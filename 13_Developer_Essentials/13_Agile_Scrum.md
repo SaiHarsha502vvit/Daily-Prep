@@ -1,17 +1,17 @@
-> **Navigation**: [< Previous](12_Monitoring_Observability.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Code_Review_Practices.md)
+**Navigation**: [< Previous](12_Monitoring_Observability.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Code_Review_Practices.md)
 
 # Agile & Scrum — Complete Developer Guide
 
 ## Why Every Developer Needs This
 
 
-> 90%+ of software teams use some form of Agile.
-> Interviewers WILL ask: "How do you work in Agile teams?"
->
-> This isn't just process — it changes HOW you code:
-> - Smaller PRs (fit in a sprint)
-> - User stories → acceptance criteria → test cases
-> - Daily standups → early blockers → faster delivery
+90%+ of software teams use some form of Agile.
+Interviewers WILL ask: "How do you work in Agile teams?"
+
+This isn't just process — it changes HOW you code:
+- Smaller PRs (fit in a sprint)
+- User stories → acceptance criteria → test cases
+- Daily standups → early blockers → faster delivery
 
 
 ---
@@ -19,15 +19,15 @@
 ## Agile Manifesto — The Foundation
 
 
-> THE 4 VALUES (2001, 17 Software Developers)
->
-> Individuals & Interactions    OVER   Processes & Tools
-> Working Software              OVER   Comprehensive Documentation
-> Customer Collaboration        OVER   Contract Negotiation
-> Responding to Change          OVER   Following a Plan
->
-> ⚠️ Items on the RIGHT still have value.
-> Items on the LEFT have MORE value.
+THE 4 VALUES (2001, 17 Software Developers)
+
+Individuals & Interactions    OVER   Processes & Tools
+Working Software              OVER   Comprehensive Documentation
+Customer Collaboration        OVER   Contract Negotiation
+Responding to Change          OVER   Following a Plan
+
+⚠️ Items on the RIGHT still have value.
+Items on the LEFT have MORE value.
 
 
 ### The 12 Principles (Summarized)
@@ -52,27 +52,27 @@
 ## Waterfall vs Agile — Mental Model
 
 
-> WATERFALL (Like building a house)
->
-> Requirements ──→ Design ──→ Build ──→ Test ──→ Deploy
-> ▔▔▔▔▔▔▔▔▔▔▔    ▔▔▔▔▔▔    ▔▔▔▔▔    ▔▔▔▔    ▔▔▔▔▔▔
-> Month 1-2        Month 3    Month 4-6 Month 7 Month 8
->
-> Customer sees product: Month 8  😱
-> "That's not what I wanted!"
->
-> ─────────────────────────────────────────────────────
->
-> AGILE (Like sculpting with feedback)
->
-> Sprint 1:  [Plan→Build→Test→Demo] → Feedback → Adjust
-> Sprint 2:  [Plan→Build→Test→Demo] → Feedback → Adjust
-> Sprint 3:  [Plan→Build→Test→Demo] → Feedback → Adjust
-> Sprint 4:  [Plan→Build→Test→Demo] → Feedback → Adjust
-> ...
->
-> Customer sees product: Every 2 weeks  ✓
-> "Let me tweak this one thing..."
+WATERFALL (Like building a house)
+
+Requirements ──→ Design ──→ Build ──→ Test ──→ Deploy
+▔▔▔▔▔▔▔▔▔▔▔    ▔▔▔▔▔▔    ▔▔▔▔▔    ▔▔▔▔    ▔▔▔▔▔▔
+Month 1-2        Month 3    Month 4-6 Month 7 Month 8
+
+Customer sees product: Month 8  😱
+"That's not what I wanted!"
+
+─────────────────────────────────────────────────────
+
+AGILE (Like sculpting with feedback)
+
+Sprint 1:  [Plan→Build→Test→Demo] → Feedback → Adjust
+Sprint 2:  [Plan→Build→Test→Demo] → Feedback → Adjust
+Sprint 3:  [Plan→Build→Test→Demo] → Feedback → Adjust
+Sprint 4:  [Plan→Build→Test→Demo] → Feedback → Adjust
+...
+
+Customer sees product: Every 2 weeks  ✓
+"Let me tweak this one thing..."
 
 
 ---
@@ -112,11 +112,9 @@ SCRUM TEAM (Typically 5-9 People)
 ```
 
 **Flow:**
-- PRODUCT OWNER (1 person) / • Owns the Product Backlog /
-- ↓
-- SCRUM MASTER (1 person, servant-leader) / • Facilitates
-- ↓
-- DEVELOPMENT TEAM (3-7 people) / • Cross-functional (fro
+1. PRODUCT OWNER (1 person) / • Owns the Product Backlog /
+2. SCRUM MASTER (1 person, servant-leader) / • Facilitates
+3. DEVELOPMENT TEAM (3-7 people) / • Cross-functional (fro
 
 ```mermaid
 flowchart TD
@@ -150,19 +148,11 @@ No adding work mid-sprint (unless truly urgent).
 ```
 
 **Flow:**
-- Sprint / Planning / (4 hrs)
-- ↓
-- Development / Daily Standups / (15 min each)
-- ↓
-- Sprint Review /
-- ↓
-- (Demo to PO) / (2 hrs)
-- ↓
-- Sprint Review /
-- ↓
-- (Demo to PO) / (2 hrs)
-- ↓
-- Retrospective / (What to improve) / (1.5 hrs)
+1. Sprint / Planning / (4 hrs)
+2. Development / Daily Standups / (15 min each)
+3. Sprint Review /
+4. (Demo to PO) / (2 hrs)
+5. Retrospective / (What to improve) / (1.5 hrs)
 
 ```mermaid
 flowchart TD
@@ -182,50 +172,50 @@ flowchart TD
 ### 1. Sprint Planning
 
 
-> SPRINT PLANNING (4 hours for 2-week sprint)
->
-> Input:  Product Backlog (prioritized by PO)
-> Output: Sprint Backlog (committed by team)
->
-> PART 1 — WHAT (with PO):
-> - PO presents top-priority items
-> - Team asks clarifying questions
-> - Team estimates capacity (story points)
-> - Team selects items they can commit to
->
-> PART 2 — HOW (dev team):
-> - Break stories into technical tasks
-> - Identify dependencies
-> - Create Sprint Goal (one-sentence summary)
->
-> SPRINT GOAL EXAMPLE:
-> "Users can register, login, and reset passwords"
+SPRINT PLANNING (4 hours for 2-week sprint)
+
+Input:  Product Backlog (prioritized by PO)
+Output: Sprint Backlog (committed by team)
+
+PART 1 — WHAT (with PO):
+- PO presents top-priority items
+- Team asks clarifying questions
+- Team estimates capacity (story points)
+- Team selects items they can commit to
+
+PART 2 — HOW (dev team):
+- Break stories into technical tasks
+- Identify dependencies
+- Create Sprint Goal (one-sentence summary)
+
+SPRINT GOAL EXAMPLE:
+"Users can register, login, and reset passwords"
 
 
 ### 2. Daily Standup (Daily Scrum)
 
 
-> DAILY STANDUP (15 minutes MAX, same time every day)
->
-> Each team member answers 3 questions:
->
-> 1. What did I do YESTERDAY?
-> 2. What will I do TODAY?
-> 3. Are there any BLOCKERS?
->
-> ❌ ANTI-PATTERNS:
-> - Status report to the manager (it's team sync, not reporting)
-> - Problem-solving in standup (say "let's take this offline")
-> - Going over 15 minutes
-> - Not showing up / phoning it in
->
-> ✅ GOOD EXAMPLE:
-> "Yesterday I completed the login API endpoint and wrote tests.
-> Today I'll start on password reset. No blockers."
->
-> ✅ GOOD BLOCKER CALL:
-> "I'm blocked on the email service integration — need access
-> credentials from DevOps. Can someone help after standup?"
+DAILY STANDUP (15 minutes MAX, same time every day)
+
+Each team member answers 3 questions:
+
+1. What did I do YESTERDAY?
+2. What will I do TODAY?
+3. Are there any BLOCKERS?
+
+❌ ANTI-PATTERNS:
+- Status report to the manager (it's team sync, not reporting)
+- Problem-solving in standup (say "let's take this offline")
+- Going over 15 minutes
+- Not showing up / phoning it in
+
+✅ GOOD EXAMPLE:
+"Yesterday I completed the login API endpoint and wrote tests.
+Today I'll start on password reset. No blockers."
+
+✅ GOOD BLOCKER CALL:
+"I'm blocked on the email service integration — need access
+credentials from DevOps. Can someone help after standup?"
 
 
 ### 3. Sprint Review (Demo)
@@ -274,43 +264,43 @@ Activities:
 
 
 
-> 🔬 **Section Challenge — Start Doing     │  Stop Doing      │  Continue Doing**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Start Doing     │  Stop Doing      │  Continue Doing**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## User Stories — Writing & Understanding
 
 
-> USER STORY FORMAT:
->
-> "As a [USER ROLE],
-> I want to [ACTION],
-> so that [BENEFIT]."
->
-> EXAMPLE:
-> "As a registered user,
-> I want to reset my password via email,
-> so that I can regain access to my account."
->
-> ─────────────────────────────────────────────────
-> ACCEPTANCE CRITERIA (Given-When-Then):
->
-> GIVEN I am on the login page
-> WHEN  I click "Forgot Password" and enter my email
-> THEN  I receive a reset link within 5 minutes
->
-> GIVEN I click the reset link
-> WHEN  I enter a valid new password (8+ chars, 1 uppercase)
-> THEN  my password is updated and I'm redirected to login
->
-> GIVEN the reset link is older than 24 hours
-> WHEN  I click it
-> THEN  I see "Link expired" and option to request new one
+USER STORY FORMAT:
+
+"As a [USER ROLE],
+I want to [ACTION],
+so that [BENEFIT]."
+
+EXAMPLE:
+"As a registered user,
+I want to reset my password via email,
+so that I can regain access to my account."
+
+─────────────────────────────────────────────────
+ACCEPTANCE CRITERIA (Given-When-Then):
+
+GIVEN I am on the login page
+WHEN  I click "Forgot Password" and enter my email
+THEN  I receive a reset link within 5 minutes
+
+GIVEN I click the reset link
+WHEN  I enter a valid new password (8+ chars, 1 uppercase)
+THEN  my password is updated and I'm redirected to login
+
+GIVEN the reset link is older than 24 hours
+WHEN  I click it
+THEN  I see "Link expired" and option to request new one
 
 
 ### INVEST Criteria for Good Stories
@@ -328,89 +318,89 @@ T — Testable    (has clear acceptance criteria)
 
 
 
-> 🔬 **Section Challenge — User Stories — Writing & Understanding**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — User Stories — Writing & Understanding**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Story Points & Estimation
 
 
-> STORY POINTS — Relative Sizing (NOT hours)
->
-> Fibonacci Scale: 1, 2, 3, 5, 8, 13, 21
->
-> 1 point  → Trivial (change a label, update a config)
-> 2 points → Simple (add a field, simple validation)
-> 3 points → Standard (new API endpoint with tests)
-> 5 points → Moderate (feature with multiple components)
-> 8 points → Complex (new service, significant logic)
-> 13 points → Very complex (consider splitting)
-> 21 points → TOO BIG (must split into smaller stories)
->
-> ─────────────────────────────────────────────────
-> ESTIMATION METHOD: Planning Poker
->
-> 1. PO presents story
-> 2. Team discusses (2 min)
-> 3. Everyone reveals estimate simultaneously
-> 4. If estimates differ: highest & lowest explain
-> 5. Re-vote until consensus
->
-> VELOCITY = Total story points completed per sprint
-> (Used to predict future capacity, NOT to judge productivity)
+STORY POINTS — Relative Sizing (NOT hours)
+
+Fibonacci Scale: 1, 2, 3, 5, 8, 13, 21
+
+1 point  → Trivial (change a label, update a config)
+2 points → Simple (add a field, simple validation)
+3 points → Standard (new API endpoint with tests)
+5 points → Moderate (feature with multiple components)
+8 points → Complex (new service, significant logic)
+13 points → Very complex (consider splitting)
+21 points → TOO BIG (must split into smaller stories)
+
+─────────────────────────────────────────────────
+ESTIMATION METHOD: Planning Poker
+
+1. PO presents story
+2. Team discusses (2 min)
+3. Everyone reveals estimate simultaneously
+4. If estimates differ: highest & lowest explain
+5. Re-vote until consensus
+
+VELOCITY = Total story points completed per sprint
+(Used to predict future capacity, NOT to judge productivity)
 
 
 ---
 
 
 
-> 🔬 **Section Challenge — Story Points & Estimation**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Story Points & Estimation**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Kanban — The Alternative Agile Framework
 
 
-> KANBAN BOARD
->
-> BACKLOG    │  IN PROGRESS   │  IN REVIEW    │  DONE
-> (No Limit) │  (WIP Limit:3) │ (WIP Limit:2) │
-> ───────────┼────────────────┼───────────────┼──────
-> [Story 7]  │  [Story 4]     │  [Story 2]    │  [Story 1] ✓
-> [Story 8]  │  [Story 5]     │  [Story 3]    │
-> [Story 9]  │  [Story 6]     │               │
-> [Story 10] │                │               │
->
-> KEY PRINCIPLES:
-> - Visualize the workflow
-> - Limit Work In Progress (WIP)
-> - Manage flow (reduce bottlenecks)
-> - Make policies explicit
-> - Continuous improvement
+KANBAN BOARD
+
+BACKLOG    │  IN PROGRESS   │  IN REVIEW    │  DONE
+(No Limit) │  (WIP Limit:3) │ (WIP Limit:2) │
+───────────┼────────────────┼───────────────┼──────
+[Story 7]  │  [Story 4]     │  [Story 2]    │  [Story 1] ✓
+[Story 8]  │  [Story 5]     │  [Story 3]    │
+[Story 9]  │  [Story 6]     │               │
+[Story 10] │                │               │
+
+KEY PRINCIPLES:
+- Visualize the workflow
+- Limit Work In Progress (WIP)
+- Manage flow (reduce bottlenecks)
+- Make policies explicit
+- Continuous improvement
 
 
 ### Scrum vs Kanban
 
 
-> ASPECT           │  SCRUM               │  KANBAN
-> Cadence          │  Fixed sprints       │  Continuous flow
-> Roles            │  PO, SM, Dev Team    │  No prescribed roles
-> Change during    │  Not recommended     │  Allowed anytime
-> iteration        │                      │
-> Commitment       │  Sprint backlog      │  WIP limits
-> Metrics          │  Velocity            │  Lead time, cycle time
-> Ceremonies       │  5 ceremonies        │  Just standups
-> Best for         │  Product development │  Support/ops/bugs
+ASPECT           │  SCRUM               │  KANBAN
+Cadence          │  Fixed sprints       │  Continuous flow
+Roles            │  PO, SM, Dev Team    │  No prescribed roles
+Change during    │  Not recommended     │  Allowed anytime
+iteration        │                      │
+Commitment       │  Sprint backlog      │  WIP limits
+Metrics          │  Velocity            │  Lead time, cycle time
+Ceremonies       │  5 ceremonies        │  Just standups
+Best for         │  Product development │  Support/ops/bugs
 
 
 ---
@@ -418,47 +408,47 @@ T — Testable    (has clear acceptance criteria)
 ## Definition of Done (DoD)
 
 
-> TEAM'S DEFINITION OF DONE (Example)
->
-> A story is "Done" when ALL of these are true:
->
-> □ Code is written and follows coding standards
-> □ Unit tests written and passing (>80% coverage)
-> □ Integration tests passing
-> □ Code reviewed by at least 1 team member
-> □ No critical SonarQube issues
-> □ Documentation updated (API docs, README)
-> □ Deployed to staging environment
-> □ PO has accepted the story
-> □ No known bugs
->
-> "Done" means SHIPPABLE — not "coding is finished"
+TEAM'S DEFINITION OF DONE (Example)
+
+A story is "Done" when ALL of these are true:
+
+□ Code is written and follows coding standards
+□ Unit tests written and passing (>80% coverage)
+□ Integration tests passing
+□ Code reviewed by at least 1 team member
+□ No critical SonarQube issues
+□ Documentation updated (API docs, README)
+□ Deployed to staging environment
+□ PO has accepted the story
+□ No known bugs
+
+"Done" means SHIPPABLE — not "coding is finished"
 
 
 ---
 
 
 
-> 🔬 **Section Challenge — Definition of Done (DoD)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Definition of Done (DoD)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Agile Metrics That Matter
 
 
-> METRIC         │  WHAT IT MEASURES           │  HEALTHY SIGN
-> Velocity       │  Points/sprint              │  Stable (±20%)
-> Sprint         │  % committed stories done   │  > 80%
-> Burndown       │  Remaining work over time   │  Steady decline
-> Cycle Time     │  Start → Done for one item  │  Decreasing
-> Lead Time      │  Request → Delivery         │  Decreasing
-> Escaped Bugs   │  Bugs found in production   │  Near zero
-> Code Coverage  │  % code with tests          │  ≥ 80%
+METRIC         │  WHAT IT MEASURES           │  HEALTHY SIGN
+Velocity       │  Points/sprint              │  Stable (±20%)
+Sprint         │  % committed stories done   │  > 80%
+Burndown       │  Remaining work over time   │  Steady decline
+Cycle Time     │  Start → Done for one item  │  Decreasing
+Lead Time      │  Request → Delivery         │  Decreasing
+Escaped Bugs   │  Bugs found in production   │  Near zero
+Code Coverage  │  % code with tests          │  ≥ 80%
 
 
 ### Burndown Chart
@@ -480,15 +470,11 @@ Remaining
 ```
 
 **Flow:**
-- Story Points
-- ↓
-- Remaining
-- ↓
-- Day 1 5 10
-- ↓
-- Ideal Burndown (straight line)
-- ↓
-- ╲_ Actual Burndown (healthy — roughly follows ideal)
+1. Story Points
+2. Remaining
+3. Day 1 5 10
+4. Ideal Burndown (straight line)
+5. ╲_ Actual Burndown (healthy — roughly follows ideal)
 
 ```mermaid
 flowchart TD
@@ -535,23 +521,23 @@ A: By user workflow, by input method, by data type,
 ## Mental Model: Agile Is a Mindset, Not Just Ceremonies
 
 
-> "Doing Agile" vs "Being Agile"
->
-> DOING AGILE:
-> - Having standups but nobody listens
-> - Sprint retros but no action items
-> - Jira board but waterfall in disguise
-> → "Cargo cult Agile" — copying the rituals without the values
->
-> BEING AGILE:
-> - Genuinely welcoming feedback and change
-> - Shipping small, getting feedback, iterating
-> - Talking to users, not hiding behind specs
-> - Reflecting honestly on what's not working
->
-> The BEST teams I've seen take what works from Scrum, Kanban,
-> XP, and create their own system. The framework serves the
-> team — not the other way around.
+"Doing Agile" vs "Being Agile"
+
+DOING AGILE:
+- Having standups but nobody listens
+- Sprint retros but no action items
+- Jira board but waterfall in disguise
+→ "Cargo cult Agile" — copying the rituals without the values
+
+BEING AGILE:
+- Genuinely welcoming feedback and change
+- Shipping small, getting feedback, iterating
+- Talking to users, not hiding behind specs
+- Reflecting honestly on what's not working
+
+The BEST teams I've seen take what works from Scrum, Kanban,
+XP, and create their own system. The framework serves the
+team — not the other way around.
 
 
 ---
@@ -561,14 +547,14 @@ A: By user workflow, by input method, by data type,
 
 ---
 
-> **Navigation**: [< Previous](12_Monitoring_Observability.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Code_Review_Practices.md)
+**Navigation**: [< Previous](12_Monitoring_Observability.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Code_Review_Practices.md)
 
-> 🔬 **Section Challenge — Mental Model: Agile Is a Mindset, Not Just Ceremonies**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Mental Model: Agile Is a Mindset, Not Just Ceremonies**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 

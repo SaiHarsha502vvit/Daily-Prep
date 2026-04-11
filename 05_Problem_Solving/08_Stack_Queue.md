@@ -1,13 +1,13 @@
-> **Navigation**: [< Previous](07_Binary_Search.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Trees.md)
+**Navigation**: [< Previous](07_Binary_Search.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Trees.md)
 
-> **Problems 08/14** | [Prev](07_Binary_Search.md) | [Index](../00_MASTER_INDEX.md) | [Next](09_Trees.md)
+**Problems 08/14** | [Prev](07_Binary_Search.md) | [Index](../00_MASTER_INDEX.md) | [Next](09_Trees.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — Stack & Queue
 
-> **When to use Stack vs Queue?**
->
+**When to use Stack vs Queue?**
+
 
 | Trigger Words | Structure | Sub-type |
 |---|---|---|
@@ -19,16 +19,16 @@
 | `sliding window max / min` | Monotonic Deque | Decreasing deque |
 | `design min/max stack` | Stack + tracking | Pair (val, minSoFar) |
 
->
-> **The Core Mental Models:**
-> ```
-> STACK → "What's the LAST (most recent) unresolved thing?"
-> QUEUE → "What's the OLDEST (arrived first) thing that I need to process?"
-> ```
->
-> 📖 **Mental Model:** [04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md)
-> 📖 **Complexity Analysis:** [09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md)
-> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**The Core Mental Models:**
+```
+STACK → "What's the LAST (most recent) unresolved thing?"
+QUEUE → "What's the OLDEST (arrived first) thing that I need to process?"
+```
+
+📖 **Mental Model:** [04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md)
+📖 **Complexity Analysis:** [09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md)
+📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
@@ -56,9 +56,8 @@
 ```
 
 **Flow:**
-- 3 / 2 / 1
-- ↓
-- 1 2 3 4
+1. 3 / 2 / 1
+2. 1 2 3 4
 
 ```mermaid
 flowchart TD
@@ -266,8 +265,8 @@ flowchart TD
 
 ## 7.1 Basic Stack Problems
 
-> **Pattern:** Use stack for matching (parentheses, tags) and undo operations (min stack).
-> **Key insight:** LIFO perfectly models "most recent unmatched" problems.
+**Pattern:** Use stack for matching (parentheses, tags) and undo operations (min stack).
+**Key insight:** LIFO perfectly models "most recent unmatched" problems.
 
 ### Problem 78: Valid Parentheses
 
@@ -296,19 +295,13 @@ flowchart TD
 ```
 
 **Flow:**
-- VALID PARENTHESES - Check if brackets are balanced
-- ↓
-- Input: '({[]})'
-- ↓
-- Processing with Stack:
-- ↓
-- Char Action Stack State
-- ↓
-- ( push ) [)]
-- ↓
-- { push } [), }]
-- ↓
-- [ push ] [), }, ]]
+1. VALID PARENTHESES - Check if brackets are balanced
+2. Input: '({[]})'
+3. Processing with Stack:
+4. Char Action Stack State
+5. ( push ) [)]
+6. { push } [), }]
+7. [ push ] [), }, ]]
 
 ```mermaid
 flowchart TD
@@ -392,29 +385,18 @@ public boolean isValid(String s) {
 ```
 
 **Flow:**
-- MIN STACK - Stack that supports getMin() in O(1)
-- ↓
-- Approach 1: Two Stacks
-- ↓
-- Main Stack Min Stack
-- ↓
-- 1 1 ← top
-- ↓
-- getMin()
-- ↓
-- peek min stack
-- ↓
-- 1
-- ↓
-- getMin()
-- ↓
-- peek min stack
-- ↓
-- 1
-- ↓
-- Approach 2: Single Stack with Pairs
-- ↓
-- (val, minSoFar)
+1. MIN STACK - Stack that supports getMin() in O(1)
+2. Approach 1: Two Stacks
+3. Main Stack Min Stack
+4. 1 1 ← top
+5. getMin()
+6. peek min stack
+7. 1
+8. getMin()
+9. peek min stack
+10. 1
+11. Approach 2: Single Stack with Pairs
+12. (val, minSoFar)
 
 ```mermaid
 flowchart TD
@@ -504,19 +486,13 @@ class MinStack {
 ```
 
 **Flow:**
-- MAX STACK - Stack with popMax() operation
-- ↓
-- Design a max stack that supports:
-- ↓
-- - push(x): Push x onto stack
-- ↓
-- - pop(): Remove top element
-- ↓
-- - top(): Get top element
-- ↓
-- - peekMax(): Retrieve maximum element
-- ↓
-- - popMax(): Remove maximum element (topmost if tie)
+1. MAX STACK - Stack with popMax() operation
+2. Design a max stack that supports:
+3. - push(x): Push x onto stack
+4. - pop(): Remove top element
+5. - top(): Get top element
+6. - peekMax(): Retrieve maximum element
+7. - popMax(): Remove maximum element (topmost if tie)
 
 ```mermaid
 flowchart TD
@@ -648,19 +624,13 @@ class MaxStack {
 ```
 
 **Flow:**
-- DECODE STRING - Expand encoded string
-- ↓
-- Input: '3[a2[c]]'
-- ↓
-- Process with Stack:
-- ↓
-- Char Action Stack / Result
-- ↓
-- 3 build num num=3
-- ↓
-- [ push [(3, '')]
-- ↓
-- a build str currentStr='a'
+1. DECODE STRING - Expand encoded string
+2. Input: '3[a2[c]]'
+3. Process with Stack:
+4. Char Action Stack / Result
+5. 3 build num num=3
+6. [ push [(3, '')]
+7. a build str currentStr='a'
 
 ```mermaid
 flowchart TD
@@ -750,19 +720,13 @@ public String decodeString(String s) {
 ```
 
 **Flow:**
-- REVERSE POLISH NOTATION (Postfix Expression)
-- ↓
-- Input: ['2','1','+','3','*']
-- ↓
-- Infix equivalent: ((2 + 1) * 3) = 9
-- ↓
-- Stack Processing:
-- ↓
-- Token Action Stack
-- ↓
-- 2 push [2]
-- ↓
-- 1 push [2, 1]
+1. REVERSE POLISH NOTATION (Postfix Expression)
+2. Input: ['2','1','+','3','*']
+3. Infix equivalent: ((2 + 1) * 3) = 9
+4. Stack Processing:
+5. Token Action Stack
+6. 2 push [2]
+7. 1 push [2, 1]
 
 ```mermaid
 flowchart TD
@@ -843,27 +807,17 @@ public int evalRPN(String[] tokens) {
 ```
 
 **Flow:**
-- BASIC CALCULATOR III - Evaluate expression with +,-,*,/
-- ↓
-- string. The expression string contains only non-negativ
-- ↓
-- integers, +, -, *, / operators, open ( and closing )
-- ↓
-- parentheses, and empty spaces.
-- ↓
-- Examples:
-- ↓
-- Input: '1+1'
-- ↓
-- Output: 2
-- ↓
-- Input: '1+1'
-- ↓
-- Output: 2
-- ↓
-- Input: '6-4/2'
-- ↓
-- Output: 4
+1. BASIC CALCULATOR III - Evaluate expression with +,-,*,/
+2. string. The expression string contains only non-negativ
+3. integers, +, -, *, / operators, open ( and closing )
+4. parentheses, and empty spaces.
+5. Examples:
+6. Input: '1+1'
+7. Output: 2
+8. Input: '1+1'
+9. Output: 2
+10. Input: '6-4/2'
+11. Output: 4
 
 ```mermaid
 flowchart TD
@@ -931,20 +885,20 @@ private int helper(Queue<Character> queue) {
 
 
 
-> 🔬 **Section Challenge — 7.1 Basic Stack Problems**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — 7.1 Basic Stack Problems**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## 7.2 Monotonic Stack Problems
 
-> **Pattern:** Maintain stack in increasing/decreasing order. Elements popped have found their NGE/NSE.
-> **Template:** `while (!stack.isEmpty() && arr[i] > arr[stack.peek()]) { popped = stack.pop(); answer[popped] = arr[i]; } stack.push(i);`
-> **Key insight:** Each element is pushed and popped AT MOST once → O(n) total, not O(n²).
+**Pattern:** Maintain stack in increasing/decreasing order. Elements popped have found their NGE/NSE.
+**Template:** `while (!stack.isEmpty() && arr[i] > arr[stack.peek()]) { popped = stack.pop(); answer[popped] = arr[i]; } stack.push(i);`
+**Key insight:** Each element is pushed and popped AT MOST once → O(n) total, not O(n²).
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -969,19 +923,13 @@ private int helper(Queue<Character> queue) {
 ```
 
 **Flow:**
-- MONOTONIC STACK - Elements in sorted order
-- ↓
-- DECREASING Stack (for Next Greater Element):
-- ↓
-- Array: [2, 1, 2, 4, 3]
-- ↓
-- i=0: stack=[2]
-- ↓
-- i=1: 1 < 2, stack=[2,1]
-- ↓
-- i=4: 3 < 4, stack=[4,3]
-- ↓
-- NGE = [4, 2, 4, -1, -1]
+1. MONOTONIC STACK - Elements in sorted order
+2. DECREASING Stack (for Next Greater Element):
+3. Array: [2, 1, 2, 4, 3]
+4. i=0: stack=[2]
+5. i=1: 1 < 2, stack=[2,1]
+6. i=4: 3 < 4, stack=[4,3]
+7. NGE = [4, 2, 4, -1, -1]
 
 ```mermaid
 flowchart TD
@@ -1033,19 +981,13 @@ flowchart TD
 ```
 
 **Flow:**
-- DAILY TEMPERATURES - Days until warmer temperature
-- ↓
-- temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
-- ↓
-- Visual Process (Monotonic Decreasing Stack by index):
-- ↓
-- i temp Stack (indices) Result
-- ↓
-- 1 74 74>73, pop, [1] [1,_,_,_,_,_,_,_]
-- ↓
-- 2 75 75>74, pop, [2] [1,1,_,_,_,_,_,_]
-- ↓
-- 5 72 72>69,71 pop×2 [2,5] [1,1,_,2,1,_,_,_]
+1. DAILY TEMPERATURES - Days until warmer temperature
+2. temperatures = [73, 74, 75, 71, 69, 72, 76, 73]
+3. Visual Process (Monotonic Decreasing Stack by index):
+4. i temp Stack (indices) Result
+5. 1 74 74>73, pop, [1] [1,_,_,_,_,_,_,_]
+6. 2 75 75>74, pop, [2] [1,1,_,_,_,_,_,_]
+7. 5 72 72>69,71 pop×2 [2,5] [1,1,_,2,1,_,_,_]
 
 ```mermaid
 flowchart TD
@@ -1115,19 +1057,13 @@ public int[] dailyTemperatures(int[] temperatures) {
 ```
 
 **Flow:**
-- NEXT GREATER ELEMENT I
-- ↓
-- nums1 = [4, 1, 2] (subset of nums2)
-- ↓
-- nums2 = [1, 3, 4, 2]
-- ↓
-- Find NGE in nums2 for each element in nums1:
-- ↓
-- nums2: [1, 3, 4, 2]
-- ↓
-- NGE: [3, 4, -1, -1]
-- ↓
-- For nums1 = [4, 1, 2]:
+1. NEXT GREATER ELEMENT I
+2. nums1 = [4, 1, 2] (subset of nums2)
+3. nums2 = [1, 3, 4, 2]
+4. Find NGE in nums2 for each element in nums1:
+5. nums2: [1, 3, 4, 2]
+6. NGE: [3, 4, -1, -1]
+7. For nums1 = [4, 1, 2]:
 
 ```mermaid
 flowchart TD
@@ -1206,23 +1142,15 @@ public int[] nextGreaterElement(int[] nums1, int[] nums2) {
 ```
 
 **Flow:**
-- NEXT GREATER ELEMENT II - Circular Array
-- ↓
-- nums = [1, 2, 1] (circular: ...1, 2, 1, 1, 2, 1...)
-- ↓
-- For each element, search circularly:
-- ↓
-- Index Element
-- ↓
-- Search NGE
-- ↓
-- Index Element
-- ↓
-- Search NGE
-- ↓
-- Trick: Iterate 2n times, use i % n
-- ↓
-- Output: [2, -1, 2]
+1. NEXT GREATER ELEMENT II - Circular Array
+2. nums = [1, 2, 1] (circular: ...1, 2, 1, 1, 2, 1...)
+3. For each element, search circularly:
+4. Index Element
+5. Search NGE
+6. Index Element
+7. Search NGE
+8. Trick: Iterate 2n times, use i % n
+9. Output: [2, -1, 2]
 
 ```mermaid
 flowchart TD
@@ -1300,13 +1228,10 @@ public int[] nextGreaterElements(int[] nums) {
 ```
 
 **Flow:**
-- LARGEST RECTANGLE IN HISTOGRAM
-- ↓
-- heights = [2, 1, 5, 6, 2, 3]
-- ↓
-- Largest rectangle = 10 (5×2 using heights 5,6)
-- ↓
-- ██████████ ← Area = 5 × 2 = 10
+1. LARGEST RECTANGLE IN HISTOGRAM
+2. heights = [2, 1, 5, 6, 2, 3]
+3. Largest rectangle = 10 (5×2 using heights 5,6)
+4. ██████████ ← Area = 5 × 2 = 10
 
 ```mermaid
 flowchart TD
@@ -1395,43 +1320,25 @@ public int largestRectangleArea(int[] heights) {
 ```
 
 **Flow:**
-- matrix = [
-- ↓
-- Convert each row to histogram heights:
-- ↓
-- Row 0: heights = [1, 0, 1, 0, 0]
-- ↓
-- maxRect in hist
-- ↓
-- Row 0: heights = [1, 0, 1, 0, 0]
-- ↓
-- maxRect in hist
-- ↓
-- Row 1: heights = [2, 0, 2, 1, 1]
-- ↓
-- maxRect in hist
-- ↓
-- Row 1: heights = [2, 0, 2, 1, 1]
-- ↓
-- maxRect in hist
-- ↓
-- Row 2: heights = [3, 1, 3, 2, 2]
-- ↓
-- maxRect in hist = 6
-- ↓
-- Row 2: heights = [3, 1, 3, 2, 2]
-- ↓
-- maxRect in hist = 6
-- ↓
-- Row 3: heights = [4, 0, 0, 3, 0]
-- ↓
-- maxRect in hist
-- ↓
-- Row 3: heights = [4, 0, 0, 3, 0]
-- ↓
-- maxRect in hist
-- ↓
-- The maximum rectangle of 6 comes from row 2:
+1. matrix = [
+2. Convert each row to histogram heights:
+3. Row 0: heights = [1, 0, 1, 0, 0]
+4. maxRect in hist
+5. Row 0: heights = [1, 0, 1, 0, 0]
+6. maxRect in hist
+7. Row 1: heights = [2, 0, 2, 1, 1]
+8. maxRect in hist
+9. Row 1: heights = [2, 0, 2, 1, 1]
+10. maxRect in hist
+11. Row 2: heights = [3, 1, 3, 2, 2]
+12. maxRect in hist = 6
+13. Row 2: heights = [3, 1, 3, 2, 2]
+14. maxRect in hist = 6
+15. Row 3: heights = [4, 0, 0, 3, 0]
+16. maxRect in hist
+17. Row 3: heights = [4, 0, 0, 3, 0]
+18. maxRect in hist
+19. The maximum rectangle of 6 comes from row 2:
 
 ```mermaid
 flowchart TD
@@ -1522,15 +1429,11 @@ private int largestRectangleArea(int[] heights) {
 ```
 
 **Flow:**
-- TRAPPING RAIN WATER
-- ↓
-- height = [0,1,0,2,1,0,1,3,2,1,2,1]
-- ↓
-- ░ = Trapped water = 6 units
-- ↓
-- For each position i:
-- ↓
-- water[i] = min(maxLeft[i], maxRight[i]) - height[i]
+1. TRAPPING RAIN WATER
+2. height = [0,1,0,2,1,0,1,3,2,1,2,1]
+3. ░ = Trapped water = 6 units
+4. For each position i:
+5. water[i] = min(maxLeft[i], maxRight[i]) - height[i]
 
 ```mermaid
 flowchart TD
@@ -1604,19 +1507,19 @@ public int trapStack(int[] height) {
 
 
 
-> 🔬 **Section Challenge — 7.2 Monotonic Stack Problems**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — 7.2 Monotonic Stack Problems**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## 7.3 Queue Problems
 
-> **Pattern:** FIFO processing. BFS uses queue naturally. Sliding window max uses monotonic deque.
-> **Key insight for Sliding Window Max:** Maintain a decreasing deque. Front = current max. Pop front if outside window. Pop back if new element is larger.
+**Pattern:** FIFO processing. BFS uses queue naturally. Sliding window max uses monotonic deque.
+**Key insight for Sliding Window Max:** Maintain a decreasing deque. Front = current max. Pop front if outside window. Pop back if new element is larger.
 
 ### Problem 90: Implement Queue using Stacks
 
@@ -1646,13 +1549,10 @@ public int trapStack(int[] height) {
 ```
 
 **Flow:**
-- inputStack / [1,2,3]
-- ↓
-- outputStack / []
-- ↓
-- inputStack / []
-- ↓
-- outputStack / [3,2,1]
+1. inputStack / [1,2,3]
+2. outputStack / []
+3. inputStack / []
+4. outputStack / [3,2,1]
 
 ```mermaid
 flowchart TD
@@ -1726,29 +1626,18 @@ class MyQueue {
 ```
 
 **Flow:**
-- IMPLEMENT STACK USING QUEUES
-- ↓
-- Approach: Make push O(n) to keep LIFO order
-- ↓
-- push(1): queue = [1]
-- ↓
-- push(2): add 2, rotate 1 time
-- ↓
-- [1,2]
-- ↓
-- poll 1, add 1
-- ↓
-- [2,1]
-- ↓
-- [1,2]
-- ↓
-- poll 1, add 1
-- ↓
-- [2,1]
-- ↓
-- push(3): add 3, rotate 2 times
-- ↓
-- Now front of queue is top of stack!
+1. IMPLEMENT STACK USING QUEUES
+2. Approach: Make push O(n) to keep LIFO order
+3. push(1): queue = [1]
+4. push(2): add 2, rotate 1 time
+5. [1,2]
+6. poll 1, add 1
+7. [2,1]
+8. [1,2]
+9. poll 1, add 1
+10. [2,1]
+11. push(3): add 3, rotate 2 times
+12. Now front of queue is top of stack!
 
 ```mermaid
 flowchart TD
@@ -1835,25 +1724,16 @@ class MyStack {
 ```
 
 **Flow:**
-- SLIDING WINDOW MAXIMUM - Max in each window of size k
-- ↓
-- nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
-- ↓
-- Use Monotonic Decreasing Deque (store indices):
-- ↓
-- Window Deque (indices) Max
-- ↓
-- [1,3,-1] [1,2]
-- ↓
-- vals[3,-1] 3
-- ↓
-- [1,3,-1] [1,2]
-- ↓
-- vals[3,-1] 3
-- ↓
-- Output: [3, 3, 5, 5, 6, 7]
-- ↓
-- Why Monotonic Decreasing?
+1. SLIDING WINDOW MAXIMUM - Max in each window of size k
+2. nums = [1, 3, -1, -3, 5, 3, 6, 7], k = 3
+3. Use Monotonic Decreasing Deque (store indices):
+4. Window Deque (indices) Max
+5. [1,3,-1] [1,2]
+6. vals[3,-1] 3
+7. [1,3,-1] [1,2]
+8. vals[3,-1] 3
+9. Output: [3, 3, 5, 5, 6, 7]
+10. Why Monotonic Decreasing?
 
 ```mermaid
 flowchart TD
@@ -1933,27 +1813,17 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ```
 
 **Flow:**
-- SHORTEST SUBARRAY WITH SUM AT LEAST K
-- ↓
-- Return the length of the shortest non-empty subarray wi
-- ↓
-- sum at least k. If no such subarray exists, return -1.
-- ↓
-- Note: Array can have NEGATIVE numbers!
-- ↓
-- Examples:
-- ↓
-- Input: nums = [1], k = 1
-- ↓
-- Output: 1
-- ↓
-- Input: nums = [1], k = 1
-- ↓
-- Output: 1
-- ↓
-- Input: nums = [1,2], k = 4
-- ↓
-- Output: -1
+1. SHORTEST SUBARRAY WITH SUM AT LEAST K
+2. Return the length of the shortest non-empty subarray wi
+3. sum at least k. If no such subarray exists, return -1.
+4. Note: Array can have NEGATIVE numbers!
+5. Examples:
+6. Input: nums = [1], k = 1
+7. Output: 1
+8. Input: nums = [1], k = 1
+9. Output: 1
+10. Input: nums = [1,2], k = 4
+11. Output: -1
 
 ```mermaid
 flowchart TD
@@ -2051,11 +1921,9 @@ public int shortestSubarray(int[] nums, int k) {
 ```
 
 **Flow:**
-- 1 2 3
-- ↓
-- 1 2 3 4 5
-- ↓
-- 6 3 4 5
+1. 1 2 3
+2. 1 2 3 4 5
+3. 6 3 4 5
 
 ```mermaid
 flowchart TD
@@ -2154,19 +2022,13 @@ class MyCircularQueue {
 ```
 
 **Flow:**
-- DESIGN CIRCULAR DEQUE (Double-ended Queue)
-- ↓
-- Design a circular deque with these operations:
-- ↓
-- - insertFront(): Add at front
-- ↓
-- - insertLast(): Add at rear
-- ↓
-- - deleteFront(): Remove from front
-- ↓
-- - deleteLast(): Remove from rear
-- ↓
-- - getFront(): Get front element
+1. DESIGN CIRCULAR DEQUE (Double-ended Queue)
+2. Design a circular deque with these operations:
+3. - insertFront(): Add at front
+4. - insertLast(): Add at rear
+5. - deleteFront(): Remove from front
+6. - deleteLast(): Remove from rear
+7. - getFront(): Get front element
 
 ```mermaid
 flowchart TD
@@ -2258,9 +2120,9 @@ class MyCircularDeque {
 
 ## 7.4 Advanced Stack Problems
 
-> **Pattern:** Greedy stack operations — use stack to build optimal sequence by popping suboptimal elements.
-> **Remove K Digits:** Pop stack top if it's larger than current digit (greedy: smaller digits first).
-> **132 Pattern:** Monotonic stack tracking the "2" (third element) while scanning backwards.
+**Pattern:** Greedy stack operations — use stack to build optimal sequence by popping suboptimal elements.
+**Remove K Digits:** Pop stack top if it's larger than current digit (greedy: smaller digits first).
+**132 Pattern:** Monotonic stack tracking the "2" (third element) while scanning backwards.
 
 ### Problem 96: Remove K Digits
 
@@ -2290,19 +2152,13 @@ class MyCircularDeque {
 ```
 
 **Flow:**
-- REMOVE K DIGITS - Make smallest number by removing k di
-- ↓
-- num = '1432219', k = 3
-- ↓
-- Use monotonic increasing stack:
-- ↓
-- Digit Stack k
-- ↓
-- 3 [1,3] (pop 4) 2
-- ↓
-- 2 [1,2] (pop 3) 1
-- ↓
-- 1 [1,2,1] (pop 2) 0
+1. REMOVE K DIGITS - Make smallest number by removing k di
+2. num = '1432219', k = 3
+3. Use monotonic increasing stack:
+4. Digit Stack k
+5. 3 [1,3] (pop 4) 2
+6. 2 [1,2] (pop 3) 1
+7. 1 [1,2,1] (pop 2) 0
 
 ```mermaid
 flowchart TD
@@ -2392,19 +2248,13 @@ public String removeKdigits(String num, int k) {
 ```
 
 **Flow:**
-- REMOVE DUPLICATE LETTERS - Smallest lexicographic resul
-- ↓
-- s = 'cbacdcbc'
-- ↓
-- Goal: Remove duplicates, keep smallest lex order
-- ↓
-- Each letter appears exactly once in result
-- ↓
-- Process:
-- ↓
-- Char Stack Reason
-- ↓
-- c [c] push
+1. REMOVE DUPLICATE LETTERS - Smallest lexicographic resul
+2. s = 'cbacdcbc'
+3. Goal: Remove duplicates, keep smallest lex order
+4. Each letter appears exactly once in result
+5. Process:
+6. Char Stack Reason
+7. c [c] push
 
 ```mermaid
 flowchart TD
@@ -2494,15 +2344,11 @@ public String removeDuplicateLetters(String s) {
 ```
 
 **Flow:**
-- 132 PATTERN - Find i < j < k where a[i] < a[k]
-- ↓
-- Example: [3, 1, 4, 2]
-- ↓
-- Pattern Visualization:
-- ↓
-- Approach: Iterate from right, track 'a[k]' candidates
-- ↓
-- using monotonic decreasing stack
+1. 132 PATTERN - Find i < j < k where a[i] < a[k]
+2. Example: [3, 1, 4, 2]
+3. Pattern Visualization:
+4. Approach: Iterate from right, track 'a[k]' candidates
+5. using monotonic decreasing stack
 
 ```mermaid
 flowchart TD
@@ -2576,19 +2422,13 @@ public boolean find132pattern(int[] nums) {
 ```
 
 **Flow:**
-- ONLINE STOCK SPAN - Days before with price <= today
-- ↓
-- Prices: [100, 80, 60, 70, 60, 75, 85]
-- ↓
-- where price <= today's price:
-- ↓
-- Day Price Explanation Span
-- ↓
-- 0 100 Just today 1
-- ↓
-- 1 80 Just today (100>80) 1
-- ↓
-- 2 60 Just today (80>60) 1
+1. ONLINE STOCK SPAN - Days before with price <= today
+2. Prices: [100, 80, 60, 70, 60, 75, 85]
+3. where price <= today's price:
+4. Day Price Explanation Span
+5. 0 100 Just today 1
+6. 1 80 Just today (100>80) 1
+7. 2 60 Just today (80>60) 1
 
 ```mermaid
 flowchart TD
@@ -2637,14 +2477,14 @@ class StockSpanner {
 
 
 
-> 🔬 **Section Challenge — 7.4 Advanced Stack Problems**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — 7.4 Advanced Stack Problems**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## 7.5 HackerEarth & Codeforces Stack/Queue Problems
 
@@ -2672,27 +2512,17 @@ class StockSpanner {
 ```
 
 **Flow:**
-- BALANCED BRACKETS - Extended validation
-- ↓
-- Given a string containing brackets and other characters
-- ↓
-- determine if the brackets are balanced.
-- ↓
-- Invalid: '{[}]', '(()', 'a{b(c]d}e'
-- ↓
-- Examples:
-- ↓
-- Input: '{[a+b]*[c-d]}'
-- ↓
-- Output: 'YES'
-- ↓
-- Input: '{[a+b]*[c-d]}'
-- ↓
-- Output: 'YES'
-- ↓
-- Input: '({[}])'
-- ↓
-- Output: 'NO' (mismatched)
+1. BALANCED BRACKETS - Extended validation
+2. Given a string containing brackets and other characters
+3. determine if the brackets are balanced.
+4. Invalid: '{[}]', '(()', 'a{b(c]d}e'
+5. Examples:
+6. Input: '{[a+b]*[c-d]}'
+7. Output: 'YES'
+8. Input: '{[a+b]*[c-d]}'
+9. Output: 'YES'
+10. Input: '({[}])'
+11. Output: 'NO' (mismatched)
 
 ```mermaid
 flowchart TD
@@ -2773,19 +2603,13 @@ public String isBalanced(String s) {
 ```
 
 **Flow:**
-- MAXIMUM ELEMENT - Stack with max queries
-- ↓
-- Support these operations:
-- ↓
-- 1 x : Push x onto the stack
-- ↓
-- 2 : Pop the top element
-- ↓
-- 3 : Print the maximum element in the stack
-- ↓
-- Example:
-- ↓
-- Operations: 1 97, 2, 1 20, 2, 1 26, 1 20, 2, 3, 1 91, 3
+1. MAXIMUM ELEMENT - Stack with max queries
+2. Support these operations:
+3. 1 x : Push x onto the stack
+4. 2 : Pop the top element
+5. 3 : Print the maximum element in the stack
+6. Example:
+7. Operations: 1 97, 2, 1 20, 2, 1 26, 1 20, 2, 3, 1 91, 3
 
 ```mermaid
 flowchart TD
@@ -2864,19 +2688,13 @@ public void processQueries(int[][] queries) {
 ```
 
 **Flow:**
-- NEAREST SMALLER ELEMENT
-- ↓
-- For each element, find the nearest smaller element to i
-- ↓
-- left. If none exists, output -1.
-- ↓
-- Input: [4, 5, 2, 10, 8]
-- ↓
-- Index Element Elements to Left Answer
-- ↓
-- 0 4 none -1
-- ↓
-- 2 2 4,5 (none smaller) -1
+1. NEAREST SMALLER ELEMENT
+2. For each element, find the nearest smaller element to i
+3. left. If none exists, output -1.
+4. Input: [4, 5, 2, 10, 8]
+5. Index Element Elements to Left Answer
+6. 0 4 none -1
+7. 2 2 4,5 (none smaller) -1
 
 ```mermaid
 flowchart TD
@@ -2950,19 +2768,13 @@ public int[] nearestSmallerElement(int[] arr) {
 ```
 
 **Flow:**
-- PREFIX TO POSTFIX CONVERSION
-- ↓
-- Convert prefix expression to postfix using stack
-- ↓
-- Prefix: *+AB-CD (operator before operands)
-- ↓
-- Postfix: AB+CD-* (operator after operands)
-- ↓
-- Algorithm: Read from RIGHT to LEFT
-- ↓
-- Char Action Stack
-- ↓
-- D push [D]
+1. PREFIX TO POSTFIX CONVERSION
+2. Convert prefix expression to postfix using stack
+3. Prefix: *+AB-CD (operator before operands)
+4. Postfix: AB+CD-* (operator after operands)
+5. Algorithm: Read from RIGHT to LEFT
+6. Char Action Stack
+7. D push [D]
 
 ```mermaid
 flowchart TD
@@ -3014,14 +2826,14 @@ public String prefixToPostfix(String prefix) {
 
 
 
-> 🔬 **Section Challenge — 7.5 HackerEarth & Codeforces Stack/Queue Problems**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — 7.5 HackerEarth & Codeforces Stack/Queue Problems**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## 🏆 Competitive Programming — Codeforces Problems
 
@@ -3064,14 +2876,14 @@ public String prefixToPostfix(String prefix) {
 
 
 
-> 🔬 **Section Challenge — 🌍 Real-World Applications of Stack & Queue**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — 🌍 Real-World Applications of Stack & Queue**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — Stack & Queue
 

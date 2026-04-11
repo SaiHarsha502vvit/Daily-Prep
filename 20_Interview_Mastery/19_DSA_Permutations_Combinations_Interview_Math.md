@@ -1,4 +1,4 @@
-> **Navigation**: [⬅ SQL Foundations from Notes](18_SQL_Foundations_Commands_Operators_Functions.md) | [📚 Index](00_INDEX.md) | [Next: Bitwise Trie Interview Guide ➡](20_Bitwise_Trie_Interview_Guide.md)
+**Navigation**: [⬅ SQL Foundations from Notes](18_SQL_Foundations_Commands_Operators_Functions.md) | [📚 Index](00_INDEX.md) | [Next: Bitwise Trie Interview Guide ➡](20_Bitwise_Trie_Interview_Guide.md)
 
 # File 19 — DSA Permutations & Combinations: Math-First Logic, Interview Narration, Then Coding
 
@@ -106,14 +106,14 @@ Interview one-liner:
 
 
 
-> 🔬 **Section Challenge — 3) Product Rule, Sum Rule, Complement — The Hidden Backbone**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 3) Product Rule, Sum Rule, Complement — The Hidden Backbone**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 3.1 Product rule
 
@@ -129,14 +129,14 @@ Example: select from branch CSE or EEE with no overlap -> add counts.
 
 
 
-> 🔬 **Section Challenge — 3.2 Sum rule**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 3.2 Sum rule**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 3.3 Complement counting
 
@@ -295,14 +295,14 @@ Interview line:
 
 
 
-> 🔬 **Section Challenge — 6.1 Security / OTP / brute-force risk**
->
-> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-> <details><summary>Answer</summary>
->
-> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-> </details>
->
+🔬 **Section Challenge — 6.1 Security / OTP / brute-force risk**
+
+**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+<details><summary>Answer</summary>
+
+JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+</details>
+
 
 ## 6.2 Team/route scheduling
 
@@ -454,4 +454,4 @@ When only counts are needed (not full generated sets), avoid recursive generatio
 
 ---
 
-> **Navigation**: [⬅ SQL Foundations from Notes](18_SQL_Foundations_Commands_Operators_Functions.md) | [📚 Index](00_INDEX.md) | [Next: Bitwise Trie Interview Guide ➡](20_Bitwise_Trie_Interview_Guide.md)
+**Navigation**: [⬅ SQL Foundations from Notes](18_SQL_Foundations_Commands_Operators_Functions.md) | [📚 Index](00_INDEX.md) | [Next: Bitwise Trie Interview Guide ➡](20_Bitwise_Trie_Interview_Guide.md)

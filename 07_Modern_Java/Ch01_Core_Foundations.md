@@ -1,6 +1,6 @@
 # 56. Java Core Foundations — Missing Pieces
 
-> **Navigation**: [< Strings & Immutability](Ch02_Strings_Immutability.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Strings & Immutability](Ch02_Strings_Immutability.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ## 🔑 JVM Class Loading Sequence — Why It Matters
 
@@ -55,13 +55,13 @@ Fundamentally, Inner Classes are **Compiler Syntactic Sugar**. At the runtime JV
 
 
 
-> 🔬 **Section Challenge — PART 1: INNER CLASSES & INITIALIZATION**
->
-> **Challenge (Reasoning):** A non-static inner class holds a hidden reference to the outer class (`Outer.this`). Why does this cause memory leaks in Android and why does `static` inner class fix it?
-> <details><summary>Answer</summary>
->
-> When you pass a non-static inner class instance (e.g., an AsyncTask or Handler) to a Thread/callback system, the inner object HOLDS a reference to the outer Activity/Fragment. If the outer is destroyed (user navigates away) but the inner is still running, the GC cannot collect the outer — memory leak. A `static` inner class has NO implicit reference to the outer instance, so the outer can be garbage collected freely. If the static inner needs to access the outer, use a `WeakReference<OuterClass>` — weak references don't prevent GC.
-> </details>
+🔬 **Section Challenge — PART 1: INNER CLASSES & INITIALIZATION**
+
+**Challenge (Reasoning):** A non-static inner class holds a hidden reference to the outer class (`Outer.this`). Why does this cause memory leaks in Android and why does `static` inner class fix it?
+<details><summary>Answer</summary>
+
+When you pass a non-static inner class instance (e.g., an AsyncTask or Handler) to a Thread/callback system, the inner object HOLDS a reference to the outer Activity/Fragment. If the outer is destroyed (user navigates away) but the inner is still running, the GC cannot collect the outer — memory leak. A `static` inner class has NO implicit reference to the outer instance, so the outer can be garbage collected freely. If the static inner needs to access the outer, use a `WeakReference<OuterClass>` — weak references don't prevent GC.
+</details>
 
 ## 1. Inner Classes — 4 Types
 
@@ -171,20 +171,20 @@ Runnable anon = new Runnable() {
 
 
 
-> 🔬 **Section Challenge — 1. Inner Classes — 4 Types**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — 1. Inner Classes — 4 Types**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## 2. Initialization Order — The Exact Sequence
 
@@ -239,13 +239,13 @@ class Child extends Parent {
 
 
 
-> 🔬 **Section Challenge — 2. Initialization Order — The Exact Sequence**
->
-> **Challenge (Reasoning):** Parent constructor calls an overridable method `init()`. Child overrides `init()`. When `new Child()` is called, `init()` runs while Child's fields are still 0/null. Why is this dangerous?
-> <details><summary>Answer</summary>
->
-> Java initialization order: Parent static → Child static → Parent instance fields → Parent constructor → Child instance fields → Child constructor. The Parent constructor runs BEFORE Child's fields are initialized. If Parent's constructor calls `init()` (which is overridden), it runs the CHILD's version while the Child's fields are still at their default values (0/null). Pattern: never call overridable methods from constructors. Mark `init()` as `final` or use a factory method pattern instead.
-> </details>
+🔬 **Section Challenge — 2. Initialization Order — The Exact Sequence**
+
+**Challenge (Reasoning):** Parent constructor calls an overridable method `init()`. Child overrides `init()`. When `new Child()` is called, `init()` runs while Child's fields are still 0/null. Why is this dangerous?
+<details><summary>Answer</summary>
+
+Java initialization order: Parent static → Child static → Parent instance fields → Parent constructor → Child instance fields → Child constructor. The Parent constructor runs BEFORE Child's fields are initialized. If Parent's constructor calls `init()` (which is overridden), it runs the CHILD's version while the Child's fields are still at their default values (0/null). Pattern: never call overridable methods from constructors. Mark `init()` as `final` or use a factory method pattern instead.
+</details>
 
 ## 3. Wrapper Classes & Caching Trap
 
@@ -319,14 +319,14 @@ void method(int... x)  { }  // NOT called for method(5)
 
 
 
-> 🔬 **Section Challenge — 3. Wrapper Classes & Caching Trap**
->
-> **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-> <details><summary>Answer</summary>
->
-> Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-> </details>
->
+🔬 **Section Challenge — 3. Wrapper Classes & Caching Trap**
+
+**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+<details><summary>Answer</summary>
+
+Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+</details>
+
 
 ## PART 2: COMPARABLE, COMPARATOR & OPTIONAL
 
@@ -334,14 +334,14 @@ void method(int... x)  { }  // NOT called for method(5)
 
 
 
-> 🔬 **Section Challenge — PART 2: COMPARABLE, COMPARATOR & OPTIONAL**
->
-> **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
-> <details><summary>Answer</summary>
->
-> `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-> </details>
->
+🔬 **Section Challenge — PART 2: COMPARABLE, COMPARATOR & OPTIONAL**
+
+**Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+<details><summary>Answer</summary>
+
+`Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
+</details>
+
 
 ## 4. Comparable vs Comparator — Complete Guide
 
@@ -485,14 +485,14 @@ Optional.ofNullable(null);  // ✅ Returns Optional.empty()
 
 
 
-> 🔬 **Section Challenge — 5. Optional — Deep Dive**
->
-> **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
-> <details><summary>Answer</summary>
->
-> `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-> </details>
->
+🔬 **Section Challenge — 5. Optional — Deep Dive**
+
+**Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+<details><summary>Answer</summary>
+
+`Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
+</details>
+
 
 ## PART 3: ITERATOR, CLONE & VARARGS
 
@@ -688,13 +688,13 @@ public boolean equals(Object o) {
 
 
 
-> 🔬 **Section Challenge — PART 4: FUNCTIONAL INTERFACES & JPMS**
->
-> **Challenge (Reasoning):** `@FunctionalInterface` is an annotation, not a compiler keyword. What does it actually do?
-> <details><summary>Answer</summary>
->
-> It's a marker annotation that causes the COMPILER to verify the interface has exactly one abstract method. It does NOT make the interface a functional interface — any interface with exactly one abstract method is already functional (lambdas can implement it). `@FunctionalInterface` just: (1) documents intent, (2) prevents accidental addition of a second abstract method. Without it: if someone later adds a second abstract method, the annotation causes a compile error instead of silently breaking all lambda usages.
-> </details>
+🔬 **Section Challenge — PART 4: FUNCTIONAL INTERFACES & JPMS**
+
+**Challenge (Reasoning):** `@FunctionalInterface` is an annotation, not a compiler keyword. What does it actually do?
+<details><summary>Answer</summary>
+
+It's a marker annotation that causes the COMPILER to verify the interface has exactly one abstract method. It does NOT make the interface a functional interface — any interface with exactly one abstract method is already functional (lambdas can implement it). `@FunctionalInterface` just: (1) documents intent, (2) prevents accidental addition of a second abstract method. Without it: if someone later adds a second abstract method, the annotation causes a compile error instead of silently breaking all lambda usages.
+</details>
 
 ## 9. All Built-in Functional Interfaces
 
@@ -757,13 +757,13 @@ Converter<String, Integer> toInt = Integer::parseInt;
 
 
 
-> 🔬 **Section Challenge — 9. All Built-in Functional Interfaces**
->
-> **Challenge (Reasoning):** `Function<T,R>` vs `UnaryOperator<T>` — they look identical. When would you choose one over the other?
-> <details><summary>Answer</summary>
->
-> `UnaryOperator<T>` extends `Function<T,T>` (same input and output type). Choose `UnaryOperator<T>` when the transformation PRESERVES the type (e.g., `UnaryOperator<String> trim = String::trim`). This communicates intent: "I'm transforming a T into another T". Choose `Function<T,R>` when input and output types differ (e.g., `Function<String, Integer> length = String::length`). In practice: use the most specific interface — better readability and allows more specific composition methods.
-> </details>
+🔬 **Section Challenge — 9. All Built-in Functional Interfaces**
+
+**Challenge (Reasoning):** `Function<T,R>` vs `UnaryOperator<T>` — they look identical. When would you choose one over the other?
+<details><summary>Answer</summary>
+
+`UnaryOperator<T>` extends `Function<T,T>` (same input and output type). Choose `UnaryOperator<T>` when the transformation PRESERVES the type (e.g., `UnaryOperator<String> trim = String::trim`). This communicates intent: "I'm transforming a T into another T". Choose `Function<T,R>` when input and output types differ (e.g., `Function<String, Integer> length = String::length`). In practice: use the most specific interface — better readability and allows more specific composition methods.
+</details>
 
 ## 10. Java Module System (JPMS) — Java 9+
 
@@ -868,31 +868,31 @@ static <T> List<T> listOf(T... elements) {
 ## 12. Interview Questions & Answers
 
 **Q: What are the 4 types of inner classes? When do you use each?**
-> (1) Static nested — utility class like Builder, no outer reference. (2) Non-static inner — tightly coupled to outer, has Outer.this reference, can cause memory leaks. (3) Local inner — defined in method, used for complex one-off logic. (4) Anonymous inner — inline interface implementation, mostly replaced by lambdas. Use lambda for functional interfaces; anonymous inner when multiple methods needed.
+(1) Static nested — utility class like Builder, no outer reference. (2) Non-static inner — tightly coupled to outer, has Outer.this reference, can cause memory leaks. (3) Local inner — defined in method, used for complex one-off logic. (4) Anonymous inner — inline interface implementation, mostly replaced by lambdas. Use lambda for functional interfaces; anonymous inner when multiple methods needed.
 
 **Q: What's the initialization order in Java?**
-> Class loading (once): parent static fields/blocks → child static fields/blocks. Object creation (each time): parent instance fields/blocks → parent constructor → child instance fields/blocks → child constructor. Static blocks run on first class access, instance blocks run before constructor body.
+Class loading (once): parent static fields/blocks → child static fields/blocks. Object creation (each time): parent instance fields/blocks → parent constructor → child instance fields/blocks → child constructor. Static blocks run on first class access, instance blocks run before constructor body.
 
 **Q: Why does `Integer a = 127; Integer b = 127; a == b` return true but `128 == 128` returns false?**
-> Integer caches values -128 to 127 (IntegerCache). Autoboxed values in this range return the same cached object, so `==` is true. Outside this range, new Integer objects are created, so `==` compares references (false). Always use `.equals()` for wrapper comparison.
+Integer caches values -128 to 127 (IntegerCache). Autoboxed values in this range return the same cached object, so `==` is true. Outside this range, new Integer objects are created, so `==` compares references (false). Always use `.equals()` for wrapper comparison.
 
 **Q: Comparable vs Comparator?**
-> Comparable defines ONE natural ordering inside the class (`compareTo`). Comparator defines EXTERNAL custom orderings (can have many). Use `Comparator.comparing(...).thenComparing(...)` chains for multi-level sorting. Use `nullsFirst/nullsLast` for null safety. Use `.reversed()` for descending.
+Comparable defines ONE natural ordering inside the class (`compareTo`). Comparator defines EXTERNAL custom orderings (can have many). Use `Comparator.comparing(...).thenComparing(...)` chains for multi-level sorting. Use `nullsFirst/nullsLast` for null safety. Use `.reversed()` for descending.
 
 **Q: When should you use Optional?**
-> Use as method return type when absence is a valid result (e.g., `findById`). Never as field type, constructor parameter, or method parameter. Use `map/flatMap/filter/orElse` chains — avoid `isPresent()+get()`. Never call `Optional.of(null)` — use `ofNullable`. Stream operations like `findFirst()` already return Optional.
+Use as method return type when absence is a valid result (e.g., `findById`). Never as field type, constructor parameter, or method parameter. Use `map/flatMap/filter/orElse` chains — avoid `isPresent()+get()`. Never call `Optional.of(null)` — use `ofNullable`. Stream operations like `findFirst()` already return Optional.
 
 **Q: Fail-fast vs fail-safe iterators?**
-> Fail-fast (ArrayList, HashMap): throw ConcurrentModificationException if collection modified during iteration. Use `Iterator.remove()` or `removeIf()` for safe removal. Fail-safe (ConcurrentHashMap, CopyOnWriteArrayList): iterate over snapshot/weakly-consistent view, never throw CME but may not reflect concurrent changes.
+Fail-fast (ArrayList, HashMap): throw ConcurrentModificationException if collection modified during iteration. Use `Iterator.remove()` or `removeIf()` for safe removal. Fail-safe (ConcurrentHashMap, CopyOnWriteArrayList): iterate over snapshot/weakly-consistent view, never throw CME but may not reflect concurrent changes.
 
 **Q: Why is clone() considered broken in Java?**
-> Cloneable is a marker interface with no methods (clone is on Object), default is shallow copy (shared references), no constructor called (bypasses initialization), and return type is Object. Use copy constructors or static factory methods (`copyOf`) instead — explicit, type-safe, and deep by design.
+Cloneable is a marker interface with no methods (clone is on Object), default is shallow copy (shared references), no constructor called (bypasses initialization), and return type is Object. Use copy constructors or static factory methods (`copyOf`) instead — explicit, type-safe, and deep by design.
 
 ---
 
-> **Key Takeaway**: Inner classes capture outer references (memory leak risk).
-> Initialization follows parent-first, static-first order. Integer caching makes 
-> `==` unreliable for wrappers. Use Comparator chains for complex sorting. 
-> Optional is for return types only. Clone is broken — use copy constructors.
+**Key Takeaway**: Inner classes capture outer references (memory leak risk).
+Initialization follows parent-first, static-first order. Integer caching makes 
+`==` unreliable for wrappers. Use Comparator chains for complex sorting. 
+Optional is for return types only. Clone is broken — use copy constructors.
 
-> **Navigation**: [< Strings & Immutability](Ch02_Strings_Immutability.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Strings & Immutability](Ch02_Strings_Immutability.md) | [Back to Index](../00_MASTER_INDEX.md)

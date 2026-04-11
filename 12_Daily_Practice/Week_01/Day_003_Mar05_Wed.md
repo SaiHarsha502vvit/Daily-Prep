@@ -53,25 +53,13 @@ String Pool (special memory area):
 ```
 
 **Flow:**
-- Before: Stack: s
-- ↓
-- [heap: 'hello']
-- ↓
-- After: Stack: s
-- ↓
-- [heap: 'hello world']
-- ↓
-- a == b
-- ↓
-- true (same reference)
-- ↓
-- a == c
-- ↓
-- false (different references)
-- ↓
-- a.equals(c)
-- ↓
-- true (same content)
+1. Before: Stack: s
+2. [heap: 'hello']
+3. After: Stack: s
+4. [heap: 'hello world'] a == b true (same reference)
+5. a == c false (different references)
+6. a.equals(c)
+7. true (same content)
 
 ```mermaid
 flowchart TD
@@ -196,29 +184,18 @@ Pass 4:
 ```
 
 **Flow:**
-- (5,3)
-- ↓
-- swap: [3, 5, 8, 1, 2]
-- ↓
-- (5,8)
-- ↓
-- ok: [3, 5, 8, 1, 2]
-- ↓
-- (8,1)
-- ↓
-- swap: [3, 5, 1, 8, 2]
-- ↓
-- (8,2)
-- ↓
-- swap: [3, 5, 1, 2, 8] ← 8 is in final position
-- ↓
-- (3,5)
-- ↓
-- ok: [3, 5, 1, 2, 8]
-- ↓
-- (5,1)
-- ↓
-- swap: [3, 1, 5, 2, 8]
+1. (5,3)
+2. swap: [3, 5, 8, 1, 2]
+3. (5,8)
+4. ok: [3, 5, 8, 1, 2]
+5. (8,1)
+6. swap: [3, 5, 1, 8, 2]
+7. (8,2)
+8. swap: [3, 5, 1, 2, 8] ← 8 is in final position
+9. (3,5)
+10. ok: [3, 5, 1, 2, 8]
+11. (5,1)
+12. swap: [3, 1, 5, 2, 8]
 
 ```mermaid
 flowchart TD
@@ -307,17 +284,9 @@ Two strings are anagrams if they contain the same characters in different order.
 ```
 
 **Flow:**
-- 'listen' and 'silent'
-- ↓
-- true
-- ↓
-- 'hello' and 'world'
-- ↓
-- false
-- ↓
-- 'anagram' and 'nagaram'
-- ↓
-- true
+1. 'listen' and 'silent' true
+2. 'hello' and 'world' false
+3. 'anagram' and 'nagaram' true
 
 ```mermaid
 flowchart LR

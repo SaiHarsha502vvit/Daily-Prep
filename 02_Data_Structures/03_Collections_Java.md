@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_2D_Arrays_Matrix.md)
+**Navigation**: [< Previous](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_2D_Arrays_Matrix.md)
 
 # 📊 Java Collections: Complete Method Reference Tables
 
@@ -219,20 +219,20 @@ for (int num : list) {
 
 
 
-> 🔬 **Section Challenge — ArrayList Methods (Most Used for Arrays/DSA)**
->
-> **Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
-> <details><summary>Answer</summary>
->
-> `remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
-> </details>
->
-> **Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
-> <details><summary>Answer</summary>
->
-> None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
-> </details>
->
+🔬 **Section Challenge — ArrayList Methods (Most Used for Arrays/DSA)**
+
+**Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
+<details><summary>Answer</summary>
+
+`remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
+</details>
+
+**Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
+<details><summary>Answer</summary>
+
+None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
+</details>
+
 
 ## LinkedList Methods (Queue + Deque operations)
 
@@ -361,20 +361,20 @@ map.forEach((key, value) -> System.out.println(key + " -> " + value));
 
 
 
-> 🔬 **Section Challenge — HashMap Methods (CRITICAL for DSA!)**
->
-> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-> <details><summary>Answer</summary>
->
-> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-> <details><summary>Answer</summary>
->
-> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-> </details>
->
+🔬 **Section Challenge — HashMap Methods (CRITICAL for DSA!)**
+
+**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+<details><summary>Answer</summary>
+
+Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+</details>
+
+**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+<details><summary>Answer</summary>
+
+Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+</details>
+
 
 ## TreeMap Methods (Sorted Order)
 
@@ -409,14 +409,14 @@ treeMap.floorKey(7);      // 5 (largest <= 7)
 
 
 
-> 🔬 **Section Challenge — TreeMap Methods (Sorted Order)**
->
-> **Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
-> <details><summary>Answer</summary>
->
-> `TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
-> </details>
->
+🔬 **Section Challenge — TreeMap Methods (Sorted Order)**
+
+**Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
+<details><summary>Answer</summary>
+
+`TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
+</details>
+
 
 # 📌 Section 3: Set Interface
 
@@ -681,14 +681,14 @@ if (sb.length() > 0) {
 
 
 
-> 🔬 **Section Challenge — StringBuilder Methods (For String Manipulation)**
->
-> **Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
-> <details><summary>Answer</summary>
->
-> Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
-> </details>
->
+🔬 **Section Challenge — StringBuilder Methods (For String Manipulation)**
+
+**Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
+<details><summary>Answer</summary>
+
+Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
+</details>
+
 
 # 📊 Section 7: Arrays Utility Class
 
@@ -824,8 +824,8 @@ Collections.sort(list, Collections.reverseOrder());  // [5, 4, 3, 1, 1]
 
 # 💪 Curated Practice Problems — Java Collections in Action
 
-> **HOW TO USE**: These problems specifically test your knowledge of Java Collections API.
-> Focus on choosing the RIGHT collection for each problem.
+**HOW TO USE**: These problems specifically test your knowledge of Java Collections API.
+Focus on choosing the RIGHT collection for each problem.
 
 ---
 

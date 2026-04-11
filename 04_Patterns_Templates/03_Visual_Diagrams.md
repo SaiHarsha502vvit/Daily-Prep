@@ -1,13 +1,10 @@
-> **Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)
+**Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)
 
 # 🎨 VISUAL ALGORITHM DIAGRAMS - COMPLETE REFERENCE
 
 ## This file contains VISUAL diagrams for ALL algorithm patterns
 
 ---
-
-
-
 
 ## 📚 TABLE OF CONTENTS
 
@@ -126,19 +123,10 @@ Continue... Final Answer: 6 (subarray [4, -1, 2, 1])
 ```
 
 **Flow:**
-- KADANE'S ALGORITHM
-- ↓
-- Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-- ↓
-- KEY IDEA: At each position, decide:
-- ↓
-- 'Should I start fresh here, or extend previous subarray
-- ↓
-- Index 0: arr[0] = -2
-- ↓
-- maxSum = -2
-- ↓
-- Index 1: arr[1] = 1
+1. Scan left to right and maintain two values: `current` and `maxSum`.
+2. At each index, choose between starting fresh at `arr[i]` or extending `current + arr[i]`.
+3. Update `maxSum` whenever `current` becomes larger.
+4. Final `maxSum` is the maximum subarray answer.
 
 ```mermaid
 flowchart TD
@@ -218,11 +206,9 @@ Result: [0, 0, 1, 1, 2, 2]
 ```
 
 **Flow:**
-- 2 0 2 1 1 0
-- ↓
-- 0 0 2 1 1 2
-- ↓
-- 0 0 1 1 2 2
+1. Start with `2 0 2 1 1 0`.
+2. Move 0s to the left zone and 2s to the right zone with low/mid/high pointers.
+3. End with `0 0 1 1 2 2`.
 
 ```mermaid
 flowchart TD
@@ -278,13 +264,9 @@ All zeros → ANAGRAM ✓
 ```
 
 **Flow:**
-- l 1 / i 1 / s 1 / t 1 / e 1 / n 1
-- ↓
-- s 1 / i 1 / l 1 / e 1 / n 1 / t 1
-- ↓
-- 0 0 0 0 1 0 0 0 1 0 0 1 0 1 0 0 0 0 1 1 0 0 0 0 0 0
-- ↓
-- 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+1. Count character frequencies for the first word (`+1` per char).
+2. Subtract frequencies using the second word (`-1` per char).
+3. If every frequency returns to zero, the words are anagrams.
 
 ```mermaid
 flowchart TD
@@ -299,90 +281,86 @@ flowchart TD
 
 ### KMP String Matching (Pattern Search)
 
+KMP STRING MATCHING
 
-> KMP STRING MATCHING
->
-> Text:    "ABABDABACDABABCABAB"
-> Pattern: "ABABCABAB"
->
-> Step 1: Build LPS (Longest Proper Prefix which is also Suffix)
->
-> Pattern: A B A B C A B A B
-> Index:   0 1 2 3 4 5 6 7 8
-> LPS:    [0,0,1,2,0,1,2,3,4]
->
-> LPS meaning:
-> - At index 3 (ABAB), LPS=2 means "AB" is both prefix and suffix
-> - At index 8 (ABABCABAB), LPS=4 means "ABAB" is prefix and suffix
->
-> Step 2: Search using LPS
->
-> Text:    A B A B D A B A C D A B A B C A B A B
-> Pattern: A B A B C
-> ↑ mismatch at index 4
->
-> LPS[3] = 2, so pattern can shift to reuse matched "AB":
->
-> Text:    A B A B D A B A C D A B A B C A B A B
-> Pattern:     A B A B C
-> ↑ continue from here (saved 2 comparisons!)
->
-> Without KMP: Would start from beginning each time → O(N×M)
-> With KMP:    Reuse matched portion → O(N+M)
+Text:    "ABABDABACDABABCABAB"
+Pattern: "ABABCABAB"
 
+Step 1: Build LPS (Longest Proper Prefix which is also Suffix)
+
+Pattern: A B A B C A B A B
+Index:   0 1 2 3 4 5 6 7 8
+LPS:    [0,0,1,2,0,1,2,3,4]
+
+LPS meaning:
+- At index 3 (ABAB), LPS=2 means "AB" is both prefix and suffix
+- At index 8 (ABABCABAB), LPS=4 means "ABAB" is prefix and suffix
+
+Step 2: Search using LPS
+
+Text:    A B A B D A B A C D A B A B C A B A B
+Pattern: A B A B C
+↑ mismatch at index 4
+
+LPS[3] = 2, so pattern can shift to reuse matched "AB":
+
+Text:    A B A B D A B A C D A B A B C A B A B
+Pattern:     A B A B C
+↑ continue from here (saved 2 comparisons!)
+
+Without KMP: Would start from beginning each time → O(N×M)
+With KMP:    Reuse matched portion → O(N+M)
 
 ---
-
-
-
 
 ## 🔢 SORTING ALGORITHMS
 
 ### Heap Sort Visualization
 
+```
+HEAP SORT VISUALIZATION
 
-> HEAP SORT VISUALIZATION
->
-> Array: [4, 10, 3, 5, 1]
->
-> PHASE 1: Build Max Heap (heapify from bottom-up)
->
-> Initial tree:              After heapify:
-> 4                          10
-> / \                        /  \
-> 10  3          →           5    3
-> / \                        / \
-> 5   1                      4   1
->
-> Max Heap Property: Parent ≥ Children
->
-> PHASE 2: Extract max repeatedly
->
-> Step 1: Swap root(10) with last(1), remove 10
-> 1
-> / \                 Heapify →        5
-> 5   3                                / \
-> /                                    4   3
-> 4                                    /
-> 1
-> Sorted: [..., 10]
->
-> Step 2: Swap root(5) with last(1), remove 5
-> 1
-> / \                 Heapify →        4
-> 4   3                                / \
-> 1   3
-> Sorted: [..., 5, 10]
->
-> Step 3: Swap root(4) with last(3), remove 4
-> 3
-> /                   Heapify →        3
-> 1                                    /
-> 1
-> Sorted: [..., 4, 5, 10]
->
-> Continue... Final: [1, 3, 4, 5, 10]
+Array: [4, 10, 3, 5, 1]
 
+PHASE 1: Build Max Heap (heapify from bottom-up)
+
+Initial tree:              After heapify:
+4                          10
+/ \                        /  \
+10  3          →           5    3
+/ \                        / \
+5   1                      4   1
+
+Max Heap Property: Parent ≥ Children
+
+PHASE 2: Extract max repeatedly
+
+Step 1: Swap root(10) with last(1), remove 10
+1
+/ \                 Heapify →        5
+5   3                                / \
+/                                    4   3
+4                                    /
+1
+Sorted: [..., 10]
+
+Step 2: Swap root(5) with last(1), remove 5
+1
+/ \                 Heapify →        4
+4   3                                / \
+1   3
+Sorted: [..., 5, 10]
+
+Step 3: Swap root(4) with last(3), remove 4
+3
+/                   Heapify →        3
+1                                    /
+1
+Sorted: [..., 4, 5, 10]
+
+Continue... Final: [1, 3, 4, 5, 10]
+
+```
 
 ### Counting Sort Visualization
 
@@ -427,9 +405,9 @@ Best when: K is small (like sorting ages 0-100)
 ```
 
 **Flow:**
-- 0 1 2 1 1 0 0 0 1 0
-- ↓
-- 0 1 3 4 5 5 5 5 6 6
+1. Build the frequency count array.
+2. Convert counts into prefix sums.
+3. Use prefix positions to place elements in sorted order (stable placement).
 
 ```mermaid
 flowchart TD
@@ -440,16 +418,13 @@ flowchart TD
 
 ---
 
+🔬 **Section Challenge — 🔢 SORTING ALGORITHMS**
 
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🔢 SORTING ALGORITHMS**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
 
 ## 🔍 SEARCHING ALGORITHMS
 
@@ -520,9 +495,6 @@ Count of 2s = Upper Bound - Lower Bound = 5 - 1 = 4
 
 ---
 
-
-
-
 ## 📦 DATA STRUCTURES
 
 ### HashMap Internal Working
@@ -591,11 +563,9 @@ Use cases: Sliding window max, BFS variations
 ```
 
 **Flow:**
-- 3 / 2 / 1
-- ↓
-- 1 2 3
-- ↓
-- A B C D E
+1. Stack view: `3, 2, 1` (LIFO behavior).
+2. Queue view: `1, 2, 3` (FIFO behavior).
+3. Deque view: `A B C D E` with insertion/removal from both ends.
 
 ```mermaid
 flowchart TD
@@ -612,112 +582,105 @@ flowchart TD
 
 ### BFS Shortest Path
 
+BFS SHORTEST PATH
 
-> BFS SHORTEST PATH
->
-> Graph (unweighted):
->
-> A ─────── B
-> │ \       │
-> │  \      │
-> │   \     │
-> C ─── D ─ E
->
-> Find shortest path from A to E
->
-> BFS Process:
->
-> Level 0: Start at A
-> Queue: [A]    Visited: {A}    Distance: {A:0}
->
-> Level 1: Process A's neighbors
-> Queue: [B, C, D]    Visited: {A,B,C,D}    Distance: {A:0, B:1, C:1, D:1}
->
-> A(0) ──── B(1)
-> │ \       │
-> │  \      │
-> │   \     │
-> C(1)─D(1)─ E
->
-> Level 2: Process B's neighbors (C,D already visited)
-> Queue: [E]    Visited: {A,B,C,D,E}    Distance: {..., E:2}
->
-> A(0) ──── B(1)
-> │ \       │
-> │  \      │
-> │   \     │
-> C(1)─D(1)─E(2)
->
-> Shortest path A→E: 2 edges
-> Possible paths: A→B→E or A→D→E
->
-> KEY: BFS finds shortest path in UNWEIGHTED graphs
-> For weighted graphs, use Dijkstra's algorithm
+Graph (unweighted):
 
+A ─────── B
+│ \       │
+│  \      │
+│   \     │
+C ─── D ─ E
+
+Find shortest path from A to E
+
+BFS Process:
+
+Level 0: Start at A
+Queue: [A]    Visited: {A}    Distance: {A:0}
+
+Level 1: Process A's neighbors
+Queue: [B, C, D]    Visited: {A,B,C,D}    Distance: {A:0, B:1, C:1, D:1}
+
+A(0) ──── B(1)
+│ \       │
+│  \      │
+│   \     │
+C(1)─D(1)─ E
+
+Level 2: Process B's neighbors (C,D already visited)
+Queue: [E]    Visited: {A,B,C,D,E}    Distance: {..., E:2}
+
+A(0) ──── B(1)
+│ \       │
+│  \      │
+│   \     │
+C(1)─D(1)─E(2)
+
+Shortest path A→E: 2 edges
+Possible paths: A→B→E or A→D→E
+
+KEY: BFS finds shortest path in UNWEIGHTED graphs
+For weighted graphs, use Dijkstra's algorithm
 
 ### DFS - Detecting Cycle
 
+DFS CYCLE DETECTION
 
-> DFS CYCLE DETECTION
->
-> Directed Graph:
->
-> A ──→ B
-> ↑     │
-> │     ↓
-> D ←── C
-> │
-> ↓
-> E
->
-> Cycle exists: A → B → C → D → A
->
-> DFS with 3 states:
-> - WHITE (0): Not visited
-> - GRAY (1): Currently in DFS stack (being processed)
-> - BLACK (2): Completely processed
->
-> DFS from A:
->
-> Step 1: Visit A (GRAY)
-> A(G) ──→ B
->
-> Step 2: Visit B (GRAY)
-> A(G) ──→ B(G)
-> │
-> ↓
-> C
->
-> Step 3: Visit C (GRAY)
-> A(G) ──→ B(G)
-> │
-> ↓
-> C(G)
->
-> Step 4: Visit D (GRAY), D points to A
-> A is GRAY (in current DFS path) → CYCLE DETECTED!
->
-> Rule: Back edge to GRAY node = CYCLE
+Directed Graph:
 
+A ──→ B
+↑     │
+│     ↓
+D ←── C
+│
+↓
+E
+
+Cycle exists: A → B → C → D → A
+
+DFS with 3 states:
+- WHITE (0): Not visited
+- GRAY (1): Currently in DFS stack (being processed)
+- BLACK (2): Completely processed
+
+DFS from A:
+
+Step 1: Visit A (GRAY)
+A(G) ──→ B
+
+Step 2: Visit B (GRAY)
+A(G) ──→ B(G)
+│
+↓
+C
+
+Step 3: Visit C (GRAY)
+A(G) ──→ B(G)
+│
+↓
+C(G)
+
+Step 4: Visit D (GRAY), D points to A
+A is GRAY (in current DFS path) → CYCLE DETECTED!
+
+Rule: Back edge to GRAY node = CYCLE
 
 ---
 
+🔬 **Section Challenge — 🌐 GRAPH ALGORITHMS**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🌐 GRAPH ALGORITHMS**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
 
 ## 🧮 DYNAMIC PROGRAMMING
 
@@ -778,19 +741,10 @@ Time: O(N), Space: O(1) 🎉
 ```
 
 **Flow:**
-- FIBONACCI - DP VISUALIZATION
-- ↓
-- WITHOUT MEMOIZATION (Exponential time):
-- ↓
-- fib(5)
-- ↓
-- fib(4) fib(3)
-- ↓
-- fib(2) fib(1)
-- ↓
-- Notice: fib(3) calculated twice, fib(2) calculated 3 ti
-- ↓
-- Time: O(2^N) 😱
+1. Naive recursion recomputes the same subproblems many times.
+2. Memoization stores results and reduces time to O(N).
+3. Bottom-up DP computes iteratively and avoids recursion overhead.
+4. Optimized tabulation uses two variables for O(1) extra space.
 
 ```mermaid
 flowchart TD
@@ -847,19 +801,10 @@ Start at dp[6][6]=3, trace back through matches
 ```
 
 **Flow:**
-- LONGEST COMMON SUBSEQUENCE
-- ↓
-- String X = 'ABCDGH'
-- ↓
-- String Y = 'AEDFHR'
-- ↓
-- DP Table: dp[i][j] = LCS length of X[0..i-1] and Y[0..j
-- ↓
-- D 0 1 1 2 2 2 2 ← D matches!
-- ↓
-- H 0 1 1 2 2 3 3 ← H matches!
-- ↓
-- Recurrence:
+1. Define strings X and Y and create `dp[i][j]` for LCS length.
+2. If characters match, take diagonal + 1.
+3. If not, take the max of top and left.
+4. Backtrack through the table to reconstruct the subsequence.
 
 ```mermaid
 flowchart TD
@@ -882,87 +827,82 @@ flowchart TD
 
 ---
 
+🔬 **Section Challenge — 🧮 DYNAMIC PROGRAMMING**
 
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🧮 DYNAMIC PROGRAMMING**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
 
 ## 🔢 MATH & BIT MANIPULATION
 
 ### Bit Operations Visual
 
+BIT MANIPULATION VISUAL
 
-> BIT MANIPULATION VISUAL
->
-> CHECKING IF POWER OF 2:
-> ────────────────────────
->
-> n = 8:    1000  (binary)
-> n-1 = 7:  0111  (binary)
-> ────
-> n & (n-1): 0000  ← All zeros! Power of 2 ✓
->
-> n = 6:    0110  (binary)
-> n-1 = 5:  0101  (binary)
-> ────
-> n & (n-1): 0100  ← Not zero! Not power of 2 ✗
->
-> Rule: Power of 2 has exactly ONE bit set
-> n & (n-1) removes rightmost set bit
-> If result is 0, it was power of 2
->
-> ═══════════════════════════════════════════════════════════════════════
->
-> COUNTING SET BITS:
-> ──────────────────
->
-> n = 13:   1101  (binary)  → 3 set bits
->
-> Iteration 1:
-> n = 1101
-> n-1 = 1100
-> n & (n-1) = 1100  → count = 1 (removed rightmost 1)
->
-> Iteration 2:
-> n = 1100
-> n-1 = 1011
-> n & (n-1) = 1000  → count = 2
->
-> Iteration 3:
-> n = 1000
-> n-1 = 0111
-> n & (n-1) = 0000  → count = 3
->
-> n = 0, stop. Answer: 3 set bits ✓
->
-> ═══════════════════════════════════════════════════════════════════════
->
-> XOR PROPERTIES:
-> ───────────────
->
-> a ^ a = 0        (same numbers cancel)
-> a ^ 0 = a        (XOR with 0 gives same number)
-> a ^ b ^ a = b    (a cancels out)
->
-> Example: Find single number in [4, 1, 2, 1, 2]
->
-> 4 ^ 1 ^ 2 ^ 1 ^ 2
-> = 4 ^ (1 ^ 1) ^ (2 ^ 2)
-> = 4 ^ 0 ^ 0
-> = 4  ← The single number!
+CHECKING IF POWER OF 2:
+────────────────────────
 
+n = 8:    1000  (binary)
+n-1 = 7:  0111  (binary)
+────
+n & (n-1): 0000  ← All zeros! Power of 2 ✓
+
+n = 6:    0110  (binary)
+n-1 = 5:  0101  (binary)
+────
+n & (n-1): 0100  ← Not zero! Not power of 2 ✗
+
+Rule: Power of 2 has exactly ONE bit set
+n & (n-1) removes rightmost set bit
+If result is 0, it was power of 2
+
+═══════════════════════════════════════════════════════════════════════
+
+COUNTING SET BITS:
+──────────────────
+
+n = 13:   1101  (binary)  → 3 set bits
+
+Iteration 1:
+n = 1101
+n-1 = 1100
+n & (n-1) = 1100  → count = 1 (removed rightmost 1)
+
+Iteration 2:
+n = 1100
+n-1 = 1011
+n & (n-1) = 1000  → count = 2
+
+Iteration 3:
+n = 1000
+n-1 = 0111
+n & (n-1) = 0000  → count = 3
+
+n = 0, stop. Answer: 3 set bits ✓
+
+═══════════════════════════════════════════════════════════════════════
+
+XOR PROPERTIES:
+───────────────
+
+a ^ a = 0        (same numbers cancel)
+a ^ 0 = a        (XOR with 0 gives same number)
+a ^ b ^ a = b    (a cancels out)
+
+Example: Find single number in [4, 1, 2, 1, 2]
+
+4 ^ 1 ^ 2 ^ 1 ^ 2
+= 4 ^ (1 ^ 1) ^ (2 ^ 2)
+= 4 ^ 0 ^ 0
+= 4  ← The single number!
 
 ### GCD Euclidean Algorithm
 
@@ -1013,15 +953,10 @@ Time Complexity: O(log(min(a, b)))
 ```
 
 **Flow:**
-- GCD - EUCLIDEAN ALGORITHM / Find GCD(48, 18): / Step 1:
-- ↓
-- GCD(18, 48 % 18) = GCD(18, 12)
-- ↓
-- GCD(12, 18 % 12) = GCD(12, 6)
-- ↓
-- GCD(6, 12 % 6) = GCD(6, 0)
-- ↓
-- return 6 ← When b becomes 0, a is the GCD / Code: / int
+1. Start with `gcd(48, 18)`.
+2. Repeatedly apply `gcd(a, b) = gcd(b, a % b)`.
+3. Sequence: `gcd(18,12) -> gcd(12,6) -> gcd(6,0)`.
+4. Stop when `b = 0`; return `a = 6`.
 
 ```mermaid
 flowchart TD
@@ -1040,52 +975,44 @@ flowchart TD
 
 ## 🎯 QUICK REFERENCE TABLE
 
-```
-                  ALGORITHM QUICK REFERENCE
-──────────────────────────────────────────────────
+**ALGORITHM QUICK REFERENCE**
 
-SORTING
-┌──────────────────┬─────────┬─────────┬─────────┬────────────────────┐
-│ Algorithm        │ Best    │ Average │ Worst   │ When to Use        │
-├──────────────────┼─────────┼─────────┼─────────┼────────────────────┤
-│ Quick Sort       │ O(NlogN)│ O(NlogN)│ O(N²)   │ General purpose    │
-│ Merge Sort       │ O(NlogN)│ O(NlogN)│ O(NlogN)│ Stable needed      │
-│ Heap Sort        │ O(NlogN)│ O(NlogN)│ O(NlogN)│ Memory constrained │
-│ Counting Sort    │ O(N+K)  │ O(N+K)  │ O(N+K)  │ Small range values │
-│ Insertion Sort   │ O(N)    │ O(N²)   │ O(N²)   │ Nearly sorted      │
-└──────────────────┴─────────┴─────────┴─────────┴────────────────────┘
+**SORTING**
 
-SEARCHING
-┌──────────────────┬─────────┬──────────────────────────────────────────┐
-│ Algorithm        │ Time    │ When to Use                              │
-├──────────────────┼─────────┼──────────────────────────────────────────┤
-│ Linear Search    │ O(N)    │ Unsorted data                            │
-│ Binary Search    │ O(logN) │ Sorted array                             │
-│ Hash Lookup      │ O(1)    │ When O(1) lookup needed                  │
-│ BFS              │ O(V+E)  │ Shortest path (unweighted)               │
-│ DFS              │ O(V+E)  │ Path exists, cycle detection             │
-└──────────────────┴─────────┴──────────────────────────────────────────┘
+| Algorithm | Best | Average | Worst | When to Use |
+|---|---|---|---|---|
+| Quick Sort | O(NlogN) | O(NlogN) | O(N²) | General purpose |
+| Merge Sort | O(NlogN) | O(NlogN) | O(NlogN) | Stable needed |
+| Heap Sort | O(NlogN) | O(NlogN) | O(NlogN) | Memory constrained |
+| Counting Sort | O(N+K) | O(N+K) | O(N+K) | Small range values |
+| Insertion Sort | O(N) | O(N²) | O(N²) | Nearly sorted |
 
-DATA STRUCTURES
-┌──────────────────┬─────────┬─────────┬─────────┬────────────────────┐
-│ Structure        │ Access  │ Search  │ Insert  │ Delete             │
-├──────────────────┼─────────┼─────────┼─────────┼────────────────────┤
-│ Array            │ O(1)    │ O(N)    │ O(N)    │ O(N)               │
-│ Linked List      │ O(N)    │ O(N)    │ O(1)    │ O(1)               │
-│ HashMap          │ -       │ O(1)    │ O(1)    │ O(1)               │
-│ Stack            │ O(N)    │ O(N)    │ O(1)    │ O(1)               │
-│ Queue            │ O(N)    │ O(N)    │ O(1)    │ O(1)               │
-│ Heap             │ -       │ O(N)    │ O(logN) │ O(logN)            │
-│ BST (balanced)   │ O(logN) │ O(logN) │ O(logN) │ O(logN)            │
-└──────────────────┴─────────┴─────────┴─────────┴────────────────────┘
-```
+**SEARCHING**
+
+| Algorithm | Time | When to Use |
+|---|---|---|
+| Linear Search | O(N) | Unsorted data |
+| Binary Search | O(logN) | Sorted array |
+| Hash Lookup | O(1) | When O(1) lookup needed |
+| BFS | O(V+E) | Shortest path (unweighted) |
+| DFS | O(V+E) | Path exists, cycle detection |
+
+**DATA STRUCTURES**
+
+| Structure | Access | Search | Insert | Delete |
+|---|---|---|---|---|
+| Array | O(1) | O(N) | O(N) | O(N) |
+| Linked List | O(N) | O(N) | O(1) | O(1) |
+| HashMap | - | O(1) | O(1) | O(1) |
+| Stack | O(N) | O(N) | O(1) | O(1) |
+| Queue | O(N) | O(N) | O(1) | O(1) |
+| Heap | - | O(N) | O(logN) | O(logN) |
+| BST (balanced) | O(logN) | O(logN) | O(logN) | O(logN) |
 
 **Flow:**
-- Algorithm Best Average Worst When to Use / Quick Sort O
-- ↓
-- Algorithm Time When to Use / Linear Search O(N) Unsorte
-- ↓
-- Structure Access Search Insert Delete / Array O(1) O(N)
+1. Review sorting algorithms by best/average/worst complexity and practical use.
+2. Review searching methods by time complexity and data preconditions.
+3. Review data-structure operation costs for access, search, insert, and delete.
 
 ```mermaid
 flowchart TD
@@ -1108,7 +1035,6 @@ flowchart TD
 4. **If stuck**: Go back to the diagram, not the code
 
 Remember: **Visual thinking → Clearer code!**
-
 
 ---
 

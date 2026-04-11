@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](01c_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01e_HashTable.md)
+**Navigation**: [< Previous Chapter](01c_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01e_HashTable.md)
 
 ---
 
@@ -73,17 +73,12 @@ PHYSICAL REALITY - Like a stack of plates:
 ```
 
 **Flow:**
-- PHYSICAL REALITY - Like a stack of plates:
-- ↓
-- TOP
-- ↓
-- 5 ← Last In, First Out (LIFO)
-- ↓
-- PUSH: Add to top
-- ↓
-- POP: Remove from top
-- ↓
-- PEEK: Look at top without removing
+1. PHYSICAL REALITY - Like a stack of plates:
+2. TOP
+3. 5 ← Last In, First Out (LIFO)
+4. PUSH: Add to top
+5. POP: Remove from top
+6. PEEK: Look at top without removing
 
 ```mermaid
 flowchart TD
@@ -134,13 +129,9 @@ flowchart TD
 ```
 
 **Flow:**
-- C() addr ← Top (current)
-- ↓
-- B() addr
-- ↓
-- A() addr
-- ↓
-- main() addr
+1. C() addr ← Top (current)
+2. B() addr
+3. A() addr main() addr
 
 ```mermaid
 flowchart TD
@@ -155,7 +146,7 @@ flowchart TD
 
 When `C()` returns → pop → go to `B()`. When `B()` returns → pop → go to `A()`.
 
-> 💡 **This is why:** `StackOverflowError` exists (too many calls), recursion works (each call pushed to stack), and debuggers show a "call stack".
+💡 **This is why:** `StackOverflowError` exists (too many calls), recursion works (each call pushed to stack), and debuggers show a "call stack".
 
 ## 💻 Implementation WITHOUT Collections
 
@@ -283,17 +274,9 @@ NOW USED IN:
 ```
 
 **Flow:**
-- - See '('
-- ↓
-- push ')'
-- ↓
-- - See '{'
-- ↓
-- push '}'
-- ↓
-- - See ')'
-- ↓
-- pop, check if matches
+1. - See '(' push ')'
+2. - See '{' push '}'
+3. - See ')' pop, check if matches
 
 ```mermaid
 flowchart LR
@@ -312,9 +295,9 @@ flowchart LR
 
 ## 🔑 The Key Bridge: Stack → DFS · Queue → BFS
 
-> [!IMPORTANT]
-> This is the single most important connection in all of graph algorithms.
-> Understanding it rewires how you think about every traversal problem.
+[!IMPORTANT]
+This is the single most important connection in all of graph algorithms.
+Understanding it rewires how you think about every traversal problem.
 
 ```
 STACK (LIFO)                          QUEUE (FIFO)
@@ -353,23 +336,23 @@ NEED TOPOLOGICAL ORDER?            → DFS postorder
 NEED LEVEL-BY-LEVEL OUTPUT?        → BFS (Queue)
 ```
 
-> 💡 **Analogy — Lost in a Maze:**
-> - **DFS (Stack):** Pick one direction, follow it to the dead end, then backtrack and try the next. Like following one path as far as it goes before giving up.
-> - **BFS (Queue):** Send scouts one step in all directions simultaneously. When any scout hits a dead end, they stop. When one reaches the exit — it took the **minimum** steps because all scouts moved equally.
+💡 **Analogy — Lost in a Maze:**
+- **DFS (Stack):** Pick one direction, follow it to the dead end, then backtrack and try the next. Like following one path as far as it goes before giving up.
+- **BFS (Queue):** Send scouts one step in all directions simultaneously. When any scout hits a dead end, they stop. When one reaches the exit — it took the **minimum** steps because all scouts moved equally.
 
-> 🔬 **Section Challenge — Stack=DFS vs Queue=BFS**
->
-> **Challenge 1 (Reasoning):** You're solving "shortest path in a maze". A friend says "just use DFS, it's simpler". Why are they wrong?
-> <details><summary>Answer</summary>
->
-> DFS explores deep paths first — it might find a path of length 10 before ever checking the path of length 2. DFS guarantees it finds A path, not THE SHORTEST path (unless you exhaustively check all paths, which is O(2^N)). BFS is guaranteed to find the shortest path because it explores all 1-hop nodes before any 2-hop nodes — the first time it reaches the destination, it's via the minimum number of edges.
-> </details>
->
-> **Challenge 2 (Reasoning):** Both DFS and BFS are O(V+E). If complexity is the same, why does the CHOICE OF ALGORITHM still matter for "count all connected components"?
-> <details><summary>Answer</summary>
->
-> Same complexity but different behavior: DFS explores ONE component completely using recursion (simpler code, but risks StackOverflow on large graphs). BFS uses an explicit queue (no stack overflow risk). For counting components: both work, but DFS recursive is cleaner code. For shortest path between components: BFS is required. The algorithm choice determines CORRECTNESS, not just speed.
-> </details>
+🔬 **Section Challenge — Stack=DFS vs Queue=BFS**
+
+**Challenge 1 (Reasoning):** You're solving "shortest path in a maze". A friend says "just use DFS, it's simpler". Why are they wrong?
+<details><summary>Answer</summary>
+
+DFS explores deep paths first — it might find a path of length 10 before ever checking the path of length 2. DFS guarantees it finds A path, not THE SHORTEST path (unless you exhaustively check all paths, which is O(2^N)). BFS is guaranteed to find the shortest path because it explores all 1-hop nodes before any 2-hop nodes — the first time it reaches the destination, it's via the minimum number of edges.
+</details>
+
+**Challenge 2 (Reasoning):** Both DFS and BFS are O(V+E). If complexity is the same, why does the CHOICE OF ALGORITHM still matter for "count all connected components"?
+<details><summary>Answer</summary>
+
+Same complexity but different behavior: DFS explores ONE component completely using recursion (simpler code, but risks StackOverflow on large graphs). BFS uses an explicit queue (no stack overflow risk). For counting components: both work, but DFS recursive is cleaner code. For shortest path between components: BFS is required. The algorithm choice determines CORRECTNESS, not just speed.
+</details>
 
 # 📬 Part 5: Queue
 
@@ -397,17 +380,12 @@ PHYSICAL REALITY - Like a line at a store:
 ```
 
 **Flow:**
-- PHYSICAL REALITY - Like a line at a store:
-- ↓
-- FRONT BACK
-- ↓
-- Dequeue Enqueue
-- ↓
-- (Remove) (Add)
-- ↓
-- FIFO = First In, First Out
-- ↓
-- 'First come, first served'
+1. PHYSICAL REALITY - Like a line at a store:
+2. FRONT BACK
+3. Dequeue Enqueue
+4. (Remove) (Add)
+5. FIFO = First In, First Out
+6. 'First come, first served'
 
 ```mermaid
 flowchart TD
@@ -452,27 +430,13 @@ PRINT QUEUE:
 ```
 
 **Flow:**
-- PRINT QUEUE:
-- ↓
-- Front Back
-- ↓
-- [Job1]
-- ↓
-- [Job2]
-- ↓
-- [Job3]
-- ↓
-- [Job4]
-- ↓
-- [Job1]
-- ↓
-- [Job2]
-- ↓
-- [Job3]
-- ↓
-- [Job4]
-- ↓
-- Printing New jobs
+1. PRINT QUEUE:
+2. Front Back
+3. [Job1]
+4. [Job2]
+5. [Job3]
+6. [Job4]
+7. Printing New jobs
 
 ```mermaid
 flowchart TD
@@ -485,7 +449,7 @@ flowchart TD
     N3 --> N4
 ```
 
-> ✅ **Now used in:** OS task scheduling, web server request handling, message queues (Kafka, RabbitMQ), BFS algorithm
+✅ **Now used in:** OS task scheduling, web server request handling, message queues (Kafka, RabbitMQ), BFS algorithm
 
 ## 💻 Implementation WITHOUT Collections
 
@@ -566,7 +530,7 @@ No wasted space!
 
 ### Problem: Number of Islands (BFS with Queue)
 
-> 🌍 **Real-World Origin:** Google Maps (2005)
+🌍 **Real-World Origin:** Google Maps (2005)
 
 **Problem:** Satellite images show land and water. Need to count distinct landmasses and identify boundaries of each island.
 
@@ -579,10 +543,10 @@ No wasted space!
 4. Count increments by 1
 5. Repeat for unexplored land
 
-> ❓ **Why BFS (Queue) not DFS (Stack)?**
-> BFS explores in "waves" from starting point — natural for geographic spreading. Won't get stuck in long narrow peninsulas.
+❓ **Why BFS (Queue) not DFS (Stack)?**
+BFS explores in "waves" from starting point — natural for geographic spreading. Won't get stuck in long narrow peninsulas.
 
-> ✅ **Impact:** Automated island counting, ocean mapping, disease spread modeling (same algorithm!), network connectivity analysis
+✅ **Impact:** Automated island counting, ocean mapping, disease spread modeling (same algorithm!), network connectivity analysis
 
 ---
 
@@ -629,12 +593,12 @@ class MinStack {
 
 ### 🚀 GO LEARN — Monotonic Stack (You'll Need This)
 
-> **STOP** — For "next greater element" pattern, you need Monotonic Stack.
->
-> 📖 [11_Stack_Plus_MonotonicPattern.md](../04_Patterns_Templates/11_Stack_Plus_MonotonicPattern.md)
-> 📖 [15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md)
->
-> ⬅️ **RETURN CHECKPOINT** — Apply below after studying.
+**STOP** — For "next greater element" pattern, you need Monotonic Stack.
+
+📖 [11_Stack_Plus_MonotonicPattern.md](../04_Patterns_Templates/11_Stack_Plus_MonotonicPattern.md)
+📖 [15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md)
+
+⬅️ **RETURN CHECKPOINT** — Apply below after studying.
 
 ### ✅ Apply: Next Greater Element — Monotonic Stack O(n)
 
@@ -726,14 +690,14 @@ public int[] maxSlidingWindow(int[] arr, int k) {
 
 
 
-> 🔬 **Section Challenge — 🎯 Full Problem Set — Stack & Queue**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — 🎯 Full Problem Set — Stack & Queue**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## 🧠 Pattern Fingerprint — Stack & Queue
 
@@ -771,7 +735,7 @@ SEE THESE WORDS → USE THIS:
 
 ## ✅ You Know Stack & Queue — Now Practice! (JIT Study Path)
 
-> **Step 1 — Basic Problems (Warm Up):**
+**Step 1 — Basic Problems (Warm Up):**
 
 | Problem | LC # | Pattern | Key Concept |
 |---|---|---|---|
@@ -781,15 +745,15 @@ SEE THESE WORDS → USE THIS:
 | Daily Temperatures | LC 739 | Monotonic Stack | Decreasing stack, pop when warmer found |
 | Next Greater Element I | LC 496 | Monotonic Stack | Stack + HashMap for O(n) answer |
 
->
-> **Step 2 — Hit a wall? Learn these patterns:**
-> - Nearest greater/smaller → **[Monotonic Stack Guide](../04_Patterns_Templates/11_Stack_Plus_MonotonicPattern.md)**
-> - BFS level-by-level → **[Graph Fundamentals](../03_Algorithms/05c_Graphs_Fundamentals.md)**
->
-> **Step 3 — Apply patterns on harder problems:**
-> 👉 **[Go to Stack/Queue Problem Solving File →](../05_Problem_Solving/08_Stack_Queue.md)**
->
-> **Step 4 — Competitive Practice:**
+
+**Step 2 — Hit a wall? Learn these patterns:**
+- Nearest greater/smaller → **[Monotonic Stack Guide](../04_Patterns_Templates/11_Stack_Plus_MonotonicPattern.md)**
+- BFS level-by-level → **[Graph Fundamentals](../03_Algorithms/05c_Graphs_Fundamentals.md)**
+
+**Step 3 — Apply patterns on harder problems:**
+👉 **[Go to Stack/Queue Problem Solving File →](../05_Problem_Solving/08_Stack_Queue.md)**
+
+**Step 4 — Competitive Practice:**
 
 | CF Problem | Topic | Difficulty |
 |---|---|---|
@@ -797,13 +761,13 @@ SEE THESE WORDS → USE THIS:
 | [CF 797C — Minimal String](https://codeforces.com/problemset/problem/797/C) | Greedy + Stack | ⭐⭐ Medium |
 | [CF 1830C — Hyperflation](https://codeforces.com/problemset/problem/1830/C) | Monotonic Stack | ⭐⭐ Medium |
 
->
-> 🌍 **Real-World Connections:**
-> - **Undo/Redo** in every editor (VS Code, Word) = two stacks: undo stack + redo stack
-> - **Browser history** = back button = stack of visited pages
-> - **Call stack in JVM/V8** = stack frame pushed per function call, popped on return
-> - **Message queues** (Kafka, RabbitMQ) = distributed queues at massive scale
-> - **CPU instruction pipeline** = queue of instructions to execute
+
+🌍 **Real-World Connections:**
+- **Undo/Redo** in every editor (VS Code, Word) = two stacks: undo stack + redo stack
+- **Browser history** = back button = stack of visited pages
+- **Call stack in JVM/V8** = stack frame pushed per function call, popped on return
+- **Message queues** (Kafka, RabbitMQ) = distributed queues at massive scale
+- **CPU instruction pipeline** = queue of instructions to execute
 
 ---
 

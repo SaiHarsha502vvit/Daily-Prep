@@ -1,13 +1,13 @@
-> **Navigation**: [< Previous](04_Arrays.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Two_Pointers.md)
+**Navigation**: [< Previous](04_Arrays.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Two_Pointers.md)
 
-> **Problems 05/14** | [Prev](04_Arrays.md) | [Index](../00_MASTER_INDEX.md) | [Next](06_Two_Pointers.md)
+**Problems 05/14** | [Prev](04_Arrays.md) | [Index](../00_MASTER_INDEX.md) | [Next](06_Two_Pointers.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — Sliding Window
 
-> **When do you use Sliding Window?** Use this decision table before every problem:
->
+**When do you use Sliding Window?** Use this decision table before every problem:
+
 
 | Trigger Words | Sub-Type | Template |
 |---|---|---|
@@ -16,35 +16,35 @@
 | `longest substring` + `at most k` | Variable Window | Expand right, shrink when > k distinct |
 | `all windows`, `permutation in string` | Fixed Window + HashMap | Compare freq arrays |
 
->
-> **The Core Idea:**
-> ```
-> Instead of recomputing [i..j] from scratch each time → O(n²)
-> SLIDE: remove arr[left], add arr[right], update state → O(n)
-> ```
->
-> 📖 **Theory:** [01b_Arrays.md — Sub Arrays section](../02_Data_Structures/01b_Arrays.md)
-> 📖 **Pattern deep dive:** [01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md)
-> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**The Core Idea:**
+```
+Instead of recomputing [i..j] from scratch each time → O(n²)
+SLIDE: remove arr[left], add arr[right], update state → O(n)
+```
+
+📖 **Theory:** [01b_Arrays.md — Sub Arrays section](../02_Data_Structures/01b_Arrays.md)
+📖 **Pattern deep dive:** [01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md)
+📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
 
 
-> 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Sliding Window**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Sliding Window**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 # 🎨 Section 4: Sliding Window Pattern Variants
 
@@ -77,21 +77,14 @@ Visual:
 ```
 
 **Flow:**
-- Root
-- ↓
-- sum=8
-- ↓
-- Root
-- ↓
-- sum=7
-- ↓
-- Root
-- ↓
-- sum=9 ← MAX
-- ↓
-- Root
-- ↓
-- sum=6
+1. Root
+2. sum=8
+3. Root
+4. sum=7
+5. Root
+6. sum=9 ← MAX
+7. Root
+8. sum=6
 
 ```mermaid
 flowchart TD
@@ -144,13 +137,10 @@ public int maxSumSubarray(int[] arr, int k) {
 ```
 
 **Flow:**
-- MAXIMUM AVERAGE SUBARRAY I
-- ↓
-- Input: nums = [1,12,-5,-6,50,3], k = 4
-- ↓
-- Output: 12.75
-- ↓
-- Explanation: Max avg is (12-5-6+50)/4 = 51/4 = 12.75
+1. MAXIMUM AVERAGE SUBARRAY I
+2. Input: nums = [1,12,-5,-6,50,3], k = 4
+3. Output: 12.75
+4. Explanation: Max avg is (12-5-6+50)/4 = 51/4 = 12.75
 
 ```mermaid
 flowchart TD
@@ -199,13 +189,10 @@ public double findMaxAverage(int[] nums, int k) {
 ```
 
 **Flow:**
-- SUBARRAYS WITH AVG >= THRESHOLD
-- ↓
-- Count subarrays of size k where average >= threshold
-- ↓
-- Output: 3
-- ↓
-- Explanation: [2,5,5], [5,5,5], [5,5,8] have avg >= 4
+1. SUBARRAYS WITH AVG >= THRESHOLD
+2. Count subarrays of size k where average >= threshold
+3. Output: 3
+4. Explanation: [2,5,5], [5,5,5], [5,5,8] have avg >= 4
 
 ```mermaid
 flowchart TD
@@ -276,19 +263,13 @@ public int numOfSubarrays(int[] arr, int k, int threshold) {
 ```
 
 **Flow:**
-- MAX SUM OF DISTINCT SUBARRAYS WITH LENGTH K
-- ↓
-- (LeetCode Premium - Full Problem Description)
-- ↓
-- are DISTINCT (no duplicates in window).
-- ↓
-- Example 1:
-- ↓
-- Input: nums = [1,5,4,2,9,9,9], k = 3
-- ↓
-- Output: 15
-- ↓
-- Explanation:
+1. MAX SUM OF DISTINCT SUBARRAYS WITH LENGTH K
+2. (LeetCode Premium - Full Problem Description)
+3. are DISTINCT (no duplicates in window).
+4. Example 1:
+5. Input: nums = [1,5,4,2,9,9,9], k = 3
+6. Output: 15
+7. Explanation:
 
 ```mermaid
 flowchart TD
@@ -372,17 +353,12 @@ Visual:
 ```
 
 **Flow:**
-- Root
-- ↓
-- sum=12, len=5
-- ↓
-- Root
-- ↓
-- sum=10, len=4
-- ↓
-- Root
-- ↓
-- sum=7, len=3
+1. Root
+2. sum=12, len=5
+3. Root
+4. sum=10, len=4
+5. Root
+6. sum=7, len=3
 
 ```mermaid
 flowchart TD
@@ -452,19 +428,13 @@ public int minSubArrayLen(int target, int[] nums) {
 ```
 
 **Flow:**
-- LONGEST SUBSTRING WITH AT MOST K DISTINCT CHARS
-- ↓
-- (LeetCode 340 - Premium)
-- ↓
-- Example 1:
-- ↓
-- Input: s = 'eceba', k = 2
-- ↓
-- Output: 3
-- ↓
-- Explanation: 'ece' has 2 distinct chars (e, c)
-- ↓
-- Example 2:
+1. LONGEST SUBSTRING WITH AT MOST K DISTINCT CHARS
+2. (LeetCode 340 - Premium)
+3. Example 1:
+4. Input: s = 'eceba', k = 2
+5. Output: 3
+6. Explanation: 'ece' has 2 distinct chars (e, c)
+7. Example 2:
 
 ```mermaid
 flowchart TD
@@ -537,19 +507,13 @@ public int lengthOfLongestSubstringKDistinct(String s, int k) {
 ```
 
 **Flow:**
-- FRUIT INTO BASKETS
-- ↓
-- Input: fruits = [1,2,1]
-- ↓
-- Output: 3 (collect all)
-- ↓
-- Input: fruits = [0,1,2,2]
-- ↓
-- Output: 3 ([1,2,2])
-- ↓
-- Input: fruits = [1,2,3,2,2]
-- ↓
-- Output: 4 ([2,3,2,2])
+1. FRUIT INTO BASKETS
+2. Input: fruits = [1,2,1]
+3. Output: 3 (collect all)
+4. Input: fruits = [0,1,2,2]
+5. Output: 3 ([1,2,2])
+6. Input: fruits = [1,2,3,2,2]
+7. Output: 4 ([2,3,2,2])
 
 ```mermaid
 flowchart TD
@@ -620,25 +584,16 @@ public int totalFruit(int[] fruits) {
 ```
 
 **Flow:**
-- LONGEST REPEATING CHARACTER REPLACEMENT
-- ↓
-- same characters after at most k replacements.
-- ↓
-- Input: s = 'ABAB', k = 2
-- ↓
-- Output: 4
-- ↓
-- Input: s = 'AABABBA', k = 1
-- ↓
-- Explanation: Replace middle B
-- ↓
-- 'AAAAABA' gives 'AAAA'
-- ↓
-- Explanation: Replace middle B
-- ↓
-- 'AAAAABA' gives 'AAAA'
-- ↓
-- KEY INSIGHT:
+1. LONGEST REPEATING CHARACTER REPLACEMENT
+2. same characters after at most k replacements.
+3. Input: s = 'ABAB', k = 2
+4. Output: 4
+5. Input: s = 'AABABBA', k = 1
+6. Explanation: Replace middle B
+7. 'AAAAABA' gives 'AAAA'
+8. Explanation: Replace middle B
+9. 'AAAAABA' gives 'AAAA'
+10. KEY INSIGHT:
 
 ```mermaid
 flowchart TD
@@ -708,19 +663,13 @@ public int characterReplacement(String s, int k) {
 ```
 
 **Flow:**
-- MAX CONSECUTIVE ONES III
-- ↓
-- Input: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2
-- ↓
-- Output: 6
-- ↓
-- Explanation: [1,1,1,0,0,1,1,1,1,1,1]
-- ↓
-- ↑ ↑ flipped
-- ↓
-- Visual:
-- ↓
-- window with 2 zeros
+1. MAX CONSECUTIVE ONES III
+2. Input: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2
+3. Output: 6
+4. Explanation: [1,1,1,0,0,1,1,1,1,1,1]
+5. ↑ ↑ flipped
+6. Visual:
+7. window with 2 zeros
 
 ```mermaid
 flowchart TD
@@ -789,19 +738,13 @@ public int longestOnes(int[] nums, int k) {
 ```
 
 **Flow:**
-- PERMUTATION IN STRING
-- ↓
-- Check if s2 contains any permutation of s1.
-- ↓
-- Input: s1 = 'ab', s2 = 'eidbaooo'
-- ↓
-- Output: true
-- ↓
-- Explanation: s2 contains 'ba' which is permutation of '
-- ↓
-- Input: s1 = 'ab', s2 = 'eidboaoo'
-- ↓
-- Output: false
+1. PERMUTATION IN STRING
+2. Check if s2 contains any permutation of s1.
+3. Input: s1 = 'ab', s2 = 'eidbaooo'
+4. Output: true
+5. Explanation: s2 contains 'ba' which is permutation of '
+6. Input: s1 = 'ab', s2 = 'eidboaoo'
+7. Output: false
 
 ```mermaid
 flowchart TD
@@ -873,19 +816,13 @@ public boolean checkInclusion(String s1, String s2) {
 ```
 
 **Flow:**
-- MINIMUM WINDOW SUBSTRING
-- ↓
-- Find minimum window in s that contains all characters o
-- ↓
-- Input: s = 'ADOBECODEBANC', t = 'ABC'
-- ↓
-- Output: 'BANC'
-- ↓
-- Visual:
-- ↓
-- ADOBECODEBANC
-- ↓
-- A (has A, need B,C)
+1. MINIMUM WINDOW SUBSTRING
+2. Find minimum window in s that contains all characters o
+3. Input: s = 'ADOBECODEBANC', t = 'ABC'
+4. Output: 'BANC'
+5. Visual:
+6. ADOBECODEBANC
+7. A (has A, need B,C)
 
 ```mermaid
 flowchart TD
@@ -987,19 +924,13 @@ public String minWindow(String s, String t) {
 ```
 
 **Flow:**
-- LONGEST SUBSTRING WITH AT MOST TWO DISTINCT CHARACTERS
-- ↓
-- (LeetCode 159 - Premium)
-- ↓
-- Example 1:
-- ↓
-- Input: s = 'eceba'
-- ↓
-- Output: 3
-- ↓
-- Explanation: 'ece' has 2 distinct characters
-- ↓
-- Example 2:
+1. LONGEST SUBSTRING WITH AT MOST TWO DISTINCT CHARACTERS
+2. (LeetCode 159 - Premium)
+3. Example 1:
+4. Input: s = 'eceba'
+5. Output: 3
+6. Explanation: 'ece' has 2 distinct characters
+7. Example 2:
 
 ```mermaid
 flowchart TD
@@ -1045,20 +976,20 @@ public int lengthOfLongestSubstringTwoDistinct(String s) {
 
 
 
-> 🔬 **Section Challenge — 📝 4.3 Sliding Window — String Matching**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — 📝 4.3 Sliding Window — String Matching**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## SECTION 4: Advanced Sliding Window Problems
 
@@ -1084,19 +1015,13 @@ public int lengthOfLongestSubstringTwoDistinct(String s) {
 ```
 
 **Flow:**
-- SLIDING WINDOW MAXIMUM (LeetCode 239 - Hard)
-- ↓
-- window position as the window slides from left to right
-- ↓
-- Example:
-- ↓
-- Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
-- ↓
-- Output: [3,3,5,5,6,7]
-- ↓
-- TIME: O(n)
-- ↓
-- SPACE: O(k)
+1. SLIDING WINDOW MAXIMUM (LeetCode 239 - Hard)
+2. window position as the window slides from left to right
+3. Example:
+4. Input: nums = [1,3,-1,-3,5,3,6,7], k = 3
+5. Output: [3,3,5,5,6,7]
+6. TIME: O(n)
+7. SPACE: O(k)
 
 ```mermaid
 flowchart TD
@@ -1154,25 +1079,16 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ```
 
 **Flow:**
-- SUBARRAYS WITH K DIFFERENT INTEGERS (LeetCode 992 - Har
-- ↓
-- Return count of subarrays with exactly k distinct integ
-- ↓
-- Example:
-- ↓
-- Input: nums = [1,2,1,2,3], k = 2
-- ↓
-- Output: 7
-- ↓
-- Input: nums = [1,2,1,2,3], k = 2
-- ↓
-- Output: 7
-- ↓
-- KEY TRICK: exactly(k) = atMost(k) - atMost(k-1)
-- ↓
-- TIME: O(n)
-- ↓
-- SPACE: O(k)
+1. SUBARRAYS WITH K DIFFERENT INTEGERS (LeetCode 992 - Har
+2. Return count of subarrays with exactly k distinct integ
+3. Example:
+4. Input: nums = [1,2,1,2,3], k = 2
+5. Output: 7
+6. Input: nums = [1,2,1,2,3], k = 2
+7. Output: 7
+8. KEY TRICK: exactly(k) = atMost(k) - atMost(k-1)
+9. TIME: O(n)
+10. SPACE: O(k)
 
 ```mermaid
 flowchart TD
@@ -1235,19 +1151,13 @@ private int atMost(int[] nums, int k) {
 ```
 
 **Flow:**
-- GRUMPY BOOKSTORE OWNER (LeetCode 1052 - Medium)
-- ↓
-- Owner can use technique for k minutes to not be grumpy.
-- ↓
-- Find max satisfied customers.
-- ↓
-- Example:
-- ↓
-- Output: 16
-- ↓
-- TIME: O(n)
-- ↓
-- SPACE: O(1)
+1. GRUMPY BOOKSTORE OWNER (LeetCode 1052 - Medium)
+2. Owner can use technique for k minutes to not be grumpy.
+3. Find max satisfied customers.
+4. Example:
+5. Output: 16
+6. TIME: O(n)
+7. SPACE: O(1)
 
 ```mermaid
 flowchart TD
@@ -1302,23 +1212,15 @@ public int maxSatisfied(int[] customers, int[] grumpy, int minutes) {
 ```
 
 **Flow:**
-- COUNT NUMBER OF NICE SUBARRAYS (LeetCode 1248 - Medium)
-- ↓
-- Nice subarray = exactly k odd numbers. Return count.
-- ↓
-- Example: nums = [1,1,2,1,1], k = 3
-- ↓
-- Output: 2
-- ↓
-- Example: nums = [1,1,2,1,1], k = 3
-- ↓
-- Output: 2
-- ↓
-- KEY: exactly(k) = atMost(k) - atMost(k-1)
-- ↓
-- TIME: O(n)
-- ↓
-- SPACE: O(1)
+1. COUNT NUMBER OF NICE SUBARRAYS (LeetCode 1248 - Medium)
+2. Nice subarray = exactly k odd numbers. Return count.
+3. Example: nums = [1,1,2,1,1], k = 3
+4. Output: 2
+5. Example: nums = [1,1,2,1,1], k = 3
+6. Output: 2
+7. KEY: exactly(k) = atMost(k) - atMost(k-1)
+8. TIME: O(n)
+9. SPACE: O(1)
 
 ```mermaid
 flowchart TD
@@ -1373,23 +1275,15 @@ private int atMost(int[] nums, int k) {
 ```
 
 **Flow:**
-- MAX CONSECUTIVE ONES III (LeetCode 1004 - Medium)
-- ↓
-- Max consecutive 1's if you can flip at most k 0's.
-- ↓
-- Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2
-- ↓
-- Output
-- ↓
-- Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2
-- ↓
-- Output
-- ↓
-- KEY: Sliding window tracking zeros count. Shrink when &
-- ↓
-- TIME: O(n)
-- ↓
-- SPACE: O(1)
+1. MAX CONSECUTIVE ONES III (LeetCode 1004 - Medium)
+2. Max consecutive 1's if you can flip at most k 0's.
+3. Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2
+4. Output
+5. Example: nums = [1,1,1,0,0,0,1,1,1,1,0], k = 2
+6. Output
+7. KEY: Sliding window tracking zeros count. Shrink when &
+8. TIME: O(n)
+9. SPACE: O(1)
 
 ```mermaid
 flowchart TD
@@ -1425,24 +1319,24 @@ public int longestOnes(int[] nums, int k) {
 
 
 
-> 🔬 **Section Challenge — SECTION 4: Advanced Sliding Window Problems**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — SECTION 4: Advanced Sliding Window Problems**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## 🏆 Competitive Programming — Codeforces Problems
 
-> These CF problems need Sliding Window + additional thinking. Must-do before interviews.
+These CF problems need Sliding Window + additional thinking. Must-do before interviews.
 
 | Problem | Link | Techniques | Difficulty |
 |---|---|---|---|
@@ -1475,20 +1369,20 @@ public int longestOnes(int[] nums, int k) {
 
 ---
 
-> **Navigation**: [< Previous](04_Arrays.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Two_Pointers.md)
+**Navigation**: [< Previous](04_Arrays.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Two_Pointers.md)
 
-> 🔬 **Section Challenge — 🌍 Real-World Applications of Sliding Window**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — 🌍 Real-World Applications of Sliding Window**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 

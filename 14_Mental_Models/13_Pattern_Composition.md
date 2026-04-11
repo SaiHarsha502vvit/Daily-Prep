@@ -1,6 +1,6 @@
-> **Navigation**: [< Previous](12_Space_Time_Tradeoffs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Optimization_Pipeline.md)
+**Navigation**: [< Previous](12_Space_Time_Tradeoffs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Optimization_Pipeline.md)
 
-> **Mental Model 13** | [Index](../00_MASTER_INDEX.md)
+**Mental Model 13** | [Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -65,8 +65,8 @@ If you can articulate both outer and inner roles, you stop "trying random patter
 
 
 
-> 🔬 **Section Challenge — COMPOSITION 1: Binary Search + Greedy**
->>>
+🔬 **Section Challenge — COMPOSITION 1: Binary Search + Greedy**
+>>
 
 ## Pattern: "Binary Search On The Answer"
 
@@ -124,8 +124,8 @@ private boolean canSplit(int[] nums, int m, int maxSum) {
 
 
 
-> 🔬 **Section Challenge — Pattern: "Binary Search On The Answer"**
->>>
+🔬 **Section Challenge — Pattern: "Binary Search On The Answer"**
+>>
 
 ## COMPOSITION 2: BFS + Bitmask DP
 
@@ -152,19 +152,9 @@ private boolean canSplit(int[] nums, int m, int maxSum) {
 ```
 
 **Flow:**
-- PATTERN: BFS with State = (node, visited bitmask)
-- ↓
-- HOW IT WORKS:
-- ↓
-- • BFS explores all states level by level (shortest path
-- ↓
-- • Bitmask fits in int when n ≤ 20 (2²⁰ = ~1M states)
-- ↓
-- EXAMPLE: Shortest Path Visiting All Nodes (LC 847)
-- ↓
-- • BFS from every node simultaneously
-- ↓
-- • Goal: any state with mask = (1<<n)-1 (all bits
+1. PATTERN: BFS with State = (node, visited bitmask)
+2. HOW IT WORKS:
+3. • BFS explores all states level by level (shortest path • Bitmask fits in int when n ≤ 20 (2²⁰ = ~1M states) EXAMPLE: Shortest Path Visiting All Nodes (LC 847) • BFS from every node simultaneously • Goal: any state with mask = (1<<n)-1 (all bits
 
 ```mermaid
 flowchart TD
@@ -214,25 +204,7 @@ flowchart TD
 ```
 
 **Flow:**
-- TRIGGER: 'Find all words from dictionary in a grid/stri
-- ↓
-- HOW IT WORKS:
-- ↓
-- • Build Trie from dictionary words
-- ↓
-- O(sum of word leng
-- ↓
-- • Build Trie from dictionary words
-- ↓
-- O(sum of word leng
-- ↓
-- • DFS/backtrack on grid, following Trie branches
-- ↓
-- Trie = single DFS checks ALL words simultaneously.
-- ↓
-- EXAMPLE: Word Search II (LC 212)
-- ↓
-- • Insert all words into Trie
+1. TRIGGER: 'Find all words from dictionary in a grid/stri HOW IT WORKS: • Build Trie from dictionary words O(sum of word leng • Build Trie from dictionary words O(sum of word leng • DFS/backtrack on grid, following Trie branches Trie = single DFS checks ALL words simultaneously. EXAMPLE: Word Search II (LC 212) • Insert all words into Trie
 
 ```mermaid
 flowchart TD
@@ -283,19 +255,13 @@ flowchart TD
 ```
 
 **Flow:**
-- TRIGGER: 'Count/find subarrays with sum = k'
-- ↓
-- HOW IT WORKS:
-- ↓
-- • prefix[j] - prefix[i] = sum(i..j)
-- ↓
-- • For target k: need prefix[j] - k in map
-- ↓
-- • HashMap stores frequency of each prefix sum seen so f
-- ↓
-- EXAMPLE: Subarray Sum Equals K (LC 560)
-- ↓
-- • Walk array, maintain running prefix sum
+1. TRIGGER: 'Count/find subarrays with sum = k'
+2. HOW IT WORKS:
+3. • prefix[j] - prefix[i] = sum(i..j)
+4. • For target k: need prefix[j] - k in map
+5. • HashMap stores frequency of each prefix sum seen so f
+6. EXAMPLE: Subarray Sum Equals K (LC 560)
+7. • Walk array, maintain running prefix sum
 
 ```mermaid
 flowchart TD
@@ -320,8 +286,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — COMPOSITION 4: Prefix Sum + HashMap**
->>
+🔬 **Section Challenge — COMPOSITION 4: Prefix Sum + HashMap**
+>
 
 ## COMPOSITION 5: DFS + Memoization
 
@@ -348,19 +314,12 @@ flowchart TD
 ```
 
 **Flow:**
-- PATTERN: Top-down DP on graph/grid structure
-- ↓
-- TRIGGER: 'Longest/count paths in grid with constraints'
-- ↓
-- HOW IT WORKS:
-- ↓
-- • DFS explores all paths from each cell
-- ↓
-- • Memoize result per cell to avoid recomputation
-- ↓
-- • Without memo: exponential. With memo: O(V×E) or O(n×m
-- ↓
-- EXAMPLE: Longest Increasing Path in Matrix (LC 329)
+1. PATTERN: Top-down DP on graph/grid structure
+2. TRIGGER: 'Longest/count paths in grid with constraints'
+3. HOW IT WORKS:
+4. • DFS explores all paths from each cell
+5. • Memoize result per cell to avoid recomputation
+6. • Without memo: exponential. With memo: O(V×E) or O(n×m EXAMPLE: Longest Increasing Path in Matrix (LC 329)
 
 ```mermaid
 flowchart TD
@@ -422,25 +381,13 @@ flowchart TD
 ```
 
 **Flow:**
-- THE RECOGNITION CHECKLIST
-- ↓
-- When you read a problem, identify:
-- ↓
-- 1. WHAT DATA STRUCTURE is implied?
-- ↓
-- Grid/graph/tree/string/array
-- ↓
-- narrows pattern space
-- ↓
-- Grid/graph/tree/string/array
-- ↓
-- narrows pattern space
-- ↓
-- 2. WHAT OPERATION is needed?
-- ↓
-- Search / Count / Optimize / Check feasibility
-- ↓
-- 3. DOES ONE PATTERN LEAVE A GAP?
+1. THE RECOGNITION CHECKLIST
+2. When you read a problem, identify:
+3. WHAT DATA STRUCTURE is implied?
+4. Grid/graph/tree/string/array narrows pattern space
+5. WHAT OPERATION is needed?
+6. Search / Count / Optimize / Check feasibility
+7. DOES ONE PATTERN LEAVE A GAP?
 
 ```mermaid
 flowchart TD
@@ -622,4 +569,4 @@ DIP: high-level modules should not depend on low-level modules — both should d
 </details>
 
 
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md)

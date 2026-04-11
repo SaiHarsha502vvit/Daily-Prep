@@ -1,126 +1,188 @@
-"""
-Fix remaining manual cases — ExecutorService and type-erasure challenges
-in DS/Algo files where the pattern regex didn't match cleanly.
+"""Remove remaining Java-specific contamination blocks from non-Java folders."""
 
-These files have the full Section Challenge block wrapping the bad challenge.
-We remove the entire block when:
-  - It's in a DS/Algo/non-Java file
-  - The block contains ExecutorService.submit OR List<String> type erasure
-"""
+from __future__ import annotations
 
-import os
+import argparse
 import re
-import sys
-sys.stdout.reconfigure(encoding='utf-8')
+from pathlib import Path
 
-BASE = r"e:\Dev_World\04_Practice\Daily-Prep"
+DEFAULT_BASE = Path(__file__).resolve().parent
 
-# Signatures that don't belong outside Java/Concurrency files
 BAD_SIGS = [
-    'ExecutorService.submit(task)',
-    'List<String> list = new ArrayList<>',
-    'A method returns `(T) jsonDeserialize(json)',
+    "ExecutorService.submit(task)",
+    "List<String> list = new ArrayList<>",
+    "A method returns `(T) jsonDeserialize(json)",
 ]
 
-# Folders where these are OK
-JAVA_OK = frozenset([
-    '07_Modern_Java', '13_Developer_Essentials', '20_Interview_Mastery'
-])
+JAVA_OK = frozenset(
+    ["07_Modern_Java", "13_Developer_Essentials", "20_Interview_Mastery"])
 
-# Full section challenge block pattern - matches a complete challenge block
-# from the opening header down to the closing >\n or \n\n after </details>
-FULL_BLOCK_PATTERN = re.compile(
-    r'(?:\n> 🔬 \*\*Section Challenge[^\n]*\n'
-    r'(?:>\n|> [^\n]*\n)+'
-    r')',
-    re.DOTALL
+CHALLENGE_BLOCK_RE = re.compile(
+    r"(^> \*\*Challenge\s+\d+.*\n(?:^>.*\n)*?^> </details>\n(?:^>\s*\n)?)",
+    re.MULTILINE,
 )
 
-# Simpler: just find and remove individual challenge items within blockquotes
-def remove_challenge_item(text, sig):
-    """Remove a single > **Challenge N ...** ... > </details> block."""
-    # Match from > **Challenge X (Type):** sig... to > </details>
-    pattern = re.compile(
-        r'(>\n)?> \*\*Challenge \d+ \([^)]*\):\*\*[^\n]*' + re.escape(sig[:35]) + r'.*?> </details>\n(>\n)?',
-        re.DOTALL
-    )
-    new, count = pattern.subn('', text)
-    return new, count
 
-total_files = 0
-total_removals = 0
-still_remaining = []
-
-for root, dirs, files in os.walk(BASE):
-    dirs[:] = [d for d in dirs if not d.startswith('_') and d != '.git']
-    for fname in files:
-        if not fname.endswith('.md'):
+def iter_markdown_files(base: Path):
+    for path in base.rglob("*.md"):
+        rel_parts = path.relative_to(base).parts
+        if ".git" in rel_parts:
             continue
-        path = os.path.join(root, fname)
-        rel = os.path.relpath(path, BASE)
-        folder = rel.split(os.sep)[0]
+        if rel_parts and rel_parts[0].startswith("_"):
+            continue
+        yield path
 
-        original = open(path, encoding='utf-8', errors='ignore').read()
-        modified = original
-        file_removals = 0
 
-        for sig in BAD_SIGS:
-            if sig not in modified:
-                continue
-            if folder in JAVA_OK:
-                continue
+def remove_challenge_block(text: str, signature: str) -> tuple[str, int]:
+    removed = 0
+    chunks = []
+    last = 0
 
-            new_text, count = remove_challenge_item(modified, sig)
-            if count > 0:
-                modified = new_text
-                file_removals += count
-            else:
-                # Last resort: remove the line + surrounding blockquote context
-                # Find the blockquote line containing the sig and remove whole block
-                lines = modified.split('\n')
-                new_lines = []
-                skip = False
-                i = 0
-                removals_this = 0
-                while i < len(lines):
-                    line = lines[i]
-                    if sig[:30] in line and line.startswith('>'):
-                        # Found sig — find the start of this challenge block
-                        # Walk back to find '> **Challenge'
-                        j = len(new_lines) - 1
-                        while j >= 0 and not new_lines[j].startswith('> **Challenge'):
-                            j -= 1
-                        if j >= 0:
-                            new_lines = new_lines[:j]  # Remove from Challenge start
-                        # Now skip forward until </details>
-                        while i < len(lines) and '</details>' not in lines[i]:
-                            i += 1
-                        i += 1  # skip </details> line
-                        if i < len(lines) and lines[i].startswith('>'):
-                            i += 1  # skip trailing >
-                        removals_this += 1
-                        continue
-                    new_lines.append(line)
-                    i += 1
+    for match in CHALLENGE_BLOCK_RE.finditer(text):
+        block = match.group(1)
+        if signature not in block:
+            continue
+        chunks.append(text[last: match.start()])
+        last = match.end()
+        removed += 1
 
-                if removals_this > 0:
-                    modified = '\n'.join(new_lines)
-                    file_removals += removals_this
-                else:
-                    still_remaining.append(f'{rel}: {sig[:40]}')
+    if removed == 0:
+        return text, 0
 
-        if file_removals > 0 and modified != original:
-            with open(path, 'w', encoding='utf-8') as f:
-                f.write(modified)
-            print(f'[FIXED] {rel}  ({file_removals} item(s))')
+    chunks.append(text[last:])
+    return "".join(chunks), removed
+
+
+def _find_challenge_start(lines: list[str], index: int) -> int | None:
+    cursor = index
+    while cursor >= 0 and not lines[cursor].startswith("> **Challenge"):
+        cursor -= 1
+    return cursor if cursor >= 0 else None
+
+
+def _find_challenge_end(lines: list[str], index: int) -> int | None:
+    cursor = index
+    while cursor < len(lines) and "</details>" not in lines[cursor]:
+        cursor += 1
+    if cursor >= len(lines):
+        return None
+
+    cursor += 1
+    while cursor < len(lines) and lines[cursor].strip() == ">":
+        cursor += 1
+    return cursor
+
+
+def _merge_ranges(ranges: list[tuple[int, int]]) -> list[tuple[int, int]]:
+    if not ranges:
+        return []
+    ranges.sort()
+    merged = [ranges[0]]
+    for start, end in ranges[1:]:
+        prev_start, prev_end = merged[-1]
+        if start <= prev_end:
+            merged[-1] = (prev_start, max(prev_end, end))
+        else:
+            merged.append((start, end))
+    return merged
+
+
+def _remove_ranges(lines: list[str], ranges: list[tuple[int, int]]) -> str:
+    out = []
+    cursor = 0
+    for start, end in ranges:
+        out.extend(lines[cursor:start])
+        cursor = end
+    out.extend(lines[cursor:])
+    return "".join(out)
+
+
+def fallback_remove_line_scan(text: str, signature: str) -> tuple[str, int]:
+    lines = text.splitlines(keepends=True)
+    hit_indices = [
+        i for i, line in enumerate(lines) if signature in line and line.lstrip().startswith(">")
+    ]
+    if not hit_indices:
+        return text, 0
+
+    ranges = []
+    for idx in hit_indices:
+        start = _find_challenge_start(lines, idx)
+        if start is None:
+            continue
+
+        end = _find_challenge_end(lines, idx)
+        if end is None:
+            continue
+        ranges.append((start, end))
+
+    merged = _merge_ranges(ranges)
+    if not merged:
+        return text, 0
+    return _remove_ranges(lines, merged), len(merged)
+
+
+def process_file(path: Path, base: Path) -> tuple[int, list[str]]:
+    rel = path.relative_to(base)
+    folder = rel.parts[0] if rel.parts else ""
+    if folder in JAVA_OK:
+        return 0, []
+
+    original = path.read_text(encoding="utf-8", errors="ignore")
+    modified = original
+    file_removals = 0
+    unresolved = []
+
+    for signature in BAD_SIGS:
+        if signature not in modified:
+            continue
+
+        modified, removed = remove_challenge_block(modified, signature)
+        file_removals += removed
+
+        if removed == 0 and signature in modified:
+            modified, fallback_removed = fallback_remove_line_scan(
+                modified, signature)
+            file_removals += fallback_removed
+            if fallback_removed == 0 and signature in modified:
+                unresolved.append(f"{rel.as_posix()}: {signature[:40]}")
+
+    if file_removals > 0 and modified != original:
+        path.write_text(modified, encoding="utf-8")
+
+    return file_removals, unresolved
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--base", type=Path,
+                        default=DEFAULT_BASE, help="Workspace root to scan")
+    args = parser.parse_args()
+
+    base = args.base.resolve()
+    total_files = 0
+    total_removals = 0
+    still_remaining = []
+
+    for path in iter_markdown_files(base):
+        rel = path.relative_to(base).as_posix()
+        file_removals, unresolved = process_file(path, base)
+        still_remaining.extend(unresolved)
+        if file_removals > 0:
+            print(f"[FIXED] {rel}  ({file_removals} item(s))")
             total_files += 1
             total_removals += file_removals
 
-print(f"\n{'='*55}")
-print(f"  Files fixed    : {total_files}")
-print(f"  Items removed  : {total_removals}")
-if still_remaining:
-    print(f"\n  Still remaining ({len(still_remaining)}):")
-    for r in still_remaining:
-        print(f"    {r}")
-print(f"{'='*55}")
+    print(f"\n{'=' * 55}")
+    print(f"  Files fixed    : {total_files}")
+    print(f"  Items removed  : {total_removals}")
+    if still_remaining:
+        print(f"\n  Still remaining ({len(still_remaining)}):")
+        for item in still_remaining[:10]:
+            print(f"    {item}")
+    print(f"{'=' * 55}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

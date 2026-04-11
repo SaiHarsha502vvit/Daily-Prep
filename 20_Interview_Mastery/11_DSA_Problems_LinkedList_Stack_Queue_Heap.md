@@ -1,10 +1,10 @@
-> **Navigation**: [⬅ Arrays, Strings, Hashing](10_DSA_Problems_Arrays_Strings_Hashing.md) | [📚 Index](00_INDEX.md) | [Next: Trees, Graphs, Trie, Union-Find ➡](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md)
+**Navigation**: [⬅ Arrays, Strings, Hashing](10_DSA_Problems_Arrays_Strings_Hashing.md) | [📚 Index](00_INDEX.md) | [Next: Trees, Graphs, Trie, Union-Find ➡](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md)
 
 # File 11 — DSA Problems: LinkedList, Stack, Queue & Heap
 
 ## Logic-First, Code-Second: The 5W+H Way
 
-> Every problem: WHAT is it asking → WHY does this approach work → WHEN to recognize it → HOW to think → HOW to translate to code.
+Every problem: WHAT is it asking → WHY does this approach work → WHEN to recognize it → HOW to think → HOW to translate to code.
 
 ---
 
@@ -341,14 +341,14 @@ Step 3: Process remaining bars in stack (right boundary = n)
 
 
 
-> 🔬 **Section Challenge — STACK**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — STACK**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## QUEUE
 
@@ -785,4 +785,4 @@ It reduces the problem to: at each step, pick the smaller head from two lists an
 </details>
 
 
-> **Navigation**: [⬅ Arrays, Strings, Hashing](10_DSA_Problems_Arrays_Strings_Hashing.md) | [📚 Index](00_INDEX.md) | [Next: Trees, Graphs, Trie, Union-Find ➡](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md)
+**Navigation**: [⬅ Arrays, Strings, Hashing](10_DSA_Problems_Arrays_Strings_Hashing.md) | [📚 Index](00_INDEX.md) | [Next: Trees, Graphs, Trie, Union-Find ➡](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md)

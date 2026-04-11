@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch42_SB_HTTP_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch50_SB_DSA_Applications.md)
+**Navigation**: [< Previous](Ch42_SB_HTTP_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch50_SB_DSA_Applications.md)
 
 # 🔐 SPRING BOOT MASTERY - Part 11: Authentication & Authorization
 
-> **Securing Your Applications**
-> _"Security is not a feature, it's a requirement"_
+**Securing Your Applications**
+_"Security is not a feature, it's a requirement"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why Security is Critical? / • Data breaches cost m
-- ↓
-- HOW: How Spring Security Works? / • Filter chain: Reque
-- ↓
-- WHEN: When to Use Each Auth Strategy? / • Session-based
-- ↓
-- WHICH: Which Security Concepts to Master? / ESSENTIAL:
+1. WHY: Why Security is Critical? / • Data breaches cost m
+2. HOW: How Spring Security Works? / • Filter chain: Reque
+3. WHEN: When to Use Each Auth Strategy? / • Session-based
+4. WHICH: Which Security Concepts to Master? / ESSENTIAL:
 
 ```mermaid
 flowchart TD
@@ -79,14 +76,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 1: Understanding the Difference**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 1: Understanding the Difference**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Authentication Vs Authorization
 
@@ -110,7 +107,7 @@ HTTP Status: 401 Unauthorized   │  HTTP Status: 403 Forbidden
 │
 ┴
 
-> 💡 **REAL-WORLD ANALOGY:**
+💡 **REAL-WORLD ANALOGY:**
 ═══════════════════
 
 **Airport Security**:
@@ -192,51 +189,29 @@ System checks: Does this user have ADMIN role? No → 403 Forbidden
 ```
 
 **Flow:**
-- 1. SecurityContextPersistenceFilter /
-- ↓
-- Loads SecurityC
-- ↓
-- 2. LogoutFilter /
-- ↓
-- Handles /logout URL
-- ↓
-- 2. LogoutFilter /
-- ↓
-- Handles /logout URL
-- ↓
-- 3. UsernamePasswordAuthenticationFilter /
-- ↓
-- Handles for
-- ↓
-- 3. UsernamePasswordAuthenticationFilter /
-- ↓
-- Handles for
-- ↓
-- 4. BasicAuthenticationFilter /
-- ↓
-- Handles HTTP Basic Aut
-- ↓
-- 4. BasicAuthenticationFilter /
-- ↓
-- Handles HTTP Basic Aut
-- ↓
-- 5. BearerTokenAuthenticationFilter (for JWT) /
-- ↓
-- Valida
-- ↓
-- 5. BearerTokenAuthenticationFilter (for JWT) /
-- ↓
-- Valida
-- ↓
-- 6. ExceptionTranslationFilter /
-- ↓
-- Converts security exc
-- ↓
-- 6. ExceptionTranslationFilter /
-- ↓
-- Converts security exc
-- ↓
-- 7. FilterSecurityInterceptor / AuthorizationFilter /
+1. 1. SecurityContextPersistenceFilter /
+2. Loads SecurityC
+3. 2. LogoutFilter /
+4. Handles /logout URL
+5. 2. LogoutFilter /
+6. Handles /logout URL
+7. 3. UsernamePasswordAuthenticationFilter /
+8. Handles for
+9. 3. UsernamePasswordAuthenticationFilter /
+10. Handles for
+11. 4. BasicAuthenticationFilter /
+12. Handles HTTP Basic Aut
+13. 4. BasicAuthenticationFilter /
+14. Handles HTTP Basic Aut
+15. 5. BearerTokenAuthenticationFilter (for JWT) /
+16. Valida
+17. 5. BearerTokenAuthenticationFilter (for JWT) /
+18. Valida
+19. 6. ExceptionTranslationFilter /
+20. Converts security exc
+21. 6. ExceptionTranslationFilter /
+22. Converts security exc
+23. 7. FilterSecurityInterceptor / AuthorizationFilter /
 
 ```mermaid
 flowchart TD
@@ -259,14 +234,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 2: Spring Security Architecture**
->
-> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-> <details><summary>Answer</summary>
->
-> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-> </details>
->
+🔬 **Section Challenge — Chapter 2: Spring Security Architecture**
+
+**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+<details><summary>Answer</summary>
+
+JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+</details>
+
 
 # SECTION 2: JWT AUTHENTICATION (Most Common)
 
@@ -276,14 +251,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 3: JWT (JSON Web Token) Explained**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 3: JWT (JSON Web Token) Explained**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Jwt Structure
 
@@ -410,19 +385,13 @@ WHY JWT?
 ```
 
 **Flow:**
-- JWT AUTHENTICATION FLOW
-- ↓
-- STEP 1: LOGIN
-- ↓
-- Client Server
-- ↓
-- POST /api/auth/login
-- ↓
-- 'email': 'john@test.com',
-- ↓
-- 'password': 'secret123'
-- ↓
-- 1. Find user by email
+1. JWT AUTHENTICATION FLOW
+2. STEP 1: LOGIN
+3. Client Server
+4. POST /api/auth/login
+5. 'email': 'john@test.com',
+6. 'password': 'secret123'
+7. 1. Find user by email
 
 ```mermaid
 flowchart TD
@@ -1070,14 +1039,14 @@ public class SecuredController {
 
 
 
-> 🔬 **Section Challenge — Chapter 6: Method-Level Security**
->
-> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-> <details><summary>Answer</summary>
->
-> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-> </details>
->
+🔬 **Section Challenge — Chapter 6: Method-Level Security**
+
+**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+<details><summary>Answer</summary>
+
+JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+</details>
+
 
 ## Chapter 7: Custom Security Expressions
 
@@ -1171,25 +1140,25 @@ public class ProjectController {
 
 
 
-> 🔬 **Section Challenge — Chapter 7: Custom Security Expressions**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — Chapter 7: Custom Security Expressions**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## Chapter 8: Testing in Postman
 
@@ -1303,14 +1272,14 @@ public class ProjectController {
 
 
 
-> 🔬 **Section Challenge — Chapter 8: Testing in Postman**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 8: Testing in Postman**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📌 Section 4: Other Auth Methods
 
@@ -1393,19 +1362,13 @@ public class ProjectController {
 ```
 
 **Flow:**
-- OAUTH2 AUTHORIZATION CODE FLOW
-- ↓
-- (Most common & most secure for web apps)
-- ↓
-- User Your App Auth Server Resource Server
-- ↓
-- Click
-- ↓
-- 'Login with
-- ↓
-- Google'
-- ↓
-- STEP 1: Redirect to Auth Server
+1. OAUTH2 AUTHORIZATION CODE FLOW
+2. (Most common & most secure for web apps)
+3. User Your App Auth Server Resource Server
+4. Click
+5. 'Login with
+6. Google'
+7. STEP 1: Redirect to Auth Server
 
 ```mermaid
 flowchart TD
@@ -1513,14 +1476,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 
 
-> 🔬 **Section Challenge — Chapter 9: OAuth2 / Social Login**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 9: OAuth2 / Social Login**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 10: API Key Authentication
 
@@ -1757,19 +1720,13 @@ public class BasicAuthSecurityConfig {
 ```
 
 **Flow:**
-- SECURITY CHECKLIST
-- ↓
-- AUTHENTICATION:
-- ↓
-- □ Implement rate limiting on login endpoints
-- ↓
-- □ Use short-lived access tokens (15-60 min)
-- ↓
-- □ Use longer-lived refresh tokens (7-30 days)
-- ↓
-- □ Implement token blacklisting for logout
-- ↓
-- □ Use HTTPS everywhere in production
+1. SECURITY CHECKLIST
+2. AUTHENTICATION:
+3. □ Implement rate limiting on login endpoints
+4. □ Use short-lived access tokens (15-60 min)
+5. □ Use longer-lived refresh tokens (7-30 days)
+6. □ Implement token blacklisting for logout
+7. □ Use HTTPS everywhere in production
 
 ```mermaid
 flowchart TD

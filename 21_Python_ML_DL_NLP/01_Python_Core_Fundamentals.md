@@ -1,14 +1,14 @@
-> **Navigation**: [Back to Index](00_INDEX.md) | [Next >](02_Python_Advanced.md)
+**Navigation**: [Back to Index](00_INDEX.md) | [Next >](02_Python_Advanced.md)
 
 # 🐍 Python Core Fundamentals — Complete Guide
 
-> _"Python is the lingua franca of data science, ML, and automation."_
+_"Python is the lingua franca of data science, ML, and automation."_
 
 ---
 
 # PART 0: The 5W+H Framework
 
-> **Mental Model:** If Java is a formal business suit (strict types, verbose, enforced structure), Python is smart-casual wear (dynamic types, concise, flexible). Both are professional, but Python lets you move faster when prototyping and data-wrangling.
+**Mental Model:** If Java is a formal business suit (strict types, verbose, enforced structure), Python is smart-casual wear (dynamic types, concise, flexible). Both are professional, but Python lets you move faster when prototyping and data-wrangling.
 
 | Question | Python Context |
 | :--- | :--- |
@@ -80,8 +80,8 @@ REFERENCE COUNTING & GARBAGE COLLECTION:
 ```python
 
 
-> 🔬 **Section Challenge — 1.2 Data Types Deep Dive**
->>
+🔬 **Section Challenge — 1.2 Data Types Deep Dive**
+>
 
 # ═══════════════════════════════════════════
 # NUMBERS
@@ -221,14 +221,14 @@ for key, value in user.items():
 ```python
 
 
-> 🔬 **Section Challenge — 2.2 Generators — Lazy Evaluation**
->
-> **Challenge 1 (Reasoning):** A generator that yields 1,000,000 numbers — what's its memory footprint vs a list?
-> <details><summary>Answer</summary>
->
-> Generator: O(1) — stores only the current execution state (stack frame: local variables, instruction pointer). ~200-300 bytes total, regardless of N. List: O(N) — stores all 1M integer objects. 1M Python ints ≈ 28MB (small ints cached, but larger ints ~28 bytes each). Generators are essential for: large file processing (yield one line at a time), infinite sequences, streaming pipelines where you process and discard data.
-> </details>
->
+🔬 **Section Challenge — 2.2 Generators — Lazy Evaluation**
+
+**Challenge 1 (Reasoning):** A generator that yields 1,000,000 numbers — what's its memory footprint vs a list?
+<details><summary>Answer</summary>
+
+Generator: O(1) — stores only the current execution state (stack frame: local variables, instruction pointer). ~200-300 bytes total, regardless of N. List: O(N) — stores all 1M integer objects. 1M Python ints ≈ 28MB (small ints cached, but larger ints ~28 bytes each). Generators are essential for: large file processing (yield one line at a time), infinite sequences, streaming pipelines where you process and discard data.
+</details>
+
 
 # PROBLEM: Processing 1 billion numbers
 # ❌ List stores ALL in memory: 8GB for 1B integers
@@ -263,14 +263,14 @@ print(sum(gen))    # Works! Processes one at a time.
 ```python
 
 
-> 🔬 **Section Challenge — 3.1 Functions are Objects**
->>
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
+🔬 **Section Challenge — 3.1 Functions are Objects**
 >
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 # In Python, functions ARE objects. You can:
 # 1. Assign them to variables
@@ -304,14 +304,14 @@ flex(1, 2, 3, name="Alice", age=30)
 ```python
 
 
-> 🔬 **Section Challenge — 3.2 Decorators — Functions that Modify Functions**
->
-> **Challenge 1 (Reasoning):** Why does a decorator without `@functools.wraps` break Flask/FastAPI route registration?
-> <details><summary>Answer</summary>
->
-> Flask uses function name (`func.__name__`) to register routes. Without `@functools.wraps`, the decorator replaces the original function with a `wrapper` function. All decorated routes have `__name__ = 'wrapper'` → duplicate view function name error. `@functools.wraps(fn)` copies `__name__`, `__doc__`, `__annotations__`  from the wrapped function. Same issue with pytest markers, Celery tasks, and any framework that inspects function attributes.
-> </details>
->
+🔬 **Section Challenge — 3.2 Decorators — Functions that Modify Functions**
+
+**Challenge 1 (Reasoning):** Why does a decorator without `@functools.wraps` break Flask/FastAPI route registration?
+<details><summary>Answer</summary>
+
+Flask uses function name (`func.__name__`) to register routes. Without `@functools.wraps`, the decorator replaces the original function with a `wrapper` function. All decorated routes have `__name__ = 'wrapper'` → duplicate view function name error. `@functools.wraps(fn)` copies `__name__`, `__doc__`, `__annotations__`  from the wrapped function. Same issue with pytest markers, Celery tasks, and any framework that inspects function attributes.
+</details>
+
 
 # A decorator WRAPS a function to add behavior
 
@@ -349,14 +349,14 @@ train_model(10)  # "train_model took 0.5234s"
 ```python
 
 
-> 🔬 **Section Challenge — 3.3 Closures & Lambda**
->
-> **Challenge 1 (Reasoning):** A lambda captures a local variable. Why must the variable be effectively final?
-> <details><summary>Answer</summary>
->
-> Lambdas are closures — they capture the variable's VALUE at creation time (not a reference to the stack slot, which would be dangerous as the stack frame may be gone). If the variable could change after capture, the lambda would see a stale value. Java enforces 'effectively final' (never reassigned) to make the semantics predictable. Workaround: use an array `int[] counter = {0};` (the array reference is final, its contents can change — though this is not thread-safe).
-> </details>
->
+🔬 **Section Challenge — 3.3 Closures & Lambda**
+
+**Challenge 1 (Reasoning):** A lambda captures a local variable. Why must the variable be effectively final?
+<details><summary>Answer</summary>
+
+Lambdas are closures — they capture the variable's VALUE at creation time (not a reference to the stack slot, which would be dangerous as the stack frame may be gone). If the variable could change after capture, the lambda would see a stale value. Java enforces 'effectively final' (never reassigned) to make the semantics predictable. Workaround: use an array `int[] counter = {0};` (the array reference is final, its contents can change — though this is not thread-safe).
+</details>
+
 
 # CLOSURE: A function that remembers its enclosing scope
 def make_multiplier(factor):
@@ -640,4 +640,4 @@ def retry(n): return lambda fn: lambda *args: ... # 3 levels!
 </details>
 
 
-> **Navigation**: [Back to Index](00_INDEX.md) | [Next >](02_Python_Advanced.md)
+**Navigation**: [Back to Index](00_INDEX.md) | [Next >](02_Python_Advanced.md)

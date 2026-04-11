@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](10_HashMap_Plus_Counting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_LinkedList_Plus_TwoPointers.md)
+**Navigation**: [< Previous](10_HashMap_Plus_Counting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_LinkedList_Plus_TwoPointers.md)
 
 # Stack + Monotonic Pattern — Combined Pattern Guide
 
-> **WHY this combination?** A stack processes elements in LIFO order. A **monotonic stack** maintains elements in sorted order, enabling O(n) solutions for "next greater/smaller element" problems that seem to need O(n²).
+**WHY this combination?** A stack processes elements in LIFO order. A **monotonic stack** maintains elements in sorted order, enabling O(n) solutions for "next greater/smaller element" problems that seem to need O(n²).
 
 ### 🧠 Deep Intuition — Why Monotonic Stack Is O(n)
 
@@ -36,9 +36,8 @@ THEN → Stack (often Monotonic)
 ```
 
 **Flow:**
-- THEN
-- ↓
-- Stack (often Monotonic)
+1. THEN
+2. Stack (often Monotonic)
 
 ```mermaid
 flowchart LR
@@ -59,21 +58,14 @@ Push 4 → pop 7,5 → [1,3,4]    Push 6 → pop 2,4 → [9,7,6]
 ```
 
 **Flow:**
-- Bottom
-- ↓
-- Top: small
-- ↓
-- big Bottom
-- ↓
-- Top: big
-- ↓
-- small
-- ↓
-- Push 4
-- ↓
-- pop 7,5
-- ↓
-- [1,3,4] Push 6
+1. Bottom
+2. Top: small
+3. big Bottom
+4. Top: big
+5. small
+6. Push 4
+7. pop 7,5
+8. [1,3,4] Push 6
 
 ```mermaid
 flowchart TD
@@ -172,29 +164,18 @@ Result: [8, 8, -1, 5, -1, -1]
 ```
 
 **Flow:**
-- i=0: arr[0]=4 stack=[]
-- ↓
-- push 0 stack=[0] (4)
-- ↓
-- i=1: arr[1]=2 2<4
-- ↓
-- push 1 stack=[0,1] (4,2)
-- ↓
-- i=2: arr[2]=8 8>2
-- ↓
-- pop 1, ans[1]=8 stack=[0] (4)
-- ↓
-- 8>4
-- ↓
-- pop 0, ans[0]=8 stack=[]
-- ↓
-- i=3: arr[3]=1 1<8
-- ↓
-- push 3 stack=[2,3] (8,1)
-- ↓
-- i=4: arr[4]=5 5>1
-- ↓
-- pop 3, ans[3]=5 stack=[2] (8)
+1. i=0: arr[0]=4 stack=[]
+2. push 0 stack=[0] (4)
+3. i=1: arr[1]=2 2<4
+4. push 1 stack=[0,1] (4,2)
+5. i=2: arr[2]=8 8>2
+6. pop 1, ans[1]=8 stack=[0] (4)
+7. 8>4
+8. pop 0, ans[0]=8 stack=[]
+9. i=3: arr[3]=1 1<8
+10. push 3 stack=[2,3] (8,1)
+11. i=4: arr[4]=5 5>1
+12. pop 3, ans[3]=5 stack=[2] (8)
 
 ```mermaid
 flowchart TD
@@ -228,14 +209,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 🔬 VISUAL: Monotonic Stack for Next Greater**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — 🔬 VISUAL: Monotonic Stack for Next Greater**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## � FULL WALKTHROUGH: Largest Rectangle in Histogram
 
@@ -272,17 +253,12 @@ Trick: Add sentinel 0 at end to auto-trigger final cleanup.
 ```
 
 **Flow:**
-- i=1, h=1: h < stack top(2)
-- ↓
-- pop 0
-- ↓
-- i=4, h=2: h < stack top(6)
-- ↓
-- pop 3
-- ↓
-- h < stack top(5)
-- ↓
-- pop 2
+1. i=1, h=1: h < stack top(2)
+2. pop 0
+3. i=4, h=2: h < stack top(6)
+4. pop 3
+5. h < stack top(5)
+6. pop 2
 
 ```mermaid
 flowchart LR
@@ -333,27 +309,17 @@ KEY: Stack stores elements waiting for their NGE.
 ```
 
 **Flow:**
-- i=1, num=3: 3 > stack top(1)
-- ↓
-- pop 1, map[1]=3
-- ↓
-- i=2, num=4: 4 > stack top(3)
-- ↓
-- pop 3, map[3]=4
-- ↓
-- i=3, num=2: 2 < stack top(4)
-- ↓
-- push
-- ↓
-- Remaining: 4
-- ↓
-- -1, 2
-- ↓
-- -1
-- ↓
-- Answer for nums1: [4
-- ↓
-- -1, 1
+1. i=1, num=3: 3 > stack top(1)
+2. pop 1, map[1]=3
+3. i=2, num=4: 4 > stack top(3)
+4. pop 3, map[3]=4
+5. i=3, num=2: 2 < stack top(4)
+6. push
+7. Remaining: 4
+8. -1, 2
+9. -1
+10. Answer for nums1: [4
+11. -1, 1
 
 ```mermaid
 flowchart TD
@@ -384,14 +350,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Next Greater Element I — Core Monotonic Template**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Next Greater Element I — Core Monotonic Template**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## 🛡️ EDGE CASES
 
@@ -410,37 +376,22 @@ flowchart TD
 ```
 
 **Flow:**
-- Edge Case Handling
-- ↓
-- All decreasing [5,4,3,2,1] No element has NGE
-- ↓
-- all -1
-- ↓
-- All decreasing [5,4,3,2,1] No element has NGE
-- ↓
-- all -1
-- ↓
-- All same values [3,3,3] No strictly greater
-- ↓
-- all -1
-- ↓
-- All same values [3,3,3] No strictly greater
-- ↓
-- all -1
-- ↓
-- Single element [7] No NGE
-- ↓
-- -1
-- ↓
-- Single element [7] No NGE
-- ↓
-- -1
-- ↓
-- Circular array (NGE II) Loop 2×n, use index % n
-- ↓
-- Histogram: all same height Area = height × n
-- ↓
-- Histogram: sorted ascending Stack never pops until clea
+1. Edge Case Handling
+2. All decreasing [5,4,3,2,1] No element has NGE
+3. all -1
+4. All decreasing [5,4,3,2,1] No element has NGE
+5. all -1
+6. All same values [3,3,3] No strictly greater
+7. all -1
+8. All same values [3,3,3] No strictly greater
+9. all -1
+10. Single element [7] No NGE
+11. -1
+12. Single element [7] No NGE
+13. -1
+14. Circular array (NGE II) Loop 2×n, use index % n
+15. Histogram: all same height Area = height × n
+16. Histogram: sorted ascending Stack never pops until clea
 
 ```mermaid
 flowchart TD
@@ -475,14 +426,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 | # | Problem | Companies | Key Insight |
@@ -535,7 +486,7 @@ flowchart TD
 
 **When the interviewer gives you a "next greater element" type problem, say this:**
 
-> "The brute force checks every element to the right for each position — O(n²). A monotonic stack solves it in O(n) because each element is pushed once and popped at most once. When a new element is larger than the stack top, it's the 'next greater' for all smaller elements on the stack — we pop and record answers. Total operations: at most n pushes + n pops = O(n)."
+"The brute force checks every element to the right for each position — O(n²). A monotonic stack solves it in O(n) because each element is pushed once and popped at most once. When a new element is larger than the stack top, it's the 'next greater' for all smaller elements on the stack — we pop and record answers. Total operations: at most n pushes + n pops = O(n)."
 
 **Key mathematical justification:**
 - "It looks O(n²) due to the inner while-loop, but each element participates in at most 2 operations (push + pop) across the entire run. Amortized O(1) per element."

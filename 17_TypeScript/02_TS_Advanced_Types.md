@@ -1,30 +1,30 @@
-> **Navigation**: [< Previous](01_TS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_TS_Patterns_BestPractices.md)
+**Navigation**: [< Previous](01_TS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_TS_Patterns_BestPractices.md)
 
-> **TypeScript Chapter 2/3** | [← Foundations](01_TS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Patterns](03_TS_Patterns_BestPractices.md)
+**TypeScript Chapter 2/3** | [← Foundations](01_TS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Patterns](03_TS_Patterns_BestPractices.md)
 
 # TypeScript Advanced Types — Generics, Utility Types & Type Gymnastics
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: Advanced type system features that make TS extremely
-> powerful — generics, mapped types, conditional types,
-> utility types, template literal types.
->
-> WHY:  Real codebases need FLEXIBLE yet SAFE types:
-> - A function that works with any array type
-> - An API response wrapper generic over the data shape
-> - Making some fields optional while keeping others required
-> - Creating new types from existing ones automatically
->
-> WHO:  Intermediate-to-advanced TS developers, library authors,
-> anyone working with complex API types or state management.
->
-> WHEN: After mastering basic types, interfaces, and unions.
->
-> HOW:  Generics provide the "type variables." Utility types,
-> mapped types, and conditional types build on that for
-> sophisticated type transformations.
+WHAT: Advanced type system features that make TS extremely
+powerful — generics, mapped types, conditional types,
+utility types, template literal types.
+
+WHY:  Real codebases need FLEXIBLE yet SAFE types:
+- A function that works with any array type
+- An API response wrapper generic over the data shape
+- Making some fields optional while keeping others required
+- Creating new types from existing ones automatically
+
+WHO:  Intermediate-to-advanced TS developers, library authors,
+anyone working with complex API types or state management.
+
+WHEN: After mastering basic types, interfaces, and unions.
+
+HOW:  Generics provide the "type variables." Utility types,
+mapped types, and conditional types build on that for
+sophisticated type transformations.
 
 
 ---
@@ -34,16 +34,16 @@
 ### The Core Idea
 
 
-> ANALOGY: Generics are FUNCTION PARAMETERS, but for TYPES.
->
-> Regular function:  function add(a: number, b: number) → number
-> Generic function:  function first<T>(arr: T[]) → T
->
-> `a` and `b` are VALUE parameters (filled with values at call).
-> `T` is a TYPE parameter (filled with types at call).
->
-> first<number>([1, 2, 3]) → T becomes number → returns number
-> first<string>(["a", "b"]) → T becomes string → returns string
+ANALOGY: Generics are FUNCTION PARAMETERS, but for TYPES.
+
+Regular function:  function add(a: number, b: number) → number
+Generic function:  function first<T>(arr: T[]) → T
+
+`a` and `b` are VALUE parameters (filled with values at call).
+`T` is a TYPE parameter (filled with types at call).
+
+first<number>([1, 2, 3]) → T becomes number → returns number
+first<string>(["a", "b"]) → T becomes string → returns string
 
 
 ```typescript
@@ -207,13 +207,10 @@ class QueryBuilder<T> {
 ```
 
 **Flow:**
-- TS provides 15+ built-in utility types. These transform
-- ↓
-- existing types into new ones WITHOUT rewriting.
-- ↓
-- WHY: Avoid duplicating type definitions. If User change
-- ↓
-- all derived types (PartialUser, UserSummary) update too
+1. TS provides 15+ built-in utility types. These transform
+2. existing types into new ones WITHOUT rewriting.
+3. WHY: Avoid duplicating type definitions. If User change
+4. all derived types (PartialUser, UserSummary) update too
 
 ```mermaid
 flowchart TD
@@ -348,21 +345,14 @@ type CreateUserParams = Parameters<typeof createUser>;
 ```
 
 **Flow:**
-- Utility Type What It Does Use Case
-- ↓
-- Partial<T> All props optional Update/patch APIs
-- ↓
-- Required<T> All props required Config defaults
-- ↓
-- Readonly<T> All props readonly Immutable data
-- ↓
-- Pick<T, K> Keep only K props API responses
-- ↓
-- Omit<T, K> Remove K props Create DTOs
-- ↓
-- Record<K, V> Object K
-- ↓
-- V mapping Dictionaries
+1. Utility Type What It Does Use Case
+2. Partial<T> All props optional Update/patch APIs
+3. Required<T> All props required Config defaults
+4. Readonly<T> All props readonly Immutable data
+5. Pick<T, K> Keep only K props API responses
+6. Omit<T, K> Remove K props Create DTOs
+7. Record<K, V> Object K
+8. V mapping Dictionaries
 
 ```mermaid
 flowchart TD
@@ -387,8 +377,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 2. Utility Types — Built-in Type Transformations**
->>
+🔬 **Section Challenge — 2. Utility Types — Built-in Type Transformations**
+>
 
 ## 3. Mapped Types — Type Algebra
 
@@ -442,8 +432,8 @@ type UserStrings = OnlyStringProps<User>;
 
 
 
-> 🔬 **Section Challenge — 3. Mapped Types — Type Algebra**
->>
+🔬 **Section Challenge — 3. Mapped Types — Type Algebra**
+>
 
 ## 4. Conditional Types — Type-Level If/Else
 
@@ -509,8 +499,8 @@ type EventPayload<E extends string> =
 
 
 
-> 🔬 **Section Challenge — 4. Conditional Types — Type-Level If/Else**
->>
+🔬 **Section Challenge — 4. Conditional Types — Type-Level If/Else**
+>
 
 ## 5. Template Literal Types
 
@@ -553,8 +543,8 @@ type Params = ExtractRouteParams<"/users/:userId/posts/:postId">;
 
 
 
-> 🔬 **Section Challenge — 5. Template Literal Types**
->>
+🔬 **Section Challenge — 5. Template Literal Types**
+>
 
 ## 6. Discriminated Unions — Advanced Patterns
 
@@ -710,37 +700,20 @@ Q: Explain conditional types distribution?
 ```
 
 **Flow:**
-- Pick<User, 'name'
-- ↓
-- 'email'>
-- ↓
-- {name, email}
-- ↓
-- Omit<User, 'id'>
-- ↓
-- everything except id.
-- ↓
-- 'sm'
-- ↓
-- 'md' + 'red'
-- ↓
-- 'blue'
-- ↓
-- 'sm-red'
-- ↓
-- 'sm-blue'
-- ↓
-- 'md-red'
-- ↓
-- 'md-blue'
-- ↓
-- over each member. string
-- ↓
-- number
-- ↓
-- IsString<string>
-- ↓
-- IsString<number>.
+1. Pick<User, 'name'
+2. 'email'>
+3. {name, email}
+4. Omit<User, 'id'> everything except id.
+5. 'sm'
+6. 'md' + 'red'
+7. 'blue'
+8. 'sm-red'
+9. 'sm-blue'
+10. 'md-red'
+11. 'md-blue' over each member. string
+12. number
+13. IsString<string>
+14. IsString<number>.
 
 ```mermaid
 flowchart LR
@@ -760,7 +733,7 @@ flowchart LR
 
 ---
 
-> [← Foundations](01_TS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Patterns](03_TS_Patterns_BestPractices.md)
+[← Foundations](01_TS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Patterns](03_TS_Patterns_BestPractices.md)
 
 
 ---

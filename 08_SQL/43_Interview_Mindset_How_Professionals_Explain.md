@@ -1,8 +1,8 @@
 # Chapter 43 — The Interview Mindset: How Professionals Explain Production Problems
 
-> **What:** The exact mental framework, vocabulary, and structure that separates a junior "I fixed the bug" answer from a senior "I identified, analyzed, and resolved a systemic issue" answer
-> **Why:** Knowing the fix is 30% of the interview. Explaining it like a professional is the other 70%.
-> **Who:** Anyone preparing for mid-level to senior backend/database interviews
+**What:** The exact mental framework, vocabulary, and structure that separates a junior "I fixed the bug" answer from a senior "I identified, analyzed, and resolved a systemic issue" answer
+**Why:** Knowing the fix is 30% of the interview. Explaining it like a professional is the other 70%.
+**Who:** Anyone preparing for mid-level to senior backend/database interviews
 
 ---
 
@@ -478,8 +478,8 @@ last 250 billion years."
 
 
 
-> 🔬 **Section Challenge — 🏆 Part 9: The 30-Second Elevator Summary**
->>
+🔬 **Section Challenge — 🏆 Part 9: The 30-Second Elevator Summary**
+>
 
 ## 📋 Part 10: Interview Self-Check Rubric
 

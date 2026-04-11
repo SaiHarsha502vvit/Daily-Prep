@@ -1,6 +1,7 @@
 > **Navigation**: [< Previous](Day_026_Mar28_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_028_Mar30_Sun.md)
 
 # DAY 027 — Saturday, March 29, 2026
+
 ## Spring Boot: JPA & Hibernate Deep Dive + SQL Practice
 
 > **Theme**: Weekend = Spring Boot (ORM, Entity mapping, Repository pattern) + SQL drills
@@ -28,7 +29,6 @@
 
 ---
 
-
 ## 🌱 SPRING BOOT BLOCK: JPA & Hibernate
 
 ### WHY: Object-Relational Mapping (ORM)
@@ -49,9 +49,8 @@ WITH JPA:
 ```
 
 **Flow:**
-- // That's it. JPA maps table
-- ↓
-- object automatically.
+1. Raw JDBC requires manual field-by-field mapping from rows to objects.
+2. With JPA repositories, entity mapping is automatic from table rows to objects.
 
 ```mermaid
 flowchart LR
@@ -182,9 +181,10 @@ List<Department> findAllWithEmployees();  // 1 query
 ```
 
 **Flow:**
-- BAD: Load 100 departments
-- ↓
-- for EACH department, load employees (101 queries!)
+1. Query departments first (1 query).
+2. Accessing employees lazily for each department adds N extra queries.
+3. Total becomes N+1 (example: 101 queries for 100 departments).
+4. Use `@EntityGraph` or `JOIN FETCH` to collapse into one query.
 
 ```mermaid
 flowchart LR
@@ -260,36 +260,24 @@ EXPLAIN SELECT * FROM products WHERE category = 'Electronics' AND price > 100;
 
 ## 📊 WEEK 04 GRAPH ALGORITHM SUMMARY
 
-```
-┌──────────────────┬──────────────────┬───────────────────────┐
-│ Algorithm        │ Time             │ Use Case              │
-├──────────────────┼──────────────────┼───────────────────────┤
-│ BFS              │ O(V + E)         │ Shortest unweighted   │
-│ DFS              │ O(V + E)         │ Connectivity, cycles  │
-│ Dijkstra         │ O((V+E) log V)   │ Shortest weighted+    │
-│ Bellman-Ford     │ O(V * E)         │ Negative weights      │
-│ Kahn's Topo Sort │ O(V + E)         │ Dependency ordering   │
-│ Kruskal's MST    │ O(E log E)       │ Min cost connect all  │
-│ Union-Find       │ O(α(N)) per op   │ Dynamic connectivity  │
-│ 2-Color BFS      │ O(V + E)         │ Bipartite check       │
-│ A*               │ O(E log V) best  │ Targeted shortest     │
-└──────────────────┴──────────────────┴───────────────────────┘
-```
+| Algorithm | Time | Use Case |
+|---|---|---|
+| BFS | O(V + E) | Shortest unweighted |
+| DFS | O(V + E) | Connectivity, cycles |
+| Dijkstra | O((V+E) log V) | Shortest weighted+ |
+| Bellman-Ford | O(V * E) | Negative weights |
+| Kahn's Topo Sort | O(V + E) | Dependency ordering |
+| Kruskal's MST | O(E log E) | Min cost connect all |
+| Union-Find | O(α(N)) per op | Dynamic connectivity |
+| 2-Color BFS | O(V + E) | Bipartite check |
+| A* | O(E log V) best | Targeted shortest |
 
 **Flow:**
-- Algorithm Time Use Case
-- ↓
-- BFS O(V + E) Shortest unweighted
-- ↓
-- DFS O(V + E) Connectivity, cycles
-- ↓
-- Dijkstra O((V+E) log V) Shortest weighted+
-- ↓
-- Bellman-Ford O(V * E) Negative weights
-- ↓
-- Kahn's Topo Sort O(V + E) Dependency ordering
-- ↓
-- Kruskal's MST O(E log E) Min cost connect all
+1. Start with graph type and edge properties.
+2. Unweighted shortest path -> BFS (O(V + E)).
+3. Weighted shortest path with non-negative edges -> Dijkstra (O((V+E) log V)).
+4. Negative-weight support -> Bellman-Ford (O(V * E)).
+5. Dependency ordering in DAG -> Kahn's Topological Sort (O(V + E)). Minimum spanning tree -> Kruskal's algorithm (O(E log E)).
 
 ```mermaid
 flowchart TD

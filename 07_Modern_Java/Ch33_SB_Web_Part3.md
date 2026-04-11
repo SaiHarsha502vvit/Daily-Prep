@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch32_SB_Data_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch34_SB_Security_Part4.md)
+**Navigation**: [< Previous](Ch32_SB_Data_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch34_SB_Security_Part4.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 3: AOP & Spring Boot Magic
 
-> **Aspect-Oriented Programming & Boot Auto-Configuration**
-> _"Understanding how @Transactional and auto-configuration actually work"_
+**Aspect-Oriented Programming & Boot Auto-Configuration**
+_"Understanding how @Transactional and auto-configuration actually work"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why AOP & Auto-Configuration? / • @Transactional m
-- ↓
-- HOW: How AOP Creates Magic? / • Proxy wrapping: Spring
-- ↓
-- WHEN: When to Use AOP? / • Logging: Log all service met
-- ↓
-- WHICH: Which AOP Concepts to Master? / ESSENTIAL: Proxy
+1. WHY: Why AOP & Auto-Configuration? / • @Transactional m
+2. HOW: How AOP Creates Magic? / • Proxy wrapping: Spring
+3. WHEN: When to Use AOP? / • Logging: Log all service met
+4. WHICH: Which AOP Concepts to Master? / ESSENTIAL: Proxy
 
 ```mermaid
 flowchart TD
@@ -114,14 +111,14 @@ long start = System.currentTimeMillis();              // REPEATED!
 
 
 
-> 🔬 **Section Challenge — The Cross-Cutting Problem**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — The Cross-Cutting Problem**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## With Aop (Separation Of Concerns)
 
@@ -184,19 +181,13 @@ public Object logMethod(ProceedingJoinPoint pjp) {
 ```
 
 **Flow:**
-- AOP VOCABULARY
-- ↓
-- Term Definition
-- ↓
-- Advice Action taken (before, after, around a method)
-- ↓
-- Pointcut Expression selecting join points (which method
-- ↓
-- Target Object being advised (original bean)
-- ↓
-- Proxy Wrapper object created by Spring (contains advice
-- ↓
-- Weaving Process of applying aspects to targets
+1. AOP VOCABULARY
+2. Term Definition
+3. Advice Action taken (before, after, around a method)
+4. Pointcut Expression selecting join points (which method
+5. Target Object being advised (original bean)
+6. Proxy Wrapper object created by Spring (contains advice
+7. Weaving Process of applying aspects to targets
 
 ```mermaid
 flowchart TD
@@ -221,14 +212,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 2: AOP Terminology**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 2: AOP Terminology**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 3: Advice Types
 
@@ -406,17 +397,12 @@ public class ComprehensiveAspect {
 ```
 
 **Flow:**
-- ADVICE EXECUTION ORDER / METHOD CALL: userService.findB
-- ↓
-- @Before
-- ↓
-- ACTUAL METHOD EXECUTION
-- ↓
-- @AfterReturning @AfterThrowing
-- ↓
-- @After
-- ↓
-- @Around (after proceed)
+1. ADVICE EXECUTION ORDER / METHOD CALL: userService.findB
+2. @Before
+3. ACTUAL METHOD EXECUTION
+4. @AfterReturning @AfterThrowing
+5. @After
+6. @Around (after proceed)
 
 ```mermaid
 flowchart TD
@@ -437,20 +423,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 3: Advice Types**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — Chapter 3: Advice Types**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## Chapter 4: Pointcut Expressions
 
@@ -591,14 +577,14 @@ public class PointcutExamplesAspect {
 
 
 
-> 🔬 **Section Challenge — Chapter 4: Pointcut Expressions**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 4: Pointcut Expressions**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 5: How Spring AOP Works (Proxy Magic)
 
@@ -642,13 +628,10 @@ public class PointcutExamplesAspect {
 ```
 
 **Flow:**
-- findById(Long id) /
-- ↓
-- Execute @Before advice /
-- ↓
-- Execut
-- ↓
-- REAL BEAN / UserService
+1. findById(Long id) /
+2. Execute @Before advice /
+3. Execut
+4. REAL BEAN / UserService
 
 ```mermaid
 flowchart TD
@@ -773,14 +756,14 @@ public class UserService {
 
 
 
-> 🔬 **Section Challenge — Chapter 5: How Spring AOP Works (Proxy Magic)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 5: How Spring AOP Works (Proxy Magic)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 6: Practical AOP Examples
 
@@ -1064,14 +1047,14 @@ spring:
 ```bash
 
 
-> 🔬 **Section Challenge — Chapter 7: The Magic of @SpringBootApplication**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 7: The Magic of @SpringBootApplication**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # See what auto-configuration is happening
 java -jar myapp.jar --debug
@@ -1215,49 +1198,28 @@ public class EmailService {
 ```
 
 **Flow:**
-- PROFILE-BASED CONFIGURATION
-- ↓
-- application.yml
-- ↓
-- Default (always loaded)
-- ↓
-- application.yml
-- ↓
-- Default (always loaded)
-- ↓
-- application-dev.yml
-- ↓
-- Development (local)
-- ↓
-- application-dev.yml
-- ↓
-- Development (local)
-- ↓
-- application-test.yml
-- ↓
-- Testing (CI/CD)
-- ↓
-- application-test.yml
-- ↓
-- Testing (CI/CD)
-- ↓
-- application-staging.yml
-- ↓
-- Staging (pre-prod)
-- ↓
-- application-staging.yml
-- ↓
-- Staging (pre-prod)
-- ↓
-- application-prod.yml
-- ↓
-- Production
-- ↓
-- application-prod.yml
-- ↓
-- Production
-- ↓
-- LOADING ORDER (later overrides earlier):
+1. PROFILE-BASED CONFIGURATION
+2. application.yml
+3. Default (always loaded)
+4. application.yml
+5. Default (always loaded)
+6. application-dev.yml
+7. Development (local)
+8. application-dev.yml
+9. Development (local)
+10. application-test.yml
+11. Testing (CI/CD)
+12. application-test.yml
+13. Testing (CI/CD)
+14. application-staging.yml
+15. Staging (pre-prod)
+16. application-staging.yml
+17. Staging (pre-prod)
+18. application-prod.yml
+19. Production
+20. application-prod.yml
+21. Production
+22. LOADING ORDER (later overrides earlier):
 
 ```mermaid
 flowchart TD
@@ -1281,14 +1243,14 @@ flowchart TD
 ```yaml
 
 
-> 🔬 **Section Challenge — Chapter 9: Profiles in Spring Boot**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 9: Profiles in Spring Boot**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # application.yml (defaults)
 spring:
@@ -1382,19 +1344,13 @@ CONFIGURATION:
 ```
 
 **Flow:**
-- AOP CONCEPTS:
-- ↓
-- □ Can explain cross-cutting concerns
-- ↓
-- □ Know all 5 advice types and when to use each
-- ↓
-- □ Understand proxy types (JDK vs CGLIB)
-- ↓
-- □ Know the self-invocation problem and solutions
-- ↓
-- SPRING BOOT:
-- ↓
-- □ Know what @SpringBootApplication does (3 annotations)
+1. AOP CONCEPTS:
+2. □ Can explain cross-cutting concerns
+3. □ Know all 5 advice types and when to use each
+4. □ Understand proxy types (JDK vs CGLIB)
+5. □ Know the self-invocation problem and solutions
+6. SPRING BOOT:
+7. □ Know what @SpringBootApplication does (3 annotations)
 
 ```mermaid
 flowchart TD

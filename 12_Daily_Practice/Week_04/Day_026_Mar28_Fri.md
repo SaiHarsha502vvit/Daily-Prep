@@ -99,19 +99,10 @@ int[] bellmanFord(int n, int[][] edges, int source) {
 ```
 
 **Flow:**
-- Property Dijkstra Bellman-Ford
-- ↓
-- Time O((V+E) log V) O(V * E)
-- ↓
-- Negative weights NO YES
-- ↓
-- Negative cycles Can't detect CAN detect
-- ↓
-- Space O(V) O(V)
-- ↓
-- Use when Non-neg weights Neg weights or K
-- ↓
-- stops constraint
+1. Property Dijkstra Bellman-Ford
+2. Time O((V+E) log V) O(V * E)
+3. Negative weights NO YES
+4. Negative cycles Can't detect CAN detect Space O(V) O(V) Use when Non-neg weights Neg weights or K stops constraint
 
 ```mermaid
 flowchart TD
@@ -151,13 +142,9 @@ Bipartite = can split nodes into 2 sets such that
 ```
 
 **Flow:**
-- 3 --- 2
-- ↓
-- BIPARTITE
-- ↓
-- 2 3 Edge 0-2: Red-Red ✗
-- ↓
-- NOT BIPARTITE
+1. 3 --- 2
+2. BIPARTITE 2 3 Edge 0-2: Red-Red ✗
+3. NOT BIPARTITE
 
 ```mermaid
 flowchart LR
@@ -224,21 +211,14 @@ Problems:
 ```
 
 **Flow:**
-- UNNORMALIZED (one table):
-- ↓
-- ID Name Dept DeptPhone Skills
-- ↓
-- 1 Alice Eng 555-0100 Java,SQL
-- ↓
-- 2 Bob Eng 555-0100 Python
-- ↓
-- 3 Carol HR 555-0200 Java,React
-- ↓
-- Problems:
-- ↓
-- • 'Eng' phone changes
-- ↓
-- update EVERY row (Update Anomal
+1. UNNORMALIZED (one table):
+2. ID Name Dept DeptPhone Skills
+3. 1 Alice Eng 555-0100 Java,SQL
+4. 2 Bob Eng 555-0100 Python
+5. 3 Carol HR 555-0200 Java,React
+6. Problems:
+7. • 'Eng' phone changes
+8. update EVERY row (Update Anomal
 
 ```mermaid
 flowchart TD
@@ -277,17 +257,11 @@ flowchart TD
 ```
 
 **Flow:**
-- If composite key (emp_id, skill), dept depends onl
-- ↓
-- move to separate table
-- ↓
-- ✓ No transitive dependencies (non-key
-- ↓
-- non-key)
-- ↓
-- DeptPhone depends on Dept, not on emp_id
-- ↓
-- move to departments table
+1. If composite key (emp_id, skill), dept depends onl
+2. move to separate table
+3. ✓ No transitive dependencies (non-key non-key)
+4. DeptPhone depends on Dept, not on emp_id
+5. move to departments table
 
 ```mermaid
 flowchart LR
@@ -348,15 +322,9 @@ Output: 700 (0→1→3)
 ```
 
 **Flow:**
-- n cities, flights[i] = [from, to, price].
-- ↓
-- Find cheapest price from src to dst with at most k stop
-- ↓
-- Output: 700 (0
-- ↓
-- 1
-- ↓
-- 3)
+1. n cities, flights[i] = [from, to, price].
+2. Find cheapest price from src to dst with at most k stop
+3. Output: 700 (0 1 3)
 
 ```mermaid
 flowchart TD

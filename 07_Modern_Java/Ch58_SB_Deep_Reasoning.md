@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](Ch22_Java_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch23_Streams_Deep_Reasoning.md)
+**Navigation**: [< Previous](Ch22_Java_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch23_Streams_Deep_Reasoning.md)
 
 # Chapter 32 — Spring Boot Deep Reasoning: The Questions That Freeze People
 
-> **"Anyone can say 'Spring Boot auto-configures everything.' The senior engineer explains WHAT DispatcherServlet actually does, WHY @Transactional fails on private methods, and HOW the proxy pattern secretly runs your entire application."**
+**"Anyone can say 'Spring Boot auto-configures everything.' The senior engineer explains WHAT DispatcherServlet actually does, WHY @Transactional fails on private methods, and HOW the proxy pattern secretly runs your entire application."**
 
 ---
 
@@ -26,7 +26,7 @@
 ## 1. DispatcherServlet vs Filter: The Request Gate vs Security Guard
 
 ### The Freeze Question
-> "What's the difference between a DispatcherServlet and a Filter?"
+"What's the difference between a DispatcherServlet and a Filter?"
 
 **This is the question the user explicitly said people freeze on.**
 
@@ -68,41 +68,24 @@ DISPATCHER SERVLET = The receptionist inside the building
 ```
 
 **Flow:**
-- THE OFFICE BUILDING ANALOGY
-- ↓
-- HTTP Request arrives at your Spring Boot application:
-- ↓
-- SERVLET CONTAINER (Tomcat)
-- ↓
-- [Request]
-- ↓
-- FILTER 1
-- ↓
-- FILTER 2
-- ↓
-- FILTER 3
-- ↓
-- [Request]
-- ↓
-- FILTER 1
-- ↓
-- FILTER 2
-- ↓
-- FILTER 3
-- ↓
-- DISPATCHER SERVLET
-- ↓
-- HandlerMapping
-- ↓
-- 'Which controller?'
-- ↓
-- HandlerMapping
-- ↓
-- 'Which controller?'
-- ↓
-- HandlerAdapter
-- ↓
-- 'Call the method'
+1. THE OFFICE BUILDING ANALOGY
+2. HTTP Request arrives at your Spring Boot application:
+3. SERVLET CONTAINER (Tomcat)
+4. [Request]
+5. FILTER 1
+6. FILTER 2
+7. FILTER 3
+8. [Request]
+9. FILTER 1
+10. FILTER 2
+11. FILTER 3
+12. DISPATCHER SERVLET
+13. HandlerMapping
+14. 'Which controller?'
+15. HandlerMapping
+16. 'Which controller?'
+17. HandlerAdapter
+18. 'Call the method'
 
 ```mermaid
 flowchart TD
@@ -176,19 +159,13 @@ Client → Tomcat → Filter1 → Filter2 → Filter3
 ```
 
 **Flow:**
-- Client
-- ↓
-- Tomcat
-- ↓
-- Filter1
-- ↓
-- Filter2
-- ↓
-- Filter3
-- ↓
-- Filter2
-- ↓
-- Filter1
+1. Client
+2. Tomcat
+3. Filter1
+4. Filter2
+5. Filter3
+6. Filter2
+7. Filter1
 
 ```mermaid
 flowchart TD
@@ -221,19 +198,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 1. DispatcherServlet vs Filter: The Request Gate vs Security Guard**
->
-> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-> <details><summary>Answer</summary>
->
-> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-> </details>
->
+🔬 **Section Challenge — 1. DispatcherServlet vs Filter: The Request Gate vs Security Guard**
+
+**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+<details><summary>Answer</summary>
+
+JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+</details>
+
 
 ## 2. What @SpringBootApplication Actually Does
 
 ### The Freeze Question
-> "What does @SpringBootApplication do? Could you build a Spring Boot app without it?"
+"What does @SpringBootApplication do? Could you build a Spring Boot app without it?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -261,21 +238,14 @@ flowchart TD
 ```
 
 **Flow:**
-- @SpringBootApplication = THREE annotations in one:
-- ↓
-- @Configuration
-- ↓
-- Makes main class a source of bean definitions
-- ↓
-- @EnableAutoConfiguration
-- ↓
-- 'Scan classpath and auto-configure beans based on wha
-- ↓
-- on the classpath'
-- ↓
-- Found spring-boot-starter-web?
-- ↓
-- Configure Tomcat,
+1. @SpringBootApplication = THREE annotations in one:
+2. @Configuration
+3. Makes main class a source of bean definitions
+4. @EnableAutoConfiguration
+5. 'Scan classpath and auto-configure beans based on wha
+6. on the classpath'
+7. Found spring-boot-starter-web?
+8. Configure Tomcat,
 
 ```mermaid
 flowchart TD
@@ -319,19 +289,19 @@ public class MyApp { ... }
 
 
 
-> 🔬 **Section Challenge — 2. What @SpringBootApplication Actually Does**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 2. What @SpringBootApplication Actually Does**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 3. Auto-Configuration: How Spring "Magically" Knows What You Need
 
 ### The Freeze Question
-> "How does Spring Boot know to configure a DataSource without you configuring it?"
+"How does Spring Boot know to configure a DataSource without you configuring it?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -364,19 +334,13 @@ public class MyApp { ... }
 ```
 
 **Flow:**
-- THE SMART HOME ANALOGY
-- ↓
-- 2. Smart home detects it (classpath scanning)
-- ↓
-- 3. It auto-configures: connects to HVAC, sets default t
-- ↓
-- 4. You CAN override: set your own temperature (properti
-- ↓
-- HOW IT ACTUALLY WORKS:
-- ↓
-- spring-boot-autoconfigure.jar contains:
-- ↓
-- META-INF/spring/org.springframework.boot.autoconfigure.
+1. THE SMART HOME ANALOGY
+2. 2. Smart home detects it (classpath scanning)
+3. 3. It auto-configures: connects to HVAC, sets default t
+4. 4. You CAN override: set your own temperature (properti
+5. HOW IT ACTUALLY WORKS:
+6. spring-boot-autoconfigure.jar contains:
+7. META-INF/spring/org.springframework.boot.autoconfigure.
 
 ```mermaid
 flowchart TD
@@ -434,19 +398,19 @@ public class MyConfig {
 
 
 
-> 🔬 **Section Challenge — 3. Auto-Configuration: How Spring "Magically" Knows What You Need**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 3. Auto-Configuration: How Spring "Magically" Knows What You Need**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 4. The Proxy Pattern: Why @Transactional Fails On Self-Calls
 
 ### The Freeze Question
-> "I put @Transactional on a method but it doesn't create a transaction. Why?"
+"I put @Transactional on a method but it doesn't create a transaction. Why?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -469,25 +433,16 @@ public class MyConfig {
 ```
 
 **Flow:**
-- THE BODYGUARD ANALOGY
-- ↓
-- Spring creates a PROXY (bodyguard) around your bean.
-- ↓
-- All calls from OUTSIDE go through the proxy.
-- ↓
-- The proxy adds behavior (transaction, security, caching
-- ↓
-- BUT! If your bean calls ITS OWN method:
-- ↓
-- [Your Bean]
-- ↓
-- this.internalMethod()
-- ↓
-- [Your Bean]
-- ↓
-- this.internalMethod()
-- ↓
-- Bypasses the proxy! No transaction started!
+1. THE BODYGUARD ANALOGY
+2. Spring creates a PROXY (bodyguard) around your bean.
+3. All calls from OUTSIDE go through the proxy.
+4. The proxy adds behavior (transaction, security, caching
+5. BUT! If your bean calls ITS OWN method:
+6. [Your Bean]
+7. this.internalMethod()
+8. [Your Bean]
+9. this.internalMethod()
+10. Bypasses the proxy! No transaction started!
 
 ```mermaid
 flowchart TD
@@ -557,19 +512,19 @@ public class NotificationService {
 
 
 
-> 🔬 **Section Challenge — 4. The Proxy Pattern: Why @Transactional Fails On Self-Calls**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — 4. The Proxy Pattern: Why @Transactional Fails On Self-Calls**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## 5. Bean Lifecycle: What Happens Between `new` and "Ready"
 
 ### The Freeze Question
-> "What's the Spring Bean lifecycle?"
+"What's the Spring Bean lifecycle?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -593,19 +548,13 @@ public class NotificationService {
 ```
 
 **Flow:**
-- THE EMPLOYEE ONBOARDING ANALOGY
-- ↓
-- 1. INSTANTIATION: Hire the employee (new MyBean())
-- ↓
-- 3. AWARE INTERFACES: Tell them company name, their ID
-- ↓
-- (BeanNameAware, ApplicationContextAware)
-- ↓
-- 4. @PostConstruct: Employee orientation (run custom ini
-- ↓
-- 5. InitializingBean.afterPropertiesSet(): Second init h
-- ↓
-- 6. Custom init-method: Third init hook
+1. THE EMPLOYEE ONBOARDING ANALOGY
+2. 1. INSTANTIATION: Hire the employee (new MyBean())
+3. 3. AWARE INTERFACES: Tell them company name, their ID
+4. (BeanNameAware, ApplicationContextAware)
+5. 4. @PostConstruct: Employee orientation (run custom ini
+6. 5. InitializingBean.afterPropertiesSet(): Second init h
+7. 6. Custom init-method: Third init hook
 
 ```mermaid
 flowchart TD
@@ -651,7 +600,7 @@ public class CacheService {
 ## 6. IoC & DI: Not Just "Injection" — The Inversion Explained
 
 ### The Freeze Question
-> "What is Inversion of Control? What's being inverted?"
+"What is Inversion of Control? What's being inverted?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -682,19 +631,13 @@ public class CacheService {
 ```
 
 **Flow:**
-- COOKING AT HOME vs RESTAURANT — The Inversion
-- ↓
-- WITHOUT IoC (cooking at home):
-- ↓
-- YOU control everything:
-- ↓
-- You decide what to buy
-- ↓
-- You buy ingredients (create dependencies)
-- ↓
-- You cook (main logic)
-- ↓
-- You clean up
+1. COOKING AT HOME vs RESTAURANT — The Inversion
+2. WITHOUT IoC (cooking at home):
+3. YOU control everything:
+4. You decide what to buy
+5. You buy ingredients (create dependencies)
+6. You cook (main logic)
+7. You clean up
 
 ```mermaid
 flowchart TD
@@ -742,19 +685,19 @@ public class OrderService {
 
 
 
-> 🔬 **Section Challenge — 6. IoC & DI: Not Just "Injection" — The Inversion Explained**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 6. IoC & DI: Not Just "Injection" — The Inversion Explained**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 7. @Autowired vs Constructor Injection: Why Seniors Choose Constructor
 
 ### The Freeze Question
-> "What's wrong with @Autowired on fields?"
+"What's wrong with @Autowired on fields?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -784,19 +727,13 @@ public class OrderService {
 ```
 
 **Flow:**
-- THREE INJECTION STYLES:
-- ↓
-- FIELD INJECTION (the lazy way):
-- ↓
-- @Autowired private UserRepository repo;
-- ↓
-- ❌ Can't make fields final (no immutability)
-- ↓
-- ❌ Hidden dependencies (not visible in constructor)
-- ↓
-- ❌ Can't use without Spring (can't new + inject in tests
-- ↓
-- ❌ Allows too many dependencies (no visible bloat signal
+1. THREE INJECTION STYLES:
+2. FIELD INJECTION (the lazy way):
+3. @Autowired private UserRepository repo;
+4. ❌ Can't make fields final (no immutability)
+5. ❌ Hidden dependencies (not visible in constructor)
+6. ❌ Can't use without Spring (can't new + inject in tests
+7. ❌ Allows too many dependencies (no visible bloat signal
 
 ```mermaid
 flowchart TD
@@ -844,19 +781,19 @@ UserService service = new UserService(mockRepo, mockEmail, mockCache);
 
 
 
-> 🔬 **Section Challenge — 7. @Autowired vs Constructor Injection: Why Seniors Choose Constructor**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 7. @Autowired vs Constructor Injection: Why Seniors Choose Constructor**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 8. Bean Scopes: Why Injecting Prototype Into Singleton Breaks
 
 ### The Freeze Question
-> "I defined a prototype bean but it's acting like a singleton. Why?"
+"I defined a prototype bean but it's acting like a singleton. Why?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -883,19 +820,13 @@ UserService service = new UserService(mockRepo, mockEmail, mockCache);
 ```
 
 **Flow:**
-- THE COFFEE MACHINE ANALOGY
-- ↓
-- Singleton scope: One coffee machine in the office. Ever
-- ↓
-- shares it. Created once at startup.
-- ↓
-- it's requested.
-- ↓
-- THE PROBLEM:
-- ↓
-- Singleton OrderService is created ONCE at startup.
-- ↓
-- During creation, Spring injects Prototype ShoppingCart.
+1. THE COFFEE MACHINE ANALOGY
+2. Singleton scope: One coffee machine in the office. Ever
+3. shares it. Created once at startup.
+4. it's requested.
+5. THE PROBLEM:
+6. Singleton OrderService is created ONCE at startup.
+7. During creation, Spring injects Prototype ShoppingCart.
 
 ```mermaid
 flowchart TD
@@ -950,19 +881,19 @@ public class ShoppingCart { ... }
 
 
 
-> 🔬 **Section Challenge — 8. Bean Scopes: Why Injecting Prototype Into Singleton Breaks**
->
-> **Challenge 1 (Reasoning):** `Object.create(proto)` vs `new Constructor()` — what's the practical difference?
-> <details><summary>Answer</summary>
->
-> `new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) — useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
-> </details>
->
+🔬 **Section Challenge — 8. Bean Scopes: Why Injecting Prototype Into Singleton Breaks**
+
+**Challenge 1 (Reasoning):** `Object.create(proto)` vs `new Constructor()` — what's the practical difference?
+<details><summary>Answer</summary>
+
+`new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) — useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
+</details>
+
 
 ## 9. @Controller vs @RestController: Not Just "Adds @ResponseBody"
 
 ### The Freeze Question
-> "What's the actual difference?"
+"What's the actual difference?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -994,33 +925,20 @@ public class ShoppingCart { ... }
 ```
 
 **Flow:**
-- @Controller = View Returns (traditional MVC web apps)
-- ↓
-- Return value is a VIEW NAME (JSP, Thymeleaf template)
-- ↓
-- DispatcherServlet passes to ViewResolver to render HT
-- ↓
-- THE DEEPER UNDERSTANDING:
-- ↓
-- @Controller + return 'users'
-- ↓
-- ViewResolver looks for
-- ↓
-- @Controller + return 'users'
-- ↓
-- ViewResolver looks for
-- ↓
-- templates/users.html
-- ↓
-- renders HTML
-- ↓
-- templates/users.html
-- ↓
-- renders HTML
-- ↓
-- @RestController + return userList
-- ↓
-- HttpMessageConverte
+1. @Controller = View Returns (traditional MVC web apps)
+2. Return value is a VIEW NAME (JSP, Thymeleaf template)
+3. DispatcherServlet passes to ViewResolver to render HT
+4. THE DEEPER UNDERSTANDING:
+5. @Controller + return 'users'
+6. ViewResolver looks for
+7. @Controller + return 'users'
+8. ViewResolver looks for
+9. templates/users.html
+10. renders HTML
+11. templates/users.html
+12. renders HTML
+13. @RestController + return userList
+14. HttpMessageConverte
 
 ```mermaid
 flowchart TD
@@ -1046,7 +964,7 @@ flowchart TD
 ## 10. Spring Security Filter Chain: How Authentication Actually Works
 
 ### The Freeze Question
-> "How does Spring Security authenticate a request?"
+"How does Spring Security authenticate a request?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -1081,25 +999,16 @@ flowchart TD
 ```
 
 **Flow:**
-- Spring Security = A CHAIN of Servlet Filters
-- ↓
-- Request
-- ↓
-- SecurityFilterChain:
-- ↓
-- Request
-- ↓
-- SecurityFilterChain:
-- ↓
-- 1. SecurityContextPersistenceFilter
-- ↓
-- Load existing security context (from session/token)
-- ↓
-- 2. UsernamePasswordAuthenticationFilter
-- ↓
-- If login request: extract credentials, authenticate
-- ↓
-- Delegates to AuthenticationManager
+1. Spring Security = A CHAIN of Servlet Filters
+2. Request
+3. SecurityFilterChain:
+4. Request
+5. SecurityFilterChain:
+6. 1. SecurityContextPersistenceFilter
+7. Load existing security context (from session/token)
+8. 2. UsernamePasswordAuthenticationFilter
+9. If login request: extract credentials, authenticate
+10. Delegates to AuthenticationManager
 
 ```mermaid
 flowchart TD
@@ -1124,19 +1033,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 10. Spring Security Filter Chain: How Authentication Actually Works**
->
-> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-> <details><summary>Answer</summary>
->
-> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-> </details>
->
+🔬 **Section Challenge — 10. Spring Security Filter Chain: How Authentication Actually Works**
+
+**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+<details><summary>Answer</summary>
+
+JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+</details>
+
 
 ## 11. Profiles & Conditional Beans: How Spring Switches Environments
 
 ### The Freeze Question
-> "How do you configure different settings for dev, staging, and production?"
+"How do you configure different settings for dev, staging, and production?"
 
 ```java
 // application.yml (default):
@@ -1180,19 +1089,19 @@ public class StorageConfig {
 
 
 
-> 🔬 **Section Challenge — 11. Profiles & Conditional Beans: How Spring Switches Environments**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 11. Profiles & Conditional Beans: How Spring Switches Environments**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 12. Why @Async Doesn't Work Without @EnableAsync
 
 ### The Freeze Question
-> "I added @Async but the method still runs synchronously."
+"I added @Async but the method still runs synchronously."
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -1215,19 +1124,13 @@ public class StorageConfig {
 ```
 
 **Flow:**
-- Same proxy problem as @Transactional (Section 4):
-- ↓
-- @Async tells Spring: 'Run this in a different thread.'
-- ↓
-- But Spring needs to create a PROXY to intercept the cal
-- ↓
-- and redirect it to a thread pool.
-- ↓
-- @EnableAsync tells Spring: 'Create those proxies.'
-- ↓
-- Without it, @Async is just an annotation — no behavior.
-- ↓
-- SAME GOTCHAS:
+1. Same proxy problem as @Transactional (Section 4):
+2. @Async tells Spring: 'Run this in a different thread.'
+3. But Spring needs to create a PROXY to intercept the cal
+4. and redirect it to a thread pool.
+5. @EnableAsync tells Spring: 'Create those proxies.'
+6. Without it, @Async is just an annotation — no behavior.
+7. SAME GOTCHAS:
 
 ```mermaid
 flowchart TD
@@ -1279,20 +1182,20 @@ public class EmailService {
 
 
 
-> 🔬 **Section Challenge — 12. Why @Async Doesn't Work Without @EnableAsync**
->
-> **Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
-> <details><summary>Answer</summary>
->
-> `Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
-> <details><summary>Answer</summary>
->
-> Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
-> </details>
->
+🔬 **Section Challenge — 12. Why @Async Doesn't Work Without @EnableAsync**
+
+**Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
+<details><summary>Answer</summary>
+
+`Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
+</details>
+
+**Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
+<details><summary>Answer</summary>
+
+Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
+</details>
+
 
 ## Interview Quick-Fire: Spring Boot Freeze Busters
 

@@ -54,17 +54,10 @@ MEMORY INSIGHT: The program call stack IS a stack.
 ```
 
 **Flow:**
-- main() calls foo() calls bar()
-- ↓
-- stack: [main, foo, bar]
-- ↓
-- bar() returns
-- ↓
-- stack: [main, foo]
-- ↓
-- foo() returns
-- ↓
-- stack: [main]
+1. main() calls foo() calls bar()
+2. stack: [main, foo, bar] bar() returns
+3. stack: [main, foo] foo() returns
+4. stack: [main]
 
 ```mermaid
 flowchart LR
@@ -111,11 +104,8 @@ push(40):    pop():       peek():
 ```
 
 **Flow:**
-- 30 / 20 / 10
-- ↓
-- 40 / 30 / 20 / 10
-- ↓
-- 20 / 10
+1. 30 / 20 / 10 40 / 30 / 20 / 10
+2. 20 / 10
 
 ```mermaid
 flowchart TD
@@ -193,29 +183,17 @@ HOW IT WORKS:
 ```
 
 **Flow:**
-- Linear search: check every element
-- ↓
-- O(n)
-- ↓
-- Array of 1 billion elements
-- ↓
-- 1 billion comparisons
-- ↓
-- Binary search: eliminate half each step
-- ↓
-- O(log n)
-- ↓
-- Array of 1 billion elements
-- ↓
-- ~30 comparisons!
-- ↓
-- Step 1: mid = arr[4] = 16. 16 < 23
-- ↓
-- search right half
-- ↓
-- Step 2: mid = arr[7] = 56. 56 > 23
-- ↓
-- search left half
+1. Linear search: check every element
+2. O(n)
+3. Array of 1 billion elements 1 billion comparisons
+4. Binary search: eliminate half each step
+5. O(log n)
+6. Array of 1 billion elements
+7. ~30 comparisons!
+8. Step 1: mid = arr[4] = 16. 16 < 23
+9. search right half
+10. Step 2: mid = arr[7] = 56. 56 > 23
+11. search left half
 
 ```mermaid
 flowchart TD
@@ -302,17 +280,9 @@ ALGORITHM:
 ```
 
 **Flow:**
-- Input: '({[]})'
-- ↓
-- true
-- ↓
-- Input: '({[}])'
-- ↓
-- false
-- ↓
-- Input: '((('
-- ↓
-- false
+1. Input: '({[]})' true
+2. Input: '({[}])' false
+3. Input: '(((' false
 
 ```mermaid
 flowchart LR
@@ -371,29 +341,17 @@ SCENARIO: Text editor undo/redo — two stacks!
 ```
 
 **Flow:**
-- Type 'Hello'
-- ↓
-- undo: [Hello] redo: []
-- ↓
-- Type ' World'
-- ↓
-- undo: [Hello, World] redo: []
-- ↓
-- Press Ctrl+Z
-- ↓
-- undo: [Hello] redo: [World] ← pop undo, push redo
-- ↓
-- Press Ctrl+Z
-- ↓
-- undo: [] redo: [World, Hello]
-- ↓
-- Press Ctrl+Y
-- ↓
-- undo: [Hello] redo: [World] ← pop redo, push undo
-- ↓
-- Type ' Java'
-- ↓
-- undo: [Hello, Java] redo: [] ← new action CLEARS r
+1. Type 'Hello' undo: [Hello] redo: []
+2. Type ' World'
+3. undo: [Hello, World] redo: []
+4. Press Ctrl+Z
+5. undo: [Hello] redo: [World] ← pop undo, push redo
+6. Press Ctrl+Z
+7. undo: [] redo: [World, Hello]
+8. Press Ctrl+Y
+9. undo: [Hello] redo: [World] ← pop redo, push undo
+10. Type ' Java'
+11. undo: [Hello, Java] redo: [] ← new action CLEARS r
 
 ```mermaid
 flowchart TD
@@ -496,13 +454,10 @@ This is exactly the LOWER BOUND template from today!
 ```
 
 **Flow:**
-- Input: [1, 3, 5, 6], target = 5
-- ↓
-- Output: 2 (found at index 2)
-- ↓
-- Input: [1, 3, 5, 6], target = 2
-- ↓
-- Output: 1 (would insert at index 1)
+1. Input: [1, 3, 5, 6], target = 5
+2. Output: 2 (found at index 2)
+3. Input: [1, 3, 5, 6], target = 2
+4. Output: 1 (would insert at index 1)
 
 ```mermaid
 flowchart LR
@@ -541,15 +496,11 @@ getMin(): return min.peek() = 3 ✓
 ```
 
 **Flow:**
-- push(5): main: [5] min: [5]
-- ↓
-- push(3): main: [5,3] min: [5,3] ← new min: 3
-- ↓
-- push(7): main: [5,3,7] min: [5,3,3] ← min still 3
-- ↓
-- pop(): main: [5,3] min: [5,3]
-- ↓
-- getMin(): return min.peek() = 3 ✓
+1. push(5): main: [5] min: [5]
+2. push(3): main: [5,3] min: [5,3] ← new min: 3
+3. push(7): main: [5,3,7] min: [5,3,3] ← min still 3
+4. pop(): main: [5,3] min: [5,3]
+5. getMin(): return min.peek() = 3 ✓
 
 ```mermaid
 flowchart TD

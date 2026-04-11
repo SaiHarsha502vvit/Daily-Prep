@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch36_SB_Service_Repository.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch40_SB_JPA_Deep_Dive.md)
+**Navigation**: [< Previous](Ch36_SB_Service_Repository.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch40_SB_JPA_Deep_Dive.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 7: Controllers & REST API Architecture
 
-> **The Gateway to Your Application**
-> _"Controllers are thin - they delegate, not implement"_
+**The Gateway to Your Application**
+_"Controllers are thin - they delegate, not implement"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why REST Controllers? / • REST is the standard: We
-- ↓
-- HOW: How Controllers Handle Requests? / • @GetMapping:
-- ↓
-- WHEN: When to Use Which Parameter Type? / • @PathVariab
-- ↓
-- WHICH: Which Controller Patterns to Use? / ESSENTIAL: @
+1. WHY: Why REST Controllers? / • REST is the standard: We
+2. HOW: How Controllers Handle Requests? / • @GetMapping:
+3. WHEN: When to Use Which Parameter Type? / • @PathVariab
+4. WHICH: Which Controller Patterns to Use? / ESSENTIAL: @
 
 ```mermaid
 flowchart TD
@@ -179,19 +176,13 @@ public class UserController {
 ```
 
 **Flow:**
-- HTTP METHODS & SPRING MAPPINGS
-- ↓
-- HTTP Method Annotation Purpose Idempotent Safe
-- ↓
-- GET @GetMapping Read resource ✅ ✅
-- ↓
-- POST @PostMapping Create resource ❌ ❌
-- ↓
-- PUT @PutMapping Replace resource ✅ ❌
-- ↓
-- PATCH @PatchMapping Partial update ❌* ❌
-- ↓
-- DELETE @DeleteMapping Delete resource ✅ ❌
+1. HTTP METHODS & SPRING MAPPINGS
+2. HTTP Method Annotation Purpose Idempotent Safe
+3. GET @GetMapping Read resource ✅ ✅
+4. POST @PostMapping Create resource ❌ ❌
+5. PUT @PutMapping Replace resource ✅ ❌
+6. PATCH @PatchMapping Partial update ❌* ❌
+7. DELETE @DeleteMapping Delete resource ✅ ❌
 
 ```mermaid
 flowchart TD
@@ -216,14 +207,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 2: HTTP Method Mappings**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — Chapter 2: HTTP Method Mappings**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## Chapter 3: Request Parameters
 
@@ -477,14 +468,14 @@ public class UserController {
 
 
 
-> 🔬 **Section Challenge — Chapter 4: Response Handling**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 4: Response Handling**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 5: Validation
 
@@ -932,14 +923,14 @@ public class GlobalExceptionHandler {
 
 
 
-> 🔬 **Section Challenge — Chapter 6: Exception Handling**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 6: Exception Handling**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 7: API Versioning
 
@@ -1079,14 +1070,14 @@ public class UserController {
 
 
 
-> 🔬 **Section Challenge — Chapter 7: API Versioning**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 7: API Versioning**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 8: Controller Best Practices
 
@@ -1169,19 +1160,13 @@ public class UserController {
 ```
 
 **Flow:**
-- CONTROLLER BEST PRACTICES
-- ↓
-- 1. THIN CONTROLLERS
-- ↓
-- Controllers should:
-- ↓
-- ✅ Receive request
-- ↓
-- ✅ Validate (via @Valid)
-- ↓
-- ✅ Delegate to service
-- ↓
-- ✅ Return response
+1. CONTROLLER BEST PRACTICES
+2. 1. THIN CONTROLLERS
+3. Controllers should:
+4. ✅ Receive request
+5. ✅ Validate (via @Valid)
+6. ✅ Delegate to service
+7. ✅ Return response
 
 ```mermaid
 flowchart TD
@@ -1380,19 +1365,13 @@ public class UserController {
 ```
 
 **Flow:**
-- □ @RequiredArgsConstructor for DI
-- ↓
-- □ @Validated for method-level validation
-- ↓
-- □ @Valid on @RequestBody DTOs
-- ↓
-- □ Appropriate HTTP methods (GET, POST, PUT, PATCH, DELE
-- ↓
-- □ Correct status codes (200, 201, 204, 400, 404, etc.)
-- ↓
-- □ ResponseEntity for explicit control
-- ↓
-- □ POST returns 201 with Location header
+1. □ @RequiredArgsConstructor for DI
+2. □ @Validated for method-level validation
+3. □ @Valid on @RequestBody DTOs
+4. □ Appropriate HTTP methods (GET, POST, PUT, PATCH, DELE
+5. □ Correct status codes (200, 201, 204, 400, 404, etc.)
+6. □ ResponseEntity for explicit control
+7. □ POST returns 201 with Location header
 
 ```mermaid
 flowchart TD

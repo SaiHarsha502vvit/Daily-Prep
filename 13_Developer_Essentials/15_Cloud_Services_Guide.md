@@ -1,16 +1,16 @@
-> **Navigation**: [< Previous](14_Code_Review_Practices.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_IaC_Terraform.md)
+**Navigation**: [< Previous](14_Code_Review_Practices.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_IaC_Terraform.md)
 
 # Cloud Services — AWS, Azure & GCP Guide
 
 ## Why Cloud Knowledge is Essential
 
 
-> 95% of companies use at least one cloud provider.
-> Even if you're not DevOps, understanding cloud services
-> makes you a 10x more effective developer.
->
-> You don't need to be a cloud architect —
-> but you MUST know what's available and when to use it.
+95% of companies use at least one cloud provider.
+Even if you're not DevOps, understanding cloud services
+makes you a 10x more effective developer.
+
+You don't need to be a cloud architect —
+but you MUST know what's available and when to use it.
 
 
 ---
@@ -76,19 +76,13 @@ Container Reg.    │  ECR             │  ACR              │  GCR
 ```
 
 **Flow:**
-- CATEGORY AWS AZURE GCP
-- ↓
-- COMPUTE
-- ↓
-- Virtual Machines EC2 Virtual Machines GCE
-- ↓
-- Containers ECS / EKS AKS GKE
-- ↓
-- Serverless Lambda Azure Functions Cloud
-- ↓
-- Func
-- ↓
-- App Platform Elastic Beanstk App Service App
+1. CATEGORY AWS AZURE GCP
+2. COMPUTE
+3. Virtual Machines EC2 Virtual Machines GCE
+4. Containers ECS / EKS AKS GKE
+5. Serverless Lambda Azure Functions Cloud
+6. Func
+7. App Platform Elastic Beanstk App Service App
 
 ```mermaid
 flowchart TD
@@ -113,14 +107,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — The Big Three — Service Mapping**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — The Big Three — Service Mapping**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Core Concepts Every Developer Should Know
 
@@ -151,11 +145,9 @@ AZs in the same region have low-latency links between them.
 ```
 
 **Flow:**
-- Data Center 1 / Data Center 2
-- ↓
-- Data Center 3 / Data Center 4
-- ↓
-- Data Center 5
+1. Data Center 1 / Data Center 2
+2. Data Center 3 / Data Center 4
+3. Data Center 5
 
 ```mermaid
 flowchart TD
@@ -189,19 +181,13 @@ Most modern apps → PaaS or Containers (good balance).
 ```
 
 **Flow:**
-- WHO IS RESPONSIBLE FOR WHAT?
-- ↓
-- IaaS PaaS SaaS
-- ↓
-- (EC2) (App Service) (Gmail)
-- ↓
-- Your Data YOU YOU YOU
-- ↓
-- Your Code YOU YOU N/A
-- ↓
-- Runtime YOU CLOUD N/A
-- ↓
-- OS YOU CLOUD CLOUD
+1. WHO IS RESPONSIBLE FOR WHAT?
+2. IaaS PaaS SaaS
+3. (EC2) (App Service) (Gmail)
+4. Your Data YOU YOU YOU
+5. Your Code YOU YOU N/A
+6. Runtime YOU CLOUD N/A
+7. OS YOU CLOUD CLOUD
 
 ```mermaid
 flowchart TD
@@ -252,11 +238,9 @@ FIX: Create individual IAM users with specific roles
 ```
 
 **Flow:**
-- User / (Person)
-- ↓
-- Role / (Assume)
-- ↓
-- Policy / (Permission)
+1. User / (Person)
+2. Role / (Assume)
+3. Policy / (Permission)
 
 ```mermaid
 flowchart TD
@@ -296,19 +280,13 @@ Savings:   Commit to $/hour → flexible across instance types
 ```
 
 **Flow:**
-- EC2 (Elastic Compute Cloud) — Virtual Servers
-- ↓
-- INSTANCE TYPES:
-- ↓
-- Category Use Case Example
-- ↓
-- t3/t4g General purpose (burstable) Web servers
-- ↓
-- m6i General purpose (steady) App servers
-- ↓
-- c6i Compute-intensive Batch jobs
-- ↓
-- r6i Memory-intensive In-memory DB
+1. EC2 (Elastic Compute Cloud) — Virtual Servers
+2. INSTANCE TYPES:
+3. Category Use Case Example
+4. t3/t4g General purpose (burstable) Web servers
+5. m6i General purpose (steady) App servers
+6. c6i Compute-intensive Batch jobs
+7. r6i Memory-intensive In-memory DB
 
 ```mermaid
 flowchart TD
@@ -357,11 +335,9 @@ CONTAINER DEPLOYMENT OPTIONS
 ```
 
 **Flow:**
-- Managed Kubernetes (EKS / AKS / GKE) / • Full Kubernete
-- ↓
-- Managed Container Service (ECS / Azure Container) / • S
-- ↓
-- Serverless Containers (Fargate / Container Apps) / • No
+1. Managed Kubernetes (EKS / AKS / GKE) / • Full Kubernete
+2. Managed Container Service (ECS / Azure Container) / • S
+3. Serverless Containers (Fargate / Container Apps) / • No
 
 ```mermaid
 flowchart TD
@@ -375,34 +351,34 @@ flowchart TD
 ### Serverless: Lambda / Azure Functions
 
 
-> SERVERLESS — No Server to Manage
->
-> HOW IT WORKS:
-> Event → Function Executes → Returns → Scales to Zero
->
-> // AWS Lambda Example (Java)
-> public class Handler implements RequestHandler<APIGatewayProxy,
-> APIGatewayProxy> {
-> public APIGatewayProxyResponseEvent handleRequest(
-> APIGatewayProxyRequestEvent input, Context context) {
-> String body = input.getBody();
-> // process...
-> return new APIGatewayProxyResponseEvent()
-> .withStatusCode(200)
-> .withBody("{\"message\": \"success\"}");
-> }
-> }
->
-> GOOD FOR:                          BAD FOR:
-> - API endpoints                   • Long-running tasks (>15 min)
-> - Event processing                • WebSockets
-> - Scheduled jobs (cron)           • Stateful applications
-> - File processing triggers        • High-throughput streaming
-> - Low/variable traffic            • Cold-start-sensitive apps
->
-> COLD START: First invocation is slow (JVM = 3-10s)
-> SOLUTION: SnapStart (AWS), Provisioned Concurrency,
-> or use Node.js/Python for latency-sensitive functions
+SERVERLESS — No Server to Manage
+
+HOW IT WORKS:
+Event → Function Executes → Returns → Scales to Zero
+
+// AWS Lambda Example (Java)
+public class Handler implements RequestHandler<APIGatewayProxy,
+APIGatewayProxy> {
+public APIGatewayProxyResponseEvent handleRequest(
+APIGatewayProxyRequestEvent input, Context context) {
+String body = input.getBody();
+// process...
+return new APIGatewayProxyResponseEvent()
+.withStatusCode(200)
+.withBody("{\"message\": \"success\"}");
+}
+}
+
+GOOD FOR:                          BAD FOR:
+- API endpoints                   • Long-running tasks (>15 min)
+- Event processing                • WebSockets
+- Scheduled jobs (cron)           • Stateful applications
+- File processing triggers        • High-throughput streaming
+- Low/variable traffic            • Cold-start-sensitive apps
+
+COLD START: First invocation is slow (JVM = 3-10s)
+SOLUTION: SnapStart (AWS), Provisioned Concurrency,
+or use Node.js/Python for latency-sensitive functions
 
 
 ### Storage: S3 / Blob Storage
@@ -445,29 +421,18 @@ RDS WRITE SCALING: Vertical (bigger instance) or sharding
 ```
 
 **Flow:**
-- YES
-- ↓
-- RDS (PostgreSQL/MySQL) or Aurora
-- ↓
-- Key-value lookups
-- ↓
-- DynamoDB / Cosmos DB
-- ↓
-- Document store
-- ↓
-- MongoDB Atlas / DocumentDB
-- ↓
-- In-memory cache
-- ↓
-- ElastiCache (Redis/Memcached)
-- ↓
-- Search
-- ↓
-- Elasticsearch / OpenSearch
-- ↓
-- Graph
-- ↓
-- Neptune / Cosmos (Gremlin)
+1. YES
+2. RDS (PostgreSQL/MySQL) or Aurora
+3. Key-value lookups
+4. DynamoDB / Cosmos DB
+5. Document store
+6. MongoDB Atlas / DocumentDB
+7. In-memory cache
+8. ElastiCache (Redis/Memcached)
+9. Search
+10. Elasticsearch / OpenSearch
+11. Graph
+12. Neptune / Cosmos (Gremlin)
 
 ```mermaid
 flowchart TD
@@ -533,19 +498,11 @@ Users
 ```
 
 **Flow:**
-- THREE-TIER WEB APPLICATION ON AWS / Users
-- ↓
-- [Route 53 — DNS]
-- ↓
-- [CloudFront — CDN] ← [S3 — Static Assets]
-- ↓
-- [ALB — Load Balancer]
-- ↓
-- [EC2 / ECS] [EC2 / ECS] ← Auto Scaling Group / (App Ser
-- ↓
-- [RDS [ElastiCache [SQS — Message / Primary] (Redis)] Qu
-- ↓
-- [RDS [Lambda — Worker] / Read Replica]
+1. THREE-TIER WEB APPLICATION ON AWS / Users
+2. [Route 53 — DNS]
+3. [CloudFront — CDN] ← [S3 — Static Assets]
+4. [ALB — Load Balancer]
+5. [EC2 / ECS] [EC2 / ECS] ← Auto Scaling Group / (App Ser [RDS [ElastiCache [SQS — Message / Primary] (Redis)] Qu [RDS [Lambda — Worker] / Read Replica]
 
 ```mermaid
 flowchart TD
@@ -571,27 +528,27 @@ flowchart TD
 ## Cost Optimization Tips
 
 
-> COST MISTAKES DEVELOPERS MAKE
->
-> 1. Leaving resources running
-> → Use auto-shutdown for dev/test environments
-> → Tag everything: Environment=dev, Owner=your-name
->
-> 2. Over-provisioning
-> → Start small (t3.small), scale up when needed
-> → Use auto-scaling (scale OUT not UP)
->
-> 3. Not using the right storage tier
-> → Old logs in S3 Standard? Move to Glacier
-> → Use lifecycle policies for automatic transitions
->
-> 4. Data transfer costs
-> → Data INTO cloud = free, data OUT = expensive
-> → Keep processing close to data (same region)
-> → Use VPC endpoints for AWS service calls
->
-> 5. Not using Reserved/Savings Plans
-> → If you know you'll run 24/7 for a year → Reserve it
+COST MISTAKES DEVELOPERS MAKE
+
+1. Leaving resources running
+→ Use auto-shutdown for dev/test environments
+→ Tag everything: Environment=dev, Owner=your-name
+
+2. Over-provisioning
+→ Start small (t3.small), scale up when needed
+→ Use auto-scaling (scale OUT not UP)
+
+3. Not using the right storage tier
+→ Old logs in S3 Standard? Move to Glacier
+→ Use lifecycle policies for automatic transitions
+
+4. Data transfer costs
+→ Data INTO cloud = free, data OUT = expensive
+→ Keep processing close to data (same region)
+→ Use VPC endpoints for AWS service calls
+
+5. Not using Reserved/Savings Plans
+→ If you know you'll run 24/7 for a year → Reserve it
 
 
 ---
@@ -599,41 +556,41 @@ flowchart TD
 ## Cloud for Spring Boot Developers
 
 
-> SPRING BOOT → CLOUD MAPPING
->
-> LOCAL                      │  CLOUD EQUIVALENT
-> ──────────────────────────┼──────────────────────────────
-> application.properties     │  AWS Parameter Store / K8s ConfigMap
-> Secrets in .env            │  AWS Secrets Manager / Key Vault
-> Local file uploads         │  S3 / Blob Storage
-> In-memory H2 database      │  RDS PostgreSQL / Azure SQL
-> @Cacheable (in-memory)     │  ElastiCache Redis
-> @Async with ThreadPool     │  SQS + Lambda workers
-> @Scheduled cron jobs       │  EventBridge / CloudWatch Events
-> Logback console output     │  CloudWatch Logs / ELK
-> Actuator /health           │  ALB health checks
-> localhost:8080             │  Route 53 → ALB → ECS/EC2
->
-> SPRING CLOUD AWS:
-> <dependency>
-> <groupId>io.awspring.cloud</groupId>
-> <artifactId>spring-cloud-aws-starter</artifactId>
-> </dependency>
-> → Auto-configures S3, SQS, SNS, Parameter Store, etc.
+SPRING BOOT → CLOUD MAPPING
+
+LOCAL                      │  CLOUD EQUIVALENT
+──────────────────────────┼──────────────────────────────
+application.properties     │  AWS Parameter Store / K8s ConfigMap
+Secrets in .env            │  AWS Secrets Manager / Key Vault
+Local file uploads         │  S3 / Blob Storage
+In-memory H2 database      │  RDS PostgreSQL / Azure SQL
+@Cacheable (in-memory)     │  ElastiCache Redis
+@Async with ThreadPool     │  SQS + Lambda workers
+@Scheduled cron jobs       │  EventBridge / CloudWatch Events
+Logback console output     │  CloudWatch Logs / ELK
+Actuator /health           │  ALB health checks
+localhost:8080             │  Route 53 → ALB → ECS/EC2
+
+SPRING CLOUD AWS:
+<dependency>
+<groupId>io.awspring.cloud</groupId>
+<artifactId>spring-cloud-aws-starter</artifactId>
+</dependency>
+→ Auto-configures S3, SQS, SNS, Parameter Store, etc.
 
 
 ---
 
 
 
-> 🔬 **Section Challenge — Cloud for Spring Boot Developers**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Cloud for Spring Boot Developers**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Interview Questions
 
@@ -664,19 +621,11 @@ A: Vertical = bigger machine (limited, downtime to change)
 ```
 
 **Flow:**
-- 1. Containerize with Docker
-- ↓
-- ECS Fargate (simplest)
-- ↓
-- 2. Kubernetes
-- ↓
-- EKS/AKS (if team already uses K8s)
-- ↓
-- (CPU > 70%
-- ↓
-- add instance, CPU < 30%
-- ↓
-- remove instance)
+1. Containerize with Docker
+2. ECS Fargate (simplest)
+3. Kubernetes
+4. EKS/AKS (if team already uses K8s)
+5. (CPU > 70% add instance, CPU < 30% remove instance)
 
 ```mermaid
 flowchart LR
@@ -698,27 +647,27 @@ flowchart LR
 ## Mental Model: Cloud as Building Blocks
 
 
-> Think of cloud services like LEGO blocks:
->
-> You don't build a database from scratch.
-> You pick the RIGHT block (RDS, DynamoDB, Redis)
-> and snap it into your architecture.
->
-> Your job as a developer:
-> 1. Know what blocks exist
-> 2. Know when to use each one
-> 3. Know how to connect them
-> 4. Know the trade-offs (cost, latency, complexity)
->
-> You DON'T need to:
-> - Memorize every service (there are 200+ on AWS alone)
-> - Know the exact CLI commands
-> - Be a networking expert
->
-> You DO need to:
-> - Design solutions using the right services
-> - Understand pricing implications of your choices
-> - Write code that works with cloud services (SDKs)
+Think of cloud services like LEGO blocks:
+
+You don't build a database from scratch.
+You pick the RIGHT block (RDS, DynamoDB, Redis)
+and snap it into your architecture.
+
+Your job as a developer:
+1. Know what blocks exist
+2. Know when to use each one
+3. Know how to connect them
+4. Know the trade-offs (cost, latency, complexity)
+
+You DON'T need to:
+- Memorize every service (there are 200+ on AWS alone)
+- Know the exact CLI commands
+- Be a networking expert
+
+You DO need to:
+- Design solutions using the right services
+- Understand pricing implications of your choices
+- Write code that works with cloud services (SDKs)
 
 
 ---
@@ -733,14 +682,14 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — Mental Model: Cloud as Building Blocks**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Mental Model: Cloud as Building Blocks**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — DevOps & Networking
 

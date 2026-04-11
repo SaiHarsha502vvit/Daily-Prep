@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch47_SB_Security_Deep.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch47_SB_Security_Deep.md)
 
 ---
 
 # 🔐 SPRING BOOT MASTERY - Part 17: Database Security & User Management
 
-> **Complete Guide to User Management, Roles, Permissions, and Database Security**
-> _"Secure your data from the ground up"_
+**Complete Guide to User Management, Roles, Permissions, and Database Security**
+_"Secure your data from the ground up"_
 
 ---
 
@@ -52,13 +52,10 @@
 ```
 
 **Flow:**
-- WHY: Why Database Security Matters? / • SQL injection i
-- ↓
-- HOW: How to Secure Database Layer? / • Use parameterize
-- ↓
-- WHEN: When to Apply Security Measures? / • User managem
-- ↓
-- WHICH: Which Security Layers to Implement? / ESSENTIAL:
+1. WHY: Why Database Security Matters? / • SQL injection i
+2. HOW: How to Secure Database Layer? / • Use parameterize
+3. WHEN: When to Apply Security Measures? / • User managem
+4. WHICH: Which Security Layers to Implement? / ESSENTIAL:
 
 ```mermaid
 flowchart TD
@@ -97,19 +94,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WHAT THIS PART COVERS
-- ↓
-- 1. User Management Entity Design
-- ↓
-- 2. Role-Based Access Control (RBAC)
-- ↓
-- 3. Permission/Authority Management
-- ↓
-- 4. Password Security (BCrypt, Argon2)
-- ↓
-- 5. Custom UserDetailsService Implementation
-- ↓
-- 6. Method-Level Security (@PreAuthorize, @Secured)
+1. WHAT THIS PART COVERS
+2. 1. User Management Entity Design
+3. 2. Role-Based Access Control (RBAC)
+4. 3. Permission/Authority Management
+5. 4. Password Security (BCrypt, Argon2)
+6. 5. Custom UserDetailsService Implementation
+7. 6. Method-Level Security (@PreAuthorize, @Secured)
 
 ```mermaid
 flowchart TD
@@ -168,13 +159,10 @@ flowchart TD
 ```
 
 **Flow:**
-- USER / - id / - username / - email / - password / - ena
-- ↓
-- USER_ROLES / (Join Table) / - user_id / - role_id
-- ↓
-- ROLE / - id / - name / - desc
-- ↓
-- PERMISSION / - id / - name / - resource / - action
+1. USER / - id / - username / - email / - password / - ena
+2. USER_ROLES / (Join Table) / - user_id / - role_id
+3. ROLE / - id / - name / - desc
+4. PERMISSION / - id / - name / - resource / - action
 
 ```mermaid
 flowchart TD
@@ -733,14 +721,14 @@ public class AuthenticationEventListener {
 
 
 
-> 🔬 **Section Challenge — Chapter 2: Implementing UserDetailsService**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 2: Implementing UserDetailsService**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🔒 Section 3: Password Security
 
@@ -962,14 +950,14 @@ public class PasswordExpiryChecker {
 
 
 
-> 🔬 **Section Challenge — Chapter 3: Password Encoding & Validation**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 3: Password Encoding & Validation**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🔒 Section 4: Method — Level Security
 
@@ -1131,25 +1119,25 @@ public class SecurityService {
 
 
 
-> 🔬 **Section Challenge — Chapter 4: @PreAuthorize, @Secured, and Custom Expressions**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — Chapter 4: @PreAuthorize, @Secured, and Custom Expressions**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — SQL
 

@@ -1,27 +1,27 @@
-> **JavaScript Chapter 4/7** | [← Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
+**JavaScript Chapter 4/7** | [← Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
 
 # Async JavaScript — Event Loop, Promises & Async/Await
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: How JS handles asynchronous operations despite being
-> SINGLE-THREADED. Event loop, callbacks, promises, async.
->
-> WHY:  Every web app does async: API calls, file reads, timers,
-> user events, animations. Without understanding async, you
-> WILL have bugs — race conditions, callback hell, unhandled
-> promise rejections, stale closures in React.
->
-> WHO:  Every developer. Frontend (fetch, events), Backend (DB,
-> file I/O, HTTP), React (useEffect, data fetching).
->
-> WHEN: After understanding closures and scope (they're essential
-> for understanding how async callbacks capture variables).
->
-> HOW:  JS delegates async work to browser/Node APIs. When done,
-> the result goes to a QUEUE. The EVENT LOOP moves it to
-> the call stack when the stack is empty.
+WHAT: How JS handles asynchronous operations despite being
+SINGLE-THREADED. Event loop, callbacks, promises, async.
+
+WHY:  Every web app does async: API calls, file reads, timers,
+user events, animations. Without understanding async, you
+WILL have bugs — race conditions, callback hell, unhandled
+promise rejections, stale closures in React.
+
+WHO:  Every developer. Frontend (fetch, events), Backend (DB,
+file I/O, HTTP), React (useEffect, data fetching).
+
+WHEN: After understanding closures and scope (they're essential
+for understanding how async callbacks capture variables).
+
+HOW:  JS delegates async work to browser/Node APIs. When done,
+the result goes to a QUEUE. The EVENT LOOP moves it to
+the call stack when the stack is empty.
 
 
 ---
@@ -31,13 +31,13 @@
 ### 5W1H: WHY is JS Single-Threaded?
 
 
-> WHY single-threaded?
-> JS was designed for the DOM. If two threads modified the same
-> DOM element simultaneously → race condition → crash/corruption.
-> One thread = no data races on the DOM. Simpler mental model.
->
-> BUT HOW does it handle async then?
-> The EVENT LOOP — JS's secret weapon.
+WHY single-threaded?
+JS was designed for the DOM. If two threads modified the same
+DOM element simultaneously → race condition → crash/corruption.
+One thread = no data races on the DOM. Simpler mental model.
+
+BUT HOW does it handle async then?
+The EVENT LOOP — JS's secret weapon.
 
 
 ```
@@ -79,9 +79,8 @@ After each macrotask, ALL pending microtasks run first.
 ```
 
 **Flow:**
-- WEB APIs (browser) or / C++ APIs (Node) / • setTimeout/
-- ↓
-- CALLBACK QUEUES / Microtask Queue: / Promise.then() / q
+1. WEB APIs (browser) or / C++ APIs (Node) / • setTimeout/
+2. CALLBACK QUEUES / Microtask Queue: / Promise.then() / q
 
 ```mermaid
 flowchart TD
@@ -129,45 +128,13 @@ console.log("4");                          // Sync → call stack
 ```
 
 **Flow:**
-- STEP-BY-STEP TRACE:
-- ↓
-- CALL STACK MICROTASK Q MACROTASK Q OUTPUT
-- ↓
-- log('1') [] [] '1'
-- ↓
-- setTimeout(cb,0) [] [cb
-- ↓
-- '2'] '1'
-- ↓
-- setTimeout(cb,0) [] [cb
-- ↓
-- '2'] '1'
-- ↓
-- Promise.then(cb) [cb
-- ↓
-- '3'] [cb
-- ↓
-- '2'] '1'
-- ↓
-- Promise.then(cb) [cb
-- ↓
-- '3'] [cb
-- ↓
-- '2'] '1'
-- ↓
-- log('4') [cb
-- ↓
-- '3'] [cb
-- ↓
-- '2'] '1','4'
-- ↓
-- log('4') [cb
-- ↓
-- '3'] [cb
-- ↓
-- '2'] '1','4'
-- ↓
-- ← stack empty
+1. STEP-BY-STEP TRACE:
+2. CALL STACK MICROTASK Q MACROTASK Q OUTPUT
+3. log('1') [] [] '1' setTimeout(cb,0) [] [cb '2'] '1'
+4. setTimeout(cb,0) [] [cb '2'] '1'
+5. Promise.then(cb) [cb '3'] [cb '2'] '1'
+6. log('4') [cb '3'] [cb '2'] '1','4'
+7. ← stack empty
 
 ```mermaid
 flowchart TD
@@ -260,9 +227,8 @@ Once settled (fulfilled/rejected), a promise NEVER changes state.
 ```
 
 **Flow:**
-- PENDING --(resolve())--> FULFILLED
-- ↓
-- PENDING --(resolve())--> REJECTED
+1. PENDING --(resolve())--> FULFILLED
+2. PENDING --(resolve())--> REJECTED
 
 ```mermaid
 flowchart LR
@@ -359,17 +325,12 @@ PROMISE METHODS COMPARISON:
 ```
 
 **Flow:**
-- PROMISE METHODS COMPARISON:
-- ↓
-- Method Resolves Rejects Use Case
-- ↓
-- Promise.all ALL fulfill ANY rejects Need all results
-- ↓
-- Promise.allSettled ALL settle Never Check each
-- ↓
-- Promise.race First done First done Timeout/fastest
-- ↓
-- Promise.any First win ALL reject Multiple sources
+1. PROMISE METHODS COMPARISON:
+2. Method Resolves Rejects Use Case
+3. Promise.all ALL fulfill ANY rejects Need all results
+4. Promise.allSettled ALL settle Never Check each
+5. Promise.race First done First done Timeout/fastest
+6. Promise.any First win ALL reject Multiple sources
 
 ```mermaid
 flowchart TD
@@ -390,28 +351,28 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 3. Promises — The Modern Foundation**
->
-> **Challenge 1 (Reasoning):** `Promise.all([p1,p2,p3])` — p2 rejects. What happens to p1 and p3?
-> <details><summary>Answer</summary>
->
-> `Promise.all` rejects immediately when ANY promise rejects (fail-fast). p1 and p3 are still running — their promises continue executing, but their results are ignored. If they reject too, those rejections are also silently ignored (potential unhandled rejection warnings). Use `Promise.allSettled` to wait for ALL to complete regardless of success/failure, getting all results including errors.
-> </details>
->
-> **Challenge 2 (Design):** Implement `Promise.race` from scratch.
-> <details><summary>Answer</summary>
->
-> ```javascript
-> function race(promises) {
->     return new Promise((resolve, reject) => {
->         promises.forEach(p => Promise.resolve(p).then(resolve, reject));
->         // First to resolve OR reject wins — others are ignored
->     });
-> }
-> ```
-> Once the first promise settles, the outer promise is settled. Other promises continue running internally but their results are discarded.
-> </details>
->
+🔬 **Section Challenge — 3. Promises — The Modern Foundation**
+
+**Challenge 1 (Reasoning):** `Promise.all([p1,p2,p3])` — p2 rejects. What happens to p1 and p3?
+<details><summary>Answer</summary>
+
+`Promise.all` rejects immediately when ANY promise rejects (fail-fast). p1 and p3 are still running — their promises continue executing, but their results are ignored. If they reject too, those rejections are also silently ignored (potential unhandled rejection warnings). Use `Promise.allSettled` to wait for ALL to complete regardless of success/failure, getting all results including errors.
+</details>
+
+**Challenge 2 (Design):** Implement `Promise.race` from scratch.
+<details><summary>Answer</summary>
+
+```javascript
+function race(promises) {
+    return new Promise((resolve, reject) => {
+        promises.forEach(p => Promise.resolve(p).then(resolve, reject));
+        // First to resolve OR reject wins — others are ignored
+    });
+}
+```
+Once the first promise settles, the outer promise is settled. Other promises continue running internally but their results are discarded.
+</details>
+
 
 ## 4. Async/Await — The Clean Syntax
 
@@ -432,13 +393,10 @@ flowchart TD
 ```
 
 **Flow:**
-- BEHAVE like synchronous code.
-- ↓
-- HOW: `async` marks a function as returning a Promise.
-- ↓
-- `await` pauses execution until the Promise resolves.
-- ↓
-- (The thread isn't blocked — other code can run!)
+1. BEHAVE like synchronous code.
+2. HOW: `async` marks a function as returning a Promise.
+3. `await` pauses execution until the Promise resolves.
+4. (The thread isn't blocked — other code can run!)
 
 ```mermaid
 flowchart TD
@@ -534,20 +492,20 @@ if (!user) { /* handle */ }
 
 
 
-> 🔬 **Section Challenge — 4. Async/Await — The Clean Syntax**
->
-> **Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
-> <details><summary>Answer</summary>
->
-> `Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
-> <details><summary>Answer</summary>
->
-> Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
-> </details>
->
+🔬 **Section Challenge — 4. Async/Await — The Clean Syntax**
+
+**Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
+<details><summary>Answer</summary>
+
+`Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
+</details>
+
+**Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
+<details><summary>Answer</summary>
+
+Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
+</details>
+
 
 ## 5. Advanced Async Patterns
 
@@ -705,17 +663,8 @@ and UI rendering NEVER run. The page freezes.
 ```
 
 **Flow:**
-- EVENT LOOP CYCLE: / 1. Execute ALL synchronous code in
-- ↓
-- 2. Drain ENTIRE microtask queue / (including microtasks
-- ↓
-- 3. Pick ONE macrotask from macrotask queue
-- ↓
-- 4. Drain ENTIRE microtask queue again
-- ↓
-- 5. Render/paint (if needed)
-- ↓
-- 6. Go to step 3 (next macrotask) / IMPLICATION: Microta
+1. EVENT LOOP CYCLE: / 1. Execute ALL synchronous code in
+2. Drain ENTIRE microtask queue / (including microtasks Pick ONE macrotask from macrotask queue Drain ENTIRE microtask queue again Render/paint (if needed) Go to step 3 (next macrotask) / IMPLICATION: Microta
 
 ```mermaid
 flowchart TD
@@ -837,19 +786,13 @@ Q: How to run async operations in parallel?
 ```
 
 **Flow:**
-- Q: What is the event loop?
-- ↓
-- It checks if the call stack is empty, then moves tasks
-- ↓
-- queues (microtask first, then macrotask) to the stack.
-- ↓
-- Q: Difference between microtask and macrotask?
-- ↓
-- Q: Promise.all vs Promise.allSettled?
-- ↓
-- .all: rejects immediately if ANY promise rejects.
-- ↓
-- .allSettled: waits for ALL, returns status of each.
+1. Q: What is the event loop?
+2. It checks if the call stack is empty, then moves tasks
+3. queues (microtask first, then macrotask) to the stack.
+4. Q: Difference between microtask and macrotask?
+5. Q: Promise.all vs Promise.allSettled?
+6. .all: rejects immediately if ANY promise rejects.
+7. .allSettled: waits for ALL, returns status of each.
 
 ```mermaid
 flowchart TD
@@ -872,7 +815,7 @@ flowchart TD
 
 ---
 
-> [← Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
+[← Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
 
 ---
 

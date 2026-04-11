@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](Ch61_SB_Microservices_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch61_SB_Microservices_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -667,15 +667,11 @@ public class OrderAggregate {
 ```
 
 **Flow:**
-- Command / Handler
-- ↓
-- Write DB / (PostgreSQL) / Normalized
-- ↓
-- Query / Handler
-- ↓
-- Read DB / (MongoDB) / Denormalized
-- ↓
-- Write DB / (PostgreSQL) / Normalized --(events)--> Read DB / (MongoDB) / Denormalized
+1. Command / Handler
+2. Write DB / (PostgreSQL) / Normalized
+3. Query / Handler
+4. Read DB / (MongoDB) / Denormalized
+5. Write DB / (PostgreSQL) / Normalized --(events)--> Read DB / (MongoDB) / Denormalized
 
 ```mermaid
 flowchart TD
@@ -894,13 +890,10 @@ public class OrderReadModelUpdater {
 ```
 
 **Flow:**
-- Service A
-- ↓
-- Sidecar / Proxy
-- ↓
-- Service B
-- ↓
-- Sidecar / Proxy
+1. Service A
+2. Sidecar / Proxy
+3. Service B
+4. Sidecar / Proxy
 
 ```mermaid
 flowchart TD
@@ -997,13 +990,10 @@ spec:
 ```
 
 **Flow:**
-- Client
-- ↓
-- Auth / Server
-- ↓
-- Gateway
-- ↓
-- Service
+1. Client
+2. Auth / Server
+3. Gateway
+4. Service
 
 ```mermaid
 flowchart LR
@@ -1100,11 +1090,9 @@ public class GatewaySecurityConfig {
 ```
 
 **Flow:**
-- METRICS / What? / Quantitative / measurements / Tools:
-- ↓
-- LOGGING / What? / Event data / & context / Tools: / ELK
-- ↓
-- TRACING / What? / Request / journey / Tools: / Jaeger /
+1. METRICS / What? / Quantitative / measurements / Tools:
+2. LOGGING / What? / Event data / & context / Tools: / ELK
+3. TRACING / What? / Request / journey / Tools: / Jaeger /
 
 ```mermaid
 flowchart TD
@@ -1191,19 +1179,13 @@ public class OrderService {
 ```
 
 **Flow:**
-- BLUE-GREEN DEPLOYMENT
-- ↓
-- Before:
-- ↓
-- Load Balancer Blue (v1.0) ✅ Active
-- ↓
-- Green (v1.1) 🔳 Staged
-- ↓
-- After:
-- ↓
-- Load Balancer Blue (v1.0) 🔳 Standby
-- ↓
-- Green (v1.1) ✅ Active
+1. BLUE-GREEN DEPLOYMENT
+2. Before:
+3. Load Balancer Blue (v1.0) ✅ Active
+4. Green (v1.1) 🔳 Staged
+5. After:
+6. Load Balancer Blue (v1.0) 🔳 Standby
+7. Green (v1.1) ✅ Active
 
 ```mermaid
 flowchart TD
@@ -1257,11 +1239,9 @@ flowchart TD
 ```
 
 **Flow:**
-- v1.0: ██████████████████████████████████████ 95% / v1.1
-- ↓
-- v1.0: ████████████████████████████████ 75% / v1.1: ████
-- ↓
-- v1.0: 0% / v1.1: ██████████████████████████████████████
+1. v1.0: ██████████████████████████████████████ 95% / v1.1
+2. v1.0: ████████████████████████████████ 75% / v1.1: ████
+3. v1.0: 0% / v1.1: ██████████████████████████████████████
 
 ```mermaid
 flowchart TD
@@ -1402,19 +1382,13 @@ Best practices:
 ```
 
 **Flow:**
-- MICROSERVICES PATTERNS CHEAT SHEET
-- ↓
-- COMMUNICATION PATTERNS
-- ↓
-- Synchronous REST, gRPC, GraphQL
-- ↓
-- Asynchronous Message queues (Kafka, RabbitMQ)
-- ↓
-- Event-driven Events/Event Sourcing
-- ↓
-- RESILIENCE PATTERNS
-- ↓
-- Circuit Breaker Fail fast when service down
+1. MICROSERVICES PATTERNS CHEAT SHEET
+2. COMMUNICATION PATTERNS
+3. Synchronous REST, gRPC, GraphQL
+4. Asynchronous Message queues (Kafka, RabbitMQ)
+5. Event-driven Events/Event Sourcing
+6. RESILIENCE PATTERNS
+7. Circuit Breaker Fail fast when service down
 
 ```mermaid
 flowchart TD
@@ -1448,7 +1422,7 @@ Microservices patterns solve distributed system challenges:
 5. **CQRS** - Optimized read/write separation
 6. **Event-Driven** - Loose coupling through events
 
-> **Remember**: "Start with a monolith, break into microservices when you understand the domain boundaries" - Martin Fowler
+**Remember**: "Start with a monolith, break into microservices when you understand the domain boundaries" - Martin Fowler
 
 ---
 
@@ -1462,8 +1436,8 @@ Microservices patterns solve distributed system challenges:
 
 
 
-> 🔬 **Section Challenge — Summary**
->>
+🔬 **Section Challenge — Summary**
+>
 
 ## 🏋️ Practice & Interview Questions — OOP & Design Patterns
 

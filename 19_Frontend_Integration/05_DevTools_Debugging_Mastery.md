@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](02_Frontend_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Web_Performance_CoreWebVitals.md)
+**Navigation**: [< Previous](02_Frontend_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Web_Performance_CoreWebVitals.md)
 
 # 🔍 Chapter 5 — DevTools Debugging Mastery: Beyond console.log
 
-> **"The developer who masters DevTools debugs in 5 minutes what others spend 2 hours on. Every tab in DevTools exists because someone needed a specific superpower. Learn them all."**
+**"The developer who masters DevTools debugs in 5 minutes what others spend 2 hours on. Every tab in DevTools exists because someone needed a specific superpower. Learn them all."**
 
 ---
 
@@ -355,8 +355,8 @@ getEventListeners($0)
 
 
 
-> 🔬 **Section Challenge — 4. Network Tab — Request Waterfall Analysis**
->>
+🔬 **Section Challenge — 4. Network Tab — Request Waterfall Analysis**
+>
 
 ## 5. Performance Tab — Finding What Makes Your App Slow
 
@@ -812,7 +812,7 @@ getEventListeners($0)
 
 ---
 
-> **Next Chapter**: [Web Performance & Core Web Vitals →](06_Web_Performance_CoreWebVitals.md)
+**Next Chapter**: [Web Performance & Core Web Vitals →](06_Web_Performance_CoreWebVitals.md)
 
 
 

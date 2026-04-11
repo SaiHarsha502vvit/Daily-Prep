@@ -1,13 +1,13 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](08_DSA_Guide_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](08_DSA_Guide_Advanced.md)
 
 ---
 
 # 🏗️ Ultimate Data Structures & Algorithms Deep Guide
 
-> **Framework**: WHY → HOW → WHAT → WHEN → PRACTICE → REAL-WORLD
+**Framework**: WHY → HOW → WHAT → WHEN → PRACTICE → REAL-WORLD
 
 ---
-> **Navigation**: [Part 1: Data Structures] | [Part 2: Advanced Algorithms](09_Ultimate_DSA_Advanced.md) | [Part 3: JVM Internals](10_Ultimate_DSA_JVM.md)
+**Navigation**: [Part 1: Data Structures] | [Part 2: Advanced Algorithms](09_Ultimate_DSA_Advanced.md) | [Part 3: JVM Internals](10_Ultimate_DSA_JVM.md)
 
 ---
 
@@ -80,20 +80,20 @@
 
 
 
-> 🔬 **Section Challenge — THE MEMORY HIERARCHY - THE FOUNDATION OF PERFORMANCE**
->
-> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-> <details><summary>Answer</summary>
->
-> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-> <details><summary>Answer</summary>
->
-> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
-> </details>
->
+🔬 **Section Challenge — THE MEMORY HIERARCHY - THE FOUNDATION OF PERFORMANCE**
+
+**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+<details><summary>Answer</summary>
+
+`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+</details>
+
+**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+<details><summary>Answer</summary>
+
+1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+</details>
+
 
 ## CACHE-FRIENDLY VS CACHE-UNFRIENDLY ALGORITHMS
 
@@ -264,9 +264,8 @@ int max = Math.max(a, b);  // Modern JIT uses cmov instruction
 ```
 
 **Flow:**
-- ArrayList Object: / Header (16 bytes) / Object[] elemen
-- ↓
-- Structure Memory for 10 ints Memory per element / int[]
+1. ArrayList Object: / Header (16 bytes) / Object[] elemen
+2. Structure Memory for 10 ints Memory per element / int[]
 
 ```mermaid
 flowchart TD
@@ -342,13 +341,10 @@ flowchart TD
 ```
 
 **Flow:**
-- Operation Cycles Notes / Integer add/sub 1 Can do 4+ pe
-- ↓
-- Operation Cycles Notes / L1 cache hit 4 Best case for m
-- ↓
-- Operation Cycles Notes / Static method call 5-10 Direct
-- ↓
-- Operation Cycles Notes / Object allocation 10-20 Bump p
+1. Operation Cycles Notes / Integer add/sub 1 Can do 4+ pe
+2. Operation Cycles Notes / L1 cache hit 4 Best case for m
+3. Operation Cycles Notes / Static method call 5-10 Direct
+4. Operation Cycles Notes / Object allocation 10-20 Bump p
 
 ```mermaid
 flowchart TD
@@ -419,19 +415,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WHEN BIG-O DOESN'T TELL THE FULL STORY
-- ↓
-- CASE 1: O(n) can beat O(log n) for small n
-- ↓
-- Crossover: Around n = 100-500 elements
-- ↓
-- For n < 100: Linear search often faster!
-- ↓
-- CASE 2: O(n) can beat O(1) amortized
-- ↓
-- ArrayList.add(): O(1) amortized, but occasional O(n) re
-- ↓
-- LinkedList.addFirst(): O(1) always, but cache-unfriendl
+1. WHEN BIG-O DOESN'T TELL THE FULL STORY
+2. CASE 1: O(n) can beat O(log n) for small n
+3. Crossover: Around n = 100-500 elements
+4. For n < 100: Linear search often faster!
+5. CASE 2: O(n) can beat O(1) amortized
+6. ArrayList.add(): O(1) amortized, but occasional O(n) re
+7. LinkedList.addFirst(): O(1) always, but cache-unfriendl
 
 ```mermaid
 flowchart TD
@@ -512,19 +502,13 @@ flowchart TD
 ```
 
 **Flow:**
-- LEARNING FRAMEWORK
-- ↓
-- WHY does this exist?
-- ↓
-- What problem does it solve?
-- ↓
-- What limitations of other structures does it address?
-- ↓
-- HOW does it work internally?
-- ↓
-- Memory layout
-- ↓
-- Operations implementation
+1. LEARNING FRAMEWORK
+2. WHY does this exist?
+3. What problem does it solve?
+4. What limitations of other structures does it address?
+5. HOW does it work internally?
+6. Memory layout
+7. Operations implementation
 
 ```mermaid
 flowchart TD
@@ -788,29 +772,18 @@ class SparseArray<T> {
 ```
 
 **Flow:**
-- 1. TWO POINTERS
-- ↓
-- Start/End pointers moving toward middle
-- ↓
-- 1. TWO POINTERS
-- ↓
-- Fast/Slow pointers
-- ↓
-- 1. TWO POINTERS
-- ↓
-- Use: Sorted arrays, palindrome, pair sum
-- ↓
-- 2. SLIDING WINDOW
-- ↓
-- Fixed or variable window
-- ↓
-- 2. SLIDING WINDOW
-- ↓
-- Use: Subarrays, continuous sequences
-- ↓
-- 3. PREFIX SUM
-- ↓
-- Precompute cumulative sums
+1. 1. TWO POINTERS
+2. Start/End pointers moving toward middle
+3. 1. TWO POINTERS
+4. Fast/Slow pointers
+5. 1. TWO POINTERS
+6. Use: Sorted arrays, palindrome, pair sum
+7. 2. SLIDING WINDOW
+8. Fixed or variable window
+9. 2. SLIDING WINDOW
+10. Use: Subarrays, continuous sequences
+11. 3. PREFIX SUM
+12. Precompute cumulative sums
 
 ```mermaid
 flowchart TD
@@ -884,29 +857,18 @@ flowchart TD
 ```
 
 **Flow:**
-- 1. DATABASE SYSTEMS
-- ↓
-- Buffer Pool: Fixed array of page frames
-- ↓
-- 1. DATABASE SYSTEMS
-- ↓
-- Query Results: Dynamic arrays for result sets
-- ↓
-- 2. OPERATING SYSTEMS
-- ↓
-- Process Table: Array of PCB pointers
-- ↓
-- 2. OPERATING SYSTEMS
-- ↓
-- Page Tables: Arrays mapping virtual to physical
-- ↓
-- 3. GRAPHICS/GAMING
-- ↓
-- Pixel Buffers: 2D arrays for frame data
-- ↓
-- 3. GRAPHICS/GAMING
-- ↓
-- Vertex Arrays: Mesh geometry storage
+1. 1. DATABASE SYSTEMS
+2. Buffer Pool: Fixed array of page frames
+3. 1. DATABASE SYSTEMS
+4. Query Results: Dynamic arrays for result sets
+5. 2. OPERATING SYSTEMS
+6. Process Table: Array of PCB pointers
+7. 2. OPERATING SYSTEMS
+8. Page Tables: Arrays mapping virtual to physical
+9. 3. GRAPHICS/GAMING
+10. Pixel Buffers: 2D arrays for frame data
+11. 3. GRAPHICS/GAMING
+12. Vertex Arrays: Mesh geometry storage
 
 ```mermaid
 flowchart TD
@@ -984,13 +946,10 @@ No formula to calculate position - must traverse.
 ```
 
 **Flow:**
-- Data: 10 / Next:2048
-- ↓
-- Data: 20 / Next:1524
-- ↓
-- Data: 30 / Next:3000
-- ↓
-- Data: 40 / Next:null
+1. Data: 10 / Next:2048
+2. Data: 20 / Next:1524
+3. Data: 30 / Next:3000
+4. Data: 40 / Next:null
 
 ```mermaid
 flowchart TD
@@ -1254,29 +1213,18 @@ class UnrolledNode {
 ```
 
 **Flow:**
-- 1. FAST-SLOW POINTERS (Floyd's Algorithm)
-- ↓
-- Cycle detection
-- ↓
-- 1. FAST-SLOW POINTERS (Floyd's Algorithm)
-- ↓
-- Find middle element
-- ↓
-- 1. FAST-SLOW POINTERS (Floyd's Algorithm)
-- ↓
-- Find nth from end
-- ↓
-- 2. DUMMY HEAD
-- ↓
-- Simplify edge cases
-- ↓
-- 2. DUMMY HEAD
-- ↓
-- Uniform handling of operations
-- ↓
-- 3. REVERSAL
-- ↓
-- Reverse entire/part of list
+1. 1. FAST-SLOW POINTERS (Floyd's Algorithm)
+2. Cycle detection
+3. 1. FAST-SLOW POINTERS (Floyd's Algorithm)
+4. Find middle element
+5. 1. FAST-SLOW POINTERS (Floyd's Algorithm)
+6. Find nth from end
+7. 2. DUMMY HEAD
+8. Simplify edge cases
+9. 2. DUMMY HEAD
+10. Uniform handling of operations
+11. 3. REVERSAL
+12. Reverse entire/part of list
 
 ```mermaid
 flowchart TD
@@ -1352,29 +1300,18 @@ flowchart TD
 ```
 
 **Flow:**
-- 1. OPERATING SYSTEMS
-- ↓
-- Process scheduling queues
-- ↓
-- 1. OPERATING SYSTEMS
-- ↓
-- Memory allocation (free list)
-- ↓
-- 1. OPERATING SYSTEMS
-- ↓
-- File system (FAT - File Allocation Table)
-- ↓
-- 2. BROWSERS
-- ↓
-- Back/Forward navigation (Doubly LL)
-- ↓
-- 2. BROWSERS
-- ↓
-- Tab management
-- ↓
-- 3. MUSIC PLAYERS
-- ↓
-- Playlist (next/previous)
+1. 1. OPERATING SYSTEMS
+2. Process scheduling queues
+3. 1. OPERATING SYSTEMS
+4. Memory allocation (free list)
+5. 1. OPERATING SYSTEMS
+6. File system (FAT - File Allocation Table)
+7. 2. BROWSERS
+8. Back/Forward navigation (Doubly LL)
+9. 2. BROWSERS
+10. Tab management
+11. 3. MUSIC PLAYERS
+12. Playlist (next/previous)
 
 ```mermaid
 flowchart TD
@@ -1456,19 +1393,13 @@ All operations: O(1)
 ```
 
 **Flow:**
-- Problem: Need to access data in reverse order of arriva
-- ↓
-- (Last In, First Out - LIFO)
-- ↓
-- Real-World Analogy:
-- ↓
-- Stack of plates (take from top)
-- ↓
-- Undo in text editor (last action first)
-- ↓
-- Browser back button (last page first)
-- ↓
-- Function calls (last called, first returned)
+1. Problem: Need to access data in reverse order of arriva
+2. (Last In, First Out - LIFO)
+3. Real-World Analogy:
+4. Stack of plates (take from top)
+5. Undo in text editor (last action first)
+6. Browser back button (last page first)
+7. Function calls (last called, first returned)
 
 ```mermaid
 flowchart TD
@@ -1758,29 +1689,18 @@ class StackWithMiddle {
 ```
 
 **Flow:**
-- 1. COMPILERS & INTERPRETERS
-- ↓
-- Syntax parsing
-- ↓
-- 1. COMPILERS & INTERPRETERS
-- ↓
-- Expression evaluation
-- ↓
-- 1. COMPILERS & INTERPRETERS
-- ↓
-- Symbol table management
-- ↓
-- 2. RUNTIME SYSTEMS
-- ↓
-- Call stack (function calls)
-- ↓
-- 2. RUNTIME SYSTEMS
-- ↓
-- Stack frame management
-- ↓
-- 2. RUNTIME SYSTEMS
-- ↓
-- Exception handling
+1. 1. COMPILERS & INTERPRETERS
+2. Syntax parsing
+3. 1. COMPILERS & INTERPRETERS
+4. Expression evaluation
+5. 1. COMPILERS & INTERPRETERS
+6. Symbol table management
+7. 2. RUNTIME SYSTEMS
+8. Call stack (function calls)
+9. 2. RUNTIME SYSTEMS
+10. Stack frame management
+11. 2. RUNTIME SYSTEMS
+12. Exception handling
 
 ```mermaid
 flowchart TD
@@ -1832,8 +1752,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Stacks - Complete Guide**
->>
+🔬 **Section Challenge — Stacks - Complete Guide**
+>
 
 ## Queues - Complete Guide
 
@@ -1855,21 +1775,14 @@ Essential for ordering and buffering in systems.
 ```
 
 **Flow:**
-- Real-World Analogy:
-- ↓
-- Line at a ticket counter
-- ↓
-- Real-World Analogy:
-- ↓
-- Print job queue
-- ↓
-- Real-World Analogy:
-- ↓
-- Message queue
-- ↓
-- Real-World Analogy:
-- ↓
-- Task scheduling
+1. Real-World Analogy:
+2. Line at a ticket counter
+3. Real-World Analogy:
+4. Print job queue
+5. Real-World Analogy:
+6. Message queue
+7. Real-World Analogy:
+8. Task scheduling
 
 ```mermaid
 flowchart TD
@@ -2153,29 +2066,18 @@ Use Case: Sliding Window Maximum in O(n) instead of O(n*k)
 ```
 
 **Flow:**
-- 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
-- ↓
-- Decoupling services
-- ↓
-- 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
-- ↓
-- Load leveling
-- ↓
-- 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
-- ↓
-- Event streaming
-- ↓
-- 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
-- ↓
-- Async processing
-- ↓
-- 2. OPERATING SYSTEMS
-- ↓
-- Process scheduling (ready queue)
-- ↓
-- 2. OPERATING SYSTEMS
-- ↓
-- I/O request queues
+1. 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
+2. Decoupling services
+3. 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
+4. Load leveling
+5. 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
+6. Event streaming
+7. 1. MESSAGE QUEUES (Kafka, RabbitMQ, SQS)
+8. Async processing
+9. 2. OPERATING SYSTEMS
+10. Process scheduling (ready queue)
+11. 2. OPERATING SYSTEMS
+12. I/O request queues
 
 ```mermaid
 flowchart TD
@@ -2269,13 +2171,10 @@ Hash Function converts key to index:
 ```
 
 **Flow:**
-- Problem: Fast lookup by key / Array: O(n) search by val
-- ↓
-- Hash h('apple') = 97 × 31^4 + ... = 93029210 / Function
-- ↓
-- 93029210 % 16 = 10 (Index in array of size 16)
-- ↓
-- Array[10] ← Store ('apple', value)
+1. Problem: Fast lookup by key / Array: O(n) search by val
+2. Hash h('apple') = 97 × 31^4 + ... = 93029210 / Function
+3. 93029210 % 16 = 10 (Index in array of size 16)
+4. Array[10] ← Store ('apple', value)
 
 ```mermaid
 flowchart TD

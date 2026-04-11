@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](07a_Advanced_DS_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](07a_Advanced_DS_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -123,19 +123,12 @@ class FenwickTree {
 ```
 
 **Flow:**
-- SEGMENT TREE — THEORY & CODE
-- ↓
-- A Segment Tree allows:
-- ↓
-- • Range Query (sum/min/max/gcd) in O(log n)
-- ↓
-- • Point Update in O(log n)
-- ↓
-- • Range Update with Lazy Propagation in O(log n)
-- ↓
-- • Uses O(4n) space (built as complete binary tree in ar
-- ↓
-- WHEN TO USE vs BIT/FENWICK:
+1. SEGMENT TREE — THEORY & CODE
+2. A Segment Tree allows:
+3. • Range Query (sum/min/max/gcd) in O(log n)
+4. • Point Update in O(log n)
+5. • Range Update with Lazy Propagation in O(log n)
+6. • Uses O(4n) space (built as complete binary tree in ar WHEN TO USE vs BIT/FENWICK:
 
 ```mermaid
 flowchart TD
@@ -211,9 +204,6 @@ class SegmentTree {
     }
 }
 ```
-
-
-
 
 ## Segment Tree with Lazy Propagation (Range Update)
 
@@ -460,13 +450,8 @@ Path: 1→9 (overshoot) ↓ 1→4→7 (overshoot) ↓ 4→6 ✓
 ```
 
 **Flow:**
-- Path: 1
-- ↓
-- 9 (overshoot) ↓ 1
-- ↓
-- 7 (overshoot) ↓ 4
-- ↓
-- 6 ✓
+1. Path: 1 9 (overshoot) ↓ 1 7 (overshoot) ↓ 4
+2. 6 ✓
 
 ```mermaid
 flowchart LR
@@ -708,19 +693,13 @@ HEAD ←→ B ←→ A ←→ C ←→ TAIL
 ```
 
 **Flow:**
-- LRU (Least Recently Used) CACHE:
-- ↓
-- Operations needed:
-- ↓
-- - GET: O(1) - HashMap
-- ↓
-- - PUT: O(1) - HashMap + update order
-- ↓
-- - EVICT: O(1) - Doubly Linked List
-- ↓
-- Structure: HashMap + Doubly Linked List
-- ↓
-- HashMap Doubly Linked List
+1. LRU (Least Recently Used) CACHE:
+2. Operations needed:
+3. - GET: O(1) - HashMap
+4. - PUT: O(1) - HashMap + update order
+5. - EVICT: O(1) - Doubly Linked List
+6. Structure: HashMap + Doubly Linked List
+7. HashMap Doubly Linked List
 
 ```mermaid
 flowchart TD
@@ -869,25 +848,12 @@ WHY B+ TREE for DATABASES?
 ```
 
 **Flow:**
-- [5,7]
-- ↓
-- [10,15,17]
-- ↓
-- [20,25,30]
-- ↓
-- null
-- ↓
-- 1. All data at leaves
-- ↓
-- consistent access time
-- ↓
-- 2. Linked leaves
-- ↓
-- efficient range queries
-- ↓
-- 3. More keys per node
-- ↓
-- shallower tree
+1. [5,7]
+2. [10,15,17]
+3. [20,25,30] null
+4. All data at leaves consistent access time
+5. Linked leaves efficient range queries
+6. More keys per node shallower tree
 
 ```mermaid
 flowchart TD
@@ -936,19 +902,13 @@ k = number of hash functions for Bloom Filter
 ```
 
 **Flow:**
-- Data Structure Search Insert Space
-- ↓
-- Trie O(m) O(m) O(ALPHABET × m × n)
-- ↓
-- Segment Tree O(log n) O(log n) O(4n)
-- ↓
-- Fenwick Tree O(log n) O(log n) O(n)
-- ↓
-- Skip List O(log n)* O(log n)* O(n)*
-- ↓
-- Bloom Filter O(k) O(k) O(m) bits
-- ↓
-- LRU Cache O(1) O(1) O(n)
+1. Data Structure Search Insert Space
+2. Trie O(m) O(m) O(ALPHABET × m × n)
+3. Segment Tree O(log n) O(log n) O(4n)
+4. Fenwick Tree O(log n) O(log n) O(n)
+5. Skip List O(log n)*O(log n)* O(n)*
+6. Bloom Filter O(k) O(k) O(m) bits
+7. LRU Cache O(1) O(1) O(n)
 
 ```mermaid
 flowchart TD
@@ -1000,19 +960,11 @@ Query(2, 6): min(sparse[2][2], sparse[3][2]) = min(1, 2) = 1
 ```
 
 **Flow:**
-- SPARSE TABLE: Precompute answers for all power-of-2 ran
-- ↓
-- Perfect for STATIC arrays with repeated queries
-- ↓
-- Array: [3, 1, 4, 1, 5, 9, 2, 6]
-- ↓
-- Sparse Table (for MIN):
-- ↓
-- k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6] (each element its
-- ↓
-- k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -] (min of 2)
-- ↓
-- k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -] (min of 4)
+1. SPARSE TABLE: Precompute answers for all power-of-2 ran
+2. Perfect for STATIC arrays with repeated queries
+3. Array: [3, 1, 4, 1, 5, 9, 2, 6]
+4. Sparse Table (for MIN):
+5. k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6] (each element its k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -] (min of 2) k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -] (min of 4)
 
 ```mermaid
 flowchart TD
@@ -1083,9 +1035,6 @@ class SparseTable {
 
 ---
 
-
-
-
 ## Monotonic Stack
 
 ```
@@ -1116,19 +1065,13 @@ Result: [5, 10, 10, -1, -1]
 ```
 
 **Flow:**
-- Reveals relationships between elements
-- ↓
-- USE CASES:
-- ↓
-- Next Greater Element
-- ↓
-- Previous Greater Element
-- ↓
-- Next Smaller Element
-- ↓
-- Stock Span Problem
-- ↓
-- Largest Rectangle in Histogram
+1. Reveals relationships between elements
+2. USE CASES:
+3. Next Greater Element
+4. Previous Greater Element
+5. Next Smaller Element
+6. Stock Span Problem
+7. Largest Rectangle in Histogram
 
 ```mermaid
 flowchart TD
@@ -1210,16 +1153,14 @@ public int largestRectangleArea(int[] heights) {
 
 ---
 
+🔬 **Section Challenge — Monotonic Stack**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Monotonic Stack**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## Monotonic Deque (Sliding Window Maximum)
 
@@ -1244,19 +1185,13 @@ Result: [3, 3, 5, 5, 6, 7]
 ```
 
 **Flow:**
-- MONOTONIC DEQUE: Deque that maintains decreasing order
-- ↓
-- Front always has maximum of current window
-- ↓
-- PROBLEM: Find maximum in each sliding window of size k
-- ↓
-- Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
-- ↓
-- Window [1,3,-1] Deque: [3,-1] Max: 3
-- ↓
-- Window [3,-1,-3] Deque: [3,-1,-3] Max: 3
-- ↓
-- Window [-1,-3,5] Deque: [5] Max: 5
+1. MONOTONIC DEQUE: Deque that maintains decreasing order
+2. Front always has maximum of current window
+3. PROBLEM: Find maximum in each sliding window of size k
+4. Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
+5. Window [1,3,-1] Deque: [3,-1] Max: 3
+6. Window [3,-1,-3] Deque: [3,-1,-3] Max: 3
+7. Window [-1,-3,5] Deque: [5] Max: 5
 
 ```mermaid
 flowchart TD
@@ -1309,22 +1244,20 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 
 ---
 
+🔬 **Section Challenge — Monotonic Deque (Sliding Window Maximum)**
 
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Monotonic Deque (Sliding Window Maximum)**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## Circular Buffer (Ring Buffer)
 
@@ -1358,11 +1291,9 @@ STRUCTURE:
 ```
 
 **Flow:**
-- A B C D E
-- ↓
-- A B C D E F G H
-- ↓
-- I B C D E F G H
+1. A B C D E
+2. A B C D E F G H
+3. I B C D E F G H
 
 ```mermaid
 flowchart TD
@@ -1452,9 +1383,6 @@ class SlidingWindowRateLimiter {
 
 ---
 
-
-
-
 ## Quadtree (Spatial Indexing)
 
 ```
@@ -1490,9 +1418,8 @@ STRUCTURE:
 ```
 
 **Flow:**
-- NW NE / SW SE
-- ↓
-- (3,7) (8,8) / (1,4) / (5,2)
+1. NW NE / SW SE
+2. (3,7) (8,8) / (1,4) / (5,2)
 
 ```mermaid
 flowchart TD
@@ -1620,19 +1547,8 @@ STRUCTURE:
 ```
 
 **Flow:**
-- MERKLE TREE: Tree where each leaf is hash of data block
-- ↓
-- and each non-leaf is hash of its children's hashes
-- ↓
-- STRUCTURE:
-- ↓
-- [Root Hash: abcd1234]
-- ↓
-- [Hash: ab12] [Hash: cd34]
-- ↓
-- Block A Block B Block C Block D
-- ↓
-- VERIFICATION:
+1. MERKLE TREE: Tree where each leaf is hash of data block
+2. and each non-leaf is hash of its children's hashes STRUCTURE: [Root Hash: abcd1234] [Hash: ab12] [Hash: cd34] Block A Block B Block C Block D VERIFICATION:
 
 ```mermaid
 flowchart TD
@@ -1791,29 +1707,18 @@ HEAP/PRIORITY QUEUE:
 ```
 
 **Flow:**
-- TRIE:
-- ↓
-- LC 208: Implement Trie (Prefix Tree) ⭐ Medium
-- ↓
-- TRIE:
-- ↓
-- LC 211: Design Add and Search Words ⭐ Medium
-- ↓
-- TRIE:
-- ↓
-- LC 212: Word Search II 🔥 Hard
-- ↓
-- TRIE:
-- ↓
-- LC 648: Replace Words ⭐ Medium
-- ↓
-- TRIE:
-- ↓
-- LC 1268: Search Suggestions System ⭐ Medium
-- ↓
-- SEGMENT TREE:
-- ↓
-- LC 307: Range Sum Query - Mutable ⭐ Medium
+1. TRIE:
+2. LC 208: Implement Trie (Prefix Tree) ⭐ Medium
+3. TRIE:
+4. LC 211: Design Add and Search Words ⭐ Medium
+5. TRIE:
+6. LC 212: Word Search II 🔥 Hard
+7. TRIE:
+8. LC 648: Replace Words ⭐ Medium
+9. TRIE:
+10. LC 1268: Search Suggestions System ⭐ Medium
+11. SEGMENT TREE:
+12. LC 307: Range Sum Query - Mutable ⭐ Medium
 
 ```mermaid
 flowchart TD
@@ -1924,19 +1829,13 @@ k = number of hash functions
 ```
 
 **Flow:**
-- COMPLETE COMPLEXITY REFERENCE
-- ↓
-- DATA STRUCTURE ACCESS SEARCH INSERT DELETE SPACE
-- ↓
-- Fenwick Tree N/A O(logn) O(logn) N/A O(n)
-- ↓
-- Sparse Table O(1) O(1) N/A N/A O(n log n)
-- ↓
-- Disjoint Set N/A O(α) O(α) N/A O(n)
-- ↓
-- Bloom Filter N/A O(k) O(k) N/A O(m) bits
-- ↓
-- * = amortized or average case
+1. COMPLETE COMPLEXITY REFERENCE
+2. DATA STRUCTURE ACCESS SEARCH INSERT DELETE SPACE
+3. Fenwick Tree N/A O(logn) O(logn) N/A O(n)
+4. Sparse Table O(1) O(1) N/A N/A O(n log n)
+5. Disjoint Set N/A O(α) O(α) N/A O(n)
+6. Bloom Filter N/A O(k) O(k) N/A O(m) bits
+7. - = amortized or average case
 
 ```mermaid
 flowchart TD
@@ -2001,37 +1900,22 @@ START: What problem are you solving?
 ```
 
 **Flow:**
-- START: What problem are you solving?
-- ↓
-- Need KEY-VALUE lookup?
-- ↓
-- START: What problem are you solving?
-- ↓
-- Keys are strings with prefix search?
-- ↓
-- TRIE
-- ↓
-- START: What problem are you solving?
-- ↓
-- Need O(1) operations?
-- ↓
-- HASH MAP
-- ↓
-- START: What problem are you solving?
-- ↓
-- Need ordered keys?
-- ↓
-- TREE MAP (Red-Black)
-- ↓
-- START: What problem are you solving?
-- ↓
-- Need RANGE operations?
-- ↓
-- START: What problem are you solving?
-- ↓
-- Static array, many queries?
-- ↓
-- SPARSE TABLE
+1. START: What problem are you solving?
+2. Need KEY-VALUE lookup?
+3. START: What problem are you solving?
+4. Keys are strings with prefix search?
+5. TRIE
+6. START: What problem are you solving?
+7. Need O(1) operations?
+8. HASH MAP
+9. START: What problem are you solving?
+10. Need ordered keys?
+11. TREE MAP (Red-Black)
+12. START: What problem are you solving?
+13. Need RANGE operations?
+14. START: What problem are you solving?
+15. Static array, many queries?
+16. SPARSE TABLE
 
 ```mermaid
 flowchart TD
@@ -2096,15 +1980,14 @@ flowchart TD
 
 _Master these structures, and you can build anything!_ 🚀
 
-
 ---
-
 
 ---
 
 ## 🏋️ Practice & Interview Questions — OOP & Design Patterns
 
 ### Predict / Trace
+
 **Q1.** What design pattern does this code follow?
 ```java
 Logger logger = Logger.getInstance();
@@ -2129,6 +2012,7 @@ class User {
 </details>
 
 ### Design Pattern Problems
+
 **Q3.** ⭐ Implement Strategy pattern for payment processing.
 <details><summary>Solution</summary>
 
@@ -2185,6 +2069,7 @@ class ServerConfig {
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | SOLID: O stands for | Open/Closed Principle |
@@ -2195,8 +2080,6 @@ class ServerConfig {
 | 6 | Proxy pattern types | Virtual, protective, remote, caching |
 | 7 | Command pattern encapsulates | Request as an object (supports undo/redo) |
 | 8 | Template Method pattern | Defines algorithm skeleton, subclasses fill in steps |
-
-
 
 ---
 
@@ -2240,5 +2123,4 @@ DIP: high-level modules should not depend on low-level modules — both should d
 **Observer**: subject holds direct references to observer objects. Subject explicitly notifies each one. Tightly coupled (subject knows about observers). Fine for: small systems, known observers at compile time. Breaks when: observers span different modules, dynamic subscription needed, observers need to be remote. **Event Bus / Message Queue**: publishers and subscribers decoupled. Publisher sends event with a TYPE to the bus. Subscribers register for event types — publisher doesn't know who's listening. De-facto standard in large systems: Spring ApplicationEventPublisher, Kafka, RabbitMQ are all event buses. Rule: Observer for in-process tightly-coupled notification. Event bus for loose coupling, cross-module, or distributed communication.
 </details>
 
-
-> **Navigation**: [< Previous](07a_Advanced_DS_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08a_NumberTheory_Core.md)
+**Navigation**: [< Previous](07a_Advanced_DS_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08a_NumberTheory_Core.md)

@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](Ch20_AlgoEng_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch20_AlgoEng_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -25,19 +25,13 @@ Data → Behavior → Scale → Failure → Human Experience → Cost → Time �
 ```
 
 **Flow:**
-- THE CORE SKILL OF ENGINEERING:
-- ↓
-- YOU ARE NOT JUST A CODER. YOU ARE:
-- ↓
-- 🔬 A Computer Scientist - Understanding computation limi
-- ↓
-- 🏗️ A System Architect - Designing scalable structures
-- ↓
-- 🎨 A Product Engineer - Building what users truly need
-- ↓
-- 🧠 A UX Thinker - Feeling the user's pain
-- ↓
-- ⚙️ A DevOps Pragmatist - Keeping systems alive
+1. THE CORE SKILL OF ENGINEERING:
+2. YOU ARE NOT JUST A CODER. YOU ARE:
+3. 🔬 A Computer Scientist - Understanding computation limi
+4. 🏗️ A System Architect - Designing scalable structures
+5. 🎨 A Product Engineer - Building what users truly need
+6. 🧠 A UX Thinker - Feeling the user's pain
+7. ⚙️ A DevOps Pragmatist - Keeping systems alive
 
 ```mermaid
 flowchart TD
@@ -60,14 +54,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Reality → Systems Translation Engine**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Reality → Systems Translation Engine**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## The Engineer's Translation Engine
 
@@ -127,19 +121,13 @@ STEP 6 — FAILURE DESIGN
 ```
 
 **Flow:**
-- What does the user EMOTIONALLY want? / 'I want to find
-- ↓
-- What must exist DIGITALLY? / • Data to store / • Operat
-- ↓
-- What are the ENTITIES and RELATIONSHIPS? / • Users have
-- ↓
-- What BREAKS at scale? / • 10x users: Database queries s
-- ↓
-- Which DATA STRUCTURES power each part? / • User search
-- ↓
-- What happens when things BREAK? / • Server dies
-- ↓
-- Failo
+1. What does the user EMOTIONALLY want? / 'I want to find
+2. What must exist DIGITALLY? / • Data to store / • Operat
+3. What are the ENTITIES and RELATIONSHIPS? / • Users have
+4. What BREAKS at scale? / • 10x users: Database queries s
+5. Which DATA STRUCTURES power each part? / • User search
+6. What happens when things BREAK? / • Server dies
+7. Failo
 
 ```mermaid
 flowchart TD
@@ -160,14 +148,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — The Engineer's Translation Engine**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — The Engineer's Translation Engine**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📌 Part 14: Data Structures As Shapes of Thought
 
@@ -185,29 +173,18 @@ DON'T THINK:                    THINK:
 ```
 
 **Flow:**
-- 'Array stores data'
-- ↓
-- 'Array models SEQUENCE in time/space'
-- ↓
-- 'HashMap is fast lookup'
-- ↓
-- 'HashMap models ASSOCIATION between things'
-- ↓
-- 'Tree has nodes'
-- ↓
-- 'Tree models HIERARCHY and relationships'
-- ↓
-- 'Graph has edges'
-- ↓
-- 'Graph models CONNECTIONS in complex systems'
-- ↓
-- 'Queue is FIFO'
-- ↓
-- 'Queue models FAIRNESS and ordering'
-- ↓
-- 'Stack is LIFO'
-- ↓
-- 'Stack models CONTEXT and undoing'
+1. 'Array stores data'
+2. 'Array models SEQUENCE in time/space'
+3. 'HashMap is fast lookup'
+4. 'HashMap models ASSOCIATION between things'
+5. 'Tree has nodes'
+6. 'Tree models HIERARCHY and relationships'
+7. 'Graph has edges'
+8. 'Graph models CONNECTIONS in complex systems'
+9. 'Queue is FIFO'
+10. 'Queue models FAIRNESS and ordering'
+11. 'Stack is LIFO'
+12. 'Stack models CONTEXT and undoing'
 
 ```mermaid
 flowchart TD
@@ -236,14 +213,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Seeing DS as Reality Models, Not Just Containers**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Seeing DS as Reality Models, Not Just Containers**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## The Complete DS Reality Map
 
@@ -273,19 +250,13 @@ QuadTree/KD-Tree        Spatial partitioning       Maps, Game collision
 ```
 
 **Flow:**
-- DATA STRUCTURE REAL-WORLD MODEL PRODUCTION SYSTEM
-- ↓
-- Array Timeline, Sequence Time-series DB
-- ↓
-- Dynamic Array Growing history Event logs
-- ↓
-- Linked List Chain of events Blockchain
-- ↓
-- HashMap Dictionary, Index Cache, Session store
-- ↓
-- Stack Undo history Call stack, Parsers
-- ↓
-- Queue Waiting line Message queue, BFS
+1. DATA STRUCTURE REAL-WORLD MODEL PRODUCTION SYSTEM
+2. Array Timeline, Sequence Time-series DB
+3. Dynamic Array Growing history Event logs
+4. Linked List Chain of events Blockchain
+5. HashMap Dictionary, Index Cache, Session store
+6. Stack Undo history Call stack, Parsers
+7. Queue Waiting line Message queue, BFS
 
 ```mermaid
 flowchart TD
@@ -337,19 +308,13 @@ flowchart TD
 ```
 
 **Flow:**
-- 1. MEMORY BEHAVIOR
-- ↓
-- - Contiguous or scattered?
-- ↓
-- - Cache-friendly?
-- ↓
-- - Memory overhead per element?
-- ↓
-- 2. TIME TRADEOFFS
-- ↓
-- - Best/Worst/Average case?
-- ↓
-- - Amortized analysis?
+1. 1. MEMORY BEHAVIOR
+2. - Contiguous or scattered?
+3. - Cache-friendly?
+4. - Memory overhead per element?
+5. 2. TIME TRADEOFFS
+6. - Best/Worst/Average case?
+7. - Amortized analysis?
 
 ```mermaid
 flowchart TD
@@ -391,11 +356,9 @@ Probabilistic           Deduplication     Personalization Quick checks    Accura
 ```
 
 **Flow:**
-- ALGORITHM BACKEND UI NETWORK COST
-- ↓
-- BFS/DFS Crawlers Navigation Routing Bandwidth
-- ↓
-- Dynamic Programming Optimization Prediction Caching Sto
+1. ALGORITHM BACKEND UI NETWORK COST
+2. BFS/DFS Crawlers Navigation Routing Bandwidth
+3. Dynamic Programming Optimization Prediction Caching Sto
 
 ```mermaid
 flowchart TD
@@ -428,17 +391,12 @@ Fraud Detection            Graph + Streaming Algo     Pattern detection in flow
 ```
 
 **Flow:**
-- SYSTEM DSA FUSION WHY IT WORKS
-- ↓
-- Rate Limiter HashMap + Queue Track requests in window
-- ↓
-- Recommendation Engine Graph + Heap Find top-k similar i
-- ↓
-- High-Scale API Cache + Bloom Filter Fast negative looku
-- ↓
-- LRU Cache HashMap + Doubly LL O(1) access + ordering
-- ↓
-- Autocomplete Trie + Heap Prefix match + top results
+1. SYSTEM DSA FUSION WHY IT WORKS
+2. Rate Limiter HashMap + Queue Track requests in window
+3. Recommendation Engine Graph + Heap Find top-k similar i
+4. High-Scale API Cache + Bloom Filter Fast negative looku
+5. LRU Cache HashMap + Doubly LL O(1) access + ordering
+6. Autocomplete Trie + Heap Prefix match + top results
 
 ```mermaid
 flowchart TD
@@ -457,14 +415,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — How Real Systems Combine Data Structures**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — How Real Systems Combine Data Structures**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Building a Rate Limiter (Complete Example)
 
@@ -495,25 +453,16 @@ FUSION DESIGN:
 ```
 
 **Flow:**
-- PROBLEM: Limit user to 100 requests per minute
-- ↓
-- HUMAN INTENT: Prevent abuse, ensure fair usage
-- ↓
-- DSA ANALYSIS:
-- ↓
-- - Need to track: User ID
-- ↓
-- Request timestamps
-- ↓
-- - Need to track: User ID
-- ↓
-- Request timestamps
-- ↓
-- - Need to count: Requests in last 60 seconds
-- ↓
-- - Need to expire: Old requests
-- ↓
-- FUSION DESIGN:
+1. PROBLEM: Limit user to 100 requests per minute
+2. HUMAN INTENT: Prevent abuse, ensure fair usage
+3. DSA ANALYSIS:
+4. - Need to track: User ID
+5. Request timestamps
+6. - Need to track: User ID
+7. Request timestamps
+8. - Need to count: Requests in last 60 seconds
+9. - Need to expire: Old requests
+10. FUSION DESIGN:
 
 ```mermaid
 flowchart TD
@@ -577,14 +526,14 @@ class RateLimiter {
 
 
 
-> 🔬 **Section Challenge — Building a Rate Limiter (Complete Example)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Building a Rate Limiter (Complete Example)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📌 Part 17: the 10 Questions Every Engineer Asks
 
@@ -625,19 +574,13 @@ MEMORIZE THESE. ASK THEM ALWAYS.
 ```
 
 **Flow:**
-- MEMORIZE THESE. ASK THEM ALWAYS.
-- ↓
-- 1. What grows UNBOUNDED?
-- ↓
-- Memory leaks, infinite loops, data accumulation
-- ↓
-- 2. What must be INSTANT?
-- ↓
-- User interactions, health checks, critical paths
-- ↓
-- 3. What can be EVENTUALLY correct?
-- ↓
-- Analytics, recommendations, logs
+1. MEMORIZE THESE. ASK THEM ALWAYS.
+2. 1. What grows UNBOUNDED?
+3. Memory leaks, infinite loops, data accumulation
+4. 2. What must be INSTANT?
+5. User interactions, health checks, critical paths
+6. 3. What can be EVENTUALLY correct?
+7. Analytics, recommendations, logs
 
 ```mermaid
 flowchart TD
@@ -662,14 +605,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Before Writing Any Code**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Before Writing Any Code**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📌 Part 18: Feature Engineering Mode
 
@@ -725,23 +668,15 @@ ELITE ENGINEER EXTRACTS:
 ```
 
 **Flow:**
-- LATENCY SOURCES / • Frontend rendering time / • API res
-- ↓
-- DATA FLOW ANALYSIS / User Click
-- ↓
-- Frontend
-- ↓
-- API Gatewa
-- ↓
-- DATA FLOW ANALYSIS / User Click
-- ↓
-- Frontend
-- ↓
-- API Gatewa
-- ↓
-- DSA BOTTLENECKS / • Linear search where binary search p
-- ↓
-- UX BOTTLENECKS / • Blocking UI during computation? / •
+1. LATENCY SOURCES / • Frontend rendering time / • API res
+2. DATA FLOW ANALYSIS / User Click
+3. Frontend
+4. API Gatewa
+5. DATA FLOW ANALYSIS / User Click
+6. Frontend
+7. API Gatewa
+8. DSA BOTTLENECKS / • Linear search where binary search p
+9. UX BOTTLENECKS / • Blocking UI during computation? / •
 
 ```mermaid
 flowchart TD
@@ -758,14 +693,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Translating Vague Requests into System Design**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Translating Vague Requests into System Design**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📌 Part 19: Production Failure Stories
 
@@ -814,19 +749,13 @@ Fix: TTL-based eviction policy
 ```
 
 **Flow:**
-- STORY 1: THE UNBOUNDED QUEUE
-- ↓
-- System: E-commerce checkout
-- ↓
-- Problem: Queue grew unbounded during flash sale
-- ↓
-- Root Cause: Producer faster than consumer, no backpress
-- ↓
-- Fix: Ring buffer with overflow handling
-- ↓
-- STORY 2: THE MISSING INDEX
-- ↓
-- System: Social media feed
+1. STORY 1: THE UNBOUNDED QUEUE
+2. System: E-commerce checkout
+3. Problem: Queue grew unbounded during flash sale
+4. Root Cause: Producer faster than consumer, no backpress
+5. Fix: Ring buffer with overflow handling
+6. STORY 2: THE MISSING INDEX
+7. System: Social media feed
 
 ```mermaid
 flowchart TD
@@ -851,14 +780,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Learning from Real System Failures**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Learning from Real System Failures**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🏗️ Part 20: Build Real Systems (project Ideas)
 
@@ -906,17 +835,12 @@ PROJECT 3: ANALYTICS PIPELINE
 ```
 
 **Flow:**
-- Components: / • Message Queue (Ring Buffer) / • User Se
-- ↓
-- Components: / • Inverted Index (HashMap of word
-- ↓
-- docum
-- ↓
-- Components: / • Inverted Index (HashMap of word
-- ↓
-- docum
-- ↓
-- Components: / • Event Stream (Ring Buffer) / • Aggregat
+1. Components: / • Message Queue (Ring Buffer) / • User Se
+2. Components: / • Inverted Index (HashMap of word
+3. docum
+4. Components: / • Inverted Index (HashMap of word
+5. docum
+6. Components: / • Event Stream (Ring Buffer) / • Aggregat
 
 ```mermaid
 flowchart TD
@@ -956,19 +880,13 @@ WEEKLY:
 ```
 
 **Flow:**
-- MORNING (Before Coding):
-- ↓
-- □ What system am I building/improving today?
-- ↓
-- □ What data structures are involved?
-- ↓
-- □ What could break?
-- ↓
-- DURING CODING:
-- ↓
-- □ Am I creating unbounded growth?
-- ↓
-- □ Is this O(n²) hidden somewhere?
+1. MORNING (Before Coding):
+2. □ What system am I building/improving today?
+3. □ What data structures are involved?
+4. □ What could break?
+5. DURING CODING:
+6. □ Am I creating unbounded growth?
+7. □ Is this O(n²) hidden somewhere?
 
 ```mermaid
 flowchart TD
@@ -1014,19 +932,13 @@ flowchart TD
 ```
 
 **Flow:**
-- YOU ARE NOT PREPARING FOR INTERVIEWS.
-- ↓
-- YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY.
-- ↓
-- Every algorithm is a tool for CONTROLLING CHAOS.
-- ↓
-- Every data structure is a SHAPE OF THOUGHT.
-- ↓
-- Every system you build is a TRANSLATION OF HUMAN NEED.
-- ↓
-- The goal is not to memorize patterns.
-- ↓
-- The goal is to SEE THE INVISIBLE ALGORITHMS
+1. YOU ARE NOT PREPARING FOR INTERVIEWS.
+2. YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY.
+3. Every algorithm is a tool for CONTROLLING CHAOS.
+4. Every data structure is a SHAPE OF THOUGHT.
+5. Every system you build is a TRANSLATION OF HUMAN NEED.
+6. The goal is not to memorize patterns.
+7. The goal is to SEE THE INVISIBLE ALGORITHMS
 
 ```mermaid
 flowchart TD
@@ -1216,14 +1128,14 @@ public class URLShortener {
 
 
 
-> 🔬 **Section Challenge — Example 1: Building a URL Shortener (Like bit.ly)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Example 1: Building a URL Shortener (Like bit.ly)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Example 2: Building a Real-Time Leaderboard
 
@@ -1262,19 +1174,13 @@ DSA ANALYSIS:
 ```
 
 **Flow:**
-- USER STORY: 'Show top 100 players in real-time for my g
-- ↓
-- REQUIREMENTS:
-- ↓
-- • 10M players total
-- ↓
-- • 1000 score updates/second
-- ↓
-- • Get top K players: O(K)
-- ↓
-- • Get player rank: O(log N)
-- ↓
-- • Handle ties correctly
+1. USER STORY: 'Show top 100 players in real-time for my g
+2. REQUIREMENTS:
+3. • 10M players total
+4. • 1000 score updates/second
+5. • Get top K players: O(K)
+6. • Get player rank: O(log N)
+7. • Handle ties correctly
 
 ```mermaid
 flowchart TD
@@ -1379,14 +1285,14 @@ public class Leaderboard {
 
 
 
-> 🔬 **Section Challenge — Example 2: Building a Real-Time Leaderboard**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Example 2: Building a Real-Time Leaderboard**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Example 3: Building an Autocomplete System
 
@@ -1436,19 +1342,13 @@ DSA MAPPING:
 ```
 
 **Flow:**
-- USER STORY: 'Show suggestions as user types in search b
-- ↓
-- REQUIREMENTS:
-- ↓
-- • 1M unique search terms
-- ↓
-- • Return top 5 suggestions
-- ↓
-- • < 50ms response time
-- ↓
-- • Handle prefix matching
-- ↓
-- • Rank by popularity
+1. USER STORY: 'Show suggestions as user types in search b
+2. REQUIREMENTS:
+3. • 1M unique search terms
+4. • Return top 5 suggestions
+5. • < 50ms response time
+6. • Handle prefix matching
+7. • Rank by popularity
 
 ```mermaid
 flowchart TD
@@ -1564,14 +1464,14 @@ class AutocompleteSystem {
 
 
 
-> 🔬 **Section Challenge — Example 3: Building an Autocomplete System**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Example 3: Building an Autocomplete System**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🧩 Part 24: Interview Problem → System Design Mapping
 
@@ -1605,19 +1505,13 @@ LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:
 ```
 
 **Flow:**
-- LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:
-- ↓
-- LC Problem Real System Application
-- ↓
-- Two Sum Finding matching orders in trading systems
-- ↓
-- LRU Cache Caching layer in any web service
-- ↓
-- Merge Intervals Calendar scheduling, resource allocatio
-- ↓
-- Word Search II Search engine indexing, plagiarism detec
-- ↓
-- Design Twitter Social media feed generation
+1. LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:
+2. LC Problem Real System Application
+3. Two Sum Finding matching orders in trading systems
+4. LRU Cache Caching layer in any web service
+5. Merge Intervals Calendar scheduling, resource allocatio
+6. Word Search II Search engine indexing, plagiarism detec
+7. Design Twitter Social media feed generation
 
 ```mermaid
 flowchart TD
@@ -1726,15 +1620,11 @@ DSA-RELATED PERFORMANCE ISSUES:
 ```
 
 **Flow:**
-- WHEN SYSTEM IS SLOW: / 1. MEASURE FIRST / 'Where is tim
-- ↓
-- Check latency / percentiles
-- ↓
-- P99 high P50 high
-- ↓
-- Edge cases Everything / are slow is slow
-- ↓
-- Check for: Check for: / - Large data - Database / - Bad
+1. WHEN SYSTEM IS SLOW: / 1. MEASURE FIRST / 'Where is tim
+2. Check latency / percentiles
+3. P99 high P50 high
+4. Edge cases Everything / are slow is slow
+5. Check for: Check for: / - Large data - Database / - Bad
 
 ```mermaid
 flowchart TD
@@ -1753,14 +1643,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — The Systematic Debugging Framework**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — The Systematic Debugging Framework**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📌 Part 26: Code Review Checklist (DSA Focus)
 
@@ -1811,29 +1701,18 @@ COMPLEXITY RED FLAGS:
 ```
 
 **Flow:**
-- 🚩 nested loops
-- ↓
-- O(n²) or worse
-- ↓
-- 🚩 recursion without memoization
-- ↓
-- exponential
-- ↓
-- 🚩 .contains() in a loop on List
-- ↓
-- O(n²)
-- ↓
-- 🚩 string concatenation in loop
-- ↓
-- O(n²)
-- ↓
-- 🚩 sorting in a loop
-- ↓
-- O(n² log n)
-- ↓
-- 🚩 regex compilation in loop
-- ↓
-- O(n × regex)
+1. 🚩 nested loops
+2. O(n²) or worse
+3. 🚩 recursion without memoization
+4. exponential
+5. 🚩 .contains() in a loop on List
+6. O(n²)
+7. 🚩 string concatenation in loop
+8. O(n²)
+9. 🚩 sorting in a loop
+10. O(n² log n)
+11. 🚩 regex compilation in loop
+12. O(n × regex)
 
 ```mermaid
 flowchart TD
@@ -1934,29 +1813,18 @@ FOR EACH ALGORITHM, KNOW:
 ```
 
 **Flow:**
-- FOR EACH ALGORITHM, KNOW:
-- ↓
-- When to use it
-- ↓
-- FOR EACH ALGORITHM, KNOW:
-- ↓
-- Time complexity
-- ↓
-- FOR EACH ALGORITHM, KNOW:
-- ↓
-- Space complexity
-- ↓
-- FOR EACH ALGORITHM, KNOW:
-- ↓
-- Implementation
-- ↓
-- FOR EACH ALGORITHM, KNOW:
-- ↓
-- Common variations
-- ↓
-- FOR EACH ALGORITHM, KNOW:
-- ↓
-- Real-world applications
+1. FOR EACH ALGORITHM, KNOW:
+2. When to use it
+3. FOR EACH ALGORITHM, KNOW:
+4. Time complexity
+5. FOR EACH ALGORITHM, KNOW:
+6. Space complexity
+7. FOR EACH ALGORITHM, KNOW:
+8. Implementation
+9. FOR EACH ALGORITHM, KNOW:
+10. Common variations
+11. FOR EACH ALGORITHM, KNOW:
+12. Real-world applications
 
 ```mermaid
 flowchart TD
@@ -2042,29 +1910,18 @@ WEEK 10: SYSTEM DESIGN
 ```
 
 **Flow:**
-- WEEK 1: ARRAYS & HASHING
-- ↓
-- Implement HashMap from scratch
-- ↓
-- WEEK 1: ARRAYS & HASHING
-- ↓
-- Solve: Two Sum, Contains Duplicate, Group Anagrams
-- ↓
-- WEEK 1: ARRAYS & HASHING
-- ↓
-- Build: In-memory key-value store
-- ↓
-- WEEK 1: ARRAYS & HASHING
-- ↓
-- Study: Hash collision resolution strategies
-- ↓
-- WEEK 2: TWO POINTERS & SLIDING WINDOW
-- ↓
-- Implement: Sliding window template
-- ↓
-- WEEK 2: TWO POINTERS & SLIDING WINDOW
-- ↓
-- Solve: 3Sum, Container With Most Water, Minimum Window
+1. WEEK 1: ARRAYS & HASHING
+2. Implement HashMap from scratch
+3. WEEK 1: ARRAYS & HASHING
+4. Solve: Two Sum, Contains Duplicate, Group Anagrams
+5. WEEK 1: ARRAYS & HASHING
+6. Build: In-memory key-value store
+7. WEEK 1: ARRAYS & HASHING
+8. Study: Hash collision resolution strategies
+9. WEEK 2: TWO POINTERS & SLIDING WINDOW
+10. Implement: Sliding window template
+11. WEEK 2: TWO POINTERS & SLIDING WINDOW
+12. Solve: 3Sum, Container With Most Water, Minimum Window
 
 ```mermaid
 flowchart TD

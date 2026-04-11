@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](13_Tree_Plus_DFS_BFS.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Heap_Plus_GreedySelection.md)
+**Navigation**: [< Previous](13_Tree_Plus_DFS_BFS.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Heap_Plus_GreedySelection.md)
 
 # Graph + Traversal Patterns — Combined Pattern Guide
 
-> **WHY this combination?** Graphs model relationships. BFS gives shortest unweighted path. DFS explores all reachable nodes. Dijkstra handles weighted graphs. Union-Find manages connected components. Choosing the right traversal is THE key skill.
+**WHY this combination?** Graphs model relationships. BFS gives shortest unweighted path. DFS explores all reachable nodes. Dijkstra handles weighted graphs. Union-Find manages connected components. Choosing the right traversal is THE key skill.
 
 ### 🧠 Deep Intuition — Choosing the Right Graph Algorithm
 
@@ -56,29 +56,18 @@ Problem type → Algorithm:
 ```
 
 **Flow:**
-- Problem type
-- ↓
-- Algorithm:
-- ↓
-- 'Shortest path' (unweighted)
-- ↓
-- BFS
-- ↓
-- 'Shortest path' (weighted, no negative)
-- ↓
-- Dijkstra
-- ↓
-- 'Shortest path' (negative edges)
-- ↓
-- Bellman-Ford
-- ↓
-- 'All pairs shortest path'
-- ↓
-- Floyd-Warshall
-- ↓
-- 'Connected components'
-- ↓
-- BFS/DFS or Union-Find
+1. Problem type
+2. Algorithm:
+3. 'Shortest path' (unweighted)
+4. BFS
+5. 'Shortest path' (weighted, no negative)
+6. Dijkstra
+7. 'Shortest path' (negative edges)
+8. Bellman-Ford
+9. 'All pairs shortest path'
+10. Floyd-Warshall
+11. 'Connected components'
+12. BFS/DFS or Union-Find
 
 ```mermaid
 flowchart TD
@@ -232,17 +221,12 @@ Time: O(R×C) | Space: O(R×C) recursion stack worst case
 ```
 
 **Flow:**
-- (0,0)=1
-- ↓
-- DFS! Sink (0,0),(0,1),(1,0),(1,1). count=1
-- ↓
-- (2,2)=1
-- ↓
-- DFS! Sink (2,2). count=2
-- ↓
-- (3,3)=1
-- ↓
-- DFS! Sink (3,3),(3,4). count=3
+1. (0,0)=1
+2. DFS! Sink (0,0),(0,1),(1,0),(1,1). count=1
+3. (2,2)=1
+4. DFS! Sink (2,2). count=2
+5. (3,3)=1
+6. DFS! Sink (3,3),(3,4). count=3
 
 ```mermaid
 flowchart LR
@@ -293,23 +277,15 @@ Time: O(V + E) | Space: O(V + E)
 ```
 
 **Flow:**
-- Compute indegree: 0
-- ↓
-- 0, 1
-- ↓
-- 1, 2
-- ↓
-- 1, 3
-- ↓
-- Dequeue 0: order=[0]. Neighbors: 1(indegree 1
-- ↓
-- 0), 2(indegree 1
-- ↓
-- 0)
-- ↓
-- Dequeue 1: order=[0,1]. Neighbors: 3(indegree 2
-- ↓
-- 1)
+1. Compute indegree: 0
+2. 0, 1
+3. 1, 2
+4. 1, 3
+5. Dequeue 0: order=[0]. Neighbors: 1(indegree 1
+6. 0), 2(indegree 1
+7. 0)
+8. Dequeue 1: order=[0,1]. Neighbors: 3(indegree 2
+9. 1)
 
 ```mermaid
 flowchart TD
@@ -369,19 +345,13 @@ COMMON MISTAKES:
 ```
 
 **Flow:**
-- EDGE CASES:
-- ↓
-- Edge Case Handling
-- ↓
-- Disconnected graph BFS/DFS may miss components — loop!
-- ↓
-- Self-loop Cycle detection catches this
-- ↓
-- Empty graph (no edges) All nodes are valid, indegree=0
-- ↓
-- Grid with all 0s 0 islands
-- ↓
-- Grid with all 1s 1 island
+1. EDGE CASES:
+2. Edge Case Handling
+3. Disconnected graph BFS/DFS may miss components — loop!
+4. Self-loop Cycle detection catches this
+5. Empty graph (no edges) All nodes are valid, indegree=0
+6. Grid with all 0s 0 islands
+7. Grid with all 1s 1 island
 
 ```mermaid
 flowchart TD
@@ -418,14 +388,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 
@@ -490,7 +460,7 @@ flowchart TD
 
 **When the interviewer gives you a graph problem, say this:**
 
-> "First, I'll represent this as a graph — [adjacency list/matrix]. Then I'll choose the right traversal: BFS for shortest unweighted path, DFS for exploring all paths or detecting cycles, Dijkstra for weighted shortest path, or Union-Find for connectivity queries."
+"First, I'll represent this as a graph — [adjacency list/matrix]. Then I'll choose the right traversal: BFS for shortest unweighted path, DFS for exploring all paths or detecting cycles, Dijkstra for weighted shortest path, or Union-Find for connectivity queries."
 
 **How to justify your choice:**
 - "BFS guarantees shortest path in unweighted graphs because it explores nodes in order of increasing distance from the source. The first time we reach any node IS the shortest path."

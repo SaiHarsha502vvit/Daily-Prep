@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](12_LinkedList_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Graph_Plus_Traversal.md)
+**Navigation**: [< Previous](12_LinkedList_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Graph_Plus_Traversal.md)
 
 # Tree + DFS/BFS — Combined Pattern Guide
 
-> **WHY this combination?** Trees are hierarchical. DFS explores depth-first (recursion/stack) — ideal for path problems. BFS explores level-by-level (queue) — ideal for shortest path and level-order problems.
+**WHY this combination?** Trees are hierarchical. DFS explores depth-first (recursion/stack) — ideal for path problems. BFS explores level-by-level (queue) — ideal for shortest path and level-order problems.
 
 ### 🧠 Deep Intuition — DFS vs BFS Are Fundamentally Different Questions
 
@@ -21,7 +21,7 @@ A BST has the invariant: `all left subtree values < root < all right subtree val
 - **DFS space = O(h)** where h = tree height. For a balanced tree, h = log n. For a skewed tree (like a linked list), h = n.
 - **BFS space = O(w)** where w = maximum width. For a complete binary tree, the last level has n/2 nodes, so BFS uses O(n/2) space.
 
-> 💡 **Rule:** For tall, narrow trees → BFS uses less space. For wide, balanced trees → DFS uses less space. In practice, most interview problems work well with either, but the choice affects correctness (BFS for shortest path, DFS for path-based problems).
+💡 **Rule:** For tall, narrow trees → BFS uses less space. For wide, balanced trees → DFS uses less space. In practice, most interview problems work well with either, but the choice affects correctness (BFS for shortest path, DFS for path-based problems).
 
 ---
 
@@ -123,97 +123,52 @@ BFS (Level):     1 | 2,3 | 4,5,6,7             (level by level)
 ```
 
 **Flow:**
-- Tree: 1
-- ↓
-- DFS (Preorder): 1
-- ↓
-- 2
-- ↓
-- 4
-- ↓
-- 5
-- ↓
-- 3
-- ↓
-- 6
-- ↓
-- 7 (go deep firs
-- ↓
-- DFS (Preorder): 1
-- ↓
-- 2
-- ↓
-- 4
-- ↓
-- 5
-- ↓
-- 3
-- ↓
-- 6
-- ↓
-- 7 (go deep firs
-- ↓
-- DFS (Inorder): 4
-- ↓
-- 2
-- ↓
-- 5
-- ↓
-- 1
-- ↓
-- 6
-- ↓
-- 3
-- ↓
-- 7 (left-root-rig
-- ↓
-- DFS (Inorder): 4
-- ↓
-- 2
-- ↓
-- 5
-- ↓
-- 1
-- ↓
-- 6
-- ↓
-- 3
-- ↓
-- 7 (left-root-rig
-- ↓
-- DFS (Postorder): 4
-- ↓
-- 5
-- ↓
-- 2
-- ↓
-- 6
-- ↓
-- 7
-- ↓
-- 3
-- ↓
-- 1 (children fi
-- ↓
-- DFS (Postorder): 4
-- ↓
-- 5
-- ↓
-- 2
-- ↓
-- 6
-- ↓
-- 7
-- ↓
-- 3
-- ↓
-- 1 (children fi
-- ↓
-- BFS (Level): 1
-- ↓
-- 2,3
-- ↓
-- 4,5,6,7 (level by level)
+1. Tree: 1
+2. DFS (Preorder): 1
+3. 2
+4. 4
+5. 5
+6. 3
+7. 6
+8. 7 (go deep firs
+9. DFS (Preorder): 1
+10. 2
+11. 4
+12. 5
+13. 3
+14. 6
+15. 7 (go deep firs
+16. DFS (Inorder): 4
+17. 2
+18. 5
+19. 1
+20. 6
+21. 3
+22. 7 (left-root-rig
+23. DFS (Inorder): 4
+24. 2
+25. 5
+26. 1
+27. 6
+28. 3
+29. 7 (left-root-rig
+30. DFS (Postorder): 4
+31. 5
+32. 2
+33. 6
+34. 7
+35. 3
+36. 1 (children fi
+37. DFS (Postorder): 4
+38. 5
+39. 2
+40. 6
+41. 7
+42. 3
+43. 1 (children fi
+44. BFS (Level): 1
+45. 2,3
+46. 4,5,6,7 (level by level)
 
 ```mermaid
 flowchart TD
@@ -257,9 +212,8 @@ Time: O(n) | Space: O(h)
 ```
 
 **Flow:**
-- must be > 5. But 3 < 5
-- ↓
-- INVALID.
+1. must be > 5. But 3 < 5
+2. INVALID.
 
 ```mermaid
 flowchart LR
@@ -312,9 +266,8 @@ Time: O(n) | Space: O(w) where w = max width of tree
 ```
 
 **Flow:**
-- queue = []
-- ↓
-- done!
+1. queue = []
+2. done!
 
 ```mermaid
 flowchart LR
@@ -353,19 +306,13 @@ COMMON MISTAKES:
 ```
 
 **Flow:**
-- EDGE CASES:
-- ↓
-- Edge Case Handling
-- ↓
-- Null root Return empty list / false / 0
-- ↓
-- Single node (leaf) Height=0, depth=0, is balanced
-- ↓
-- Skewed tree (like linked list) Height = n, BFS space =
-- ↓
-- Complete binary tree BFS space = O(n/2) for last level
-- ↓
-- Duplicate values in BST Convention: left < root ≤ ri
+1. EDGE CASES:
+2. Edge Case Handling
+3. Null root Return empty list / false / 0
+4. Single node (leaf) Height=0, depth=0, is balanced
+5. Skewed tree (like linked list) Height = n, BFS space =
+6. Complete binary tree BFS space = O(n/2) for last level
+7. Duplicate values in BST Convention: left < root ≤ ri
 
 ```mermaid
 flowchart TD
@@ -403,14 +350,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 | 1 | [Maximum Depth](https://leetcode.com/problems/maximum-depth-of-binary-tree/) | — | DFS: 1 + max(left, right) |
@@ -495,7 +442,7 @@ flowchart TD
 
 **When the interviewer gives you a tree problem, say this:**
 
-> "I'll use DFS/BFS depending on the problem type. DFS is natural for tree problems because trees are recursive structures — the answer for a tree combines answers from its subtrees. Each node is visited exactly once, so time is O(n). Space is O(h) where h is height — O(log n) for balanced, O(n) for skewed."
+"I'll use DFS/BFS depending on the problem type. DFS is natural for tree problems because trees are recursive structures — the answer for a tree combines answers from its subtrees. Each node is visited exactly once, so time is O(n). Space is O(h) where h is height — O(log n) for balanced, O(n) for skewed."
 
 **How to choose DFS vs BFS:**
 - "If the problem asks about paths (root-to-leaf, path sum) or subtree properties (height, balance, validation) → **DFS**, because we need to fully explore each branch."

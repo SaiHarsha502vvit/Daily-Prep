@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch27_Pre_Spring_Part2.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch27_Pre_Spring_Part2.md)
 
 ---
 
 # 🔮 SPRING BOOT PART 0: THE HIDDEN FOUNDATIONS
 
-> **Everything They Assume You Know But Never Teach**
-> _The "invisible" knowledge gap between tutorials and real understanding_
+**Everything They Assume You Know But Never Teach**
+_The "invisible" knowledge gap between tutorials and real understanding_
 
 ---
 
@@ -52,13 +52,10 @@
 ```
 
 **Flow:**
-- WHY: Why Learn Hidden Foundations? / • Spring is 90% re
-- ↓
-- HOW: How These Foundations Power Spring? / • Reflection
-- ↓
-- WHEN: When to Study These Topics? / • Before Spring Boo
-- ↓
-- WHICH: Which Foundations are Most Critical? / ESSENTIAL
+1. WHY: Why Learn Hidden Foundations? / • Spring is 90% re
+2. HOW: How These Foundations Power Spring? / • Reflection
+3. WHEN: When to Study These Topics? / • Before Spring Boo
+4. WHICH: Which Foundations are Most Critical? / ESSENTIAL
 
 ```mermaid
 flowchart TD
@@ -139,45 +136,26 @@ If you study each section by asking "what metadata is read", "what boundary is i
 ```
 
 **Flow:**
-- SPRING IS 90% REFLECTION
-- ↓
-- Spring Boot does ALL of this using Reflection:
-- ↓
-- @Autowired
-- ↓
-- Reflection finds field, injects bean
-- ↓
-- @Autowired
-- ↓
-- Reflection finds field, injects bean
-- ↓
-- @Component scan
-- ↓
-- Reflection discovers classes
-- ↓
-- @Component scan
-- ↓
-- Reflection discovers classes
-- ↓
-- @RequestMapping
-- ↓
-- Reflection reads annotation metadata
-- ↓
-- @RequestMapping
-- ↓
-- Reflection reads annotation metadata
-- ↓
-- @Value('${prop}')
-- ↓
-- Reflection sets field values
-- ↓
-- @Value('${prop}')
-- ↓
-- Reflection sets field values
-- ↓
-- @Transactional
-- ↓
-- Reflection creates proxy at runtime
+1. SPRING IS 90% REFLECTION
+2. Spring Boot does ALL of this using Reflection:
+3. @Autowired
+4. Reflection finds field, injects bean
+5. @Autowired
+6. Reflection finds field, injects bean
+7. @Component scan
+8. Reflection discovers classes
+9. @Component scan
+10. Reflection discovers classes
+11. @RequestMapping
+12. Reflection reads annotation metadata
+13. @RequestMapping
+14. Reflection reads annotation metadata
+15. @Value('${prop}')
+16. Reflection sets field values
+17. @Value('${prop}')
+18. Reflection sets field values
+19. @Transactional
+20. Reflection creates proxy at runtime
 
 ```mermaid
 flowchart TD
@@ -251,14 +229,14 @@ Modifier.isFinal(modifiers);     // true/false
 
 
 
-> 🔬 **Section Challenge — A.2 The Class Object - Your Entry Point**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — A.2 The Class Object - Your Entry Point**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## A.3 Field Reflection - How @Autowired Works
 
@@ -489,14 +467,14 @@ UserService instance = withRepo.newInstance(repoInstance);
 
 
 
-> 🔬 **Section Challenge — A.5 Constructor Reflection - How Spring Creates Beans**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — A.5 Constructor Reflection - How Spring Creates Beans**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## A.6 Annotation Reflection - How Spring Reads Configuration
 
@@ -554,14 +532,14 @@ for (Parameter param : params) {
 
 
 
-> 🔬 **Section Challenge — A.6 Annotation Reflection - How Spring Reads Configuration**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — A.6 Annotation Reflection - How Spring Reads Configuration**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## A.7 Generic Type Information - The Advanced Stuff
 
@@ -595,20 +573,20 @@ for (Type type : genericInterfaces) {
 
 
 
-> 🔬 **Section Challenge — A.7 Generic Type Information - The Advanced Stuff**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — A.7 Generic Type Information - The Advanced Stuff**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## A.8 Performance Considerations
 
@@ -688,41 +666,24 @@ public class CachedDispatcher {
 ```
 
 **Flow:**
-- YOU USE ANNOTATIONS DAILY BUT NEVER ASK: HOW DO THEY WO
-- ↓
-- @Override
-- ↓
-- Checked at COMPILE time (compiler magic)
-- ↓
-- @Override
-- ↓
-- Checked at COMPILE time (compiler magic)
-- ↓
-- @Deprecated
-- ↓
-- Warning at COMPILE time
-- ↓
-- @Deprecated
-- ↓
-- Warning at COMPILE time
-- ↓
-- @Autowired
-- ↓
-- Processed at RUNTIME (Spring reflection)
-- ↓
-- @Autowired
-- ↓
-- Processed at RUNTIME (Spring reflection)
-- ↓
-- @Entity
-- ↓
-- Processed at RUNTIME (Hibernate reflection)
-- ↓
-- @Entity
-- ↓
-- Processed at RUNTIME (Hibernate reflection)
-- ↓
-- THREE different mechanisms! Do you know which is which?
+1. YOU USE ANNOTATIONS DAILY BUT NEVER ASK: HOW DO THEY WO
+2. @Override
+3. Checked at COMPILE time (compiler magic)
+4. @Override
+5. Checked at COMPILE time (compiler magic)
+6. @Deprecated
+7. Warning at COMPILE time
+8. @Deprecated
+9. Warning at COMPILE time
+10. @Autowired
+11. Processed at RUNTIME (Spring reflection)
+12. @Autowired
+13. Processed at RUNTIME (Spring reflection)
+14. @Entity
+15. Processed at RUNTIME (Hibernate reflection)
+16. @Entity
+17. Processed at RUNTIME (Hibernate reflection)
+18. THREE different mechanisms! Do you know which is which?
 
 ```mermaid
 flowchart TD
@@ -811,15 +772,11 @@ public @interface RuntimeAvailable { }
 ```
 
 **Flow:**
-- RETENTION POLICY COMPARISON
-- ↓
-- Policy In Source In .class At Runtime Example
-- ↓
-- SOURCE ✅ ❌ ❌ @Override, @SuppressWarnings
-- ↓
-- CLASS ✅ ✅ ❌ Default, bytecode tools
-- ↓
-- RUNTIME ✅ ✅ ✅ @Autowired, @Entity
+1. RETENTION POLICY COMPARISON
+2. Policy In Source In .class At Runtime Example
+3. SOURCE ✅ ❌ ❌ @Override, @SuppressWarnings
+4. CLASS ✅ ✅ ❌ Default, bytecode tools
+5. RUNTIME ✅ ✅ ✅ @Autowired, @Entity
 
 ```mermaid
 flowchart TD
@@ -836,25 +793,25 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — B.1 Creating Custom Annotations**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — B.1 Creating Custom Annotations**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## B.2 Processing Annotations at Runtime (Spring's Way)
 
@@ -930,14 +887,14 @@ public class AnnotationProcessor {
 
 
 
-> 🔬 **Section Challenge — B.2 Processing Annotations at Runtime (Spring's Way)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — B.2 Processing Annotations at Runtime (Spring's Way)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## B.3 Compile-Time Annotation Processing (Lombok's Way)
 
@@ -993,14 +950,14 @@ public class User {
 
 
 
-> 🔬 **Section Challenge — B.3 Compile-Time Annotation Processing (Lombok's Way)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — B.3 Compile-Time Annotation Processing (Lombok's Way)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## B.4 Creating a Compile-Time Annotation Processor
 
@@ -1055,14 +1012,14 @@ public class BuilderProcessor extends AbstractProcessor {
 
 
 
-> 🔬 **Section Challenge — B.4 Creating a Compile-Time Annotation Processor**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — B.4 Creating a Compile-Time Annotation Processor**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🎨 Section C: Proxy Patterns — the Real Spring Magic
 
@@ -1097,19 +1054,13 @@ public class BuilderProcessor extends AbstractProcessor {
 ```
 
 **Flow:**
-- Your Code: What Spring Creates:
-- ↓
-- @Service @Service
-- ↓
-- class UserService { class UserService$Proxy extends ...
-- ↓
-- @Transactional private UserService target;
-- ↓
-- void save(User u) {
-- ↓
-- repo.save(u); void save(User u) {
-- ↓
-- } beginTransaction();
+1. Your Code: What Spring Creates:
+2. @Service @Service
+3. class UserService { class UserService$Proxy extends ...
+4. @Transactional private UserService target;
+5. void save(User u) {
+6. repo.save(u); void save(User u) {
+7. } beginTransaction();
 
 ```mermaid
 flowchart TD
@@ -1214,14 +1165,14 @@ proxiedService.save(new User());  // Prints: BEGIN TRANSACTION, COMMIT
 
 
 
-> 🔬 **Section Challenge — C.1 JDK Dynamic Proxies - Interface-Based**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — C.1 JDK Dynamic Proxies - Interface-Based**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## C.2 CGLIB Proxies - Class-Based (No Interface Needed)
 
@@ -1282,14 +1233,14 @@ class TransactionInterceptor implements MethodInterceptor {
 
 
 
-> 🔬 **Section Challenge — C.2 CGLIB Proxies - Class-Based (No Interface Needed)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — C.2 CGLIB Proxies - Class-Based (No Interface Needed)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## C.3 JDK vs CGLIB - When Spring Uses Which
 
@@ -1313,14 +1264,14 @@ class TransactionInterceptor implements MethodInterceptor {
 
 
 
-> 🔬 **Section Challenge — C.3 JDK vs CGLIB - When Spring Uses Which**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — C.3 JDK vs CGLIB - When Spring Uses Which**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## C.4 The Famous @Transactional Self-Invocation Bug
 
@@ -1410,14 +1361,14 @@ public class UserServiceB {
 
 
 
-> 🔬 **Section Challenge — C.4 The Famous @Transactional Self-Invocation Bug**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — C.4 The Famous @Transactional Self-Invocation Bug**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## C.5 Why @Transactional Doesn't Work on Private Methods
 
@@ -1455,14 +1406,14 @@ RESULT: Private methods bypass the proxy entirely
 
 
 
-> 🔬 **Section Challenge — C.5 Why @Transactional Doesn't Work on Private Methods**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — C.5 Why @Transactional Doesn't Work on Private Methods**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 # 🌱 Section D: Servlet API — What Spring Boot Hides
 
@@ -1489,19 +1440,13 @@ RESULT: Private methods bypass the proxy entirely
 ```
 
 **Flow:**
-- SPRING MVC IS BUILT ON SERVLETS - YOU JUST DON'T SEE TH
-- ↓
-- When you write: Behind the scenes:
-- ↓
-- @GetMapping('/users') HttpServletRequest request
-- ↓
-- public List<User> getUsers() { HttpServletRespons
-- ↓
-- return userService.findAll(); FilterChain chain
-- ↓
-- } DispatcherServlet
-- ↓
-- RequestMapping handler
+1. SPRING MVC IS BUILT ON SERVLETS - YOU JUST DON'T SEE TH
+2. When you write: Behind the scenes:
+3. @GetMapping('/users') HttpServletRequest request
+4. public List<User> getUsers() { HttpServletRespons
+5. return userService.findAll(); FilterChain chain
+6. } DispatcherServlet
+7. RequestMapping handler
 
 ```mermaid
 flowchart TD
@@ -1623,14 +1568,14 @@ public void debugRequest(HttpServletRequest request) {
 
 
 
-> 🔬 **Section Challenge — D.2 HttpServletRequest - Everything About the Request**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — D.2 HttpServletRequest - Everything About the Request**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## D.3 HttpServletResponse - Controlling the Response
 
@@ -1674,14 +1619,14 @@ public void customResponse(HttpServletResponse response) throws IOException {
 
 
 
-> 🔬 **Section Challenge — D.3 HttpServletResponse - Controlling the Response**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — D.3 HttpServletResponse - Controlling the Response**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## D.4 Filters - The Pipeline Before Controllers
 
@@ -1778,14 +1723,14 @@ public class RequestLoggingFilter implements Filter {
 
 
 
-> 🔬 **Section Challenge — D.4 Filters - The Pipeline Before Controllers**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — D.4 Filters - The Pipeline Before Controllers**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## D.5 Understanding DispatcherServlet
 
@@ -1836,14 +1781,14 @@ public class DispatcherServlet extends FrameworkServlet {
 
 
 
-> 🔬 **Section Challenge — D.5 Understanding DispatcherServlet**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — D.5 Understanding DispatcherServlet**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📌 Section E: Jackson & Serialization — JSON Isn't Magic
 
@@ -1872,19 +1817,13 @@ public class DispatcherServlet extends FrameworkServlet {
 ```
 
 **Flow:**
-- EVERY @RestController USES JACKSON - DO YOU KNOW HOW?
-- ↓
-- @GetMapping('/user')
-- ↓
-- public User getUser() {
-- ↓
-- return new User('John', 25);
-- ↓
-- @PostMapping('/user')
-- ↓
-- public void create(@RequestBody User user) {
-- ↓
-- WHO CONVERTS JAVA ↔ JSON? JACKSON!
+1. EVERY @RestController USES JACKSON - DO YOU KNOW HOW?
+2. @GetMapping('/user')
+3. public User getUser() {
+4. return new User('John', 25);
+5. @PostMapping('/user')
+6. public void create(@RequestBody User user) {
+7. WHO CONVERTS JAVA ↔ JSON? JACKSON!
 
 ```mermaid
 flowchart TD
@@ -2072,25 +2011,25 @@ public class MoneySerializer extends JsonSerializer<BigDecimal> {
 
 ---
 
-> **Navigation**: [< Previous](Ch20_AlgoEng_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch27_Pre_Spring_Part2.md)
+**Navigation**: [< Previous](Ch20_AlgoEng_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch27_Pre_Spring_Part2.md)
 
-> 🔬 **Section Challenge — E.3 Custom Serializers & Deserializers**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — E.3 Custom Serializers & Deserializers**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 

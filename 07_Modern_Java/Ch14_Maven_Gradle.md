@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](Ch08_Collections_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch13_Networking_NIO.md)
+**Navigation**: [< Previous](Ch08_Collections_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch13_Networking_NIO.md)
 
 # 🔧 Chapter 45 — Maven & Gradle Build Internals: How Java Projects Actually Build
 
-> **"Every Java developer uses Maven or Gradle daily, but few understand the lifecycle phases, dependency resolution algorithm, or why 'mvn clean install' does what it does. Understanding build tools is what makes you self-sufficient — you stop copying Stack Overflow commands blindly."**
+**"Every Java developer uses Maven or Gradle daily, but few understand the lifecycle phases, dependency resolution algorithm, or why 'mvn clean install' does what it does. Understanding build tools is what makes you self-sufficient — you stop copying Stack Overflow commands blindly."**
 
 ---
 
@@ -261,14 +261,14 @@
 
 
 
-> 🔬 **Section Challenge — 4. Maven Dependency Resolution**
->
-> **Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
-> <details><summary>Answer</summary>
->
-> Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
-> </details>
->
+🔬 **Section Challenge — 4. Maven Dependency Resolution**
+
+**Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+<details><summary>Answer</summary>
+
+Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
+</details>
+
 
 ## 5. Dependency Scopes
 
@@ -300,14 +300,14 @@
 
 
 
-> 🔬 **Section Challenge — 5. Dependency Scopes**
->
-> **Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
-> <details><summary>Answer</summary>
->
-> Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
-> </details>
->
+🔬 **Section Challenge — 5. Dependency Scopes**
+
+**Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+<details><summary>Answer</summary>
+
+Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
+</details>
+
 
 ## 6. BOM — Bill of Materials
 
@@ -515,14 +515,14 @@ dependencies {
 
 
 
-> 🔬 **Section Challenge — 9. Gradle Dependency Management**
->
-> **Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
-> <details><summary>Answer</summary>
->
-> Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
-> </details>
->
+🔬 **Section Challenge — 9. Gradle Dependency Management**
+
+**Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+<details><summary>Answer</summary>
+
+Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
+</details>
+
 
 ## 10. Maven vs Gradle Comparison
 
@@ -629,4 +629,4 @@ gradlew.bat build            # Windows
 
 ---
 
-> **Next Chapter**: [Java Networking & NIO →](Ch13_Networking_NIO.md)
+**Next Chapter**: [Java Networking & NIO →](Ch13_Networking_NIO.md)

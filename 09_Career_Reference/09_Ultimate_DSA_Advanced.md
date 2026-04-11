@@ -32,19 +32,13 @@
 ```
 
 **Flow:**
-- STRING ALGORITHMS HIERARCHY
-- ↓
-- PATTERN MATCHING ALGORITHMS:
-- ↓
-- Algorithm Time Space Best For
-- ↓
-- Naive O(nm) O(1) Short patterns, simple cases
-- ↓
-- KMP O(n+m) O(m) Single pattern, streaming
-- ↓
-- Rabin-Karp O(n+m)† O(1) Multiple patterns same length
-- ↓
-- Z-Algorithm O(n+m) O(n) All occurrences, string analysi
+1. STRING ALGORITHMS HIERARCHY
+2. PATTERN MATCHING ALGORITHMS:
+3. Algorithm Time Space Best For
+4. Naive O(nm) O(1) Short patterns, simple cases
+5. KMP O(n+m) O(m) Single pattern, streaming
+6. Rabin-Karp O(n+m)† O(1) Multiple patterns same length
+7. Z-Algorithm O(n+m) O(n) All occurrences, string analysi
 
 ```mermaid
 flowchart TD
@@ -209,17 +203,12 @@ class AhoCorasick {
 ```
 
 **Flow:**
-- RANDOMIZED ALGORITHMS - POWER OF RANDOMNESS
-- ↓
-- WHY RANDOMIZATION?
-- ↓
-- • Simpler algorithms with good expected performance
-- ↓
-- • Avoid adversarial worst cases
-- ↓
-- • Handle uncertain or dynamic data
-- ↓
-- QUICKSELECT (Find k-th smallest element):
+1. RANDOMIZED ALGORITHMS - POWER OF RANDOMNESS
+2. WHY RANDOMIZATION?
+3. • Simpler algorithms with good expected performance
+4. • Avoid adversarial worst cases
+5. • Handle uncertain or dynamic data
+6. QUICKSELECT (Find k-th smallest element):
 
 ```mermaid
 flowchart TD
@@ -377,9 +366,8 @@ int[] reservoirSample(Iterator<Integer> stream, int k) {
 ```
 
 **Flow:**
-- APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS
-- ↓
-- VERTEX COVER - 2-APPROXIMATION:
+1. APPROXIMATION ALGORITHMS FOR NP-HARD PROBLEMS
+2. VERTEX COVER - 2-APPROXIMATION:
 
 ```mermaid
 flowchart TD
@@ -528,9 +516,8 @@ List<Integer> tspApprox(int[][] dist, int n) {
 ```
 
 **Flow:**
-- PRODUCTION-GRADE DATA STRUCTURES
-- ↓
-- COUNT-MIN SKETCH (Approximate frequency counting):
+1. PRODUCTION-GRADE DATA STRUCTURES
+2. COUNT-MIN SKETCH (Approximate frequency counting):
 
 ```mermaid
 flowchart TD
@@ -745,9 +732,8 @@ class CuckooFilter {
 ```
 
 **Flow:**
-- ADVANCED INTERVIEW PATTERNS
-- ↓
-- PATTERN 1: MONOTONIC STACK VARIATIONS
+1. ADVANCED INTERVIEW PATTERNS
+2. PATTERN 1: MONOTONIC STACK VARIATIONS
 
 ```mermaid
 flowchart TD
@@ -1022,19 +1008,13 @@ int closestSum(int[] nums, int target) {
 ```
 
 **Flow:**
-- DSA MASTERY CHECKLIST
-- ↓
-- FUNDAMENTALS (Must master completely):
-- ↓
-- □ Arrays: Access, insertion, deletion, resizing
-- ↓
-- □ Linked Lists: Singly, doubly, circular, operations
-- ↓
-- □ Queues: Regular, circular, deque, priority queue
-- ↓
-- □ Hash Tables: Collision handling, load factor, rehashi
-- ↓
-- □ Heaps: Build, insert, extract, heapify
+1. DSA MASTERY CHECKLIST
+2. FUNDAMENTALS (Must master completely):
+3. □ Arrays: Access, insertion, deletion, resizing
+4. □ Linked Lists: Singly, doubly, circular, operations
+5. □ Queues: Regular, circular, deque, priority queue
+6. □ Hash Tables: Collision handling, load factor, rehashi
+7. □ Heaps: Build, insert, extract, heapify
 
 ```mermaid
 flowchart TD
@@ -1080,19 +1060,13 @@ flowchart TD
 ```
 
 **Flow:**
-- JVM INTERNALS - THE COMPLETE GUIDE FOR BUILDING FRAMEWO
-- ↓
-- Why JVM knowledge matters:
-- ↓
-- • Understand WHY your code performs the way it does
-- ↓
-- • Debug memory issues (leaks, OOM errors)
-- ↓
-- • Build frameworks like Spring, Hibernate, Mockito
-- ↓
-- • Optimize applications for production
-- ↓
-- • Ace senior-level Java interviews
+1. JVM INTERNALS - THE COMPLETE GUIDE FOR BUILDING FRAMEWO
+2. Why JVM knowledge matters:
+3. • Understand WHY your code performs the way it does
+4. • Debug memory issues (leaks, OOM errors)
+5. • Build frameworks like Spring, Hibernate, Mockito
+6. • Optimize applications for production
+7. • Ace senior-level Java interviews
 
 ```mermaid
 flowchart TD

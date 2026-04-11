@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](02_DP_State_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Array_String_Thinking.md)
+**Navigation**: [< Previous](02_DP_State_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Array_String_Thinking.md)
 
 # 🗺️ Graph & Tree Problem Thinking — Mental Model
 
-> **The key insight**: Most graph/tree problems are just asking "how do I explore this structure?" The answer is almost always BFS, DFS, or Union-Find. The skill is knowing WHICH one and WHY.
+**The key insight**: Most graph/tree problems are just asking "how do I explore this structure?" The answer is almost always BFS, DFS, or Union-Find. The skill is knowing WHICH one and WHY.
 
 ---
 
@@ -24,29 +24,18 @@ Problem says:                          → Model as:
 ```
 
 **Flow:**
-- Problem says:
-- ↓
-- Model as:
-- ↓
-- 'Dependencies between tasks'
-- ↓
-- Directed graph (topological sort)
-- ↓
-- 'Can person A reach person B?'
-- ↓
-- Undirected graph (BFS/DFS)
-- ↓
-- 'Convert word A to word B'
-- ↓
-- Graph where words are nodes
-- ↓
-- '2D grid with obstacles'
-- ↓
-- Grid graph (4-directional)
-- ↓
-- 'Network of computers'
-- ↓
-- Undirected graph
+1. Problem says:
+2. Model as:
+3. 'Dependencies between tasks'
+4. Directed graph (topological sort)
+5. 'Can person A reach person B?'
+6. Undirected graph (BFS/DFS)
+7. 'Convert word A to word B'
+8. Graph where words are nodes
+9. '2D grid with obstacles'
+10. Grid graph (4-directional)
+11. 'Network of computers'
+12. Undirected graph
 
 ```mermaid
 flowchart TD
@@ -88,8 +77,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Part 1: "Is This a Graph Problem?" — Recognition**
->>>
+🔬 **Section Challenge — Part 1: "Is This a Graph Problem?" — Recognition**
+>>
 
 ## Part 2: BFS vs DFS — The Decision Framework
 
@@ -106,11 +95,8 @@ Drop a stone → it expands in CIRCLES → nearest first
 ```
 
 **Flow:**
-- Drop a stone
-- ↓
-- it expands in CIRCLES
-- ↓
-- nearest first
+1. Drop a stone it expands in CIRCLES
+2. nearest first
 
 ```mermaid
 flowchart LR
@@ -135,13 +121,8 @@ Go as DEEP as possible → hit dead end → BACKTRACK → try next path
 ```
 
 **Flow:**
-- Go as DEEP as possible
-- ↓
-- hit dead end
-- ↓
-- BACKTRACK
-- ↓
-- try next path
+1. Go as DEEP as possible hit dead end
+2. BACKTRACK try next path
 
 ```mermaid
 flowchart LR
@@ -175,13 +156,9 @@ Each person belongs to a club → when two people connect, their clubs merge
 ```
 
 **Flow:**
-- ✅ Cycle detection in undirected graph (if union re
-- ↓
-- cycle)
-- ↓
-- Each person belongs to a club
-- ↓
-- when two people connect, their clubs merge
+1. ✅ Cycle detection in undirected graph (if union re cycle)
+2. Each person belongs to a club
+3. when two people connect, their clubs merge
 
 ```mermaid
 flowchart LR
@@ -219,13 +196,10 @@ Graph problem?
 ```
 
 **Flow:**
-- Root-to-leaf?
-- ↓
-- DFS
-- ↓
-- Level-order?
-- ↓
-- BFS
+1. Root-to-leaf?
+2. DFS
+3. Level-order?
+4. BFS
 
 ```mermaid
 flowchart LR
@@ -279,19 +253,13 @@ Category 4: "FIND something in the tree"
 ```
 
 **Flow:**
-- Category 1: 'RETURN something about the tree'
-- ↓
-- DFS that returns a value (height, sum, boolean)
-- ↓
-- Example: max depth = 1 + max(leftDepth, rightDepth)
-- ↓
-- Category 2: 'UPDATE a global answer during traversal'
-- ↓
-- DFS with a class variable
-- ↓
-- Category 3: 'BUILD or TRANSFORM the tree'
-- ↓
-- DFS that returns new nodes
+1. Category 1: 'RETURN something about the tree'
+2. DFS that returns a value (height, sum, boolean)
+3. Example: max depth = 1 + max(leftDepth, rightDepth)
+4. Category 2: 'UPDATE a global answer during traversal'
+5. DFS with a class variable
+6. Category 3: 'BUILD or TRANSFORM the tree'
+7. DFS that returns new nodes
 
 ```mermaid
 flowchart TD
@@ -324,27 +292,17 @@ BST = sorted structure → INORDER traversal gives sorted array
 ```
 
 **Flow:**
-- BST = sorted structure
-- ↓
-- INORDER traversal gives sorted array
-- ↓
-- 'Kth smallest?'
-- ↓
-- Inorder, count to k
-- ↓
-- 'Validate BST?'
-- ↓
-- Every node has a valid range [min, max]
-- ↓
-- 'Search?'
-- ↓
-- Go left if smaller, right if larger
-- ↓
-- O(log n)
-- ↓
-- 'Insert?'
-- ↓
-- Find the right spot like binary search
+1. BST = sorted structure
+2. INORDER traversal gives sorted array
+3. 'Kth smallest?'
+4. Inorder, count to k
+5. 'Validate BST?'
+6. Every node has a valid range [min, max]
+7. 'Search?'
+8. Go left if smaller, right if larger
+9. O(log n)
+10. 'Insert?'
+11. Find the right spot like binary search
 
 ```mermaid
 flowchart TD
@@ -415,29 +373,18 @@ boolean[][] visited;  // When you can't mutate the grid
 ```
 
 **Flow:**
-- 'How many islands?'
-- ↓
-- Count DFS/BFS starts on unvisited land
-- ↓
-- 'Shortest path to exit?'
-- ↓
-- BFS from start
-- ↓
-- 'Distance from all 1s?'
-- ↓
-- MULTI-SOURCE BFS (enqueue ALL 1s first)
-- ↓
-- 'Can we escape?'
-- ↓
-- DFS/BFS to check connectivity
-- ↓
-- 'Surrounded regions?'
-- ↓
-- DFS from BORDERS first, then fill rest
-- ↓
-- 'Rotting oranges?'
-- ↓
-- Multi-source BFS with time tracking
+1. 'How many islands?'
+2. Count DFS/BFS starts on unvisited land
+3. 'Shortest path to exit?'
+4. BFS from start
+5. 'Distance from all 1s?'
+6. MULTI-SOURCE BFS (enqueue ALL 1s first)
+7. 'Can we escape?'
+8. DFS/BFS to check connectivity
+9. 'Surrounded regions?'
+10. DFS from BORDERS first, then fill rest
+11. 'Rotting oranges?'
+12. Multi-source BFS with time tracking
 
 ```mermaid
 flowchart TD
@@ -465,8 +412,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Part 4: Grid/Matrix as Graph — Mental Model**
->>>
+🔬 **Section Challenge — Part 4: Grid/Matrix as Graph — Mental Model**
+>>
 
 ## Part 5: Common Graph Patterns & When They Appear
 
@@ -489,9 +436,7 @@ Mental model: "Color neighbors with opposite color. Contradiction = not bipartit
 ```
 
 **Flow:**
-- If conflict found
-- ↓
-- not bipartite
+1. If conflict found not bipartite
 
 ```mermaid
 flowchart LR
@@ -510,9 +455,7 @@ Mental model: "Can child reach higher than parent without this edge?"
 ```
 
 **Flow:**
-- If low[child] > disc[parent]
-- ↓
-- bridge edge
+1. If low[child] > disc[parent] bridge edge
 
 ```mermaid
 flowchart LR
@@ -525,8 +468,8 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — Part 5: Common Graph Patterns & When They Appear**
->>>
+🔬 **Section Challenge — Part 5: Common Graph Patterns & When They Appear**
+>>
 
 ## Part 6: Graph/Tree Debugging Checklist
 
@@ -543,13 +486,8 @@ flowchart LR
 ```
 
 **Flow:**
-- Wrong: mark when poll
-- ↓
-- may enqueue duplicates
-- ↓
-- Right: mark when offer
-- ↓
-- each node enqueued once
+1. Wrong: mark when poll may enqueue duplicates
+2. Right: mark when offer each node enqueued once
 
 ```mermaid
 flowchart LR
@@ -579,8 +517,8 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — Part 6: Graph/Tree Debugging Checklist**
->>>
+🔬 **Section Challenge — Part 6: Graph/Tree Debugging Checklist**
+>>
 
 ## 🏋️ Practice & Interview Questions — Trees & Heaps
 

@@ -1,6 +1,6 @@
 # 🐳 Docker & Containers — Complete Guide
 
-> **Navigation**: [< Linux CLI](02_Linux_CLI_Shell.md) | [Index](00_INDEX.md) | [Next: CI/CD >](04_CICD_Pipelines.md)
+**Navigation**: [< Linux CLI](02_Linux_CLI_Shell.md) | [Index](00_INDEX.md) | [Next: CI/CD >](04_CICD_Pipelines.md)
 
 ---
 
@@ -48,19 +48,13 @@ This container runs IDENTICALLY on:
 ```
 
 **Flow:**
-- Container = Your application + ALL its dependencies
-- ↓
-- packaged into ONE portable unit
-- ↓
-- Container
-- ↓
-- Your Java MySQL
-- ↓
-- App 17 8.0
-- ↓
-- Ubuntu 22.04 (base)
-- ↓
-- This container runs IDENTICALLY on:
+1. Container = Your application + ALL its dependencies
+2. packaged into ONE portable unit
+3. Container
+4. Your Java MySQL
+5. App 17 8.0
+6. Ubuntu 22.04 (base)
+7. This container runs IDENTICALLY on:
 
 ```mermaid
 flowchart TD
@@ -83,14 +77,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — The Solution: Containers**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — The Solution: Containers**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Container vs Virtual Machine
 
@@ -115,9 +109,8 @@ Analogy:
 ```
 
 **Flow:**
-- App A App B App C / Bins/Libs Bins/Libs B/L / Guest OS
-- ↓
-- App A App B App C / Bins/Libs Bins/Libs B/L / Docker En
+1. App A App B App C / Bins/Libs Bins/Libs B/L / Guest OS
+2. App A App B App C / Bins/Libs Bins/Libs B/L / Docker En
 
 ```mermaid
 flowchart TD
@@ -128,14 +121,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Container vs Virtual Machine**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Container vs Virtual Machine**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## WHO: Origin
 
@@ -149,9 +142,8 @@ Docker's genius = Made containers EASY to use
 ```
 
 **Flow:**
-- Open-sourced it
-- ↓
-- Revolutionized deployment
+1. Open-sourced it
+2. Revolutionized deployment
 
 ```mermaid
 flowchart LR
@@ -164,14 +156,14 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — WHO: Origin**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — WHO: Origin**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # WHAT: Core Concepts
 
@@ -196,9 +188,8 @@ One image → Many containers:
 ```
 
 **Flow:**
-- One image
-- ↓
-- Many containers:
+1. One image
+2. Many containers:
 
 ```mermaid
 flowchart LR
@@ -209,14 +200,14 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — Images vs Containers**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Images vs Containers**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Layers (How Images are Efficient)
 
@@ -233,39 +224,17 @@ Key insight: Layers are CACHED and SHARED
 ```
 
 **Flow:**
-- Dockerfile: Image Layers:
-- ↓
-- FROM ubuntu:22.04
-- ↓
-- Layer 1: Ubuntu (shared!)
-- ↓
-- FROM ubuntu:22.04
-- ↓
-- Layer 1: Ubuntu (shared!)
-- ↓
-- RUN apt install java
-- ↓
-- Layer 2: Java
-- ↓
-- RUN apt install java
-- ↓
-- Layer 2: Java
-- ↓
-- COPY app.jar /app/
-- ↓
-- Layer 3: Your JAR
-- ↓
-- COPY app.jar /app/
-- ↓
-- Layer 3: Your JAR
-- ↓
-- CMD ['java','-jar']
-- ↓
-- Key insight: Layers are CACHED and SHARED
-- ↓
-- - 10 apps using Java 17?
-- ↓
-- Java layer downloaded ONCE
+1. Dockerfile: Image Layers:
+2. FROM ubuntu:22.04
+3. Layer 1: Ubuntu (shared!)
+4. RUN apt install java
+5. Layer 2: Java
+6. COPY app.jar /app/
+7. Layer 3: Your JAR
+8. CMD ['java','-jar']
+9. Key insight: Layers are CACHED and SHARED
+10. - 10 apps using Java 17?
+11. Java layer downloaded ONCE
 
 ```mermaid
 flowchart TD
@@ -295,14 +264,14 @@ flowchart TD
 ```bash
 
 
-> 🔬 **Section Challenge — Installation**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Installation**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # Windows: Install Docker Desktop
 # Mac: Install Docker Desktop
@@ -522,17 +491,12 @@ instead of "localhost:5432" inside Docker
 ```
 
 **Flow:**
-- app ←
-- ↓
-- db ← communicate by SERVICE NAME
-- ↓
-- app ←
-- ↓
-- cache ← no need for IP addresses!
-- ↓
-- nginx ←
-- ↓
-- internet ← only nginx exposed to outside
+1. app ←
+2. db ← communicate by SERVICE NAME
+3. app ←
+4. cache ← no need for IP addresses!
+5. nginx ←
+6. internet ← only nginx exposed to outside
 
 ```mermaid
 flowchart LR
@@ -635,25 +599,25 @@ CLEANUP:     system prune | image prune | container prune
 
 
 
-> 🔬 **Section Challenge — Exercise 2: Build Custom Image**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — Exercise 2: Build Custom Image**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## Exercise 3: Compose Full Stack
 ```
@@ -667,7 +631,7 @@ CLEANUP:     system prune | image prune | container prune
 
 ---
 
-> **Next Chapter**: [CI/CD Pipelines →](04_CICD_Pipelines.md)
+**Next Chapter**: [CI/CD Pipelines →](04_CICD_Pipelines.md)
 
 
 ---
@@ -677,8 +641,8 @@ CLEANUP:     system prune | image prune | container prune
 
 
 
-> 🔬 **Section Challenge — Exercise 3: Compose Full Stack**
->>
+🔬 **Section Challenge — Exercise 3: Compose Full Stack**
+>
 
 ## 🏋️ Practice & Interview Questions — DevOps & Networking
 

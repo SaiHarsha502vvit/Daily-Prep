@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](00_INDEX.md) | [< Prev](36_Advanced_Data_Modeling.md) | [Next >](38_RealWorld_Production_Scenarios_Part1.md)
+**Navigation**: [Back to Index](00_INDEX.md) | [< Prev](36_Advanced_Data_Modeling.md) | [Next >](38_RealWorld_Production_Scenarios_Part1.md)
 
 # Chapter 37 — SQL 5W-H Deep Reasoning Framework
 
 ## What Is This File?
 This is the **capstone** of the SQL section. We apply the **5W-H framework** (Who, What, When, Where, Why, How) systematically to EVERY major SQL concept — giving you a mental model to reason about ANY SQL topic from first principles.
 
-> "If you can't explain it simply, you don't understand it well enough." — Einstein
+"If you can't explain it simply, you don't understand it well enough." — Einstein
 
 ---
 
@@ -80,20 +80,20 @@ LEFT JOIN orders o ON u.user_id = o.user_id;
 
 
 
-> 🔬 **Section Challenge — 2. JOINs**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — 2. JOINs**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 
 ## 3. Indexes
 
@@ -155,14 +155,14 @@ This is the D in ACID (Durability) — WAL guarantees it.
 
 
 
-> 🔬 **Section Challenge — 4. Transactions & ACID**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — 4. Transactions & ACID**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## 5. Normalization
 
@@ -217,20 +217,20 @@ When to use which:
 
 
 
-> 🔬 **Section Challenge — 6. Window Functions**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — 6. Window Functions**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## 7. Subqueries vs CTEs vs Temp Tables
 
@@ -391,8 +391,8 @@ This is WHY you can't use a SELECT alias in WHERE:
 
 For each concept, try to complete this sentence:
 
-> "[CONCEPT] exists because without it, [PROBLEM] would happen.
-> It works by [MECHANISM], and you should use it when [CONDITION]."
+"[CONCEPT] exists because without it, [PROBLEM] would happen.
+It works by [MECHANISM], and you should use it when [CONDITION]."
 
 **Examples**:
 - "**Indexes** exist because without them, every query would scan the entire table. They work by maintaining a sorted B-tree structure, and you should use them when columns appear in WHERE/JOIN/ORDER BY on large tables."
@@ -649,4 +649,4 @@ Red flags: (1) **"Full Table Scan" / "Seq Scan"** on a large table → missing i
 </details>
 
 
-> **Navigation**: [Back to Index](00_INDEX.md) | [< Prev](36_Advanced_Data_Modeling.md) | [Next >](38_RealWorld_Production_Scenarios_Part1.md)
+**Navigation**: [Back to Index](00_INDEX.md) | [< Prev](36_Advanced_Data_Modeling.md) | [Next >](38_RealWorld_Production_Scenarios_Part1.md)

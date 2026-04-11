@@ -65,13 +65,10 @@ Source Code
 ```
 
 **Flow:**
-- TypeScript / Compiler
-- ↓
-- Babel / / SWC
-- ↓
-- Webpack / / Vite
-- ↓
-- Output: / dist/
+1. TypeScript / Compiler
+2. Babel / / SWC
+3. Webpack / / Vite
+4. Output: / dist/
 
 ```mermaid
 flowchart TD
@@ -166,29 +163,16 @@ npx create-vite      → Run a package without installing
 ```
 
 **Flow:**
-- '^18.3.1'
-- ↓
-- caret: allows 18.x.x updates (minor + patch)
-- ↓
-- '~18.3.1'
-- ↓
-- tilde: allows 18.3.x updates (patch only)
-- ↓
-- '18.3.1'
-- ↓
-- exact: only this version
-- ↓
-- npm install
-- ↓
-- Install all dependencies from lock file
-- ↓
-- npm install react
-- ↓
-- Add to dependencies
-- ↓
-- npm install -D vite
-- ↓
-- Add to devDependencies
+1. '^18.3.1'
+2. caret: allows 18.x.x updates (minor + patch)
+3. '~18.3.1'
+4. tilde: allows 18.3.x updates (patch only)
+5. '18.3.1' exact: only this version
+6. npm install
+7. Install all dependencies from lock file
+8. npm install react
+9. Add to dependencies npm install -D vite
+10. Add to devDependencies
 
 ```mermaid
 flowchart TD
@@ -251,19 +235,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WHAT BABEL DOES — Translate modern JS to older JS:
-- ↓
-- YOUR CODE: BABEL OUTPUT:
-- ↓
-- `Hello, ${name}!`; return 'Hello, ' + name
-- ↓
-- const user = data?.user; var _data;
-- ↓
-- var user = (_data = data)
-- ↓
-- void 0 ? _data.user
-- ↓
-- : void 0;
+1. WHAT BABEL DOES — Translate modern JS to older JS:
+2. YOUR CODE: BABEL OUTPUT:
+3. `Hello, ${name}!`; return 'Hello, ' + name
+4. const user = data?.user; var _data;
+5. var user = (_data = data)
+6. void 0 ? _data.user
+7. : void 0;
 
 ```mermaid
 flowchart TD
@@ -309,25 +287,14 @@ flowchart TD
 ```
 
 **Flow:**
-- JSX IS NOT JAVASCRIPT. Browsers cannot run it.
-- ↓
-- Babel (or SWC) transforms JSX
-- ↓
-- function calls:
-- ↓
-- Babel (or SWC) transforms JSX
-- ↓
-- function calls:
-- ↓
-- WHAT YOU WRITE:
-- ↓
-- <div className='card'>
-- ↓
-- <h1>{title}</h1>
-- ↓
-- <p>Hello</p>
-- ↓
-- </div>
+1. JSX IS NOT JAVASCRIPT. Browsers cannot run it.
+2. Babel (or SWC) transforms JSX
+3. function calls:
+4. WHAT YOU WRITE:
+5. <div className='card'>
+6. <h1>{title}</h1>
+7. <p>Hello</p>
+8. </div>
 
 ```mermaid
 flowchart TD
@@ -384,29 +351,15 @@ dist/
 ```
 
 **Flow:**
-- src/
-- ↓
-- App.tsx (imports Header, Router, Context)
-- ↓
-- src/
-- ↓
-- components/
-- ↓
-- src/
-- ↓
-- Header.tsx (imports Button, Logo, useAuth)
-- ↓
-- src/
-- ↓
-- Button.tsx (imports styles)
-- ↓
-- src/
-- ↓
-- UserCard.tsx (imports Badge, Avatar, date-fns)
-- ↓
-- src/
-- ↓
-- hooks/
+1. src/
+2. App.tsx (imports Header, Router, Context)
+3. src/ components/ src/
+4. Header.tsx (imports Button, Logo, useAuth)
+5. src/
+6. Button.tsx (imports styles)
+7. src/
+8. UserCard.tsx (imports Badge, Avatar, date-fns)
+9. src/ hooks/
 
 ```mermaid
 flowchart TD
@@ -471,13 +424,9 @@ PROS:                         CONS:
 ```
 
 **Flow:**
-- 2. Follow every import/require
-- ↓
-- build dependency graph
-- ↓
-- babel-loader: .tsx/.jsx
-- ↓
-- JavaScript
+1. Follow every import/require build dependency graph
+2. babel-loader: .tsx/.jsx
+3. JavaScript
 
 ```mermaid
 flowchart LR
@@ -523,19 +472,13 @@ RESULT:
 ```
 
 **Flow:**
-- Source
-- ↓
-- Bundle ALL files
-- ↓
-- Serve
-- ↓
-- You see page / ^^^^
-- ↓
-- Source
-- ↓
-- Start server immediately
-- ↓
-- Transform / on requ
+1. Source
+2. Bundle ALL files
+3. Serve
+4. You see page / ^^^^
+5. Source
+6. Start server immediately
+7. Transform / on requ
 
 ```mermaid
 flowchart TD
@@ -564,19 +507,13 @@ flowchart TD
 ```
 
 **Flow:**
-- Feature Webpack Vite
-- ↓
-- Dev startup Slow (bundles) Instant (native ESM)
-- ↓
-- HMR speed Seconds Milliseconds
-- ↓
-- Config Complex Minimal
-- ↓
-- Production Battle-tested Uses Rollup (also solid)
-- ↓
-- Plugin ecosystem Huge Growing fast, Rollup compat
-- ↓
-- Learning curve Steep Low
+1. Feature Webpack Vite
+2. Dev startup Slow (bundles) Instant (native ESM)
+3. HMR speed Seconds Milliseconds
+4. Config Complex Minimal
+5. Production Battle-tested Uses Rollup (also solid)
+6. Plugin ecosystem Huge Growing fast, Rollup compat
+7. Learning curve Steep Low
 
 ```mermaid
 flowchart TD
@@ -627,19 +564,13 @@ flowchart TD
 ```
 
 **Flow:**
-- TREE SHAKING — Remove unused code from bundles
-- ↓
-- Tree shaking tears out the unused chapters before shipp
-- ↓
-- export function add(a, b) { return a + b; }
-- ↓
-- export function subtract(a, b) { return a - b; } // unu
-- ↓
-- export function multiply(a, b) { return a * b; } // unu
-- ↓
-- import { add } from './utils';
-- ↓
-- REQUIRES: ES Module syntax (import/export, NOT require)
+1. TREE SHAKING — Remove unused code from bundles
+2. Tree shaking tears out the unused chapters before shipp
+3. export function add(a, b) { return a + b; }
+4. export function subtract(a, b) { return a - b; } // unu
+5. export function multiply(a, b) { return a * b; } // unu
+6. import { add } from './utils';
+7. REQUIRES: ES Module syntax (import/export, NOT require)
 
 ```mermaid
 flowchart TD
@@ -692,31 +623,7 @@ flowchart TD
 ```
 
 **Flow:**
-- CODE SPLITTING — Load only what's needed, when needed
-- ↓
-- WITHOUT Splitting:
-- ↓
-- User visits login page
-- ↓
-- downloads ENTIRE app (5MB)
-- ↓
-- User visits login page
-- ↓
-- downloads ENTIRE app (5MB)
-- ↓
-- WITH Splitting:
-- ↓
-- User visits login page
-- ↓
-- downloads login chunk (50KB)
-- ↓
-- User visits login page
-- ↓
-- downloads login chunk (50KB)
-- ↓
-- Admin page? Only loaded if user is admin
-- ↓
-- HOW IN REACT:
+1. CODE SPLITTING — Load only what's needed, when needed WITHOUT Splitting: User visits login page downloads ENTIRE app (5MB) User visits login page downloads ENTIRE app (5MB) WITH Splitting: User visits login page downloads login chunk (50KB) User visits login page downloads login chunk (50KB) Admin page? Only loaded if user is admin HOW IN REACT:
 
 ```mermaid
 flowchart TD
@@ -759,19 +666,9 @@ flowchart TD
 ```
 
 **Flow:**
-- SOURCE MAPS — Bridge between minified and original code
-- ↓
-- Production bundle: (minified, unreadable)
-- ↓
-- var a=function(t){return t.map(function(e){return e*2})
-- ↓
-- Your original:
-- ↓
-- const doubleAll = (numbers: number[]) =>
-- ↓
-- numbers.map(n => n * 2);
-- ↓
-- Source map (.js.map) contains the MAPPING between them.
+1. SOURCE MAPS — Bridge between minified and original code
+2. Production bundle: (minified, unreadable)
+3. var a=function(t){return t.map(function(e){return e*2}) Your original: const doubleAll = (numbers: number[]) => numbers.map(n => n * 2); Source map (.js.map) contains the MAPPING between them.
 
 ```mermaid
 flowchart TD
@@ -872,13 +769,9 @@ Q: What's the difference between Babel and TypeScript compiler?
 ```
 
 **Flow:**
-- Babel: transforms syntax (JSX, ES2024+
-- ↓
-- ES5). No type checking.
-- ↓
-- TSC: transforms TS
-- ↓
-- JS AND does type checking. Slower but safer.
+1. Babel: transforms syntax (JSX, ES2024+ ES5). No type checking.
+2. TSC: transforms TS
+3. JS AND does type checking. Slower but safer.
 
 ```mermaid
 flowchart LR

@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](17_DSA_Java_Implementation_Mastery.md) | [Back to Index](00_INDEX.md) | [Next >](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
+**Navigation**: [< Previous](17_DSA_Java_Implementation_Mastery.md) | [Back to Index](00_INDEX.md) | [Next >](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
 
 # Chapter 18 - Bitwise Trie Java Complete Guide
 
-> Purpose: Make Bitwise Trie interview-ready in Java with deep reasoning, production-safe implementation, variants, and common pitfalls.
+Purpose: Make Bitwise Trie interview-ready in Java with deep reasoning, production-safe implementation, variants, and common pitfalls.
 
 ---
 
@@ -67,8 +67,6 @@ Since W is constant, linear in practice.
 ---
 
 ## 4. Java Data Structure Design
-
-
 
 ## 4.1 Node
 
@@ -206,16 +204,14 @@ public final class MaxXorTwoNumbers {
 
 ---
 
+🔬 **Section Challenge — 5. Classic Problem 1 - Maximum XOR of Two Numbers**
 
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 5. Classic Problem 1 - Maximum XOR of Two Numbers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## 6. Classic Problem 2 - Maximum XOR with Constraint (Offline)
 
@@ -277,9 +273,6 @@ public final class MaxXorWithConstraint {
 ```
 
 ---
-
-
-
 
 ## 7. Classic Problem 3 - Maximum Subarray XOR
 
@@ -382,26 +375,23 @@ public final class CountPairsXorLessThanK {
 
 ---
 
-
-
-
 ## 9. Java-Specific Pitfalls and Fixes
 
 1. Signed shift confusion
 - use `>>>` for unsigned right shift when reading bits
 
-2. Overflow in bit mask build
+1. Overflow in bit mask build
 - keep expressions parenthesized: `(x >>> b) & 1`
 
-3. Object overhead
+1. Object overhead
 - for huge data, replace node objects with array pools:
   - `int[][] next = new int[maxNodes][2]`
   - `int[] cnt = new int[maxNodes]`
 
-4. Empty trie query
+1. Empty trie query
 - define behavior (`0` or `-1`) and keep it consistent
 
-5. Negative numbers
+1. Negative numbers
 - fixed width 32-bit traversal handles them; do not shorten width unless constraints allow non-negative bounded values
 
 ---
@@ -442,15 +432,13 @@ If you remember only one line:
 
 ---
 
-> **Navigation**: [< Previous](17_DSA_Java_Implementation_Mastery.md) | [Back to Index](00_INDEX.md) | [Next >](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
+**Navigation**: [< Previous](17_DSA_Java_Implementation_Mastery.md) | [Back to Index](00_INDEX.md) | [Next >](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)
 
+🔬 **Section Challenge — 12. Summary**
 
-> 🔬 **Section Challenge — 12. Summary**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
 

@@ -1,11 +1,11 @@
-> **Navigation**: [⬅ SQL Foundations & Intermediate](15_SQL_Problems_Foundations_Intermediate.md) | [📚 Index](00_INDEX.md) | [Next: SQL Analytics & Real-World ➡](17_SQL_Problems_Analytics_RealWorld_Design.md)
+**Navigation**: [⬅ SQL Foundations & Intermediate](15_SQL_Problems_Foundations_Intermediate.md) | [📚 Index](00_INDEX.md) | [Next: SQL Analytics & Real-World ➡](17_SQL_Problems_Analytics_RealWorld_Design.md)
 
 # File 16 — SQL Problems: Window Functions & Advanced Techniques
 
 ## Logic-First, Code-Second: The 5W+H Way
 
-> Window Functions = "Compute something across a SET of rows related to the current row, WITHOUT collapsing them."
-> The key difference from GROUP BY: Window functions keep every row.
+Window Functions = "Compute something across a SET of rows related to the current row, WITHOUT collapsing them."
+The key difference from GROUP BY: Window functions keep every row.
 
 ---
 
@@ -37,20 +37,20 @@ function_name() OVER (
 
 
 
-> 🔬 **Section Challenge — WINDOW FUNCTION CORE CONCEPTS**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — WINDOW FUNCTION CORE CONCEPTS**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## RANKING PROBLEMS
 
@@ -447,20 +447,20 @@ SELECT product, 'Mar' AS month, Mar AS amount FROM MonthlySales
 
 
 
-> 🔬 **Section Challenge — MASTER PROBLEM MAP — Window Functions & Advanced**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — MASTER PROBLEM MAP — Window Functions & Advanced**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## Frame Specification Cheat Sheet
 
@@ -684,4 +684,4 @@ Red flags: (1) **"Full Table Scan" / "Seq Scan"** on a large table → missing i
 </details>
 
 
-> **Navigation**: [⬅ SQL Foundations & Intermediate](15_SQL_Problems_Foundations_Intermediate.md) | [📚 Index](00_INDEX.md) | [Next: SQL Analytics & Real-World ➡](17_SQL_Problems_Analytics_RealWorld_Design.md)
+**Navigation**: [⬅ SQL Foundations & Intermediate](15_SQL_Problems_Foundations_Intermediate.md) | [📚 Index](00_INDEX.md) | [Next: SQL Analytics & Real-World ➡](17_SQL_Problems_Analytics_RealWorld_Design.md)

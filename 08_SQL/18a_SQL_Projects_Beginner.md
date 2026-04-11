@@ -1,6 +1,6 @@
 ---
 
-> **SQL Chapter 18/20** | [← Previous](17_Practice_100_Problems.md) | [Index](../00_MASTER_INDEX.md) | [Next →](19_Interview_Top50.md)
+**SQL Chapter 18/20** | [← Previous](17_Practice_100_Problems.md) | [Index](../00_MASTER_INDEX.md) | [Next →](19_Interview_Top50.md)
 
 ---
 
@@ -453,7 +453,7 @@ DELIMITER ;
 
 # 🎯 SQL Practice Projects & Interview Questions
 
-> Build real skills through project-based learning. Each project simulates actual data analyst work.
+Build real skills through project-based learning. Each project simulates actual data analyst work.
 
 ---
 
@@ -482,14 +482,14 @@ You're a data analyst at an e-commerce company. The CEO wants a dashboard showin
 
 
 
-> 🔬 **Section Challenge — 🏢 Business Context**
->
-> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-> <details><summary>Answer</summary>
->
-> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-> </details>
->
+🔬 **Section Challenge — 🏢 Business Context**
+
+**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+<details><summary>Answer</summary>
+
+Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+</details>
+
 
 ## 📊 Schema Setup
 
@@ -867,14 +867,14 @@ You're analyzing HR data to help with:
 
 
 
-> 🔬 **Section Challenge — 🏢 Business Context**
->
-> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-> <details><summary>Answer</summary>
->
-> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-> </details>
->
+🔬 **Section Challenge — 🏢 Business Context**
+
+**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+<details><summary>Answer</summary>
+
+Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+</details>
+
 
 ## 📊 Schema Setup
 
@@ -1050,14 +1050,14 @@ You're analyzing financial transactions for:
 
 
 
-> 🔬 **Section Challenge — 🏢 Business Context**
->
-> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-> <details><summary>Answer</summary>
->
-> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-> </details>
->
+🔬 **Section Challenge — 🏢 Business Context**
+
+**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+<details><summary>Answer</summary>
+
+Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+</details>
+
 
 ## 📊 Schema Setup
 

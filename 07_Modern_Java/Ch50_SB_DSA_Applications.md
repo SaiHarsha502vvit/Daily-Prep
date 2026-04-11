@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch43_SB_Auth_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch51_SB_Industry_Projects.md)
+**Navigation**: [< Previous](Ch43_SB_Auth_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch51_SB_Industry_Projects.md)
 
 # 🧮 SPRING BOOT MASTERY - Part 12: DSA in Spring Boot Applications
 
-> **Where Data Structures & Algorithms Meet Real World**
-> _"The algorithm you choose determines your application's success"_
+**Where Data Structures & Algorithms Meet Real World**
+_"The algorithm you choose determines your application's success"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why DSA Knowledge in Spring Boot? / • Performance:
-- ↓
-- HOW: How DSA Applies in Real Applications? / • Caching:
-- ↓
-- WHEN: When to Apply DSA in Spring Boot? / • Custom cach
-- ↓
-- WHICH: Which DSA Topics are Most Relevant? / ESSENTIAL:
+1. WHY: Why DSA Knowledge in Spring Boot? / • Performance:
+2. HOW: How DSA Applies in Real Applications? / • Caching:
+3. WHEN: When to Apply DSA in Spring Boot? / • Custom cach
+4. WHICH: Which DSA Topics are Most Relevant? / ESSENTIAL:
 
 ```mermaid
 flowchart TD
@@ -79,14 +76,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 1: DSA in Enterprise Applications**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 1: DSA in Enterprise Applications**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Dsa Usage In Spring Boot Applications
 
@@ -159,14 +156,14 @@ Sliding Window      │ • Rate limiting
 
 
 
-> 🔬 **Section Challenge — Dsa Usage In Spring Boot Applications**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Dsa Usage In Spring Boot Applications**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🔧 Section 2: Real Implementations
 
@@ -298,20 +295,20 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
 
 
-> 🔬 **Section Challenge — Chapter 2: Rate Limiting with Sliding Window**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — Chapter 2: Rate Limiting with Sliding Window**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## Chapter 3: Auto-Complete with Trie
 
@@ -559,14 +556,14 @@ public class ProductService {
 
 
 
-> 🔬 **Section Challenge — Chapter 4: LRU Cache for API Response Caching**
->
-> **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-> <details><summary>Answer</summary>
->
-> Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-> </details>
->
+🔬 **Section Challenge — Chapter 4: LRU Cache for API Response Caching**
+
+**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+<details><summary>Answer</summary>
+
+Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+</details>
+
 
 ## Chapter 5: Shortest Path for Delivery Routing
 
@@ -748,14 +745,14 @@ public class DeliveryController {
 
 
 
-> 🔬 **Section Challenge — Chapter 5: Shortest Path for Delivery Routing**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 5: Shortest Path for Delivery Routing**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 6: Task Scheduler with Priority Queue
 
@@ -1120,14 +1117,14 @@ public class LeaderboardController {
 
 
 
-> 🔬 **Section Challenge — Chapter 7: Leaderboard with TreeMap**
->
-> **Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
-> <details><summary>Answer</summary>
->
-> `TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
-> </details>
->
+🔬 **Section Challenge — Chapter 7: Leaderboard with TreeMap**
+
+**Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
+<details><summary>Answer</summary>
+
+`TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
+</details>
+
 
 ## Chapter 8: Organization Hierarchy with Tree Traversal
 
@@ -1339,20 +1336,20 @@ public class OrganizationController {
 
 
 
-> 🔬 **Section Challenge — Chapter 8: Organization Hierarchy with Tree Traversal**
->
-> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-> <details><summary>Answer</summary>
->
-> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-> <details><summary>Answer</summary>
->
-> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
-> </details>
->
+🔬 **Section Challenge — Chapter 8: Organization Hierarchy with Tree Traversal**
+
+**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+<details><summary>Answer</summary>
+
+`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+</details>
+
+**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+<details><summary>Answer</summary>
+
+1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+</details>
+
 
 # 📋 DSA + Spring Boot Summary
 
@@ -1380,19 +1377,13 @@ public class OrganizationController {
 ```
 
 **Flow:**
-- DSA IN SPRING BOOT - QUICK REFERENCE
-- ↓
-- FEATURE DATA STRUCTURE ALGORITHM
-- ↓
-- Rate Limiting Queue + HashMap Sliding Window
-- ↓
-- Auto-Complete Trie DFS Traversal
-- ↓
-- Caching LinkedHashMap LRU Eviction
-- ↓
-- Route Planning Graph Dijkstra's/A*
-- ↓
-- Task Scheduling PriorityQueue Heap Operations
+1. DSA IN SPRING BOOT - QUICK REFERENCE
+2. FEATURE DATA STRUCTURE ALGORITHM
+3. Rate Limiting Queue + HashMap Sliding Window
+4. Auto-Complete Trie DFS Traversal
+5. Caching LinkedHashMap LRU Eviction
+6. Route Planning Graph Dijkstra's/A*
+7. Task Scheduling PriorityQueue Heap Operations
 
 ```mermaid
 flowchart TD

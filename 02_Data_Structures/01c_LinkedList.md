@@ -109,59 +109,14 @@ CIRCULAR LINKED LIST:
 ```
 
 **Flow:**
-- [10
-- ↓
-- ●]
-- ↓
-- [20
-- ↓
-- ●]
-- ↓
-- [20
-- ↓
-- ●]
-- ↓
-- [30
-- ↓
-- null]
-- ↓
-- null←[●
-- ↓
-- 10
-- ↓
-- ●]↔[●
-- ↓
-- 20
-- ↓
-- ●]↔[●
-- ↓
-- 30
-- ↓
-- ●]
-- ↓
-- null
-- ↓
-- [10
-- ↓
-- ●]
-- ↓
-- [20
-- ↓
-- ●]
-- ↓
-- [20
-- ↓
-- ●]
-- ↓
-- [30
-- ↓
-- ●]
-- ↓
-- [30
-- ↓
-- ●]
-- ↓
-- (back to 10)
+1. [10 ●]
+2. [20 ●]
+3. [30 null] null←[● 10 ●]↔[● 20 ●]↔[● 30 ●]
+4. null
+5. [10 ●]
+6. [20 ●]
+7. [30 ●]
+8. (back to 10)
 
 ```mermaid
 flowchart TD
@@ -228,29 +183,13 @@ WHY NON-CONTIGUOUS IS USEFUL:
 ```
 
 **Flow:**
-- PHYSICAL REALITY:
-- ↓
-- Nodes scattered across memory, connected by refs
-- ↓
-- 10 ●
-- ↓
-- 20 ●
-- ↓
-- 30 null
-- ↓
-- 10 ●
-- ↓
-- 20 ●
-- ↓
-- 30 null
-- ↓
-- addr: 5000 addr: 2000 addr: 8000
-- ↓
-- NOT CONTIGUOUS = Scattered in memory
-- ↓
-- WHY NON-CONTIGUOUS IS USEFUL:
-- ↓
-- - No need for big continuous memory block
+1. PHYSICAL REALITY:
+2. Nodes scattered across memory, connected by refs
+3. 10 ● 20 ● 30 null 10 ● 20 ● 30 null
+4. addr: 5000 addr: 2000 addr: 8000
+5. NOT CONTIGUOUS = Scattered in memory
+6. WHY NON-CONTIGUOUS IS USEFUL:
+7. - No need for big continuous memory block
 
 ```mermaid
 flowchart TD
@@ -586,21 +525,13 @@ while (curr != null) {
 ```
 
 **Flow:**
-- [1]
-- ↓
-- [2]
-- ↓
-- [3]
-- ↓
-- [4]
-- ↓
-- [5]
-- ↓
-- null
-- ↓
-- After 2 steps: slow=3, fast=5
-- ↓
-- fast at end
+1. [1]
+2. [2]
+3. [3]
+4. [4]
+5. [5] null
+6. After 2 steps: slow=3, fast=5
+7. fast at end
 
 ```mermaid
 flowchart TD
@@ -654,13 +585,7 @@ ListNode nthFromEnd(ListNode head, int n) {
 ```
 
 **Flow:**
-- Step 2: null ← 1 ← 2 3
-- ↓
-- null (reverse 2's pointer)
-- ↓
-- AFTER: null ← 1 ← 2 ← 3
-- ↓
-- head = 3
+1. Step 2: null ← 1 ← 2 3 null (reverse 2's pointer) AFTER: null ← 1 ← 2 ← 3 head = 3
 
 ```mermaid
 flowchart LR
@@ -688,17 +613,9 @@ flowchart LR
 ```
 
 **Flow:**
-- Compare heads: 1 < 2
-- ↓
-- take 1
-- ↓
-- Compare: 3 > 2
-- ↓
-- take 2
-- ↓
-- Compare: 3 < 4
-- ↓
-- take 3
+1. Compare heads: 1 < 2 take 1
+2. Compare: 3 > 2 take 2
+3. Compare: 3 < 4 take 3
 
 ```mermaid
 flowchart LR

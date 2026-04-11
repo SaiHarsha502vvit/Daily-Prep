@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](10_Bit_Manipulation_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Greedy_Algorithms_Complete.md)
+**Navigation**: [< Previous](10_Bit_Manipulation_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Greedy_Algorithms_Complete.md)
 
 # 🔄 Backtracking Complete Guide
 
-> The Art of "Try Everything, Undo, Try Next"
+The Art of "Try Everything, Undo, Try Next"
 
 ## Table of Contents
 
@@ -40,13 +40,10 @@ BACKTRACKING prunes early → only explore VALID partial solutions
 ```
 
 **Flow:**
-- BRUTE FORCE would try everything
-- ↓
-- for 8 queens: 64^8 = 281 trillion positions
-- ↓
-- BACKTRACKING prunes early
-- ↓
-- only explore VALID partial solutions
+1. BRUTE FORCE would try everything
+2. for 8 queens: 64^8 = 281 trillion positions
+3. BACKTRACKING prunes early
+4. only explore VALID partial solutions
 
 ```mermaid
 flowchart LR
@@ -80,21 +77,10 @@ BACKTRACKING = DFS through this tree, BUT:
 ```
 
 **Flow:**
-- - Before going deeper
-- ↓
-- CHECK if this partial solution CAN lead to a valid
-- ↓
-- - If NO
-- ↓
-- PRUNE this branch (don't explore further)
-- ↓
-- HUGE time savings
-- ↓
-- - If dead end
-- ↓
-- UNDO last choice (backtrack)
-- ↓
-- try next option
+1. - Before going deeper
+2. CHECK if this partial solution CAN lead to a valid
+3. - If NO
+4. PRUNE this branch (don't explore further) HUGE time savings - If dead end UNDO last choice (backtrack) try next option
 
 ```mermaid
 flowchart TD
@@ -128,13 +114,10 @@ then try the other trail.
 ```
 
 **Flow:**
-- 1. CHOOSE: Make a choice (add to current path)
-- ↓
-- 2. EXPLORE: Recurse to next position
-- ↓
-- you go down a trail, hit a dead end, walk BACK to the f
-- ↓
-- then try the other trail.
+1. CHOOSE: Make a choice (add to current path)
+2. EXPLORE: Recurse to next position
+3. you go down a trail, hit a dead end, walk BACK to the f
+4. then try the other trail.
 
 ```mermaid
 flowchart TD
@@ -168,13 +151,7 @@ flowchart TD
 ```
 
 **Flow:**
-- - You only need the COUNT (not the actual solution
-- ↓
-- Use DP instead
-- ↓
-- - You need the OPTIMAL solution
-- ↓
-- Use DP or Greedy
+1. - You only need the COUNT (not the actual solution Use DP instead - You need the OPTIMAL solution Use DP or Greedy
 
 ```mermaid
 flowchart LR
@@ -202,9 +179,6 @@ Today it's the foundation for:
 
 ---
 
-
-
-
 ## What is Backtracking? <a name="what-is-backtracking"></a>
 
 ### The Core Idea
@@ -229,29 +203,15 @@ When you hit a dead end, GO BACK and try a different path.
 ```
 
 **Flow:**
-- Backtracking = DFS + Undo
-- ↓
-- Explore all possible paths.
-- ↓
-- When you hit a dead end, GO BACK and try a different pa
-- ↓
-- BACKTRACKING FLOW
-- ↓
-- 1. CHOOSE
-- ↓
-- 2. EXPLORE
-- ↓
-- 3. UNCHOOSE
-- ↓
-- 1. CHOOSE
-- ↓
-- 2. EXPLORE
-- ↓
-- 3. UNCHOOSE
-- ↓
-- Make a Recursively Undo the
-- ↓
-- decision explore with decision
+1. Backtracking = DFS + Undo
+2. Explore all possible paths.
+3. When you hit a dead end, GO BACK and try a different pa
+4. BACKTRACKING FLOW
+5. CHOOSE
+6. EXPLORE
+7. UNCHOOSE
+8. Make a Recursively Undo the
+9. decision explore with decision
 
 ```mermaid
 flowchart TD
@@ -310,19 +270,13 @@ That's OK! Problem asks for ALL solutions.
 ```
 
 **Flow:**
-- USE BACKTRACKING WHEN YOU SEE:
-- ↓
-- ✓ 'Generate all...'
-- ↓
-- ✓ 'Find all possible...'
-- ↓
-- ✓ 'Print all combinations/permutations/subsets'
-- ↓
-- ✓ 'All ways to...'
-- ↓
-- ✓ Constraint satisfaction (Sudoku, N-Queens)
-- ↓
-- ✓ Path finding with constraints
+1. USE BACKTRACKING WHEN YOU SEE:
+2. ✓ 'Generate all...'
+3. ✓ 'Find all possible...'
+4. ✓ 'Print all combinations/permutations/subsets'
+5. ✓ 'All ways to...'
+6. ✓ Constraint satisfaction (Sudoku, N-Queens)
+7. ✓ Path finding with constraints
 
 ```mermaid
 flowchart TD
@@ -344,9 +298,6 @@ flowchart TD
 ```
 
 ---
-
-
-
 
 ## The Universal Template <a name="universal-template"></a>
 
@@ -438,19 +389,10 @@ public class BacktrackingTemplate {
 ```
 
 **Flow:**
-- CRITICAL IMPLEMENTATION NOTES
-- ↓
-- 1. ALWAYS COPY before adding to result:
-- ↓
-- result.add(new ArrayList<>(current)); ✓
-- ↓
-- result.add(current); ✗ (adds reference, will be modifie
-- ↓
-- 2. REMOVE from END (last element):
-- ↓
-- current.remove(current.size() - 1); ✓
-- ↓
-- current.remove(element); ✗ (removes by value, slower)
+1. CRITICAL IMPLEMENTATION NOTES
+2. ALWAYS COPY before adding to result:
+3. result.add(new ArrayList<>(current)); ✓
+4. result.add(current); ✗ (adds reference, will be modifie REMOVE from END (last element): current.remove(current.size() - 1); ✓ current.remove(element); ✗ (removes by value, slower)
 
 ```mermaid
 flowchart TD
@@ -485,9 +427,8 @@ Each element: include OR exclude → 2^n subsets
 ```
 
 **Flow:**
-- Each element: include OR exclude
-- ↓
-- 2^n subsets
+1. Each element: include OR exclude
+2. 2^n subsets
 
 ```mermaid
 flowchart LR
@@ -559,29 +500,18 @@ Result: [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]
 ```
 
 **Flow:**
-- backtrack(start=0, current=[])
-- ↓
-- Add []
-- ↓
-- backtrack(start=0, current=[])
-- ↓
-- i=0: Choose 1
-- ↓
-- backtrack(start=0, current=[])
-- ↓
-- backtrack(start=1, current=[1])
-- ↓
-- backtrack(start=0, current=[])
-- ↓
-- Add [1]
-- ↓
-- backtrack(start=0, current=[])
-- ↓
-- i=1: Choose 2
-- ↓
-- backtrack(start=0, current=[])
-- ↓
-- backtrack(start=2, current=[1,2])
+1. backtrack(start=0, current=[])
+2. Add []
+3. backtrack(start=0, current=[])
+4. i=0: Choose 1
+5. backtrack(start=0, current=[])
+6. backtrack(start=1, current=[1])
+7. backtrack(start=0, current=[])
+8. Add [1]
+9. backtrack(start=0, current=[])
+10. i=1: Choose 2
+11. backtrack(start=0, current=[])
+12. backtrack(start=2, current=[1,2])
 
 ```mermaid
 flowchart TD
@@ -672,8 +602,6 @@ Why i > start (not i > 0)?
 ```
 
 ---
-
-
 
 ## Permutations Pattern <a name="permutations-pattern"></a>
 
@@ -773,31 +701,15 @@ Level 0: Fix position 0
 ```
 
 **Flow:**
-- Level 0: Fix position 0
-- ↓
-- swap(0,0): [1, 2, 3]
-- ↓
-- Level 0: Fix position 0
-- ↓
-- Level 1: Fix position 1
-- ↓
-- Level 0: Fix position 0
-- ↓
-- swap(1,1): [1, 2, 3]
-- ↓
-- Level 0: Fix position 0
-- ↓
-- Level 2: Fix position 2
-- ↓
-- Level 0: Fix position 0
-- ↓
-- swap(2,2): [1, 2, 3]
-- ↓
-- Add [1,2,3]
-- ↓
-- Level 0: Fix position 0
-- ↓
-- swap(1,2): [1, 3, 2]
+1. Level 0: Fix position 0 swap(0,0): [1, 2, 3]
+2. Level 0: Fix position 0
+3. Level 1: Fix position 1
+4. Level 0: Fix position 0 swap(1,1): [1, 2, 3]
+5. Level 0: Fix position 0
+6. Level 2: Fix position 2
+7. Level 0: Fix position 0 swap(2,2): [1, 2, 3]
+8. Add [1,2,3]
+9. Level 0: Fix position 0 swap(1,2): [1, 3, 2]
 
 ```mermaid
 flowchart TD
@@ -877,8 +789,6 @@ Why !visited[i-1]?
 ```
 
 ---
-
-
 
 ## Combinations Pattern <a name="combinations-pattern"></a>
 
@@ -1020,9 +930,6 @@ private void backtrack(int k, int remaining, int start,
 
 ---
 
-
-
-
 ## Classic Problems <a name="classic-problems"></a>
 
 ### N-Queens (LeetCode 51) ⭐⭐⭐
@@ -1112,13 +1019,10 @@ Anti-diagonal (r + c is constant):
 ```
 
 **Flow:**
-- Queen at (row, col) attacks:
-- ↓
-- Same column: col
-- ↓
-- Main diagonal (r - c is constant):
-- ↓
-- Anti-diagonal (r + c is constant):
+1. Queen at (row, col) attacks:
+2. Same column: col
+3. Main diagonal (r - c is constant):
+4. Anti-diagonal (r + c is constant):
 
 ```mermaid
 flowchart TD
@@ -1446,19 +1350,13 @@ for (int end = 0; end < n; end++) {
 ```
 
 **Flow:**
-- BACKTRACKING PROBLEM TYPES
-- ↓
-- SUBSETS: PERMUTATIONS:
-- ↓
-- - Subsets I, II - Permutations I, II
-- ↓
-- - Combination Sum 1-3 - Next Permutation
-- ↓
-- - Palindrome Partitioning - Permutation Sequence
-- ↓
-- COMBINATIONS: GRID/MATRIX:
-- ↓
-- - Combinations (n,k) - N-Queens
+1. BACKTRACKING PROBLEM TYPES
+2. SUBSETS: PERMUTATIONS:
+3. - Subsets I, II - Permutations I, II
+4. - Combination Sum 1-3 - Next Permutation
+5. - Palindrome Partitioning - Permutation Sequence
+6. COMBINATIONS: GRID/MATRIX:
+7. - Combinations (n,k) - N-Queens
 
 ```mermaid
 flowchart TD
@@ -1613,37 +1511,16 @@ private List<String> backtrack(String s, int start,
 ```
 
 **Flow:**
-- WHICH PATTERN TO USE?
-- ↓
-- 'Generate all subsets'
-- ↓
-- SUBSETS PATTERN
-- ↓
-- 'Generate all subsets'
-- ↓
-- SUBSETS PATTERN
-- ↓
-- start = i + 1, every state valid
-- ↓
-- 'Generate all permutations'
-- ↓
-- PERMUTATIONS PATTERN
-- ↓
-- 'Generate all permutations'
-- ↓
-- PERMUTATIONS PATTERN
-- ↓
-- Use visited[], iterate from 0
-- ↓
-- 'Find k numbers that sum to n'
-- ↓
-- COMBINATIONS PATTERN
-- ↓
-- 'Find k numbers that sum to n'
-- ↓
-- COMBINATIONS PATTERN
-- ↓
-- start = i + 1, size = k is base case
+1. WHICH PATTERN TO USE?
+2. 'Generate all subsets'
+3. SUBSETS PATTERN
+4. start = i + 1, every state valid
+5. 'Generate all permutations'
+6. PERMUTATIONS PATTERN
+7. Use visited[], iterate from 0
+8. 'Find k numbers that sum to n'
+9. COMBINATIONS PATTERN
+10. start = i + 1, size = k is base case
 
 ```mermaid
 flowchart TD
@@ -1694,19 +1571,13 @@ Space: O(n) for recursion stack (excluding output)
 ```
 
 **Flow:**
-- TIME COMPLEXITIES
-- ↓
-- Subsets: O(n × 2^n) - 2^n subsets, O(n) to copy
-- ↓
-- Permutations: O(n × n!) - n! permutations, O(n) copy
-- ↓
-- Combinations (k): O(k × C(n,k))
-- ↓
-- N-Queens: O(n!) - roughly
-- ↓
-- Sudoku: O(9^m) - m = empty cells
-- ↓
-- Space: O(n) for recursion stack (excluding output)
+1. TIME COMPLEXITIES
+2. Subsets: O(n × 2^n) - 2^n subsets, O(n) to copy
+3. Permutations: O(n × n!) - n! permutations, O(n) copy
+4. Combinations (k): O(k × C(n,k))
+5. N-Queens: O(n!) - roughly
+6. Sudoku: O(9^m) - m = empty cells
+7. Space: O(n) for recursion stack (excluding output)
 
 ```mermaid
 flowchart TD
@@ -1774,11 +1645,9 @@ All three share: CHOOSE → EXPLORE → UNCHOOSE
 ```
 
 **Flow:**
-- All three share: CHOOSE
-- ↓
-- EXPLORE
-- ↓
-- UNCHOOSE
+1. All three share: CHOOSE
+2. EXPLORE
+3. UNCHOOSE
 
 ```mermaid
 flowchart LR
@@ -1791,17 +1660,15 @@ flowchart LR
 
 **Pro Tip:** When solving a new backtracking problem, first identify which of these 3 patterns it maps to. Then adapt the template!
 
-
 ---
 
-> **Navigation**: [< Previous](10_Bit_Manipulation_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Greedy_Algorithms_Complete.md)
+**Navigation**: [< Previous](10_Bit_Manipulation_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Greedy_Algorithms_Complete.md)
 
-> 🔬 **Section Challenge — Summary: Master These 3 Templates**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — Summary: Master These 3 Templates**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
 

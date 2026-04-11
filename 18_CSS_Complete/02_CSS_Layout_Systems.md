@@ -60,11 +60,9 @@ When you change direction, their effects SWAP!
 ```
 
 **Flow:**
-- Item 1
-- ↓
-- Item 2
-- ↓
-- Item 1
+1. Item 1
+2. Item 2
+3. Item 1
 
 ```mermaid
 flowchart TD
@@ -163,21 +161,14 @@ flowchart TD
 ```
 
 **Flow:**
-- Extra space: 600 - 300 = 300px
-- ↓
-- flex-grow: 0 (default) — items stay at their size:
-- ↓
-- ┃ A(100) B(100) C(100) empty 300px ┃
-- ↓
-- A: flex-grow: 1, B: flex-grow: 1, C: flex-grow: 1
-- ↓
-- Each gets 300/3 = 100px extra:
-- ↓
-- A: flex-grow: 2, B: flex-grow: 1, C: flex-grow: 1
-- ↓
-- Ratio 2:1:1
-- ↓
-- A gets 150px, B gets 75px, C gets 75px:
+1. Extra space: 600 - 300 = 300px
+2. flex-grow: 0 (default) — items stay at their size:
+3. ┃ A(100) B(100) C(100) empty 300px ┃
+4. A: flex-grow: 1, B: flex-grow: 1, C: flex-grow: 1
+5. Each gets 300/3 = 100px extra:
+6. A: flex-grow: 2, B: flex-grow: 1, C: flex-grow: 1
+7. Ratio 2:1:1
+8. A gets 150px, B gets 75px, C gets 75px:
 
 ```mermaid
 flowchart TD
@@ -303,19 +294,13 @@ GAP: Space between tracks
 ```
 
 **Flow:**
-- GRID ANATOMY:
-- ↓
-- Column 1 Column 2 Column 3
-- ↓
-- ← Row 1
-- ↓
-- Cell(1,1) Cell(1,2) Cell(1,3)
-- ↓
-- ← Grid Line
-- ↓
-- ← Row 2
-- ↓
-- Cell(2,1) Cell(2,2) Cell(2,3)
+1. GRID ANATOMY:
+2. Column 1 Column 2 Column 3
+3. ← Row 1
+4. Cell(1,1) Cell(1,2) Cell(1,3)
+5. ← Grid Line
+6. ← Row 2
+7. Cell(2,1) Cell(2,2) Cell(2,3)
 
 ```mermaid
 flowchart TD
@@ -558,9 +543,8 @@ COMMON COMBO: Grid for page layout, Flex inside components.
 ```
 
 **Flow:**
-- Navigation bars / Centering content / Single row/column
-- ↓
-- Page-level layouts / Card grids (responsive) / Dashboar
+1. Navigation bars / Centering content / Single row/column
+2. Page-level layouts / Card grids (responsive) / Dashboar
 
 ```mermaid
 flowchart TD
@@ -692,9 +676,7 @@ Q: What are container queries?
 ```
 
 **Flow:**
-- 2fr + 1fr + 1fr = total 4fr
-- ↓
-- 50%, 25%, 25%.
+1. 2fr + 1fr + 1fr = total 4fr 50%, 25%, 25%.
 
 ```mermaid
 flowchart LR

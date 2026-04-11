@@ -1,7 +1,7 @@
 # Chapter 48 — Problem Variants Bank: 100+ Interview Practice Problems
 
-> **What:** Every core scenario from chapters 38-46 with 2-4 variants each — different scales, constraints, technologies. Practice these to handle any twist an interviewer throws.
-> **How To Use:** Pick a variant. Explain using the SIREN framework from Chapter 43. Time yourself: 2 minutes for the summary, 5 minutes for the deep dive.
+**What:** Every core scenario from chapters 38-46 with 2-4 variants each — different scales, constraints, technologies. Practice these to handle any twist an interviewer throws.
+**How To Use:** Pick a variant. Explain using the SIREN framework from Chapter 43. Time yourself: 2 minutes for the summary, 5 minutes for the deep dive.
 
 ---
 
@@ -328,20 +328,20 @@ Pool size 10 handles 10x burst. Pool size 50 is wasteful (unused connections con
 
 
 
-> 🔬 **Section Challenge — E. Connection & Pool Variants**
->
-> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
-> <details><summary>Answer</summary>
->
-> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
-> </details>
->
-> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
-> <details><summary>Answer</summary>
->
-> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
-> </details>
->
+🔬 **Section Challenge — E. Connection & Pool Variants**
+
+**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+<details><summary>Answer</summary>
+
+First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+</details>
+
+**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+<details><summary>Answer</summary>
+
+Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+</details>
+
 
 ## F. Concurrency & Lock Variants
 

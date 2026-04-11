@@ -105,34 +105,27 @@ LSM-TREE            │ • Cassandra, LevelDB, RocksDB, ScyllaDB
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — The History of DS in Computing**
 
 # Performance Characteristics — The Full Picture
 
-```
-┌────────────────────┬───────────┬───────────┬───────────┬───────────┬───────────┐
-│ Data Structure      │ Access    │ Search    │ Insert    │ Delete    │ Space     │
-├────────────────────┼───────────┼───────────┼───────────┼───────────┼───────────┤
-│ Array               │ O(1)      │ O(n)      │ O(n)*     │ O(n)      │ O(n)      │
-│ Sorted Array        │ O(1)      │ O(log n)  │ O(n)      │ O(n)      │ O(n)      │
-│ Linked List         │ O(n)      │ O(n)      │ O(1)**    │ O(1)**    │ O(n)      │
-│ Hash Table          │ N/A       │ O(1) avg  │ O(1) avg  │ O(1) avg  │ O(n)      │
-│ BST (balanced)      │ N/A       │ O(log n)  │ O(log n)  │ O(log n)  │ O(n)      │
-│ B-Tree              │ N/A       │ O(log n)  │ O(log n)  │ O(log n)  │ O(n)      │
-│ Heap                │ O(1) max  │ O(n)      │ O(log n)  │ O(log n)  │ O(n)      │
-│ Trie                │ N/A       │ O(k)***   │ O(k)      │ O(k)      │ O(n·k)    │
-│ Skip List           │ N/A       │ O(log n)  │ O(log n)  │ O(log n)  │ O(n log n)│
-│ Bloom Filter        │ N/A       │ O(k)      │ O(k)      │ ❌         │ O(m)      │
-│ LSM-Tree            │ N/A       │ O(log n)  │ O(1)      │ O(1)      │ O(n)      │
-└────────────────────┴───────────┴───────────┴───────────┴───────────┴───────────┘
+| Data Structure | Access | Search | Insert | Delete | Space |
+|---|---|---|---|---|---|
+| Array | O(1) | O(n) | O(n)* | O(n) | O(n) |
+| Sorted Array | O(1) | O(log n) | O(n) | O(n) | O(n) |
+| Linked List | O(n) | O(n) | O(1)** | O(1)** | O(n) |
+| Hash Table | N/A | O(1) avg | O(1) avg | O(1) avg | O(n) |
+| BST (balanced) | N/A | O(log n) | O(log n) | O(log n) | O(n) |
+| B-Tree | N/A | O(log n) | O(log n) | O(log n) | O(n) |
+| Heap | O(1) max | O(n) | O(log n) | O(log n) | O(n) |
+| Trie | N/A | O(k)*** | O(k) | O(k) | O(n·k) |
+| Skip List | N/A | O(log n) | O(log n) | O(log n) | O(n log n) |
+| Bloom Filter | N/A | O(k) | O(k) | ❌ | O(m) |
+| LSM-Tree | N/A | O(log n) | O(1) | O(1) | O(n) |
+
 * O(1) amortized for append. O(n) for arbitrary insert (shift elements).
-** O(1) if you have the node reference. O(n) to find the node first.
-*** k = key length (number of characters).
+* O(1) if you have the node reference. O(n) to find the node first.
+* k = key length (number of characters).
 
 CACHE BEHAVIOR (often more important than BigO!):
   Array:      L1/L2 cache FRIENDLY — contiguous memory, prefetching works.
@@ -144,7 +137,6 @@ CACHE BEHAVIOR (often more important than BigO!):
   Linked list O(1) insert SOUNDS better than array O(n) insert.
   But: array operations per second are 10-100x faster because of cache locality!
   For < 1000 elements: arrays beat everything due to cache efficiency.
-```
 
 ---
 
@@ -191,47 +183,44 @@ START: What operation is most frequent?
 
 # System Design Interview → DS Mapping
 
-```
-SYSTEM DESIGN PROBLEM           │ KEY DATA STRUCTURES NEEDED
-────────────────────────────────┼─────────────────────────────────────
-URL Shortener                   │ Hash table (short → long), Base62 encoding
-Rate Limiter                    │ Sliding window (array), token bucket (queue)
-LRU Cache                       │ Doubly linked list + hash map
-Message Queue (Kafka-like)      │ Circular buffer (ring buffer), LSM-tree for persistence
-Search Engine                   │ Inverted index (hash map of word → doc list), trie for autocomplete
-Social Network (Feed)           │ Graph (adjacency list), heap (merge k sorted feeds)
-Key-Value Store (Redis-like)    │ Hash table, skip list (sorted sets), linked list (lists)
-Database Engine                 │ B-Tree (indexes), buffer pool (array), WAL (append-only log)
-Distributed File System         │ Trie (path lookup), hash ring (consistent hashing)
-Autocomplete/Typeahead          │ Trie, PQ (top-K results)
-Web Crawler                     │ Queue (BFS), Bloom filter (visited URLs), graph (link structure)
-Notification System             │ Priority queue, hash map (user subscriptions)
-Video Streaming                 │ Buffer (ring buffer), tree (CDN routing), hash (cache)
-Real-Time Leaderboard           │ Skip list or balanced BST (sorted set)
-```
+| System Design Problem | Key Data Structures Needed |
+|---|---|
+| URL Shortener | Hash table (short → long)<br><br>Base62 encoding |
+| Rate Limiter | Sliding window (array)<br><br>Token bucket (queue) |
+| LRU Cache | Doubly linked list + hash map |
+| Message Queue (Kafka-like) | Circular buffer (ring buffer)<br><br>LSM-tree for persistence |
+| Search Engine | Inverted index (hash map of word → doc list)<br><br>Trie for autocomplete |
+| Social Network (Feed) | Graph (adjacency list)<br><br>Heap (merge k sorted feeds) |
+| Key-Value Store (Redis-like) | Hash table<br><br>Skip list (sorted sets)<br><br>Linked list (lists) |
+| Database Engine | B-Tree (indexes)<br><br>Buffer pool (array)<br><br>WAL (append-only log) |
+| Distributed File System | Trie (path lookup)<br><br>Hash ring (consistent hashing) |
+| Autocomplete/Typeahead | Trie<br><br>PQ (top-K results) |
+| Web Crawler | Queue (BFS)<br><br>Bloom filter (visited URLs)<br><br>Graph (link structure) |
+| Notification System | Priority queue<br><br>Hash map (user subscriptions) |
+| Video Streaming | Buffer (ring buffer)<br><br>Tree (CDN routing)<br><br>Hash (cache) |
+| Real-Time Leaderboard | Skip list or balanced BST (sorted set) |
 
 ---
 
 # Memory Trade-Off Analysis
 
-```
-STRUCTURE     │ OVERHEAD PER ELEMENT    │ WHEN TO WORRY
-──────────────┼─────────────────────────┼──────────────────────────
-int[] (Java)  │ 4 bytes/element         │ Never (densest format)
-Integer[]     │ 16+ bytes/element       │ Millions of elements (4x overhead!)
-HashMap entry │ ~48 bytes per entry     │ >100K entries → hundreds of MB
-LinkedList    │ ~40 bytes per node      │ Consider ArrayList for <10K
-TreeMap entry │ ~56 bytes per entry     │ Use if you NEED sorted access
-Bloom Filter  │ ~10 bits/element (1%)   │ Almost never (ultra compact)
-Trie          │ Per character → large   │ Compressed trie for dictionaries
+| Structure | Overhead Per Element | When To Worry |
+|---|---|---|
+| int[] (Java) | 4 bytes/element | Never (densest format) |
+| Integer[] | 16+ bytes/element | Millions of elements (4x overhead!) |
+| HashMap entry | ~48 bytes per entry | >100K entries → hundreds of MB |
+| LinkedList | ~40 bytes per node | Consider ArrayList for <10K |
+| TreeMap entry | ~56 bytes per entry | Use if you need sorted access |
+| Bloom Filter | ~10 bits/element (1%) | Almost never (ultra compact) |
+| Trie | Per character → large | Compressed trie for dictionaries |
 
 REAL EXAMPLE:
-  Store 10M user IDs (long):
-  long[] → 80 MB (10M × 8 bytes). Cache-friendly. Fast iteration.
-  HashSet<Long> → ~400 MB (10M × ~40 bytes overhead). 5x more memory!
-  
-  LESSON: when scale matters, choose DS based on MEMORY, not just BigO.
-```
+Store 10M user IDs (long):
+long[] → 80 MB (10M × 8 bytes), cache-friendly with fast iteration.
+HashSet<Long> → ~400 MB (10M × ~40 bytes overhead), about 5x more memory.
+
+LESSON:
+When scale matters, choose data structures based on memory, not just Big-O.
 
 ---
 

@@ -58,19 +58,13 @@ EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR
 ```
 
 **Flow:**
-- EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR
-- ↓
-- UserCard Component
-- ↓
-- DATA (Props + State):
-- ↓
-- user: { name, avatar, role, isOnline }
-- ↓
-- isExpanded: boolean (local state)
-- ↓
-- STRUCTURE (JSX):
-- ↓
-- <div className='card'>
+1. EVERY COMPONENT = DATA + STRUCTURE + STYLE + BEHAVIOR
+2. UserCard Component
+3. DATA (Props + State):
+4. user: { name, avatar, role, isOnline }
+5. isExpanded: boolean (local state)
+6. STRUCTURE (JSX):
+7. <div className='card'>
 
 ```mermaid
 flowchart TD
@@ -619,29 +613,17 @@ If it's complex UI state, use useReducer.
 ```
 
 **Flow:**
-- useState:
-- ↓
-- Simple values (toggle, counter, input)
-- ↓
-- useState:
-- ↓
-- State used by ONE component only
-- ↓
-- useState:
-- ↓
-- Beginner-friendly
-- ↓
-- useReducer:
-- ↓
-- Complex state logic (multiple related updates)
-- ↓
-- useReducer:
-- ↓
-- State transitions depend on previous state
-- ↓
-- useReducer:
-- ↓
-- Like a mini Redux inside a component
+1. useState:
+2. Simple values (toggle, counter, input)
+3. useState:
+4. State used by ONE component only
+5. useState:
+6. Beginner-friendly useReducer:
+7. Complex state logic (multiple related updates)
+8. useReducer:
+9. State transitions depend on previous state
+10. useReducer:
+11. Like a mini Redux inside a component
 
 ```mermaid
 flowchart TD
@@ -862,13 +844,8 @@ Q: Server state vs client state?
 ```
 
 **Flow:**
-- Types first
-- ↓
-- atomic components
-- ↓
-- composite components
-- ↓
-- page.
+1. Types first atomic components
+2. composite components page.
 
 ```mermaid
 flowchart LR

@@ -45,13 +45,10 @@ STEP 4: NOW design the storage to support those queries.
 ```
 
 **Flow:**
-- Users
-- ↓
-- Actions
-- ↓
-- Views
-- ↓
-- Storage
+1. Users
+2. Actions
+3. Views
+4. Storage
 
 ```mermaid
 flowchart LR
@@ -98,19 +95,13 @@ Insight: Read-heavy (100:1 ratio) → need caching + CDN
 ```
 
 **Flow:**
-- BACK-OF-THE-ENVELOPE ESTIMATION
-- ↓
-- Before designing, ESTIMATE the scale:
-- ↓
-- NUMBERS TO MEMORIZE:
-- ↓
-- 1 day = 86,400 seconds ≈ 100K seconds
-- ↓
-- 1 month = 2.5 million seconds
-- ↓
-- 1 year = 30 million seconds
-- ↓
-- 1 char = 1 byte (ASCII) / 2 bytes (UTF)
+1. BACK-OF-THE-ENVELOPE ESTIMATION
+2. Before designing, ESTIMATE the scale:
+3. NUMBERS TO MEMORIZE:
+4. 1 day = 86,400 seconds ≈ 100K seconds
+5. 1 month = 2.5 million seconds
+6. 1 year = 30 million seconds
+7. 1 char = 1 byte (ASCII) / 2 bytes (UTF)
 
 ```mermaid
 flowchart TD
@@ -190,15 +181,11 @@ under-engineering. Build for 10x your current scale, not 1000x.
 ```
 
 **Flow:**
-- App / Server
-- ↓
-- Database / (separate)
-- ↓
-- App / Server
-- ↓
-- Cache / (Redis)
-- ↓
-- DB
+1. App / Server
+2. Database / (separate)
+3. App / Server
+4. Cache / (Redis)
+5. DB
 
 ```mermaid
 flowchart TD

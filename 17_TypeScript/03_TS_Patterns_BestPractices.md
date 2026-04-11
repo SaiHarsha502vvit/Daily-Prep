@@ -1,25 +1,25 @@
-> **Navigation**: [< Previous](02_TS_Advanced_Types.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_TS_Deep_Reasoning.md)
+**Navigation**: [< Previous](02_TS_Advanced_Types.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_TS_Deep_Reasoning.md)
 
-> **TypeScript Chapter 3/3** | [← Advanced Types](02_TS_Advanced_Types.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → CSS Foundations](../18_CSS_Complete/01_CSS_Foundations.md)
+**TypeScript Chapter 3/3** | [← Advanced Types](02_TS_Advanced_Types.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → CSS Foundations](../18_CSS_Complete/01_CSS_Foundations.md)
 
 # TypeScript Patterns & Best Practices — Production-Grade TS
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: Real-world TypeScript patterns, best practices, and
-> production techniques used in professional codebases.
->
-> WHY:  Knowing types isn't enough — you need to know HOW to
-> organize, structure, and apply them in real projects.
-> Bad TS is worse than no TS (false confidence).
->
-> WHO:  Developers writing production TypeScript — React apps,
-> Node APIs, libraries, internal tools.
->
-> WHEN: After understanding generics and utility types.
->
-> HOW:  Design patterns + anti-patterns + real codebase examples.
+WHAT: Real-world TypeScript patterns, best practices, and
+production techniques used in professional codebases.
+
+WHY:  Knowing types isn't enough — you need to know HOW to
+organize, structure, and apply them in real projects.
+Bad TS is worse than no TS (false confidence).
+
+WHO:  Developers writing production TypeScript — React apps,
+Node APIs, libraries, internal tools.
+
+WHEN: After understanding generics and utility types.
+
+HOW:  Design patterns + anti-patterns + real codebase examples.
 
 
 ---
@@ -27,15 +27,15 @@
 ## 1. The "Think in Types First" Approach
 
 
-> BEFORE writing logic, define your data shapes.
->
-> Step 1: What data exist?  → Define interfaces/types
-> Step 2: What operations?  → Define function signatures
-> Step 3: What can go wrong? → Union types for error states
-> Step 4: Implement logic
->
-> This is TYPE-DRIVEN DEVELOPMENT.
-> The types become your specification — code fills in the blanks.
+BEFORE writing logic, define your data shapes.
+
+Step 1: What data exist?  → Define interfaces/types
+Step 2: What operations?  → Define function signatures
+Step 3: What can go wrong? → Union types for error states
+Step 4: Implement logic
+
+This is TYPE-DRIVEN DEVELOPMENT.
+The types become your specification — code fills in the blanks.
 
 
 ```typescript
@@ -128,8 +128,8 @@ function cartReducer(state: Cart, action: CartAction): CartResult<Cart> {
 
 
 
-> 🔬 **Section Challenge — 1. The "Think in Types First" Approach**
->>
+🔬 **Section Challenge — 1. The "Think in Types First" Approach**
+>
 
 ## 2. React + TypeScript Patterns
 
@@ -276,8 +276,8 @@ const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 
 
 
-> 🔬 **Section Challenge — 2. React + TypeScript Patterns**
->>
+🔬 **Section Challenge — 2. React + TypeScript Patterns**
+>
 
 ## 3. API Types Pattern — Single Source of Truth
 
@@ -360,8 +360,8 @@ class ApiClient {
 
 
 
-> 🔬 **Section Challenge — 3. API Types Pattern — Single Source of Truth**
->>
+🔬 **Section Challenge — 3. API Types Pattern — Single Source of Truth**
+>
 
 ## 4. Anti-Patterns — What NOT to Do
 
@@ -457,8 +457,8 @@ type Timestamp = Brand<number, "Timestamp">;
 
 
 
-> 🔬 **Section Challenge — 5. Branded Types — Preventing Mix-Ups**
->>
+🔬 **Section Challenge — 5. Branded Types — Preventing Mix-Ups**
+>
 
 ## 6. Declaration Files & Third-Party Types
 
@@ -507,8 +507,8 @@ declare namespace NodeJS {
 
 
 
-> 🔬 **Section Challenge — 6. Declaration Files & Third-Party Types**
->>
+🔬 **Section Challenge — 6. Declaration Files & Third-Party Types**
+>
 
 ## 7. Migration Strategy — JS to TS
 
@@ -544,11 +544,8 @@ because it gives FALSE confidence. Reach Phase 3.
 ```
 
 **Flow:**
-- 1. npm install -D typescript / 2. npx tsc --init / 3. S
-- ↓
-- 1. Start with leaf files (utils, helpers — no dependenc
-- ↓
-- 1. Enable strict flags ONE AT A TIME: / noImplicitAny
+1. npm install -D typescript / 2. npx tsc --init / 3. S
+2. Start with leaf files (utils, helpers — no dependenc Enable strict flags ONE AT A TIME: / noImplicitAny
 
 ```mermaid
 flowchart TD
@@ -619,9 +616,8 @@ Library/Package:
 ```
 
 **Flow:**
-- PROJECT TYPE
-- ↓
-- KEY TSCONFIG OPTIONS:
+1. PROJECT TYPE
+2. KEY TSCONFIG OPTIONS:
 
 ```mermaid
 flowchart LR
@@ -634,8 +630,8 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — 9. Essential TypeScript Configuration by Project Type**
->>
+🔬 **Section Challenge — 9. Essential TypeScript Configuration by Project Type**
+>
 
 ## Interview Quick-Fire
 
@@ -669,19 +665,13 @@ Q: How do you type a function that accepts any object with a specific key?
 ```
 
 **Flow:**
-- based on a variant?
-- ↓
-- Discriminated union of prop types:
-- ↓
-- Then narrow on props.variant.
-- ↓
-- Q: How do you handle API response types?
-- ↓
-- Q: How would you migrate a large JS project to TS?
-- ↓
-- Phase 1: Install TS, allowJs, rename files gradually.
-- ↓
-- Phase 2: Add types starting from leaf files.
+1. based on a variant?
+2. Discriminated union of prop types:
+3. Then narrow on props.variant.
+4. Q: How do you handle API response types?
+5. Q: How would you migrate a large JS project to TS?
+6. Phase 1: Install TS, allowJs, rename files gradually.
+7. Phase 2: Add types starting from leaf files.
 
 ```mermaid
 flowchart TD
@@ -704,7 +694,7 @@ flowchart TD
 
 ---
 
-> [← Advanced Types](02_TS_Advanced_Types.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → CSS Foundations](../18_CSS_Complete/01_CSS_Foundations.md)
+[← Advanced Types](02_TS_Advanced_Types.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → CSS Foundations](../18_CSS_Complete/01_CSS_Foundations.md)
 
 
 ---

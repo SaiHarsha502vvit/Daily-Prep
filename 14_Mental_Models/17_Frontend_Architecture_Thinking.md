@@ -69,13 +69,7 @@ DECISION: Ask "Where does this data COME FROM?"
 ```
 
 **Flow:**
-- SERVER STATE / (lives on the server, Frontend has a COP
-- ↓
-- GLOBAL CLIENT STATE / (shared across many components) /
-- ↓
-- LOCAL COMPONENT STATE / (belongs to ONE component or a
-- ↓
-- URL STATE / (encoded in the URL — shareable, bookmarkab
+1. SERVER STATE / (lives on the server, Frontend has a COP GLOBAL CLIENT STATE / (shared across many components) / LOCAL COMPONENT STATE / (belongs to ONE component or a URL STATE / (encoded in the URL — shareable, bookmarkab
 
 ```mermaid
 flowchart TD
@@ -129,9 +123,8 @@ Premature optimization = the root of all evil (Knuth)
 ```
 
 **Flow:**
-- Header
-- ↓
-- Content / List / Item 1 / Item 2 / Item 3
+1. Header
+2. Content / List / Item 1 / Item 2 / Item 3
 
 ```mermaid
 flowchart TD
@@ -248,11 +241,9 @@ SKELETON SCREENS (perceived performance):
 ```
 
 **Flow:**
-- IDLE / (initial)
-- ↓
-- LOADING / (pending)
-- ↓
-- SUCCESS / (data!)
+1. IDLE / (initial)
+2. LOADING / (pending)
+3. SUCCESS / (data!)
 
 ```mermaid
 flowchart TD

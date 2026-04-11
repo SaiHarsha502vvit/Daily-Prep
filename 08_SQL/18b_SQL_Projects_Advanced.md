@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](18a_SQL_Projects_Beginner.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](18a_SQL_Projects_Beginner.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -199,19 +199,13 @@ ORDER BY this_year.month;
 ```
 
 **Flow:**
-- □ Can write JOINs without looking up syntax
-- ↓
-- □ Can use GROUP BY with HAVING confidently
-- ↓
-- □ Understand when to use subquery vs JOIN vs CTE
-- ↓
-- □ Can write window functions (ROW_NUMBER, LAG, SUM OVER
-- ↓
-- □ Can solve problems multiple ways
-- ↓
-- □ Can optimize slow queries (know when to check EXPLAIN
-- ↓
-- □ Can handle NULL values correctly
+1. □ Can write JOINs without looking up syntax
+2. □ Can use GROUP BY with HAVING confidently
+3. □ Understand when to use subquery vs JOIN vs CTE
+4. □ Can write window functions (ROW_NUMBER, LAG, SUM OVER
+5. □ Can solve problems multiple ways
+6. □ Can optimize slow queries (know when to check EXPLAIN
+7. □ Can handle NULL values correctly
 
 ```mermaid
 flowchart TD
@@ -240,7 +234,7 @@ _Practice consistently. Aim for 2-3 problems daily. Review solutions even for pr
 
 # 📊 PART 5: DATA ANALYTICS & ENGINEERING ESSENTIALS
 
-> Everything you need to master SQL for Data Analytics and Data Engineering roles
+Everything you need to master SQL for Data Analytics and Data Engineering roles
 
 ---
 
@@ -269,19 +263,13 @@ _Practice consistently. Aim for 2-3 problems daily. Review solutions even for pr
 ```
 
 **Flow:**
-- DATA ENGINEERING SQL REQUIREMENTS
-- ↓
-- Data Engineers deal with:
-- ↓
-- • VOLUME: Billions of rows daily
-- ↓
-- • VELOCITY: Real-time data streams
-- ↓
-- • VARIETY: Multiple sources, formats
-- ↓
-- • VERACITY: Data quality issues everywhere
-- ↓
-- Key SQL Skills Required:
+1. DATA ENGINEERING SQL REQUIREMENTS
+2. Data Engineers deal with:
+3. • VOLUME: Billions of rows daily
+4. • VELOCITY: Real-time data streams
+5. • VARIETY: Multiple sources, formats
+6. • VERACITY: Data quality issues everywhere
+7. Key SQL Skills Required:
 
 ```mermaid
 flowchart TD
@@ -539,19 +527,13 @@ TRUNCATE TABLE large_table RESTART IDENTITY CASCADE;  -- Reset sequences, cascad
 ```
 
 **Flow:**
-- ETL DATA PIPELINE
-- ↓
-- RAW DATA > STAGING > CLEANED > DATA WAREHOUSE
-- ↓
-- Source Systems: Landing Zone: Cleaning: Final Tables:
-- ↓
-- • CSV files • raw_sales • Handle NULLs • fact_sales
-- ↓
-- • APIs • raw_users • Fix types • dim_customers
-- ↓
-- • Databases • raw_products • Deduplicate • dim_products
-- ↓
-- • Validate • dim_date
+1. ETL DATA PIPELINE
+2. RAW DATA > STAGING > CLEANED > DATA WAREHOUSE
+3. Source Systems: Landing Zone: Cleaning: Final Tables:
+4. • CSV files • raw_sales • Handle NULLs • fact_sales
+5. • APIs • raw_users • Fix types • dim_customers
+6. • Databases • raw_products • Deduplicate • dim_products
+7. • Validate • dim_date
 
 ```mermaid
 flowchart TD
@@ -572,14 +554,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 🔵 WHY: ETL = Extract, Transform, Load**
->
-> **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-> <details><summary>Answer</summary>
->
-> Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
-> </details>
->
+🔬 **Section Challenge — 🔵 WHY: ETL = Extract, Transform, Load**
+
+**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+<details><summary>Answer</summary>
+
+Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+</details>
+
 
 ## 2.1 Data Cleaning Transformations
 
@@ -925,25 +907,25 @@ FROM customer_stats;
 
 
 
-> 🔬 **Section Challenge — 3.5 Customer Lifetime Value (CLV)**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — 3.5 Customer Lifetime Value (CLV)**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 # 🔬 Section 4: Window Functions Deep Dive
 
@@ -990,20 +972,20 @@ FROM orders;
 
 
 
-> 🔬 **Section Challenge — 4.2 Value Functions**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — 4.2 Value Functions**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## 4.3 Aggregate Window Functions
 
@@ -1033,20 +1015,20 @@ FROM orders;
 
 
 
-> 🔬 **Section Challenge — 4.3 Aggregate Window Functions**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — 4.3 Aggregate Window Functions**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 # 🎤 Section 5: More Interview Questions
 
@@ -1174,20 +1156,20 @@ WHERE p1.id < p2.id
 
 
 
-> 🔬 **Section Challenge — Questions Set 3: Complex JOINs**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — Questions Set 3: Complex JOINs**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 
 ## Questions Set 4: Performance Optimization
 
@@ -1367,19 +1349,13 @@ VALUES ('fact_sales', @@ROWCOUNT, CURRENT_TIMESTAMP);
 ```
 
 **Flow:**
-- □ Can write efficient bulk INSERT/UPDATE/DELETE
-- ↓
-- □ Understand COPY vs INSERT performance difference
-- ↓
-- □ Can build ETL transformations in pure SQL
-- ↓
-- □ Know all window function types (RANK, LAG, SUM OVER)
-- ↓
-- □ Can implement SCD Type 1 and Type 2
-- ↓
-- □ Understand star schema design
-- ↓
-- □ Can perform incremental loads
+1. □ Can write efficient bulk INSERT/UPDATE/DELETE
+2. □ Understand COPY vs INSERT performance difference
+3. □ Can build ETL transformations in pure SQL
+4. □ Know all window function types (RANK, LAG, SUM OVER)
+5. □ Can implement SCD Type 1 and Type 2
+6. □ Understand star schema design
+7. □ Can perform incremental loads
 
 ```mermaid
 flowchart TD

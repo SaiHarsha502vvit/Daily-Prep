@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
+**Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
 
 # Chapter 17 — DSA Java Implementation Mastery: The Language-Specific Reasoning
 
-> **"Knowing an algorithm is one thing. Implementing it in Java with the right collections, the right Comparator, the right edge-case handling — that's what separates the whiteboard from the real solution. This chapter fills the gap between algorithm theory and Java implementation."**
+**"Knowing an algorithm is one thing. Implementing it in Java with the right collections, the right Comparator, the right edge-case handling — that's what separates the whiteboard from the real solution. This chapter fills the gap between algorithm theory and Java implementation."**
 
 ---
 
@@ -26,27 +26,25 @@
 
 ### Deep Reasoning
 
+THE TOOLBOX ANALOGY
 
-> THE TOOLBOX ANALOGY
->
-> You wouldn't use a hammer to screw in a bolt.
-> Similarly, don't use ArrayList when you need O(1) lookup.
->
-> Your DSA toolbox in Java:
->
-> Need O(1) lookup by key?        → HashMap
-> Need O(1) lookup + insertion order? → LinkedHashMap
-> Need sorted keys + range queries?   → TreeMap
-> Need O(1) add/remove + uniqueness?  → HashSet
-> Need min/max quickly?               → PriorityQueue
-> Need LIFO (stack)?                  → ArrayDeque (NOT Stack!)
-> Need FIFO (queue)?                  → ArrayDeque or LinkedList
-> Need both ends (deque)?             → ArrayDeque
-> Need fast random access + growth?   → ArrayList
-> Need fast insert/delete at ends?    → LinkedList (rare!)
->
-> 90% of DSA problems need: HashMap + ArrayList + ArrayDeque
+You wouldn't use a hammer to screw in a bolt.
+Similarly, don't use ArrayList when you need O(1) lookup.
 
+Your DSA toolbox in Java:
+
+Need O(1) lookup by key?        → HashMap
+Need O(1) lookup + insertion order? → LinkedHashMap
+Need sorted keys + range queries?   → TreeMap
+Need O(1) add/remove + uniqueness?  → HashSet
+Need min/max quickly?               → PriorityQueue
+Need LIFO (stack)?                  → ArrayDeque (NOT Stack!)
+Need FIFO (queue)?                  → ArrayDeque or LinkedList
+Need both ends (deque)?             → ArrayDeque
+Need fast random access + growth?   → ArrayList
+Need fast insert/delete at ends?    → LinkedList (rare!)
+
+90% of DSA problems need: HashMap + ArrayList + ArrayDeque
 
 ### Decision Matrix
 
@@ -73,19 +71,13 @@
 ```
 
 **Flow:**
-- Problem Pattern Java Structure WHY
-- ↓
-- Two Sum (pair lookup) HashMap O(1) complement
-- ↓
-- Sliding Window max ArrayDeque Monotonic deque
-- ↓
-- Top-K elements PriorityQueue Min-heap of K
-- ↓
-- LRU Cache LinkedHashMap Access order +
-- ↓
-- removeEldest
-- ↓
-- Intervals / sweep line TreeMap Sorted + floorKey
+1. Problem Pattern Java Structure WHY
+2. Two Sum (pair lookup) HashMap O(1) complement
+3. Sliding Window max ArrayDeque Monotonic deque
+4. Top-K elements PriorityQueue Min-heap of K
+5. LRU Cache LinkedHashMap Access order +
+6. removeEldest
+7. Intervals / sweep line TreeMap Sorted + floorKey
 
 ```mermaid
 flowchart TD
@@ -111,34 +103,33 @@ flowchart TD
 ## 2. PriorityQueue Deep Reasoning: The Gotchas That Bite
 
 ### The Freeze Question
-> "PriorityQueue — is it a min-heap or max-heap? Why does removing an element take O(n)?"
+
+"PriorityQueue — is it a min-heap or max-heap? Why does removing an element take O(n)?"
 
 ### Deep Reasoning
 
+PriorityQueue = MIN-HEAP by default (smallest first)
 
-> PriorityQueue = MIN-HEAP by default (smallest first)
->
-> GOTCHA #1: Natural order is MIN, not MAX!
-> PriorityQueue<Integer> pq = new PriorityQueue<>();
-> pq.addAll(List.of(5, 1, 3));
-> pq.poll(); // Returns 1 (smallest!), not 5
->
-> For MAX-HEAP:
-> PriorityQueue<Integer> maxPQ = new PriorityQueue<>(
-> Comparator.reverseOrder()   // or (a, b) -> b - a
-> );
-> ⚠️ NEVER use (a, b) -> b - a for large numbers (overflow!)
-> ✅ Use Comparator.reverseOrder() or Integer::compare reversed
->
-> GOTCHA #2: peek()/poll() = O(log n), but remove(Object) = O(n)
-> pq.remove(3);  // Must scan ALL elements to find 3 → O(n)
-> This kills performance in sliding window problems!
-> FIX: Use lazy deletion (mark deleted, skip on poll)
->
-> GOTCHA #3: Iteration order is NOT sorted!
-> for (int x : pq) { ... }  // RANDOM heap order, NOT sorted!
-> To get sorted: while (!pq.isEmpty()) { pq.poll(); }
+GOTCHA #1: Natural order is MIN, not MAX!
+PriorityQueue<Integer> pq = new PriorityQueue<>();
+pq.addAll(List.of(5, 1, 3));
+pq.poll(); // Returns 1 (smallest!), not 5
 
+For MAX-HEAP:
+PriorityQueue<Integer> maxPQ = new PriorityQueue<>(
+Comparator.reverseOrder()   // or (a, b) -> b - a
+);
+⚠️ NEVER use (a, b) -> b - a for large numbers (overflow!)
+✅ Use Comparator.reverseOrder() or Integer::compare reversed
+
+GOTCHA #2: peek()/poll() = O(log n), but remove(Object) = O(n)
+pq.remove(3);  // Must scan ALL elements to find 3 → O(n)
+This kills performance in sliding window problems!
+FIX: Use lazy deletion (mark deleted, skip on poll)
+
+GOTCHA #3: Iteration order is NOT sorted!
+for (int x : pq) { ... }  // RANDOM heap order, NOT sorted!
+To get sorted: while (!pq.isEmpty()) { pq.poll(); }
 
 ### Code — Top-K Pattern (The Right Way)
 
@@ -188,13 +179,11 @@ PriorityQueue<int[]> safe = new PriorityQueue<>(
 
 ---
 
-
-
-
 ## 3. TreeMap & TreeSet: Your BST in Disguise
 
 ### The Freeze Question
-> "When would you use TreeMap instead of HashMap?"
+
+"When would you use TreeMap instead of HashMap?"
 
 ### Deep Reasoning
 
@@ -221,45 +210,18 @@ PriorityQueue<int[]> safe = new PriorityQueue<>(
 ```
 
 **Flow:**
-- HashMap = Unordered filing cabinet (find by name: O(1))
-- ↓
-- TreeMap (Red-Black BST) UNIQUE abilities:
-- ↓
-- floorKey(k)
-- ↓
-- Largest key ≤ k (or null)
-- ↓
-- floorKey(k)
-- ↓
-- Largest key ≤ k (or null)
-- ↓
-- ceilingKey(k)
-- ↓
-- Smallest key ≥ k (or null)
-- ↓
-- ceilingKey(k)
-- ↓
-- Smallest key ≥ k (or null)
-- ↓
-- lowerKey(k)
-- ↓
-- Largest key < k (strict)
-- ↓
-- lowerKey(k)
-- ↓
-- Largest key < k (strict)
-- ↓
-- higherKey(k)
-- ↓
-- Smallest key > k (strict)
-- ↓
-- higherKey(k)
-- ↓
-- Smallest key > k (strict)
-- ↓
-- firstKey()
-- ↓
-- Smallest key
+1. HashMap = Unordered filing cabinet (find by name: O(1))
+2. TreeMap (Red-Black BST) UNIQUE abilities:
+3. floorKey(k)
+4. Largest key ≤ k (or null)
+5. ceilingKey(k)
+6. Smallest key ≥ k (or null)
+7. lowerKey(k)
+8. Largest key < k (strict)
+9. higherKey(k)
+10. Smallest key > k (strict)
+11. firstKey()
+12. Smallest key
 
 ```mermaid
 flowchart TD
@@ -335,16 +297,14 @@ int closest = (target - floor <= ceiling - target) ? floor : ceiling;
 
 ---
 
+🔬 **Section Challenge — 3. TreeMap & TreeSet: Your BST in Disguise**
 
+**Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 3. TreeMap & TreeSet: Your BST in Disguise**
->
-> **Challenge 1 (Reasoning):** When should you use `TreeMap` over `HashMap`? What's the actual performance cost?
-> <details><summary>Answer</summary>
->
-> `TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
-> </details>
->
+`TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
+</details>
+
 
 ## 4. Comparator Mastery: Sorting Logic That Doesn't Break
 
@@ -374,37 +334,13 @@ int closest = (target - floor <= ceiling - target) ? floor : ceiling;
 ```
 
 **Flow:**
-- SORTING RULES FOR DSA:
-- ↓
-- Comparator returns:
-- ↓
-- negative
-- ↓
-- first comes BEFORE second
-- ↓
-- negative
-- ↓
-- first comes BEFORE second
-- ↓
-- zero
-- ↓
-- equal (order doesn't matter)
-- ↓
-- zero
-- ↓
-- equal (order doesn't matter)
-- ↓
-- positive
-- ↓
-- first comes AFTER second
-- ↓
-- positive
-- ↓
-- first comes AFTER second
-- ↓
-- DANGER ZONE:
-- ↓
-- (a, b) -> a - b ← OVERFLOW when a=MAX, b=negative!
+1. SORTING RULES FOR DSA:
+2. Comparator returns: negative first comes BEFORE second
+3. negative first comes BEFORE second
+4. zero equal (order doesn't matter) zero equal (order doesn't matter)
+5. positive first comes AFTER second
+6. DANGER ZONE:
+7. (a, b) -> a - b ← OVERFLOW when a=MAX, b=negative!
 
 ```mermaid
 flowchart TD
@@ -478,16 +414,14 @@ System.out.println(safe.compare(Integer.MAX_VALUE, -1));  // Positive (correct!)
 
 ---
 
+🔬 **Section Challenge — 4. Comparator Mastery: Sorting Logic That Doesn't Break**
 
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 4. Comparator Mastery: Sorting Logic That Doesn't Break**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## 5. Arrays.sort vs Collections.sort: Internal Differences That Matter
 
@@ -520,19 +454,13 @@ System.out.println(safe.compare(Integer.MAX_VALUE, -1));  // Positive (correct!)
 ```
 
 **Flow:**
-- TWO DIFFERENT ALGORITHMS:
-- ↓
-- Arrays.sort(int[]):
-- ↓
-- Dual-Pivot Quicksort (by Vladimir Yaroslavskiy)
-- ↓
-- In-place, O(1) space
-- ↓
-- Used for: int[], long[], double[], char[] etc.
-- ↓
-- Arrays.sort(Object[]) / Collections.sort():
-- ↓
-- TimSort (by Tim Peters, from Python)
+1. TWO DIFFERENT ALGORITHMS:
+2. Arrays.sort(int[]):
+3. Dual-Pivot Quicksort (by Vladimir Yaroslavskiy)
+4. In-place, O(1) space
+5. Used for: int[], long[], double[], char[] etc.
+6. Arrays.sort(Object[]) / Collections.sort():
+7. TimSort (by Tim Peters, from Python)
 
 ```mermaid
 flowchart TD
@@ -580,9 +508,6 @@ Arrays.sort(arr);  // Now worst case is astronomically unlikely
 ```
 
 ---
-
-
-
 
 ## 6. HashMap for DSA: Beyond Key-Value
 
@@ -657,22 +582,20 @@ public int subarraySum(int[] nums, int k) {
 
 ---
 
+🔬 **Section Challenge — 6. HashMap for DSA: Beyond Key-Value**
 
+**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 6. HashMap for DSA: Beyond Key-Value**
->
-> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-> <details><summary>Answer</summary>
->
-> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-> <details><summary>Answer</summary>
->
-> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-> </details>
->
+Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+</details>
+
+**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+<details><summary>Answer</summary>
+
+Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+</details>
+
 
 ## 7. Stack, Queue, Deque: The Java Way
 
@@ -699,19 +622,13 @@ public int subarraySum(int[] nums, int k) {
 ```
 
 **Flow:**
-- For Stack (LIFO): ArrayDeque<> (push/pop/peek)
-- ↓
-- For Queue (FIFO): ArrayDeque<> (offer/poll/peek)
-- ↓
-- WHY ArrayDeque over LinkedList for Queue?
-- ↓
-- ArrayDeque: array-backed, cache-friendly, no node obj
-- ↓
-- ArrayDeque is 3-5x faster than LinkedList for queue o
-- ↓
-- WHEN to use LinkedList?
-- ↓
-- Almost never in DSA. Only when you need:
+1. For Stack (LIFO): ArrayDeque<> (push/pop/peek)
+2. For Queue (FIFO): ArrayDeque<> (offer/poll/peek)
+3. WHY ArrayDeque over LinkedList for Queue?
+4. ArrayDeque: array-backed, cache-friendly, no node obj
+5. ArrayDeque is 3-5x faster than LinkedList for queue o
+6. WHEN to use LinkedList?
+7. Almost never in DSA. Only when you need:
 
 ```mermaid
 flowchart TD
@@ -752,19 +669,13 @@ flowchart TD
 ```
 
 **Flow:**
-- Operation Stack (LIFO) Queue (FIFO)
-- ↓
-- Add element push(e) / addFirst offer(e) / addLast
-- ↓
-- Remove top pop() / removeFirst poll() / removeFirst
-- ↓
-- Peek top peek() / peekFirst peek() / peekFirst
-- ↓
-- Empty check isEmpty() isEmpty()
-- ↓
-- ⚠️ Both Stack and Queue use ArrayDeque — same class!
-- ↓
-- The difference is just WHICH end you operate on.
+1. Operation Stack (LIFO) Queue (FIFO)
+2. Add element push(e) / addFirst offer(e) / addLast
+3. Remove top pop() / removeFirst poll() / removeFirst
+4. Peek top peek() / peekFirst peek() / peekFirst
+5. Empty check isEmpty() isEmpty()
+6. ⚠️ Both Stack and Queue use ArrayDeque — same class!
+7. The difference is just WHICH end you operate on.
 
 ```mermaid
 flowchart TD
@@ -838,16 +749,14 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 
 ---
 
+🔬 **Section Challenge — 7. Stack, Queue, Deque: The Java Way**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 7. Stack, Queue, Deque: The Java Way**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## 8. String Manipulation for DSA: StringBuilder Reasoning
 
@@ -879,37 +788,16 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 ```
 
 **Flow:**
-- WHY StringBuilder MATTERS IN DSA
-- ↓
-- String concatenation in a loop:
-- ↓
-- String s = '';
-- ↓
-- s += 'a'; // Creates N new String objects!
-- ↓
-- Time: O(N²) — because each += copies the entire string
-- ↓
-- 'a'
-- ↓
-- 'aa'
-- ↓
-- 'aaa'
-- ↓
-- 'aaaa'
-- ↓
-- ... (copy 1+2+3+...+N byt
-- ↓
-- 'a'
-- ↓
-- 'aa'
-- ↓
-- 'aaa'
-- ↓
-- 'aaaa'
-- ↓
-- ... (copy 1+2+3+...+N byt
-- ↓
-- StringBuilder:
+1. WHY StringBuilder MATTERS IN DSA
+2. String concatenation in a loop:
+3. String s = '';
+4. s += 'a'; // Creates N new String objects!
+5. Time: O(N²) — because each += copies the entire string
+6. 'a'
+7. 'aa'
+8. 'aaa'
+9. 'aaaa'
+10. ... (copy 1+2+3+...+N byt 'a' 'aa' 'aaa' 'aaaa' ... (copy 1+2+3+...+N byt StringBuilder:
 
 ```mermaid
 flowchart TD
@@ -965,16 +853,14 @@ sb.setCharAt(index, 'c');  // Modify in-place
 
 ---
 
+🔬 **Section Challenge — 8. String Manipulation for DSA: StringBuilder Reasoning**
 
+**Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 8. String Manipulation for DSA: StringBuilder Reasoning**
->
-> **Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
-> <details><summary>Answer</summary>
->
-> Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
-> </details>
->
+Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
+</details>
+
 
 ## 9. Bit Manipulation with Java Specifics
 
@@ -1090,8 +976,6 @@ Map<String, Integer> map = new HashMap<>(capacity, 0.75f);  // Avoid rehashing
 
 ---
 
-
-
 ## 11. Quick-Fire Table
 
 | Interview Question | One-Line Senior Answer |
@@ -1109,4 +993,4 @@ Map<String, Integer> map = new HashMap<>(capacity, 0.75f);  // Avoid rehashing
 
 ---
 
-> **Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
+**Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)

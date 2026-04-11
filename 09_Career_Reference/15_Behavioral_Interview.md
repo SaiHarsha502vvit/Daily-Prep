@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](14_Resources_Links.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](14_Resources_Links.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Behavioral Interview — Complete Guide
 
@@ -18,11 +18,9 @@ Behavioral = The HIRE/NO-HIRE tiebreaker when coding is equal
 ```
 
 **Flow:**
-- Coding / 2-3 rounds / 40%
-- ↓
-- System / Design / 1-2 rounds / 20-30%
-- ↓
-- Behavioral / 1-2 rounds / 20-30%
+1. Coding / 2-3 rounds / 40%
+2. System / Design / 1-2 rounds / 20-30%
+3. Behavioral / 1-2 rounds / 20-30%
 
 ```mermaid
 flowchart TD
@@ -33,8 +31,8 @@ flowchart TD
     N2 --> N3
 ```
 
-> **Mental Model:** Behavioral interviews test PAST behavior as a PREDICTOR of future behavior.
-> They're not asking what you WOULD do — they want what you DID do.
+**Mental Model:** Behavioral interviews test PAST behavior as a PREDICTOR of future behavior.
+They're not asking what you WOULD do — they want what you DID do.
 
 ---
 
@@ -66,13 +64,10 @@ S.T.A.R. FRAMEWORK
 ```
 
 **Flow:**
-- S ituation / (15%)
-- ↓
-- T ask / (15%)
-- ↓
-- A ction / (50%)
-- ↓
-- R esult / (20%)
+1. S ituation / (15%)
+2. T ask / (15%)
+3. A ction / (50%)
+4. R esult / (20%)
 
 ```mermaid
 flowchart TD
@@ -88,13 +83,13 @@ flowchart TD
 ### STAR Anti-Patterns
 
 
-> ❌ BAD STAR                    ✅ GOOD STAR
-> "We did this..."              "I specifically did this..."
-> Too much situation setup      Quick context, deep action
-> Vague results ("it worked")   "Reduced latency by 60%"
-> No learning mentioned         "I learned that..."
-> 10+ minute rambling answer    2-3 minute focused answer
-> Made-up or hypothetical       Real, specific experience
+❌ BAD STAR                    ✅ GOOD STAR
+"We did this..."              "I specifically did this..."
+Too much situation setup      Quick context, deep action
+Vague results ("it worked")   "Reduced latency by 60%"
+No learning mentioned         "I learned that..."
+10+ minute rambling answer    2-3 minute focused answer
+Made-up or hypothetical       Real, specific experience
 
 
 ---
@@ -111,30 +106,30 @@ flowchart TD
 **Sample Answer:**
 
 
-> SITUATION: During a Sprint planning meeting, my senior developer
-> wanted to use MongoDB for a new order management system. I
-> believed PostgreSQL was a better fit because we had complex
-> relationships between orders, products, and customers.
->
-> TASK: I needed to present my case without undermining my senior
-> or creating team friction.
->
-> ACTION:
-> 1. I scheduled a 1-on-1 instead of arguing in the group meeting
-> 2. I prepared a comparison document with specific trade-offs:
-> - ACID requirements for financial data (favors PostgreSQL)
-> - JOIN complexity analysis (6 related tables)
-> - Schema evolution patterns we'd need
-> 3. I also listed scenarios where MongoDB WOULD be better
-> 4. I suggested we prototype both approaches (2 days each)
->
-> RESULT: After the prototype, the team agreed PostgreSQL was the
-> right choice. My senior appreciated the data-driven approach.
-> We shipped on time. The relationship actually improved — he
-> started asking my input on architecture decisions.
->
-> KEY SIGNALS: Respectful, data-driven, solution-oriented,
-> acknowledges other viewpoints
+SITUATION: During a Sprint planning meeting, my senior developer
+wanted to use MongoDB for a new order management system. I
+believed PostgreSQL was a better fit because we had complex
+relationships between orders, products, and customers.
+
+TASK: I needed to present my case without undermining my senior
+or creating team friction.
+
+ACTION:
+1. I scheduled a 1-on-1 instead of arguing in the group meeting
+2. I prepared a comparison document with specific trade-offs:
+- ACID requirements for financial data (favors PostgreSQL)
+- JOIN complexity analysis (6 related tables)
+- Schema evolution patterns we'd need
+3. I also listed scenarios where MongoDB WOULD be better
+4. I suggested we prototype both approaches (2 days each)
+
+RESULT: After the prototype, the team agreed PostgreSQL was the
+right choice. My senior appreciated the data-driven approach.
+We shipped on time. The relationship actually improved — he
+started asking my input on architecture decisions.
+
+KEY SIGNALS: Respectful, data-driven, solution-oriented,
+acknowledges other viewpoints
 
 
 ### Category 2: Leadership & Initiative
@@ -193,13 +188,10 @@ THE FAILURE ANSWER FORMULA
 ```
 
 **Flow:**
-- Real failure / (not humble brag)
-- ↓
-- Impact
-- ↓
-- Root cause
-- ↓
-- Fix + Prevention
+1. Real failure / (not humble brag)
+2. Impact
+3. Root cause
+4. Fix + Prevention
 
 ```mermaid
 flowchart TD
@@ -252,9 +244,8 @@ RESULT: Production stable within 1 hour, feature delivered next day,
 ```
 
 **Flow:**
-- 1. Assessed impact: Production bug
-- ↓
-- P0, everything else waits
+1. 1. Assessed impact: Production bug
+2. P0, everything else waits
 
 ```mermaid
 flowchart LR
@@ -273,14 +264,14 @@ flowchart LR
 **What They're Looking For:**
 
 
-> DECISION-MAKING SIGNALS
->
-> ✓ Considered trade-offs (not just "it's the best")
-> ✓ Thought about maintainability, not just speed
-> ✓ Consulted others when appropriate
-> ✓ Made reversible decisions quickly
-> ✓ Made irreversible decisions carefully
-> ✓ Used data/evidence, not just gut feeling
+DECISION-MAKING SIGNALS
+
+✓ Considered trade-offs (not just "it's the best")
+✓ Thought about maintainability, not just speed
+✓ Consulted others when appropriate
+✓ Made reversible decisions quickly
+✓ Made irreversible decisions carefully
+✓ Used data/evidence, not just gut feeling
 
 
 ### Category 7: Adaptability & Ambiguity
@@ -308,23 +299,23 @@ Documented decisions → Iterated as more info came → Successfully delivered
 ## Amazon Leadership Principles — Quick Reference
 
 
-> AMAZON LPs — PREPARE 2 STORIES FOR EACH
-> 1.  Customer Obsession     — Start with the customer
-> 2.  Ownership              — Think long-term, act on behalf of
-> 3.  Invent and Simplify    — Find new ways, simplify
-> 4.  Are Right, A Lot       — Strong judgment, seek diverse views
-> 5.  Learn and Be Curious   — Always improving
-> 6.  Hire and Develop Best  — Raise the bar
-> 7.  Insist on Highest Stds — Relentlessly high standards
-> 8.  Think Big              — Bold direction, inspire results
-> 9.  Bias for Action        — Speed matters, calculated risks OK
-> 10. Frugality              — Do more with less
-> 11. Earn Trust             — Self-critical, benchmark against best
-> 12. Dive Deep              — Stay connected to details, audit
-> 13. Have Backbone          — Respectfully challenge, then commit
-> 14. Deliver Results        — Focus on key inputs, deliver quality
-> 15. Strive to be Best Emp  — Create productive environment
-> 16. Success and Scale      — Create more than you consume
+AMAZON LPs — PREPARE 2 STORIES FOR EACH
+1.  Customer Obsession     — Start with the customer
+2.  Ownership              — Think long-term, act on behalf of
+3.  Invent and Simplify    — Find new ways, simplify
+4.  Are Right, A Lot       — Strong judgment, seek diverse views
+5.  Learn and Be Curious   — Always improving
+6.  Hire and Develop Best  — Raise the bar
+7.  Insist on Highest Stds — Relentlessly high standards
+8.  Think Big              — Bold direction, inspire results
+9.  Bias for Action        — Speed matters, calculated risks OK
+10. Frugality              — Do more with less
+11. Earn Trust             — Self-critical, benchmark against best
+12. Dive Deep              — Stay connected to details, audit
+13. Have Backbone          — Respectfully challenge, then commit
+14. Deliver Results        — Focus on key inputs, deliver quality
+15. Strive to be Best Emp  — Create productive environment
+16. Success and Scale      — Create more than you consume
 
 
 ---
@@ -335,42 +326,42 @@ Documented decisions → Iterated as more info came → Successfully delivered
 ## Story Bank Template — Prepare 8-10 Stories
 
 
-> STORY BANK — YOUR PERSONAL PREPARATION
->
-> Story 1: "The Production Bug"
-> Tags: [failure, debugging, ownership, time-pressure]
-> S: ___________________________________________________________
-> T: ___________________________________________________________
-> A: ___________________________________________________________
-> R: ___________________________________________________________
->
-> Story 2: "The Disagreement"
-> Tags: [conflict, communication, data-driven]
-> S: ___________________________________________________________
-> T: ___________________________________________________________
-> A: ___________________________________________________________
-> R: ___________________________________________________________
->
-> Story 3: "I Took Initiative"
-> Tags: [leadership, initiative, impact]
->
-> Story 4: "The Tight Deadline"
-> Tags: [prioritization, pressure, delivery]
->
-> Story 5: "I Helped a Struggling Teammate"
-> Tags: [teamwork, empathy, mentoring]
->
-> Story 6: "The Technical Decision"
-> Tags: [trade-offs, simplification, architecture]
->
-> Story 7: "Learning Something New Fast"
-> Tags: [adaptability, curiosity, growth]
->
-> Story 8: "Customer Impact"
-> Tags: [user-focus, going-beyond, feedback]
->
-> TIP: Each story should map to 3+ question categories
-> 8 stories can cover 20+ different questions
+STORY BANK — YOUR PERSONAL PREPARATION
+
+Story 1: "The Production Bug"
+Tags: [failure, debugging, ownership, time-pressure]
+S: ___________________________________________________________
+T: ___________________________________________________________
+A: ___________________________________________________________
+R: ___________________________________________________________
+
+Story 2: "The Disagreement"
+Tags: [conflict, communication, data-driven]
+S: ___________________________________________________________
+T: ___________________________________________________________
+A: ___________________________________________________________
+R: ___________________________________________________________
+
+Story 3: "I Took Initiative"
+Tags: [leadership, initiative, impact]
+
+Story 4: "The Tight Deadline"
+Tags: [prioritization, pressure, delivery]
+
+Story 5: "I Helped a Struggling Teammate"
+Tags: [teamwork, empathy, mentoring]
+
+Story 6: "The Technical Decision"
+Tags: [trade-offs, simplification, architecture]
+
+Story 7: "Learning Something New Fast"
+Tags: [adaptability, curiosity, growth]
+
+Story 8: "Customer Impact"
+Tags: [user-focus, going-beyond, feedback]
+
+TIP: Each story should map to 3+ question categories
+8 stories can cover 20+ different questions
 
 
 ### How to Map Stories to Questions
@@ -394,23 +385,23 @@ EVERY category should have 2+ stories that fit                  ║
 ## Google's Interview Values
 
 
-> GOOGLE EVALUATES 4 THINGS:
->
-> 1. General Cognitive Ability
-> → How you approach & solve problems
-> → "Walk me through your thought process"
->
-> 2. Leadership
-> → Emergent leadership (not just title-based)
-> → "Stepped up when needed, stepped back when appropriate"
->
-> 3. Googleyness
-> → Comfort with ambiguity
-> → Fun to work with
-> → Pushes boundaries
->
-> 4. Role-Related Knowledge
-> → Technical skills specific to the role
+GOOGLE EVALUATES 4 THINGS:
+
+1. General Cognitive Ability
+→ How you approach & solve problems
+→ "Walk me through your thought process"
+
+2. Leadership
+→ Emergent leadership (not just title-based)
+→ "Stepped up when needed, stepped back when appropriate"
+
+3. Googleyness
+→ Comfort with ambiguity
+→ Fun to work with
+→ Pushes boundaries
+
+4. Role-Related Knowledge
+→ Technical skills specific to the role
 
 
 ---
@@ -418,17 +409,17 @@ EVERY category should have 2+ stories that fit                  ║
 ## Common Traps & How to Avoid Them
 
 
-> TRAP                          │  SOLUTION
-> Saying "we" for everything    │  Use "I" — show YOUR role
-> Badmouthing former employers  │  Be diplomatic, focus on learning
-> Too short answer (30 sec)     │  Aim for 2-3 minutes
-> Too long answer (10+ min)     │  Practice with a timer
-> No quantifiable results       │  Add numbers: "reduced by 40%"
-> Only positive stories         │  Include failures + growth
-> Hypothetical answers          │  ALWAYS use real experiences
-> Not answering the question    │  Repeat the question to yourself
-> No follow-up ready            │  Prepare "if asked more" details
-> Same story for everything     │  Prepare 8-10 diverse stories
+TRAP                          │  SOLUTION
+Saying "we" for everything    │  Use "I" — show YOUR role
+Badmouthing former employers  │  Be diplomatic, focus on learning
+Too short answer (30 sec)     │  Aim for 2-3 minutes
+Too long answer (10+ min)     │  Practice with a timer
+No quantifiable results       │  Add numbers: "reduced by 40%"
+Only positive stories         │  Include failures + growth
+Hypothetical answers          │  ALWAYS use real experiences
+Not answering the question    │  Repeat the question to yourself
+No follow-up ready            │  Prepare "if asked more" details
+Same story for everything     │  Prepare 8-10 diverse stories
 
 
 ---
@@ -436,29 +427,29 @@ EVERY category should have 2+ stories that fit                  ║
 ## Questions YOU Should Ask
 
 
-> ASK THE INTERVIEWER (Pick 2-3)
->
-> About the Team:
-> - What does a typical sprint look like for your team?
-> - How does the team handle code reviews and knowledge sharing?
-> - What's the team's biggest challenge right now?
->
-> About Growth:
-> - How does the company support learning and development?
-> - What does the career path look like for this role?
-> - Can you tell me about someone who grew in this role?
->
-> About Culture:
-> - How does the team handle disagreements on tech decisions?
-> - What's the balance between feature work and tech debt?
-> - How are on-call rotations handled?
->
-> About the Role:
-> - What would success look like in the first 90 days?
-> - What's the most impactful project I'd work on initially?
->
-> ⚠️ NEVER ask about salary in behavioral round
-> ⚠️ NEVER say "I have no questions" — it shows disinterest
+ASK THE INTERVIEWER (Pick 2-3)
+
+About the Team:
+- What does a typical sprint look like for your team?
+- How does the team handle code reviews and knowledge sharing?
+- What's the team's biggest challenge right now?
+
+About Growth:
+- How does the company support learning and development?
+- What does the career path look like for this role?
+- Can you tell me about someone who grew in this role?
+
+About Culture:
+- How does the team handle disagreements on tech decisions?
+- What's the balance between feature work and tech debt?
+- How are on-call rotations handled?
+
+About the Role:
+- What would success look like in the first 90 days?
+- What's the most impactful project I'd work on initially?
+
+⚠️ NEVER ask about salary in behavioral round
+⚠️ NEVER say "I have no questions" — it shows disinterest
 
 
 ---
@@ -466,27 +457,27 @@ EVERY category should have 2+ stories that fit                  ║
 ## Self-Introduction — The "Tell Me About Yourself" Template
 
 
-> THE 60-90 SECOND INTRO (Present → Past → Future)
->
-> PRESENT (20 sec):
-> "I'm a software developer with experience in Java and Spring
-> Boot, currently focused on building scalable backend systems."
->
-> PAST (30 sec):
-> "In my recent work, I built [specific thing] that [specific
-> impact]. I particularly enjoy [area] because [reason]."
->
-> FUTURE (20 sec):
-> "I'm excited about [company] because [specific reason —
-> tech stack, scale, mission]. I want to contribute to
-> [specific area] and grow into [direction]."
->
-> ─────────────────────────────────────────────────────────
-> TIPS:
-> - Tailor to EACH company — research them before
-> - Practice out loud until it's natural, not robotic
-> - End with something that invites follow-up
-> - NO: "I'm a hard worker" (show it, don't say it)
+THE 60-90 SECOND INTRO (Present → Past → Future)
+
+PRESENT (20 sec):
+"I'm a software developer with experience in Java and Spring
+Boot, currently focused on building scalable backend systems."
+
+PAST (30 sec):
+"In my recent work, I built [specific thing] that [specific
+impact]. I particularly enjoy [area] because [reason]."
+
+FUTURE (20 sec):
+"I'm excited about [company] because [specific reason —
+tech stack, scale, mission]. I want to contribute to
+[specific area] and grow into [direction]."
+
+─────────────────────────────────────────────────────────
+TIPS:
+- Tailor to EACH company — research them before
+- Practice out loud until it's natural, not robotic
+- End with something that invites follow-up
+- NO: "I'm a hard worker" (show it, don't say it)
 
 
 ---
@@ -510,19 +501,13 @@ Before every behavioral interview, research:
 ```
 
 **Flow:**
-- Before every behavioral interview, research:
-- ↓
-- □ Company's recent news / product launches
-- ↓
-- □ Tech blog posts (shows you care about their engineeri
-- ↓
-- □ Glassdoor reviews (understand culture)
-- ↓
-- □ LinkedIn — interviewer's background
-- ↓
-- □ Company values / mission statement
-- ↓
-- □ Tech stack (from job listing or StackShare)
+1. Before every behavioral interview, research:
+2. □ Company's recent news / product launches
+3. □ Tech blog posts (shows you care about their engineeri
+4. □ Glassdoor reviews (understand culture)
+5. □ LinkedIn — interviewer's background
+6. □ Company values / mission statement
+7. □ Tech stack (from job listing or StackShare)
 
 ```mermaid
 flowchart TD
@@ -547,35 +532,35 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — "Why This Company?" — Research Checklist**
->>>
+🔬 **Section Challenge — "Why This Company?" — Research Checklist**
+>>
 
 ## Interview Day Checklist
 
 
-> BEFORE THE INTERVIEW
->
-> □ Review your 8-10 stories (read once, don't memorize)
-> □ Research the company (last 15 min before)
-> □ Prepare 3 questions to ask
-> □ Test tech setup (camera, mic, internet) if virtual
-> □ Have water nearby
-> □ Be ready 5 minutes early
->
-> DURING THE INTERVIEW
->
-> □ Listen to the FULL question before answering
-> □ Take 5 seconds to think — silence is OK
-> □ Use STAR — don't ramble
-> □ Say "I" not "we"
-> □ If stuck: "Can I take a moment to think of a good example?"
-> □ Watch body language — sit up, eye contact, smile
->
-> AFTER THE INTERVIEW
->
-> □ Send thank-you email within 24 hours
-> □ Note down questions you were asked (for future prep)
-> □ Reflect: What went well? What to improve?
+BEFORE THE INTERVIEW
+
+□ Review your 8-10 stories (read once, don't memorize)
+□ Research the company (last 15 min before)
+□ Prepare 3 questions to ask
+□ Test tech setup (camera, mic, internet) if virtual
+□ Have water nearby
+□ Be ready 5 minutes early
+
+DURING THE INTERVIEW
+
+□ Listen to the FULL question before answering
+□ Take 5 seconds to think — silence is OK
+□ Use STAR — don't ramble
+□ Say "I" not "we"
+□ If stuck: "Can I take a moment to think of a good example?"
+□ Watch body language — sit up, eye contact, smile
+
+AFTER THE INTERVIEW
+
+□ Send thank-you email within 24 hours
+□ Note down questions you were asked (for future prep)
+□ Reflect: What went well? What to improve?
 
 
 ---
@@ -608,18 +593,18 @@ flowchart TD
 ### Answering "What's Your Biggest Weakness?"
 
 
-> THE WEAKNESS FORMULA:
->
-> Real weakness + What you're doing about it + Progress
->
-> ✅ GOOD: "I used to struggle with estimating task timelines.
-> I've started breaking tasks into smaller subtasks and
-> tracking my estimates vs actuals. My accuracy has improved
-> significantly over the past 6 months."
->
-> ❌ BAD:  "I'm a perfectionist" (humble brag)
-> ❌ BAD:  "I have no weaknesses" (delusional)
-> ❌ BAD:  "I'm terrible at communication" (too damaging)
+THE WEAKNESS FORMULA:
+
+Real weakness + What you're doing about it + Progress
+
+✅ GOOD: "I used to struggle with estimating task timelines.
+I've started breaking tasks into smaller subtasks and
+tracking my estimates vs actuals. My accuracy has improved
+significantly over the past 6 months."
+
+❌ BAD:  "I'm a perfectionist" (humble brag)
+❌ BAD:  "I have no weaknesses" (delusional)
+❌ BAD:  "I'm terrible at communication" (too damaging)
 
 
 ---
@@ -649,19 +634,13 @@ PREPARATION = CONFIDENCE = PERFORMANCE
 ```
 
 **Flow:**
-- Think of the interview as a CONVERSATION, not an EXAM
-- ↓
-- You're evaluating THEM as much as they're evaluating YO
-- ↓
-- they need to fill. They're rooting for you to be great.
-- ↓
-- MINDSET SHIFT:
-- ↓
-- From: 'Please hire me, I'll do anything'
-- ↓
-- To: 'Let's see if we're a good fit for
-- ↓
-- each other'
+1. Think of the interview as a CONVERSATION, not an EXAM
+2. You're evaluating THEM as much as they're evaluating YO
+3. they need to fill. They're rooting for you to be great.
+4. MINDSET SHIFT:
+5. From: 'Please hire me, I'll do anything'
+6. To: 'Let's see if we're a good fit for
+7. each other'
 
 ```mermaid
 flowchart TD

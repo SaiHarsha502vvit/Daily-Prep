@@ -1,5 +1,5 @@
-> **Navigation**: [< Previous Chapter](03b_Recursion_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
-> 🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — include/exclude pattern and decision trees
+**Navigation**: [< Previous Chapter](03b_Recursion_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — include/exclude pattern and decision trees
 
 ---
 
@@ -169,26 +169,24 @@ public void sumArray(int[] arr, int index) {
 
 ---
 
+🔬 **Section Challenge — PART 9: Advanced Recursion Patterns**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — PART 9: Advanced Recursion Patterns**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## PART 10: Recursion to Iteration Conversion
 
@@ -338,26 +336,24 @@ public List<List<Integer>> subsetsCascade(int[] nums) {
 
 ---
 
+🔬 **Section Challenge — PART 10: Recursion to Iteration Conversion**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — PART 10: Recursion to Iteration Conversion**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## PART 11: Classic Recursion Problems with Full Solutions
 
@@ -581,26 +577,24 @@ private void helper(String num, int target, int index,
 
 ---
 
+🔬 **Section Challenge — PART 11: Classic Recursion Problems with Full Solutions**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — PART 11: Classic Recursion Problems with Full Solutions**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## PART 12: Recursion Complexity Analysis
 
@@ -628,19 +622,13 @@ SPACE COMPLEXITY:
 ```
 
 **Flow:**
-- RECURSION TYPE RECURRENCE TIME
-- ↓
-- Tree traversal T(n) = 2T(n/2)+1 O(n)
-- ↓
-- Subsets T(n) = 2T(n-1)+1 O(2^n)
-- ↓
-- Permutations T(n) = n*T(n-1) O(n!)
-- ↓
-- SPACE COMPLEXITY:
-- ↓
-- - Usually O(max recursion depth)
-- ↓
-- - For trees: O(height) = O(log n) balanced, O(n) skewed
+1. RECURSION TYPE RECURRENCE TIME
+2. Tree traversal T(n) = 2T(n/2)+1 O(n)
+3. Subsets T(n) = 2T(n-1)+1 O(2^n)
+4. Permutations T(n) = n*T(n-1) O(n!)
+5. SPACE COMPLEXITY:
+6. - Usually O(max recursion depth)
+7. - For trees: O(height) = O(log n) balanced, O(n) skewed
 
 ```mermaid
 flowchart TD
@@ -684,26 +672,24 @@ public int fib(int n) {
 
 ---
 
+🔬 **Section Challenge — PART 12: Recursion Complexity Analysis**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — PART 12: Recursion Complexity Analysis**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## PART 13: Recursion Mental Models
 
@@ -723,9 +709,8 @@ You just trust that it did its job correctly.
 ```
 
 **Flow:**
-- YOU (CEO)
-- ↓
-- Don't do all the work yourself!
+1. YOU (CEO)
+2. Don't do all the work yourself!
 
 ```mermaid
 flowchart LR
@@ -751,9 +736,7 @@ Then combine results back up.
 ```
 
 **Flow:**
-- ... eventually sort [9]
-- ↓
-- trivially sorted!
+1. ... eventually sort [9] trivially sorted!
 
 ```mermaid
 flowchart LR
@@ -781,81 +764,14 @@ Just trust the smaller call works.
 ```
 
 **Flow:**
-- TRUST that your recursive call works correctly.
-- ↓
-- Example: Reverse a linked list
-- ↓
-- reverseList(1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- null)
-- ↓
-- reverseList(1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- null)
-- ↓
-- TRUST: reverseList(2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- null) = 4
-- ↓
-- 3
-- ↓
-- 2
-- ↓
-- null
-- ↓
-- TRUST: reverseList(2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- null) = 4
-- ↓
-- 3
-- ↓
-- 2
-- ↓
-- null
-- ↓
-- Now just attach node 1:
-- ↓
-- 4
-- ↓
-- 3
-- ↓
-- 2
-- ↓
-- 1
-- ↓
-- null
-- ↓
-- 4
-- ↓
-- 3
-- ↓
-- 2
-- ↓
-- 1
-- ↓
-- null
-- ↓
-- Don't trace through every call!
+1. TRUST that your recursive call works correctly.
+2. Example: Reverse a linked list
+3. reverseList(1 2 3 4 null)
+4. TRUST: reverseList(2 3 4 null) = 4
+5. 3 2 null
+6. Now just attach node 1: 4 3 2
+7. 1 null 4 3 2 1 null
+8. Don't trace through every call!
 
 ```mermaid
 flowchart TD
@@ -894,26 +810,24 @@ Example: Check if tree is balanced
 
 ---
 
+🔬 **Section Challenge — PART 13: Recursion Mental Models**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — PART 13: Recursion Mental Models**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## PART 14: Common Recursion Mistakes and Fixes
 
@@ -1020,26 +934,24 @@ public long factorial(int n) {
 
 ---
 
+🔬 **Section Challenge — PART 14: Common Recursion Mistakes and Fixes**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — PART 14: Common Recursion Mistakes and Fixes**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 # 🚀 PART FINAL: ADVANCED RECURSION PATTERNS & TECHNIQUES
 
@@ -1061,19 +973,13 @@ Why and what are the 3 fixes?
 ```
 
 **Flow:**
-- ADVANCED RECURSION - BEYOND THE BASICS
-- ↓
-- system-level programming:
-- ↓
-- • Mutual recursion
-- ↓
-- • Indirect recursion
-- ↓
-- • Continuation Passing Style (CPS)
-- ↓
-- • Y-Combinator (anonymous recursion)
-- ↓
-- • Recursion with immutable state
+1. ADVANCED RECURSION - BEYOND THE BASICS
+2. system-level programming:
+3. • Mutual recursion
+4. • Indirect recursion
+5. • Continuation Passing Style (CPS)
+6. • Y-Combinator (anonymous recursion)
+7. • Recursion with immutable state
 
 ```mermaid
 flowchart TD
@@ -1115,9 +1021,7 @@ flowchart TD
 ```
 
 **Flow:**
-- isEven
-- ↓
-- isOdd
+1. isEven isOdd
 
 ```mermaid
 flowchart LR
@@ -1213,27 +1117,10 @@ class Parser {
 ```
 
 **Flow:**
-- CALL GRAPH for parsing '(2+3)*4':
-- ↓
-- parseExpr()
-- ↓
-- parseTerm()
-- ↓
-- parseFactor() [sees '(']
-- ↓
-- parseExpr() ← MUTUAL CALL
-- ↓
-- parseFactor()
-- ↓
-- 2
-- ↓
-- parseFactor()
-- ↓
-- 2
-- ↓
-- parseFactor()
-- ↓
-- 3
+1. CALL GRAPH for parsing '(2+3)*4':
+2. parseExpr()
+3. parseTerm()
+4. parseFactor() [sees '('] parseExpr() ← MUTUAL CALL parseFactor() 2 parseFactor() 2 parseFactor() 3
 
 ```mermaid
 flowchart TD
@@ -1254,26 +1141,24 @@ flowchart TD
     N7 --> N8
 ```
 
+🔬 **Section Challenge — 🔁 Mutual Recursion**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🔁 Mutual Recursion**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## 📌 Continuation Passing Style (cps)
 
@@ -1295,21 +1180,12 @@ Why and what are the 3 fixes?
 ```
 
 **Flow:**
-- CONTINUATION PASSING STYLE (CPS)
-- ↓
-- result. Every call becomes a tail call!
-- ↓
-- TRADITIONAL: CPS:
-- ↓
-- return value ← caller continuation(value)
-- ↓
-- no return
-- ↓
-- return value ← caller continuation(value)
-- ↓
-- no return
-- ↓
-- EXAMPLE: Factorial in CPS
+1. CONTINUATION PASSING STYLE (CPS)
+2. result. Every call becomes a tail call!
+3. TRADITIONAL: CPS:
+4. return value ← caller continuation(value)
+5. no return
+6. EXAMPLE: Factorial in CPS
 
 ```mermaid
 flowchart TD
@@ -1371,37 +1247,16 @@ factorialCPS(5, result -> System.out.println(result));  // Prints 120
 ```
 
 **Flow:**
-- TRACE OF factorialCPS(4, print):
-- ↓
-- factorialCPS(4, k₀) where k₀ = print
-- ↓
-- factorialCPS(3, k₁) where k₁ = r
-- ↓
-- k₀(4 * r)
-- ↓
-- factorialCPS(3, k₁) where k₁ = r
-- ↓
-- k₀(4 * r)
-- ↓
-- factorialCPS(2, k₂) where k₂ = r
-- ↓
-- k₁(3 * r)
-- ↓
-- factorialCPS(2, k₂) where k₂ = r
-- ↓
-- k₁(3 * r)
-- ↓
-- factorialCPS(1, k₃) where k₃ = r
-- ↓
-- k₂(2 * r)
-- ↓
-- factorialCPS(1, k₃) where k₃ = r
-- ↓
-- k₂(2 * r)
-- ↓
-- k₃.accept(1)
-- ↓
-- k₂.accept(2) // 2 * 1
+1. TRACE OF factorialCPS(4, print):
+2. factorialCPS(4, k₀) where k₀ = print
+3. factorialCPS(3, k₁) where k₁ = r
+4. k₀(4 * r)
+5. factorialCPS(2, k₂) where k₂ = r
+6. k₁(3 * r)
+7. factorialCPS(1, k₃) where k₃ = r
+8. k₂(2 * r)
+9. k₃.accept(1)
+10. k₂.accept(2) // 2 * 1
 
 ```mermaid
 flowchart TD
@@ -1447,17 +1302,9 @@ void fibCPS(int n, Continuation<Integer> k) {
 ```
 
 **Flow:**
-- WHY USE CPS?
-- ↓
-- • Explicit control flow
-- ↓
-- useful for async programming
-- ↓
-- • Explicit control flow
-- ↓
-- useful for async programming
-- ↓
-- • Foundation of async/await patterns
+1. WHY USE CPS?
+2. • Explicit control flow useful for async programming
+3. • Foundation of async/await patterns
 
 ```mermaid
 flowchart TD
@@ -1467,9 +1314,6 @@ flowchart TD
     N1 --> N2
     N2 --> N3
 ```
-
-
-
 
 ## 🔁 Y — Combinator — Anonymous Recursion
 
@@ -1491,13 +1335,10 @@ flowchart TD
 ```
 
 **Flow:**
-- Y-COMBINATOR - RECURSION WITHOUT NAMING
-- ↓
-- (Lambda calculus has no assignment!)
-- ↓
-- MATHEMATICAL DEFINITION:
-- ↓
-- JAVA IMPLEMENTATION:
+1. Y-COMBINATOR - RECURSION WITHOUT NAMING
+2. (Lambda calculus has no assignment!)
+3. MATHEMATICAL DEFINITION:
+4. JAVA IMPLEMENTATION:
 
 ```mermaid
 flowchart TD
@@ -1567,13 +1408,10 @@ Function<Integer, Integer> factorial = new Function<>() {
 ```
 
 **Flow:**
-- WHY CARE ABOUT Y-COMBINATOR?
-- ↓
-- • Foundation of lambda calculus and functional programm
-- ↓
-- • Proves recursion can be derived from simpler construc
-- ↓
-- • Asked in advanced interviews about programming theory
+1. WHY CARE ABOUT Y-COMBINATOR?
+2. • Foundation of lambda calculus and functional programm
+3. • Proves recursion can be derived from simpler construc
+4. • Asked in advanced interviews about programming theory
 
 ```mermaid
 flowchart TD
@@ -1586,26 +1424,24 @@ flowchart TD
     N3 --> N4
 ```
 
+🔬 **Section Challenge — 🔁 Y — Combinator — Anonymous Recursion**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🔁 Y — Combinator — Anonymous Recursion**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## 🚀 Advanced Backtracking Optimizations
 
@@ -1810,9 +1646,6 @@ class SudokuSolver {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
-
 ## DIVIDE AND CONQUER - ADVANCED PATTERNS
 
 ```
@@ -1827,9 +1660,8 @@ class SudokuSolver {
 ```
 
 **Flow:**
-- ADVANCED DIVIDE AND CONQUER PATTERNS
-- ↓
-- PATTERN 1: CLOSEST PAIR OF POINTS (2D)
+1. ADVANCED DIVIDE AND CONQUER PATTERNS
+2. PATTERN 1: CLOSEST PAIR OF POINTS (2D)
 
 ```mermaid
 flowchart TD
@@ -1981,8 +1813,6 @@ int[][] strassen(int[][] A, int[][] B) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ## 🔁 Recursion With State — Functional Approach
 
 ```
@@ -1999,11 +1829,9 @@ int[][] strassen(int[][] A, int[][] B) {
 ```
 
 **Flow:**
-- IMMUTABLE STATE IN RECURSION
-- ↓
-- SOLUTION: Pass state as parameters, return new state
-- ↓
-- MUTABLE (hard to reason): IMMUTABLE (easier to reason):
+1. IMMUTABLE STATE IN RECURSION
+2. SOLUTION: Pass state as parameters, return new state
+3. MUTABLE (hard to reason): IMMUTABLE (easier to reason):
 
 ```mermaid
 flowchart TD
@@ -2083,26 +1911,24 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+🔬 **Section Challenge — 🔁 Recursion With State — Functional Approach**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🔁 Recursion With State — Functional Approach**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## RECURSION PERFORMANCE COMPARISON
 
@@ -2141,10 +1967,10 @@ Why and what are the 3 fixes?
 │ ├───────────────────────────────┼────────────────┼────────────────┤             │
 │ │ Factorial(1000) │ 32 KB stack │ 8 bytes │                                     │
 │ │ Factorial(100000) │ OVERFLOW! │ 8 bytes │                                     │
-│ │ Tree Traversal (depth 20) │ 640 bytes │ 640 bytes* │                          │
+│ │ Tree Traversal (depth 20) │ 640 bytes │ 640 bytes*│                          │
 │ │ Tree Traversal (depth 10000) │ OVERFLOW! │ 320 KB heap │                      │
 │ └───────────────────────────────┴────────────────┴────────────────┘             │
-│ * Iterative tree traversal uses heap-allocated stack                            │
+│* Iterative tree traversal uses heap-allocated stack                            │
 │                                                                                 │
 │                                                                                 │
 │ WHEN TO CHOOSE EACH:                                                            │
@@ -2161,9 +1987,8 @@ Why and what are the 3 fixes?
 ```
 
 **Flow:**
-- Problem Recursive (ns) Iterative (ns) Ratio / Factorial
-- ↓
-- Problem Recursive Iterative / Factorial(1000) 32 KB sta
+1. Problem Recursive (ns) Iterative (ns) Ratio / Factorial
+2. Problem Recursive Iterative / Factorial(1000) 32 KB sta
 
 ```mermaid
 flowchart TD
@@ -2172,26 +1997,24 @@ flowchart TD
     N1 --> N2
 ```
 
+🔬 **Section Challenge — RECURSION PERFORMANCE COMPARISON**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — RECURSION PERFORMANCE COMPARISON**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## COMPLETE RECURSION PROBLEM TAXONOMY
 
@@ -2252,19 +2075,13 @@ Why and what are the 3 fixes?
 ```
 
 **Flow:**
-- RECURSION PROBLEM CLASSIFICATION
-- ↓
-- RECURSION PROBLEM TYPES
-- ↓
-- LINEAR Only ONE recursive call per invocation
-- ↓
-- RECURSION • Factorial, Sum, Array traversal
-- ↓
-- O(n) calls • Can always convert to simple iteration
-- ↓
-- BINARY TWO recursive calls per invocation
-- ↓
-- RECURSION • Fibonacci, Merge Sort, Binary Tree traversa
+1. RECURSION PROBLEM CLASSIFICATION
+2. RECURSION PROBLEM TYPES
+3. LINEAR Only ONE recursive call per invocation
+4. RECURSION • Factorial, Sum, Array traversal
+5. O(n) calls • Can always convert to simple iteration
+6. BINARY TWO recursive calls per invocation
+7. RECURSION • Fibonacci, Merge Sort, Binary Tree traversa
 
 ```mermaid
 flowchart TD
@@ -2285,26 +2102,24 @@ flowchart TD
     N7 --> N8
 ```
 
+🔬 **Section Challenge — COMPLETE RECURSION PROBLEM TAXONOMY**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — COMPLETE RECURSION PROBLEM TAXONOMY**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## MASTER CHECKLIST FOR WRITING RECURSION
 
@@ -2353,19 +2168,13 @@ Why and what are the 3 fixes?
 ```
 
 **Flow:**
-- RECURSION WRITING CHECKLIST ✓
-- ↓
-- BEFORE CODING:
-- ↓
-- □ Identify the subproblem - what's the 'smaller version
-- ↓
-- □ Identify base case(s) - when can you answer directly?
-- ↓
-- □ Identify what each call returns (or modifies)
-- ↓
-- □ Estimate max depth - will stack overflow?
-- ↓
-- □ Check for overlapping subproblems - need memoization?
+1. RECURSION WRITING CHECKLIST ✓
+2. BEFORE CODING:
+3. □ Identify the subproblem - what's the 'smaller version
+4. □ Identify base case(s) - when can you answer directly?
+5. □ Identify what each call returns (or modifies)
+6. □ Estimate max depth - will stack overflow?
+7. □ Check for overlapping subproblems - need memoization?
 
 ```mermaid
 flowchart TD
@@ -2392,26 +2201,24 @@ _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
 
 ---
 
+🔬 **Section Challenge — MASTER CHECKLIST FOR WRITING RECURSION**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — MASTER CHECKLIST FOR WRITING RECURSION**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## QUICK REFERENCE CARD
 
@@ -2453,19 +2260,8 @@ Why and what are the 3 fixes?
 ```
 
 **Flow:**
-- RECURSION QUICK REFERENCE
-- ↓
-- TEMPLATE:
-- ↓
-- returnType solve(input) {
-- ↓
-- return combine(solve(smallerInput));
-- ↓
-- COMPLEXITY RULES:
-- ↓
-- BACKTRACKING TEMPLATE:
-- ↓
-- void backtrack(state, choices) {
+1. RECURSION QUICK REFERENCE
+2. TEMPLATE: returnType solve(input) { return combine(solve(smallerInput)); COMPLEXITY RULES: BACKTRACKING TEMPLATE: void backtrack(state, choices) {
 
 ```mermaid
 flowchart TD
@@ -2490,8 +2286,8 @@ flowchart TD
 
 # CURATED PRACTICE PROBLEMS — RECURSION & BACKTRACKING
 
-> **HOW TO USE**: Start with Section 1 (pure recursion) before touching backtracking.
-> Every backtracking problem is recursion + choice/undo. Master the base first.
+**HOW TO USE**: Start with Section 1 (pure recursion) before touching backtracking.
+Every backtracking problem is recursion + choice/undo. Master the base first.
 
 ---
 
@@ -2510,26 +2306,24 @@ flowchart TD
 
 ---
 
+🔬 **Section Challenge — Section 1: Pure Recursion (Build Your Foundation)**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Section 1: Pure Recursion (Build Your Foundation)**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## Section 2: Backtracking — Subsets / Combinations / Permutations
 
@@ -2584,24 +2378,23 @@ Why and what are the 3 fixes?
 
 ---
 
-> **Navigation**: [< Previous](03b_Recursion_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04a_DP_Internals.md)
+**Navigation**: [< Previous](03b_Recursion_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04a_DP_Internals.md)
 
-> 🔬 **Section Challenge — HIDDEN GEMS — Recursion & Backtracking**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — HIDDEN GEMS — Recursion & Backtracking**
+
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
+
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
 

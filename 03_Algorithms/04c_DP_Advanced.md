@@ -347,8 +347,6 @@ public int[] dpWithDeque(int[] arr, int k) {
 
 ---
 
-
-
 # PART 12: Complete DP Problem Solutions
 
 ## Problem 1: Longest Increasing Subsequence with Path
@@ -410,9 +408,6 @@ public class LIS {
     }
 }
 ```
-
-
-
 
 ## Problem 2: Edit Distance with Operations
 
@@ -577,9 +572,6 @@ public class PalindromePartition {
     }
 }
 ```
-
-
-
 
 ## Problem 5: Best Time to Buy and Sell Stock (All Variants)
 
@@ -809,19 +801,10 @@ MISTAKE 6: Redundant states
 ```
 
 **Flow:**
-- This section covers advanced DP patterns used in:
-- ↓
-- • Competitive programming (Codeforces, ICPC, IOI)
-- ↓
-- • Technical interviews at top companies
-- ↓
-- • Real-world optimization problems
-- ↓
-- ## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES
-- ↓
-- DIGIT DP - THE PATTERN
-- ↓
-- Examples:
+1. This section covers advanced DP patterns used in competitive programming, interviews, and optimization problems.
+2. Digit DP focuses on counting numbers in a range that satisfy digit-based properties.
+3. Core pattern: build numbers digit-by-digit with bounded-state tracking.
+4. Typical examples include digit-sum, non-repeating digits, and divisibility constraints.
 
 ```mermaid
 flowchart TD
@@ -883,7 +866,6 @@ long solve(String N, int pos, int sum, boolean tight, int target) {
 │ ───────────────────────────────────────────────────────────── │
 ```
 
-
 ```java
 Long[][][] memo;  // [pos][prevDigit][tight]
 
@@ -917,13 +899,7 @@ long solve(String N, int pos, int prev, boolean tight) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
-
-
-
 ## ⚡ Bitmask DP — Subset State Tracking
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -953,29 +929,14 @@ long solve(String N, int pos, int prev, boolean tight) {
 ```
 
 **Flow:**
-- BITMASK DP - COMPLETE GUIDE
-- ↓
-- BITMASK OPERATIONS:
-- ↓
-- Operation Code Example
-- ↓
-- Check if bit i is set (mask >> i) & 1 mask=5: bit
-- ↓
-- Set bit i mask
-- ↓
-- (1 << i) 5
-- ↓
-- 2=7 (set bit 1)
-- ↓
-- Set bit i mask
-- ↓
-- (1 << i) 5
-- ↓
-- 2=7 (set bit 1)
-- ↓
-- Clear bit i mask & ~(1 << i) 7&~2=5 (clear bit 1)
-- ↓
-- Toggle bit i mask ^ (1 << i) 5^4=1 (toggle bit 2)
+1. BITMASK DP - COMPLETE GUIDE
+2. BITMASK OPERATIONS:
+3. Operation Code Example
+4. Check if bit i is set (mask >> i) & 1 mask=5: bit
+5. Set bit i mask
+6. (1 << i) 5 2=7 (set bit 1)
+7. Clear bit i mask & ~(1 << i) 7&~2=5 (clear bit 1)
+8. Toggle bit i mask ^ (1 << i) 5^4=1 (toggle bit 2)
 
 ```mermaid
 flowchart TD
@@ -995,7 +956,6 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
-
 
 ```java
 // dp[mask][i] = min cost to visit cities in mask, ending at city i
@@ -1042,7 +1002,6 @@ int tsp(int[][] dist) {
 │ ───────────────────────────────────── │
 ```
 
-
 ```java
 // Iterate all subsets of mask (including empty and mask itself)
 for (int subset = mask; subset > 0; subset = (subset - 1) & mask) {
@@ -1061,7 +1020,6 @@ for (int subset = mask; subset > 0; subset = (subset - 1) & mask) {
 │ ASSIGNMENT PROBLEM (HUNGARIAN ALTERNATIVE): │
 │ ─────────────────────────────────────────── │
 ```
-
 
 ```java
 // Assign n workers to n tasks, minimize total cost
@@ -1092,13 +1050,7 @@ int assignmentProblem(int[][] cost) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
-
-
-
 ## 📌 Interval DP — Optimal Substructure on Ranges
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1120,19 +1072,13 @@ int assignmentProblem(int[][] cost) {
 ```
 
 **Flow:**
-- INTERVAL DP - THE PATTERN
-- ↓
-- CLASSIC PROBLEMS:
-- ↓
-- • Matrix chain multiplication
-- ↓
-- • Optimal BST
-- ↓
-- • Palindrome partitioning
-- ↓
-- • Burst balloons
-- ↓
-- • Stone game
+1. INTERVAL DP - THE PATTERN
+2. CLASSIC PROBLEMS:
+3. • Matrix chain multiplication
+4. • Optimal BST
+5. • Palindrome partitioning
+6. • Burst balloons
+7. • Stone game
 
 ```mermaid
 flowchart TD
@@ -1152,7 +1098,6 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
-
 
 ```java
 // dp[i][j] = optimal solution for interval [i, j]
@@ -1192,7 +1137,6 @@ int intervalDP(int[] arr) {
 │ ──────────────────────────── │
 ```
 
-
 ```java
 // dims[i-1] x dims[i] = dimensions of matrix i (0-indexed)
 // Minimize scalar multiplications to compute M0 * M1 * ... * Mn-1
@@ -1227,7 +1171,6 @@ int matrixChain(int[] dims) {
 │ BURST BALLOONS (LeetCode 312): │
 │ ────────────────────────────── │
 ```
-
 
 ```java
 // Burst all balloons, maximize coins collected
@@ -1264,7 +1207,6 @@ int maxCoins(int[] nums) {
 │ MINIMUM COST TO CUT A STICK (LeetCode 1547): │
 │ ──────────────────────────────────────────── │
 ```
-
 
 ```java
 // Given stick of length n, cuts[] = positions to cut at.
@@ -1339,19 +1281,8 @@ int minCost(int n, int[] cuts) {
 ```
 
 **Flow:**
-- INTERVAL DP DECISION GUIDE:
-- ↓
-- Signal It's Interval DP
-- ↓
-- 'Merge' or 'split' Matrix chain, cut a stick
-- ↓
-- 'Remove from ends' Stone game, burst balloons
-- ↓
-- 'Optimal over range' Any [i..j] optimization
-- ↓
-- Answer for [i,j] uses O(n³) — try all split points k
-- ↓
-- answers for sub-ranges
+1. INTERVAL DP DECISION GUIDE:
+2. Signal It's Interval DP 'Merge' or 'split' Matrix chain, cut a stick 'Remove from ends' Stone game, burst balloons 'Optimal over range' Any [i..j] optimization Answer for [i,j] uses O(n³) — try all split points k answers for sub-ranges
 
 ```mermaid
 flowchart TD
@@ -1372,13 +1303,7 @@ flowchart TD
     N7 --> N8
 ```
 
-
-
-
-
-
 ## 🌳 DP on Trees
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1395,11 +1320,9 @@ flowchart TD
 ```
 
 **Flow:**
-- TREE DP - THE PATTERN
-- ↓
-- WHEN TO USE: Compute optimal values on tree structures
-- ↓
-- BASIC TREE DP - MAXIMUM INDEPENDENT SET:
+1. TREE DP - THE PATTERN
+2. WHEN TO USE: Compute optimal values on tree structures
+3. BASIC TREE DP - MAXIMUM INDEPENDENT SET:
 
 ```mermaid
 flowchart TD
@@ -1409,7 +1332,6 @@ flowchart TD
     N1 --> N2
     N2 --> N3
 ```
-
 
 ```java
 // Select maximum weight of non-adjacent nodes
@@ -1444,7 +1366,6 @@ void dfs(int v, int parent) {
 │ ────────────── │
 ```
 
-
 ```java
 // Longest path in tree
 int diameter = 0;
@@ -1477,7 +1398,6 @@ int dfs(int v, int parent) {
 │ REROOTING TECHNIQUE (for all-roots DP): │
 │ ───────────────────────────────────────── │
 ```
-
 
 ```java
 // Compute answer for all possible roots in O(n)
@@ -1533,10 +1453,7 @@ void dfs2(int v, int parent) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ## ⚡ DP Optimizations — Convex Hull Trick
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1577,19 +1494,13 @@ void dfs2(int v, int parent) {
 ```
 
 **Flow:**
-- CONVEX HULL TRICK (CHT)
-- ↓
-- Reduces O(n²) to O(n) or O(n log n)
-- ↓
-- CONDITIONS:
-- ↓
-- • Slopes b[j] are monotonic
-- ↓
-- • Query values a[i] are monotonic
-- ↓
-- • Want minimum (or can convert to minimum)
-- ↓
-- INTUITION:
+1. CONVEX HULL TRICK (CHT)
+2. Reduces O(n²) to O(n) or O(n log n)
+3. CONDITIONS:
+4. • Slopes b[j] are monotonic
+5. • Query values a[i] are monotonic
+6. • Want minimum (or can convert to minimum)
+7. INTUITION:
 
 ```mermaid
 flowchart TD
@@ -1609,7 +1520,6 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
-
 
 ```java
 class ConvexHullTrick {
@@ -1662,10 +1572,7 @@ for (int i = 1; i < n; i++) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ## ⚡ Divide and Conquer DP Optimization
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1684,15 +1591,11 @@ for (int i = 1; i < n; i++) {
 ```
 
 **Flow:**
-- DIVIDE AND CONQUER DP
-- ↓
-- And: optimal k for j₁ ≤ optimal k for j₂ when j₁ < j
-- ↓
-- (This is the 'monotonicity of optimal splits' property)
-- ↓
-- Reduces O(n × m × n) to O(n × m × log n)
-- ↓
-- IMPLEMENTATION:
+1. DIVIDE AND CONQUER DP
+2. And: optimal k for j₁ ≤ optimal k for j₂ when j₁ < j
+3. (This is the 'monotonicity of optimal splits' property)
+4. Reduces O(n × m × n) to O(n × m × log n)
+5. IMPLEMENTATION:
 
 ```mermaid
 flowchart TD
@@ -1706,7 +1609,6 @@ flowchart TD
     N3 --> N4
     N4 --> N5
 ```
-
 
 ```java
 // dp[i][j] = optimal value using exactly i partitions ending at j
@@ -1744,7 +1646,6 @@ void compute(int level, int lo, int hi, int optLo, int optHi) {
 │ ────────────────────────────────────────────────────────── │
 ```
 
-
 ```java
 long solve(int[] arr, int k) {
     int n = arr.length;
@@ -1772,10 +1673,7 @@ long cost(int l, int r) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ## 📌 Broken Profile DP (plug DP)
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -1809,9 +1707,8 @@ long cost(int l, int r) {
 ```
 
 **Flow:**
-- ✓ ✓ ✓ / ✓ ✓ ▐▌ ←
-- ↓
-- ✓ ✓ ✓ / here ✓ ✓ ?
+1. ✓ ✓ ✓ / ✓ ✓ ▐▌ ←
+2. ✓ ✓ ✓ / here ✓ ✓ ?
 
 ```mermaid
 flowchart TD
@@ -1819,7 +1716,6 @@ flowchart TD
     N2["✓ ✓ ✓ / here ✓ ✓ ?"]
     N1 --> N2
 ```
-
 
 ```java
 // Count ways to tile n×m grid with dominoes
@@ -1880,11 +1776,9 @@ long dominoTiling(int n, int m) {
 ```
 
 **Flow:**
-- Time: O(m × n × 2^n)
-- ↓
-- Space: O(2^n)
-- ↓
-- Practical for n ≤ 15-20
+1. Time: O(m × n × 2^n)
+2. Space: O(2^n)
+3. Practical for n ≤ 15-20
 
 ```mermaid
 flowchart TD
@@ -1895,10 +1789,7 @@ flowchart TD
     N2 --> N3
 ```
 
-
-
 ## 🎨 DP Pattern Quick Reference
-
 
  DP PATTERNS QUICK REFERENCE
 ```
@@ -1924,13 +1815,9 @@ _DP is not about memorizing solutions - it's about SEEING the substructure!_
 ```
 
 **Flow:**
-- Knuth Optimization
-- ↓
-- Quadratic
-- ↓
-- near-linear
-- ↓
-- O(n²)
+1. Knuth Optimization
+2. Quadratic near-linear
+3. O(n²)
 
 ```mermaid
 flowchart LR
@@ -1940,8 +1827,6 @@ flowchart LR
 ```
 
 ---
-
-
 
 ## PRACTICE PROBLEMS — Dynamic Programming (Progressive)
 
@@ -2001,15 +1886,14 @@ flowchart LR
 | Largest Divisible Subset | LC 368 | LIS variant with divisibility |
 | Counting Bits | LC 338 | DP on bits — beautiful O(n) pattern |
 
-
 ---
-
 
 ---
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -2036,6 +1920,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -2070,6 +1955,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -2132,6 +2018,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -2166,6 +2053,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -2178,8 +2066,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -2244,6 +2130,5 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
-
 
 > **Navigation**: [< Previous](04b_DP_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Trees.md)

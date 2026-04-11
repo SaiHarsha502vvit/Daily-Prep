@@ -1,4 +1,4 @@
-> **Navigation**: [⬅ DSA Permutations & Combinations](19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](00_INDEX.md) | [Next: Prefix, Prefix XOR & 2D Prefix ➡](21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md)
+**Navigation**: [⬅ DSA Permutations & Combinations](19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](00_INDEX.md) | [Next: Prefix, Prefix XOR & 2D Prefix ➡](21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md)
 
 # File 20 — Bitwise Trie Interview Guide (Logic First, Code Later)
 
@@ -122,14 +122,14 @@ Flow:
 
 
 
-> 🔬 **Section Challenge — Variant A: Maximum XOR of Two Numbers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — Variant A: Maximum XOR of Two Numbers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## Variant B: Maximum XOR with Constraint (offline)
 
@@ -157,14 +157,14 @@ Logic:
 
 
 
-> 🔬 **Section Challenge — Variant C: Prefix XOR + Trie (max subarray XOR)**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — Variant C: Prefix XOR + Trie (max subarray XOR)**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## Variant D: Counting XOR pairs less than K
 
@@ -206,14 +206,14 @@ Interview line:
 
 
 
-> 🔬 **Section Challenge — Option 2: Bounded range optimization**
->
-> **Challenge 1 (Reasoning):** `<T extends Comparable<T>>` vs `<T extends Comparable>` — what's the difference and why does the first form matter?
-> <details><summary>Answer</summary>
->
-> The raw form `<T extends Comparable>` loses type safety — compares apples to oranges at runtime. `<T extends Comparable<T>>` specifies that T can compare WITH ITSELF: `Integer.compareTo(Integer)`, not `Integer.compareTo(Object)`. This is why `Collections.sort()` uses `<T extends Comparable<? super T>>` — T can be compared using its own or a supertype's compareTo.
-> </details>
->
+🔬 **Section Challenge — Option 2: Bounded range optimization**
+
+**Challenge 1 (Reasoning):** `<T extends Comparable<T>>` vs `<T extends Comparable>` — what's the difference and why does the first form matter?
+<details><summary>Answer</summary>
+
+The raw form `<T extends Comparable>` loses type safety — compares apples to oranges at runtime. `<T extends Comparable<T>>` specifies that T can compare WITH ITSELF: `Integer.compareTo(Integer)`, not `Integer.compareTo(Object)`. This is why `Collections.sort()` uses `<T extends Comparable<? super T>>` — T can be compared using its own or a supertype's compareTo.
+</details>
+
 
 ## 7) Common Mistakes
 
@@ -306,4 +306,4 @@ maxXor(x):
 
 ---
 
-> **Navigation**: [⬅ DSA Permutations & Combinations](19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](00_INDEX.md) | [Next: Prefix, Prefix XOR & 2D Prefix ➡](21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md)
+**Navigation**: [⬅ DSA Permutations & Combinations](19_DSA_Permutations_Combinations_Interview_Math.md) | [📚 Index](00_INDEX.md) | [Next: Prefix, Prefix XOR & 2D Prefix ➡](21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md)

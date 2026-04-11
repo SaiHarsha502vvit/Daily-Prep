@@ -1,9 +1,11 @@
-> **Navigation**: [< Previous](14_Union_Find_DSU_Complete.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](14_Union_Find_DSU_Complete.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # 📚 Monotonic Stack & Queue Complete Guide
-> Master the Technique for Next Greater/Smaller Element Problems
+
+Master the Technique for Next Greater/Smaller Element Problems
 
 ## Table of Contents
+
 0. [PART 0: Complete Understanding](#part-0)
 1. [Fundamentals](#fundamentals)
 2. [Monotonic Stack Basics](#monotonic-stack)
@@ -20,11 +22,7 @@
 
 ## PART 0: COMPLETE UNDERSTANDING — The WHY Before the WHAT <a name="part-0"></a>
 
-
-
-
 ## What Problem Does Monotonic Stack Solve
-
 
 **Core Problem**: For each element in an array, find the NEXT (or PREVIOUS)
 element that is GREATER (or SMALLER). This appears EVERYWHERE.
@@ -46,22 +44,21 @@ pop all smaller elements (they found their answer = current element).
 Each element pushed once, popped once: TOTAL = O(n)
 n=100K → 200K operations → <1 millisecond ✅
 
-> 💡 **WHY O(n)? THE KEY INSIGHT:**
+💡 **WHY O(n)? THE KEY INSIGHT:**
 Each element enters the stack exactly ONCE.
 Each element leaves the stack at most ONCE.
 Total push + pop operations = 2n = O(n).
 Despite the while loop INSIDE the for loop, it's NOT O(n²)!
 (Amortized analysis: each element pays for its own push and pop.)
 
+🔬 **Section Challenge — What Problem Does Monotonic Stack Solve**
 
-> 🔬 **Section Challenge — What Problem Does Monotonic Stack Solve**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## Real-World Origin Story
 
@@ -83,8 +80,6 @@ TODAY — INDUSTRY USES:
 - Computer vision: Local maxima/minima detection in signal processing
 - Web rendering: CSS stacking context resolution
 - Game engines: Visibility calculation (which buildings can you see?)
-
-
 
 ## The Mental Model: The Bouncer At A Nightclub
 
@@ -112,6 +107,7 @@ Final: 5 has no NGE → -1
 Result: NGE = [4, 4, 5, 5, -1]
 
 **Total**: 5 pushes + 5 pops = 10 operations = O(2n) = O(n) ✅
+
 ## The Complete Variant Table
 
 ┬
@@ -315,19 +311,13 @@ public int[] prevSmaller(int[] arr) {
 ```
 
 **Flow:**
-- MONOTONIC DATA STRUCTURES
-- ↓
-- MONOTONIC STACK: A stack where elements are always in
-- ↓
-- increasing or decreasing order from bottom to top.
-- ↓
-- MONOTONIC QUEUE: A deque where elements are always in
-- ↓
-- increasing or decreasing order.
-- ↓
-- WHY USE THEM?
-- ↓
-- • Find next/previous greater/smaller element in O(n)
+1. MONOTONIC DATA STRUCTURES
+2. MONOTONIC STACK: A stack where elements are always in
+3. increasing or decreasing order from bottom to top.
+4. MONOTONIC QUEUE: A deque where elements are always in
+5. increasing or decreasing order.
+6. WHY USE THEM?
+7. • Find next/previous greater/smaller element in O(n)
 
 ```mermaid
 flowchart TD
@@ -373,11 +363,7 @@ Monotonic Increasing Stack:
 ```
 
 **Flow:**
-- 3 / 7 / 2 / 5
-- ↓
-- 7 / 5 / 3
-- ↓
-- 2 / 4 / 7
+1. 3 / 7 / 2 / 5 7 / 5 / 3 2 / 4 / 7
 
 ```mermaid
 flowchart TD
@@ -411,19 +397,8 @@ flowchart TD
 ```
 
 **Flow:**
-- MONOTONIC STACK KEY INSIGHT
-- ↓
-- When we POP an element, we've found its answer!
-- ↓
-- For Next Greater Element:
-- ↓
-- - Use DECREASING stack (larger pops smaller)
-- ↓
-- - When we pop: current element IS the next greater
-- ↓
-- For Next Smaller Element:
-- ↓
-- - Use INCREASING stack (smaller pops larger)
+1. MONOTONIC STACK KEY INSIGHT
+2. When we POP an element, we've found its answer! For Next Greater Element: - Use DECREASING stack (larger pops smaller) - When we pop: current element IS the next greater For Next Smaller Element: - Use INCREASING stack (smaller pops larger)
 
 ```mermaid
 flowchart TD
@@ -525,25 +500,13 @@ Result: [5, 5, 6, -1, 3, -1]
 ```
 
 **Flow:**
-- 5 > 1, pop 1
-- ↓
-- Next greater of 1 is 5
-- ↓
-- 5 > 2, pop 2
-- ↓
-- Next greater of 2 is 5
-- ↓
-- 6 > 5, pop 5
-- ↓
-- Next greater of 5 is 6
-- ↓
-- 3 > 2, pop 2
-- ↓
-- Next greater of 2 is 3
-- ↓
-- Final: 6, 3 have no next greater
-- ↓
-- -1
+1. 5 > 1, pop 1
+2. Next greater of 1 is 5 5 > 2, pop 2
+3. Next greater of 2 is 5 6 > 5, pop 5
+4. Next greater of 5 is 6 3 > 2, pop 2
+5. Next greater of 2 is 3
+6. Final: 6, 3 have no next greater
+7. -1
 
 ```mermaid
 flowchart TD
@@ -566,16 +529,14 @@ flowchart TD
 
 ---
 
+🔬 **Section Challenge — Monotonic Stack Basics <a name="monotonic-stack"></a>**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Monotonic Stack Basics <a name="monotonic-stack"></a>**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## Next Greater Element Pattern <a name="next-greater"></a>
 
@@ -689,17 +650,9 @@ result = [2, -1, 2]
 ```
 
 **Flow:**
-- Array: [1, 2, 1] (circular)
-- ↓
-- Treating as: [1, 2, 1, 1, 2, 1]
-- ↓
-- ↑ ↑ (don't add to result, just for lookup)
-- ↓
-- i=0: push 0, stack=[0]
-- ↓
-- i=5: done
-- ↓
-- result = [2, -1, 2]
+1. Array: [1, 2, 1] (circular)
+2. Treating as: [1, 2, 1, 1, 2, 1]
+3. ↑ ↑ (don't add to result, just for lookup) i=0: push 0, stack=[0] i=5: done result = [2, -1, 2]
 
 ```mermaid
 flowchart TD
@@ -717,8 +670,6 @@ flowchart TD
 ```
 
 ---
-
-
 
 ## Next Smaller Element Pattern <a name="next-smaller"></a>
 
@@ -775,19 +726,13 @@ public int[] nextSmallerElement(int[] nums) {
 ```
 
 **Flow:**
-- COMPARISON: GREATER vs SMALLER
-- ↓
-- NEXT GREATER ELEMENT:
-- ↓
-- • Use DECREASING stack
-- ↓
-- • Pop when current > stack.top
-- ↓
-- • 'Larger element kicks out smaller ones'
-- ↓
-- NEXT SMALLER ELEMENT:
-- ↓
-- • Use INCREASING stack
+1. COMPARISON: GREATER vs SMALLER
+2. NEXT GREATER ELEMENT:
+3. • Use DECREASING stack
+4. • Pop when current > stack.top
+5. • 'Larger element kicks out smaller ones'
+6. NEXT SMALLER ELEMENT:
+7. • Use INCREASING stack
 
 ```mermaid
 flowchart TD
@@ -835,8 +780,6 @@ public int[] dailyTemperatures(int[] temperatures) {
 ```
 
 ---
-
-
 
 ## Previous Greater/Smaller <a name="previous"></a>
 
@@ -937,25 +880,14 @@ public int[] previousSmallerElement(int[] nums) {
 ```
 
 **Flow:**
-- ALL FOUR PATTERNS
-- ↓
-- NEXT GREATER (right):
-- ↓
-- • Direction: Left
-- ↓
-- Right
-- ↓
-- • Direction: Left
-- ↓
-- Right
-- ↓
-- • Stack: Decreasing
-- ↓
-- • Answer: When POPPING
-- ↓
-- NEXT SMALLER (right):
-- ↓
-- • Stack: Increasing
+1. ALL FOUR PATTERNS
+2. NEXT GREATER (right):
+3. • Direction: Left
+4. Right
+5. • Stack: Decreasing
+6. • Answer: When POPPING
+7. NEXT SMALLER (right):
+8. • Stack: Increasing
 
 ```mermaid
 flowchart TD
@@ -1000,19 +932,13 @@ flowchart TD
 ```
 
 **Flow:**
-- MONOTONIC QUEUE
-- ↓
-- A queue (deque) maintaining monotonic order.
-- ↓
-- Key Operations:
-- ↓
-- • Add from back (may pop existing elements)
-- ↓
-- • Remove from front (when element leaves window)
-- ↓
-- • Get max/min: Front of deque
-- ↓
-- Use case: Sliding window max/min in O(n) total
+1. MONOTONIC QUEUE
+2. A queue (deque) maintaining monotonic order.
+3. Key Operations:
+4. • Add from back (may pop existing elements)
+5. • Remove from front (when element leaves window)
+6. • Get max/min: Front of deque
+7. Use case: Sliding window max/min in O(n) total
 
 ```mermaid
 flowchart TD
@@ -1061,16 +987,14 @@ Window [-1, -3, 5]:
 
 ---
 
+🔬 **Section Challenge — Monotonic Queue <a name="monotonic-queue"></a>**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Monotonic Queue <a name="monotonic-queue"></a>**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## Sliding Window Maximum/Minimum <a name="sliding-window"></a>
 
@@ -1176,22 +1100,20 @@ public int[] minSlidingWindow(int[] nums, int k) {
 
 ---
 
+🔬 **Section Challenge — Sliding Window Maximum/Minimum <a name="sliding-window"></a>**
 
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Sliding Window Maximum/Minimum <a name="sliding-window"></a>**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## Advanced Applications <a name="advanced"></a>
 
@@ -1286,19 +1208,9 @@ Maximum rectangle has area 10 (using bars at indices 2,3)
 ```
 
 **Flow:**
-- heights = [2, 1, 5, 6, 2, 3]
-- ↓
-- For bar at index 2 (height 5):
-- ↓
-- - Can extend left until bar at index 1 (height 1 < 5
-- ↓
-- - Can extend right until bar at index 4 (height 2 <
-- ↓
-- - Width = 4 - 1 - 1 = 2
-- ↓
-- - Area = 5 * 2 = 10
-- ↓
-- Maximum rectangle has area 10 (using bars at indices 2,
+1. heights = [2, 1, 5, 6, 2, 3]
+2. For bar at index 2 (height 5):
+3. - Can extend left until bar at index 1 (height 1 < 5 - Can extend right until bar at index 4 (height 2 < - Width = 4 - 1 - 1 = 2 - Area = 5 * 2 = 10 Maximum rectangle has area 10 (using bars at indices 2,
 
 ```mermaid
 flowchart TD
@@ -1492,19 +1404,13 @@ public boolean find132pattern(int[] nums) {
 ```
 
 **Flow:**
-- MONOTONIC STACK/QUEUE PROBLEMS
-- ↓
-- NEXT/PREVIOUS GREATER/SMALLER:
-- ↓
-- • Next Greater Element I/II
-- ↓
-- • Daily Temperatures
-- ↓
-- • Stock Span Problem
-- ↓
-- RECTANGLE PROBLEMS:
-- ↓
-- • Largest Rectangle in Histogram
+1. MONOTONIC STACK/QUEUE PROBLEMS
+2. NEXT/PREVIOUS GREATER/SMALLER:
+3. • Next Greater Element I/II
+4. • Daily Temperatures
+5. • Stock Span Problem
+6. RECTANGLE PROBLEMS:
+7. • Largest Rectangle in Histogram
 
 ```mermaid
 flowchart TD
@@ -1711,19 +1617,13 @@ public int sumSubarrayMins(int[] arr) {
 ```
 
 **Flow:**
-- STACK TYPE SELECTION
-- ↓
-- DECREASING STACK (larger at bottom):
-- ↓
-- • Next/Previous GREATER element
-- ↓
-- • Largest rectangle (find boundaries)
-- ↓
-- • Stock span (count higher prices)
-- ↓
-- INCREASING STACK (smaller at bottom):
-- ↓
-- • Next/Previous SMALLER element
+1. STACK TYPE SELECTION
+2. DECREASING STACK (larger at bottom):
+3. • Next/Previous GREATER element
+4. • Largest rectangle (find boundaries)
+5. • Stock span (count higher prices)
+6. INCREASING STACK (smaller at bottom):
+7. • Next/Previous SMALLER element
 
 ```mermaid
 flowchart TD
@@ -1825,19 +1725,13 @@ public int[] maxWindow(int[] arr, int k) {
 ```
 
 **Flow:**
-- MONOTONIC STACK/QUEUE COMPLEXITIES
-- ↓
-- Next Greater Element: O(n) time, O(n) space
-- ↓
-- Daily Temperatures: O(n) time, O(n) space
-- ↓
-- Largest Rectangle Histogram: O(n) time, O(n) space
-- ↓
-- Sliding Window Maximum: O(n) time, O(k) space
-- ↓
-- Remove K Digits: O(n) time, O(n) space
-- ↓
-- KEY INSIGHT:
+1. MONOTONIC STACK/QUEUE COMPLEXITIES
+2. Next Greater Element: O(n) time, O(n) space
+3. Daily Temperatures: O(n) time, O(n) space
+4. Largest Rectangle Histogram: O(n) time, O(n) space
+5. Sliding Window Maximum: O(n) time, O(k) space
+6. Remove K Digits: O(n) time, O(n) space
+7. KEY INSIGHT:
 
 ```mermaid
 flowchart TD
@@ -1895,39 +1789,17 @@ flowchart TD
 ```
 
 **Flow:**
-- MONOTONIC STACK/QUEUE - MASTER CHECKLIST
-- ↓
-- 1. IDENTIFY THE PATTERN
-- ↓
-- • 'Next greater/smaller'
-- ↓
-- Monotonic Stack
-- ↓
-- • 'Next greater/smaller'
-- ↓
-- Monotonic Stack
-- ↓
-- • 'Sliding window max/min'
-- ↓
-- Monotonic Queue
-- ↓
-- • 'Sliding window max/min'
-- ↓
-- Monotonic Queue
-- ↓
-- • 'Rectangle area'
-- ↓
-- Usually needs both boundaries
-- ↓
-- • 'Rectangle area'
-- ↓
-- Usually needs both boundaries
-- ↓
-- 2. CHOOSE STACK TYPE
-- ↓
-- • Looking for GREATER
-- ↓
-- Decreasing stack
+1. MONOTONIC STACK/QUEUE - MASTER CHECKLIST
+2. IDENTIFY THE PATTERN
+3. • 'Next greater/smaller'
+4. Monotonic Stack
+5. • 'Sliding window max/min'
+6. Monotonic Queue
+7. • 'Rectangle area'
+8. Usually needs both boundaries
+9. CHOOSE STACK TYPE
+10. • Looking for GREATER
+11. Decreasing stack
 
 ```mermaid
 flowchart TD
@@ -1950,26 +1822,23 @@ flowchart TD
 
 **Pro Tip:** When you see "next greater/smaller", "sliding window max/min", or problems involving "how far can we extend", think monotonic stack/queue!
 
+---
 
 ---
 
+🔬 **Section Challenge — Summary**
 
----
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
 
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
 
-
-> 🔬 **Section Challenge — Summary**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
 
 ## 🏋️ Practice & Interview Questions — Stack & Queue
 
 ### Predict / Trace
+
 **Q1.** Stack has [1,2,3] (3 is top). After pop(), pop(), push(5) — what's the stack?
 <details><summary>Answer</summary>
 
@@ -1983,6 +1852,7 @@ push 3 → [3]; push 4 → [3,4]; + → pop 3,4, push 7 → [7]; push 2 → [7,2
 </details>
 
 ### LeetCode / Coding
+
 **Q3.** ⭐ Valid Parentheses — O(N).
 <details><summary>Solution</summary>
 
@@ -2071,6 +1941,7 @@ return curr.toString();
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | Stack LIFO/FIFO? | LIFO |
@@ -2081,8 +1952,6 @@ return curr.toString();
 | 6 | BFS uses which data structure? | Queue |
 | 7 | DFS (iterative) uses which structure? | Stack |
 | 8 | peek() vs poll() on empty queue | peek()=null, poll()=null (no exception) |
-
-
 
 ---
 
@@ -2128,5 +1997,4 @@ Two-stack queue: transfer from stack1 to stack2 only when stack2 is empty. Indiv
 The **call stack** is a stack of stack frames. Each function call pushes a frame (local variables, return address, parameters). Return pops the frame. Recursive DFS naturally uses the call stack AS its traversal stack. Iterative DFS explicitly manages a stack in heap memory. Iterative is often preferred for: (1) avoiding stack overflow on deep recursion (JVM default: ~500-1000 frames), (2) more control over traversal order, (3) ability to pause/resume traversal.
 </details>
 
-
-> **Navigation**: [< Previous](14_Union_Find_DSU_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DSA_Deep_Reasoning.md)
+**Navigation**: [< Previous](14_Union_Find_DSU_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DSA_Deep_Reasoning.md)

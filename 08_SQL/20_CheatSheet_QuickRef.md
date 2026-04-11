@@ -158,19 +158,13 @@
 ```
 
 **Flow:**
-- □ Database Fundamentals
-- ↓
-- □ Understand RDBMS architecture
-- ↓
-- □ Know SQL command categories (DDL, DML, DCL, TCL)
-- ↓
-- □ Understand data types and when to use them
-- ↓
-- □ Basic Operations
-- ↓
-- □ Master SELECT with all clauses
-- ↓
-- □ Use all comparison and logical operators
+1. □ Database Fundamentals
+2. □ Understand RDBMS architecture
+3. □ Know SQL command categories (DDL, DML, DCL, TCL)
+4. □ Understand data types and when to use them
+5. □ Basic Operations
+6. □ Master SELECT with all clauses
+7. □ Use all comparison and logical operators
 
 ```mermaid
 flowchart TD

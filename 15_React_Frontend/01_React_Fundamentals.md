@@ -1,16 +1,16 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next: Hooks Deep Dive →](03_Hooks_Deep_Dive.md)
-> 🧠 **Mental Model**: See [Frontend Architecture Thinking](../14_Mental_Models/17_Frontend_Architecture_Thinking.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next: Hooks Deep Dive →](03_Hooks_Deep_Dive.md)
+🧠 **Mental Model**: See [Frontend Architecture Thinking](../14_Mental_Models/17_Frontend_Architecture_Thinking.md)
 
-> [!IMPORTANT]
-> **📌 Prerequisite:** This guide assumes JavaScript ES6+ knowledge.
-> If you haven't studied JavaScript yet, start with **[16_JavaScript/01_JS_Foundations.md](../16_JavaScript/01_JS_Foundations.md)** first.
-> Key concepts you need: Arrow functions, Destructuring, Array methods (map/filter/reduce), Modules (import/export), Closures, Promises.
+[!IMPORTANT]
+**📌 Prerequisite:** This guide assumes JavaScript ES6+ knowledge.
+If you haven't studied JavaScript yet, start with **[16_JavaScript/01_JS_Foundations.md](../16_JavaScript/01_JS_Foundations.md)** first.
+Key concepts you need: Arrow functions, Destructuring, Array methods (map/filter/reduce), Modules (import/export), Closures, Promises.
 
 ---
 
 # ⚛️ React Fundamentals — Core Concepts from Scratch
 
-> Everything you need to understand before writing production React — Components, JSX, Props, State
+Everything you need to understand before writing production React — Components, JSX, Props, State
 
 ---
 
@@ -100,18 +100,18 @@ React's insight: What if the UI was just a FUNCTION of data?
 
 ### React's Core Philosophy
 
-> React is a LIBRARY for building user interfaces (not a framework!)
->
-> KEY IDEAS:
-> 1. **Component-Based**: UI = tree of reusable components
-> 2. **Declarative**: Describe WHAT to render, React handles HOW
-> 3. **Virtual DOM**: React diffs changes, updates only what changed
-> 4. **One-Way Data Flow**: Data flows Parent → Child via props
->
-> MENTAL MODEL:
-> Traditional: Manually update DOM when data changes (imperative)
-> React: UI = f(state) — UI is a FUNCTION of state (declarative)
-> When state changes → React re-renders → diffs → updates DOM
+React is a LIBRARY for building user interfaces (not a framework!)
+
+KEY IDEAS:
+1. **Component-Based**: UI = tree of reusable components
+2. **Declarative**: Describe WHAT to render, React handles HOW
+3. **Virtual DOM**: React diffs changes, updates only what changed
+4. **One-Way Data Flow**: Data flows Parent → Child via props
+
+MENTAL MODEL:
+Traditional: Manually update DOM when data changes (imperative)
+React: UI = f(state) — UI is a FUNCTION of state (declarative)
+When state changes → React re-renders → diffs → updates DOM
 
 ### Library vs Framework — Why This Matters
 
@@ -266,20 +266,20 @@ function App() {
 
 
 
-> 🔬 **Section Challenge — Part 3: Components — Function Components**
->
-> **Challenge 1 (Reasoning):** React says "component render must be a pure function". What does PURE mean and what breaks if it's impure?
-> <details><summary>Answer</summary>
->
-> Pure = same inputs (props + state) always return same output (JSX). No side effects during render. Impure examples: writing to a global variable, calling fetch(), reading mutable globals. Why it breaks: React may call your render function multiple times in development (StrictMode) or abort renders mid-way (Concurrent Mode). If render has side effects, those effects run multiple times with unpredictable results. Rule: ALL side effects must go inside `useEffect`, not in the render body.
-> </details>
->
-> **Challenge 2 (Structural):** Parent has `useState`. Parent re-renders. Child receives the SAME props as before. Does Child re-render?
-> <details><summary>Answer</summary>
->
-> YES — by default, when a parent re-renders, ALL children re-render too, even if their props didn't change. React re-calls the child function. This is why `React.memo()` exists: it wraps a component to skip re-render if props are shallowly equal. Key insight: re-rendering ≠ DOM update. React re-renders (calls the function), then reconciles — only changed DOM nodes are actually updated. Unnecessary re-renders waste CPU time but don't always cause visible issues.
-> </details>
->
+🔬 **Section Challenge — Part 3: Components — Function Components**
+
+**Challenge 1 (Reasoning):** React says "component render must be a pure function". What does PURE mean and what breaks if it's impure?
+<details><summary>Answer</summary>
+
+Pure = same inputs (props + state) always return same output (JSX). No side effects during render. Impure examples: writing to a global variable, calling fetch(), reading mutable globals. Why it breaks: React may call your render function multiple times in development (StrictMode) or abort renders mid-way (Concurrent Mode). If render has side effects, those effects run multiple times with unpredictable results. Rule: ALL side effects must go inside `useEffect`, not in the render body.
+</details>
+
+**Challenge 2 (Structural):** Parent has `useState`. Parent re-renders. Child receives the SAME props as before. Does Child re-render?
+<details><summary>Answer</summary>
+
+YES — by default, when a parent re-renders, ALL children re-render too, even if their props didn't change. React re-calls the child function. This is why `React.memo()` exists: it wraps a component to skip re-render if props are shallowly equal. Key insight: re-rendering ≠ DOM update. React re-renders (calls the function), then reconciles — only changed DOM nodes are actually updated. Unnecessary re-renders waste CPU time but don't always cause visible issues.
+</details>
+
 
 ## Part 4: Props — Data Flows Down
 
@@ -455,20 +455,20 @@ function Form() {
 
 
 
-> 🔬 **Section Challenge — Part 5: State — useState Hook**
->
-> **Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
-> <details><summary>Answer</summary>
->
-> Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
-> <details><summary>Answer</summary>
->
-> `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
-> </details>
->
+🔬 **Section Challenge — Part 5: State — useState Hook**
+
+**Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
+<details><summary>Answer</summary>
+
+Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
+</details>
+
+**Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+<details><summary>Answer</summary>
+
+`useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
+</details>
+
 
 ## Part 6: Event Handling
 
@@ -713,29 +713,15 @@ THE FIBER ARCHITECTURE (React 16+):
 ```
 
 **Flow:**
-- FUNCTION COMPONENT LIFECYCLE (via Hooks)
-- ↓
-- Mount (component appears):
-- ↓
-- 1. Function called
-- ↓
-- JSX returned
-- ↓
-- DOM updated
-- ↓
-- 1. Function called
-- ↓
-- JSX returned
-- ↓
-- DOM updated
-- ↓
-- Update (state/props change):
-- ↓
-- 2. useEffect(() => { ... }, [dep]) runs if dep chang
-- ↓
-- Unmount (component removed):
-- ↓
-- 1. Cleanup function from useEffect runs
+1. FUNCTION COMPONENT LIFECYCLE (via Hooks)
+2. Mount (component appears):
+3. Function called
+4. JSX returned
+5. DOM updated
+6. Update (state/props change):
+7. useEffect(() => { ... }, [dep]) runs if dep chang
+8. Unmount (component removed):
+9. Cleanup function from useEffect runs
 
 ```mermaid
 flowchart TD

@@ -1,12 +1,12 @@
-> **Navigation**: [< Previous Chapter](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04c_DP_Advanced.md)
-> 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
+**Navigation**: [< Previous Chapter](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04c_DP_Advanced.md)
+🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
 
 ---
 
 ## 🔗 JIT Connection — When You Need This
 
-> **Got stuck on a DP problem? Identify which type you're dealing with:**
->
+**Got stuck on a DP problem? Identify which type you're dealing with:**
+
 
 | DP Pattern | State Definition | Problem Examples | PS Section |
 |---|---|---|---|
@@ -15,18 +15,18 @@
 | **String (2D)** | `dp[i][j]` = answer for s1[0..i-1] vs s2[0..j-1] | LCS, Edit Distance | [DP PS](../05_Problem_Solving/07_DP.md) |
 | **Knapsack** | `dp[i][w]` = max value with i items, capacity w | 0/1 Knapsack, Coin Change | [DP PS](../05_Problem_Solving/07_DP.md) |
 
->
-> **The 5-Step Recipe (memorize this):**
-> ```
-> 1. IDENTIFY subproblem: what is the last decision?
-> 2. DEFINE state: what changes between recursive calls?
-> 3. WRITE recurrence: dp[i] = f(dp[i-1], dp[i-2], ...)
-> 4. BASE CASES: what's the smallest problem you know directly?
-> 5. COMPUTE ORDER: fill table from smallest to largest
-> ```
->
-> **Greedy vs DP?** → See [11_Greedy_vs_DP_Decision.md](../14_Mental_Models/11_Greedy_vs_DP_Decision.md)
-> 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**The 5-Step Recipe (memorize this):**
+```
+1. IDENTIFY subproblem: what is the last decision?
+2. DEFINE state: what changes between recursive calls?
+3. WRITE recurrence: dp[i] = f(dp[i-1], dp[i-2], ...)
+4. BASE CASES: what's the smallest problem you know directly?
+5. COMPUTE ORDER: fill table from smallest to largest
+```
+
+**Greedy vs DP?** → See [11_Greedy_vs_DP_Decision.md](../14_Mental_Models/11_Greedy_vs_DP_Decision.md)
+📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
@@ -253,22 +253,20 @@ THIS IS MEMOIZATION: Remember what you've already calculated.
 
 ---
 
+🔬 **Section Challenge — What is Dynamic Programming?**
 
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — What is Dynamic Programming?**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
 
 # 📌 Part 2: Fibonacci — the Gateway to DP
 
@@ -458,9 +456,6 @@ public int climbStairs(int n) {
 //   Total = dp[2] + dp[1]
 ```
 
-
-
-
 ## Problem 2: House Robber
 
 ```java
@@ -539,9 +534,6 @@ public int coinChange(int[] coins, int amount) {
 // dp[11] = 3    [5, 5, 1]
 ```
 
-
-
-
 ## Problem 4: Longest Increasing Subsequence (LIS)
 
 ```java
@@ -590,9 +582,6 @@ public int lengthOfLIS(int[] nums) {
 ```
 
 ---
-
-
-
 
 # 💎 Part 5: 2d Dynamic Programming
 
@@ -778,9 +767,6 @@ TRANSITION: Try all split points k between i and j
 
 ---
 
-
-
-
 # 🧠 Part 7: Memoization vs Tabulation
 
 ```
@@ -818,19 +804,13 @@ TABULATION:
 ```
 
 **Flow:**
-- MEMOIZATION (Top-Down)
-- ↓
-- Approach: Recursive with caching
-- ↓
-- Direction: Start from main problem, recurse to subprobl
-- ↓
-- When used: Only computes needed subproblems
-- ↓
-- Space: Recursion stack + memo table
-- ↓
-- Pros: Natural, easy to write, lazy evaluation
-- ↓
-- Cons: Recursion overhead, stack overflow risk
+1. MEMOIZATION (Top-Down)
+2. Approach: Recursive with caching
+3. Direction: Start from main problem, recurse to subprobl
+4. When used: Only computes needed subproblems
+5. Space: Recursion stack + memo table
+6. Pros: Natural, easy to write, lazy evaluation
+7. Cons: Recursion overhead, stack overflow risk
 
 ```mermaid
 flowchart TD
@@ -899,9 +879,6 @@ public int lcsOptimized(String s1, String s2) {
 4. Best Time to Buy and Sell Stock
 5. Decode Ways
 
-
-
-
 ## Grid DP
 
 1. Unique Paths
@@ -917,9 +894,6 @@ public int lcsOptimized(String s1, String s2) {
 3. Longest Palindromic Subsequence
 4. Regular Expression Matching
 5. Wildcard Matching
-
-
-
 
 ## Knapsack DP
 
@@ -957,12 +931,12 @@ public int lcsOptimized(String s1, String s2) {
 
 ---
 
-
 ---
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -989,6 +963,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -1023,6 +998,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -1085,6 +1061,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -1119,6 +1096,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -1131,8 +1109,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -1198,5 +1174,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [< Previous](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04c_DP_Advanced.md)
+**Navigation**: [< Previous](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04c_DP_Advanced.md)

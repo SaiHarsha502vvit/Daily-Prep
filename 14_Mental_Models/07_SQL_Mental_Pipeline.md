@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](06_Implementation_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Debugging_DryRun.md)
+**Navigation**: [< Previous](06_Implementation_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Debugging_DryRun.md)
 
 # 🗃️ SQL Mental Pipeline — Think in Sets, Build Queries Step-by-Step
 
-> **The key insight**: SQL doesn't work like Java. In Java, you think in LOOPS (process one row at a time). In SQL, you think in SETS (operate on entire tables at once). This shift is the #1 barrier for programmers learning SQL.
+**The key insight**: SQL doesn't work like Java. In Java, you think in LOOPS (process one row at a time). In SQL, you think in SETS (operate on entire tables at once). This shift is the #1 barrier for programmers learning SQL.
 
 ---
 
@@ -24,9 +24,8 @@ SQL is declarative — you describe the result, the engine figures out the steps
 ```
 
 **Flow:**
-- SELECT name FROM employees WHERE salary > 50000;
-- ↓
-- You're describing WHAT you want, not HOW to get it.
+1. SELECT name FROM employees WHERE salary > 50000;
+2. You're describing WHAT you want, not HOW to get it.
 
 ```mermaid
 flowchart TD
@@ -64,17 +63,12 @@ LIMIT     ─── 7th ───→  8. LIMIT/OFFSET   (paginate)
 ```
 
 **Flow:**
-- SELECT --(5th)--> 1. FROM / JOIN (which tables?)
-- ↓
-- FROM --(1st)--> 2. WHERE (filter rows)
-- ↓
-- JOIN --(1st)--> 3. GROUP BY (make groups)
-- ↓
-- WHERE --(2nd)--> 4. HAVING (filter groups)
-- ↓
-- GROUP BY --(3rd)--> 5. SELECT (pick columns)
-- ↓
-- HAVING --(4th)--> 6. DISTINCT (remove duplicates)
+1. SELECT --(5th)--> 1. FROM / JOIN (which tables?)
+2. FROM --(1st)--> 2. WHERE (filter rows)
+3. JOIN --(1st)--> 3. GROUP BY (make groups)
+4. WHERE --(2nd)--> 4. HAVING (filter groups)
+5. GROUP BY --(3rd)--> 5. SELECT (pick columns)
+6. HAVING --(4th)--> 6. DISTINCT (remove duplicates)
 
 ```mermaid
 flowchart TD
@@ -197,9 +191,8 @@ CROSS JOIN:      A × B         (every combo — rarely wanted)
 ```
 
 **Flow:**
-- A / A∩
-- ↓
-- A∩B
+1. A / A∩
+2. A∩B
 
 ```mermaid
 flowchart TD
@@ -218,25 +211,16 @@ flowchart TD
 ```
 
 **Flow:**
-- 'Get employees WITH their department name'
-- ↓
-- INNER JOIN (skip employees with no dept)
-- ↓
-- 'Get ALL employees, even without department'
-- ↓
-- LEFT JOIN (keep all employees)
-- ↓
-- 'Find employees WITHOUT a department'
-- ↓
-- LEFT JOIN + WHERE b.id IS NULL
-- ↓
-- 'Find all possible team pairings'
-- ↓
-- CROSS JOIN (or self-join)
-- ↓
-- 'Find matching records in both tables'
-- ↓
-- INNER JOIN
+1. 'Get employees WITH their department name'
+2. INNER JOIN (skip employees with no dept)
+3. 'Get ALL employees, even without department'
+4. LEFT JOIN (keep all employees)
+5. 'Find employees WITHOUT a department'
+6. LEFT JOIN + WHERE b.id IS NULL
+7. 'Find all possible team pairings'
+8. CROSS JOIN (or self-join)
+9. 'Find matching records in both tables'
+10. INNER JOIN
 
 ```mermaid
 flowchart TD
@@ -275,20 +259,20 @@ WHERE e.salary > m.salary;
 
 
 
-> 🔬 **Section Challenge — Part 4: JOIN Mental Models**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — Part 4: JOIN Mental Models**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 
 ## Part 5: Subquery vs JOIN — Decision Framework
 
@@ -309,17 +293,12 @@ WHERE e.salary > m.salary;
 ```
 
 **Flow:**
-- 1. 'Find employees whose salary > AVERAGE salary'
-- ↓
-- The inner query computes ONE value
-- ↓
-- 2. 'Find employees in departments located in NYC'
-- ↓
-- The inner query computes a LIST
-- ↓
-- 'Find employees who earn max in their department'
-- ↓
-- SELECT * FROM employees e
+1. 'Find employees whose salary > AVERAGE salary'
+2. The inner query computes ONE value
+3. 'Find employees in departments located in NYC'
+4. The inner query computes a LIST
+5. 'Find employees who earn max in their department'
+6. SELECT * FROM employees e
 
 ```mermaid
 flowchart TD
@@ -347,25 +326,9 @@ Rule of thumb: If you need columns from multiple tables in SELECT → use JOIN
 ```
 
 **Flow:**
-- 1. When you need columns from BOTH tables
-- ↓
-- JOIN
-- ↓
-- 2. When subquery would be executed for EACH row (c
-- ↓
-- Consider JOIN
-- ↓
-- 3. When you need to combine/match data
-- ↓
-- JOIN
-- ↓
-- Rule of thumb: If you need columns from multiple t
-- ↓
-- use JOIN
-- ↓
-- If you need a value for filtering (WHERE/HAVING)
-- ↓
-- subquery is fine
+1. When you need columns from BOTH tables
+2. JOIN
+3. When subquery would be executed for EACH row (c Consider JOIN When you need to combine/match data JOIN Rule of thumb: If you need columns from multiple t use JOIN If you need a value for filtering (WHERE/HAVING) subquery is fine
 
 ```mermaid
 flowchart TD
@@ -389,20 +352,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Part 5: Subquery vs JOIN — Decision Framework**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — Part 5: Subquery vs JOIN — Decision Framework**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 
 ## Part 6: GROUP BY + Aggregation — Mental Model
 
@@ -430,9 +393,8 @@ Now you can only SELECT:
 ```
 
 **Flow:**
-- HR pile / Alice 60K / Carol 55K
-- ↓
-- IT pile / Bob 75K / Dave 80K
+1. HR pile / Alice 60K / Carol 55K
+2. IT pile / Bob 75K / Dave 80K
 
 ```mermaid
 flowchart TD
@@ -467,13 +429,10 @@ HAVING AVG(salary) > 60000  -- Filter GROUPS (after grouping)
 ```
 
 **Flow:**
-- WHERE: Filters ROWS before grouping
-- ↓
-- Cannot use aggregates
-- ↓
-- HAVING: Filters GROUPS after grouping
-- ↓
-- CAN use aggregates
+1. WHERE: Filters ROWS before grouping
+2. Cannot use aggregates
+3. HAVING: Filters GROUPS after grouping
+4. CAN use aggregates
 
 ```mermaid
 flowchart LR
@@ -503,9 +462,7 @@ Window functions compute aggregates BUT keep every row!
 ```
 
 **Flow:**
-- GROUP BY collapses rows
-- ↓
-- you lose individual row data
+1. GROUP BY collapses rows you lose individual row data
 
 ```mermaid
 flowchart LR
@@ -546,20 +503,20 @@ WHERE rn <= 3;  -- Top 3 earners per department
 
 
 
-> 🔬 **Section Challenge — Part 7: Window Functions — "Aggregation Without Losing Rows"**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — Part 7: Window Functions — "Aggregation Without Losing Rows"**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## Part 8: SQL Problem Classification
 
@@ -579,29 +536,18 @@ See these keywords in the problem? → Use this approach:
 ```
 
 **Flow:**
-- See these keywords in the problem?
-- ↓
-- Use this approach:
-- ↓
-- 'For each department/category...'
-- ↓
-- GROUP BY
-- ↓
-- 'Top N per group'
-- ↓
-- Window function + ROW_NUMBER()
-- ↓
-- 'Running total / cumulative sum'
-- ↓
-- Window function + SUM() OVER
-- ↓
-- 'Compare with previous row'
-- ↓
-- LAG() / LEAD() window functions
-- ↓
-- 'Employees not in any project'
-- ↓
-- LEFT JOIN + IS NULL (or NOT IN)
+1. See these keywords in the problem?
+2. Use this approach:
+3. 'For each department/category...'
+4. GROUP BY
+5. 'Top N per group'
+6. Window function + ROW_NUMBER()
+7. 'Running total / cumulative sum'
+8. Window function + SUM() OVER
+9. 'Compare with previous row'
+10. LAG() / LEAD() window functions
+11. 'Employees not in any project'
+12. LEFT JOIN + IS NULL (or NOT IN)
 
 ```mermaid
 flowchart TD
@@ -658,9 +604,7 @@ flowchart TD
 ```
 
 **Flow:**
-- □ Am I selecting non-grouped columns without aggre
-- ↓
-- SQL error
+1. □ Am I selecting non-grouped columns without aggre SQL error
 
 ```mermaid
 flowchart LR

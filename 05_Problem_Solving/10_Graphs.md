@@ -1,13 +1,13 @@
-> **Navigation**: [< Previous](09_Trees.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Dynamic_Programming.md)
+**Navigation**: [< Previous](09_Trees.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Dynamic_Programming.md)
 
-> **Problems 10/14** | [Prev](09_Trees.md) | [Index](../00_MASTER_INDEX.md) | [Next](11_Dynamic_Programming.md)
+**Problems 10/14** | [Prev](09_Trees.md) | [Index](../00_MASTER_INDEX.md) | [Next](11_Dynamic_Programming.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — Graphs
 
-> **Graph Algorithm Selector** — Use this before every problem:
->
+**Graph Algorithm Selector** — Use this before every problem:
+
 
 | If it asks... | Algorithm | Time |
 |---|---|---|
@@ -19,37 +19,37 @@
 | `union / merge components dynamically` | Union-Find | O(E·α(V)) |
 | `bipartite check` | BFS 2-coloring | O(V+E) |
 
->
-> **First Question for Every Graph Problem:**
-> ```
-> 1. What are the NODES?
-> 2. What are the EDGES? (directed or undirected?)
-> 3. Is it weighted?
-> → Then pick your algorithm from the table above.
-> ```
->
-> 📖 **Mental Model:** [03_Graph_Tree_Thinking.md](../14_Mental_Models/03_Graph_Tree_Thinking.md)
-> 📖 **Theory:** [01f_Trees_Heaps.md](../02_Data_Structures/01f_Trees_Heaps.md)
-> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**First Question for Every Graph Problem:**
+```
+1. What are the NODES?
+2. What are the EDGES? (directed or undirected?)
+3. Is it weighted?
+→ Then pick your algorithm from the table above.
+```
+
+📖 **Mental Model:** [03_Graph_Tree_Thinking.md](../14_Mental_Models/03_Graph_Tree_Thinking.md)
+📖 **Theory:** [01f_Trees_Heaps.md](../02_Data_Structures/01f_Trees_Heaps.md)
+📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
 
 
-> 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Graphs**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Graphs**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 # 📚 SECTION 9: GRAPH ALGORITHMS
 
@@ -90,9 +90,8 @@
 ```
 
 **Flow:**
-- 0 1 1 0 / 1 0 1 1 / 1 1 0 0 / 0 1 0 0
-- ↓
-- DFS (Stack/Recursion) BFS (Queue) / - Go deep first - G
+1. 0 1 1 0 / 1 0 1 1 / 1 1 0 0 / 0 1 0 0
+2. DFS (Stack/Recursion) BFS (Queue) / - Go deep first - G
 
 ```mermaid
 flowchart TD
@@ -160,9 +159,8 @@ flowchart TD
 ```
 
 **Flow:**
-- Problem Node = Edge = / Number of Islands Cell (r,c) Ad
-- ↓
-- 1 1 0 / 1 0 0 / 0 0 1
+1. Problem Node = Edge = / Number of Islands Cell (r,c) Ad
+2. 1 1 0 / 1 0 0 / 0 0 1
 
 ```mermaid
 flowchart TD
@@ -343,25 +341,25 @@ void dfs(int[][] grid, int r, int c, boolean[][] visited) {
 
 
 
-> 🔬 **Section Challenge — PART 0: WHY Graph Problems & How to Think About Them**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+🔬 **Section Challenge — PART 0: WHY Graph Problems & How to Think About Them**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## 9.1 Graph Traversal (BFS/DFS)
 
-> **Pattern:** Explore connected regions. DFS to mark & count, BFS for multi-source spreading.
-> **Key insight for grids:** Treat each cell as a node. "Sink" visited cells (mark '0' or use visited set).
+**Pattern:** Explore connected regions. DFS to mark & count, BFS for multi-source spreading.
+**Key insight for grids:** Treat each cell as a node. "Sink" visited cells (mark '0' or use visited set).
 
 ### Problem 136: Number of Islands
 
@@ -394,19 +392,13 @@ void dfs(int[][] grid, int r, int c, boolean[][] visited) {
 ```
 
 **Flow:**
-- NUMBER OF ISLANDS - Count connected components of '1's
-- ↓
-- grid = [
-- ↓
-- ['1','1','0','0','0'], Island 1: top-left 1s
-- ↓
-- ['0','0','1','0','0'], Island 2: middle 1
-- ↓
-- ['0','0','0','1','1'] Island 3: bottom-right 1s
-- ↓
-- Visual:
-- ↓
-- 1 1 0 0 0 🏝️ Island 1
+1. NUMBER OF ISLANDS - Count connected components of '1's
+2. grid = [
+3. ['1','1','0','0','0'], Island 1: top-left 1s
+4. ['0','0','1','0','0'], Island 2: middle 1
+5. ['0','0','0','1','1'] Island 3: bottom-right 1s
+6. Visual:
+7. 1 1 0 0 0 🏝️ Island 1
 
 ```mermaid
 flowchart TD
@@ -532,11 +524,9 @@ public int numIslandsBFS(char[][] grid) {
 ```
 
 **Flow:**
-- MAX AREA OF ISLAND
-- ↓
-- grid = [
-- ↓
-- Maximum area = 6 (the island in middle-right)
+1. MAX AREA OF ISLAND
+2. grid = [
+3. Maximum area = 6 (the island in middle-right)
 
 ```mermaid
 flowchart TD
@@ -601,21 +591,14 @@ private int dfs(int[][] grid, int i, int j) {
 ```
 
 **Flow:**
-- CLONE GRAPH - Deep copy of undirected graph
-- ↓
-- Input: Output (Clone):
-- ↓
-- Each node has: val, List<Node> neighbors
-- ↓
-- Key: Use HashMap to track original
-- ↓
-- clone mapping
-- ↓
-- Key: Use HashMap to track original
-- ↓
-- clone mapping
-- ↓
-- Prevents infinite loop when graph has cycles
+1. CLONE GRAPH - Deep copy of undirected graph
+2. Input: Output (Clone):
+3. Each node has: val, List<Node> neighbors
+4. Key: Use HashMap to track original
+5. clone mapping
+6. Key: Use HashMap to track original
+7. clone mapping
+8. Prevents infinite loop when graph has cycles
 
 ```mermaid
 flowchart TD
@@ -684,9 +667,8 @@ public Node cloneGraph(Node node) {
 ```
 
 **Flow:**
-- 1 1 1 / 1 1 0 / 1 0 1
-- ↓
-- 2 2 2 / 2 2 0 / 2 0 1
+1. 1 1 1 / 1 1 0 / 1 0 1
+2. 2 2 2 / 2 2 0 / 2 0 1
 
 ```mermaid
 flowchart LR
@@ -755,15 +737,11 @@ private void dfs(int[][] image, int r, int c, int original, int newColor) {
 ```
 
 **Flow:**
-- 2 1 1 / 1 1 0 / 0 1 1
-- ↓
-- 2 2 1 / 2 1 0 / 0 1 1
-- ↓
-- 2 2 2 / 2 2 0 / 0 1 1
-- ↓
-- 2 2 2 / 2 2 0 / 0 2 1
-- ↓
-- 2 2 2 / 2 2 0 / 0 2 2
+1. 2 1 1 / 1 1 0 / 0 1 1
+2. 2 2 1 / 2 1 0 / 0 1 1
+3. 2 2 2 / 2 2 0 / 0 1 1
+4. 2 2 2 / 2 2 0 / 0 2 1
+5. 2 2 2 / 2 2 0 / 0 2 2
 
 ```mermaid
 flowchart TD
@@ -862,9 +840,8 @@ public int orangesRotting(int[][] grid) {
 ```
 
 **Flow:**
-- INF -1 0 INF / INF INF INF -1 / INF -1 INF -1 / 0 -1 IN
-- ↓
-- 3 -1 0 1 / 2 2 1 -1 / 1 -1 2 -1 / 0 -1 3 4
+1. INF -1 0 INF / INF INF INF -1 / INF -1 INF -1 / 0 -1 IN
+2. 3 -1 0 1 / 2 2 1 -1 / 1 -1 2 -1 / 0 -1 3 4
 
 ```mermaid
 flowchart LR
@@ -914,27 +891,27 @@ public void wallsAndGates(int[][] rooms) {
 
 
 
-> 🔬 **Section Challenge — 9.1 Graph Traversal (BFS/DFS)**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+🔬 **Section Challenge — 9.1 Graph Traversal (BFS/DFS)**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## 9.2 Graph Cycle Detection
 
-> **Pattern:** Detect if a directed graph has a cycle. Two approaches:
-> 1. **DFS 3-coloring:** WHITE(unvisited) → GRAY(in-progress) → BLACK(done). If you visit a GRAY node → cycle!
-> 2. **Kahn's Algorithm:** Remove nodes with in-degree 0 repeatedly. If nodes remain → cycle.
-> **Key insight:** Course Schedule = "Can all courses be taken?" = "Does the prerequisite graph have a cycle?"
+**Pattern:** Detect if a directed graph has a cycle. Two approaches:
+1. **DFS 3-coloring:** WHITE(unvisited) → GRAY(in-progress) → BLACK(done). If you visit a GRAY node → cycle!
+2. **Kahn's Algorithm:** Remove nodes with in-degree 0 repeatedly. If nodes remain → cycle.
+**Key insight:** Course Schedule = "Can all courses be taken?" = "Does the prerequisite graph have a cycle?"
 
 ### Problem 142: Course Schedule (Cycle Detection)
 
@@ -962,19 +939,13 @@ public void wallsAndGates(int[][] rooms) {
 ```
 
 **Flow:**
-- COURSE SCHEDULE - Detect cycle in directed graph / numC
-- ↓
-- 1 2 No cycle
-- ↓
-- Can finish all courses ✓
-- ↓
-- 1 2 No cycle
-- ↓
-- Can finish all courses ✓
-- ↓
-- With cycle: [[1,0], [0,1]] / 0 ↔ 1 Cycle!
-- ↓
-- Cannot fini
+1. COURSE SCHEDULE - Detect cycle in directed graph / numC
+2. 1 2 No cycle
+3. Can finish all courses ✓
+4. 1 2 No cycle
+5. Can finish all courses ✓
+6. With cycle: [[1,0], [0,1]] / 0 ↔ 1 Cycle!
+7. Cannot fini
 
 ```mermaid
 flowchart TD
@@ -1054,19 +1025,13 @@ private boolean hasCycle(List<List<Integer>> graph, int node, int[] state) {
 ```
 
 **Flow:**
-- COURSE SCHEDULE II - Return valid course order
-- ↓
-- numCourses = 4
-- ↓
-- prerequisites = [[1,0], [2,0], [3,1], [3,2]]
-- ↓
-- Valid orders:
-- ↓
-- Topological Sort: Order where all prerequisites come fi
-- ↓
-- Using Kahn's Algorithm (BFS):
-- ↓
-- 1. Calculate in-degree for each node
+1. COURSE SCHEDULE II - Return valid course order
+2. numCourses = 4
+3. prerequisites = [[1,0], [2,0], [3,1], [3,2]]
+4. Valid orders:
+5. Topological Sort: Order where all prerequisites come fi
+6. Using Kahn's Algorithm (BFS):
+7. 1. Calculate in-degree for each node
 
 ```mermaid
 flowchart TD
@@ -1163,19 +1128,13 @@ public int[] findOrder(int numCourses, int[][] prerequisites) {
 ```
 
 **Flow:**
-- GRAPH VALID TREE
-- ↓
-- A valid tree has:
-- ↓
-- 1. No cycles
-- ↓
-- 2. All nodes connected (single connected component)
-- ↓
-- 3. Exactly n-1 edges for n nodes
-- ↓
-- Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]]
-- ↓
-- 1 2 3 Valid tree ✓
+1. GRAPH VALID TREE
+2. A valid tree has:
+3. 1. No cycles
+4. 2. All nodes connected (single connected component)
+5. 3. Exactly n-1 edges for n nodes
+6. Example 1: n=5, edges=[[0,1],[0,2],[0,3],[1,4]]
+7. 1 2 3 Valid tree ✓
 
 ```mermaid
 flowchart TD
@@ -1231,29 +1190,29 @@ private int find(int[] parent, int x) {
 
 
 
-> 🔬 **Section Challenge — 9.2 Graph Cycle Detection**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+🔬 **Section Challenge — 9.2 Graph Cycle Detection**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## 9.3 Shortest Path Problems
 
-> **Pattern:** Find minimum distance/steps. Choose algorithm based on edge weights:
-> - **Unweighted graph** → BFS (each edge = 1 step)
-> - **Non-negative weights** → Dijkstra's with min-heap
-> - **Negative weights** → Bellman-Ford
-> - **K stops limit** → Modified Dijkstra or BFS with state (node, stops)
-> **Key insight:** BFS naturally gives shortest path in unweighted graphs because it explores level-by-level.
+**Pattern:** Find minimum distance/steps. Choose algorithm based on edge weights:
+- **Unweighted graph** → BFS (each edge = 1 step)
+- **Non-negative weights** → Dijkstra's with min-heap
+- **Negative weights** → Bellman-Ford
+- **K stops limit** → Modified Dijkstra or BFS with state (node, stops)
+**Key insight:** BFS naturally gives shortest path in unweighted graphs because it explores level-by-level.
 
 ### Problem 145: 01 Matrix
 
@@ -1277,11 +1236,9 @@ private int find(int[] parent, int x) {
 ```
 
 **Flow:**
-- 01 MATRIX - Distance to nearest 0 for each cell
-- ↓
-- Input: Output:
-- ↓
-- Multi-source BFS from all 0s simultaneously
+1. 01 MATRIX - Distance to nearest 0 for each cell
+2. Input: Output:
+3. Multi-source BFS from all 0s simultaneously
 
 ```mermaid
 flowchart TD
@@ -1361,17 +1318,12 @@ public int[][] updateMatrix(int[][] mat) {
 ```
 
 **Flow:**
-- SHORTEST PATH IN BINARY MATRIX
-- ↓
-- Find shortest clear path from top-left to bottom-right
-- ↓
-- Can move in 8 directions (including diagonals)
-- ↓
-- 0 = clear, 1 = blocked
-- ↓
-- grid = [[0,0,0],
-- ↓
-- Length = 4
+1. SHORTEST PATH IN BINARY MATRIX
+2. Find shortest clear path from top-left to bottom-right
+3. Can move in 8 directions (including diagonals)
+4. 0 = clear, 1 = blocked
+5. grid = [[0,0,0],
+6. Length = 4
 
 ```mermaid
 flowchart TD
@@ -1454,41 +1406,24 @@ public int shortestPathBinaryMatrix(int[][] grid) {
 ```
 
 **Flow:**
-- NETWORK DELAY TIME - Dijkstra's Algorithm
-- ↓
-- Start from node 2:
-- ↓
-- - Node 2: time 0
-- ↓
-- - Node 1: time 1 (via 2
-- ↓
-- 1)
-- ↓
-- - Node 1: time 1 (via 2
-- ↓
-- 1)
-- ↓
-- - Node 3: time 1 (via 2
-- ↓
-- 3)
-- ↓
-- - Node 3: time 1 (via 2
-- ↓
-- 3)
-- ↓
-- - Node 4: time 2 (via 2
-- ↓
-- 3
-- ↓
-- 4)
-- ↓
-- - Node 4: time 2 (via 2
-- ↓
-- 3
-- ↓
-- 4)
-- ↓
-- All nodes reached, max time = 2
+1. NETWORK DELAY TIME - Dijkstra's Algorithm
+2. Start from node 2:
+3. - Node 2: time 0
+4. - Node 1: time 1 (via 2
+5. 1)
+6. - Node 1: time 1 (via 2
+7. 1)
+8. - Node 3: time 1 (via 2
+9. 3)
+10. - Node 3: time 1 (via 2
+11. 3)
+12. - Node 4: time 2 (via 2
+13. 3
+14. 4)
+15. - Node 4: time 2 (via 2
+16. 3
+17. 4)
+18. All nodes reached, max time = 2
 
 ```mermaid
 flowchart TD
@@ -1590,41 +1525,24 @@ public int networkDelayTime(int[][] times, int n, int k) {
 ```
 
 **Flow:**
-- CHEAPEST FLIGHTS WITHIN K STOPS
-- ↓
-- n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,60
-- ↓
-- With at most 1 stop:
-- ↓
-- - 0
-- ↓
-- 1
-- ↓
-- 3 = 700 (1 stop)
-- ↓
-- - 0
-- ↓
-- 1
-- ↓
-- 3 = 700 (1 stop)
-- ↓
-- - 0
-- ↓
-- 1
-- ↓
-- 2
-- ↓
-- 3 = 400 but has 2 stops ✗
-- ↓
-- - 0
-- ↓
-- 1
-- ↓
-- 2
-- ↓
-- 3 = 400 but has 2 stops ✗
-- ↓
-- Output: 700
+1. CHEAPEST FLIGHTS WITHIN K STOPS
+2. n = 4, flights = [[0,1,100],[1,2,100],[2,0,100],[1,3,60
+3. With at most 1 stop:
+4. - 0
+5. 1
+6. 3 = 700 (1 stop)
+7. - 0
+8. 1
+9. 3 = 700 (1 stop)
+10. - 0
+11. 1
+12. 2
+13. 3 = 400 but has 2 stops ✗
+14. - 0
+15. 1
+16. 2
+17. 3 = 400 but has 2 stops ✗
+18. Output: 700
 
 ```mermaid
 flowchart TD
@@ -1684,9 +1602,9 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 
 ## 9.4 Union-Find (Disjoint Set)
 
-> **Pattern:** Dynamic connectivity — merge groups and check membership.
-> **When to use over BFS/DFS:** When edges arrive one-by-one (online), or when you need to count components after each merge.
-> **Template:** Find with path compression + Union by rank → O(α(n)) ≈ O(1) per operation.
+**Pattern:** Dynamic connectivity — merge groups and check membership.
+**When to use over BFS/DFS:** When edges arrive one-by-one (online), or when you need to count components after each merge.
+**Template:** Find with path compression + Union by rank → O(α(n)) ≈ O(1) per operation.
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
@@ -1715,19 +1633,13 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 ```
 
 **Flow:**
-- UNION-FIND DATA STRUCTURE
-- ↓
-- Operations:
-- ↓
-- - find(x): Find root/representative of x's set
-- ↓
-- - union(x, y): Merge sets containing x and y
-- ↓
-- Optimizations:
-- ↓
-- 1. Path Compression: Flatten tree during find
-- ↓
-- 2. Union by Rank: Attach smaller tree under larger
+1. UNION-FIND DATA STRUCTURE
+2. Operations:
+3. - find(x): Find root/representative of x's set
+4. - union(x, y): Merge sets containing x and y
+5. Optimizations:
+6. 1. Path Compression: Flatten tree during find
+7. 2. Union by Rank: Attach smaller tree under larger
 
 ```mermaid
 flowchart TD
@@ -1775,19 +1687,13 @@ flowchart TD
 ```
 
 **Flow:**
-- NUMBER OF CONNECTED COMPONENTS
-- ↓
-- n = 5, edges = [[0,1], [1,2], [3,4]]
-- ↓
-- Component 1: {0,1,2}
-- ↓
-- Component 2: {3,4}
-- ↓
-- Output: 2
-- ↓
-- Constraints:
-- ↓
-- - 0 <= edges.length <= 5000
+1. NUMBER OF CONNECTED COMPONENTS
+2. n = 5, edges = [[0,1], [1,2], [3,4]]
+3. Component 1: {0,1,2}
+4. Component 2: {3,4}
+5. Output: 2
+6. Constraints:
+7. - 0 <= edges.length <= 5000
 
 ```mermaid
 flowchart TD
@@ -1877,15 +1783,11 @@ private boolean union(int[] parent, int[] rank, int x, int y) {
 ```
 
 **Flow:**
-- REDUNDANT CONNECTION - Find edge that creates cycle
-- ↓
-- edges = [[1,2], [1,3], [2,3]]
-- ↓
-- 2 3 Edge [2,3] creates the cycle
-- ↓
-- Return the last edge that creates a cycle
-- ↓
-- Output: [2, 3]
+1. REDUNDANT CONNECTION - Find edge that creates cycle
+2. edges = [[1,2], [1,3], [2,3]]
+3. 2 3 Edge [2,3] creates the cycle
+4. Return the last edge that creates a cycle
+5. Output: [2, 3]
 
 ```mermaid
 flowchart TD
@@ -1961,19 +1863,13 @@ private int find(int[] parent, int x) {
 ```
 
 **Flow:**
-- ACCOUNTS MERGE - Merge accounts with same email
-- ↓
-- accounts = [
-- ↓
-- ['John', 'john@mail.com', 'john_work@mail.com'],
-- ↓
-- ['John', 'john@mail.com', 'john_home@mail.com'],
-- ↓
-- ['Mary', 'mary@mail.com'],
-- ↓
-- ['John', 'johnny@mail.com']
-- ↓
-- John (account 0) and John (account 1) share 'john@mail.
+1. ACCOUNTS MERGE - Merge accounts with same email
+2. accounts = [
+3. ['John', 'john@mail.com', 'john_work@mail.com'],
+4. ['John', 'john@mail.com', 'john_home@mail.com'],
+5. ['Mary', 'mary@mail.com'],
+6. ['John', 'johnny@mail.com']
+7. John (account 0) and John (account 1) share 'john@mail.
 
 ```mermaid
 flowchart TD
@@ -2054,27 +1950,27 @@ private void union(Map<String, String> parent, String x, String y) {
 
 
 
-> 🔬 **Section Challenge — 9.4 Union-Find (Disjoint Set)**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — 9.4 Union-Find (Disjoint Set)**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 
 ## 9.5 Advanced Graph Problems
 
-> **Pattern:** These problems require creative graph modeling.
-> - **Word Ladder:** Each word = node, differ-by-1-letter = edge → BFS for shortest transformation
-> - **Alien Dictionary:** Characters → nodes, ordering rules → directed edges → Topological sort
-> - **Bipartite:** 2-color the graph. If any edge connects same-color nodes → not bipartite.
+**Pattern:** These problems require creative graph modeling.
+- **Word Ladder:** Each word = node, differ-by-1-letter = edge → BFS for shortest transformation
+- **Alien Dictionary:** Characters → nodes, ordering rules → directed edges → Topological sort
+- **Bipartite:** 2-color the graph. If any edge connects same-color nodes → not bipartite.
 
 ### Problem 152: Word Ladder
 
@@ -2104,37 +2000,22 @@ private void union(Map<String, String> parent, String x, String y) {
 ```
 
 **Flow:**
-- WORD LADDER - Shortest transformation sequence
-- ↓
-- beginWord = 'hit', endWord = 'cog'
-- ↓
-- wordList = ['hot','dot','dog','lot','log','cog']
-- ↓
-- Transformation: Change one letter at a time
-- ↓
-- Each intermediate word must be in wordList
-- ↓
-- hit
-- ↓
-- hot
-- ↓
-- dot
-- ↓
-- dog
-- ↓
-- cog
-- ↓
-- hit
-- ↓
-- hot
-- ↓
-- dot
-- ↓
-- dog
-- ↓
-- cog
-- ↓
-- 5 words
+1. WORD LADDER - Shortest transformation sequence
+2. beginWord = 'hit', endWord = 'cog'
+3. wordList = ['hot','dot','dog','lot','log','cog']
+4. Transformation: Change one letter at a time
+5. Each intermediate word must be in wordList
+6. hit
+7. hot
+8. dot
+9. dog
+10. cog
+11. hit
+12. hot
+13. dot
+14. dog
+15. cog
+16. 5 words
 
 ```mermaid
 flowchart TD
@@ -2234,33 +2115,20 @@ public int ladderLength(String beginWord, String endWord, List<String> wordList)
 ```
 
 **Flow:**
-- ALIEN DICTIONARY - Find character order from sorted wor
-- ↓
-- words = ['wrt', 'wrf', 'er', 'ett', 'rftt']
-- ↓
-- These words are sorted in alien language order
-- ↓
-- Compare adjacent words to find relationships:
-- ↓
-- 'wrt' vs 'wrf'
-- ↓
-- t comes before f (t < f)
-- ↓
-- 'wrt' vs 'wrf'
-- ↓
-- t comes before f (t < f)
-- ↓
-- 'wrf' vs 'er'
-- ↓
-- w comes before e (w < e)
-- ↓
-- 'wrf' vs 'er'
-- ↓
-- w comes before e (w < e)
-- ↓
-- 'er' vs 'ett'
-- ↓
-- r comes before t (r < t)
+1. ALIEN DICTIONARY - Find character order from sorted wor
+2. words = ['wrt', 'wrf', 'er', 'ett', 'rftt']
+3. These words are sorted in alien language order
+4. Compare adjacent words to find relationships:
+5. 'wrt' vs 'wrf'
+6. t comes before f (t < f)
+7. 'wrt' vs 'wrf'
+8. t comes before f (t < f)
+9. 'wrf' vs 'er'
+10. w comes before e (w < e)
+11. 'wrf' vs 'er'
+12. w comes before e (w < e)
+13. 'er' vs 'ett'
+14. r comes before t (r < t)
 
 ```mermaid
 flowchart TD
@@ -2362,15 +2230,11 @@ public String alienOrder(String[] words) {
 ```
 
 **Flow:**
-- IS GRAPH BIPARTITE - Can nodes be divided into 2 sets?
-- ↓
-- A graph is bipartite if we can color nodes with 2 color
-- ↓
-- such that no two adjacent nodes have the same color.
-- ↓
-- Bipartite: Not Bipartite:
-- ↓
-- Colors: 0,2=RED, 1,3=BLUE Triangle can't be 2-colored
+1. IS GRAPH BIPARTITE - Can nodes be divided into 2 sets?
+2. A graph is bipartite if we can color nodes with 2 color
+3. such that no two adjacent nodes have the same color.
+4. Bipartite: Not Bipartite:
+5. Colors: 0,2=RED, 1,3=BLUE Triangle can't be 2-colored
 
 ```mermaid
 flowchart TD
@@ -2427,20 +2291,20 @@ private boolean bfs(int[][] graph, int[] colors, int start) {
 
 
 
-> 🔬 **Section Challenge — 9.5 Advanced Graph Problems**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+🔬 **Section Challenge — 9.5 Advanced Graph Problems**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## 9.6 HackerEarth & Codeforces Graph Problems
 
@@ -2470,19 +2334,13 @@ private boolean bfs(int[][] graph, int[] colors, int start) {
 ```
 
 **Flow:**
-- FIND THE TOWN JUDGE
-- ↓
-- In a town of n people, one might be the judge.
-- ↓
-- The judge:
-- ↓
-- 1. Trusts nobody
-- ↓
-- 2. Everybody else trusts the judge
-- ↓
-- trust = [[1,2], [3,2]] (a trusts b)
-- ↓
-- Person 2: in-degree = 2 (n-1), out-degree = 0
+1. FIND THE TOWN JUDGE
+2. In a town of n people, one might be the judge.
+3. The judge:
+4. 1. Trusts nobody
+5. 2. Everybody else trusts the judge
+6. trust = [[1,2], [3,2]] (a trusts b)
+7. Person 2: in-degree = 2 (n-1), out-degree = 0
 
 ```mermaid
 flowchart TD
@@ -2553,17 +2411,12 @@ public int findJudge(int n, int[][] trust) {
 ```
 
 **Flow:**
-- MINIMUM SPANNING TREE - Kruskal's Algorithm
-- ↓
-- Connect all nodes with minimum total edge weight
-- ↓
-- n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]]
-- ↓
-- MST edges: [1,2,1], [2,3,2], [3,4,3]
-- ↓
-- Total weight = 1 + 2 + 3 = 6
-- ↓
-- Kruskal's: Sort edges, add if doesn't create cycle
+1. MINIMUM SPANNING TREE - Kruskal's Algorithm
+2. Connect all nodes with minimum total edge weight
+3. n = 4, edges = [[1,2,1], [1,3,4], [2,3,2], [3,4,3]]
+4. MST edges: [1,2,1], [2,3,2], [3,4,3]
+5. Total weight = 1 + 2 + 3 = 6
+6. Kruskal's: Sort edges, add if doesn't create cycle
 
 ```mermaid
 flowchart TD
@@ -2639,15 +2492,11 @@ private int find(int[] parent, int x) {
 ```
 
 **Flow:**
-- DETECT CYCLE IN UNDIRECTED GRAPH
-- ↓
-- Has Cycle: No Cycle:
-- ↓
-- DFS: If we visit a node that's already visited and
-- ↓
-- it's not the parent
-- ↓
-- cycle detected
+1. DETECT CYCLE IN UNDIRECTED GRAPH
+2. Has Cycle: No Cycle:
+3. DFS: If we visit a node that's already visited and
+4. it's not the parent
+5. cycle detected
 
 ```mermaid
 flowchart TD
@@ -2735,19 +2584,13 @@ private boolean dfs(List<List<Integer>> graph, boolean[] visited,
 ```
 
 **Flow:**
-- STRONGLY CONNECTED COMPONENTS (Kosaraju's Algorithm)
-- ↓
-- A directed graph's SCC is a maximal set of vertices whe
-- ↓
-- every vertex is reachable from every other vertex.
-- ↓
-- SCC 1: {0, 1, 2} (form a cycle)
-- ↓
-- SCC 2: {3, 4} (form a cycle)
-- ↓
-- Kosaraju's Algorithm:
-- ↓
-- 1. DFS to get finish order
+1. STRONGLY CONNECTED COMPONENTS (Kosaraju's Algorithm)
+2. A directed graph's SCC is a maximal set of vertices whe
+3. every vertex is reachable from every other vertex.
+4. SCC 1: {0, 1, 2} (form a cycle)
+5. SCC 2: {3, 4} (form a cycle)
+6. Kosaraju's Algorithm:
+7. 1. DFS to get finish order
 
 ```mermaid
 flowchart TD
@@ -2837,20 +2680,20 @@ private void dfs2(List<List<Integer>> graph, boolean[] visited, int node) {
 
 
 
-> 🔬 **Section Challenge — 9.6 HackerEarth & Codeforces Graph Problems**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+🔬 **Section Challenge — 9.6 HackerEarth & Codeforces Graph Problems**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## 🏆 Competitive Programming — Codeforces Problems
 
@@ -2898,20 +2741,20 @@ private void dfs2(List<List<Integer>> graph, boolean[] visited, int node) {
 
 
 
-> 🔬 **Section Challenge — 🌍 Real-World Applications of Graph Algorithms**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+🔬 **Section Challenge — 🌍 Real-World Applications of Graph Algorithms**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 

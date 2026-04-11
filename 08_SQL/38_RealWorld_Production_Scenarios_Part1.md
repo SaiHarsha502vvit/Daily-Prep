@@ -1,11 +1,11 @@
 # Chapter 38 — Real-World Production Scenarios Part 1: IDs, Data Growth & Storage Crises
 
-> **What:** 25 real-world production scenarios that every developer hits — ID exhaustion, data overflow, storage crises
-> **Why:** These aren't textbook problems; they're 3 AM pager alerts that break real systems
-> **When:** When your tables grow from thousands to billions of rows
-> **Where:** E-commerce, banking, SaaS, healthcare, logistics — every production database
-> **Who:** Backend devs, DBAs, Spring Boot developers, on-call engineers
-> **How:** 5W-H analysis → SQL solution → DSA/Backend solution → Prevention strategy
+**What:** 25 real-world production scenarios that every developer hits — ID exhaustion, data overflow, storage crises
+**Why:** These aren't textbook problems; they're 3 AM pager alerts that break real systems
+**When:** When your tables grow from thousands to billions of rows
+**Where:** E-commerce, banking, SaaS, healthcare, logistics — every production database
+**Who:** Backend devs, DBAs, Spring Boot developers, on-call engineers
+**How:** 5W-H analysis → SQL solution → DSA/Backend solution → Prevention strategy
 
 ---
 
@@ -971,14 +971,14 @@ SELECT pg_reload_conf();
 
 
 
-> 🔬 **Section Challenge — Scenario 10: Transaction Log Eating All Disk Space**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — Scenario 10: Transaction Log Eating All Disk Space**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## Scenario 11: BLOB/TEXT Columns Inflating Table Size 100x
 

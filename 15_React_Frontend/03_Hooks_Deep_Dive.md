@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← Component Patterns](02_Component_Patterns.md) | [Next: State Management →](04_State_Management.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← Component Patterns](02_Component_Patterns.md) | [Next: State Management →](04_State_Management.md)
 
 ---
 
@@ -47,20 +47,20 @@ Quick reminder: `const [state, setState] = useState(initialValue);`
 
 
 
-> 🔬 **Section Challenge — useState (Already covered in Fundamentals)**
->
-> **Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
-> <details><summary>Answer</summary>
->
-> Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
-> <details><summary>Answer</summary>
->
-> `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
-> </details>
->
+🔬 **Section Challenge — useState (Already covered in Fundamentals)**
+
+**Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
+<details><summary>Answer</summary>
+
+Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
+</details>
+
+**Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+<details><summary>Answer</summary>
+
+`useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
+</details>
+
 
 ## useEffect — Side Effects
 
@@ -157,20 +157,20 @@ function UserProfile({ userId }) {
 
 
 
-> 🔬 **Section Challenge — useEffect — Side Effects**
->
-> **Challenge 1 (Reasoning):** A useEffect with dependency `[user]` runs after every render where `user` changes. But `user` is an object. What subtle bug can occur?
-> <details><summary>Answer</summary>
->
-> React uses `Object.is()` to compare dependency values (===). A new object reference is ALWAYS different from the previous one even if the content is identical: `{name:'John'} !== {name:'John'}`. If the parent creates a new `user` object each render, the effect runs on every parent render even though the data didn't change. Fix: depend on `user.id` (primitive) instead, or `useMemo` to stabilize the reference.
-> </details>
->
-> **Challenge 2 (Design):** When does `useEffect` cleanup run? Give a concrete scenario where missing cleanup causes a bug.
-> <details><summary>Answer</summary>
->
-> Cleanup runs: (1) before the effect runs again (when deps change), (2) when the component unmounts. Bug scenario: effect fetches data and updates state. User navigates away (unmounts) before fetch completes. Fetch completes → tries to `setState` on unmounted component → React warning (memory leak). Fix: `let cancelled = false; return () => { cancelled = true; }` — check `if (!cancelled) setState(data)`.
-> </details>
->
+🔬 **Section Challenge — useEffect — Side Effects**
+
+**Challenge 1 (Reasoning):** A useEffect with dependency `[user]` runs after every render where `user` changes. But `user` is an object. What subtle bug can occur?
+<details><summary>Answer</summary>
+
+React uses `Object.is()` to compare dependency values (===). A new object reference is ALWAYS different from the previous one even if the content is identical: `{name:'John'} !== {name:'John'}`. If the parent creates a new `user` object each render, the effect runs on every parent render even though the data didn't change. Fix: depend on `user.id` (primitive) instead, or `useMemo` to stabilize the reference.
+</details>
+
+**Challenge 2 (Design):** When does `useEffect` cleanup run? Give a concrete scenario where missing cleanup causes a bug.
+<details><summary>Answer</summary>
+
+Cleanup runs: (1) before the effect runs again (when deps change), (2) when the component unmounts. Bug scenario: effect fetches data and updates state. User navigates away (unmounts) before fetch completes. Fetch completes → tries to `setState` on unmounted component → React warning (memory leak). Fix: `let cancelled = false; return () => { cancelled = true; }` — check `if (!cancelled) setState(data)`.
+</details>
+
 
 ## useRef — Persist Values Without Re-render
 
@@ -393,14 +393,14 @@ function ThemeToggle() {
 
 
 
-> 🔬 **Section Challenge — useContext — Global State Without Prop Drilling**
->
-> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-> <details><summary>Answer</summary>
->
-> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-> </details>
->
+🔬 **Section Challenge — useContext — Global State Without Prop Drilling**
+
+**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+<details><summary>Answer</summary>
+
+Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+</details>
+
 
 ## useReducer — Complex State Logic
 
@@ -561,25 +561,25 @@ function useDebounce(value, delay = 300) {
 
 
 
-> 🔬 **Section Challenge — Custom Hooks — Reuse Logic**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — Custom Hooks — Reuse Logic**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## Hook Rules (MUST FOLLOW)
 
@@ -622,19 +622,13 @@ THE INTERNAL REASON:
 ```
 
 **Flow:**
-- RULE 1: Only call hooks at the TOP LEVEL
-- ↓
-- ❌ if (condition) { useState(...) }
-- ↓
-- ❌ for (let i...) { useEffect(...) }
-- ↓
-- ✅ Always same hooks in same order every render
-- ↓
-- RULE 2: Only call hooks from React FUNCTIONS
-- ↓
-- ✅ Function components
-- ↓
-- ✅ Custom hooks (useXxx)
+1. RULE 1: Only call hooks at the TOP LEVEL
+2. ❌ if (condition) { useState(...) }
+3. ❌ for (let i...) { useEffect(...) }
+4. ✅ Always same hooks in same order every render
+5. RULE 2: Only call hooks from React FUNCTIONS
+6. ✅ Function components
+7. ✅ Custom hooks (useXxx)
 
 ```mermaid
 flowchart TD
@@ -928,4 +922,4 @@ function LikeButton({ initialLikes }: { initialLikes: number }) {
 
 ---
 
-> **Navigation**: [< Previous](02_Component_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_State_Management.md)
+**Navigation**: [< Previous](02_Component_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_State_Management.md)

@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](Ch68_Distributed_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](Ch68_Distributed_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # ⚡ Chapter 43 — Performance Engineering: Making Java Systems Fast
 
-> **"Performance isn't about writing 'fast code.' It's about MEASURING what's slow, understanding WHY, and fixing the right thing. A 10x optimization on a function that takes 1% of total time saves almost nothing."**
+**"Performance isn't about writing 'fast code.' It's about MEASURING what's slow, understanding WHY, and fixing the right thing. A 10x optimization on a function that takes 1% of total time saves almost nothing."**
 
 ---
 
@@ -63,14 +63,14 @@
 
 
 
-> 🔬 **Section Challenge — 1. The Performance Mindset**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 1. The Performance Mindset**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 2. Latency vs Throughput vs Percentiles
 
@@ -153,14 +153,14 @@
 
 
 
-> 🔬 **Section Challenge — 3. CPU-Bound vs I/O-Bound — Know What You're Optimizing**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 3. CPU-Bound vs I/O-Bound — Know What You're Optimizing**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 4. JVM Memory Model — Heap, Stack, and GC Roots
 
@@ -217,8 +217,8 @@
 
 
 
-> 🔬 **Section Challenge — 4. JVM Memory Model — Heap, Stack, and GC Roots**
->>
+🔬 **Section Challenge — 4. JVM Memory Model — Heap, Stack, and GC Roots**
+>
 
 ## 5. Garbage Collection Tuning
 
@@ -270,14 +270,14 @@
 
 
 
-> 🔬 **Section Challenge — 5. Garbage Collection Tuning**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 5. Garbage Collection Tuning**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 6. Profiling with async-profiler and Flamegraphs
 
@@ -323,8 +323,8 @@
 
 
 
-> 🔬 **Section Challenge — 6. Profiling with async-profiler and Flamegraphs**
->>>
+🔬 **Section Challenge — 6. Profiling with async-profiler and Flamegraphs**
+>>
 
 ## 7. Memory Leak Detection
 
@@ -506,14 +506,14 @@ public class CollectionBenchmark {
 
 
 
-> 🔬 **Section Challenge — 9. JMH — Microbenchmarking Done Right**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 9. JMH — Microbenchmarking Done Right**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 10. Connection Pool Tuning
 
@@ -567,14 +567,14 @@ public class CollectionBenchmark {
 
 
 
-> 🔬 **Section Challenge — 10. Connection Pool Tuning**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 10. Connection Pool Tuning**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 11. Caching Strategies
 
@@ -658,14 +658,14 @@ public void updateUser(Long userId, UserDTO dto) {
 
 
 
-> 🔬 **Section Challenge — 11. Caching Strategies**
->
-> **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-> <details><summary>Answer</summary>
->
-> Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-> </details>
->
+🔬 **Section Challenge — 11. Caching Strategies**
+
+**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+<details><summary>Answer</summary>
+
+Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+</details>
+
 
 ## 12. Production Performance Checklist
 
@@ -705,4 +705,4 @@ public void updateUser(Long userId, UserDTO dto) {
 
 ---
 
-> **Previous Chapter**: [Distributed Patterns & Consensus ←](Ch68_Distributed_Patterns.md)
+**Previous Chapter**: [Distributed Patterns & Consensus ←](Ch68_Distributed_Patterns.md)

@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)
+**Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)
 
 # ⭐ Complete Pattern Programs - From Zero to Hero
 
@@ -6,24 +6,20 @@
 
 ---
 
+WHY PATTERN PROGRAMS?
 
-> WHY PATTERN PROGRAMS?
->
-> 1. INTERVIEW REALITY: Asked in 90% of fresher interviews
-> 2. BUILDS LOOP THINKING: Foundation for ALL DSA
-> 3. TEACHES OBSERVATION: Any pattern = rows + columns + relationship
-> 4. REAL APPLICATIONS:
-> - UI grids (game boards, spreadsheets)
-> - Image processing (pixel manipulation)
-> - Matrix transformations
-> - Report formatting
->
-> START DATE: February 10, 2026
+1. INTERVIEW REALITY: Asked in 90% of fresher interviews
+2. BUILDS LOOP THINKING: Foundation for ALL DSA
+3. TEACHES OBSERVATION: Any pattern = rows + columns + relationship
+4. REAL APPLICATIONS:
+- UI grids (game boards, spreadsheets)
+- Image processing (pixel manipulation)
+- Matrix transformations
+- Report formatting
 
+START DATE: February 10, 2026
 
 ---
-
-
 
 # 🎯 THE PATTERN SOLVING FRAMEWORK
 
@@ -50,19 +46,13 @@ STEP 4: CODE THE LOOPS
 ```
 
 **Flow:**
-- STEP 1: COUNT ROWS
-- ↓
-- How many rows? = Outer loop count
-- ↓
-- STEP 2: FOR EACH ROW, IDENTIFY:
-- ↓
-- Spaces before content (leading spaces)
-- ↓
-- Content (stars, numbers, characters)
-- ↓
-- Spaces after content (sometimes needed)
-- ↓
-- Relationship with row number (i)
+1. STEP 1: COUNT ROWS
+2. How many rows? = Outer loop count
+3. STEP 2: FOR EACH ROW, IDENTIFY:
+4. Spaces before content (leading spaces)
+5. Content (stars, numbers, characters)
+6. Spaces after content (sometimes needed)
+7. Relationship with row number (i)
 
 ```mermaid
 flowchart TD
@@ -84,8 +74,6 @@ flowchart TD
 ```
 
 ---
-
-
 
 # ═══════════════════════════════════════════════════════════
 
@@ -122,8 +110,6 @@ public static void square(int n) {
 ```
 
 ---
-
-
 
 ## Pattern 2: Right Triangle (Increasing)
 
@@ -166,9 +152,6 @@ public static void rightTriangleAlt(int n) {
 
 ---
 
-
-
-
 ## Pattern 3: Inverted Right Triangle
 
 ```
@@ -199,9 +182,6 @@ public static void invertedRightTriangle(int n) {
 ```
 
 ---
-
-
-
 
 ## Pattern 4: Right-Aligned Triangle
 
@@ -239,8 +219,6 @@ public static void rightAlignedTriangle(int n) {
 
 ---
 
-
-
 ## Pattern 5: Inverted Right-Aligned Triangle
 
 ```
@@ -273,9 +251,6 @@ public static void invertedRightAligned(int n) {
 ```
 
 ---
-
-
-
 
 ## Pattern 6: Pyramid (Centered Triangle)
 
@@ -313,8 +288,6 @@ public static void pyramid(int n) {
 
 ---
 
-
-
 ## Pattern 7: Inverted Pyramid
 
 ```
@@ -347,9 +320,6 @@ public static void invertedPyramid(int n) {
 ```
 
 ---
-
-
-
 
 ## Pattern 8: Diamond
 
@@ -389,8 +359,6 @@ public static void diamond(int n) {
 
 ---
 
-
-
 ## Pattern 9: Hollow Square
 
 ```
@@ -422,8 +390,6 @@ public static void hollowSquare(int n) {
 ```
 
 ---
-
-
 
 ## Pattern 10: Hollow Pyramid
 
@@ -460,8 +426,6 @@ public static void hollowPyramid(int n) {
 ```
 
 ---
-
-
 
 ## Pattern 11: Hollow Diamond
 
@@ -503,8 +467,6 @@ public static void hollowDiamond(int n) {
 
 ---
 
-
-
 ## Pattern 12: Sandglass
 
 ```
@@ -542,8 +504,6 @@ public static void sandglass(int n) {
 
 ---
 
-
-
 ## Pattern 13: Arrow
 
 ```
@@ -579,8 +539,6 @@ public static void arrow(int n) {
 
 ---
 
-
-
 ## Pattern 14: Right Arrow
 
 ```
@@ -615,8 +573,6 @@ public static void rightArrow(int n) {
 
 ---
 
-
-
 ## Pattern 15: Plus Sign
 
 ```
@@ -646,8 +602,6 @@ public static void plusSign(int n) {
 
 ---
 
-
-
 ## Pattern X: Cross (X Shape)
 
 ```
@@ -675,8 +629,6 @@ public static void cross(int n) {
 ```
 
 ---
-
-
 
 # ═══════════════════════════════════════════════════════════
 
@@ -711,8 +663,6 @@ public static void numberTriangleRow(int n) {
 
 ---
 
-
-
 ## Pattern N2: Number Triangle (Column Number)
 
 ```
@@ -740,8 +690,6 @@ public static void numberTriangleCol(int n) {
 
 ---
 
-
-
 ## Pattern N3: Number Triangle Reverse
 
 ```
@@ -765,8 +713,6 @@ public static void numberTriangleReverse(int n) {
 ```
 
 ---
-
-
 
 ## Pattern N4: Floyd's Triangle
 
@@ -797,8 +743,6 @@ public static void floydsTriangle(int n) {
 ```
 
 ---
-
-
 
 ## Pattern N5: Pascal's Triangle
 
@@ -835,8 +779,6 @@ public static void pascalsTriangle(int n) {
 ```
 
 ---
-
-
 
 ## Pattern N6: Number Pyramid
 
@@ -878,8 +820,6 @@ public static void numberPyramid(int n) {
 
 ---
 
-
-
 ## Pattern N7: Palindrome Number Triangle
 
 ```
@@ -907,9 +847,6 @@ public static void palindromeTriangle(int n) {
 
 ---
 
-
-
-
 ## Pattern N8: Binary Triangle (0-1 Pattern)
 
 ```
@@ -936,9 +873,6 @@ public static void binaryTriangle(int n) {
 ```
 
 ---
-
-
-
 
 ## Pattern N9: Zigzag Numbers
 
@@ -978,8 +912,6 @@ public static void zigzagNumbers(int n) {
 
 ---
 
-
-
 ## Pattern N10: Number Diamond
 
 ```
@@ -1016,8 +948,6 @@ public static void numberDiamond(int n) {
 
 ---
 
-
-
 ## Pattern N11: Multiplication Table
 
 ```
@@ -1041,8 +971,6 @@ public static void multiplicationTable(int n) {
 ```
 
 ---
-
-
 
 ## Pattern N12: Prime Number Triangle
 
@@ -1082,8 +1010,6 @@ private static boolean isPrime(int n) {
 
 ---
 
-
-
 ## Pattern N13: Fibonacci Triangle
 
 ```
@@ -1111,8 +1037,6 @@ public static void fibonacciTriangle(int n) {
 ```
 
 ---
-
-
 
 ## Pattern N14: Square Number Pattern
 
@@ -1171,8 +1095,6 @@ public static void spiralSquare(int n) {
 
 ---
 
-
-
 ## Pattern N15: Number Box
 
 ```
@@ -1207,8 +1129,6 @@ public static void numberBox(int n) {
 
 ---
 
-
-
 # ═══════════════════════════════════════════════════════════
 
 # PART 3: CHARACTER PATTERNS (10 Patterns)
@@ -1239,8 +1159,6 @@ public static void alphabetTriangle(int n) {
 
 ---
 
-
-
 ## Pattern C2: Alphabet Triangle (Same Letter)
 
 ```
@@ -1266,8 +1184,6 @@ public static void sameLetterTriangle(int n) {
 
 ---
 
-
-
 ## Pattern C3: Reverse Alphabet Triangle
 
 ```
@@ -1291,8 +1207,6 @@ public static void reverseAlphabetTriangle(int n) {
 ```
 
 ---
-
-
 
 ## Pattern C4: Alphabet Pyramid
 
@@ -1321,8 +1235,6 @@ public static void alphabetPyramid(int n) {
 
 ---
 
-
-
 ## Pattern C5: Continuous Alphabet Triangle
 
 ```
@@ -1349,9 +1261,6 @@ public static void continuousAlphabet(int n) {
 ```
 
 ---
-
-
-
 
 ## Pattern C6: Alphabet with Stars
 
@@ -1386,8 +1295,6 @@ public static void alphabetWithStars(int rows) {
 ```
 
 ---
-
-
 
 ## Pattern C7: Alphabet Diamond
 
@@ -1425,8 +1332,6 @@ public static void alphabetDiamond(int n) {
 
 ---
 
-
-
 ## Pattern C8: Sandglass Alphabet
 
 ```
@@ -1463,8 +1368,6 @@ public static void alphabetSandglass(int n) {
 
 ---
 
-
-
 ## Pattern C9: Word Pattern
 
 ```
@@ -1495,8 +1398,6 @@ public static void wordPattern(String word) {
 
 ---
 
-
-
 ## Pattern C10: Hollow Alphabet Triangle
 
 ```
@@ -1525,8 +1426,6 @@ public static void hollowAlphabetTriangle(int n) {
 ```
 
 ---
-
-
 
 # ═══════════════════════════════════════════════════════════
 
@@ -1577,8 +1476,6 @@ public static void heartPattern(int n) {
 
 ---
 
-
-
 ## Pattern S2: Butterfly
 
 ```
@@ -1614,8 +1511,6 @@ public static void butterfly(int n) {
 
 ---
 
-
-
 ## Pattern S3: Stairs
 
 ```
@@ -1638,8 +1533,6 @@ public static void stairs(int n) {
 ```
 
 ---
-
-
 
 ## Pattern S4: Chess Board
 
@@ -1672,8 +1565,6 @@ public static void chessBoard(int n) {
 
 ---
 
-
-
 ## Pattern S5: Zero-One Box
 
 ```
@@ -1697,8 +1588,6 @@ public static void zeroOneBox(int n) {
 ```
 
 ---
-
-
 
 ## Pattern S6: Triangle with Border
 
@@ -1732,8 +1621,6 @@ public static void triangleWithBorder(int n) {
 
 ---
 
-
-
 ## Pattern S7: Rhombus
 
 ```
@@ -1759,8 +1646,6 @@ public static void rhombus(int n) {
 
 ---
 
-
-
 ## Pattern S8: Parallelogram
 
 ```
@@ -1783,8 +1668,6 @@ public static void parallelogram(int n) {
 ```
 
 ---
-
-
 
 ## Pattern S9: Number Frame
 
@@ -1820,8 +1703,6 @@ public static void numberFrame(int n) {
 
 ---
 
-
-
 ## Pattern S10: Hourglass with Numbers
 
 ```
@@ -1853,8 +1734,6 @@ public static void hourglassNumbers(int n) {
 
 ---
 
-
-
 # ═══════════════════════════════════════════════════════════
 
 # 🎨 Part 5: Interview Pattern Questions
@@ -1868,25 +1747,25 @@ Input: n=4, char='#'
 Output:
 
 
-> 🔬 **Section Challenge — Q1: Print Triangle with Custom Character**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — Q1: Print Triangle with Custom Character**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 #
 # #
@@ -1929,9 +1808,6 @@ public static void stringTriangle(String s) {
 
 ---
 
-
-
-
 ## Q3: Zigzag Pattern
 
 ```
@@ -1968,8 +1844,6 @@ public static String zigzagConversion(String s, int numRows) {
 ```
 
 ---
-
-
 
 ## Q4: Spiral Matrix
 
@@ -2079,43 +1953,16 @@ public static void rotate90(int[][] matrix) {
 ```
 
 **Flow:**
-- PATTERN SOLVING FORMULAS
-- ↓
-- RIGHT TRIANGLE: Row i
-- ↓
-- print (i+1) items, starting col
-- ↓
-- RIGHT TRIANGLE: Row i
-- ↓
-- print (i+1) items, starting col
-- ↓
-- LEFT TRIANGLE: Row i
-- ↓
-- print (n-i) spaces, then (i+1) i
-- ↓
-- LEFT TRIANGLE: Row i
-- ↓
-- print (n-i) spaces, then (i+1) i
-- ↓
-- PYRAMID: Row i
-- ↓
-- print (n-i-1) spaces, then (2i+1) item
-- ↓
-- PYRAMID: Row i
-- ↓
-- print (n-i-1) spaces, then (2i+1) item
-- ↓
-- INVERTED: Row i
-- ↓
-- print i spaces, then (2(n-i)-1) items
-- ↓
-- INVERTED: Row i
-- ↓
-- print i spaces, then (2(n-i)-1) items
-- ↓
-- DIAMOND: Pyramid (0 to n-1) + Inverted Pyramid (n-2 to
-- ↓
-- SANDGLASS: Inverted (0 to n-1) + Pyramid (1 to n-1)
+1. PATTERN SOLVING FORMULAS
+2. RIGHT TRIANGLE: Row i
+3. print (i+1) items, starting col
+4. LEFT TRIANGLE: Row i
+5. print (n-i) spaces, then (i+1) i
+6. PYRAMID: Row i
+7. print (n-i-1) spaces, then (2i+1) item
+8. INVERTED: Row i
+9. print i spaces, then (2(n-i)-1) items
+10. DIAMOND: Pyramid (0 to n-1) + Inverted Pyramid (n-2 to SANDGLASS: Inverted (0 to n-1) + Pyramid (1 to n-1)
 
 ```mermaid
 flowchart TD
@@ -2155,9 +2002,7 @@ flowchart TD
 
 _Master patterns = Master loops = Master DSA_
 
-
 ---
-
 
 ---
 
@@ -2201,5 +2046,4 @@ DIP: high-level modules should not depend on low-level modules — both should d
 **Observer**: subject holds direct references to observer objects. Subject explicitly notifies each one. Tightly coupled (subject knows about observers). Fine for: small systems, known observers at compile time. Breaks when: observers span different modules, dynamic subscription needed, observers need to be remote. **Event Bus / Message Queue**: publishers and subscribers decoupled. Publisher sends event with a TYPE to the bus. Subscribers register for event types — publisher doesn't know who's listening. De-facto standard in large systems: Spring ApplicationEventPublisher, Kafka, RabbitMQ are all event buses. Rule: Observer for in-process tightly-coupled notification. Event bus for loose coupling, cross-module, or distributed communication.
 </details>
 
-
-> **Navigation**: [< Previous](08b_NumberTheory_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)
+**Navigation**: [< Previous](08b_NumberTheory_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)

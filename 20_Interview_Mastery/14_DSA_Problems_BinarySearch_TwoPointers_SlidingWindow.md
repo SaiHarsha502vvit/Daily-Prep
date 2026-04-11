@@ -1,12 +1,12 @@
-> **Navigation**: [⬅ DP, Greedy, Backtracking](13_DSA_Problems_DP_Greedy_Backtracking.md) | [📚 Index](00_INDEX.md) | [Next: SQL Foundations & Intermediate ➡](15_SQL_Problems_Foundations_Intermediate.md)
+**Navigation**: [⬅ DP, Greedy, Backtracking](13_DSA_Problems_DP_Greedy_Backtracking.md) | [📚 Index](00_INDEX.md) | [Next: SQL Foundations & Intermediate ➡](15_SQL_Problems_Foundations_Intermediate.md)
 
 # File 14 — DSA Problems: Binary Search, Two Pointers & Sliding Window
 
 ## Logic-First, Code-Second: The 5W+H Way
 
-> Binary Search = "The answer space is sorted or monotonic — cut it in half."
-> Two Pointers = "Process from both ends or at different speeds."
-> Sliding Window = "Maintain a valid window, grow right, shrink left."
+Binary Search = "The answer space is sorted or monotonic — cut it in half."
+Two Pointers = "Process from both ends or at different speeds."
+Sliding Window = "Maintain a valid window, grow right, shrink left."
 
 ---
 
@@ -184,20 +184,20 @@ Binary search on partition1 (0 to m) in smaller array:
 
 
 
-> 🔬 **Section Challenge — BINARY SEARCH**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — BINARY SEARCH**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## TWO POINTERS
 
@@ -332,14 +332,14 @@ While mid ≤ hi:
 
 
 
-> 🔬 **Section Challenge — TWO POINTERS**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — TWO POINTERS**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## SLIDING WINDOW
 
@@ -453,20 +453,20 @@ Return atMost(K) - atMost(K-1)
 
 
 
-> 🔬 **Section Challenge — SLIDING WINDOW**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — SLIDING WINDOW**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## INTERVALS (Bonus Section)
 
@@ -547,20 +547,20 @@ Phase 3: Add remaining intervals
 
 
 
-> 🔬 **Section Challenge — MASTER PROBLEM MAP — Binary Search, Two Pointers, Sliding Window**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — MASTER PROBLEM MAP — Binary Search, Two Pointers, Sliding Window**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## The Binary Search Template Zoo
 
@@ -600,20 +600,20 @@ return lo
 
 
 
-> 🔬 **Section Challenge — The Binary Search Template Zoo**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — The Binary Search Template Zoo**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
@@ -793,7 +793,7 @@ while(!pq.isEmpty()){
 
 ## 🧠 Deep Conceptual Questions — Arrays & Memory
 
-> These questions test your REASONING, not just recall. Think before expanding.
+These questions test your REASONING, not just recall. Think before expanding.
 
 **C1. Why is array access O(1)?**
 <details><summary>Deep Answer</summary>
@@ -863,4 +863,4 @@ The key insight: at each position i, the maximum subarray ending at i is either:
 </details>
 
 
-> **Navigation**: [⬅ DP, Greedy, Backtracking](13_DSA_Problems_DP_Greedy_Backtracking.md) | [📚 Index](00_INDEX.md) | [Next: SQL Foundations & Intermediate ➡](15_SQL_Problems_Foundations_Intermediate.md)
+**Navigation**: [⬅ DP, Greedy, Backtracking](13_DSA_Problems_DP_Greedy_Backtracking.md) | [📚 Index](00_INDEX.md) | [Next: SQL Foundations & Intermediate ➡](15_SQL_Problems_Foundations_Intermediate.md)

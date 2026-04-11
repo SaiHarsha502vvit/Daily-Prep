@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02_ERP_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02_ERP_Advanced.md)
 
 ---
 
@@ -50,9 +50,8 @@
 ```
 
 **Flow:**
-- THE REALITY OF SOFTWARE INDUSTRY / 70% of enterprise so
-- ↓
-- WHAT YOU'LL LEARN / 1. How to convert BUSINESS RULES in
+1. THE REALITY OF SOFTWARE INDUSTRY / 70% of enterprise so
+2. WHAT YOU'LL LEARN / 1. How to convert BUSINESS RULES in
 
 ```mermaid
 flowchart TD
@@ -172,7 +171,7 @@ AFTER ERP (Connected):
 ## 🧠 The Developer's Mindset
 
 
-> THE 5-STEP DOMAIN TO CODE TRANSLATION
+THE 5-STEP DOMAIN TO CODE TRANSLATION
 
 
 Step 1: UNDERSTAND THE BUSINESS PROCESS
@@ -265,11 +264,9 @@ NOUNS in the scenario → CLASSES
 ```
 
 **Flow:**
-- Employee / - id / - name / - email / - designation / -
-- ↓
-- Department / - id / - name / - head_id / - budget
-- ↓
-- Designation / - id / - title / - level / - min_salary /
+1. Employee / - id / - name / - email / - designation / -
+2. Department / - id / - name / - head_id / - budget
+3. Designation / - id / - title / - level / - min_salary /
 
 ```mermaid
 flowchart TD
@@ -679,20 +676,20 @@ public class OrgChartController {
 
 
 
-> 🔬 **Section Challenge — 📝 Example: Converting "Employee Hierarchy" to Code**
->
-> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-> <details><summary>Answer</summary>
->
-> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-> <details><summary>Answer</summary>
->
-> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
-> </details>
->
+🔬 **Section Challenge — 📝 Example: Converting "Employee Hierarchy" to Code**
+
+**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+<details><summary>Answer</summary>
+
+`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+</details>
+
+**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+<details><summary>Answer</summary>
+
+1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+</details>
+
 
 # ⚙️ Part 3: Unique Id Generation Systems
 
@@ -720,19 +717,13 @@ SCENARIO (Amazon):
 ```
 
 **Flow:**
-- THE TRACKING ID / ORDER NUMBER PROBLEM
-- ↓
-- SCENARIO (Amazon):
-- ↓
-- You order a phone on Amazon
-- ↓
-- Order ID: 402-1234567-8901234
-- ↓
-- Tracking ID: AMZN1234567890
-- ↓
-- QUESTIONS:
-- ↓
-- 1. How do they generate UNIQUE IDs?
+1. THE TRACKING ID / ORDER NUMBER PROBLEM
+2. SCENARIO (Amazon):
+3. You order a phone on Amazon
+4. Order ID: 402-1234567-8901234
+5. Tracking ID: AMZN1234567890
+6. QUESTIONS:
+7. 1. How do they generate UNIQUE IDs?
 
 ```mermaid
 flowchart TD
@@ -1259,9 +1250,8 @@ Explanation:
 ```
 
 **Flow:**
-- For every DEBIT, there must be an equal CREDIT / Assets
-- ↓
-- JOURNAL ENTRY: / Account Type Debit (₹) Credit (₹) / Eq
+1. For every DEBIT, there must be an equal CREDIT / Assets
+2. JOURNAL ENTRY: / Account Type Debit (₹) Credit (₹) / Eq
 
 ```mermaid
 flowchart TD

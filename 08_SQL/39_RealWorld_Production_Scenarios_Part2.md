@@ -1,9 +1,9 @@
 # Chapter 39 — Real-World Production Scenarios Part 2: Query Performance & Optimization Crises
 
-> **What:** 25 real-world query performance disasters (Scenarios 26–50) with full 5W-H + fixes
-> **Why:** Slow queries cost revenue, frustrate users, and wake engineers at 3 AM
-> **Where:** Every production database — OLTP and OLAP
-> **How:** Identify the anti-pattern → SQL fix → Spring Boot/Backend fix → DSA insight
+**What:** 25 real-world query performance disasters (Scenarios 26–50) with full 5W-H + fixes
+**Why:** Slow queries cost revenue, frustrate users, and wake engineers at 3 AM
+**Where:** Every production database — OLTP and OLAP
+**How:** Identify the anti-pattern → SQL fix → Spring Boot/Backend fix → DSA insight
 
 ---
 
@@ -607,20 +607,20 @@ JOIN (
 
 
 
-> 🔬 **Section Challenge — Scenario 34: DISTINCT Masking a JOIN Explosion**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — Scenario 34: DISTINCT Masking a JOIN Explosion**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 
 ## Scenario 35: COUNT(*) on Billion-Row Table — 45-Minute Query
 

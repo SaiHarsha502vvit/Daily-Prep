@@ -53,21 +53,14 @@ If cycle exists → NO valid ordering (detect: not all nodes processed)
 ```
 
 **Flow:**
-- Valid order: CS101
-- ↓
-- CS201
-- ↓
-- CS301
-- ↓
-- CS202
-- ↓
-- CS101
-- ↓
-- CS202
-- ↓
-- CS201
-- ↓
-- CS301
+1. Valid order: CS101
+2. CS201
+3. CS301
+4. CS202
+5. CS101
+6. CS202
+7. CS201
+8. CS301
 
 ```mermaid
 flowchart TD
@@ -245,19 +238,11 @@ Output: false (cycle: 0→1→0)
 ```
 
 **Flow:**
-- numCourses = 2, prerequisites = [[1,0]]
-- ↓
-- Means: to take course 1, you must first take course 0
-- ↓
-- Return true if you can finish all courses.
-- ↓
-- Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
-- ↓
-- Output: false (cycle: 0
-- ↓
-- 1
-- ↓
-- 0)
+1. numCourses = 2, prerequisites = [[1,0]]
+2. Means: to take course 1, you must first take course 0
+3. Return true if you can finish all courses.
+4. Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
+5. Output: false (cycle: 0 1 0)
 
 ```mermaid
 flowchart TD

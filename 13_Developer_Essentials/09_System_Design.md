@@ -1,6 +1,6 @@
 # 🏗️ System Design — Complete Guide
 
-> **Navigation**: [< Security](08_Security_Fundamentals.md) | [Index](00_INDEX.md) | [Next: Dev Tools >](10_Dev_Tools_Productivity.md)
+**Navigation**: [< Security](08_Security_Fundamentals.md) | [Index](00_INDEX.md) | [Next: Dev Tools >](10_Dev_Tools_Productivity.md)
 
 ---
 
@@ -29,21 +29,14 @@ System design isn't just for interviews — it's your daily reality.
 ```
 
 **Flow:**
-- 10-100 users
-- ↓
-- one server handles everything
-- ↓
-- 1,000 users
-- ↓
-- bigger CPU, more RAM, faster disk
-- ↓
-- 100,000 users
-- ↓
-- multiple servers behind a load balancer
-- ↓
-- 1,000,000+ users
-- ↓
-- microservices, caching, CDN, message queues
+1. 10-100 users
+2. one server handles everything
+3. 1,000 users
+4. bigger CPU, more RAM, faster disk
+5. 100,000 users
+6. multiple servers behind a load balancer
+7. 1,000,000+ users
+8. microservices, caching, CDN, message queues
 
 ```mermaid
 flowchart LR
@@ -65,14 +58,14 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — From Single Server to Global Scale**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — From Single Server to Global Scale**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # WHAT: Core Building Blocks
 
@@ -99,11 +92,9 @@ Tools: NGINX, HAProxy, AWS ALB, Kubernetes Ingress
 ```
 
 **Flow:**
-- Client
-- ↓
-- Load Balancer / (distributes)
-- ↓
-- Server 1 / Server 2 / Server 3
+1. Client
+2. Load Balancer / (distributes)
+3. Server 1 / Server 2 / Server 3
 
 ```mermaid
 flowchart LR
@@ -116,14 +107,14 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — 1. Load Balancer**
->
-> **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-> <details><summary>Answer</summary>
->
-> Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
-> </details>
->
+🔬 **Section Challenge — 1. Load Balancer**
+
+**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+<details><summary>Answer</summary>
+
+Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+</details>
+
 
 ## 2. Caching
 
@@ -154,13 +145,10 @@ Eviction Policies:
 ```
 
 **Flow:**
-- Browser / Cache / (local)
-- ↓
-- CDN / Cache / (edge)
-- ↓
-- App / Cache / (Redis)
-- ↓
-- Database
+1. Browser / Cache / (local)
+2. CDN / Cache / (edge)
+3. App / Cache / (Redis)
+4. Database
 
 ```mermaid
 flowchart LR
@@ -196,14 +184,14 @@ public class ProductService {
 
 
 
-> 🔬 **Section Challenge — 2. Caching**
->
-> **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-> <details><summary>Answer</summary>
->
-> Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-> </details>
->
+🔬 **Section Challenge — 2. Caching**
+
+**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+<details><summary>Answer</summary>
+
+Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+</details>
+
 
 ## 3. Database Scaling
 
@@ -230,9 +218,8 @@ SQL vs NoSQL Decision:
 ```
 
 **Flow:**
-- Master / (writes)
-- ↓
-- Read Replica / (reads only)
+1. Master / (writes)
+2. Read Replica / (reads only)
 
 ```mermaid
 flowchart TD
@@ -243,14 +230,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 3. Database Scaling**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 3. Database Scaling**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 4. Message Queues
 
@@ -277,11 +264,8 @@ Tools: Apache Kafka, RabbitMQ, AWS SQS, Redis Streams
 ```
 
 **Flow:**
-- API / Server
-- ↓
-- Queue / (Kafka/ / RabbitMQ
-- ↓
-- Worker / Process
+1. API / Server
+2. Queue / (Kafka/ / RabbitMQ Worker / Process
 
 ```mermaid
 flowchart LR
@@ -316,11 +300,9 @@ Tools: Cloudflare, AWS CloudFront, Akamai
 ```
 
 **Flow:**
-- User / India
-- ↓
-- CDN / Mumbai
-- ↓
-- Origin / US-East
+1. User / India
+2. CDN / Mumbai
+3. Origin / US-East
 
 ```mermaid
 flowchart TD
@@ -335,8 +317,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 5. CDN (Content Delivery Network)**
->>
+🔬 **Section Challenge — 5. CDN (Content Delivery Network)**
+>
 
 # HOW: Design Patterns
 
@@ -370,15 +352,11 @@ RULE: Start with monolith, extract microservices WHEN NEEDED
 ```
 
 **Flow:**
-- ONE BIG APPLICATION / Users + Orders + Pay + / Inventor
-- ↓
-- Users / Service
-- ↓
-- Orders / Service
-- ↓
-- Payment / Service
-- ↓
-- Inventory / Service
+1. ONE BIG APPLICATION / Users + Orders + Pay + / Inventor
+2. Users / Service
+3. Orders / Service
+4. Payment / Service
+5. Inventory / Service
 
 ```mermaid
 flowchart TD
@@ -395,14 +373,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Microservices vs Monolith**
->
-> **Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
-> <details><summary>Answer</summary>
->
-> Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
-> </details>
->
+🔬 **Section Challenge — Microservices vs Monolith**
+
+**Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
+<details><summary>Answer</summary>
+
+Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
+</details>
+
 
 ## CAP Theorem
 
@@ -426,19 +404,13 @@ So you choose: CP or AP.
 ```
 
 **Flow:**
-- You can only have 2 of 3:
-- ↓
-- C — Consistency: Every read gets the most recent write
-- ↓
-- So you choose: CP or AP.
-- ↓
-- CP (Consistency + Partition Tolerance):
-- ↓
-- Banking: Balance MUST be correct, even if slow
-- ↓
-- Tools: PostgreSQL, MongoDB (default), Redis Cluster
-- ↓
-- AP (Availability + Partition Tolerance):
+1. You can only have 2 of 3:
+2. C — Consistency: Every read gets the most recent write
+3. So you choose: CP or AP.
+4. CP (Consistency + Partition Tolerance):
+5. Banking: Balance MUST be correct, even if slow
+6. Tools: PostgreSQL, MongoDB (default), Redis Cluster
+7. AP (Availability + Partition Tolerance):
 
 ```mermaid
 flowchart TD
@@ -479,14 +451,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Rate Limiting Algorithms**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Rate Limiting Algorithms**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # WHERE: System Design Template
 
@@ -516,13 +488,10 @@ flowchart TD
 ```
 
 **Flow:**
-- - Draw boxes: Client
-- ↓
-- LB
-- ↓
-- API
-- ↓
-- DB
+1. - Draw boxes: Client
+2. LB
+3. API
+4. DB
 
 ```mermaid
 flowchart LR
@@ -557,25 +526,9 @@ Useful numbers to memorize:
 ```
 
 **Flow:**
-- 1 KB
-- ↓
-- a short email
-- ↓
-- 1 MB
-- ↓
-- a photo
-- ↓
-- 1 GB
-- ↓
-- a movie
-- ↓
-- 1 TB
-- ↓
-- 1M photos
-- ↓
-- 1 PB
-- ↓
-- 1B photos
+1. 1 KB a short email 1 MB a photo
+2. 1 GB a movie 1 TB 1M photos 1 PB
+3. 1B photos
 
 ```mermaid
 flowchart TD
@@ -613,29 +566,18 @@ Monitor       → Prometheus + Grafana + ELK Stack
 ```
 
 **Flow:**
-- Scale reads
-- ↓
-- Caching (Redis) + Read Replicas + CDN
-- ↓
-- Scale writes
-- ↓
-- Sharding + Message Queues + Async processing
-- ↓
-- High avail
-- ↓
-- Load Balancer + Multiple servers + Health checks
-- ↓
-- Low latency
-- ↓
-- CDN + Cache + Database indexing
-- ↓
-- Decouple
-- ↓
-- Message Queue (Kafka/RabbitMQ)
-- ↓
-- Search
-- ↓
-- Elasticsearch
+1. Scale reads
+2. Caching (Redis) + Read Replicas + CDN
+3. Scale writes
+4. Sharding + Message Queues + Async processing
+5. High avail
+6. Load Balancer + Multiple servers + Health checks
+7. Low latency
+8. CDN + Cache + Database indexing
+9. Decouple
+10. Message Queue (Kafka/RabbitMQ)
+11. Search
+12. Elasticsearch
 
 ```mermaid
 flowchart TD
@@ -687,13 +629,8 @@ Think about:
 ```
 
 **Flow:**
-- - POST /shorten
-- ↓
-- returns short URL
-- ↓
-- - GET /{shortCode}
-- ↓
-- redirects to original
+1. - POST /shorten returns short URL
+2. - GET /{shortCode} redirects to original
 
 ```mermaid
 flowchart LR
@@ -722,7 +659,7 @@ Think about:
 
 ---
 
-> **Next Chapter**: [Dev Tools & Productivity →](10_Dev_Tools_Productivity.md)
+**Next Chapter**: [Dev Tools & Productivity →](10_Dev_Tools_Productivity.md)
 
 
 ---

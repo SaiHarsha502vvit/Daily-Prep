@@ -1,6 +1,6 @@
 # 47. Java Reflection & Custom Annotations — The Complete Deep Dive
 
-> **Navigation**: [< Java Networking & NIO](Ch13_Networking_NIO.md) | [Back to Index](../00_MASTER_INDEX.md) | [Events & Listeners >](Ch11_Events_Listeners.md)
+**Navigation**: [< Java Networking & NIO](Ch13_Networking_NIO.md) | [Back to Index](../00_MASTER_INDEX.md) | [Events & Listeners >](Ch11_Events_Listeners.md)
 
 ---
 
@@ -126,14 +126,14 @@ clazz.getAnnotations();          // ALL annotations on this class
 
 
 
-> 🔬 **Section Challenge — 2. The `Class<?>` Object — Everything Starts Here**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 2. The `Class<?>` Object — Everything Starts Here**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 3. Inspecting Fields
 
@@ -180,23 +180,23 @@ nameField.set(user, "Changed!");
 System.out.println(user.getName());  // "Changed!"
 ```
 
-> **⚠️ Interview Alert**: `setAccessible(true)` breaks encapsulation. This is how:
-> - **Spring** injects `@Autowired` private fields
-> - **Jackson** reads/writes private fields for JSON
-> - **Hibernate** hydrates entity objects from database rows
+**⚠️ Interview Alert**: `setAccessible(true)` breaks encapsulation. This is how:
+- **Spring** injects `@Autowired` private fields
+- **Jackson** reads/writes private fields for JSON
+- **Hibernate** hydrates entity objects from database rows
 
 ---
 
 
 
-> 🔬 **Section Challenge — 3. Inspecting Fields**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 3. Inspecting Fields**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 4. Invoking Methods via Reflection
 
@@ -239,14 +239,14 @@ Each overload is a DIFFERENT Method object
 
 
 
-> 🔬 **Section Challenge — 4. Invoking Methods via Reflection**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 4. Invoking Methods via Reflection**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 5. Creating Objects via Reflection
 
@@ -265,22 +265,22 @@ privateCtor.setAccessible(true);
 Object singleton2 = privateCtor.newInstance();  // BREAKS singleton!
 ```
 
-> **⚠️ Interview Question**: "How can you break a Singleton?"
-> Answer: Reflection + setAccessible(true) on private constructor.
-> Defense: Throw exception from constructor if instance exists, OR use enum singleton.
+**⚠️ Interview Question**: "How can you break a Singleton?"
+Answer: Reflection + setAccessible(true) on private constructor.
+Defense: Throw exception from constructor if instance exists, OR use enum singleton.
 
 ---
 
 
 
-> 🔬 **Section Challenge — 5. Creating Objects via Reflection**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 5. Creating Objects via Reflection**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 6. How Spring Uses Reflection — The Full Picture
 
@@ -369,14 +369,14 @@ public class MiniSpringContainer {
 
 
 
-> 🔬 **Section Challenge — 6. How Spring Uses Reflection — The Full Picture**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 6. How Spring Uses Reflection — The Full Picture**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 7. Annotations — Understanding From Ground Up
 
@@ -420,14 +420,14 @@ PROCESSOR  = Person who reads sticky notes and acts
 
 
 
-> 🔬 **Section Challenge — 7. Annotations — Understanding From Ground Up**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 7. Annotations — Understanding From Ground Up**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 8. Creating Custom Annotations — Step by Step
 
@@ -490,32 +490,32 @@ SOURCE → COMPILE → .class → RUNTIME
   └── SOURCE annotations stop here
 ```
 
-> **Rule of Thumb**: If you're creating an annotation for a framework 
-> to process at runtime → use `RetentionPolicy.RUNTIME`
+**Rule of Thumb**: If you're creating an annotation for a framework 
+to process at runtime → use `RetentionPolicy.RUNTIME`
 
 ---
 
 
 
-> 🔬 **Section Challenge — 8. Creating Custom Annotations — Step by Step**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — 8. Creating Custom Annotations — Step by Step**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## 9. Practical Example: Building @LogExecutionTime
 
@@ -613,14 +613,14 @@ public class AnnotationProcessor {
 
 
 
-> 🔬 **Section Challenge — 9. Practical Example: Building @LogExecutionTime**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 9. Practical Example: Building @LogExecutionTime**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 10. Practical Example: Building @Validate
 
@@ -699,14 +699,14 @@ List<String> errors = Validator.validate(request);
 
 
 
-> 🔬 **Section Challenge — 10. Practical Example: Building @Validate**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 10. Practical Example: Building @Validate**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 11. Practical Example: Building Mini @JsonProperty
 
@@ -779,14 +779,14 @@ String json = MiniJsonSerializer.toJson(user);
 
 
 
-> 🔬 **Section Challenge — 11. Practical Example: Building Mini @JsonProperty**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 11. Practical Example: Building Mini @JsonProperty**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 12. Meta-Annotations — Annotations ON Annotations
 
@@ -955,20 +955,20 @@ proxy.findById(1L);
 
 
 
-> 🔬 **Section Challenge — 14. Dynamic Proxy — Reflection's Power Feature**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+🔬 **Section Challenge — 14. Dynamic Proxy — Reflection's Power Feature**
+
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
+
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
 
 ## 15. Complete Reflection Cheat Sheet
 
@@ -1003,19 +1003,19 @@ proxy.findById(1L);
 ## 16. Interview Questions & Answers
 
 **Q: What is reflection and when would you use it?**
-> Reflection lets you inspect & manipulate classes at runtime. Used by frameworks for DI, ORM, serialization, and testing. Don't use it in normal application code.
+Reflection lets you inspect & manipulate classes at runtime. Used by frameworks for DI, ORM, serialization, and testing. Don't use it in normal application code.
 
 **Q: How does Spring @Autowired work internally?**
-> Spring scans for fields annotated with @Autowired, calls `field.setAccessible(true)`, then `field.set(bean, dependency)` using reflection.
+Spring scans for fields annotated with @Autowired, calls `field.setAccessible(true)`, then `field.set(bean, dependency)` using reflection.
 
 **Q: Difference between `getFields()` and `getDeclaredFields()`?**
-> `getFields()` → public fields including inherited. `getDeclaredFields()` → all fields in this class only (including private), not inherited.
+`getFields()` → public fields including inherited. `getDeclaredFields()` → all fields in this class only (including private), not inherited.
 
 **Q: How can you break a Singleton using reflection?**
-> Get the private constructor, call `setAccessible(true)`, then `newInstance()`. Defense: use enum singleton or throw exception from constructor.
+Get the private constructor, call `setAccessible(true)`, then `newInstance()`. Defense: use enum singleton or throw exception from constructor.
 
 **Q: What are the 3 retention policies?**
-> SOURCE (compile only, e.g., @Override), CLASS (in .class file, default), RUNTIME (available via reflection, e.g., @Autowired).
+SOURCE (compile only, e.g., @Override), CLASS (in .class file, default), RUNTIME (available via reflection, e.g., @Autowired).
 
 **Q: Create a custom annotation that marks a method as cached.**
 
@@ -1030,8 +1030,8 @@ public @interface Cached {
 
 ---
 
-> **Key Takeaway**: Reflection is the BACKBONE of every Java framework. 
-> You use it indirectly every time you write `@Autowired`, `@Entity`, or `@Test`.
-> Understanding reflection = understanding HOW frameworks work.
+**Key Takeaway**: Reflection is the BACKBONE of every Java framework. 
+You use it indirectly every time you write `@Autowired`, `@Entity`, or `@Test`.
+Understanding reflection = understanding HOW frameworks work.
 
-> **Navigation**: [< Java Networking & NIO](Ch13_Networking_NIO.md) | [Back to Index](../00_MASTER_INDEX.md) | [Events & Listeners >](Ch11_Events_Listeners.md)
+**Navigation**: [< Java Networking & NIO](Ch13_Networking_NIO.md) | [Back to Index](../00_MASTER_INDEX.md) | [Events & Listeners >](Ch11_Events_Listeners.md)

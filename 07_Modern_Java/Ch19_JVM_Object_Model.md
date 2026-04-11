@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](Ch23_Streams_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch17_Concurrency_Synchronizers.md)
+**Navigation**: [< Previous](Ch23_Streams_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch17_Concurrency_Synchronizers.md)
 
 # Chapter 34 — JVM Object Model Internals: How Java Objects REALLY Live in Memory
 
-> **"Every time you write `new Object()`, the JVM creates a precise memory layout with an object header, klass pointer, and aligned fields. Understanding this turns you from 'I write Java' to 'I understand the machine I'm commanding.'"**
+**"Every time you write `new Object()`, the JVM creates a precise memory layout with an object header, klass pointer, and aligned fields. Understanding this turns you from 'I write Java' to 'I understand the machine I'm commanding.'"**
 
 ---
 
@@ -24,7 +24,7 @@
 ## 1. Object Memory Layout: What `new` Actually Creates
 
 ### The Freeze Question
-> "What happens in memory when you write `new Object()`?"
+"What happens in memory when you write `new Object()`?"
 
 ### Deep Reasoning
 
@@ -59,13 +59,10 @@ Header (12 bytes) + Padding (4 bytes) = 16 bytes minimum
 ```
 
 **Flow:**
-- Mark Word (8 bytes / 64-bit JVM) /
-- ↓
-- Identity: hashCode
-- ↓
-- Klass Pointer (4 bytes compressed) /
-- ↓
-- 'What type am I?
+1. Mark Word (8 bytes / 64-bit JVM) /
+2. Identity: hashCode
+3. Klass Pointer (4 bytes compressed) /
+4. 'What type am I?
 
 ```mermaid
 flowchart TD
@@ -104,11 +101,9 @@ flowchart TD
 ```
 
 **Flow:**
-- Mark Word Klass Pointer Padding / (8 bytes) (4 bytes) (
-- ↓
-- Mark Word Klass Pointer Array Len Padding / (8 bytes) (
-- ↓
-- Mark Word Klass Pointer x y / (8 bytes) (4 bytes) (4 b)
+1. Mark Word Klass Pointer Padding / (8 bytes) (4 bytes) (
+2. Mark Word Klass Pointer Array Len Padding / (8 bytes) (
+3. Mark Word Klass Pointer x y / (8 bytes) (4 bytes) (4 b)
 
 ```mermaid
 flowchart TD
@@ -164,15 +159,11 @@ State: GC (marked for garbage collection)
 ```
 
 **Flow:**
-- identity hashCode unused GC age state / (31 bits) (1 bi
-- ↓
-- thread ID epoch GC age state / (54 bits) (2 bits) (4 bi
-- ↓
-- pointer to lock record on stack state / (62 bits) (2 bi
-- ↓
-- pointer to ObjectMonitor (OS mutex) state / (62 bits) (
-- ↓
-- forwarding pointer state / (62 bits) (2 bits)
+1. identity hashCode unused GC age state / (31 bits) (1 bi
+2. thread ID epoch GC age state / (54 bits) (2 bits) (4 bi
+3. pointer to lock record on stack state / (62 bits) (2 bi
+4. pointer to ObjectMonitor (OS mutex) state / (62 bits) (
+5. forwarding pointer state / (62 bits) (2 bits)
 
 ```mermaid
 flowchart TD
@@ -209,19 +200,13 @@ flowchart TD
 ```
 
 **Flow:**
-- Last 3 bits of mark word determine the object's lock st
-- ↓
-- Bits State What It Means
-- ↓
-- 001 Normal (unlocked) hashCode stored, no lock
-- ↓
-- 101 Biased One thread owns it cheaply
-- ↓
-- 00 Thin Lock CAS-based lightweight lock
-- ↓
-- 10 Fat Lock OS mutex (heavyweight)
-- ↓
-- 11 GC marked Being garbage collected
+1. Last 3 bits of mark word determine the object's lock st
+2. Bits State What It Means
+3. 001 Normal (unlocked) hashCode stored, no lock
+4. 101 Biased One thread owns it cheaply
+5. 00 Thin Lock CAS-based lightweight lock
+6. 10 Fat Lock OS mutex (heavyweight)
+7. 11 GC marked Being garbage collected
 
 ```mermaid
 flowchart TD
@@ -272,14 +257,14 @@ synchronized(obj) {
 
 
 
-> 🔬 **Section Challenge — 2. The Mark Word: 64 Bits That Control Everything**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 2. The Mark Word: 64 Bits That Control Everything**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 3. Klass Pointer: How JVM Knows the Type
 
@@ -313,25 +298,16 @@ synchronized(obj) {
 ```
 
 **Flow:**
-- THE EMPLOYEE ID BADGE ANALOGY
-- ↓
-- Klass Pointer = ID badge that says 'I work in Departmen
-- ↓
-- Object in heap: 'I am a String'
-- ↓
-- Klass Pointer
-- ↓
-- String.class metadata
-- ↓
-- Klass Pointer
-- ↓
-- String.class metadata
-- ↓
-- (in Metaspace, NOT heap)
-- ↓
-- Contains:
-- ↓
-- vtable (virtual method table)
+1. THE EMPLOYEE ID BADGE ANALOGY
+2. Klass Pointer = ID badge that says 'I work in Departmen
+3. Object in heap: 'I am a String'
+4. Klass Pointer
+5. String.class metadata
+6. Klass Pointer
+7. String.class metadata
+8. (in Metaspace, NOT heap)
+9. Contains:
+10. vtable (virtual method table)
 
 ```mermaid
 flowchart TD
@@ -380,20 +356,20 @@ if (obj instanceof String s) {
 
 
 
-> 🔬 **Section Challenge — 3. Klass Pointer: How JVM Knows the Type**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — 3. Klass Pointer: How JVM Knows the Type**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## 4. Field Layout, Padding, and Alignment
 
@@ -422,19 +398,13 @@ if (obj instanceof String s) {
 ```
 
 **Flow:**
-- THE BOOKSHELF ANALOGY
-- ↓
-- If a `long` (8 bytes) starts at address 5:
-- ↓
-- CPU must do TWO reads (bytes 0-7 and bytes 8-15)
-- ↓
-- Then combine them = SLOW
-- ↓
-- If a `long` starts at address 8 (aligned):
-- ↓
-- CPU does ONE read = FAST
-- ↓
-- JVM RULES for field ordering:
+1. THE BOOKSHELF ANALOGY
+2. If a `long` (8 bytes) starts at address 5:
+3. CPU must do TWO reads (bytes 0-7 and bytes 8-15)
+4. Then combine them = SLOW
+5. If a `long` starts at address 8 (aligned):
+6. CPU does ONE read = FAST
+7. JVM RULES for field ordering:
 
 ```mermaid
 flowchart TD
@@ -514,19 +484,13 @@ class BadLayout {
 ```
 
 **Flow:**
-- Object Actual Size 'Useful' Data
-- ↓
-- new Object() 16 bytes 0 bytes (!)
-- ↓
-- new Integer(42) 16 bytes 4 bytes (int)
-- ↓
-- new Long(42L) 24 bytes 8 bytes (long)
-- ↓
-- new Boolean(true) 16 bytes 1 byte (!)
-- ↓
-- '' (empty String) 40 bytes 0 chars (!)
-- ↓
-- 'Hello' (5 chars) ~56 bytes 10 bytes
+1. Object Actual Size 'Useful' Data
+2. new Object() 16 bytes 0 bytes (!)
+3. new Integer(42) 16 bytes 4 bytes (int)
+4. new Long(42L) 24 bytes 8 bytes (long)
+5. new Boolean(true) 16 bytes 1 byte (!)
+6. '' (empty String) 40 bytes 0 chars (!)
+7. 'Hello' (5 chars) ~56 bytes 10 bytes
 
 ```mermaid
 flowchart TD
@@ -551,19 +515,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 4. Field Layout, Padding, and Alignment**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 4. Field Layout, Padding, and Alignment**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 5. Lock Escalation: Biased → Thin → Fat
 
 ### The Freeze Question
-> "What happens inside the JVM when you use `synchronized`?"
+"What happens inside the JVM when you use `synchronized`?"
 
 ### Deep Reasoning
 
@@ -595,19 +559,13 @@ flowchart TD
 ```
 
 **Flow:**
-- THE BATHROOM LOCK ANALOGY
-- ↓
-- BIASED LOCK (you live alone):
-- ↓
-- Bathroom door has your name on it permanently
-- ↓
-- You walk in without checking — ZERO cost
-- ↓
-- If a guest arrives, name must be erased (revoke bias)
-- ↓
-- Cost: ~0 for single thread, expensive revocation
-- ↓
-- THIN LOCK (you have a roommate):
+1. THE BATHROOM LOCK ANALOGY
+2. BIASED LOCK (you live alone):
+3. Bathroom door has your name on it permanently
+4. You walk in without checking — ZERO cost
+5. If a guest arrives, name must be erased (revoke bias)
+6. Cost: ~0 for single thread, expensive revocation
+7. THIN LOCK (you have a roommate):
 
 ```mermaid
 flowchart TD
@@ -661,31 +619,19 @@ flowchart TD
 ```
 
 **Flow:**
-- Step-by-step lock escalation:
-- ↓
-- 1. NEW OBJECT
-- ↓
-- Mark word: unlocked (state bits = 001)
-- ↓
-- 1. NEW OBJECT
-- ↓
-- Mark word: unlocked (state bits = 001)
-- ↓
-- 2. First synchronized(obj) by Thread A:
-- ↓
-- JVM sets biased lock (write thread A's ID into mark w
-- ↓
-- Future locks by Thread A: check ID match
-- ↓
-- FREE!
-- ↓
-- Future locks by Thread A: check ID match
-- ↓
-- FREE!
-- ↓
-- Mark word state bits: 101 (biased)
-- ↓
-- 3. Thread B tries synchronized(obj):
+1. Step-by-step lock escalation:
+2. 1. NEW OBJECT
+3. Mark word: unlocked (state bits = 001)
+4. 1. NEW OBJECT
+5. Mark word: unlocked (state bits = 001)
+6. 2. First synchronized(obj) by Thread A:
+7. JVM sets biased lock (write thread A's ID into mark w
+8. Future locks by Thread A: check ID match
+9. FREE!
+10. Future locks by Thread A: check ID match
+11. FREE!
+12. Mark word state bits: 101 (biased)
+13. 3. Thread B tries synchronized(obj):
 
 ```mermaid
 flowchart TD
@@ -710,19 +656,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 5. Lock Escalation: Biased → Thin → Fat**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 5. Lock Escalation: Biased → Thin → Fat**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 6. Method Dispatch: How JVM Calls the Right Method
 
 ### The Freeze Question
-> "When you call `animal.makeSound()`, how does the JVM know to call Dog's version?"
+"When you call `animal.makeSound()`, how does the JVM know to call Dog's version?"
 
 ### Deep Reasoning
 
@@ -753,33 +699,20 @@ flowchart TD
 ```
 
 **Flow:**
-- THE PHONE DIRECTORY ANALOGY (vtable)
-- ↓
-- Every class has a VIRTUAL METHOD TABLE (vtable):
-- ↓
-- Like a phone directory listing methods and their addres
-- ↓
-- class Animal:
-- ↓
-- vtable = [ eat
-- ↓
-- Animal.eat, makeSound
-- ↓
-- Animal.makeSou
-- ↓
-- vtable = [ eat
-- ↓
-- Animal.eat, makeSound
-- ↓
-- Animal.makeSou
-- ↓
-- class Dog extends Animal:
-- ↓
-- vtable = [ eat
-- ↓
-- Animal.eat, makeSound
-- ↓
-- Dog.makeSound
+1. THE PHONE DIRECTORY ANALOGY (vtable)
+2. Every class has a VIRTUAL METHOD TABLE (vtable):
+3. Like a phone directory listing methods and their addres
+4. class Animal:
+5. vtable = [ eat
+6. Animal.eat, makeSound
+7. Animal.makeSou
+8. vtable = [ eat
+9. Animal.eat, makeSound
+10. Animal.makeSou
+11. class Dog extends Animal:
+12. vtable = [ eat
+13. Animal.eat, makeSound
+14. Dog.makeSound
 
 ```mermaid
 flowchart TD
@@ -824,19 +757,13 @@ flowchart TD
 ```
 
 **Flow:**
-- Bytecode When Used Dispatch Method
-- ↓
-- invokevirtual Normal instance methods vtable lookup
-- ↓
-- invokeinterface Interface methods itable lookup (slower
-- ↓
-- invokespecial Constructors, super, STATIC binding
-- ↓
-- private methods (no lookup needed)
-- ↓
-- invokestatic Static methods STATIC binding
-- ↓
-- invokedynamic Lambdas, string concat Bootstrap method
+1. Bytecode When Used Dispatch Method
+2. invokevirtual Normal instance methods vtable lookup
+3. invokeinterface Interface methods itable lookup (slower
+4. invokespecial Constructors, super, STATIC binding
+5. private methods (no lookup needed)
+6. invokestatic Static methods STATIC binding
+7. invokedynamic Lambdas, string concat Bootstrap method
 
 ```mermaid
 flowchart TD
@@ -878,7 +805,7 @@ s.makeSound();      // invokeinterface → must search itable!
 ## 7. Method Hiding vs Overriding: The Static Method Freeze Moment
 
 ### The Freeze Question
-> "What happens when a child class has a static method with the same signature as the parent?"
+"What happens when a child class has a static method with the same signature as the parent?"
 
 ### Deep Reasoning
 
@@ -904,19 +831,13 @@ s.makeSound();      // invokeinterface → must search itable!
 ```
 
 **Flow:**
-- THE NAME TAG vs EMPLOYEE BADGE ANALOGY
-- ↓
-- OVERRIDING (instance methods) = Employee Badge
-- ↓
-- Machine reads your badge (runtime type) to decide acc
-- ↓
-- You ARE a Dog, so Dog.makeSound() runs, regardless of
-- ↓
-- whether someone labeled you 'Animal'
-- ↓
-- Dynamic dispatch: 'What type IS this object?'
-- ↓
-- HIDING (static methods) = Name Tag
+1. THE NAME TAG vs EMPLOYEE BADGE ANALOGY
+2. OVERRIDING (instance methods) = Employee Badge
+3. Machine reads your badge (runtime type) to decide acc
+4. You ARE a Dog, so Dog.makeSound() runs, regardless of
+5. whether someone labeled you 'Animal'
+6. Dynamic dispatch: 'What type IS this object?'
+7. HIDING (static methods) = Name Tag
 
 ```mermaid
 flowchart TD
@@ -990,19 +911,13 @@ public class Test {
 ```
 
 **Flow:**
-- Feature Overriding Hiding
-- ↓
-- Applies to Instance methods Static methods
-- ↓
-- Dispatch Runtime (dynamic) Compile-time (static)
-- ↓
-- @Override ✅ Compiler checks ❌ Not applicable
-- ↓
-- Polymorphism ✅ Yes ❌ No
-- ↓
-- Bytecode invokevirtual (vtable) invokestatic (direct)
-- ↓
-- Binding Late binding Early binding
+1. Feature Overriding Hiding
+2. Applies to Instance methods Static methods
+3. Dispatch Runtime (dynamic) Compile-time (static)
+4. @Override ✅ Compiler checks ❌ Not applicable
+5. Polymorphism ✅ Yes ❌ No
+6. Bytecode invokevirtual (vtable) invokestatic (direct)
+7. Binding Late binding Early binding
 
 ```mermaid
 flowchart TD
@@ -1042,14 +957,14 @@ System.out.println(((Child) obj).x);  // 20 (Child's x — need cast!)
 
 
 
-> 🔬 **Section Challenge — 7. Method Hiding vs Overriding: The Static Method Freeze Moment**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 7. Method Hiding vs Overriding: The Static Method Freeze Moment**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 8. Best Java Design Strategies: Building Robust Structures
 
@@ -1080,19 +995,13 @@ System.out.println(((Child) obj).x);  // 20 (Child's x — need cast!)
 ```
 
 **Flow:**
-- WHY IMMUTABLE BY DEFAULT?
-- ↓
-- Mutable object = A whiteboard anyone can erase and rewr
-- ↓
-- Benefits:
-- ↓
-- Thread-safe WITHOUT synchronization (nothing to corru
-- ↓
-- Safe as HashMap key (hashCode never changes)
-- ↓
-- Safe to share references (no defensive copies needed)
-- ↓
-- Easier to reason about (predictable state)
+1. WHY IMMUTABLE BY DEFAULT?
+2. Mutable object = A whiteboard anyone can erase and rewr
+3. Benefits:
+4. Thread-safe WITHOUT synchronization (nothing to corru
+5. Safe as HashMap key (hashCode never changes)
+6. Safe to share references (no defensive copies needed)
+7. Easier to reason about (predictable state)
 
 ```mermaid
 flowchart TD
@@ -1233,14 +1142,14 @@ sealed interface Shape permits Circle, Rectangle, Triangle {
 
 
 
-> 🔬 **Section Challenge — 8. Best Java Design Strategies: Building Robust Structures**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 8. Best Java Design Strategies: Building Robust Structures**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 9. Records, Sealed Classes, and Modern Java Object Design
 
@@ -1273,19 +1182,13 @@ sealed interface Shape permits Circle, Rectangle, Triangle {
 ```
 
 **Flow:**
-- WHAT YOU GET FREE:
-- ↓
-- final class (can't extend, only implement interfaces)
-- ↓
-- private final fields
-- ↓
-- All-args constructor
-- ↓
-- Accessor methods (name(), not getName())
-- ↓
-- equals() based on ALL fields
-- ↓
-- hashCode() based on ALL fields
+1. WHAT YOU GET FREE:
+2. final class (can't extend, only implement interfaces)
+3. private final fields
+4. All-args constructor
+5. Accessor methods (name(), not getName())
+6. equals() based on ALL fields
+7. hashCode() based on ALL fields
 
 ```mermaid
 flowchart TD
@@ -1357,4 +1260,4 @@ double eval(Expr expr) {
 
 ---
 
-> **Navigation**: [< Streams Deep Reasoning](Ch23_Streams_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Concurrency Synchronizers >](Ch17_Concurrency_Synchronizers.md)
+**Navigation**: [< Streams Deep Reasoning](Ch23_Streams_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Concurrency Synchronizers >](Ch17_Concurrency_Synchronizers.md)

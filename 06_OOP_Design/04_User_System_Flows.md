@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](03_System_Design.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_SD_Interview_Problems.md)
+**Navigation**: [< Previous](03_System_Design.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_SD_Interview_Problems.md)
 
 # 🔄 Understanding User Flows & System Flows
 
@@ -30,7 +30,7 @@ Example: Client → Load Balancer → API Gateway → Services → DB
 Path a BUSINESS PROCESS takes
 Example: Order → Payment → Inventory → Shipping → Delivery
 
-> 💡 **ANALOGY: City Roads**
+💡 **ANALOGY: City Roads**
 USER FLOW = The route a person takes (Home → Work → Gym → Home)
 DATA FLOW = The route packages take (Warehouse → Truck → Store → You)
 SYSTEM FLOW = The city's infrastructure (Roads, Traffic lights, Signs)
@@ -78,20 +78,20 @@ After flow design: "I know EXACTLY what to build"
 - Demonstrates senior-level thinking
 
 
-> 🔬 **Section Challenge — Why Learn Flow Design**
->
-> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
-> <details><summary>Answer</summary>
->
-> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-> </details>
->
-> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-> <details><summary>Answer</summary>
->
-> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
-> </details>
->
+🔬 **Section Challenge — Why Learn Flow Design**
+
+**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+<details><summary>Answer</summary>
+
+Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+</details>
+
+**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+<details><summary>Answer</summary>
+
+1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+</details>
+
 
 ## When To Create Flow Diagrams
 
@@ -132,20 +132,20 @@ After flow design: "I know EXACTLY what to build"
 - Visual IDEs for flow-based programming
 
 
-> 🔬 **Section Challenge — Historical Evolution Of Flow Design**
->
-> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
-> <details><summary>Answer</summary>
->
-> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-> </details>
->
-> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-> <details><summary>Answer</summary>
->
-> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
-> </details>
->
+🔬 **Section Challenge — Historical Evolution Of Flow Design**
+
+**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+<details><summary>Answer</summary>
+
+Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+</details>
+
+**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+<details><summary>Answer</summary>
+
+1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+</details>
+
 
 ## ⭐ Growth Mindset: From Flow Reader To Flow Creator ⭐
 
@@ -217,25 +217,16 @@ SIMPLE USER FLOW EXAMPLE - LOGIN:
 ```
 
 **Flow:**
-- Visit / Website
-- ↓
-- Login Page
-- ↓
-- Enter / Credentials
-- ↓
-- Login Page
-- ↓
-- Invalid / Credentials
-- ↓
-- Enter / Credentials
-- ↓
-- Submit
-- ↓
-- Success! / Dashboard
-- ↓
-- Invalid / Credentials
-- ↓
-- Show Error / Try Again
+1. Visit / Website
+2. Login Page
+3. Enter / Credentials
+4. Login Page
+5. Invalid / Credentials
+6. Enter / Credentials
+7. Submit
+8. Success! / Dashboard
+9. Invalid / Credentials
+10. Show Error / Try Again
 
 ```mermaid
 flowchart TD
@@ -291,19 +282,13 @@ flowchart TD
 ```
 
 **Flow:**
-- STANDARD FLOW SYMBOLS
-- ↓
-- SYMBOL MEANING
-- ↓
-- RECTANGLE: Screen/Page/State
-- ↓
-- A UI screen or application state
-- ↓
-- ◇ DIAMOND: Decision Point
-- ↓
-- / \ User makes a choice or system checks condition
-- ↓
-- ARROW: Flow Direction
+1. STANDARD FLOW SYMBOLS
+2. SYMBOL MEANING
+3. RECTANGLE: Screen/Page/State
+4. A UI screen or application state
+5. ◇ DIAMOND: Decision Point
+6. / \ User makes a choice or system checks condition
+7. ARROW: Flow Direction
 
 ```mermaid
 flowchart TD
@@ -398,23 +383,15 @@ flowchart TD
 ```
 
 **Flow:**
-- Cart Summary Page / - View items / - Update quantities
-- ↓
-- Use saved / address
-- ↓
-- Shipping Method / - Standard (5 days) / - Express (2 da
-- ↓
-- Enter shipping / address
-- ↓
-- Error Message / Retry or change / payment method
-- ↓
-- Shipping Method / - Standard (5 days) / - Express (2 da
-- ↓
-- Payment Method / - Credit Card / - PayPal / - Apple Pay
-- ↓
-- Order Review / - Items summary / - Total with tax / - S
-- ↓
-- Confirmation / Page / - Order # / - ETA / - Email sent
+1. Cart Summary Page / - View items / - Update quantities
+2. Use saved / address
+3. Shipping Method / - Standard (5 days) / - Express (2 da
+4. Enter shipping / address
+5. Error Message / Retry or change / payment method
+6. Shipping Method / - Standard (5 days) / - Express (2 da
+7. Payment Method / - Credit Card / - PayPal / - Apple Pay
+8. Order Review / - Items summary / - Total with tax / - S
+9. Confirmation / Page / - Order # / - ETA / - Email sent
 
 ```mermaid
 flowchart TD
@@ -441,7 +418,7 @@ flowchart TD
 ## Understanding Data Flow
 
 
-> DATA FLOW FUNDAMENTALS
+DATA FLOW FUNDAMENTALS
 
 
 DEFINITION:
@@ -545,13 +522,10 @@ DATA TRANSFORMATIONS:
 ```
 
 **Flow:**
-- FRONTEND / (Validation)
-- ↓
-- STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel
-- ↓
-- BACKEND / (Process)
-- ↓
-- STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel
+1. FRONTEND / (Validation)
+2. STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel
+3. BACKEND / (Process)
+4. STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel
 
 ```mermaid
 flowchart TD
@@ -650,23 +624,15 @@ USER REQUEST: GET /api/products/123
 ```
 
 **Flow:**
-- USER / Browser
-- ↓
-- DNS
-- ↓
-- CDN
-- ↓
-- LOAD BALANCER
-- ↓
-- Server 2
-- ↓
-- LOAD BALANCER
-- ↓
-- Server 3
-- ↓
-- Server 1
-- ↓
-- API GATEWAY / - Auth check / - Rate limit / - Logging
+1. USER / Browser
+2. DNS
+3. CDN
+4. LOAD BALANCER
+5. Server 2
+6. LOAD BALANCER
+7. Server 3
+8. Server 1
+9. API GATEWAY / - Auth check / - Rate limit / - Logging
 
 ```mermaid
 flowchart TD
@@ -768,13 +734,10 @@ STEP 5: DRAW THE COMPLETE FLOW
 ```
 
 **Flow:**
-- Ask: 'What is the user trying to achieve?' / Example: '
-- ↓
-- Ask: 'Who/What is involved in this flow?' / Example: /
-- ↓
-- Ask: 'What happens when everything works perfectly?' /
-- ↓
-- Ask: 'What could go wrong?' / Example Error Cases: / •
+1. Ask: 'What is the user trying to achieve?' / Example: '
+2. Ask: 'Who/What is involved in this flow?' / Example: /
+3. Ask: 'What happens when everything works perfectly?' /
+4. Ask: 'What could go wrong?' / Example Error Cases: / •
 
 ```mermaid
 flowchart TD
@@ -1033,19 +996,13 @@ For each exercise:
 ```
 
 **Flow:**
-- FLOW DESIGN EXERCISES
-- ↓
-- EXERCISE 1: Password Reset Flow
-- ↓
-- EXERCISE 2: File Upload Flow
-- ↓
-- EXERCISE 3: Real-time Chat Flow
-- ↓
-- EXERCISE 4: Shopping Cart Sync Flow
-- ↓
-- Include: Local storage, server sync, conflict resolutio
-- ↓
-- EXERCISE 5: Two-Factor Authentication Flow
+1. FLOW DESIGN EXERCISES
+2. EXERCISE 1: Password Reset Flow
+3. EXERCISE 2: File Upload Flow
+4. EXERCISE 3: Real-time Chat Flow
+5. EXERCISE 4: Shopping Cart Sync Flow
+6. Include: Local storage, server sync, conflict resolutio
+7. EXERCISE 5: Two-Factor Authentication Flow
 
 ```mermaid
 flowchart TD
@@ -1090,19 +1047,13 @@ flowchart TD
 ```
 
 **Flow:**
-- FLOW DESIGN CHECKLIST
-- ↓
-- □ Clear START and END points
-- ↓
-- □ All decision points marked (diamonds)
-- ↓
-- □ Happy path clearly visible
-- ↓
-- □ Error paths included
-- ↓
-- □ All actors/systems identified
-- ↓
-- □ Data formats at each stage
+1. FLOW DESIGN CHECKLIST
+2. □ Clear START and END points
+3. □ All decision points marked (diamonds)
+4. □ Happy path clearly visible
+5. □ Error paths included
+6. □ All actors/systems identified
+7. □ Data formats at each stage
 
 ```mermaid
 flowchart TD

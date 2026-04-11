@@ -1,13 +1,13 @@
-> **Navigation**: [< Previous](06_Two_Pointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Stack_Queue.md)
+**Navigation**: [< Previous](06_Two_Pointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Stack_Queue.md)
 
-> **Problems 07/14** | [Prev](06_Two_Pointers.md) | [Index](../00_MASTER_INDEX.md) | [Next](08_Stack_Queue.md)
+**Problems 07/14** | [Prev](06_Two_Pointers.md) | [Index](../00_MASTER_INDEX.md) | [Next](08_Stack_Queue.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — Binary Search
 
-> **When do you use Binary Search?** Use this checklist:
->
+**When do you use Binary Search?** Use this checklist:
+
 
 | Trigger | Sub-type | Template |
 |---|---|---|
@@ -16,35 +16,35 @@
 | `rotated sorted array` | Rotated BS | Check which half sorted |
 | `minimise/maximise` some value | BS on answer | `lo=MIN, hi=MAX, canAchieve(mid)?` |
 
->
-> **The Binary Search Mindset:**
-> ```
-> 1. Can I eliminate HALF the search space at each step?
-> 2. Is there a MONOTONIC property? (F,F,F,T,T,T or T,T,F,F)
-> If yes to both → Binary Search applies.
-> ```
->
-> 📖 **Pattern deep dive:** [06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md)
-> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**The Binary Search Mindset:**
+```
+1. Can I eliminate HALF the search space at each step?
+2. Is there a MONOTONIC property? (F,F,F,T,T,T or T,T,F,F)
+If yes to both → Binary Search applies.
+```
+
+📖 **Pattern deep dive:** [06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md)
+📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
 
 
-> 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Binary Search**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Binary Search**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 # 🔍 Section 6: Binary Search Patterns
 
@@ -58,25 +58,25 @@
 🔗 [https://leetcode.com/problems/binary-search/](https://leetcode.com/problems/binary-search/)
 
 
-> BINARY SEARCH - THE FOUNDATION
->
-> Search for target in sorted array. Return index or -1.
->
-> Input: nums = [-1, 0, 3, 5, 9, 12], target = 9
-> Output: 4
->
-> Visual:
-> [-1, 0, 3, 5, 9, 12]
-> L     M      R     mid=5 < 9, search right
-> L  M   R     mid=9 = target ✓
->
-> Template:
-> while (left <= right)
-> mid = left + (right - left) / 2
-> if target found: return mid
-> if target > mid: left = mid + 1
-> else: right = mid - 1
->
+BINARY SEARCH - THE FOUNDATION
+
+Search for target in sorted array. Return index or -1.
+
+Input: nums = [-1, 0, 3, 5, 9, 12], target = 9
+Output: 4
+
+Visual:
+[-1, 0, 3, 5, 9, 12]
+L     M      R     mid=5 < 9, search right
+L  M   R     mid=9 = target ✓
+
+Template:
+while (left <= right)
+mid = left + (right - left) / 2
+if target found: return mid
+if target > mid: left = mid + 1
+else: right = mid - 1
+
 
 
 ```java
@@ -125,19 +125,13 @@ public int search(int[] nums, int target) {
 ```
 
 **Flow:**
-- SEARCH INSERT POSITION
-- ↓
-- Input: nums = [1, 3, 5, 6], target = 5
-- ↓
-- Output: 2
-- ↓
-- Input: nums = [1, 3, 5, 6], target = 2
-- ↓
-- Output: 1
-- ↓
-- Input: nums = [1, 3, 5, 6], target = 7
-- ↓
-- Output: 4
+1. SEARCH INSERT POSITION
+2. Input: nums = [1, 3, 5, 6], target = 5
+3. Output: 2
+4. Input: nums = [1, 3, 5, 6], target = 2
+5. Output: 1
+6. Input: nums = [1, 3, 5, 6], target = 7
+7. Output: 4
 
 ```mermaid
 flowchart TD
@@ -201,17 +195,12 @@ public int searchInsert(int[] nums, int target) {
 ```
 
 **Flow:**
-- FIRST BAD VERSION
-- ↓
-- Find the first bad version.
-- ↓
-- Input: n = 5, bad = 4
-- ↓
-- Versions: [G, G, G, B, B]
-- ↓
-- Output: 4
-- ↓
-- Pattern: Find leftmost true (first bad)
+1. FIRST BAD VERSION
+2. Find the first bad version.
+3. Input: n = 5, bad = 4
+4. Versions: [G, G, G, B, B]
+5. Output: 4
+6. Pattern: Find leftmost true (first bad)
 
 ```mermaid
 flowchart TD
@@ -249,20 +238,20 @@ public int firstBadVersion(int n) {
 
 
 
-> 🔬 **Section Challenge — 🔍 6.1 Basic Binary Search**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — 🔍 6.1 Basic Binary Search**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## 📌 6.2 Find Boundaries
 
@@ -290,17 +279,12 @@ public int firstBadVersion(int n) {
 ```
 
 **Flow:**
-- FIND FIRST AND LAST POSITION
-- ↓
-- Input: nums = [5, 7, 7, 8, 8, 10], target = 8
-- ↓
-- Output: [3, 4]
-- ↓
-- Input: nums = [5, 7, 7, 8, 8, 10], target = 6
-- ↓
-- Output: [-1, -1]
-- ↓
-- Two binary searches: Find leftmost, find rightmost
+1. FIND FIRST AND LAST POSITION
+2. Input: nums = [5, 7, 7, 8, 8, 10], target = 8
+3. Output: [3, 4]
+4. Input: nums = [5, 7, 7, 8, 8, 10], target = 6
+5. Output: [-1, -1]
+6. Two binary searches: Find leftmost, find rightmost
 
 ```mermaid
 flowchart TD
@@ -391,19 +375,13 @@ private int findLast(int[] nums, int target) {
 ```
 
 **Flow:**
-- FIND SMALLEST LETTER GREATER THAN TARGET
-- ↓
-- Letters wrap around (if none greater, return first lett
-- ↓
-- Input: letters = ['c','f','j'], target = 'a'
-- ↓
-- Output: 'c'
-- ↓
-- Input: letters = ['c','f','j'], target = 'c'
-- ↓
-- Output: 'f'
-- ↓
-- Input: letters = ['c','f','j'], target = 'k'
+1. FIND SMALLEST LETTER GREATER THAN TARGET
+2. Letters wrap around (if none greater, return first lett
+3. Input: letters = ['c','f','j'], target = 'a'
+4. Output: 'c'
+5. Input: letters = ['c','f','j'], target = 'c'
+6. Output: 'f'
+7. Input: letters = ['c','f','j'], target = 'k'
 
 ```mermaid
 flowchart TD
@@ -477,19 +455,13 @@ public char nextGreatestLetter(char[] letters, char target) {
 ```
 
 **Flow:**
-- SEARCH IN ROTATED SORTED ARRAY
-- ↓
-- Array was sorted then rotated at unknown pivot.
-- ↓
-- No duplicates. Search for target.
-- ↓
-- Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0
-- ↓
-- Output: 4
-- ↓
-- Visual:
-- ↓
-- Original: [0, 1, 2, 4, 5, 6, 7]
+1. SEARCH IN ROTATED SORTED ARRAY
+2. Array was sorted then rotated at unknown pivot.
+3. No duplicates. Search for target.
+4. Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0
+5. Output: 4
+6. Visual:
+7. Original: [0, 1, 2, 4, 5, 6, 7]
 
 ```mermaid
 flowchart TD
@@ -565,15 +537,11 @@ public int search(int[] nums, int target) {
 ```
 
 **Flow:**
-- SEARCH IN ROTATED SORTED ARRAY II (WITH DUPLICATES)
-- ↓
-- Same as above but array may have duplicates.
-- ↓
-- Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0
-- ↓
-- Output: true
-- ↓
-- Solution: Skip duplicates by left++, right--
+1. SEARCH IN ROTATED SORTED ARRAY II (WITH DUPLICATES)
+2. Same as above but array may have duplicates.
+3. Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0
+4. Output: true
+5. Solution: Skip duplicates by left++, right--
 
 ```mermaid
 flowchart TD
@@ -653,19 +621,13 @@ public boolean search(int[] nums, int target) {
 ```
 
 **Flow:**
-- FIND MINIMUM IN ROTATED SORTED ARRAY
-- ↓
-- Input: nums = [3, 4, 5, 1, 2]
-- ↓
-- Output: 1
-- ↓
-- Visual:
-- ↓
-- 1 ← minimum
-- ↓
-- KEY: Compare mid with right
-- ↓
-- - If mid > right: min is in right half
+1. FIND MINIMUM IN ROTATED SORTED ARRAY
+2. Input: nums = [3, 4, 5, 1, 2]
+3. Output: 1
+4. Visual:
+5. 1 ← minimum
+6. KEY: Compare mid with right
+7. - If mid > right: min is in right half
 
 ```mermaid
 flowchart TD
@@ -731,17 +693,12 @@ public int findMin(int[] nums) {
 ```
 
 **Flow:**
-- SQRT(X) - Binary Search on Answer
-- ↓
-- Find integer square root (truncate decimals).
-- ↓
-- Input: x = 8
-- ↓
-- Output: 2 (√8 = 2.828..., truncated to 2)
-- ↓
-- Binary search range: [1, x]
-- ↓
-- Find largest n where n*n <= x
+1. SQRT(X) - Binary Search on Answer
+2. Find integer square root (truncate decimals).
+3. Input: x = 8
+4. Output: 2 (√8 = 2.828..., truncated to 2)
+5. Binary search range: [1, x]
+6. Find largest n where n*n <= x
 
 ```mermaid
 flowchart TD
@@ -810,19 +767,13 @@ public int mySqrt(int x) {
 ```
 
 **Flow:**
-- KOKO EATING BANANAS
-- ↓
-- Koko eats k bananas/hour. Guard returns in h hours.
-- ↓
-- Find minimum k to eat all bananas before guard returns.
-- ↓
-- Input: piles = [3, 6, 7, 11], h = 8
-- ↓
-- Output: 4
-- ↓
-- Explanation: At k=4, time needed:
-- ↓
-- pile 3: ceil(3/4) = 1 hour
+1. KOKO EATING BANANAS
+2. Koko eats k bananas/hour. Guard returns in h hours.
+3. Find minimum k to eat all bananas before guard returns.
+4. Input: piles = [3, 6, 7, 11], h = 8
+5. Output: 4
+6. Explanation: At k=4, time needed:
+7. pile 3: ceil(3/4) = 1 hour
 
 ```mermaid
 flowchart TD
@@ -899,19 +850,13 @@ private boolean canFinish(int[] piles, int h, int k) {
 ```
 
 **Flow:**
-- CAPACITY TO SHIP PACKAGES
-- ↓
-- Packages must be shipped IN ORDER.
-- ↓
-- Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5
-- ↓
-- Output: 15
-- ↓
-- Explanation:
-- ↓
-- Day 1: 1,2,3,4,5 (sum=15)
-- ↓
-- Day 2: 6,7 (sum=13)
+1. CAPACITY TO SHIP PACKAGES
+2. Packages must be shipped IN ORDER.
+3. Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5
+4. Output: 15
+5. Explanation:
+6. Day 1: 1,2,3,4,5 (sum=15)
+7. Day 2: 6,7 (sum=13)
 
 ```mermaid
 flowchart TD
@@ -992,19 +937,13 @@ private boolean canShip(int[] weights, int days, int capacity) {
 ```
 
 **Flow:**
-- SPLIT ARRAY LARGEST SUM
-- ↓
-- Input: nums = [7,2,5,10,8], k = 2
-- ↓
-- Output: 18
-- ↓
-- Explanation:
-- ↓
-- Split: [7,2,5] and [10,8]
-- ↓
-- Sums: 14 and 18
-- ↓
-- Largest sum = 18 (minimized)
+1. SPLIT ARRAY LARGEST SUM
+2. Input: nums = [7,2,5,10,8], k = 2
+3. Output: 18
+4. Explanation:
+5. Split: [7,2,5] and [10,8]
+6. Sums: 14 and 18
+7. Largest sum = 18 (minimized)
 
 ```mermaid
 flowchart TD
@@ -1107,19 +1046,13 @@ private boolean canSplit(int[] nums, int k, int maxSum) {
 ```
 
 **Flow:**
-- FIND K-TH SMALLEST PAIR DISTANCE
-- ↓
-- (LeetCode 719 - Hard)
-- ↓
-- Find the k-th smallest distance among all pairs.
-- ↓
-- Example 1:
-- ↓
-- Input: nums = [1, 3, 1], k = 1
-- ↓
-- Output: 0
-- ↓
-- Explanation:
+1. FIND K-TH SMALLEST PAIR DISTANCE
+2. (LeetCode 719 - Hard)
+3. Find the k-th smallest distance among all pairs.
+4. Example 1:
+5. Input: nums = [1, 3, 1], k = 1
+6. Output: 0
+7. Explanation:
 
 ```mermaid
 flowchart TD
@@ -1179,20 +1112,20 @@ private int countPairs(int[] nums, int maxDist) {
 
 
 
-> 🔬 **Section Challenge — 🔍 6.4 Binary Search on Answer**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — 🔍 6.4 Binary Search on Answer**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## SECTION 5: Additional Binary Search Problems
 
@@ -1216,23 +1149,15 @@ private int countPairs(int[] nums, int maxDist) {
 ```
 
 **Flow:**
-- FIND PEAK ELEMENT (LeetCode 162 - Medium)
-- ↓
-- A peak element is strictly greater than its neighbors.
-- ↓
-- Return index of ANY peak. nums[-1] = nums[n] = -∞.
-- ↓
-- Example: nums = [1,2,3,1]
-- ↓
-- Output: 2 (nums[2]=3 is pea
-- ↓
-- Example: nums = [1,2,3,1]
-- ↓
-- Output: 2 (nums[2]=3 is pea
-- ↓
-- TIME: O(log n)
-- ↓
-- SPACE: O(1)
+1. FIND PEAK ELEMENT (LeetCode 162 - Medium)
+2. A peak element is strictly greater than its neighbors.
+3. Return index of ANY peak. nums[-1] = nums[n] = -∞.
+4. Example: nums = [1,2,3,1]
+5. Output: 2 (nums[2]=3 is pea
+6. Example: nums = [1,2,3,1]
+7. Output: 2 (nums[2]=3 is pea
+8. TIME: O(log n)
+9. SPACE: O(1)
 
 ```mermaid
 flowchart TD
@@ -1285,17 +1210,12 @@ public int findPeakElement(int[] nums) {
 ```
 
 **Flow:**
-- SEARCH A 2D MATRIX (LeetCode 74 - Medium)
-- ↓
-- Determine if target exists in matrix.
-- ↓
-- Example:
-- ↓
-- Output: true
-- ↓
-- TIME: O(log(m*n))
-- ↓
-- SPACE: O(1)
+1. SEARCH A 2D MATRIX (LeetCode 74 - Medium)
+2. Determine if target exists in matrix.
+3. Example:
+4. Output: true
+5. TIME: O(log(m*n))
+6. SPACE: O(1)
 
 ```mermaid
 flowchart TD
@@ -1351,25 +1271,16 @@ public boolean searchMatrix(int[][] matrix, int target) {
 ```
 
 **Flow:**
-- TIME BASED KEY-VALUE STORE (LeetCode 981 - Medium)
-- ↓
-- set(key, value, timestamp) — store key-value with times
-- ↓
-- Example:
-- ↓
-- set('foo','bar',1), get('foo',1)
-- ↓
-- 'bar'
-- ↓
-- set('foo','bar',1), get('foo',1)
-- ↓
-- 'bar'
-- ↓
-- KEY: Binary search on timestamps for each key.
-- ↓
-- TIME: set O(1), get O(log n)
-- ↓
-- SPACE: O(n)
+1. TIME BASED KEY-VALUE STORE (LeetCode 981 - Medium)
+2. set(key, value, timestamp) — store key-value with times
+3. Example:
+4. set('foo','bar',1), get('foo',1)
+5. 'bar'
+6. set('foo','bar',1), get('foo',1)
+7. 'bar'
+8. KEY: Binary search on timestamps for each key.
+9. TIME: set O(1), get O(log n)
+10. SPACE: O(n)
 
 ```mermaid
 flowchart TD
@@ -1436,31 +1347,19 @@ class TimeMap {
 ```
 
 **Flow:**
-- MEDIAN OF TWO SORTED ARRAYS (LeetCode 4 - Hard)
-- ↓
-- Given two sorted arrays nums1 and nums2, return the med
-- ↓
-- Overall runtime must be O(log(m+n)).
-- ↓
-- Example:
-- ↓
-- nums1 = [1,3], nums2 = [2]
-- ↓
-- Output: 2.0
-- ↓
-- nums1 = [1,3], nums2 = [2]
-- ↓
-- Output: 2.0
-- ↓
-- nums1 = [1,2], nums2 = [3,4]
-- ↓
-- Output: 2.5
-- ↓
-- nums1 = [1,2], nums2 = [3,4]
-- ↓
-- Output: 2.5
-- ↓
-- KEY: Binary search on partition of shorter array.
+1. MEDIAN OF TWO SORTED ARRAYS (LeetCode 4 - Hard)
+2. Given two sorted arrays nums1 and nums2, return the med
+3. Overall runtime must be O(log(m+n)).
+4. Example:
+5. nums1 = [1,3], nums2 = [2]
+6. Output: 2.0
+7. nums1 = [1,3], nums2 = [2]
+8. Output: 2.0
+9. nums1 = [1,2], nums2 = [3,4]
+10. Output: 2.5
+11. nums1 = [1,2], nums2 = [3,4]
+12. Output: 2.5
+13. KEY: Binary search on partition of shorter array.
 
 ```mermaid
 flowchart TD
@@ -1540,31 +1439,19 @@ public double findMedianSortedArrays(int[] nums1, int[] nums2) {
 ```
 
 **Flow:**
-- MAGNETIC FORCE BETWEEN TWO BALLS (LeetCode 1552 - Mediu
-- ↓
-- (distance) between any two balls.
-- ↓
-- Example:
-- ↓
-- position = [1,2,3,4,7], m = 3
-- ↓
-- Output: 3
-- ↓
-- position = [1,2,3,4,7], m = 3
-- ↓
-- Output: 3
-- ↓
-- Place at positions 1, 4, 7
-- ↓
-- min distance = 3
-- ↓
-- Place at positions 1, 4, 7
-- ↓
-- min distance = 3
-- ↓
-- KEY: Binary search on answer (minimum distance).
-- ↓
-- For each candidate distance, greedily check if m balls
+1. MAGNETIC FORCE BETWEEN TWO BALLS (LeetCode 1552 - Mediu
+2. (distance) between any two balls.
+3. Example:
+4. position = [1,2,3,4,7], m = 3
+5. Output: 3
+6. position = [1,2,3,4,7], m = 3
+7. Output: 3
+8. Place at positions 1, 4, 7
+9. min distance = 3
+10. Place at positions 1, 4, 7
+11. min distance = 3
+12. KEY: Binary search on answer (minimum distance).
+13. For each candidate distance, greedily check if m balls
 
 ```mermaid
 flowchart TD
@@ -1620,20 +1507,20 @@ private boolean canPlace(int[] position, int m, int minDist) {
 
 
 
-> 🔬 **Section Challenge — SECTION 5: Additional Binary Search Problems**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — SECTION 5: Additional Binary Search Problems**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## 🏆 Competitive Programming — Codeforces Problems
 
@@ -1676,20 +1563,20 @@ private boolean canPlace(int[] position, int m, int minDist) {
 
 
 
-> 🔬 **Section Challenge — 🌍 Real-World Applications of Binary Search**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — 🌍 Real-World Applications of Binary Search**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 

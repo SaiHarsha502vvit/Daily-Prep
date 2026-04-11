@@ -1,12 +1,12 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02b_Sorting_Advanced.md)
-> 🧠 **Mental Model**: See [Complexity Intuition](../14_Mental_Models/09_Complexity_Intuition.md) — why O(n log n) is the sorting lower bound
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02b_Sorting_Advanced.md)
+🧠 **Mental Model**: See [Complexity Intuition](../14_Mental_Models/09_Complexity_Intuition.md) — why O(n log n) is the sorting lower bound
 
 ---
 
 ## 🔗 JIT Connection — When You Need This
 
-> **Arrived here from a problem?** Here's where to go next:
->
+**Arrived here from a problem?** Here's where to go next:
+
 
 | Sorting sub-topic | Key Interview Fact | Jump to PS Problems |
 |---|---|---|
@@ -15,10 +15,10 @@
 | Timsort (Java Objects) | `Arrays.sort(Object[])` is stable TimSort | [Greedy PS](../05_Problem_Solving/13_Greedy.md) |
 | Sort + Two Pointer | Sort then scan — reduces O(n²) search to O(n) | [Two Pointers PS](../05_Problem_Solving/03_TwoPointers.md) |
 
->
-> **Study Path:** `Arrays` → `Sorting (this)` → `Binary Search` → `Two Pointers` → `Greedy`
->
-> 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**Study Path:** `Arrays` → `Sorting (this)` → `Binary Search` → `Two Pointers` → `Greedy`
+
+📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
@@ -28,33 +28,33 @@
 
 ---
 
-
-
-
 # 🔬 PART 0: DEEP INTERNALS - HOW SORTING ACTUALLY WORKS AT CPU/MEMORY LEVEL
 
+SORTING AT THE HARDWARE LEVEL - WHAT YOUR CPU ACTUALLY DOES
 
-> SORTING AT THE HARDWARE LEVEL - WHAT YOUR CPU ACTUALLY DOES
->
-> Before learning sorting algorithms, understand what happens when you:
-> - Compare two numbers
-> - Swap two elements
-> - Access array elements
->
-> This knowledge separates "knows the algorithm" from "TRULY understands it"
->
+Before learning sorting algorithms, understand what happens when you:
+- Compare two numbers
+- Swap two elements
+- Access array elements
+
+This knowledge separates "knows the algorithm" from "TRULY understands it"
 
 
 ## ⚖️ Comparison Operation — at CPU Instruction Level
 
-
-
-
 ## What Happens When You Do: If (Arr[I] > Arr[J])
 
-Java Code:
-if (arr[i] > arr[j]) { swap(arr, i, j); }
-BYTECODE (JVM Instructions):
+### Java code
+
+```java
+if (arr[i] > arr[j]) {
+    swap(arr, i, j);
+}
+```
+
+### Bytecode (JVM instructions, conceptual)
+
+```text
 aload_1           // Load array reference onto stack
 iload_2           // Load i onto stack
 iaload            // Load arr[i] onto stack (array int load)
@@ -64,8 +64,12 @@ iaload            // Load arr[j] onto stack
 if_icmple SKIP    // If arr[i] <= arr[j], skip swap (integer compare less-eq)
 ... swap code ... // Execute swap
 
-**Skip**:
-x86-64 ASSEMBLY (After JIT Compilation):
+SKIP:
+```
+
+### x86-64 assembly (after JIT compilation, conceptual)
+
+```asm
 ; rax = array base address
 ; ecx = i, edx = j
 movsxd rcx, ecx                    ; Sign-extend i to 64 bits
@@ -76,39 +80,41 @@ cmp    edi, esi                    ; Compare arr[i] with arr[j]
 jle    SKIP                        ; Jump if arr[i] <= arr[j]
 ; ... swap code ...
 
-**Skip**:
+SKIP:
+```
 
-**Cpu Cycles Breakdown**:
-┬
-Operation                      │ Cycles (approx)
-┼
-Load arr[i] from L1 cache      │ 4 cycles
-Load arr[j] from L1 cache      │ 4 cycles
-Compare (cmp instruction)      │ 1 cycle
-Conditional jump               │ 1 cycle (if predicted correctly)
-│ ~15 cycles (if mispredicted!)
-┼
-TOTAL (best case):             │ ~10 cycles
-TOTAL (cache miss):            │ ~400+ cycles
-┴
-BRANCH PREDICTION - THE HIDDEN COST:
-Modern CPUs "guess" which way branches will go (pipeline optimization)
-PREDICTABLE PATTERN (Insertion Sort on nearly sorted):
-- if (arr[i] > arr[j])  → almost always FALSE
-- CPU learns pattern, predicts FALSE
-- Prediction accuracy: ~99%
-- Cost: ~1 cycle per comparison
-UNPREDICTABLE PATTERN (QuickSort on random data):
-- if (arr[i] > pivot)  → 50% TRUE, 50% FALSE (random!)
-- CPU can't learn pattern
-- Prediction accuracy: ~50%
-- Cost: ~8 cycles per comparison (misprediction penalty)
-THIS IS WHY INSERTION SORT CAN BEAT QUICKSORT FOR SMALL ARRAYS!
+### CPU cycles breakdown (approximate)
+
+| Operation | Cycles (approx.) |
+|---|---|
+| Load `arr[i]` from L1 cache | 4 cycles |
+| Load `arr[j]` from L1 cache | 4 cycles |
+| Compare (`cmp` instruction) | 1 cycle |
+| Conditional jump (predicted correctly) | 1 cycle |
+| Conditional jump (mispredicted) | ~15 cycles penalty |
+
+- Total (best case): ~10 cycles
+- Total (cache miss path): ~400+ cycles
+
+### Branch prediction - the hidden cost
+
+Modern CPUs "guess" which branch path will be taken to keep the pipeline full.
+
+**Predictable pattern (Insertion Sort on nearly sorted data)**
+- `if (arr[i] > arr[j])` is almost always false.
+- CPU learns the pattern and predicts false.
+- Prediction accuracy can be ~99%.
+- Effective cost stays near ~1 cycle per comparison.
+
+**Unpredictable pattern (QuickSort on random data)**
+- `if (arr[i] > pivot)` is close to 50% true / 50% false.
+- CPU cannot reliably learn the pattern.
+- Prediction accuracy can drop to ~50%.
+- Effective cost rises to around ~8 cycles per comparison (misprediction penalty).
+
+This is why Insertion Sort can beat QuickSort for small arrays.
 
 ## 🖥️ Swap Operation — at CPU Instruction Level
-
-
-
 
 ## What Happens When You Swap Two Elements
 
@@ -151,16 +157,14 @@ If arr[0] and arr[3] are in DIFFERENT cache lines:
 - Each load might be a cache miss
 - Total: ~200-400 cycles (20-50x slower!)
 
+🔬 **Section Challenge — What Happens When You Swap Two Elements**
 
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — What Happens When You Swap Two Elements**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## 🔄 Cache Behavior — Why Some Sorts Are Faster
 
@@ -264,17 +268,12 @@ MERGE SORT - GOOD BUT USES MORE MEMORY:
 ```
 
 **Flow:**
-- Cache Line 1 [0-15] Cache Line 2 [16-31]
-- ↓
-- Cache Line 1 [0-15] Cache Line 2 [16-31] / ↔ ↔
-- ↓
-- Cache Line 1 [0-15] Cache Line 2 [16-31] / ▼ ▼ ▼ ▼ ▼▼▼▼
-- ↓
-- Left half
-- ↓
-- Right half
-- ↓
-- Temp array
+1. Cache Line 1 [0-15] Cache Line 2 [16-31]
+2. Cache Line 1 [0-15] Cache Line 2 [16-31] / ↔ ↔
+3. Cache Line 1 [0-15] Cache Line 2 [16-31] / ▼ ▼ ▼ ▼ ▼▼▼▼
+4. Left half
+5. Right half
+6. Temp array
 
 ```mermaid
 flowchart TD
@@ -290,8 +289,6 @@ flowchart TD
     N4 --> N5
     N5 --> N6
 ```
-
-
 
 ## 📊 Why Arrays.sort() Uses Different Algorithms
 
@@ -329,13 +326,7 @@ Primitives: java.util.DualPivotQuicksort
 Objects:    java.util.TimSort
 You can read the actual implementation!
 
-
-
-
 ## ⚖️ Counting Comparisons and Swaps
-
-
-
 
 ## Exact Operation Counts For Sorting Algorithms
 
@@ -373,27 +364,23 @@ BEST FOR NEARLY SORTED DATA!
 - Swaps (average): ~0.3n⋅log₂(n)
 Fewer swaps than Merge Sort (in-place partitioning)
 COMPARISON TABLE (n=1000):
-┬─────────────────┬────────────────┬
-| Algorithm     | Comparisons     | Swaps/Copies   | Cache Efficiency |
-┼─────────────────┼────────────────┼
-| Bubble Sort   | ~500,000        | ~250,000       | Excellent |
-| Selection     | ~500,000        | 999            | Good |
-| Insertion     | ~250,000 (avg)  | ~250,000       | Excellent |
-| Merge Sort    | ~10,000         | ~20,000        | Good |
-| Quick Sort    | ~14,000         | ~3,000         | Very Good |
-| Heap Sort     | ~20,000         | ~10,000        | Poor |
-┴─────────────────┴────────────────┴
+| Algorithm | Comparisons | Swaps/Copies | Cache Efficiency |
+|---|---|---|---|
+| Bubble Sort | ~500,000 | ~250,000 | Excellent |
+| Selection | ~500,000 | 999 | Good |
+| Insertion | ~250,000 (avg) | ~250,000 | Excellent |
+| Merge Sort | ~10,000 | ~20,000 | Good |
+| Quick Sort | ~14,000 | ~3,000 | Very Good |
+| Heap Sort | ~20,000 | ~10,000 | Poor |
 
+🔬 **Section Challenge — Exact Operation Counts For Sorting Algorithms**
 
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Exact Operation Counts For Sorting Algorithms**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## 📌 Real Benchmark Data
 
@@ -450,11 +437,9 @@ COMPARISON TABLE (n=1000):
 ```
 
 **Flow:**
-- Algorithm n=100 n=1,000 n=10,000 n=100,000 n=1,000,000
-- ↓
-- Algorithm Time (n=10,000) Notes / Insertion Sort 0.3 ms
-- ↓
-- Algorithm Time (n=20) Notes / Insertion Sort 50 ns Fast
+1. Algorithm n=100 n=1,000 n=10,000 n=100,000 n=1,000,000
+2. Algorithm Time (n=10,000) Notes / Insertion Sort 0.3 ms
+3. Algorithm Time (n=20) Notes / Insertion Sort 50 ns Fast
 
 ```mermaid
 flowchart TD
@@ -651,29 +636,18 @@ PASS 4:
 ```
 
 **Flow:**
-- [5, 2, 8, 1, 9] Compare 5, 2
-- ↓
-- Swap
-- ↓
-- [2, 5, 8, 1, 9] Compare 5, 8
-- ↓
-- OK
-- ↓
-- [2, 5, 8, 1, 9] Compare 8, 1
-- ↓
-- Swap
-- ↓
-- [2, 5, 1, 8, 9] Compare 8, 9
-- ↓
-- OK
-- ↓
-- [2, 5, 1, 8, 9] Compare 2, 5
-- ↓
-- OK
-- ↓
-- [2, 5, 1, 8, 9] Compare 5, 1
-- ↓
-- Swap
+1. [5, 2, 8, 1, 9] Compare 5, 2
+2. Swap
+3. [2, 5, 8, 1, 9] Compare 5, 8
+4. OK
+5. [2, 5, 8, 1, 9] Compare 8, 1
+6. Swap
+7. [2, 5, 1, 8, 9] Compare 8, 9
+8. OK
+9. [2, 5, 1, 8, 9] Compare 2, 5
+10. OK
+11. [2, 5, 1, 8, 9] Compare 5, 1
+12. Swap
 
 ```mermaid
 flowchart TD
@@ -745,13 +719,8 @@ Find second smallest → put at position 1
 ```
 
 **Flow:**
-- Find smallest
-- ↓
-- put at position 0
-- ↓
-- Find second smallest
-- ↓
-- put at position 1
+1. Find smallest put at position 0
+2. Find second smallest put at position 1
 
 ```mermaid
 flowchart LR
@@ -786,21 +755,12 @@ PASS 4: Find min in [8,9] → min is 8 at index 3
 ```
 
 **Flow:**
-- PASS 1: Find min in [5,2,8,1,9]
-- ↓
-- min is 1 at index 3
-- ↓
-- PASS 2: Find min in [2,8,5,9]
-- ↓
-- min is 2 at index 1
-- ↓
-- PASS 3: Find min in [8,5,9]
-- ↓
-- min is 5 at index 3
-- ↓
-- PASS 4: Find min in [8,9]
-- ↓
-- min is 8 at index 3
+1. PASS 1: Find min in [5,2,8,1,9]
+2. min is 1 at index 3
+3. PASS 2: Find min in [2,8,5,9]
+4. min is 2 at index 1
+5. PASS 3: Find min in [8,5,9] min is 5 at index 3
+6. PASS 4: Find min in [8,9] min is 8 at index 3
 
 ```mermaid
 flowchart LR
@@ -881,45 +841,13 @@ Array: [5, 2, 8, 1, 9]
 ```
 
 **Flow:**
-- Array: [5, 2, 8, 1, 9]
-- ↓
-- ↑ sorted part starts with just first element
-- ↓
-- [5
-- ↓
-- 2, 8, 1, 9] Insert 2: Compare with 5, shift 5 righ
-- ↓
-- [5
-- ↓
-- 2, 8, 1, 9] Insert 2: Compare with 5, shift 5 righ
-- ↓
-- [2, 5
-- ↓
-- 8, 1, 9] 2 inserted
-- ↓
-- [2, 5
-- ↓
-- 8, 1, 9] 2 inserted
-- ↓
-- [2, 5
-- ↓
-- 8, 1, 9] Insert 8: Compare with 5, 8 > 5, st
-- ↓
-- [2, 5
-- ↓
-- 8, 1, 9] Insert 8: Compare with 5, 8 > 5, st
-- ↓
-- [2, 5, 8
-- ↓
-- 1, 9] 8 in place
-- ↓
-- [2, 5, 8
-- ↓
-- 1, 9] 8 in place
-- ↓
-- [2, 5, 8
-- ↓
-- 1, 9] Insert 1: Compare with 8, shift 8
+1. Array: [5, 2, 8, 1, 9]
+2. ↑ sorted part starts with just first element
+3. [5 2, 8, 1, 9] Insert 2: Compare with 5, shift 5 righ
+4. [2, 5 8, 1, 9] 2 inserted
+5. [2, 5 8, 1, 9] Insert 8: Compare with 5, 8 > 5, st
+6. [2, 5, 8 1, 9] 8 in place
+7. [2, 5, 8 1, 9] Insert 1: Compare with 8, shift 8
 
 ```mermaid
 flowchart TD
@@ -1031,19 +959,13 @@ Result: [1, 2, 5, 8] ✓
 ```
 
 **Flow:**
-- Array: [5, 2, 8, 1]
-- ↓
-- DIVIDE:
-- ↓
-- MERGE (bottom up):
-- ↓
-- [2, 5] [1, 8] ← Merge pairs in order
-- ↓
-- [1, 2, 5, 8] ← Final merge
-- ↓
-- DETAILED MERGE of [2,5] and [1,8]:
-- ↓
-- Left: [2, 5] pointer at 2
+1. Array: [5, 2, 8, 1]
+2. DIVIDE:
+3. MERGE (bottom up):
+4. [2, 5] [1, 8] ← Merge pairs in order
+5. [1, 2, 5, 8] ← Final merge
+6. DETAILED MERGE of [2,5] and [1,8]:
+7. Left: [2, 5] pointer at 2
 
 ```mermaid
 flowchart TD
@@ -1173,19 +1095,13 @@ FINAL: [1, 2, 3, 5, 8, 9] ✓
 ```
 
 **Flow:**
-- Array: [5, 2, 8, 1, 9, 3]
-- ↓
-- STEP 1: Choose pivot (last element) = 3
-- ↓
-- Partition around 3
-- ↓
-- i starts at -1, j scans array
-- ↓
-- j=0: 5 > 3, skip
-- ↓
-- j=1: 2 < 3, i++, swap arr[0] and arr[1]
-- ↓
-- j=2: 8 > 3, skip
+1. Array: [5, 2, 8, 1, 9, 3]
+2. STEP 1: Choose pivot (last element) = 3
+3. Partition around 3
+4. i starts at -1, j scans array
+5. j=0: 5 > 3, skip
+6. j=1: 2 < 3, i++, swap arr[0] and arr[1]
+7. j=2: 8 > 3, skip
 
 ```mermaid
 flowchart TD
@@ -1251,12 +1167,12 @@ private int partition(int[] arr, int low, int high) {
 
 ---
 
-
 ---
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -1283,6 +1199,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -1317,6 +1234,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -1379,6 +1297,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -1413,6 +1332,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -1425,8 +1345,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -1492,5 +1410,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [< Previous](01_Algorithm_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02b_Sorting_Advanced.md)
+**Navigation**: [< Previous](01_Algorithm_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02b_Sorting_Advanced.md)

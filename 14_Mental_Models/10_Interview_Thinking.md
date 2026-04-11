@@ -38,13 +38,8 @@ The constraints are [CONSTRAINTS]. Is that correct?"
 ```
 
 **Flow:**
-- The constraints are [CONSTRAINTS]. Is that correct?'
-- ↓
-- This catches misunderstandings early
-- ↓
-- Shows the interviewer you're systematic
-- ↓
-- Buys you thinking time
+1. The constraints are [CONSTRAINTS]. Is that correct?' This catches misunderstandings early Shows the interviewer you're systematic
+2. Buys you thinking time
 
 ```mermaid
 flowchart TD
@@ -69,15 +64,9 @@ So the answer is [0, 1]."
 ```
 
 **Flow:**
-- 'Let me trace through the example:
-- ↓
-- Input: [2, 7, 11, 15], target = 9
-- ↓
-- So the answer is [0, 1].'
-- ↓
-- Walk through the example MANUALLY
-- ↓
-- This often reveals the algorithm naturally
+1. 'Let me trace through the example: Input: [2, 7, 11, 15], target = 9 So the answer is [0, 1].'
+2. Walk through the example MANUALLY
+3. This often reveals the algorithm naturally
 
 ```mermaid
 flowchart TD
@@ -108,13 +97,9 @@ Shall I code this up?"
 ```
 
 **Flow:**
-- 1. Brute force: Check all pairs
-- ↓
-- O(n²)
-- ↓
-- 2. Better: Use a HashMap to store values we've see
-- ↓
-- O(n)
+1. Brute force: Check all pairs
+2. O(n²)
+3. Better: Use a HashMap to store values we've see O(n)
 
 ```mermaid
 flowchart LR
@@ -138,9 +123,8 @@ flowchart LR
 ```
 
 **Flow:**
-- 'I'm initializing a HashMap to store value
-- ↓
-- index...'
+1. 'I'm initializing a HashMap to store value
+2. index...'
 
 ```mermaid
 flowchart LR
@@ -160,13 +144,10 @@ i=1: num=7, complement=2, found in map at index 0 → return [0, 1] ✅"
 ```
 
 **Flow:**
-- i=0: num=2, complement=7, not in map
-- ↓
-- add {2:0}
-- ↓
-- i=1: num=7, complement=2, found in map at index 0
-- ↓
-- return [0, 1] ✅'
+1. i=0: num=2, complement=7, not in map
+2. add {2:0}
+3. i=1: num=7, complement=2, found in map at index 0
+4. return [0, 1] ✅'
 
 ```mermaid
 flowchart LR
@@ -199,11 +180,9 @@ flowchart LR
 ```
 
 **Flow:**
-- Use a different, maybe larger example
-- ↓
-- Trace manually — the pattern often emerges
-- ↓
-- Ask yourself: 'What am I doing naturally, as a human?
+1. Use a different, maybe larger example
+2. Trace manually — the pattern often emerges
+3. Ask yourself: 'What am I doing naturally, as a human?
 
 ```mermaid
 flowchart TD
@@ -225,29 +204,7 @@ I need range queries → Segment Tree"
 ```
 
 **Flow:**
-- 'I need fast lookup
-- ↓
-- HashMap
-- ↓
-- I need sorted order
-- ↓
-- TreeMap or sorted array
-- ↓
-- I need LIFO
-- ↓
-- Stack
-- ↓
-- I need FIFO
-- ↓
-- Queue
-- ↓
-- I need min/max quickly
-- ↓
-- Heap
-- ↓
-- I need range queries
-- ↓
-- Segment Tree'
+1. 'I need fast lookup HashMap I need sorted order TreeMap or sorted array I need LIFO Stack I need FIFO Queue I need min/max quickly Heap I need range queries Segment Tree'
 
 ```mermaid
 flowchart TD
@@ -282,9 +239,7 @@ flowchart TD
 ```
 
 **Flow:**
-- Solve the simpler version
-- ↓
-- extend to the real problem
+1. Solve the simpler version extend to the real problem
 
 ```mermaid
 flowchart LR
@@ -419,11 +374,9 @@ private int findMostFrequent(Map<Integer, Integer> freq) { ... }
 ```
 
 **Flow:**
-- For read-heavy
-- ↓
-- ReadWriteLock. For write-heavy
-- ↓
-- ConcurrentHashMap.'
+1. For read-heavy
+2. ReadWriteLock. For write-heavy
+3. ConcurrentHashMap.'
 
 ```mermaid
 flowchart LR
@@ -470,19 +423,12 @@ MINDSET RESET (30 min before):
 ```
 
 **Flow:**
-- LOGISTICS (Night Before):
-- ↓
-- □ Test camera, mic, screen sharing
-- ↓
-- □ Have backup plan (phone hotspot, alternate device)
-- ↓
-- □ Prepare water, pen+paper, quiet room
-- ↓
-- □ Set two alarms (phone + system)
-- ↓
-- TECHNICAL WARM-UP (Morning of):
-- ↓
-- □ Review your top 20 solved problems — patterns not cod
+1. LOGISTICS (Night Before):
+2. □ Test camera, mic, screen sharing
+3. □ Have backup plan (phone hotspot, alternate device)
+4. □ Prepare water, pen+paper, quiet room
+5. □ Set two alarms (phone + system) TECHNICAL WARM-UP (Morning of):
+6. □ Review your top 20 solved problems — patterns not cod
 
 ```mermaid
 flowchart TD
@@ -514,13 +460,10 @@ flowchart TD
 ```
 
 **Flow:**
-- □ Take a deep breath when you first read the problem
-- ↓
-- □ Read the problem TWICE before starting
-- ↓
-- □ If you're stuck, talk about what you're considering
-- ↓
-- □ Remember: the interviewer WANTS you to succeed
+1. □ Take a deep breath when you first read the problem
+2. □ Read the problem TWICE before starting
+3. □ If you're stuck, talk about what you're considering
+4. □ Remember: the interviewer WANTS you to succeed
 
 ```mermaid
 flowchart TD
@@ -581,19 +524,12 @@ After coding:
 ```
 
 **Flow:**
-- Before coding:
-- ↓
-- □ Restate the problem in my own words
-- ↓
-- □ Clarify edge cases and constraints
-- ↓
-- □ Propose brute force first
-- ↓
-- □ Propose optimized approach
-- ↓
-- □ Get interviewer's OK to start coding
-- ↓
-- While coding:
+1. Before coding:
+2. □ Restate the problem in my own words
+3. □ Clarify edge cases and constraints
+4. □ Propose brute force first
+5. □ Propose optimized approach
+6. □ Get interviewer's OK to start coding While coding:
 
 ```mermaid
 flowchart TD
@@ -674,13 +610,7 @@ DIFFICULTY DISTRIBUTION (typical onsite):
 ```
 
 **Flow:**
-- • Two Sum variants (HashMap) / • Valid Parentheses (Sta
-- ↓
-- • Design LRU Cache (HashMap + DLL) / • Serialize/Deseri
-- ↓
-- • DP problems (Coin Change, LCS, Knapsack variants) / •
-- ↓
-- Amazon: Arrays, Hash Maps, Trees, BFS/DFS, Design / Goo
+1. • Two Sum variants (HashMap) / • Valid Parentheses (Sta • Design LRU Cache (HashMap + DLL) / • Serialize/Deseri • DP problems (Coin Change, LCS, Knapsack variants) / • Amazon: Arrays, Hash Maps, Trees, BFS/DFS, Design / Goo
 
 ```mermaid
 flowchart TD
@@ -713,19 +643,11 @@ WEEKLY REVIEW:
 ```
 
 **Flow:**
-- WITHIN 1 HOUR OF THE INTERVIEW:
-- ↓
-- □ Record your approach — what you said, what you coded
-- ↓
-- □ Note where you struggled or got hints
-- ↓
-- SAME DAY:
-- ↓
-- □ Look up the problems on LeetCode — solve them cleanly
-- ↓
-- □ Identify: 'What pattern should I have recognized fast
-- ↓
-- □ Add any new patterns to your study list
+1. WITHIN 1 HOUR OF THE INTERVIEW:
+2. □ Record your approach — what you said, what you coded
+3. □ Note where you struggled or got hints SAME DAY:
+4. □ Look up the problems on LeetCode — solve them cleanly
+5. □ Identify: 'What pattern should I have recognized fast □ Add any new patterns to your study list
 
 ```mermaid
 flowchart TD

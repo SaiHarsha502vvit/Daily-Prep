@@ -29,9 +29,8 @@ Graph Database    │ Neo4j, Amazon     │ Nodes + edges  │ Social networks,
 ```
 
 **Flow:**
-- Key-Value Store Redis, DynamoDB key
-- ↓
-- blob Caching, sessions,
+1. Key-Value Store Redis, DynamoDB key
+2. blob Caching, sessions,
 
 ```mermaid
 flowchart LR
@@ -68,19 +67,13 @@ flowchart LR
 ```
 
 **Flow:**
-- CHOOSE SQL WHEN: CHOOSE NoSQL WHEN:
-- ↓
-- ✅ Complex queries with JOINs ✅ Flexible/evolving schema
-- ↓
-- ✅ ACID transactions required ✅ Massive write throughput
-- ↓
-- ✅ Strong consistency needed ✅ Horizontal scaling needed
-- ↓
-- ✅ Complex reporting/analytics ✅ Low latency at any scal
-- ↓
-- EXAMPLES: EXAMPLES:
-- ↓
-- • Banking, financial systems • Product catalogs (MongoD
+1. CHOOSE SQL WHEN: CHOOSE NoSQL WHEN:
+2. ✅ Complex queries with JOINs ✅ Flexible/evolving schema
+3. ✅ ACID transactions required ✅ Massive write throughput
+4. ✅ Strong consistency needed ✅ Horizontal scaling needed
+5. ✅ Complex reporting/analytics ✅ Low latency at any scal
+6. EXAMPLES: EXAMPLES:
+7. • Banking, financial systems • Product catalogs (MongoD
 
 ```mermaid
 flowchart TD
@@ -149,19 +142,13 @@ db.events.createIndex({ createdAt: 1 }, { expireAfterSeconds: 86400 }) // TTL in
 ```
 
 **Flow:**
-- name: 'John Doe',
-- ↓
-- email: 'john@example.com',
-- ↓
-- address: { // embedded document (denormalized)
-- ↓
-- street: '123 Main St',
-- ↓
-- city: 'Springfield',
-- ↓
-- state: 'IL'
-- ↓
-- orders: [ // embedded array
+1. name: 'John Doe',
+2. email: 'john@example.com',
+3. address: { // embedded document (denormalized)
+4. street: '123 Main St',
+5. city: 'Springfield',
+6. state: 'IL'
+7. orders: [ // embedded array
 
 ```mermaid
 flowchart TD
@@ -242,21 +229,14 @@ SET lock:order:456 "owner-id" NX EX 30  // acquire lock for 30s
 ```
 
 **Flow:**
-- GET user:1:name //
-- ↓
-- 'John'
-- ↓
-- HGETALL user:1 //
-- ↓
-- name: John, age: 30
-- ↓
-- RPOP queue:orders //
-- ↓
-- 'order123'
-- ↓
-- SISMEMBER user:1:tags 'premium' //
-- ↓
-- true
+1. GET user:1:name //
+2. 'John'
+3. HGETALL user:1 //
+4. name: John, age: 30
+5. RPOP queue:orders //
+6. 'order123'
+7. SISMEMBER user:1:tags 'premium' //
+8. true
 
 ```mermaid
 flowchart LR

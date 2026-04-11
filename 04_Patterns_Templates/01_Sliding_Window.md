@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Code_Templates.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Code_Templates.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — Sliding Window
 
-> **How do I know this is a Sliding Window problem?**
->
+**How do I know this is a Sliding Window problem?**
+
 
 | Signal in problem | Sub-pattern | Template |
 |---|---|---|
@@ -15,38 +15,38 @@
 | `"sum equals K"` (positive only) | **Variable Window** | `sum>target → shrink; sum==target → answer` |
 | `"minimum window substring"` | **Variable + 2 counters** | `have/need counters + HashMap` |
 
->
-> **The rule that never fails:**
-> ```
-> "contiguous" + "optimize length or value" = Sliding Window
-> Each element enters window ONCE and leaves ONCE → O(n)
->
-> Fixed window:    j - i + 1 == k        ← count elements, not indices!
-> Variable window: expand right, shrink left while invalid
-> ```
->
-> 🔗 **Practice problems here:** [Sliding Window PS](../05_Problem_Solving/05_Sliding_Window.md)
-> 📖 **Algo connection:** [Sorting (why arrays must be structured)](../03_Algorithms/02a_Sorting_Fundamentals.md)
-> 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
+
+**The rule that never fails:**
+```
+"contiguous" + "optimize length or value" = Sliding Window
+Each element enters window ONCE and leaves ONCE → O(n)
+
+Fixed window:    j - i + 1 == k        ← count elements, not indices!
+Variable window: expand right, shrink left while invalid
+```
+
+🔗 **Practice problems here:** [Sliding Window PS](../05_Problem_Solving/05_Sliding_Window.md)
+📖 **Algo connection:** [Sorting (why arrays must be structured)](../03_Algorithms/02a_Sorting_Fundamentals.md)
+📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
 
 
-> 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Sliding Window**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Sliding Window**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 # 🎯 SLIDING WINDOW MASTERY - THE COMPLETE MENTAL MODEL
 
@@ -366,11 +366,9 @@ Count = j - i + 1 = 4 - 2 + 1 = 3 ✅
 ```
 
 **Flow:**
-- Window at i=0, j=2:
-- ↓
-- Window at i=1, j=3:
-- ↓
-- Window at i=2, j=4:
+1. Window at i=0, j=2:
+2. Window at i=1, j=3:
+3. Window at i=2, j=4:
 
 ```mermaid
 flowchart TD
@@ -426,19 +424,13 @@ Questions are easier to remember than formulas!
 ```
 
 **Flow:**
-- THE EQUIVALENCE CHAIN - WHY j-i+1=k WORKS
-- ↓
-- These THREE expressions are MATHEMATICALLY EQUIVALENT:
-- ↓
-- j - i + 1 = k ← 'Window has K elements' ⭐ BEST!
-- ↓
-- j = i + k - 1 ← 'j is at last valid position'
-- ↓
-- j < i + k ← 'j hasn't crossed boundary'
-- ↓
-- Mathematical Proof:
-- ↓
-- Start with: j - i + 1 = k
+1. THE EQUIVALENCE CHAIN - WHY j-i+1=k WORKS
+2. These THREE expressions are MATHEMATICALLY EQUIVALENT:
+3. j - i + 1 = k ← 'Window has K elements' ⭐ BEST!
+4. j = i + k - 1 ← 'j is at last valid position'
+5. j < i + k ← 'j hasn't crossed boundary'
+6. Mathematical Proof:
+7. Start with: j - i + 1 = k
 
 ```mermaid
 flowchart TD
@@ -470,11 +462,9 @@ j < i + k              ← "j hasn't crossed boundary"
 ```
 
 **Flow:**
-- j - i + 1 = k ← 'Window has K elements' (BEST!)
-- ↓
-- j = i + k - 1 ← 'j is at last valid position'
-- ↓
-- j < i + k ← 'j hasn't crossed boundary'
+1. j - i + 1 = k ← 'Window has K elements' (BEST!)
+2. j = i + k - 1 ← 'j is at last valid position'
+3. j < i + k ← 'j hasn't crossed boundary'
 
 ```mermaid
 flowchart TD
@@ -533,11 +523,9 @@ SOLUTION: Use "j - i + 1 == k" and NEVER think about it again!
 ```
 
 **Flow:**
-- USING j < i + k: / j < 0 + 3 / j < 3 / Valid j
-- ↓
-- USING j <= i + k: ❌ WRONG / j <= 0 + 3 / j <=
-- ↓
-- USING j < k: ❌ WRONG (after first window) / After i
+1. USING j < i + k: / j < 0 + 3 / j < 3 / Valid j
+2. USING j <= i + k: ❌ WRONG / j <= 0 + 3 / j <=
+3. USING j < k: ❌ WRONG (after first window) / After i
 
 ```mermaid
 flowchart TD
@@ -586,36 +574,36 @@ Valid j: 0, 1, 2  ❌ (We need 1, 2, 3!)
 ## ✅ THE EXAM-SAFE PATTERN
 
 
-> EXAM-SAFE SLIDING WINDOW TEMPLATE
->
-> int i = 0;  // Window start (left pointer)
->
-> for (int j = 0; j < n; j++) {  // j expands window (right pointer)
->
-> // STEP 1: EXPAND - Include arr[j] in window
-> // (add to sum, add to hashmap, etc.)
->
-> if (j - i + 1 == k) {  // STEP 2: CHECK - "Do I have K elements?"
->
-> // STEP 3: PROCESS - Window is ready, do something
-> // (compare max, print result, etc.)
->
-> // STEP 4: SHRINK - Remove arr[i] from window
-> // (subtract from sum, remove from hashmap, etc.)
->
-> i++;  // STEP 5: SLIDE - Move window forward
-> }
-> }
->
-> ─────────────────────────────────────────────────────────────────────
->
-> WHY THIS IS PERFECT:
->
-> ✅ You count elements (j - i + 1), not indices
-> ✅ No confusion about < vs <=
-> ✅ Clear 5-step process: EXPAND → CHECK → PROCESS → SHRINK → SLIDE
-> ✅ Works for ANY window problem with small modifications
->
+EXAM-SAFE SLIDING WINDOW TEMPLATE
+
+int i = 0;  // Window start (left pointer)
+
+for (int j = 0; j < n; j++) {  // j expands window (right pointer)
+
+// STEP 1: EXPAND - Include arr[j] in window
+// (add to sum, add to hashmap, etc.)
+
+if (j - i + 1 == k) {  // STEP 2: CHECK - "Do I have K elements?"
+
+// STEP 3: PROCESS - Window is ready, do something
+// (compare max, print result, etc.)
+
+// STEP 4: SHRINK - Remove arr[i] from window
+// (subtract from sum, remove from hashmap, etc.)
+
+i++;  // STEP 5: SLIDE - Move window forward
+}
+}
+
+─────────────────────────────────────────────────────────────────────
+
+WHY THIS IS PERFECT:
+
+✅ You count elements (j - i + 1), not indices
+✅ No confusion about < vs <=
+✅ Clear 5-step process: EXPAND → CHECK → PROCESS → SHRINK → SLIDE
+✅ Works for ANY window problem with small modifications
+
 
 
 ### Pattern 1: Count-Based (Recommended)
@@ -666,21 +654,14 @@ Total windows processed: 4 = n - k + 1 = 5 - 2 + 1 ✅
 ```
 
 **Flow:**
-- j=1: i=0, window=[10,-1], count=1-0+1=2 ✅ PROCESS
-- ↓
-- i becomes 1
-- ↓
-- j=2: i=1, window=[-1,3], count=2-1+1=2 ✅ PROCESS
-- ↓
-- i becomes 2
-- ↓
-- j=3: i=2, window=[3,-2], count=3-2+1=2 ✅ PROCESS
-- ↓
-- i becomes 3
-- ↓
-- j=4: i=3, window=[-2,5], count=4-3+1=2 ✅ PROCESS
-- ↓
-- i becomes 4
+1. j=1: i=0, window=[10,-1], count=1-0+1=2 ✅ PROCESS
+2. i becomes 1
+3. j=2: i=1, window=[-1,3], count=2-1+1=2 ✅ PROCESS
+4. i becomes 2
+5. j=3: i=2, window=[3,-2], count=3-2+1=2 ✅ PROCESS
+6. i becomes 3
+7. j=4: i=3, window=[-2,5], count=4-3+1=2 ✅ PROCESS
+8. i becomes 4
 
 ```mermaid
 flowchart LR
@@ -848,11 +829,9 @@ When it equals k, I'm ready."
 ```
 
 **Flow:**
-- 'How many elements? j - i + 1
-- ↓
-- When it equals k, I'm ready.'
-- ↓
-- Confidence, clarity, correctness
+1. 'How many elements? j - i + 1
+2. When it equals k, I'm ready.'
+3. Confidence, clarity, correctness
 
 ```mermaid
 flowchart TD
@@ -943,8 +922,8 @@ You're ready. 🚀
 
 # 💪 Curated Practice Problems — Sliding Window & Two Pointers
 
-> **HOW TO USE**: Section 1 = fixed window (easiest). Section 2 = variable window. Section 3 = two pointers.
-> Master each section before moving to the next.
+**HOW TO USE**: Section 1 = fixed window (easiest). Section 2 = variable window. Section 3 = two pointers.
+Master each section before moving to the next.
 
 ---
 
@@ -962,20 +941,20 @@ You're ready. 🚀
 
 
 
-> 🔬 **Section Challenge — Section 1: Fixed-Size Sliding Window**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — Section 1: Fixed-Size Sliding Window**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## Section 2: Variable-Size Sliding Window
 
@@ -994,20 +973,20 @@ You're ready. 🚀
 
 
 
-> 🔬 **Section Challenge — Section 2: Variable-Size Sliding Window**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — Section 2: Variable-Size Sliding Window**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## Section 3: Two Pointers
 
@@ -1026,14 +1005,14 @@ You're ready. 🚀
 
 
 
-> 🔬 **Section Challenge — Section 3: Two Pointers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — Section 3: Two Pointers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## HIDDEN GEMS — Sliding Window & Two Pointers
 
@@ -1064,14 +1043,14 @@ _Based on your breakthrough understanding_
 
 ---
 
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Code_Templates.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Code_Templates.md)
 
-> 🔬 **Section Challenge — HIDDEN GEMS — Sliding Window & Two Pointers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — HIDDEN GEMS — Sliding Window & Two Pointers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 

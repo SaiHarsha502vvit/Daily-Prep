@@ -1,6 +1,6 @@
-> **Navigation**: [< Previous](20_Sorting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Recursion_Subsets.md)
+**Navigation**: [< Previous](20_Sorting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Recursion_Subsets.md)
 
-> **Problems 21** | [Prev](20_Sorting.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Recursion_Subsets.md)
+**Problems 21** | [Prev](20_Sorting.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Recursion_Subsets.md)
 
 ---
 
@@ -36,19 +36,13 @@
 ```
 
 **Flow:**
-- DESIGN PROBLEMS FUNDAMENTALS
-- ↓
-- WHAT 'DESIGN' MEANS IN INTERVIEWS:
-- ↓
-- Not system design (that's a separate round).
-- ↓
-- These are DATA STRUCTURE DESIGN problems:
-- ↓
-- 'Implement class X with operations A, B, C in O(?) time
-- ↓
-- THE 5 CATEGORIES:
-- ↓
-- Cache Design LRU, LFU, TTL Cache
+1. DESIGN PROBLEMS FUNDAMENTALS
+2. WHAT 'DESIGN' MEANS IN INTERVIEWS:
+3. Not system design (that's a separate round).
+4. These are DATA STRUCTURE DESIGN problems:
+5. 'Implement class X with operations A, B, C in O(?) time
+6. THE 5 CATEGORIES:
+7. Cache Design LRU, LFU, TTL Cache
 
 ```mermaid
 flowchart TD
@@ -143,9 +137,8 @@ flowchart TD
 ```
 
 **Flow:**
-- Need Combine / O(1) access + O(1) order HashMap + Doubl
-- ↓
-- COMMON MISTAKES / 1. Starting to code before listing AL
+1. Need Combine / O(1) access + O(1) order HashMap + Doubl
+2. COMMON MISTAKES / 1. Starting to code before listing AL
 
 ```mermaid
 flowchart TD
@@ -197,25 +190,16 @@ SOLUTION:
 ```
 
 **Flow:**
-- DIFFICULTY: Medium (but Hard to get right in interview)
-- ↓
-- PATTERN: HashMap + Doubly Linked List
-- ↓
-- PROBLEM: Design LRU cache with:
-- ↓
-- get(key)
-- ↓
-- return value if exists, else -1. Mark as use
-- ↓
-- get(key)
-- ↓
-- return value if exists, else -1. Mark as use
-- ↓
-- Both operations must be O(1).
-- ↓
-- WHY THIS IS #1 INTERVIEW PROBLEM:
-- ↓
-- THE KEY INSIGHT:
+1. DIFFICULTY: Medium (but Hard to get right in interview)
+2. PATTERN: HashMap + Doubly Linked List
+3. PROBLEM: Design LRU cache with:
+4. get(key)
+5. return value if exists, else -1. Mark as use
+6. get(key)
+7. return value if exists, else -1. Mark as use
+8. Both operations must be O(1).
+9. WHY THIS IS #1 INTERVIEW PROBLEM:
+10. THE KEY INSIGHT:
 
 ```mermaid
 flowchart TD
@@ -302,9 +286,8 @@ FOLLOW-UP: "Make it thread-safe" → Use ReentrantReadWriteLock.
 ```
 
 **Flow:**
-- FOLLOW-UP: 'Make it thread-safe'
-- ↓
-- Use ReentrantReadWriteLock.
+1. FOLLOW-UP: 'Make it thread-safe'
+2. Use ReentrantReadWriteLock.
 
 ```mermaid
 flowchart LR
@@ -340,19 +323,13 @@ SOLUTION:
 ```
 
 **Flow:**
-- DIFFICULTY: Medium
-- ↓
-- COMPANIES: Amazon, Google, Bloomberg, Microsoft
-- ↓
-- PATTERN: Auxiliary Stack
-- ↓
-- KEY INSIGHT:
-- ↓
-- When you push 5, 3, 7:
-- ↓
-- Main: [5, 3, 7] ← top = 7
-- ↓
-- MinSt: [5, 3, 3] ← top = 3 (current min)
+1. DIFFICULTY: Medium
+2. COMPANIES: Amazon, Google, Bloomberg, Microsoft
+3. PATTERN: Auxiliary Stack
+4. KEY INSIGHT:
+5. When you push 5, 3, 7:
+6. Main: [5, 3, 7] ← top = 7
+7. MinSt: [5, 3, 3] ← top = 3 (current min)
 
 ```mermaid
 flowchart TD
@@ -444,19 +421,13 @@ SOLUTION:
 ```
 
 **Flow:**
-- DIFFICULTY: Medium
-- ↓
-- COMPANIES: Google, Amazon, Facebook, Microsoft
-- ↓
-- PATTERN: Trie
-- ↓
-- PROBLEM: Implement Trie with insert, search, startsWith
-- ↓
-- WHY TRIE?
-- ↓
-- Searching 'apple' in a HashSet: O(L) hash computation
-- ↓
-- Searching 'app*' prefix in HashSet: O(N·L) check every
+1. DIFFICULTY: Medium
+2. COMPANIES: Google, Amazon, Facebook, Microsoft
+3. PATTERN: Trie
+4. PROBLEM: Implement Trie with insert, search, startsWith
+5. WHY TRIE?
+6. Searching 'apple' in a HashSet: O(L) hash computation
+7. Searching 'app*' prefix in HashSet: O(N·L) check every
 
 ```mermaid
 flowchart TD
@@ -524,8 +495,8 @@ VARIANT: Use HashMap<Character, Trie> instead of array for Unicode support.
 
 
 
-> 🔬 **Section Challenge — PROBLEM 3: Implement Trie / Prefix Tree (LC 208)**
->>
+🔬 **Section Challenge — PROBLEM 3: Implement Trie / Prefix Tree (LC 208)**
+>
 
 ## PROBLEM 4: Design Add and Search Words (LC 211)
 
@@ -544,11 +515,9 @@ SOLUTION:
 ```
 
 **Flow:**
-- addWord('bad'); search('b.d')
-- ↓
-- true; search('b..')
-- ↓
-- true
+1. addWord('bad'); search('b.d')
+2. true; search('b..')
+3. true
 
 ```mermaid
 flowchart LR
@@ -640,29 +609,18 @@ SOLUTION:
 ```
 
 **Flow:**
-- get(key)
-- ↓
-- return value, increase frequency
-- ↓
-- put(key, value)
-- ↓
-- insert/update. At capacity, evict LEAST frequent.
-- ↓
-- keyMap: key
-- ↓
-- Node(key, val, freq)
-- ↓
-- freqMap: freq
-- ↓
-- DoublyLinkedList of nodes with that frequency
-- ↓
-- If exists
-- ↓
-- update value + same as GET
-- ↓
-- If capacity full
-- ↓
-- evict tail of freqMap[minFreq]
+1. get(key)
+2. return value, increase frequency
+3. put(key, value)
+4. insert/update. At capacity, evict LEAST frequent.
+5. keyMap: key
+6. Node(key, val, freq)
+7. freqMap: freq
+8. DoublyLinkedList of nodes with that frequency
+9. If exists
+10. update value + same as GET
+11. If capacity full
+12. evict tail of freqMap[minFreq]
 
 ```mermaid
 flowchart TD
@@ -826,20 +784,20 @@ FOLLOW-UP: Real HashMap uses power-of-2 sizing, tree-ify at 8 collisions,
 
 
 
-> 🔬 **Section Challenge — PROBLEM 6: Design HashMap (LC 706)**
->
-> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-> <details><summary>Answer</summary>
->
-> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-> <details><summary>Answer</summary>
->
-> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-> </details>
->
+🔬 **Section Challenge — PROBLEM 6: Design HashMap (LC 706)**
+
+**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+<details><summary>Answer</summary>
+
+Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+</details>
+
+**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+<details><summary>Answer</summary>
+
+Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+</details>
+
 
 ## PROBLEM 7: Insert Delete GetRandom O(1) (LC 380)
 
@@ -870,17 +828,12 @@ SOLUTION:
 ```
 
 **Flow:**
-- ArrayList
-- ↓
-- O(1) random access by index
-- ↓
-- Swap target with LAST element, then remove last
-- ↓
-- O(1)!
-- ↓
-- HashMap: val
-- ↓
-- index in ArrayList
+1. ArrayList
+2. O(1) random access by index
+3. Swap target with LAST element, then remove last
+4. O(1)!
+5. HashMap: val
+6. index in ArrayList
 
 ```mermaid
 flowchart LR
@@ -1006,9 +959,8 @@ SOLUTION:
 ```
 
 **Flow:**
-- getNewsFeed(userId)
-- ↓
-- 10 most recent tweets from user + followees
+1. getNewsFeed(userId)
+2. 10 most recent tweets from user + followees
 
 ```mermaid
 flowchart LR
@@ -1136,11 +1088,9 @@ KEY: Using "null" markers preserves the tree structure uniquely.
 ```
 
 **Flow:**
-- FLATTEN NESTED LIST ITERATOR (LeetCode 341 - Medium)
-- ↓
-- Example: [[1,1],2,[1,1]]
-- ↓
-- 1, 1, 2, 1, 1
+1. FLATTEN NESTED LIST ITERATOR (LeetCode 341 - Medium)
+2. Example: [[1,1],2,[1,1]]
+3. 1, 1, 2, 1, 1
 
 ```mermaid
 flowchart TD
@@ -1194,13 +1144,10 @@ public class NestedIterator implements Iterator<Integer> {
 ```
 
 **Flow:**
-- DESIGN CIRCULAR QUEUE (LeetCode 622 - Medium)
-- ↓
-- isEmpty, isFull.
-- ↓
-- KEY: Array with head/tail pointers, modular arithmetic.
-- ↓
-- All operations O(1)
+1. DESIGN CIRCULAR QUEUE (LeetCode 622 - Medium)
+2. isEmpty, isFull.
+3. KEY: Array with head/tail pointers, modular arithmetic.
+4. All operations O(1)
 
 ```mermaid
 flowchart TD
@@ -1268,11 +1215,9 @@ class MyCircularQueue {
 ```
 
 **Flow:**
-- SNAPSHOT ARRAY (LeetCode 1146 - Medium)
-- ↓
-- Example:
-- ↓
-- set/snap O(1), get O(log S) where S = number of snaps
+1. SNAPSHOT ARRAY (LeetCode 1146 - Medium)
+2. Example:
+3. set/snap O(1), get O(log S) where S = number of snaps
 
 ```mermaid
 flowchart TD
@@ -1344,11 +1289,9 @@ class SnapshotArray {
 ```
 
 **Flow:**
-- STOCK PRICE FLUCTUATION (LeetCode 2034 - Medium)
-- ↓
-- update can CORRECT previous timestamp's price.
-- ↓
-- update O(log n), current/max/min O(1)
+1. STOCK PRICE FLUCTUATION (LeetCode 2034 - Medium)
+2. update can CORRECT previous timestamp's price.
+3. update O(log n), current/max/min O(1)
 
 ```mermaid
 flowchart TD
@@ -1413,39 +1356,23 @@ class StockPrice {
 ```
 
 **Flow:**
-- FIND MEDIAN FROM DATA STREAM (LeetCode 295 - Hard)
-- ↓
-- addNum(int num) — add integer from data stream
-- ↓
-- findMedian() — return median of all elements so far
-- ↓
-- Example:
-- ↓
-- add(1), add(2)
-- ↓
-- median=1.5, add(3)
-- ↓
-- median=2.0
-- ↓
-- add(1), add(2)
-- ↓
-- median=1.5, add(3)
-- ↓
-- median=2.0
-- ↓
-- Keep balanced:
-- ↓
-- maxHeap.size - minHeap.size
-- ↓
-- <= 1
-- ↓
-- Keep balanced:
-- ↓
-- maxHeap.size - minHeap.size
-- ↓
-- <= 1
-- ↓
-- addNum O(log n), findMedian O(1)
+1. FIND MEDIAN FROM DATA STREAM (LeetCode 295 - Hard)
+2. addNum(int num) — add integer from data stream
+3. findMedian() — return median of all elements so far
+4. Example:
+5. add(1), add(2)
+6. median=1.5, add(3)
+7. median=2.0
+8. add(1), add(2)
+9. median=1.5, add(3)
+10. median=2.0
+11. Keep balanced:
+12. maxHeap.size - minHeap.size
+13. <= 1
+14. Keep balanced:
+15. maxHeap.size - minHeap.size
+16. <= 1
+17. addNum O(log n), findMedian O(1)
 
 ```mermaid
 flowchart TD
@@ -1679,4 +1606,4 @@ DIP: high-level modules should not depend on low-level modules — both should d
 </details>
 
 
-> **Navigation**: [< Previous](20_Sorting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Recursion_Subsets.md)
+**Navigation**: [< Previous](20_Sorting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Recursion_Subsets.md)

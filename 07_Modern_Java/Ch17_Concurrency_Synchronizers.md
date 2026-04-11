@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](Ch19_JVM_Object_Model.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](Ch19_JVM_Object_Model.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 35 — Concurrency Synchronizers Deep: Semaphore, CountDownLatch, CyclicBarrier, Phaser & Beyond
 
-> **"Synchronized and volatile are training wheels. Real concurrent systems use Semaphores to control throughput, CountDownLatch for startup sequencing, CyclicBarrier for parallel phases, and Phaser for dynamic coordination. This chapter gives you the deep reasoning for WHEN and WHY."**
+**"Synchronized and volatile are training wheels. Real concurrent systems use Semaphores to control throughput, CountDownLatch for startup sequencing, CyclicBarrier for parallel phases, and Phaser for dynamic coordination. This chapter gives you the deep reasoning for WHEN and WHY."**
 
 ---
 
@@ -26,29 +26,29 @@
 ### Deep Reasoning
 
 
-> THE CONCERT VENUE ANALOGY
->
-> You're organizing a large concert. Different coordination needs:
->
-> Semaphore     = Parking lot gate
-> "Only 50 cars at a time. Car leaves → next car enters."
-> → Controls concurrent access to N resources
->
-> CountDownLatch = Pre-show checklist
-> "Sound ✓, Lights ✓, Security ✓ → Open the doors!"
-> → Wait until N tasks complete, then proceed. ONE-TIME use.
->
-> CyclicBarrier = Band performing in rounds
-> "All 4 musicians ready? → Play verse. All ready? → Chorus."
-> → N threads sync at a point, REUSABLE for multiple rounds.
->
-> Phaser        = Flexible stage management
-> "Phase 1: 5 crew set up. Phase 2: 3 crew handle sound."
-> → Dynamic: participants can join/leave between phases.
->
-> Exchanger     = Backstage pass swap
-> "I give you my VIP pass, you give me your backstage pass."
-> → Two threads each give and receive one item.
+THE CONCERT VENUE ANALOGY
+
+You're organizing a large concert. Different coordination needs:
+
+Semaphore     = Parking lot gate
+"Only 50 cars at a time. Car leaves → next car enters."
+→ Controls concurrent access to N resources
+
+CountDownLatch = Pre-show checklist
+"Sound ✓, Lights ✓, Security ✓ → Open the doors!"
+→ Wait until N tasks complete, then proceed. ONE-TIME use.
+
+CyclicBarrier = Band performing in rounds
+"All 4 musicians ready? → Play verse. All ready? → Chorus."
+→ N threads sync at a point, REUSABLE for multiple rounds.
+
+Phaser        = Flexible stage management
+"Phase 1: 5 crew set up. Phase 2: 3 crew handle sound."
+→ Dynamic: participants can join/leave between phases.
+
+Exchanger     = Backstage pass swap
+"I give you my VIP pass, you give me your backstage pass."
+→ Two threads each give and receive one item.
 
 
 ### Decision Matrix: Which Synchronizer to Use
@@ -76,19 +76,13 @@
 ```
 
 **Flow:**
-- Your Scenario Use This
-- ↓
-- Limit concurrent connections/threads Semaphore
-- ↓
-- Wait for N tasks to finish, then go CountDownLatch
-- ↓
-- N threads meet at barrier, repeat CyclicBarrier
-- ↓
-- Threads arrive at phases dynamically Phaser
-- ↓
-- Two threads exchange data Exchanger
-- ↓
-- Exclusive access (mutual exclusion) ReentrantLock / syn
+1. Your Scenario Use This
+2. Limit concurrent connections/threads Semaphore
+3. Wait for N tasks to finish, then go CountDownLatch
+4. N threads meet at barrier, repeat CyclicBarrier
+5. Threads arrive at phases dynamically Phaser
+6. Two threads exchange data Exchanger
+7. Exclusive access (mutual exclusion) ReentrantLock / syn
 
 ```mermaid
 flowchart TD
@@ -114,29 +108,29 @@ flowchart TD
 ## 2. Semaphore: The Parking Lot Pattern
 
 ### The Freeze Question
-> "How is a Semaphore different from a Lock?"
+"How is a Semaphore different from a Lock?"
 
 ### Deep Reasoning
 
 
-> THE PARKING LOT ANALOGY
->
-> Lock = single-car garage
-> → ONE thread enters at a time
-> → The thread that locked MUST unlock (owner-based)
->
-> Semaphore = parking lot with N spots
-> → N threads can enter simultaneously
-> → ANY thread can release a permit (not owner-based!)
-> → When full, next thread waits until a spot opens
->
-> KEY DIFFERENCE:
-> Lock:      1 thread, owner releases
-> Semaphore: N threads, anyone can release
->
-> Semaphore(1) ≈ Lock, but WITHOUT ownership enforcement
-> → Thread A acquires, Thread B can release → INTENTIONAL!
-> → Useful for signaling between threads
+THE PARKING LOT ANALOGY
+
+Lock = single-car garage
+→ ONE thread enters at a time
+→ The thread that locked MUST unlock (owner-based)
+
+Semaphore = parking lot with N spots
+→ N threads can enter simultaneously
+→ ANY thread can release a permit (not owner-based!)
+→ When full, next thread waits until a spot opens
+
+KEY DIFFERENCE:
+Lock:      1 thread, owner releases
+Semaphore: N threads, anyone can release
+
+Semaphore(1) ≈ Lock, but WITHOUT ownership enforcement
+→ Thread A acquires, Thread B can release → INTENTIONAL!
+→ Useful for signaling between threads
 
 
 ### Code — Connection Pool Limiter
@@ -207,31 +201,19 @@ public class ConnectionPool {
 ```
 
 **Flow:**
-- Semaphore is built on AbstractQueuedSynchronizer (AQS):
-- ↓
-- AQS.state = number of available permits
-- ↓
-- acquire():
-- ↓
-- 1. CAS: state = state - 1
-- ↓
-- 2. If state >= 0
-- ↓
-- proceed (got permit)
-- ↓
-- 2. If state >= 0
-- ↓
-- proceed (got permit)
-- ↓
-- 3. If state < 0
-- ↓
-- park thread in CLH queue (wait)
-- ↓
-- 3. If state < 0
-- ↓
-- park thread in CLH queue (wait)
-- ↓
-- release():
+1. Semaphore is built on AbstractQueuedSynchronizer (AQS):
+2. AQS.state = number of available permits
+3. acquire():
+4. 1. CAS: state = state - 1
+5. 2. If state >= 0
+6. proceed (got permit)
+7. 2. If state >= 0
+8. proceed (got permit)
+9. 3. If state < 0
+10. park thread in CLH queue (wait)
+11. 3. If state < 0
+12. park thread in CLH queue (wait)
+13. release():
 
 ```mermaid
 flowchart TD
@@ -256,19 +238,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 2. Semaphore: The Parking Lot Pattern**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 2. Semaphore: The Parking Lot Pattern**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 3. CountDownLatch: The Rocket Launch Countdown
 
 ### The Freeze Question
-> "How do you wait for multiple threads to complete before proceeding?"
+"How do you wait for multiple threads to complete before proceeding?"
 
 ### Deep Reasoning
 
@@ -296,53 +278,30 @@ flowchart TD
 ```
 
 **Flow:**
-- THE ROCKET LAUNCH ANALOGY
-- ↓
-- Mission Control: 'We launch when 5 systems report READY
-- ↓
-- CountDownLatch(5):
-- ↓
-- Navigation system: 'Ready!'
-- ↓
-- countDown()
-- ↓
-- count = 4
-- ↓
-- Navigation system: 'Ready!'
-- ↓
-- countDown()
-- ↓
-- count = 4
-- ↓
-- Fuel system: 'Ready!'
-- ↓
-- countDown()
-- ↓
-- count = 3
-- ↓
-- Fuel system: 'Ready!'
-- ↓
-- countDown()
-- ↓
-- count = 3
-- ↓
-- Guidance system: 'Ready!'
-- ↓
-- countDown()
-- ↓
-- count = 2
-- ↓
-- Guidance system: 'Ready!'
-- ↓
-- countDown()
-- ↓
-- count = 2
-- ↓
-- Communication: 'Ready!'
-- ↓
-- countDown()
-- ↓
-- count = 1
+1. THE ROCKET LAUNCH ANALOGY
+2. Mission Control: 'We launch when 5 systems report READY
+3. CountDownLatch(5):
+4. Navigation system: 'Ready!'
+5. countDown()
+6. count = 4
+7. Navigation system: 'Ready!'
+8. countDown()
+9. count = 4
+10. Fuel system: 'Ready!'
+11. countDown()
+12. count = 3
+13. Fuel system: 'Ready!'
+14. countDown()
+15. count = 3
+16. Guidance system: 'Ready!'
+17. countDown()
+18. count = 2
+19. Guidance system: 'Ready!'
+20. countDown()
+21. count = 2
+22. Communication: 'Ready!'
+23. countDown()
+24. count = 1
 
 ```mermaid
 flowchart TD
@@ -438,7 +397,7 @@ startGun.countDown();      // BANG! All 10 threads released at once
 ## 4. CyclicBarrier: The Hiking Group at Checkpoints
 
 ### The Freeze Question
-> "How is CyclicBarrier different from CountDownLatch?"
+"How is CyclicBarrier different from CountDownLatch?"
 
 ### Deep Reasoning
 
@@ -472,33 +431,20 @@ KEY DIFFERENCES from CountDownLatch:
 ```
 
 **Flow:**
-- THE HIKING GROUP ANALOGY
-- ↓
-- 5 hikers agree: 'Nobody moves on until everyone reaches
-- ↓
-- checkpoint.'
-- ↓
-- Checkpoint 1 (valley):
-- ↓
-- Alice arrives
-- ↓
-- waits... (1/5)
-- ↓
-- Alice arrives
-- ↓
-- waits... (1/5)
-- ↓
-- Bob arrives
-- ↓
-- waits... (2/5)
-- ↓
-- Bob arrives
-- ↓
-- waits... (2/5)
-- ↓
-- Charlie arrives
-- ↓
-- waits... (3/5)
+1. THE HIKING GROUP ANALOGY
+2. 5 hikers agree: 'Nobody moves on until everyone reaches
+3. checkpoint.'
+4. Checkpoint 1 (valley):
+5. Alice arrives
+6. waits... (1/5)
+7. Alice arrives
+8. waits... (1/5)
+9. Bob arrives
+10. waits... (2/5)
+11. Bob arrives
+12. waits... (2/5)
+13. Charlie arrives
+14. waits... (3/5)
 
 ```mermaid
 flowchart TD
@@ -591,19 +537,13 @@ public class ParallelSimulation {
 ```
 
 **Flow:**
-- WHAT HAPPENS WHEN ONE THREAD FAILS AT A BARRIER?
-- ↓
-- If Thread 3 throws exception while others await:
-- ↓
-- barrier.await() throws BrokenBarrierException for ALL
-- ↓
-- The barrier is 'broken' — all waiting threads wake up
-- ↓
-- Future calls to await() also throw BrokenBarrierExcep
-- ↓
-- Must call barrier.reset() to reuse
-- ↓
-- If Thread 3 is interrupted:
+1. WHAT HAPPENS WHEN ONE THREAD FAILS AT A BARRIER?
+2. If Thread 3 throws exception while others await:
+3. barrier.await() throws BrokenBarrierException for ALL
+4. The barrier is 'broken' — all waiting threads wake up
+5. Future calls to await() also throw BrokenBarrierExcep
+6. Must call barrier.reset() to reuse
+7. If Thread 3 is interrupted:
 
 ```mermaid
 flowchart TD
@@ -654,19 +594,13 @@ flowchart TD
 ```
 
 **Flow:**
-- THE RELAY RACE ANALOGY
-- ↓
-- Phaser = A relay race where:
-- ↓
-- Runners can JOIN mid-race (register)
-- ↓
-- Runners can DROP OUT (arriveAndDeregister)
-- ↓
-- Number of runners changes between legs (phases)
-- ↓
-- vs CyclicBarrier:
-- ↓
-- Phaser = Dynamic. Team adapts. Phase advances normally.
+1. THE RELAY RACE ANALOGY
+2. Phaser = A relay race where:
+3. Runners can JOIN mid-race (register)
+4. Runners can DROP OUT (arriveAndDeregister)
+5. Number of runners changes between legs (phases)
+6. vs CyclicBarrier:
+7. Phaser = Dynamic. Team adapts. Phase advances normally.
 
 ```mermaid
 flowchart TD
@@ -752,14 +686,14 @@ phaser.arriveAndAwaitAdvance();  // Waiter proceeds when all arrive
 
 
 
-> 🔬 **Section Challenge — 5. Phaser: The Flexible Multi-Phase Coordinator**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 5. Phaser: The Flexible Multi-Phase Coordinator**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 6. Exchanger: The Two-Person Handoff
 
@@ -787,19 +721,13 @@ phaser.arriveAndAwaitAdvance();  // Waiter proceeds when all arrive
 ```
 
 **Flow:**
-- THE BATON PASS ANALOGY
-- ↓
-- Two runners meet at a point. Each gives their baton to
-- ↓
-- other. Both must arrive before either can leave.
-- ↓
-- Thread A has: buffer1 (full data)
-- ↓
-- Thread B has: buffer2 (empty buffer)
-- ↓
-- USE CASE: Double-buffered data pipeline
-- ↓
-- Producer fills buffer1, consumer processes buffer2
+1. THE BATON PASS ANALOGY
+2. Two runners meet at a point. Each gives their baton to
+3. other. Both must arrive before either can leave.
+4. Thread A has: buffer1 (full data)
+5. Thread B has: buffer2 (empty buffer)
+6. USE CASE: Double-buffered data pipeline
+7. Producer fills buffer1, consumer processes buffer2
 
 ```mermaid
 flowchart TD
@@ -851,13 +779,13 @@ new Thread(() -> {
 
 
 
-> 🔬 **Section Challenge — 6. Exchanger: The Two-Person Handoff**
->>
+🔬 **Section Challenge — 6. Exchanger: The Two-Person Handoff**
+>
 
 ## 7. Livelock vs Deadlock vs Starvation
 
 ### The Freeze Question
-> "What's the difference between deadlock, livelock, and starvation?"
+"What's the difference between deadlock, livelock, and starvation?"
 
 ### Deep Reasoning
 
@@ -888,19 +816,13 @@ new Thread(() -> {
 ```
 
 **Flow:**
-- THE HALLWAY ANALOGIES
-- ↓
-- DEADLOCK = Two people in a narrow hallway, face to face
-- ↓
-- 'You go first!' 'No, YOU go first!'
-- ↓
-- Neither moves. Both stuck forever.
-- ↓
-- Threads: A holds lock1, wants lock2.
-- ↓
-- B holds lock2, wants lock1.
-- ↓
-- Neither can proceed. CPU idle.
+1. THE HALLWAY ANALOGIES
+2. DEADLOCK = Two people in a narrow hallway, face to face
+3. 'You go first!' 'No, YOU go first!'
+4. Neither moves. Both stuck forever.
+5. Threads: A holds lock1, wants lock2.
+6. B holds lock2, wants lock1.
+7. Neither can proceed. CPU idle.
 
 ```mermaid
 flowchart TD
@@ -998,19 +920,13 @@ Semaphore fairSemaphore = new Semaphore(5, true);  // Fair = true
 ```
 
 **Flow:**
-- ALL FOUR must be true simultaneously for deadlock:
-- ↓
-- 1. Mutual Exclusion — Resource held exclusively
-- ↓
-- (only one thread can hold the lock)
-- ↓
-- 2. Hold and Wait — Thread holds resource while waiting
-- ↓
-- (Thread A has lock1, waiting for lock2)
-- ↓
-- 3. No Preemption — Cannot forcibly take a resource
-- ↓
-- (can't steal a lock from another thread)
+1. ALL FOUR must be true simultaneously for deadlock:
+2. 1. Mutual Exclusion — Resource held exclusively
+3. (only one thread can hold the lock)
+4. 2. Hold and Wait — Thread holds resource while waiting
+5. (Thread A has lock1, waiting for lock2)
+6. 3. No Preemption — Cannot forcibly take a resource
+7. (can't steal a lock from another thread)
 
 ```mermaid
 flowchart TD
@@ -1063,45 +979,26 @@ flowchart TD
 ```
 
 **Flow:**
-- synchronized vs ReentrantLock
-- ↓
-- ReentrantLock ADDS:
-- ↓
-- 1. tryLock()
-- ↓
-- Non-blocking attempt
-- ↓
-- 1. tryLock()
-- ↓
-- Non-blocking attempt
-- ↓
-- 2. tryLock(timeout)
-- ↓
-- Bounded waiting (avoids deadlock)
-- ↓
-- 2. tryLock(timeout)
-- ↓
-- Bounded waiting (avoids deadlock)
-- ↓
-- 3. lockInterruptibly()
-- ↓
-- Can cancel waiting thread
-- ↓
-- 3. lockInterruptibly()
-- ↓
-- Can cancel waiting thread
-- ↓
-- 4. fairness policy
-- ↓
-- FIFO ordering to prevent starvatio
-- ↓
-- 4. fairness policy
-- ↓
-- FIFO ordering to prevent starvatio
-- ↓
-- 5. Multiple Conditions
-- ↓
-- Multiple wait-sets (not just o
+1. synchronized vs ReentrantLock
+2. ReentrantLock ADDS:
+3. 1. tryLock()
+4. Non-blocking attempt
+5. 1. tryLock()
+6. Non-blocking attempt
+7. 2. tryLock(timeout)
+8. Bounded waiting (avoids deadlock)
+9. 2. tryLock(timeout)
+10. Bounded waiting (avoids deadlock)
+11. 3. lockInterruptibly()
+12. Can cancel waiting thread
+13. 3. lockInterruptibly()
+14. Can cancel waiting thread
+15. 4. fairness policy
+16. FIFO ordering to prevent starvatio
+17. 4. fairness policy
+18. FIFO ordering to prevent starvatio
+19. 5. Multiple Conditions
+20. Multiple wait-sets (not just o
 
 ```mermaid
 flowchart TD
@@ -1212,14 +1109,14 @@ public void move(double deltaX, double deltaY) {
 
 
 
-> 🔬 **Section Challenge — 8. Lock Deep Reasoning: ReentrantLock, ReadWriteLock, StampedLock**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 8. Lock Deep Reasoning: ReentrantLock, ReadWriteLock, StampedLock**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 9. Real-World Production Patterns
 
@@ -1332,7 +1229,7 @@ public class GracefulShutdown {
 
 ## 11. AQS — The Engine Under Everything
 
-> **The secret**: Every synchronizer you've learned — ReentrantLock, Semaphore, CountDownLatch, CyclicBarrier — is built on top of one class: `AbstractQueuedSynchronizer (AQS)`. Understanding AQS unlocks deep understanding of HOW they all work.
+**The secret**: Every synchronizer you've learned — ReentrantLock, Semaphore, CountDownLatch, CyclicBarrier — is built on top of one class: `AbstractQueuedSynchronizer (AQS)`. Understanding AQS unlocks deep understanding of HOW they all work.
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -1433,14 +1330,14 @@ class SimpleReentrantLock extends AbstractQueuedSynchronizer {
 
 
 
-> 🔬 **Section Challenge — 11. AQS — The Engine Under Everything**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 11. AQS — The Engine Under Everything**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 12. ThreadLocal — Per-Thread Storage Deep Dive
 
@@ -1552,7 +1449,7 @@ public class RequestFilter implements Filter {
 
 ## 13. LockSupport — The Primitive Under Synchronizers
 
-> `LockSupport.park()` and `LockSupport.unpark()` are the **lowest-level** thread blocking primitives in Java. Every higher-level synchronizer ultimately calls these.
+`LockSupport.park()` and `LockSupport.unpark()` are the **lowest-level** thread blocking primitives in Java. Every higher-level synchronizer ultimately calls these.
 
 ```java
 // LockSupport: the atom — everything else is built from this
@@ -1851,5 +1748,5 @@ LockSupport.park() (used by AQS and heavyweight locks) suspends the thread using
 </details>
 
 
-> **Navigation**: [< JVM Object Model](Ch19_JVM_Object_Model.md) | [Back to Index](../00_MASTER_INDEX.md) | [SQL Data Analyst >](../08_SQL/24_SQL_Data_Analyst_RealWorld.md)
+**Navigation**: [< JVM Object Model](Ch19_JVM_Object_Model.md) | [Back to Index](../00_MASTER_INDEX.md) | [SQL Data Analyst >](../08_SQL/24_SQL_Data_Analyst_RealWorld.md)
 

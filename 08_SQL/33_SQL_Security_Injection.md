@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](00_INDEX.md) | [< Prev](32_Partitioning_Sharding_Replication.md) | [Next >](34_TimeSeries_Temporal.md)
+**Navigation**: [Back to Index](00_INDEX.md) | [< Prev](32_Partitioning_Sharding_Replication.md) | [Next >](34_TimeSeries_Temporal.md)
 
 # Chapter 33 — SQL Security & Injection Prevention
 
@@ -487,14 +487,14 @@ $$ LANGUAGE plpgsql;
 
 
 
-> 🔬 **Section Challenge — Security Checklist**
->
-> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-> <details><summary>Answer</summary>
->
-> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-> </details>
->
+🔬 **Section Challenge — Security Checklist**
+
+**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+<details><summary>Answer</summary>
+
+JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — SQL
 
@@ -703,4 +703,4 @@ Red flags: (1) **"Full Table Scan" / "Seq Scan"** on a large table → missing i
 </details>
 
 
-> **Navigation**: [Back to Index](00_INDEX.md) | [< Prev](32_Partitioning_Sharding_Replication.md) | [Next >](34_TimeSeries_Temporal.md)
+**Navigation**: [Back to Index](00_INDEX.md) | [< Prev](32_Partitioning_Sharding_Replication.md) | [Next >](34_TimeSeries_Temporal.md)

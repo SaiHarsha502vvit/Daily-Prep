@@ -1,6 +1,6 @@
-> **Navigation**: [< Previous](19_Matrix.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Design.md)
+**Navigation**: [< Previous](19_Matrix.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Design.md)
 
-> **Problems 20** | [Prev](19_Matrix.md) | [Index](../00_MASTER_INDEX.md) | [Next](21_Design.md)
+**Problems 20** | [Prev](19_Matrix.md) | [Index](../00_MASTER_INDEX.md) | [Next](21_Design.md)
 
 ---
 
@@ -36,19 +36,13 @@
 ```
 
 **Flow:**
-- SORTING PROBLEMS FUNDAMENTALS
-- ↓
-- WHY SORTING MATTERS:
-- ↓
-- THE 4 SORTING FAMILIES:
-- ↓
-- Comparison D&C Non-Compare Hybrid
-- ↓
-- Bubble O(n²) Merge O(nlogn) Counting TimSort
-- ↓
-- Selection Quick O(nlogn) Radix IntroSort
-- ↓
-- Insertion Heap O(nlogn) Bucket BlockSort
+1. SORTING PROBLEMS FUNDAMENTALS
+2. WHY SORTING MATTERS:
+3. THE 4 SORTING FAMILIES:
+4. Comparison D&C Non-Compare Hybrid
+5. Bubble O(n²) Merge O(nlogn) Counting TimSort
+6. Selection Quick O(nlogn) Radix IntroSort
+7. Insertion Heap O(nlogn) Bucket BlockSort
 
 ```mermaid
 flowchart TD
@@ -170,14 +164,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — PART 0: WHY Sorting — The Foundation Every Algorithm Stands On**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+🔬 **Section Challenge — PART 0: WHY Sorting — The Foundation Every Algorithm Stands On**
+
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
+
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## PROBLEM 1: Sort an Array (LC 912) — Implement Merge Sort
 
@@ -219,9 +213,8 @@ SOLUTION:
 ```
 
 **Flow:**
-- then merge back up
-- ↓
-- entire array sorted in O(n log n).
+1. then merge back up
+2. entire array sorted in O(n log n).
 
 ```mermaid
 flowchart LR
@@ -300,19 +293,13 @@ SOLUTION:
 ```
 
 **Flow:**
-- DIFFICULTY: Medium
-- ↓
-- PATTERN: Divide and Conquer, Randomization
-- ↓
-- WHY QUICK SORT?
-- ↓
-- 1. Better cache locality (in-place, sequential access)
-- ↓
-- 2. No extra O(n) memory allocation
-- ↓
-- 3. Inner loop is simpler (fewer comparisons per element
-- ↓
-- BUT: Worst case O(n²) if pivot is always min/max.
+1. DIFFICULTY: Medium
+2. PATTERN: Divide and Conquer, Randomization
+3. WHY QUICK SORT?
+4. 1. Better cache locality (in-place, sequential access)
+5. 2. No extra O(n) memory allocation
+6. 3. Inner loop is simpler (fewer comparisons per element
+7. BUT: Worst case O(n²) if pivot is always min/max.
 
 ```mermaid
 flowchart TD
@@ -405,17 +392,12 @@ SOLUTION (QuickSelect):
 ```
 
 **Flow:**
-- 1. Sort
-- ↓
-- O(n log n) — works but overkill
-- ↓
-- 2. Min-Heap of size k
-- ↓
-- O(n log k) — good
-- ↓
-- 3. QuickSelect
-- ↓
-- O(n) average — OPTIMAL ✓
+1. 1. Sort
+2. O(n log n) — works but overkill
+3. 2. Min-Heap of size k
+4. O(n log k) — good
+5. 3. QuickSelect
+6. O(n) average — OPTIMAL ✓
 
 ```mermaid
 flowchart LR
@@ -497,23 +479,15 @@ SOLUTION:
 ```
 
 **Flow:**
-- Step 1: Sort by start
-- ↓
-- [1,3] [2,6] [8,10] [15,18]
-- ↓
-- [1,3] + [2,6]
-- ↓
-- 3 >= 2
-- ↓
-- merge
-- ↓
-- [1,6]
-- ↓
-- [1,6] + [8,10]
-- ↓
-- 6 < 8
-- ↓
-- no merge
+1. Step 1: Sort by start
+2. [1,3] [2,6] [8,10] [15,18]
+3. [1,3] + [2,6]
+4. 3 >= 2
+5. merge
+6. [1,6]
+7. [1,6] + [8,10]
+8. 6 < 8
+9. no merge
 
 ```mermaid
 flowchart TD
@@ -565,13 +539,10 @@ VARIANT: Insert Interval (LC 57) — same idea, but insert first then merge
 ```
 
 **Flow:**
-- EDGE CASE: Single interval
-- ↓
-- return as-is
-- ↓
-- EDGE CASE: All overlapping
-- ↓
-- returns single interval
+1. EDGE CASE: Single interval
+2. return as-is
+3. EDGE CASE: All overlapping
+4. returns single interval
 
 ```mermaid
 flowchart LR
@@ -629,25 +600,16 @@ SOLUTION:
 ```
 
 **Flow:**
-- lo=0 mid=0 hi=5: nums[0]=2
-- ↓
-- swap(0,5)
-- ↓
-- [0,0,2,1,1,2] hi=4
-- ↓
-- lo=0 mid=0 hi=4: nums[0]=0
-- ↓
-- lo=1 mid=1
-- ↓
-- lo=1 mid=1 hi=4: nums[1]=0
-- ↓
-- lo=2 mid=2
-- ↓
-- lo=2 mid=2 hi=4: nums[2]=2
-- ↓
-- swap(2,4)
-- ↓
-- [0,0,1,1,2,2] hi=3
+1. lo=0 mid=0 hi=5: nums[0]=2
+2. swap(0,5)
+3. [0,0,2,1,1,2] hi=4
+4. lo=0 mid=0 hi=4: nums[0]=0
+5. lo=1 mid=1
+6. lo=1 mid=1 hi=4: nums[1]=0
+7. lo=2 mid=2
+8. lo=2 mid=2 hi=4: nums[2]=2
+9. swap(2,4)
+10. [0,0,1,1,2,2] hi=3
 
 ```mermaid
 flowchart TD
@@ -726,13 +688,10 @@ SOLUTION:
 ```
 
 **Flow:**
-- For 3 vs 30: '330' > '303'
-- ↓
-- 3 comes first
-- ↓
-- For 3 vs 34: '334' < '343'
-- ↓
-- 34 comes first
+1. For 3 vs 30: '330' > '303'
+2. 3 comes first
+3. For 3 vs 34: '334' < '343'
+4. 34 comes first
 
 ```mermaid
 flowchart LR
@@ -767,9 +726,8 @@ PROOF OF CORRECTNESS: The comparator defines a total order.
 ```
 
 **Flow:**
-- PROOF OF CORRECTNESS: The comparator defines a total or
-- ↓
-- If a○b > b○a and b○c > c○b, then a○c > c○a (tr
+1. PROOF OF CORRECTNESS: The comparator defines a total or
+2. If a○b > b○a and b○c > c○b, then a○c > c○a (tr
 
 ```mermaid
 flowchart TD
@@ -800,19 +758,13 @@ SOLUTION:
 ```
 
 **Flow:**
-- DIFFICULTY: Medium
-- ↓
-- COMPANIES: Amazon, Microsoft, Adobe
-- ↓
-- PATTERN: Merge Sort on Linked List
-- ↓
-- WHY MERGE SORT FOR LINKED LISTS?
-- ↓
-- - QuickSort needs random access (bad for linked lists)
-- ↓
-- - Merge Sort only needs sequential access ✓
-- ↓
-- - Splitting: use slow/fast pointer to find middle
+1. DIFFICULTY: Medium
+2. COMPANIES: Amazon, Microsoft, Adobe
+3. PATTERN: Merge Sort on Linked List
+4. WHY MERGE SORT FOR LINKED LISTS?
+5. - QuickSort needs random access (bad for linked lists)
+6. - Merge Sort only needs sequential access ✓
+7. - Splitting: use slow/fast pointer to find middle
 
 ```mermaid
 flowchart TD
@@ -915,21 +867,14 @@ SOLUTION:
 ```
 
 **Flow:**
-- 1. HashMap + Sort
-- ↓
-- O(n log n)
-- ↓
-- 2. HashMap + MinHeap
-- ↓
-- O(n log k)
-- ↓
-- 3. HashMap + BucketSort
-- ↓
-- O(n) ✓ OPTIMAL
-- ↓
-- Walk from right: bucket[3]=[1], bucket[2]=[2]
-- ↓
-- result = [1, 2]
+1. 1. HashMap + Sort
+2. O(n log n)
+3. 2. HashMap + MinHeap
+4. O(n log k)
+5. 3. HashMap + BucketSort
+6. O(n) ✓ OPTIMAL
+7. Walk from right: bucket[3]=[1], bucket[2]=[2]
+8. result = [1, 2]
 
 ```mermaid
 flowchart LR
@@ -1001,13 +946,10 @@ SOLUTION:
 ```
 
 **Flow:**
-- 1. Sort both strings, compare
-- ↓
-- O(n log n)
-- ↓
-- 2. Frequency count
-- ↓
-- O(n) ✓
+1. 1. Sort both strings, compare
+2. O(n log n)
+3. 2. Frequency count
+4. O(n) ✓
 
 ```mermaid
 flowchart LR
@@ -1147,9 +1089,8 @@ SOLUTION:
 ```
 
 **Flow:**
-- 1. Find median using QuickSelect
-- ↓
-- O(n)
+1. 1. Find median using QuickSelect
+2. O(n)
 
 ```mermaid
 flowchart LR
@@ -1538,4 +1479,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 </details>
 
 
-> **Navigation**: [< Previous](19_Matrix.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Design.md)
+**Navigation**: [< Previous](19_Matrix.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Design.md)

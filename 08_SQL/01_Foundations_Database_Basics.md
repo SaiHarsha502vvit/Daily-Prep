@@ -1,13 +1,13 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DataTypes_Constraints.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DataTypes_Constraints.md)
 
-> **SQL Chapter 01/20** |  | [Index](../00_MASTER_INDEX.md) | [Next →](02_DataTypes_Constraints.md)
+**SQL Chapter 01/20** |  | [Index](../00_MASTER_INDEX.md) | [Next →](02_DataTypes_Constraints.md)
 
 ---
 
 ## 🔑 SQL Query Execution Order — The Most Critical Mental Model
 
-> [!IMPORTANT]
-> **This is the #1 source of confusion in SQL.** The order you WRITE a query is NOT the order SQL EXECUTES it. Memorize this before studying anything else.
+[!IMPORTANT]
+**This is the #1 source of confusion in SQL.** The order you WRITE a query is NOT the order SQL EXECUTES it. Memorize this before studying anything else.
 
 ```
 WRITE ORDER vs EXECUTION ORDER
@@ -51,19 +51,19 @@ ANALOGY — A Restaurant Kitchen:
   LIMIT   = Only serve 10 plates per table
 ```
 
-> 🔬 **Section Challenge — SQL Query Execution Order**
->
-> **Challenge 1 (Reasoning):** This query fails: `SELECT dept, AVG(salary) AS avg_sal FROM emp GROUP BY dept WHERE avg_sal > 50000`. Identify 2 bugs and fix them.
-> <details><summary>Answer</summary>
->
-> Bug 1: WHERE must come before GROUP BY in the written order. Bug 2: WHERE cannot reference aggregate alias `avg_sal` — WHERE runs before SELECT. Fix: `SELECT dept, AVG(salary) AS avg_sal FROM emp GROUP BY dept HAVING AVG(salary) > 50000`. HAVING is the correct clause for filtering after grouping.
-> </details>
->
-> **Challenge 2 (Reasoning):** `SELECT DISTINCT col FROM t ORDER BY col2` — why does this fail?
-> <details><summary>Answer</summary>
->
-> DISTINCT removes duplicates based on the SELECT list. ORDER BY col2 means "sort by col2" but col2 is NOT in the SELECT list. After DISTINCT is applied, only `col` remains — there's no `col2` to sort by. Rule: When using DISTINCT, ORDER BY can only reference columns in the SELECT list.
-> </details>
+🔬 **Section Challenge — SQL Query Execution Order**
+
+**Challenge 1 (Reasoning):** This query fails: `SELECT dept, AVG(salary) AS avg_sal FROM emp GROUP BY dept WHERE avg_sal > 50000`. Identify 2 bugs and fix them.
+<details><summary>Answer</summary>
+
+Bug 1: WHERE must come before GROUP BY in the written order. Bug 2: WHERE cannot reference aggregate alias `avg_sal` — WHERE runs before SELECT. Fix: `SELECT dept, AVG(salary) AS avg_sal FROM emp GROUP BY dept HAVING AVG(salary) > 50000`. HAVING is the correct clause for filtering after grouping.
+</details>
+
+**Challenge 2 (Reasoning):** `SELECT DISTINCT col FROM t ORDER BY col2` — why does this fail?
+<details><summary>Answer</summary>
+
+DISTINCT removes duplicates based on the SELECT list. ORDER BY col2 means "sort by col2" but col2 is NOT in the SELECT list. After DISTINCT is applied, only `col` remains — there's no `col2` to sort by. Rule: When using DISTINCT, ORDER BY can only reference columns in the SELECT list.
+</details>
 
 ---
 
@@ -113,19 +113,13 @@ ANALOGY — A Restaurant Kitchen:
 ```
 
 **Flow:**
-- DATABASE FUNDAMENTALS
-- ↓
-- DATABASE = Organized collection of structured data
-- ↓
-- REAL-WORLD ANALOGY:
-- ↓
-- Database = Library
-- ↓
-- Tables = Sections (Fiction, Science, History)
-- ↓
-- Rows = Individual Books
-- ↓
-- Columns = Book attributes (Title, Author, ISBN, Year)
+1. DATABASE FUNDAMENTALS
+2. DATABASE = Organized collection of structured data
+3. REAL-WORLD ANALOGY:
+4. Database = Library
+5. Tables = Sections (Fiction, Science, History)
+6. Rows = Individual Books
+7. Columns = Book attributes (Title, Author, ISBN, Year)
 
 ```mermaid
 flowchart TD
@@ -198,13 +192,10 @@ flowchart TD
 ```
 
 **Flow:**
-- APPLICATION / (Your Java/Python / code)
-- ↓
-- DBMS ENGINE / Query Parser / Query / Optimizer / Execut
-- ↓
-- STORAGE ENGINE / Buffer Pool / Transaction / Manager /
-- ↓
-- DISK STORAGE / (Data files, / Index files, / Log files)
+1. APPLICATION / (Your Java/Python / code)
+2. DBMS ENGINE / Query Parser / Query / Optimizer / Execut
+3. STORAGE ENGINE / Buffer Pool / Transaction / Manager /
+4. DISK STORAGE / (Data files, / Index files, / Log files)
 
 ```mermaid
 flowchart TD
@@ -259,13 +250,10 @@ flowchart TD
 ```
 
 **Flow:**
-- CREATE - Create database objects (tables, views, indexe
-- ↓
-- SELECT - Retrieve data / INSERT - Add new data / UPDATE
-- ↓
-- GRANT - Give permissions / REVOKE - Remove permissions
-- ↓
-- COMMIT - Save changes permanently / ROLLBACK - Undo cha
+1. CREATE - Create database objects (tables, views, indexe
+2. SELECT - Retrieve data / INSERT - Add new data / UPDATE
+3. GRANT - Give permissions / REVOKE - Remove permissions
+4. COMMIT - Save changes permanently / ROLLBACK - Undo cha
 
 ```mermaid
 flowchart TD
@@ -286,8 +274,8 @@ flowchart TD
 
 # 📊 SQL FOUNDATIONS - WHY-HOW Framework
 
-> **From Zero to SQL Fluency - Every Concept Explained with Real-World Context**
-> _"Understanding WHY before HOW makes learning permanent"_
+**From Zero to SQL Fluency - Every Concept Explained with Real-World Context**
+_"Understanding WHY before HOW makes learning permanent"_
 
 ---
 
@@ -321,29 +309,18 @@ For every SQL concept, we answer:
 ```
 
 **Flow:**
-- 🔵 WHY does this exist?
-- ↓
-- What real-world problem does it solve?
-- ↓
-- 🔵 WHY does this exist?
-- ↓
-- What would happen without it?
-- ↓
-- 🔵 WHY does this exist?
-- ↓
-- Which companies use this? When?
-- ↓
-- 🟢 HOW does it work?
-- ↓
-- Core syntax and mechanics
-- ↓
-- 🟢 HOW does it work?
-- ↓
-- Step-by-step execution
-- ↓
-- 🟢 HOW does it work?
-- ↓
-- Visual representation
+1. 🔵 WHY does this exist?
+2. What real-world problem does it solve?
+3. 🔵 WHY does this exist?
+4. What would happen without it?
+5. 🔵 WHY does this exist?
+6. Which companies use this? When?
+7. 🟢 HOW does it work?
+8. Core syntax and mechanics
+9. 🟢 HOW does it work?
+10. Step-by-step execution
+11. 🟢 HOW does it work?
+12. Visual representation
 
 ```mermaid
 flowchart TD
@@ -462,7 +439,7 @@ Checkpoints                │ Regular state snapshots
 ## Why Ddl Exists
 
 
-> 💡 **ANALOGY: Building a House**
+💡 **ANALOGY: Building a House**
 Before putting furniture (DATA), you need:
 1. BLUEPRINT (Schema)     → CREATE DATABASE
 2. ROOMS (Structure)      → CREATE TABLE
@@ -693,13 +670,10 @@ CREATE TABLE order_items (
 ```
 
 **Flow:**
-- CUSTOMERS / PK: customer_id / email / first_name / last
-- ↓
-- ORDERS / PK: order_id / FK: customer_id / order_number
-- ↓
-- PRODUCTS / PK: product_id / name / price / stock
-- ↓
-- ORDER_ITEMS / PK: item_id / FK: order_id / FK: product_
+1. CUSTOMERS / PK: customer_id / email / first_name / last
+2. ORDERS / PK: order_id / FK: customer_id / order_number
+3. PRODUCTS / PK: product_id / name / price / stock
+4. ORDER_ITEMS / PK: item_id / FK: order_id / FK: product_
 
 ```mermaid
 flowchart TD
@@ -764,19 +738,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WHY SCHEMAS EVOLVE
-- ↓
-- BUSINESS REASONS:
-- ↓
-- 1. NEW FEATURES
-- ↓
-- - 'We need to store user's profile photo'
-- ↓
-- ALTER TABLE users ADD COLUMN profile_url VARCHAR(500)
-- ↓
-- 2. REGULATORY COMPLIANCE
-- ↓
-- - 'GDPR requires consent tracking'
+1. WHY SCHEMAS EVOLVE
+2. BUSINESS REASONS:
+3. 1. NEW FEATURES
+4. - 'We need to store user's profile photo'
+5. ALTER TABLE users ADD COLUMN profile_url VARCHAR(500)
+6. 2. REGULATORY COMPLIANCE
+7. - 'GDPR requires consent tracking'
 
 ```mermaid
 flowchart TD
@@ -955,13 +923,10 @@ ALTER TABLE products CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci
 ```
 
 **Flow:**
-- • ADD COLUMN with DEFAULT (MySQL 8.0+, PostgreSQL) / •
-- ↓
-- • ADD INDEX on large table (locks table in MySQL < 8
-- ↓
-- • DROP COLUMN (irreversible, may break app) / • Change
-- ↓
-- □ Test on staging with production-size data / □ Measure
+1. • ADD COLUMN with DEFAULT (MySQL 8.0+, PostgreSQL) / •
+2. • ADD INDEX on large table (locks table in MySQL < 8
+3. • DROP COLUMN (irreversible, may break app) / • Change
+4. □ Test on staging with production-size data / □ Measure
 
 ```mermaid
 flowchart TD
@@ -1034,15 +999,11 @@ flowchart TD
 ```
 
 **Flow:**
-- CREATE
-- ↓
-- INSERT / READ
-- ↓
-- SELECT / UPDATE
-- ↓
-- UPDATE / DEL
-- ↓
-- HTTP Method SQL Operation Example / POST INSERT Create
+1. CREATE
+2. INSERT / READ
+3. SELECT / UPDATE
+4. UPDATE / DEL
+5. HTTP Method SQL Operation Example / POST INSERT Create
 
 ```mermaid
 flowchart TD
@@ -1368,19 +1329,13 @@ DELETE FROM temp_import_data WHERE import_date < '2024-01-01';
 ```
 
 **Flow:**
-- WHY DCL EXISTS
-- ↓
-- PRINCIPLE OF LEAST PRIVILEGE:
-- ↓
-- 'Every user should have only the minimum permissions
-- ↓
-- necessary to perform their job function'
-- ↓
-- WHY THIS MATTERS:
-- ↓
-- Developer needs: Read production logs
-- ↓
-- Developer gets: SELECT on logs table only
+1. WHY DCL EXISTS
+2. PRINCIPLE OF LEAST PRIVILEGE:
+3. 'Every user should have only the minimum permissions
+4. necessary to perform their job function'
+5. WHY THIS MATTERS:
+6. Developer needs: Read production logs
+7. Developer gets: SELECT on logs table only
 
 ```mermaid
 flowchart TD
@@ -1548,9 +1503,8 @@ SHOW GRANTS;
 ```
 
 **Flow:**
-- Step 1: UPDATE accounts SET balance = balance - 10000 /
-- ↓
-- START TRANSACTION; / UPDATE accounts SET balance = bala
+1. Step 1: UPDATE accounts SET balance = balance - 10000 /
+2. START TRANSACTION; / UPDATE accounts SET balance = bala
 
 ```mermaid
 flowchart TD
@@ -1631,13 +1585,10 @@ flowchart TD
 ```
 
 **Flow:**
-- Like an ATOM - indivisible unit / Transaction with 5 SQ
-- ↓
-- Database rules (constraints) ALWAYS enforced / Example:
-- ↓
-- Two transactions running simultaneously: / T1: Read bal
-- ↓
-- After COMMIT, data survives: / - Power failure / - Serv
+1. Like an ATOM - indivisible unit / Transaction with 5 SQ
+2. Database rules (constraints) ALWAYS enforced / Example:
+3. Two transactions running simultaneously: / T1: Read bal
+4. After COMMIT, data survives: / - Power failure / - Serv
 
 ```mermaid
 flowchart TD
@@ -1809,14 +1760,14 @@ TRADE-OFF: Higher isolation = Slower performance (more locking)
 
 
 
-> 🔬 **Section Challenge — Chapter 6: TCL - Transaction Control Language**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — Chapter 6: TCL - Transaction Control Language**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 # 💪 Practice Problems
 
@@ -1885,19 +1836,13 @@ TRADE-OFF: Higher isolation = Slower performance (more locking)
 ```
 
 **Flow:**
-- SQL FOUNDATIONS - QUICK REFERENCE
-- ↓
-- DDL (Structure):
-- ↓
-- DML (Data):
-- ↓
-- INSERT, SELECT, UPDATE, DELETE, MERGE
-- ↓
-- DCL (Permissions):
-- ↓
-- GRANT, REVOKE, CREATE USER, CREATE ROLE
-- ↓
-- TCL (Transactions):
+1. SQL FOUNDATIONS - QUICK REFERENCE
+2. DDL (Structure):
+3. DML (Data):
+4. INSERT, SELECT, UPDATE, DELETE, MERGE
+5. DCL (Permissions):
+6. GRANT, REVOKE, CREATE USER, CREATE ROLE
+7. TCL (Transactions):
 
 ```mermaid
 flowchart TD

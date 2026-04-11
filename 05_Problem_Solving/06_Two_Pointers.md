@@ -1,13 +1,13 @@
-> **Navigation**: [< Previous](05_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Binary_Search.md)
+**Navigation**: [< Previous](05_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Binary_Search.md)
 
-> **Problems 06/14** | [Prev](05_Sliding_Window.md) | [Index](../00_MASTER_INDEX.md) | [Next](07_Binary_Search.md)
+**Problems 06/14** | [Prev](05_Sliding_Window.md) | [Index](../00_MASTER_INDEX.md) | [Next](07_Binary_Search.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — Two Pointers
 
-> **When do you use Two Pointers?** Ask yourself these questions before every problem:
->
+**When do you use Two Pointers?** Ask yourself these questions before every problem:
+
 
 | If you see... | Sub-pattern | First do... |
 |---|---|---|
@@ -16,30 +16,30 @@
 | `remove duplicates in-place` | Same direction (slow/fast) | Slow writes, fast reads |
 | `partition / sort colors` | Three pointers | Dutch National Flag |
 
->
-> **The Core Rule:**
-> ```
-> Works ONLY on sorted arrays (or when order doesn't matter for in-place)
-> Saves O(n) space compared to HashMap approach
-> Time: O(n log n) for sort + O(n) scan = O(n log n)
-> ```
->
-> 📖 **Theory:** [01b_Arrays.md — Sub Arrays section](../02_Data_Structures/01b_Arrays.md)
-> 📖 **Pattern deep dive:** [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md)
-> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**The Core Rule:**
+```
+Works ONLY on sorted arrays (or when order doesn't matter for in-place)
+Saves O(n) space compared to HashMap approach
+Time: O(n log n) for sort + O(n) scan = O(n log n)
+```
+
+📖 **Theory:** [01b_Arrays.md — Sub Arrays section](../02_Data_Structures/01b_Arrays.md)
+📖 **Pattern deep dive:** [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md)
+📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
 
 
-> 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Two Pointers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Two Pointers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 # 🚀 Section 5: Two Pointers Advanced Variants
 
@@ -53,23 +53,23 @@
 🔗 [https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/](https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/)
 
 
-> TWO SUM II - SORTED ARRAY
->
-> Array is SORTED. Find two numbers that add to target.
-> Return 1-indexed positions.
->
-> Input: numbers = [2, 7, 11, 15], target = 9
-> Output: [1, 2]
->
-> Visual:
-> [2,  7,  11,  15]
-> ↑            ↑
-> L            R   sum=17 > 9, move R left
-> ↑        ↑
-> L        R       sum=13 > 9, move R left
-> ↑    ↑
-> L    R           sum=9 = target ✓
->
+TWO SUM II - SORTED ARRAY
+
+Array is SORTED. Find two numbers that add to target.
+Return 1-indexed positions.
+
+Input: numbers = [2, 7, 11, 15], target = 9
+Output: [1, 2]
+
+Visual:
+[2,  7,  11,  15]
+↑            ↑
+L            R   sum=17 > 9, move R left
+↑        ↑
+L        R       sum=13 > 9, move R left
+↑    ↑
+L    R           sum=9 = target ✓
+
 
 
 ```java
@@ -120,19 +120,13 @@ public int[] twoSum(int[] numbers, int target) {
 ```
 
 **Flow:**
-- 3SUM
-- ↓
-- Find all unique triplets that sum to zero.
-- ↓
-- Input: nums = [-1, 0, 1, 2, -1, -4]
-- ↓
-- Output: [[-1, -1, 2], [-1, 0, 1]]
-- ↓
-- Algorithm:
-- ↓
-- 1. Sort the array
-- ↓
-- 2. Fix one element, use two pointers for remaining
+1. 3SUM
+2. Find all unique triplets that sum to zero.
+3. Input: nums = [-1, 0, 1, 2, -1, -4]
+4. Output: [[-1, -1, 2], [-1, 0, 1]]
+5. Algorithm:
+6. 1. Sort the array
+7. 2. Fix one element, use two pointers for remaining
 
 ```mermaid
 flowchart TD
@@ -213,15 +207,11 @@ public List<List<Integer>> threeSum(int[] nums) {
 ```
 
 **Flow:**
-- 3SUM CLOSEST
-- ↓
-- Find three integers whose sum is closest to target.
-- ↓
-- Input: nums = [-1, 2, 1, -4], target = 1
-- ↓
-- Output: 2
-- ↓
-- Explanation: (-1) + 2 + 1 = 2, closest to target 1
+1. 3SUM CLOSEST
+2. Find three integers whose sum is closest to target.
+3. Input: nums = [-1, 2, 1, -4], target = 1
+4. Output: 2
+5. Explanation: (-1) + 2 + 1 = 2, closest to target 1
 
 ```mermaid
 flowchart TD
@@ -287,15 +277,11 @@ public int threeSumClosest(int[] nums, int target) {
 ```
 
 **Flow:**
-- 4SUM
-- ↓
-- Find all unique quadruplets that sum to target.
-- ↓
-- Input: nums = [1, 0, -1, 0, -2, 2], target = 0
-- ↓
-- Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]]
-- ↓
-- Pattern: Extend 3Sum with one more loop
+1. 4SUM
+2. Find all unique quadruplets that sum to target.
+3. Input: nums = [1, 0, -1, 0, -2, 2], target = 0
+4. Output: [[-2,-1,1,2], [-2,0,0,2], [-1,0,0,1]]
+5. Pattern: Extend 3Sum with one more loop
 
 ```mermaid
 flowchart TD
@@ -400,19 +386,13 @@ public List<List<Integer>> fourSum(int[] nums, int target) {
 ```
 
 **Flow:**
-- 3SUM SMALLER
-- ↓
-- (LeetCode 259 - Premium)
-- ↓
-- Count triplets with sum LESS than target.
-- ↓
-- Example 1:
-- ↓
-- Input: nums = [-2, 0, 1, 3], target = 2
-- ↓
-- Output: 2
-- ↓
-- Explanation:
+1. 3SUM SMALLER
+2. (LeetCode 259 - Premium)
+3. Count triplets with sum LESS than target.
+4. Example 1:
+5. Input: nums = [-2, 0, 1, 3], target = 2
+6. Output: 2
+7. Explanation:
 
 ```mermaid
 flowchart TD
@@ -483,19 +463,13 @@ public int threeSumSmaller(int[] nums, int target) {
 ```
 
 **Flow:**
-- VALID TRIANGLE NUMBER
-- ↓
-- Count triplets that can form a valid triangle.
-- ↓
-- Triangle rule: sum of any two sides > third side
-- ↓
-- Input: nums = [2, 2, 3, 4]
-- ↓
-- Output: 3
-- ↓
-- Valid: (2,3,4), (2,3,4), (2,2,3)
-- ↓
-- KEY: After sorting, only need to check a + b > c
+1. VALID TRIANGLE NUMBER
+2. Count triplets that can form a valid triangle.
+3. Triangle rule: sum of any two sides > third side
+4. Input: nums = [2, 2, 3, 4]
+5. Output: 3
+6. Valid: (2,3,4), (2,3,4), (2,2,3)
+7. KEY: After sorting, only need to check a + b > c
 
 ```mermaid
 flowchart TD
@@ -543,14 +517,14 @@ public int triangleNumber(int[] nums) {
 
 
 
-> 🔬 **Section Challenge — 📌 5.1 Opposite Direction Two Pointers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — 📌 5.1 Opposite Direction Two Pointers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## 📌 5.2 Same Direction Two Pointers
 
@@ -580,19 +554,13 @@ public int triangleNumber(int[] nums) {
 ```
 
 **Flow:**
-- REMOVE DUPLICATES FROM SORTED ARRAY
-- ↓
-- Remove duplicates in-place. Return new length.
-- ↓
-- Input: nums = [1, 1, 2]
-- ↓
-- Output: 2, nums = [1, 2, _]
-- ↓
-- Visual:
-- ↓
-- ↑ ↑ slow=0, fast=1, same value, skip
-- ↓
-- ↑ ↑ slow=0, fast=2, different! copy
+1. REMOVE DUPLICATES FROM SORTED ARRAY
+2. Remove duplicates in-place. Return new length.
+3. Input: nums = [1, 1, 2]
+4. Output: 2, nums = [1, 2, _]
+5. Visual:
+6. ↑ ↑ slow=0, fast=1, same value, skip
+7. ↑ ↑ slow=0, fast=2, different! copy
 
 ```mermaid
 flowchart TD
@@ -652,15 +620,11 @@ public int removeDuplicates(int[] nums) {
 ```
 
 **Flow:**
-- REMOVE DUPLICATES II (Allow at most 2 duplicates)
-- ↓
-- Each element can appear at most TWICE.
-- ↓
-- Input: nums = [1, 1, 1, 2, 2, 3]
-- ↓
-- Output: 5, nums = [1, 1, 2, 2, 3, _]
-- ↓
-- KEY: Compare with nums[slow - 2] instead of nums[slow -
+1. REMOVE DUPLICATES II (Allow at most 2 duplicates)
+2. Each element can appear at most TWICE.
+3. Input: nums = [1, 1, 1, 2, 2, 3]
+4. Output: 5, nums = [1, 1, 2, 2, 3, _]
+5. KEY: Compare with nums[slow - 2] instead of nums[slow -
 
 ```mermaid
 flowchart TD
@@ -712,13 +676,10 @@ public int removeDuplicates(int[] nums) {
 ```
 
 **Flow:**
-- REMOVE ELEMENT
-- ↓
-- Remove all instances of val in-place. Return new length
-- ↓
-- Input: nums = [3, 2, 2, 3], val = 3
-- ↓
-- Output: 2, nums = [2, 2, _, _]
+1. REMOVE ELEMENT
+2. Remove all instances of val in-place. Return new length
+3. Input: nums = [3, 2, 2, 3], val = 3
+4. Output: 2, nums = [2, 2, _, _]
 
 ```mermaid
 flowchart TD
@@ -777,19 +738,13 @@ public int removeElement(int[] nums, int val) {
 ```
 
 **Flow:**
-- SORT COLORS (Dutch National Flag Problem)
-- ↓
-- Sort array with only 0s, 1s, and 2s in-place.
-- ↓
-- One-pass algorithm with constant space.
-- ↓
-- Input: nums = [2, 0, 2, 1, 1, 0]
-- ↓
-- Output: [0, 0, 1, 1, 2, 2]
-- ↓
-- Three Pointers:
-- ↓
-- - low: boundary for 0s (everything before low is 0)
+1. SORT COLORS (Dutch National Flag Problem)
+2. Sort array with only 0s, 1s, and 2s in-place.
+3. One-pass algorithm with constant space.
+4. Input: nums = [2, 0, 2, 1, 1, 0]
+5. Output: [0, 0, 1, 1, 2, 2]
+6. Three Pointers:
+7. - low: boundary for 0s (everything before low is 0)
 
 ```mermaid
 flowchart TD
@@ -858,13 +813,10 @@ private void swap(int[] nums, int i, int j) {
 ```
 
 **Flow:**
-- PARTITION ARRAY ACCORDING TO PIVOT
-- ↓
-- > pivot at end. Maintain relative order.
-- ↓
-- Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10
-- ↓
-- Output: [9, 5, 3, 10, 10, 12, 14]
+1. PARTITION ARRAY ACCORDING TO PIVOT
+2. > pivot at end. Maintain relative order.
+3. Input: nums = [9, 12, 5, 10, 14, 3, 10], pivot = 10
+4. Output: [9, 5, 3, 10, 10, 12, 14]
 
 ```mermaid
 flowchart TD
@@ -905,14 +857,14 @@ public int[] pivotArray(int[] nums, int pivot) {
 
 
 
-> 🔬 **Section Challenge — 📌 5.2 Same Direction Two Pointers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — 📌 5.2 Same Direction Two Pointers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## 🔗 5.3 Linked List Two Pointers
 
@@ -941,19 +893,13 @@ public int[] pivotArray(int[] nums, int pivot) {
 ```
 
 **Flow:**
-- LINKED LIST CYCLE
-- ↓
-- Detect if linked list has a cycle.
-- ↓
-- Visual (with cycle):
-- ↓
-- Floyd's Cycle Detection (Tortoise & Hare):
-- ↓
-- - Slow pointer moves 1 step
-- ↓
-- - Fast pointer moves 2 steps
-- ↓
-- - If they meet, there's a cycle
+1. LINKED LIST CYCLE
+2. Detect if linked list has a cycle.
+3. Visual (with cycle):
+4. Floyd's Cycle Detection (Tortoise & Hare):
+5. - Slow pointer moves 1 step
+6. - Fast pointer moves 2 steps
+7. - If they meet, there's a cycle
 
 ```mermaid
 flowchart TD
@@ -1021,19 +967,13 @@ public boolean hasCycle(ListNode head) {
 ```
 
 **Flow:**
-- LINKED LIST CYCLE II - Find Start of Cycle
-- ↓
-- MATHEMATICAL PROOF:
-- ↓
-- Let:
-- ↓
-- - Distance from head to cycle start = a
-- ↓
-- - Distance from cycle start to meeting point = b
-- ↓
-- - Cycle length = c
-- ↓
-- When they meet:
+1. LINKED LIST CYCLE II - Find Start of Cycle
+2. MATHEMATICAL PROOF:
+3. Let:
+4. - Distance from head to cycle start = a
+5. - Distance from cycle start to meeting point = b
+6. - Cycle length = c
+7. When they meet:
 
 ```mermaid
 flowchart TD
@@ -1103,43 +1043,25 @@ public ListNode detectCycle(ListNode head) {
 ```
 
 **Flow:**
-- MIDDLE OF LINKED LIST
-- ↓
-- When fast reaches end, slow is at middle.
-- ↓
-- For even length, return second middle.
-- ↓
-- Odd: 1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- 5 Middle = 3
-- ↓
-- Odd: 1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- 5 Middle = 3
-- ↓
-- Even: 1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- 5
-- ↓
-- 6 Middle = 4 (second)
+1. MIDDLE OF LINKED LIST
+2. When fast reaches end, slow is at middle.
+3. For even length, return second middle.
+4. Odd: 1
+5. 2
+6. 3
+7. 4
+8. 5 Middle = 3
+9. Odd: 1
+10. 2
+11. 3
+12. 4
+13. 5 Middle = 3
+14. Even: 1
+15. 2
+16. 3
+17. 4
+18. 5
+19. 6 Middle = 4 (second)
 
 ```mermaid
 flowchart TD
@@ -1191,51 +1113,29 @@ public ListNode middleNode(ListNode head) {
 ```
 
 **Flow:**
-- REMOVE NTH NODE FROM END
-- ↓
-- Remove the nth node from end of list.
-- ↓
-- Input: 1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- 5, n = 2
-- ↓
-- Input: 1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- 5, n = 2
-- ↓
-- Output: 1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- 5
-- ↓
-- Output: 1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- 5
-- ↓
-- Technique: Advance fast pointer n steps first
-- ↓
-- Then move both until fast reaches end
-- ↓
-- Slow will be at (n+1)th from end
+1. REMOVE NTH NODE FROM END
+2. Remove the nth node from end of list.
+3. Input: 1
+4. 2
+5. 3
+6. 4
+7. 5, n = 2
+8. Input: 1
+9. 2
+10. 3
+11. 4
+12. 5, n = 2
+13. Output: 1
+14. 2
+15. 3
+16. 5
+17. Output: 1
+18. 2
+19. 3
+20. 5
+21. Technique: Advance fast pointer n steps first
+22. Then move both until fast reaches end
+23. Slow will be at (n+1)th from end
 
 ```mermaid
 flowchart TD
@@ -1328,33 +1228,20 @@ public ListNode removeNthFromEnd(ListNode head, int n) {
 ```
 
 **Flow:**
-- PLUS ONE LINKED LIST
-- ↓
-- (LeetCode 369 - Premium)
-- ↓
-- Linked list represents a number. Add 1 to it.
-- ↓
-- Most significant digit is at head.
-- ↓
-- Example 1:
-- ↓
-- Input: 1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- Input: 1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- Output: 1
-- ↓
-- 2
-- ↓
-- 4
+1. PLUS ONE LINKED LIST
+2. (LeetCode 369 - Premium)
+3. Linked list represents a number. Add 1 to it.
+4. Most significant digit is at head.
+5. Example 1:
+6. Input: 1
+7. 2
+8. 3
+9. Input: 1
+10. 2
+11. 3
+12. Output: 1
+13. 2
+14. 4
 
 ```mermaid
 flowchart TD
@@ -1413,14 +1300,14 @@ public ListNode plusOne(ListNode head) {
 
 
 
-> 🔬 **Section Challenge — 🔗 5.3 Linked List Two Pointers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — 🔗 5.3 Linked List Two Pointers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## 🏆 Competitive Programming — Codeforces Problems
 
@@ -1455,14 +1342,14 @@ public ListNode plusOne(ListNode head) {
 
 ---
 
-> **Navigation**: [< Previous](05_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Binary_Search.md)
+**Navigation**: [< Previous](05_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Binary_Search.md)
 
-> 🔬 **Section Challenge — 🌍 Real-World Applications of Two Pointers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — 🌍 Real-World Applications of Two Pointers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 

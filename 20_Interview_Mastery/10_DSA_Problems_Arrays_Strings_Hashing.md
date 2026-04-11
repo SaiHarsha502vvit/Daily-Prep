@@ -1,10 +1,10 @@
-> **Navigation**: [⬅ Mock Interviews](09_Mock_Interview_Simulations.md) | [📚 Index](00_INDEX.md) | [Next: LinkedList, Stack, Queue, Heap ➡](11_DSA_Problems_LinkedList_Stack_Queue_Heap.md)
+**Navigation**: [⬅ Mock Interviews](09_Mock_Interview_Simulations.md) | [📚 Index](00_INDEX.md) | [Next: LinkedList, Stack, Queue, Heap ➡](11_DSA_Problems_LinkedList_Stack_Queue_Heap.md)
 
 # File 10 — DSA Problems: Arrays, Strings & Hashing
 
 ## The 5W+H Interview Framework for Every Problem
 
-> **Don't memorize solutions. Understand the LOGIC, then the code writes itself.**
+**Don't memorize solutions. Understand the LOGIC, then the code writes itself.**
 
 For every problem below, we answer:
 - **WHAT** is this problem really asking? (Strip away the story)
@@ -489,14 +489,14 @@ Step 2: For each number:
 
 
 
-> 🔬 **Section Challenge — STRINGS**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — STRINGS**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## HASHING (Advanced)
 
@@ -631,14 +631,14 @@ Decode:
 
 
 
-> 🔬 **Section Challenge — HASHING (Advanced)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — HASHING (Advanced)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## MASTER PROBLEM MAP — Arrays, Strings, Hashing
 
@@ -672,14 +672,14 @@ Decode:
 
 
 
-> 🔬 **Section Challenge — MASTER PROBLEM MAP — Arrays, Strings, Hashing**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — MASTER PROBLEM MAP — Arrays, Strings, Hashing**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Interview Quick-Fire: "What Would You Do If..."
 
@@ -700,7 +700,7 @@ Decode:
 
 ## 🏋️ Practice & Interview Questions — Arrays
 
-> Attempt each before looking at the answer. Time yourself.
+Attempt each before looking at the answer. Time yourself.
 
 ### Predict / Trace
 **Q1.** What is the output? `int[] a = {1,2,3}; int[] b = a; b[0] = 99; System.out.println(a[0]);`
@@ -884,7 +884,7 @@ CPU loads data in cache lines (~64 bytes). Arrays store elements contiguously �
 
 ## 🧠 Deep Conceptual Questions — Arrays & Memory
 
-> These questions test your REASONING, not just recall. Think before expanding.
+These questions test your REASONING, not just recall. Think before expanding.
 
 **C1. Why is array access O(1)?**
 <details><summary>Deep Answer</summary>
@@ -954,4 +954,4 @@ The key insight: at each position i, the maximum subarray ending at i is either:
 </details>
 
 
-> **Navigation**: [⬅ Mock Interviews](09_Mock_Interview_Simulations.md) | [📚 Index](00_INDEX.md) | [Next: LinkedList, Stack, Queue, Heap ➡](11_DSA_Problems_LinkedList_Stack_Queue_Heap.md)
+**Navigation**: [⬅ Mock Interviews](09_Mock_Interview_Simulations.md) | [📚 Index](00_INDEX.md) | [Next: LinkedList, Stack, Queue, Heap ➡](11_DSA_Problems_LinkedList_Stack_Queue_Heap.md)

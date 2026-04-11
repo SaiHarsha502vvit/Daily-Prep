@@ -1,32 +1,32 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_CSS_Layout_Systems.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_CSS_Layout_Systems.md)
 
-> **CSS Chapter 1/4** | [Index](../00_MASTER_INDEX.md) | [Next → Layout Systems](02_CSS_Layout_Systems.md)
+**CSS Chapter 1/4** | [Index](../00_MASTER_INDEX.md) | [Next → Layout Systems](02_CSS_Layout_Systems.md)
 
 # CSS Foundations — Selectors, Cascade, Box Model & Display
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: CSS (Cascading Style Sheets) controls HOW HTML looks.
-> Layout, colors, typography, spacing, animations.
->
-> WHY:  HTML alone = newspaper from 1995. CSS = modern web.
-> Without CSS skills, you CAN'T build professional UIs.
-> React components need CSS. Debugging layout issues needs
-> deep CSS understanding.
->
-> WHO:  Every frontend developer. Even "backend-focused" devs
-> need CSS basics for full-stack work.
->
-> WHEN: After HTML basics. Before learning any CSS framework.
-> CSS fundamentals are FOREVER — Tailwind/Bootstrap change.
->
-> WHERE: Browsers render CSS. Every website, web app, email
-> template, mobile webview uses CSS.
->
-> HOW:  CSS rules = selector { property: value; }
-> Selector targets HTML. Properties change appearance.
-> The CASCADE determines which rule wins when conflicts.
+WHAT: CSS (Cascading Style Sheets) controls HOW HTML looks.
+Layout, colors, typography, spacing, animations.
+
+WHY:  HTML alone = newspaper from 1995. CSS = modern web.
+Without CSS skills, you CAN'T build professional UIs.
+React components need CSS. Debugging layout issues needs
+deep CSS understanding.
+
+WHO:  Every frontend developer. Even "backend-focused" devs
+need CSS basics for full-stack work.
+
+WHEN: After HTML basics. Before learning any CSS framework.
+CSS fundamentals are FOREVER — Tailwind/Bootstrap change.
+
+WHERE: Browsers render CSS. Every website, web app, email
+template, mobile webview uses CSS.
+
+HOW:  CSS rules = selector { property: value; }
+Selector targets HTML. Properties change appearance.
+The CASCADE determines which rule wins when conflicts.
 
 
 ---
@@ -83,25 +83,16 @@ SELECTOR              │ WHAT IT TARGETS
 ```
 
 **Flow:**
-- <div class='parent'>
-- ↓
-- <p>Direct child</p> ← child (>)
-- ↓
-- <div class='parent'>
-- ↓
-- <section>
-- ↓
-- <div class='parent'>
-- ↓
-- <p>Nested</p> ← descendant (space)
-- ↓
-- <div class='parent'>
-- ↓
-- <p>Another child</p> ← child (>)
-- ↓
-- <div class='parent'>
-- ↓
-- <p>Yet another</p> ← child (>)
+1. <div class='parent'>
+2. <p>Direct child</p> ← child (>)
+3. <div class='parent'>
+4. <section>
+5. <div class='parent'>
+6. <p>Nested</p> ← descendant (space)
+7. <div class='parent'>
+8. <p>Another child</p> ← child (>)
+9. <div class='parent'>
+10. <p>Yet another</p> ← child (>)
 
 ```mermaid
 flowchart TD
@@ -190,19 +181,13 @@ If SPECIFICITY is EQUAL → LAST rule in source order wins.
 ```
 
 **Flow:**
-- WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS?
-- ↓
-- 1. !important declarations (AVOID!)
-- ↓
-- 2. Inline styles (style='...') (RARE)
-- ↓
-- 3. ID selectors (#id) (HIGHEST specificity)
-- ↓
-- 4. Class/attribute/pseudo-class (.class, [attr])
-- ↓
-- 5. Element/pseudo-element (p, ::before)
-- ↓
-- 6. Universal (*) (LOWEST specificity)
+1. WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS?
+2. !important declarations (AVOID!)
+3. Inline styles (style='...') (RARE)
+4. ID selectors (#id) (HIGHEST specificity)
+5. Class/attribute/pseudo-class (.class, [attr])
+6. Element/pseudo-element (p, ::before)
+7. Universal (*) (LOWEST specificity)
 
 ```mermaid
 flowchart TD
@@ -253,19 +238,12 @@ flowchart TD
 ```
 
 **Flow:**
-- SPECIFICITY = (Inline, IDs, Classes, Elements)
-- ↓
-- Selector Specificity Score
-- ↓
-- p.intro (0,0,1,1) 11
-- ↓
-- .nav .link (0,0,2,0) 20
-- ↓
-- #header (0,1,0,0) 100
-- ↓
-- #header .nav .link (0,1,2,0) 120
-- ↓
-- #header .nav a:hover (0,1,2,1) 121
+1. SPECIFICITY = (Inline, IDs, Classes, Elements)
+2. Selector Specificity Score p.intro (0,0,1,1) 11
+3. .nav .link (0,0,2,0) 20
+4. #header (0,1,0,0) 100
+5. #header .nav .link (0,1,2,0) 120
+6. #header .nav a:hover (0,1,2,1) 121
 
 ```mermaid
 flowchart TD
@@ -341,19 +319,13 @@ BORDER-BOX (what you want):
 ```
 
 **Flow:**
-- THE CSS BOX MODEL (Every element is a box):
-- ↓
-- MARGIN
-- ↓
-- BORDER
-- ↓
-- PADDING
-- ↓
-- CONTENT
-- ↓
-- (width × height)
-- ↓
-- CONTENT-BOX (default):
+1. THE CSS BOX MODEL (Every element is a box):
+2. MARGIN
+3. BORDER
+4. PADDING
+5. CONTENT
+6. (width × height)
+7. CONTENT-BOX (default):
 
 ```mermaid
 flowchart TD
@@ -444,9 +416,8 @@ FIX/PREVENT:
 ```
 
 **Flow:**
-- Element A / margin-bottom: / 20px
-- ↓
-- Element B / margin-top: / 30px
+1. Element A / margin-bottom: / 20px
+2. Element B / margin-top: / 30px
 
 ```mermaid
 flowchart TD
@@ -485,19 +456,13 @@ contents       │ Element box disappears, children act as if
 ```
 
 **Flow:**
-- display VALUE BEHAVIOR
-- ↓
-- block Takes full width. New line before/after.
-- ↓
-- Can set width/height. <div>, <p>, <h1&gt
-- ↓
-- inline Only as wide as content. NO width/height.
-- ↓
-- Same line as neighbors. <span>, <a>, <st
-- ↓
-- inline-block Inline flow BUT allows width/height.
-- ↓
-- Best of both worlds. <img>, <button>
+1. display VALUE BEHAVIOR
+2. block Takes full width. New line before/after.
+3. Can set width/height. <div>, <p>, <h1&gt
+4. inline Only as wide as content. NO width/height.
+5. Same line as neighbors. <span>, <a>, <st
+6. inline-block Inline flow BUT allows width/height.
+7. Best of both worlds. <img>, <button>
 
 ```mermaid
 flowchart TD
@@ -603,19 +568,8 @@ flowchart TD
 ```
 
 **Flow:**
-- UNIT RELATIVE TO USE CASE
-- ↓
-- px Absolute (1/96') Borders, shadows, fine details
-- ↓
-- rem Root font-size Font sizes, spacing, MOST things
-- ↓
-- em Parent font-size Relative to current text size
-- ↓
-- % Parent element Widths, heights, layout
-- ↓
-- vw Viewport width Full-width sections, fluid text
-- ↓
-- vh Viewport height Full-height sections, hero banners
+1. UNIT RELATIVE TO USE CASE
+2. px Absolute (1/96') Borders, shadows, fine details rem Root font-size Font sizes, spacing, MOST things em Parent font-size Relative to current text size % Parent element Widths, heights, layout vw Viewport width Full-width sections, fluid text vh Viewport height Full-height sections, hero banners
 
 ```mermaid
 flowchart TD
@@ -690,8 +644,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 5. Colors, Typography & Units**
->>>
+🔬 **Section Challenge — 5. Colors, Typography & Units**
+>>
 
 ## 6. Backgrounds, Shadows & Borders
 
@@ -758,19 +712,13 @@ flowchart TD
 ```
 
 **Flow:**
-- POSITION RELATIVE TO IN FLOW? USE CASE
-- ↓
-- static Normal document flow YES Default (no offset)
-- ↓
-- relative Its normal position YES Offset + context
-- ↓
-- absolute Nearest positioned NO Overlays, tooltips
-- ↓
-- ancestor
-- ↓
-- fixed Viewport NO Sticky nav, modals
-- ↓
-- sticky Scroll threshold YES* Sticky headers
+1. POSITION RELATIVE TO IN FLOW? USE CASE
+2. static Normal document flow YES Default (no offset)
+3. relative Its normal position YES Offset + context
+4. absolute Nearest positioned NO Overlays, tooltips
+5. ancestor
+6. fixed Viewport NO Sticky nav, modals
+7. sticky Scroll threshold YES* Sticky headers
 
 ```mermaid
 flowchart TD
@@ -855,19 +803,12 @@ This is why z-index "doesn't work" sometimes!
 ```
 
 **Flow:**
-- Z-INDEX GUIDE:
-- ↓
-- z-index only works on POSITIONED elements (not static).
-- ↓
-- LAYER SYSTEM (use consistent values):
-- ↓
-- z-index: 9999 MODAL OVERLAY ← On top of everything
-- ↓
-- z-index: 1000 NAVIGATION
-- ↓
-- z-index: 100 DROPDOWN/POPUP
-- ↓
-- z-index: 50 STICKY ELEMENTS
+1. Z-INDEX GUIDE:
+2. z-index only works on POSITIONED elements (not static).
+3. LAYER SYSTEM (use consistent values):
+4. z-index: 9999 MODAL OVERLAY ← On top of everything
+5. z-index: 1000 NAVIGATION z-index: 100 DROPDOWN/POPUP
+6. z-index: 50 STICKY ELEMENTS
 
 ```mermaid
 flowchart TD
@@ -981,17 +922,11 @@ Q: What is the cascade?
 ```
 
 **Flow:**
-- Every element is a box: Content
-- ↓
-- Padding
-- ↓
-- Border
-- ↓
-- Margin.
-- ↓
-- CSS applies rules in order: importance (!important
-- ↓
-- specificity
+1. Every element is a box: Content
+2. Padding
+3. Border
+4. Margin.
+5. CSS applies rules in order: importance (!important specificity
 
 ```mermaid
 flowchart LR
@@ -1009,7 +944,7 @@ flowchart LR
 
 ---
 
-> [Index](../00_MASTER_INDEX.md) | [Next → Layout Systems (Flex, Grid)](02_CSS_Layout_Systems.md)
+[Index](../00_MASTER_INDEX.md) | [Next → Layout Systems (Flex, Grid)](02_CSS_Layout_Systems.md)
 
 
 ---

@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](05_DevTools_Debugging_Mastery.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Web_Accessibility_A11y.md)
+**Navigation**: [< Previous](05_DevTools_Debugging_Mastery.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Web_Accessibility_A11y.md)
 
 # ⚡ Chapter 6 — Web Performance & Core Web Vitals: Making the Web Fast
 
-> **"Google ranks faster sites higher. Users abandon sites that take more than 3 seconds to load. Performance isn't optional — it's the first feature your users experience."**
+**"Google ranks faster sites higher. Users abandon sites that take more than 3 seconds to load. Performance isn't optional — it's the first feature your users experience."**
 
 ---
 
@@ -320,7 +320,7 @@
   alt="Product photo"
   loading="lazy"
   decoding="async"
->
+
 ```
 
 ---
@@ -521,14 +521,14 @@ function Dashboard() {
 
 
 
-> 🔬 **Section Challenge — 9. Caching Strategies — HTTP Cache Headers**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — 9. Caching Strategies — HTTP Cache Headers**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## 10. Measuring Performance in Code
 
@@ -588,7 +588,7 @@ onCLS(({ value }) => sendToAnalytics('CLS', value));
 
 ---
 
-> **Next Chapter**: [Web Accessibility (a11y) →](07_Web_Accessibility_A11y.md)
+**Next Chapter**: [Web Accessibility (a11y) →](07_Web_Accessibility_A11y.md)
 
 
 

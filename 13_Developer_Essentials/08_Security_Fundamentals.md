@@ -1,6 +1,6 @@
 # 🔐 Security Fundamentals — Complete Guide
 
-> **Navigation**: [< API Design](07_API_Design_REST.md) | [Index](00_INDEX.md) | [Next: System Design >](09_System_Design.md)
+**Navigation**: [< API Design](07_API_Design_REST.md) | [Index](00_INDEX.md) | [Next: System Design >](09_System_Design.md)
 
 ---
 
@@ -23,19 +23,13 @@ LESSON: Security is not a feature to add later.
 ```
 
 **Flow:**
-- Equifax Breach (2017)
-- ↓
-- 147 million records leaked
-- ↓
-- $700M+ settlement
-- ↓
-- Log4Shell (2021)
-- ↓
-- Affected MILLIONS of servers worldwide
-- ↓
-- SolarWinds (2020)
-- ↓
-- 18,000 organizations compromised
+1. Equifax Breach (2017)
+2. 147 million records leaked
+3. $700M+ settlement
+4. Log4Shell (2021)
+5. Affected MILLIONS of servers worldwide
+6. SolarWinds (2020)
+7. 18,000 organizations compromised
 
 ```mermaid
 flowchart LR
@@ -75,13 +69,9 @@ Flow:
 ```
 
 **Flow:**
-- 2. Server AUTHENTICATES
-- ↓
-- issues token (JWT)
-- ↓
-- 4. Server AUTHORIZES
-- ↓
-- checks role/permissions for that endpoint
+1. Server AUTHENTICATES issues token (JWT)
+2. Server AUTHORIZES
+3. checks role/permissions for that endpoint
 
 ```mermaid
 flowchart LR
@@ -112,9 +102,8 @@ flowchart LR
 ```
 
 **Flow:**
-- # Vulnerability What It Means Prevention
-- ↓
-- chooses
+1. # Vulnerability What It Means Prevention
+2. chooses
 
 ```mermaid
 flowchart TD
@@ -272,13 +261,10 @@ Encryption Types:
 ```
 
 **Flow:**
-- 1. Client
-- ↓
-- Server: 'Hello, I support these ciphers'
-- ↓
-- 2. Server
-- ↓
-- Client: 'Let's use this cipher + here's my certifi
+1. Client
+2. Server: 'Hello, I support these ciphers'
+3. Server
+4. Client: 'Let's use this cipher + here's my certifi
 
 ```mermaid
 flowchart LR
@@ -314,14 +300,14 @@ public class CorsConfig implements WebMvcConfigurer {
 
 
 
-> 🔬 **Section Challenge — Level 6 — CORS (Cross-Origin Resource Sharing)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Level 6 — CORS (Cross-Origin Resource Sharing)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # WHERE: Security Checklist for Every Project
 
@@ -354,9 +340,7 @@ DEPENDENCIES:
 ```
 
 **Flow:**
-- ☐ HTTPS everywhere (redirect HTTP
-- ↓
-- HTTPS)
+1. ☐ HTTPS everywhere (redirect HTTP HTTPS)
 
 ```mermaid
 flowchart LR
@@ -381,29 +365,18 @@ Dependencies     → Dependabot + regular updates
 ```
 
 **Flow:**
-- SQL Injection
-- ↓
-- Parameterized queries
-- ↓
-- XSS
-- ↓
-- Escape output, CSP headers
-- ↓
-- CSRF
-- ↓
-- Anti-CSRF tokens (or stateless JWT)
-- ↓
-- Password Storage
-- ↓
-- BCrypt (never MD5/SHA)
-- ↓
-- Auth
-- ↓
-- JWT + refresh token
-- ↓
-- Transport
-- ↓
-- HTTPS + HSTS
+1. SQL Injection
+2. Parameterized queries
+3. XSS
+4. Escape output, CSP headers
+5. CSRF
+6. Anti-CSRF tokens (or stateless JWT)
+7. Password Storage
+8. BCrypt (never MD5/SHA)
+9. Auth
+10. JWT + refresh token
+11. Transport
+12. HTTPS + HSTS
 
 ```mermaid
 flowchart TD
@@ -455,14 +428,14 @@ public String login(@RequestParam String user, @RequestParam String pass) {
 
 
 
-> 🔬 **Section Challenge — Exercise 1: Find the Vulnerabilities**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Exercise 1: Find the Vulnerabilities**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Exercise 2: Secure a Spring Boot App
 ```
@@ -477,19 +450,19 @@ Build a Spring Boot REST API with:
 
 ---
 
-> **Next Chapter**: [System Design →](09_System_Design.md)
+**Next Chapter**: [System Design →](09_System_Design.md)
 
 
 ---
 
-> **Navigation**: [< Previous](07_API_Design_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_System_Design.md)
+**Navigation**: [< Previous](07_API_Design_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_System_Design.md)
 
-> 🔬 **Section Challenge — Exercise 2: Secure a Spring Boot App**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Exercise 2: Secure a Spring Boot App**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 

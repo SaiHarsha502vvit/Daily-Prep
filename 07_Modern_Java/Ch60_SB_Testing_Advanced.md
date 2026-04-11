@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](Ch59_SB_Testing_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch59_SB_Testing_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -235,14 +235,14 @@ class ExternalApiClientTest {
 
 
 
-> 🔬 **Section Challenge — Integration Testing**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Integration Testing**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Test Containers
 
@@ -353,14 +353,14 @@ class UserServiceIntegrationTest extends AbstractContainerBaseTest {
 
 
 
-> 🔬 **Section Challenge — Test Containers**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Test Containers**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Testing Best Practices
 
@@ -1071,14 +1071,14 @@ class UserApiSimulation extends Simulation {
 
 
 
-> 🔬 **Section Challenge — Performance Testing**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Performance Testing**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Interview Questions
 
@@ -1294,7 +1294,7 @@ Testing is a critical skill for professional developers:
 5. **TDD** - Write tests first, then code
 6. **BDD** - Tests that describe behavior
 
-> **Remember**: "Tests are not overhead. They are investments in code quality, maintainability, and your own sanity."
+**Remember**: "Tests are not overhead. They are investments in code quality, maintainability, and your own sanity."
 
 ---
 
@@ -1303,8 +1303,8 @@ Testing is a critical skill for professional developers:
 
 ---
 
-> **Navigation**: [< Previous](Ch59_SB_Testing_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch61_SB_Microservices_Core.md)
+**Navigation**: [< Previous](Ch59_SB_Testing_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch61_SB_Microservices_Core.md)
 
-> 🔬 **Section Challenge — Summary**
->>
+🔬 **Section Challenge — Summary**
+>
 

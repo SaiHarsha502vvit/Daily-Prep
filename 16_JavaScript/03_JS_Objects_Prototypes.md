@@ -1,24 +1,24 @@
-> **JavaScript Chapter 3/7** | [← Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
+**JavaScript Chapter 3/7** | [← Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
 
 # Objects & Prototypes — How JS Really Does Inheritance
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: Objects are JS's universal data structure. Prototypes are
-> JS's inheritance mechanism. Classes (ES6) are sugar on top.
->
-> WHY:  Everything in JS is (or behaves like) an object.
-> Understanding prototypes explains: why [].map works,
-> how inheritance works, what `class` really does.
->
-> WHO:  Anyone doing JS — React props are objects, APIs return
-> objects, DOM elements are objects.
->
-> WHEN: After understanding functions and closures (Ch 2).
->
-> HOW:  Every object has an internal [[Prototype]] link to another
-> object. When you access a property, JS walks this chain.
+WHAT: Objects are JS's universal data structure. Prototypes are
+JS's inheritance mechanism. Classes (ES6) are sugar on top.
+
+WHY:  Everything in JS is (or behaves like) an object.
+Understanding prototypes explains: why [].map works,
+how inheritance works, what `class` really does.
+
+WHO:  Anyone doing JS — React props are objects, APIs return
+objects, DOM elements are objects.
+
+WHEN: After understanding functions and closures (Ch 2).
+
+HOW:  Every object has an internal [[Prototype]] link to another
+object. When you access a property, JS walks this chain.
 
 
 ---
@@ -90,19 +90,13 @@ avoid `this` problems entirely — good for utility modules.
 ```
 
 **Flow:**
-- WHICH TO USE:
-- ↓
-- Approach When to Use
-- ↓
-- Object literal One-off objects, configs, data
-- ↓
-- Class Multiple instances, inheritance
-- ↓
-- Factory function Privacy, no `this` confusion
-- ↓
-- Object.create When you need specific prototype
-- ↓
-- Constructor fn Legacy code only (use class)
+1. WHICH TO USE:
+2. Approach When to Use
+3. Object literal One-off objects, configs, data
+4. Class Multiple instances, inheritance
+5. Factory function Privacy, no `this` confusion
+6. Object.create When you need specific prototype
+7. Constructor fn Legacy code only (use class)
 
 ```mermaid
 flowchart TD
@@ -197,19 +191,13 @@ person.firstName;          // "New"
 ```
 
 **Flow:**
-- LEVEL 1: Object.preventExtensions(obj)
-- ↓
-- Cannot ADD new properties. Can modify/delete existing
-- ↓
-- LEVEL 2: Object.seal(obj)
-- ↓
-- Cannot ADD or DELETE properties. CAN modify values.
-- ↓
-- (Sets configurable: false on all properties)
-- ↓
-- LEVEL 3: Object.freeze(obj)
-- ↓
-- Cannot ADD, DELETE, or MODIFY. Completely immutable.
+1. LEVEL 1: Object.preventExtensions(obj)
+2. Cannot ADD new properties. Can modify/delete existing
+3. LEVEL 2: Object.seal(obj)
+4. Cannot ADD or DELETE properties. CAN modify values.
+5. (Sets configurable: false on all properties)
+6. LEVEL 3: Object.freeze(obj)
+7. Cannot ADD, DELETE, or MODIFY. Completely immutable.
 
 ```mermaid
 flowchart TD
@@ -255,19 +243,12 @@ flowchart TD
 ```
 
 **Flow:**
-- object. This forms a CHAIN (until null).
-- ↓
-- WHY: Memory efficiency. Instead of copying methods to e
-- ↓
-- instance, all instances SHARE methods via the prototype
-- ↓
-- 1000 users, 1 copy of greet() — not 1000 copies.
-- ↓
-- ANALOGY: Prototype chain is like a family tree.
-- ↓
-- If you don't know something, ask your parent.
-- ↓
-- HOW: Access via Object.getPrototypeOf(obj) or obj.__pro
+1. object. This forms a CHAIN (until null).
+2. WHY: Memory efficiency. Instead of copying methods to e
+3. instance, all instances SHARE methods via the prototype
+4. 1000 users, 1 copy of greet() — not 1000 copies.
+5. ANALOGY: Prototype chain is like a family tree.
+6. If you don't know something, ask your parent. HOW: Access via Object.getPrototypeOf(obj) or obj.__pro
 
 ```mermaid
 flowchart TD
@@ -316,13 +297,9 @@ flowchart TD
 ```
 
 **Flow:**
-- PROTOTYPE CHAIN VISUALIZATION: / const arr = [1, 2, 3];
-- ↓
-- Array.prototype { map, filter, reduce, forEach, ... } /
-- ↓
-- Object.prototype { toString, hasOwnProperty, valueOf, .
-- ↓
-- null ← END OF CHAIN / When you call arr.map(), JS looks
+1. PROTOTYPE CHAIN VISUALIZATION: / const arr = [1, 2, 3];
+2. Array.prototype { map, filter, reduce, forEach, ... } /
+3. Object.prototype { toString, hasOwnProperty, valueOf, . null ← END OF CHAIN / When you call arr.map(), JS looks
 
 ```mermaid
 flowchart TD
@@ -369,14 +346,14 @@ rex.toString(); // "[object Object]" ← found on Object.prototype
 
 
 
-> 🔬 **Section Challenge — 4. Prototypes — JS's Inheritance Mechanism**
->
-> **Challenge 1 (Reasoning):** `Object.create(proto)` vs `new Constructor()` — what's the practical difference?
-> <details><summary>Answer</summary>
->
-> `new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) — useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
-> </details>
->
+🔬 **Section Challenge — 4. Prototypes — JS's Inheritance Mechanism**
+
+**Challenge 1 (Reasoning):** `Object.create(proto)` vs `new Constructor()` — what's the practical difference?
+<details><summary>Answer</summary>
+
+`new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) — useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
+</details>
+
 
 ## 5. ES6 Classes — Syntactic Sugar
 
@@ -460,19 +437,10 @@ rex.showTricks();     // "sit"
 ```
 
 **Flow:**
-- CLASS ≡ PROTOTYPE (what class actually does):
-- ↓
-- class Dog extends Animal { bark() {} }
-- ↓
-- IS EXACTLY THE SAME AS:
-- ↓
-- function Dog(name, breed) { Animal.call(this, name); ..
-- ↓
-- Dog.prototype = Object.create(Animal.prototype);
-- ↓
-- Dog.prototype.constructor = Dog;
-- ↓
-- Dog.prototype.bark = function() {};
+1. CLASS ≡ PROTOTYPE (what class actually does):
+2. class Dog extends Animal { bark() {} }
+3. IS EXACTLY THE SAME AS:
+4. function Dog(name, breed) { Animal.call(this, name); .. Dog.prototype = Object.create(Animal.prototype); Dog.prototype.constructor = Dog; Dog.prototype.bark = function() {};
 
 ```mermaid
 flowchart TD
@@ -646,19 +614,13 @@ properties at any time. More flexible, but less safe.
 ```
 
 **Flow:**
-- Feature JavaScript Java
-- ↓
-- Typing Dynamic Static
-- ↓
-- Inheritance Prototype-based Class-based
-- ↓
-- Class keyword Sugar over proto Real class
-- ↓
-- Private fields # prefix (new) private keyword
-- ↓
-- Interfaces None (use TS) interface keyword
-- ↓
-- Multiple inherit Mixins/compose Interfaces only
+1. Feature JavaScript Java
+2. Typing Dynamic Static
+3. Inheritance Prototype-based Class-based
+4. Class keyword Sugar over proto Real class
+5. Private fields # prefix (new) private keyword
+6. Interfaces None (use TS) interface keyword
+7. Multiple inherit Mixins/compose Interfaces only
 
 ```mermaid
 flowchart TD
@@ -714,19 +676,13 @@ Q: How to check if a property exists?
 ```
 
 **Flow:**
-- Q: How does prototypal inheritance work?
-- ↓
-- on the object, JS walks up the prototype chain until nu
-- ↓
-- Q: What does `new` keyword do?
-- ↓
-- 1. Creates empty object {}
-- ↓
-- 2. Sets its [[Prototype]] to Constructor.prototype
-- ↓
-- 3. Calls constructor with `this` = new object
-- ↓
-- Q: Difference between hasOwnProperty and `in`?
+1. Q: How does prototypal inheritance work?
+2. on the object, JS walks up the prototype chain until nu
+3. Q: What does `new` keyword do?
+4. Creates empty object {}
+5. Sets its [[Prototype]] to Constructor.prototype
+6. Calls constructor with `this` = new object
+7. Q: Difference between hasOwnProperty and `in`?
 
 ```mermaid
 flowchart TD
@@ -749,7 +705,7 @@ flowchart TD
 
 ---
 
-> [← Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
+[← Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
 
 ---
 

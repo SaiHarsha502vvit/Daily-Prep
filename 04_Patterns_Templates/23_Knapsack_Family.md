@@ -1,6 +1,6 @@
-> **Navigation**: [< Previous](22_Cyclic_Sort_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](22_Cyclic_Sort_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md)
 
-> **Pattern 23** | [Index](../00_MASTER_INDEX.md)
+**Pattern 23** | [Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -181,9 +181,8 @@ VISUAL (3 items, W=4):
 ```
 
 **Flow:**
-- Answer: dp[3][4] = 22 (take items 2 and 3: weight=
-- ↓
-- items 1+3: 1+3=4, 6+12=18?
+1. Answer: dp[3][4] = 22 (take items 2 and 3: weight=
+2. items 1+3: 1+3=4, 6+12=18?
 
 ```mermaid
 flowchart LR
@@ -245,9 +244,8 @@ SOLUTION:
 ```
 
 **Flow:**
-- PATTERN: 0/1 Knapsack
-- ↓
-- Subset Sum with target = totalSum/2
+1. PATTERN: 0/1 Knapsack
+2. Subset Sum with target = totalSum/2
 
 ```mermaid
 flowchart LR
@@ -283,14 +281,14 @@ COMPLEXITY: Time O(n × sum) | Space O(sum)
 
 
 
-> 🔬 **Section Challenge — PROBLEM 2: Partition Equal Subset Sum (LC 416)**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — PROBLEM 2: Partition Equal Subset Sum (LC 416)**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## PROBLEM 3: Target Sum (LC 494)
 
@@ -310,9 +308,8 @@ SOLUTION:
 ```
 
 **Flow:**
-- PATTERN: 0/1 Knapsack
-- ↓
-- count ways
+1. PATTERN: 0/1 Knapsack
+2. count ways
 
 ```mermaid
 flowchart LR
@@ -349,14 +346,14 @@ KEY: The mathematical transformation is the hardest part!
 
 
 
-> 🔬 **Section Challenge — PROBLEM 3: Target Sum (LC 494)**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — PROBLEM 3: Target Sum (LC 494)**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## PROBLEM 4: Coin Change — Minimum Coins (LC 322)
 
@@ -372,13 +369,10 @@ SOLUTION:
 ```
 
 **Flow:**
-- PATTERN: Unbounded Knapsack
-- ↓
-- minimize count
-- ↓
-- Input: coins = [1,5,11], amount = 15
-- ↓
-- Output: 3 (5+5+5)
+1. PATTERN: Unbounded Knapsack
+2. minimize count
+3. Input: coins = [1,5,11], amount = 15
+4. Output: 3 (5+5+5)
 
 ```mermaid
 flowchart LR
@@ -434,17 +428,12 @@ SOLUTION:
 ```
 
 **Flow:**
-- PATTERN: Unbounded Knapsack
-- ↓
-- count combinations
-- ↓
-- Input: coins = [1,2,5], amount = 5
-- ↓
-- Output: 4
-- ↓
-- This problem asks COMBINATIONS
-- ↓
-- coins as outer loop.
+1. PATTERN: Unbounded Knapsack
+2. count combinations
+3. Input: coins = [1,2,5], amount = 5
+4. Output: 4
+5. This problem asks COMBINATIONS
+6. coins as outer loop.
 
 ```mermaid
 flowchart LR
@@ -576,19 +565,13 @@ COMPLEXITY: Time O(strs × m × n) | Space O(m × n)
 ```
 
 **Flow:**
-- WHY LOOP DIRECTION MATTERS
-- ↓
-- 0/1 KNAPSACK (RIGHT
-- ↓
-- LEFT):
-- ↓
-- 0/1 KNAPSACK (RIGHT
-- ↓
-- LEFT):
-- ↓
-- UNBOUNDED KNAPSACK (LEFT
-- ↓
-- RIGHT):
+1. WHY LOOP DIRECTION MATTERS
+2. 0/1 KNAPSACK (RIGHT
+3. LEFT):
+4. 0/1 KNAPSACK (RIGHT
+5. LEFT):
+6. UNBOUNDED KNAPSACK (LEFT
+7. RIGHT):
 
 ```mermaid
 flowchart TD
@@ -618,4 +601,4 @@ flowchart TD
 
 ---
 
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md)

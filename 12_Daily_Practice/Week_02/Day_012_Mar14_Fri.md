@@ -67,15 +67,10 @@ size()          O(1)      set.size()
 ```
 
 **Flow:**
-- OPERATIONS: TIME EXAMPLE
-- ↓
-- add(x) O(1) set.add('apple')
-- ↓
-- remove(x) O(1) set.remove('apple')
-- ↓
-- contains(x) O(1) set.contains('apple')
-- ↓
-- size() O(1) set.size()
+1. OPERATIONS: TIME EXAMPLE add(x) O(1) set.add('apple')
+2. remove(x) O(1) set.remove('apple')
+3. contains(x) O(1) set.contains('apple')
+4. size() O(1) set.size()
 
 ```mermaid
 flowchart TD
@@ -154,9 +149,8 @@ TWO VARIANTS:
 ```
 
 **Flow:**
-- OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array) /
-- ↓
-- SAME DIRECTION EXAMPLE: Remove Duplicates (sorted) / [1
+1. OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array) /
+2. SAME DIRECTION EXAMPLE: Remove Duplicates (sorted) / [1
 
 ```mermaid
 flowchart TD
@@ -263,13 +257,9 @@ WHY HashMap + HashSet?
 ```
 
 **Flow:**
-- HashMap<String, Long>: key
-- ↓
-- last timestamp
-- ↓
-- O(1) per transaction
-- ↓
-- can handle millions in real-time
+1. HashMap<String, Long>: key last timestamp
+2. O(1) per transaction
+3. can handle millions in real-time
 
 ```mermaid
 flowchart LR

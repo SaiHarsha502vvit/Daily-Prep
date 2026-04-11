@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](22_NoSQL_MongoDB.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_SQL_Data_Analyst_RealWorld.md)
+**Navigation**: [< Previous](22_NoSQL_MongoDB.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_SQL_Data_Analyst_RealWorld.md)
 
 # Chapter 23 — SQL Deep Reasoning: The Questions That Freeze People
 
-> **"Anyone can write SELECT * FROM users. The senior engineer explains WHY NULL breaks everything, WHEN indexes make queries SLOWER, and HOW transaction isolation levels cause phantom reads."**
+**"Anyone can write SELECT * FROM users. The senior engineer explains WHY NULL breaks everything, WHEN indexes make queries SLOWER, and HOW transaction isolation levels cause phantom reads."**
 
 ---
 
@@ -24,32 +24,32 @@
 ## 1. NULL: The Value That Isn't a Value
 
 ### The Freeze Question
-> "What does `NULL = NULL` return? Is it true?"
+"What does `NULL = NULL` return? Is it true?"
 
 ### Deep Reasoning
 
 
-> NULL = "I don't know" — The Unknown Analogy
->
-> NULL doesn't mean zero. NULL doesn't mean empty string.
-> NULL means "UNKNOWN" or "NOT APPLICABLE."
->
-> "Is an unknown value equal to another unknown value?"
-> Answer: "I don't know!" → NULL (not true, not false)
->
-> SQL uses THREE-VALUED LOGIC: TRUE, FALSE, NULL
->
-> NULL = NULL     → NULL (not TRUE!)
-> NULL <> NULL    → NULL (not TRUE!)
-> NULL > 5        → NULL
-> NULL + 10       → NULL (anything + NULL = NULL)
-> NULL AND TRUE   → NULL
-> NULL OR TRUE    → TRUE (TRUE wins over unknown)
-> NULL OR FALSE   → NULL
-> NOT NULL        → NULL
->
-> To check for NULL: Use IS NULL / IS NOT NULL
-> NOT: = NULL or <> NULL (these always return NULL, never TRUE)
+NULL = "I don't know" — The Unknown Analogy
+
+NULL doesn't mean zero. NULL doesn't mean empty string.
+NULL means "UNKNOWN" or "NOT APPLICABLE."
+
+"Is an unknown value equal to another unknown value?"
+Answer: "I don't know!" → NULL (not true, not false)
+
+SQL uses THREE-VALUED LOGIC: TRUE, FALSE, NULL
+
+NULL = NULL     → NULL (not TRUE!)
+NULL <> NULL    → NULL (not TRUE!)
+NULL > 5        → NULL
+NULL + 10       → NULL (anything + NULL = NULL)
+NULL AND TRUE   → NULL
+NULL OR TRUE    → TRUE (TRUE wins over unknown)
+NULL OR FALSE   → NULL
+NOT NULL        → NULL
+
+To check for NULL: Use IS NULL / IS NOT NULL
+NOT: = NULL or <> NULL (these always return NULL, never TRUE)
 
 
 ```sql
@@ -80,7 +80,7 @@ SELECT COALESCE(phone, email, 'No contact') AS contact FROM users;
 ## 2. WHERE vs HAVING: Not Just "One Is For Groups"
 
 ### The Freeze Question
-> "Why can't I use WHERE with aggregate functions?"
+"Why can't I use WHERE with aggregate functions?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -105,19 +105,13 @@ SELECT COALESCE(phone, email, 'No contact') AS contact FROM users;
 ```
 
 **Flow:**
-- SQL EXECUTION ORDER (not the order you write it!):
-- ↓
-- 1. FROM / JOIN ← Identify the tables
-- ↓
-- 2. WHERE ← Filter INDIVIDUAL rows
-- ↓
-- 3. GROUP BY ← Create groups
-- ↓
-- 4. HAVING ← Filter GROUPS (after aggregation)
-- ↓
-- 5. SELECT ← Choose columns, compute expressions
-- ↓
-- 6. DISTINCT ← Remove duplicates
+1. SQL EXECUTION ORDER (not the order you write it!):
+2. 1. FROM / JOIN ← Identify the tables
+3. 2. WHERE ← Filter INDIVIDUAL rows
+4. 3. GROUP BY ← Create groups
+5. 4. HAVING ← Filter GROUPS (after aggregation)
+6. 5. SELECT ← Choose columns, compute expressions
+7. 6. DISTINCT ← Remove duplicates
 
 ```mermaid
 flowchart TD
@@ -168,7 +162,7 @@ HAVING COUNT(*) > 5;      -- Then filter groups
 ## 3. JOIN Execution: What Actually Happens Under The Hood
 
 ### The Freeze Question
-> "What's the difference between INNER JOIN and LEFT JOIN? What about execution?"
+"What's the difference between INNER JOIN and LEFT JOIN? What about execution?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -196,29 +190,18 @@ HAVING COUNT(*) > 5;      -- Then filter groups
 ```
 
 **Flow:**
-- THE SCHOOL DANCE ANALOGY
-- ↓
-- Students table (left) Lockers table (right)
-- ↓
-- [Alice, Bob, Charlie] [Locker1
-- ↓
-- Alice, Locker2
-- ↓
-- Bob]
-- ↓
-- [Alice, Bob, Charlie] [Locker1
-- ↓
-- Alice, Locker2
-- ↓
-- Bob]
-- ↓
-- INNER JOIN: Only students WITH lockers dance.
-- ↓
-- Result: [Alice+Locker1, Bob+Locker2] (Charlie excluded)
-- ↓
-- Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL]
-- ↓
-- RIGHT JOIN: ALL lockers shown. No student? NULL.
+1. THE SCHOOL DANCE ANALOGY
+2. Students table (left) Lockers table (right)
+3. [Alice, Bob, Charlie] [Locker1
+4. Alice, Locker2
+5. Bob]
+6. [Alice, Bob, Charlie] [Locker1
+7. Alice, Locker2
+8. Bob]
+9. INNER JOIN: Only students WITH lockers dance.
+10. Result: [Alice+Locker1, Bob+Locker2] (Charlie excluded)
+11. Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL]
+12. RIGHT JOIN: ALL lockers shown. No student? NULL.
 
 ```mermaid
 flowchart TD
@@ -255,25 +238,25 @@ LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US';
 
 
 
-> 🔬 **Section Challenge — 3. JOIN Execution: What Actually Happens Under The Hood**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — 3. JOIN Execution: What Actually Happens Under The Hood**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 
 ## 4. Indexes: When They Help AND When They Hurt
 
 ### The Freeze Question
-> "Should I just add indexes to every column?"
+"Should I just add indexes to every column?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -311,25 +294,16 @@ LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US';
 ```
 
 **Flow:**
-- THE BOOK INDEX ANALOGY (literally!)
-- ↓
-- An index at the back of a textbook:
-- ↓
-- 'binary search'
-- ↓
-- pages 45, 67, 112
-- ↓
-- 'binary search'
-- ↓
-- pages 45, 67, 112
-- ↓
-- Fast to FIND specific terms (O(log n) vs full scan)
-- ↓
-- But the index itself takes SPACE (extra pages)
-- ↓
-- And updating the index when content changes costs TIM
-- ↓
-- WHEN INDEXES HELP:
+1. THE BOOK INDEX ANALOGY (literally!)
+2. An index at the back of a textbook:
+3. 'binary search'
+4. pages 45, 67, 112
+5. 'binary search'
+6. pages 45, 67, 112
+7. Fast to FIND specific terms (O(log n) vs full scan)
+8. But the index itself takes SPACE (extra pages)
+9. And updating the index when content changes costs TIM
+10. WHEN INDEXES HELP:
 
 ```mermaid
 flowchart TD
@@ -355,7 +329,7 @@ flowchart TD
 ## 5. Transaction Isolation Levels: The Four Levels Explained
 
 ### The Freeze Question
-> "What's the difference between Read Committed and Repeatable Read?"
+"What's the difference between Read Committed and Repeatable Read?"
 
 ```
 THE EXAM ROOM ANALOGY
@@ -394,19 +368,13 @@ Everyone takes the exam ONE AT A TIME.
 ```
 
 **Flow:**
-- THE EXAM ROOM ANALOGY
-- ↓
-- READ UNCOMMITTED (no isolation):
-- ↓
-- You can read someone's answer sheet WHILE they're writi
-- ↓
-- READ COMMITTED (most common — Postgres default):
-- ↓
-- You can only read SUBMITTED answer sheets.
-- ↓
-- ✅ No dirty reads
-- ↓
-- ❌ Non-repeatable read: You read Bob's score=80. Read ag
+1. THE EXAM ROOM ANALOGY
+2. READ UNCOMMITTED (no isolation):
+3. You can read someone's answer sheet WHILE they're writi
+4. READ COMMITTED (most common — Postgres default):
+5. You can only read SUBMITTED answer sheets.
+6. ✅ No dirty reads
+7. ❌ Non-repeatable read: You read Bob's score=80. Read ag
 
 ```mermaid
 flowchart TD
@@ -431,19 +399,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 5. Transaction Isolation Levels: The Four Levels Explained**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — 5. Transaction Isolation Levels: The Four Levels Explained**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## 6. Deadlocks: Why Two Transactions Can Freeze Each Other
 
 ### The Freeze Question
-> "What is a deadlock and how do you prevent it?"
+"What is a deadlock and how do you prevent it?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -472,25 +440,16 @@ flowchart TD
 ```
 
 **Flow:**
-- THE NARROW DOORWAY ANALOGY
-- ↓
-- Transaction A: Locks Row 1, needs Row 2.
-- ↓
-- Transaction B: Locks Row 2, needs Row 1.
-- ↓
-- A waits for B to release Row 2.
-- ↓
-- B waits for A to release Row 1.
-- ↓
-- Neither can proceed
-- ↓
-- DEADLOCK!
-- ↓
-- Neither can proceed
-- ↓
-- DEADLOCK!
-- ↓
-- Like two people in a narrow hallway, each waiting for t
+1. THE NARROW DOORWAY ANALOGY
+2. Transaction A: Locks Row 1, needs Row 2.
+3. Transaction B: Locks Row 2, needs Row 1.
+4. A waits for B to release Row 2.
+5. B waits for A to release Row 1.
+6. Neither can proceed
+7. DEADLOCK!
+8. Neither can proceed
+9. DEADLOCK!
+10. Like two people in a narrow hallway, each waiting for t
 
 ```mermaid
 flowchart TD
@@ -515,19 +474,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 6. Deadlocks: Why Two Transactions Can Freeze Each Other**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — 6. Deadlocks: Why Two Transactions Can Freeze Each Other**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## 7. N+1 Query Problem: The Silent Performance Killer
 
 ### The Freeze Question
-> "What's the N+1 problem?"
+"What's the N+1 problem?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -544,31 +503,19 @@ flowchart TD
 ```
 
 **Flow:**
-- THE RESTAURANT ORDER ANALOGY
-- ↓
-- BAD (N+1): Waiter asks kitchen once per customer.
-- ↓
-- 'What did customer 1 order?'
-- ↓
-- 1 trip
-- ↓
-- 'What did customer 1 order?'
-- ↓
-- 1 trip
-- ↓
-- 'What did customer 2 order?'
-- ↓
-- 1 trip
-- ↓
-- 'What did customer 2 order?'
-- ↓
-- 1 trip
-- ↓
-- ... repeat N times.
-- ↓
-- GOOD: 'Give me ALL orders at once.'
-- ↓
-- 1 or 2 queries to
+1. THE RESTAURANT ORDER ANALOGY
+2. BAD (N+1): Waiter asks kitchen once per customer.
+3. 'What did customer 1 order?'
+4. 1 trip
+5. 'What did customer 1 order?'
+6. 1 trip
+7. 'What did customer 2 order?'
+8. 1 trip
+9. 'What did customer 2 order?'
+10. 1 trip
+11. ... repeat N times.
+12. GOOD: 'Give me ALL orders at once.'
+13. 1 or 2 queries to
 
 ```mermaid
 flowchart TD
@@ -611,7 +558,7 @@ private Set<Employee> employees;
 ## 8. EXPLAIN Plan: Reading It Like A Senior
 
 ### The Freeze Question
-> "How do you know if a query is slow?"
+"How do you know if a query is slow?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -641,19 +588,13 @@ private Set<Employee> employees;
 ```
 
 **Flow:**
-- EXPLAIN shows the database's EXECUTION PLAN:
-- ↓
-- RED FLAGS to look for:
-- ↓
-- 🔴 'Seq Scan' / 'Full Table Scan'
-- ↓
-- Reading EVERY row. Missing index?
-- ↓
-- 🔴 'rows' is much larger than 'filtered'
-- ↓
-- Scanning many rows but keeping few. Index would help.
-- ↓
-- 🔴 'Using filesort'
+1. EXPLAIN shows the database's EXECUTION PLAN:
+2. RED FLAGS to look for:
+3. 🔴 'Seq Scan' / 'Full Table Scan'
+4. Reading EVERY row. Missing index?
+5. 🔴 'rows' is much larger than 'filtered'
+6. Scanning many rows but keeping few. Index would help.
+7. 🔴 'Using filesort'
 
 ```mermaid
 flowchart TD
@@ -691,7 +632,7 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 42;
 ## 9. Normalization vs Denormalization: When To Break The Rules
 
 ### The Freeze Question
-> "Should the database always be normalized?"
+"Should the database always be normalized?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -719,25 +660,16 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 42;
 ```
 
 **Flow:**
-- NORMALIZATION = Organizing data to eliminate redundancy
-- ↓
-- 'Every piece of data lives in ONE place.'
-- ↓
-- ✅ No update anomalies
-- ↓
-- ✅ Less storage
-- ↓
-- ❌ More JOINs needed
-- ↓
-- slower reads for complex queries
-- ↓
-- ❌ More JOINs needed
-- ↓
-- slower reads for complex queries
-- ↓
-- DENORMALIZATION = Intentionally adding redundancy
-- ↓
-- 'Store computed/duplicate data for faster reads.'
+1. NORMALIZATION = Organizing data to eliminate redundancy
+2. 'Every piece of data lives in ONE place.'
+3. ✅ No update anomalies
+4. ✅ Less storage
+5. ❌ More JOINs needed
+6. slower reads for complex queries
+7. ❌ More JOINs needed
+8. slower reads for complex queries
+9. DENORMALIZATION = Intentionally adding redundancy
+10. 'Store computed/duplicate data for faster reads.'
 
 ```mermaid
 flowchart TD
@@ -763,7 +695,7 @@ flowchart TD
 ## 10. Window Functions: Not Just "Fancy GROUP BY"
 
 ### The Freeze Question
-> "What's the difference between GROUP BY and window functions?"
+"What's the difference between GROUP BY and window functions?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -782,27 +714,17 @@ flowchart TD
 ```
 
 **Flow:**
-- GROUP BY: 'Summarize and COLLAPSE rows into groups.'
-- ↓
-- 100 rows
-- ↓
-- 5 groups
-- ↓
-- 5 result rows.
-- ↓
-- 100 rows
-- ↓
-- 5 groups
-- ↓
-- 5 result rows.
-- ↓
-- You LOSE individual row details.
-- ↓
-- You KEEP individual row details AND get aggregate info.
-- ↓
-- Analogy: CLASS RANKING
-- ↓
-- GROUP BY = 'What's the average score per class?'
+1. GROUP BY: 'Summarize and COLLAPSE rows into groups.'
+2. 100 rows
+3. 5 groups
+4. 5 result rows.
+5. 100 rows
+6. 5 groups
+7. 5 result rows.
+8. You LOSE individual row details.
+9. You KEEP individual row details AND get aggregate info.
+10. Analogy: CLASS RANKING
+11. GROUP BY = 'What's the average score per class?'
 
 ```mermaid
 flowchart TD
@@ -845,20 +767,20 @@ FROM employees;
 
 
 
-> 🔬 **Section Challenge — 10. Window Functions: Not Just "Fancy GROUP BY"**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — 10. Window Functions: Not Just "Fancy GROUP BY"**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## Interview Quick-Fire: SQL Freeze Busters
 

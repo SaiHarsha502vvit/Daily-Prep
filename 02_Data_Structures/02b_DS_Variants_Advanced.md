@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -7,9 +7,6 @@
 ## 2.1 Min Stack
 
 ::: pattern
-
-
-
 
 ## What Is It?
 
@@ -143,19 +140,14 @@ public class MinStackOptimized {
 ```
 
 **Flow:**
-- MAX STACK - COMPLETE GUIDE
-- ↓
-- WHAT IS IT?
-- ↓
-- Similar to Min Stack but also supports:
-- ↓
-- • popMax() - Remove and return the maximum element
-- ↓
-- This is HARDER than Min Stack because:
-- ↓
-- - popMax() might remove element from MIDDLE of stack
-- ↓
-- - Need to maintain consistency
+
+# MAX STACK - COMPLETE GUIDE
+
+1. Max Stack extends Min Stack with one extra operation: `popMax()`.
+2. `popMax()` removes and returns the current maximum element.
+3. This is harder than Min Stack because removal can happen from the middle.
+4. After middle removal, structure consistency must be preserved.
+5. Use `TreeMap + Doubly Linked List` for efficient max lookup and stable stack order.
 
 ```mermaid
 flowchart TD
@@ -236,16 +228,13 @@ public class MaxStackSimple {
 
 ---
 
+🔬 **Section Challenge — 2.2 Max Stack**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 2.2 Max Stack**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
 
 # 📬 Part 3: Queue Variants
 
@@ -292,19 +281,14 @@ public class MaxStackSimple {
 ```
 
 **Flow:**
-- CIRCULAR QUEUE - COMPLETE GUIDE
-- ↓
-- WHAT IS IT?
-- ↓
-- A queue implemented using a circular array.
-- ↓
-- WHY CIRCULAR?
-- ↓
-- LINEAR QUEUE PROBLEM:
-- ↓
-- After many enqueue/dequeue operations:
-- ↓
-- front rear
+
+# CIRCULAR QUEUE - COMPLETE GUIDE
+
+1. Circular Queue is a queue implemented using a circular array.
+2. The circular design solves wasted-space issues in linear queue layouts.
+3. In a linear queue, repeated enqueue/dequeue operations leave unused front slots.
+4. Front and rear move forward, but reclaimed front space cannot be reused efficiently.
+5. Circular indexing wraps positions so available slots are reused.
 
 ```mermaid
 flowchart TD
@@ -454,31 +438,13 @@ public class CircularQueue<T> {
 ```
 
 **Flow:**
-- DEQUE - COMPLETE GUIDE
-- ↓
-- WHAT IS IT?
-- ↓
-- A queue where you can add/remove from BOTH ends in O(1)
-- ↓
-- VISUAL:
-- ↓
-- addFirst
-- ↓
-- ← addLast
-- ↓
-- addFirst
-- ↓
-- ← addLast
-- ↓
-- removeFirst ←
-- ↓
-- removeLast
-- ↓
-- removeFirst ←
-- ↓
-- removeLast
-- ↓
-- OPERATIONS:
+
+# DEQUE - COMPLETE GUIDE
+
+1. A deque supports insertion and deletion at both ends in `O(1)`.
+2. Front side operations: `addFirst` and `removeFirst`.
+3. Back side operations: `addLast` and `removeLast`.
+4. Because both ends are efficient, deque can behave like both stack and queue.
 
 ```mermaid
 flowchart TD
@@ -662,19 +628,13 @@ Window [-1,-3,5]:
 ```
 
 **Flow:**
-- MONOTONIC QUEUE - COMPLETE GUIDE
-- ↓
-- WHAT IS IT?
-- ↓
-- A deque that maintains elements in MONOTONIC order
-- ↓
-- (either increasing or decreasing).
-- ↓
-- MONOTONIC DECREASING QUEUE (for finding max):
-- ↓
-- Elements from front to back: 8 > 6 > 5 > 3
-- ↓
-- Front is always the maximum!
+
+# MONOTONIC QUEUE - COMPLETE GUIDE
+
+1. A monotonic queue keeps elements in sorted order inside a deque.
+2. For window maximums, use a decreasing queue.
+3. Maintain order from front to back (example: `8 > 6 > 5 > 3`).
+4. The front always gives the current maximum.
 
 ```mermaid
 flowchart TD
@@ -754,19 +714,12 @@ public class MonotonicQueue {
 ```
 
 **Flow:**
-- 🧠 INTERVIEW KEY POINTS - MONOTONIC QUEUE:
-- ↓
-- 1. 'When to use Monotonic Queue?'
-- ↓
-- Sliding window min/max problems
-- ↓
-- Find next greater/smaller element
-- ↓
-- Stock span problems
-- ↓
-- 2. 'Time Complexity?'
-- ↓
-- O(n) overall
+
+# INTERVIEW KEY POINTS - MONOTONIC QUEUE
+
+1. Use monotonic queue for sliding-window extrema and next greater/smaller style patterns.
+2. Typical examples include window max/min and stock span style problems.
+3. Total complexity is `O(n)` because each element is inserted and removed at most once.
 
 ```mermaid
 flowchart TD
@@ -791,16 +744,13 @@ flowchart TD
 
 ---
 
+🔬 **Section Challenge — 3.3 Monotonic Queue**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 3.3 Monotonic Queue**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
 
 # 🌳 Part 4: Tree Variants
 
@@ -868,19 +818,13 @@ Essentially a linked list!
 ```
 
 **Flow:**
-- BINARY TREE VARIANTS OVERVIEW
-- ↓
-- BINARY TREE
-- ↓
-- FULL COMPLETE PERFECT BALANCED DEGENERATE
-- ↓
-- FULL BINARY TREE:
-- ↓
-- Every node has 0 or 2 children (never 1)
-- ↓
-- COMPLETE BINARY TREE:
-- ↓
-- All levels filled except possibly last
+
+# BINARY TREE VARIANTS OVERVIEW
+
+1. Start with the binary tree family overview.
+2. Distinguish core variants: full, complete, perfect, balanced, and degenerate.
+3. Full tree rule: every node has either `0` or `2` children.
+4. Complete tree rule: all levels are full except possibly the last, filled left-to-right.
 
 ```mermaid
 flowchart TD
@@ -903,10 +847,8 @@ flowchart TD
 
 :::
 
-
-
-> 🔬 **Section Challenge — 4.1 Binary Tree Types**
->>
+🔬 **Section Challenge — 4.1 Binary Tree Types**
+>
 
 ## 4.2 AVL Tree (Self-Balancing BST)
 
@@ -971,29 +913,14 @@ flowchart TD
 ```
 
 **Flow:**
-- AVL TREE - COMPLETE GUIDE
-- ↓
-- WHAT IS IT?
-- ↓
-- A self-balancing Binary Search Tree where:
-- ↓
-- • For EVERY node:
-- ↓
-- height(left) - height(right)
-- ↓
-- ≤ 1
-- ↓
-- • For EVERY node:
-- ↓
-- height(left) - height(right)
-- ↓
-- ≤ 1
-- ↓
-- INVENTED: 1962 by Adelson-Velsky and Landis
-- ↓
-- WHY BALANCE MATTERS:
-- ↓
-- Balanced AVL: O(log n) GUARANTEED for all operations!
+
+# AVL TREEE - COMPLETE GUIDE
+
+1. AVL is a self-balancing BST.
+2. For every node, balance condition is `|height(left) - height(right)| <= 1`.
+3. When balance is violated, rotations restore structure.
+4. Balancing guarantees `O(log n)` search, insert, and delete.
+5. AVL was introduced by Adelson-Velsky and Landis (1962).
 
 ```mermaid
 flowchart TD
@@ -1199,9 +1126,6 @@ public class AVLTree {
 
 ---
 
-
-
-
 ## 4.3 Red-Black Tree
 
 ::: pattern
@@ -1260,19 +1184,10 @@ public class AVLTree {
 ```
 
 **Flow:**
-- RED-BLACK TREE - COMPLETE GUIDE
-- ↓
-- WHAT IS IT?
-- ↓
-- REFINED: 1978 by Leonidas Guibas and Robert Sedgewick
-- ↓
-- PROPERTIES (MUST ALL BE TRUE):
-- ↓
-- 1. Every node is either RED or BLACK
-- ↓
-- 2. Root is always BLACK
-- ↓
-- 3. Every leaf (NIL) is BLACK
+1. Red-Black Tree is a self-balancing BST using node colors.
+2. Historical context: refined by Guibas and Sedgewick (1978).
+3. Core rules include color assignment, black root, and black NIL leaves.
+4. These rules maintain logarithmic-height behavior for operations.
 
 ```mermaid
 flowchart TD
@@ -1318,19 +1233,9 @@ flowchart TD
 ```
 
 **Flow:**
-- 🧠 INTERVIEW KEY POINTS - TREE VARIANTS:
-- ↓
-- 1. 'Difference between AVL and Red-Black?'
-- ↓
-- AVL: More balanced, better for lookups
-- ↓
-- RB: Less rotations, better for inserts/deletes
-- ↓
-- Both guarantee O(log n)
-- ↓
-- 2. 'Which does Java TreeMap use?'
-- ↓
-- Red-Black Tree
+1. AVL vs Red-Black: AVL is stricter and lookup-optimized; RB usually has faster updates.
+2. Both provide `O(log n)` guarantees.
+3. Java `TreeMap` uses a Red-Black Tree.
 
 ```mermaid
 flowchart TD
@@ -1413,19 +1318,10 @@ Tree:      1      (index 0)
 ```
 
 **Flow:**
-- HEAP VARIANTS - COMPLETE GUIDE
-- ↓
-- HEAP TYPES
-- ↓
-- 1. MIN HEAP: Parent ≤ Children
-- ↓
-- Min at root!
-- ↓
-- 2. MAX HEAP: Parent ≥ Children
-- ↓
-- Max at root!
-- ↓
-- 3. BINARY HEAP: Most common, complete binary tree
+1. Heaps are categorized by parent-child ordering and structure.
+2. Min-heap keeps the smallest value at the root.
+3. Max-heap keeps the largest value at the root.
+4. Binary heap is the standard complete-tree implementation used in practice.
 
 ```mermaid
 flowchart TD
@@ -1638,19 +1534,10 @@ public class MinHeap {
 ```
 
 **Flow:**
-- HASH TABLE VARIANTS - COMPLETE GUIDE
-- ↓
-- COLLISION RESOLUTION STRATEGIES
-- ↓
-- 1. SEPARATE CHAINING (External Chaining):
-- ↓
-- Each bucket contains a linked list
-- ↓
-- Index 0: -> null
-- ↓
-- Index 1: -> [15] -> [25] -> null (15 % 10 = 5,
-- ↓
-- Index 2: -> [12] -> null
+1. Hash table variants differ mainly by collision-resolution strategy.
+2. Separate chaining stores collided keys in per-bucket linked structures.
+3. Example: multiple values can map to the same bucket index.
+4. Java map variants then differ by ordering, sorting, and thread-safety behavior.
 
 ```mermaid
 flowchart TD
@@ -1734,13 +1621,10 @@ HASH TABLE SELECTION:
 ```
 
 **Flow:**
-- Need Use / Simple forward traversal Singly Linked List
-- ↓
-- Need Use / Basic FIFO Simple Queue / Fixed size, no was
-- ↓
-- Need Use / Basic sorted structure BST / Guaranteed O(lo
-- ↓
-- Need Use / Basic key-value HashMap / Maintain insertion
+1. Start from need-based selection, not from implementation preference.
+2. Pick linked-list variants by traversal and update requirements.
+3. Pick queue/tree variants by access pattern and complexity guarantees.
+4. Pick hash-map variants by ordering and concurrency requirements.
 
 ```mermaid
 flowchart TD
@@ -1811,7 +1695,7 @@ This guide covers ALL major variants of data structures with:
 
 # CURATED PRACTICE PROBLEMS — DS VARIANTS (Trie, Heap, Segment Tree, etc.)
 
-> **HOW TO USE**: These cover advanced data structure variants. Attempt after mastering basic DS.
+**HOW TO USE**: These cover advanced data structure variants. Attempt after mastering basic DS.
 
 ---
 
@@ -1855,16 +1739,13 @@ This guide covers ALL major variants of data structures with:
 
 ---
 
+🔬 **Section Challenge — Section 3: Monotonic Stack / Monotonic Queue**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Section 3: Monotonic Stack / Monotonic Queue**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
 
 ## HIDDEN GEMS — DS Variants
 

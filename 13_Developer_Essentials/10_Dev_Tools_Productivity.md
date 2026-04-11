@@ -1,6 +1,6 @@
 # 🛠️ Dev Tools & Productivity — Complete Guide
 
-> **Navigation**: [< System Design](09_System_Design.md) | [Index](00_INDEX.md) | [Chapter 1: Git >](01_Git_Version_Control.md)
+**Navigation**: [< System Design](09_System_Design.md) | [Index](00_INDEX.md) | [Chapter 1: Git >](01_Git_Version_Control.md)
 
 ---
 
@@ -16,17 +16,10 @@ what another takes 2 days to do.
 ```
 
 **Flow:**
-- Junior Dev: Writes code
-- ↓
-- clicks buttons
-- ↓
-- debugs with println
-- ↓
-- Senior Dev: Writes code
-- ↓
-- keyboard shortcuts
-- ↓
-- debugs with debugger + profiler
+1. Junior Dev: Writes code clicks buttons
+2. debugs with println
+3. Senior Dev: Writes code keyboard shortcuts
+4. debugs with debugger + profiler
 
 ```mermaid
 flowchart LR
@@ -62,19 +55,13 @@ Monitoring        │ Prometheus + Grafana  │ Watch production metrics
 ```
 
 **Flow:**
-- Category Tool Why
-- ↓
-- IDE/Editor IntelliJ / VS Code Where you live 8 hours/da
-- ↓
-- Version Control Git + GitHub Track every change
-- ↓
-- Terminal Bash/PowerShell Automation, scripts
-- ↓
-- Build Tool Maven / Gradle Compile, test, package
-- ↓
-- API Testing Postman / curl Test HTTP endpoints
-- ↓
-- Containerization Docker Consistent environments
+1. Category Tool Why
+2. IDE/Editor IntelliJ / VS Code Where you live 8 hours/da
+3. Version Control Git + GitHub Track every change
+4. Terminal Bash/PowerShell Automation, scripts
+5. Build Tool Maven / Gradle Compile, test, package
+6. API Testing Postman / curl Test HTTP endpoints
+7. Containerization Docker Consistent environments
 
 ```mermaid
 flowchart TD
@@ -118,9 +105,8 @@ Navigate Back/Forward       │ Ctrl+Alt+←/→       │ Cmd+Opt+←/→
 ```
 
 **Flow:**
-- Navigate Back/Forward Ctrl+Alt+←/
-- ↓
-- Cmd+Opt+←/
+1. Navigate Back/Forward Ctrl+Alt+←/
+2. Cmd+Opt+←/
 
 ```mermaid
 flowchart LR
@@ -149,19 +135,13 @@ Surround With (try/if)      │ Ctrl+Alt+T         │ Cmd+Opt+T
 ```
 
 **Flow:**
-- ACTION Windows/Linux Mac
-- ↓
-- Rename (refactor) Shift+F6 Shift+F6
-- ↓
-- Extract Variable Ctrl+Alt+V Cmd+Opt+V
-- ↓
-- Extract Method Ctrl+Alt+M Cmd+Opt+M
-- ↓
-- Inline Ctrl+Alt+N Cmd+Opt+N
-- ↓
-- Comment Line Ctrl+/ Cmd+/
-- ↓
-- Duplicate Line Ctrl+D Cmd+D
+1. ACTION Windows/Linux Mac
+2. Rename (refactor) Shift+F6 Shift+F6
+3. Extract Variable Ctrl+Alt+V Cmd+Opt+V
+4. Extract Method Ctrl+Alt+M Cmd+Opt+M
+5. Inline Ctrl+Alt+N Cmd+Opt+N
+6. Comment Line Ctrl+/ Cmd+/
+7. Duplicate Line Ctrl+D Cmd+D
 
 ```mermaid
 flowchart TD
@@ -206,27 +186,14 @@ MULTI-CURSOR:
 ```
 
 **Flow:**
-- LIVE TEMPLATES: Type abbreviation
-- ↓
-- Tab
-- ↓
-- expands code
-- ↓
-- sout
-- ↓
-- System.out.println();
-- ↓
-- psvm
-- ↓
-- public static void main(String[] args) {}
-- ↓
-- fori
-- ↓
-- for (int i = 0; i < ; i++) {}
-- ↓
-- iter
-- ↓
-- for (Type item : collection) {}
+1. LIVE TEMPLATES: Type abbreviation
+2. Tab expands code sout
+3. System.out.println(); psvm
+4. public static void main(String[] args) {}
+5. fori
+6. for (int i = 0; i < ; i++) {}
+7. iter
+8. for (Type item : collection) {}
 
 ```mermaid
 flowchart TD
@@ -301,19 +268,13 @@ MUST-HAVE Extensions:
 ```
 
 **Flow:**
-- ACTION Shortcut
-- ↓
-- Command Palette Ctrl+Shift+P
-- ↓
-- Quick Open File Ctrl+P
-- ↓
-- Toggle Terminal Ctrl+`
-- ↓
-- Search in Files Ctrl+Shift+F
-- ↓
-- Multi-cursor (same word) Ctrl+D (repeat)
-- ↓
-- Go to Line Ctrl+G
+1. ACTION Shortcut
+2. Command Palette Ctrl+Shift+P
+3. Quick Open File Ctrl+P
+4. Toggle Terminal Ctrl+`
+5. Search in Files Ctrl+Shift+F
+6. Multi-cursor (same word) Ctrl+D (repeat)
+7. Go to Line Ctrl+G
 
 ```mermaid
 flowchart TD
@@ -468,21 +429,14 @@ QUICK PROFILING with Spring Boot:
 ```
 
 **Flow:**
-- - /actuator/health
-- ↓
-- Is app running?
-- ↓
-- - /actuator/metrics
-- ↓
-- JVM stats
-- ↓
-- - /actuator/info
-- ↓
-- App info
-- ↓
-- - /actuator/loggers
-- ↓
-- Change log level at runtime
+1. - /actuator/health
+2. Is app running?
+3. - /actuator/metrics
+4. JVM stats
+5. - /actuator/info
+6. App info
+7. - /actuator/loggers
+8. Change log level at runtime
 
 ```mermaid
 flowchart LR
@@ -526,14 +480,14 @@ public class PerformanceAspect {
 
 
 
-> 🔬 **Section Challenge — Level 6 — Performance Profiling**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Level 6 — Performance Profiling**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # WHERE: Daily Workflow Optimization
 
@@ -572,21 +526,10 @@ public class PerformanceAspect {
 ```
 
 **Flow:**
-- Write failing test
-- ↓
-- implement
-- ↓
-- test passes
-- ↓
-- Ctrl+Alt+L (IntelliJ)
-- ↓
-- consistent style
-- ↓
-- 10. REVIEW feedback
-- ↓
-- fix
-- ↓
-- merge
+1. Write failing test implement test passes
+2. Ctrl+Alt+L (IntelliJ)
+3. consistent style
+4. REVIEW feedback fix merge
 
 ```mermaid
 flowchart TD
@@ -679,4 +622,4 @@ Practice the complete development workflow:
 
 ---
 
-> **Full Circle**: [Back to Git →](01_Git_Version_Control.md) | [Index](00_INDEX.md)
+**Full Circle**: [Back to Git →](01_Git_Version_Control.md) | [Index](00_INDEX.md)

@@ -1,6 +1,6 @@
 # 55. Java String Internals & Immutability Patterns — Deep Dive
 
-> **Navigation**: [< JMM & GC](Ch18_JMM_GC_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Core Foundations >](Ch01_Core_Foundations.md)
+**Navigation**: [< JMM & GC](Ch18_JMM_GC_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Core Foundations >](Ch01_Core_Foundations.md)
 
 ---
 
@@ -10,14 +10,14 @@
 
 
 
-> 🔬 **Section Challenge — PART 1: STRING INTERNALS**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — PART 1: STRING INTERNALS**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 🎯 The 5W1H
 
@@ -88,20 +88,20 @@ System.out.println(s1 == s6);       // false — runtime concat, new object
 
 
 
-> 🔬 **Section Challenge — 1. String Pool — How It Works**
->
-> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
-> <details><summary>Answer</summary>
->
-> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
-> </details>
->
-> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
-> <details><summary>Answer</summary>
->
-> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
-> </details>
->
+🔬 **Section Challenge — 1. String Pool — How It Works**
+
+**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+<details><summary>Answer</summary>
+
+First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+</details>
+
+**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+<details><summary>Answer</summary>
+
+Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+</details>
+
 
 ## 2. String Immutability — Why and How
 
@@ -129,14 +129,14 @@ s = s.toUpperCase(); // NOW s points to the NEW "HELLO" string
 
 
 
-> 🔬 **Section Challenge — 2. String Immutability — Why and How**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 2. String Immutability — Why and How**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 3. String Concatenation — The Performance Trap
 
@@ -184,14 +184,14 @@ String s = "Name: " + name + " Age: " + age;
 
 
 
-> 🔬 **Section Challenge — 3. String Concatenation — The Performance Trap**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 3. String Concatenation — The Performance Trap**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 4. StringBuilder vs StringBuffer
 
@@ -227,14 +227,14 @@ StringBuilder sb = new StringBuilder(1000);  // Start with capacity 1000
 
 
 
-> 🔬 **Section Challenge — 4. StringBuilder vs StringBuffer**
->
-> **Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
-> <details><summary>Answer</summary>
->
-> Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
-> </details>
->
+🔬 **Section Challenge — 4. StringBuilder vs StringBuffer**
+
+**Challenge 1 (Reasoning):** Why is `String str = ""; for(int i=0;i<1000;i++) str += i;` O(N²) and how does StringBuilder fix it?
+<details><summary>Answer</summary>
+
+Each `+=` creates a NEW String object: copies all existing chars + appends new char. Iteration 1: copy 1 char. Iteration 2: copy 2 chars. ... Iteration N: copy N chars. Total: 1+2+...+N = N(N+1)/2 = O(N²) character copies. StringBuilder uses a resizable internal array. `append()` adds to the end: O(1) amortized. Final `toString()`: O(N) once. Total: O(N).
+</details>
+
 
 ## 5. Compact Strings (Java 9+)
 
@@ -257,14 +257,14 @@ StringBuilder sb = new StringBuilder(1000);  // Start with capacity 1000
 
 
 
-> 🔬 **Section Challenge — 5. Compact Strings (Java 9+)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 5. Compact Strings (Java 9+)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 6. Text Blocks (Java 15+)
 
@@ -343,14 +343,14 @@ String.format("Name: %s", name); // Formatted string
 
 
 
-> 🔬 **Section Challenge — 7. Common String Methods — Cheat Sheet**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 7. Common String Methods — Cheat Sheet**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## PART 2: IMMUTABILITY PATTERNS
 
@@ -613,28 +613,28 @@ HttpRequest request = new HttpRequest.Builder()
 ## 13. Interview Questions & Answers
 
 **Q: Why is String immutable in Java?**
-> Thread safety (shared without synchronization), String pool (multiple references share one object), hashCode caching (computed once for HashMap performance), and security (class names, URLs, connection strings can't be tampered). String is `final` to prevent subclass-based mutability attacks.
+Thread safety (shared without synchronization), String pool (multiple references share one object), hashCode caching (computed once for HashMap performance), and security (class names, URLs, connection strings can't be tampered). String is `final` to prevent subclass-based mutability attacks.
 
 **Q: What's the difference between String pool, `new String()`, and `intern()`?**
-> Literals (`"hello"`) go to the pool — same content = same reference. `new String("hello")` creates a separate heap object. `intern()` adds a string to the pool (or returns existing), so `new String("hello").intern() == "hello"` is true.
+Literals (`"hello"`) go to the pool — same content = same reference. `new String("hello")` creates a separate heap object. `intern()` adds a string to the pool (or returns existing), so `new String("hello").intern() == "hello"` is true.
 
 **Q: Why is `+=` in a loop slow for Strings?**
-> Each `+=` creates a new String and copies all previous characters. In a loop of N iterations with growing string, total characters copied is ~N²/2. Use StringBuilder (O(N) amortized, internal resizable buffer, no copying on each append).
+Each `+=` creates a new String and copies all previous characters. In a loop of N iterations with growing string, total characters copied is ~N²/2. Use StringBuilder (O(N) amortized, internal resizable buffer, no copying on each append).
 
 **Q: How do you make a class truly immutable?**
-> (1) `final` class, (2) `private final` fields, (3) no setters, (4) defensive copy mutable objects in constructor AND getters, (5) don't return mutable internal state. For collections, use `List.copyOf()` not `Collections.unmodifiableList()` (which is still a view of the original).
+(1) `final` class, (2) `private final` fields, (3) no setters, (4) defensive copy mutable objects in constructor AND getters, (5) don't return mutable internal state. For collections, use `List.copyOf()` not `Collections.unmodifiableList()` (which is still a view of the original).
 
 **Q: Records vs manual immutable class?**
-> Records auto-generate constructor, accessors, equals, hashCode, toString — great for simple value objects. But records DON'T do defensive copies, can't extend other classes, and fields are always public (via accessors). Use manual immutable class when you need private/protected fields, inheritance, or lazy computation.
+Records auto-generate constructor, accessors, equals, hashCode, toString — great for simple value objects. But records DON'T do defensive copies, can't extend other classes, and fields are always public (via accessors). Use manual immutable class when you need private/protected fields, inheritance, or lazy computation.
 
 **Q: `Collections.unmodifiableList()` vs `List.copyOf()` — what's the difference?**
-> `unmodifiableList()` is a READ-ONLY VIEW backed by the original — changes to original appear in the view. `List.copyOf()` creates an independent immutable copy — changes to original don't affect it. For true immutability, always use `List.copyOf()`.
+`unmodifiableList()` is a READ-ONLY VIEW backed by the original — changes to original appear in the view. `List.copyOf()` creates an independent immutable copy — changes to original don't affect it. For true immutability, always use `List.copyOf()`.
 
 ---
 
-> **Key Takeaway**: String immutability enables the pool, thread safety, and 
-> hashCode caching. Use StringBuilder in loops, not `+=`. For your own immutable 
-> classes: `final` class, `final` fields, defensive copies, no setters. 
-> Records are shorthand but need defensive copies for mutable fields.
+**Key Takeaway**: String immutability enables the pool, thread safety, and 
+hashCode caching. Use StringBuilder in loops, not `+=`. For your own immutable 
+classes: `final` class, `final` fields, defensive copies, no setters. 
+Records are shorthand but need defensive copies for mutable fields.
 
-> **Navigation**: [< JMM & GC](Ch18_JMM_GC_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Core Foundations >](Ch01_Core_Foundations.md)
+**Navigation**: [< JMM & GC](Ch18_JMM_GC_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Core Foundations >](Ch01_Core_Foundations.md)

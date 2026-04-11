@@ -1,12 +1,12 @@
-> **Navigation**: [< Previous Chapter](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05d_Graphs_Advanced_Algos.md)
-> 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — BFS/DFS decision framework and cycle detection
+**Navigation**: [< Previous Chapter](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05d_Graphs_Advanced_Algos.md)
+🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — BFS/DFS decision framework and cycle detection
 
 ---
 
 ## 🔗 JIT Connection — When You Need This
 
-> **Arrived here from a graph or tree problem? Use this decision table:**
->
+**Arrived here from a graph or tree problem? Use this decision table:**
+
 
 | Problem Signal | Algorithm to use | Time Complexity |
 |---|---|---|
@@ -17,15 +17,15 @@
 | Find all islands / components | **DFS or BFS** from each unvisited | O(V+E) |
 | Minimum spanning tree | **Kruskal** (sort edges) or **Prim** | O(E log E) |
 
->
-> **BFS vs DFS in one line:**
-> ```
-> BFS = "Shortest path / minimum steps"    → Queue  → O(V+E)
-> DFS = "Exists? / Cycles / Components"   → Stack/Recursion → O(V+E)
-> ```
->
-> 🔗 **Jump to practice:** [Graphs PS](../05_Problem_Solving/10_Graphs.md) | [Trees PS](../05_Problem_Solving/09_Trees.md)
-> 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**BFS vs DFS in one line:**
+```
+BFS = "Shortest path / minimum steps"    → Queue  → O(V+E)
+DFS = "Exists? / Cycles / Components"   → Stack/Recursion → O(V+E)
+```
+
+🔗 **Jump to practice:** [Graphs PS](../05_Problem_Solving/10_Graphs.md) | [Trees PS](../05_Problem_Solving/09_Trees.md)
+📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
@@ -179,22 +179,20 @@
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
+🔬 **Section Challenge — Complete Understanding of Graphs**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Complete Understanding of Graphs**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## Graph Representations
 
@@ -230,22 +228,20 @@ ADJACENCY MATRIX (For dense graphs):
 1 = edge exists, 0 = no edge
 ```
 
+🔬 **Section Challenge — Graph Representations**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Graph Representations**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## Graph Types
 
@@ -261,22 +257,20 @@ CONNECTED: All nodes reachable from any node
 
 ---
 
+🔬 **Section Challenge — Graph Types**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Graph Types**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 # 🕸️ Part 6: Graph Traversals
 
@@ -341,9 +335,8 @@ CONNECTED: All nodes reachable from any node
 ```
 
 **Flow:**
-- BFS (Breadth-First Search) / STRATEGY: Visit all neighb
-- ↓
-- Problem Type Use / Shortest path (unweighted) BFS / Sho
+1. BFS (Breadth-First Search) / STRATEGY: Visit all neighb
+2. Problem Type Use / Shortest path (unweighted) BFS / Sho
 
 ```mermaid
 flowchart TD
@@ -374,33 +367,8 @@ USES:
 ```
 
 **Flow:**
-- GO DEEP first, then backtrack!
-- ↓
-- Start at node, visit neighbor, visit neighbor's neighbo
-- ↓
-- Until dead end, then backtrack.
-- ↓
-- DFS from 0: 0
-- ↓
-- 1
-- ↓
-- 2
-- ↓
-- 3 (one possible order)
-- ↓
-- DFS from 0: 0
-- ↓
-- 1
-- ↓
-- 2
-- ↓
-- 3 (one possible order)
-- ↓
-- USES:
-- ↓
-- - Path finding
-- ↓
-- - Cycle detection
+1. GO DEEP first, then backtrack!
+2. Start at node, visit neighbor, visit neighbor's neighbo Until dead end, then backtrack. DFS from 0: 0 1 2 3 (one possible order) DFS from 0: 0 1 2 3 (one possible order) USES: - Path finding - Cycle detection
 
 ```mermaid
 flowchart TD
@@ -461,22 +429,20 @@ public void dfsIterative(int start, List<List<Integer>> graph) {
 // SPACE: O(V) for visited array and stack/recursion
 ```
 
+🔬 **Section Challenge — DFS (Depth-First Search)**
 
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — DFS (Depth-First Search)**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## BFS (Breadth-First Search)
 
@@ -501,33 +467,13 @@ USES:
 ```
 
 **Flow:**
-- GO WIDE first! Visit all neighbors before going deeper.
-- ↓
-- BFS from 0:
-- ↓
-- Level 0: 0
-- ↓
-- Level 1: 1, 3
-- ↓
-- Level 2: 2
-- ↓
-- BFS order: 0
-- ↓
-- 1
-- ↓
-- 3
-- ↓
-- 2
-- ↓
-- BFS order: 0
-- ↓
-- 1
-- ↓
-- 3
-- ↓
-- 2
-- ↓
-- USES:
+1. GO WIDE first! Visit all neighbors before going deeper.
+2. BFS from 0:
+3. Level 0: 0
+4. Level 1: 1, 3
+5. Level 2: 2
+6. BFS order: 0 1 3 2
+7. USES:
 
 ```mermaid
 flowchart TD
@@ -597,22 +543,20 @@ public int shortestPath(int start, int end, List<List<Integer>> graph) {
 
 ---
 
+🔬 **Section Challenge — BFS (Breadth-First Search)**
 
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — BFS (Breadth-First Search)**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 # 📌 Part 7: Cycle Detection
 
@@ -651,22 +595,20 @@ private boolean dfsHasCycle(int node, int parent,
 }
 ```
 
+🔬 **Section Challenge — In Undirected Graph**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — In Undirected Graph**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## In Directed Graph
 
@@ -707,22 +649,20 @@ private boolean dfsHasCycleDirected(int node, List<List<Integer>> graph, int[] c
 
 ---
 
+🔬 **Section Challenge — In Directed Graph**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — In Directed Graph**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 # 🔄 Part 8: Topological Sort
 
@@ -738,11 +678,9 @@ Valid orders: [1, 2, 4, 3] or [1, 4, 2, 3]
 ```
 
 **Flow:**
-- Course 1
-- ↓
-- Course 2
-- ↓
-- Course 3
+1. Course 1
+2. Course 2
+3. Course 3
 
 ```mermaid
 flowchart LR
@@ -907,29 +845,27 @@ HARD:
 
 ---
 
-
 ---
 
+🔬 **Section Challenge — Graphs**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Graphs**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -956,6 +892,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -990,6 +927,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -1052,6 +990,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -1086,6 +1025,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -1098,8 +1038,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -1165,5 +1103,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [< Previous](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05d_Graphs_Advanced_Algos.md)
+**Navigation**: [< Previous](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05d_Graphs_Advanced_Algos.md)

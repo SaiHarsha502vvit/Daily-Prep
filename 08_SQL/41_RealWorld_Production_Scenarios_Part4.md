@@ -1,9 +1,9 @@
 # Chapter 41 — Real-World Production Scenarios Part 4: Schema Evolution, Migrations & Data Integrity Crises
 
-> **What:** 25 real-world schema/migration/integrity disasters (Scenarios 76–100) with 5W-H + fixes
-> **Why:** Schema changes are the #1 cause of production outages in database-backed systems
-> **Where:** Every growing application — startups scaling up, enterprises modernizing
-> **How:** Understand the failure → SQL/migration fix → Spring Boot/backend fix → DSA insight
+**What:** 25 real-world schema/migration/integrity disasters (Scenarios 76–100) with 5W-H + fixes
+**Why:** Schema changes are the #1 cause of production outages in database-backed systems
+**Where:** Every growing application — startups scaling up, enterprises modernizing
+**How:** Understand the failure → SQL/migration fix → Spring Boot/backend fix → DSA insight
 
 ---
 
@@ -200,8 +200,8 @@ ALTER TABLE users RENAME COLUMN phone_number TO phone;
 
 
 
-> 🔬 **Section Challenge — Scenario 78: Column Type Change Breaks Data**
->>
+🔬 **Section Challenge — Scenario 78: Column Type Change Breaks Data**
+>
 
 ## Scenario 79: Dropping Column That Application Still Reads
 
@@ -377,8 +377,8 @@ ALTER TABLE orders ADD CONSTRAINT chk_status
 
 
 
-> 🔬 **Section Challenge — Scenario 82: ENUM Type Extended — Deployment Order Matters**
->>
+🔬 **Section Challenge — Scenario 82: ENUM Type Extended — Deployment Order Matters**
+>
 
 ## Scenario 83: Default Value Change Breaks INSERT Logic
 

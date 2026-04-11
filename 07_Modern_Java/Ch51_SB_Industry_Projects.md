@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch50_SB_DSA_Applications.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch44_SB_Caching_Scheduling.md)
+**Navigation**: [< Previous](Ch50_SB_DSA_Applications.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch44_SB_Caching_Scheduling.md)
 
 # 🏭 SPRING BOOT MASTERY - Part 13: Industry-Level Real Projects
 
-> **What Top Companies Actually Build**
-> _"Not another TODO app - build what enterprises use"_
+**What Top Companies Actually Build**
+_"Not another TODO app - build what enterprises use"_
 
 ---
 
@@ -49,13 +49,10 @@
 ```
 
 **Flow:**
-- WHY: Why Build Real-World Projects? / • Portfolio: TODO
-- ↓
-- HOW: How Top Companies Structure Spring Boot Apps? / •
-- ↓
-- WHEN: When to Build Which Type of Project? / • Beginner
-- ↓
-- WHICH: Which Projects Stand Out in Interviews? / IMPRES
+1. WHY: Why Build Real-World Projects? / • Portfolio: TODO
+2. HOW: How Top Companies Structure Spring Boot Apps? / •
+3. WHEN: When to Build Which Type of Project? / • Beginner
+4. WHICH: Which Projects Stand Out in Interviews? / IMPRES
 
 ```mermaid
 flowchart TD
@@ -78,14 +75,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 1: Spring Boot at Scale**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 1: Spring Boot at Scale**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Spring Boot In Enterprise - Real Examples
 
@@ -130,14 +127,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Spring Boot In Enterprise - Real Examples**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Spring Boot In Enterprise - Real Examples**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🏗️ Section 2: Industry — Level Project Ideas (free to Build)
 
@@ -191,29 +188,18 @@ flowchart TD
 ```
 
 **Flow:**
-- Client / Services
-- ↓
-- Notification / API
-- ↓
-- Client / Services
-- ↓
-- Email Worker / (SMTP/SES)
-- ↓
-- Notification / API
-- ↓
-- Message / Queue
-- ↓
-- Notification / API
-- ↓
-- Email Worker / (SMTP/SES)
-- ↓
-- Message / Queue
-- ↓
-- SMS Worker / (Twilio)
-- ↓
-- Message / Queue
-- ↓
-- Push / Worker
+1. Client / Services
+2. Notification / API
+3. Client / Services
+4. Email Worker / (SMTP/SES)
+5. Notification / API
+6. Message / Queue
+7. Notification / API
+8. Email Worker / (SMTP/SES)
+9. Message / Queue
+10. SMS Worker / (Twilio)
+11. Message / Queue
+12. Push / Worker
 
 ```mermaid
 flowchart TD
@@ -410,14 +396,14 @@ public class SlackNotificationSender implements NotificationSender {
 
 
 
-> 🔬 **Section Challenge — Project 1: 🔔 Notification & Alert Engine**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Project 1: 🔔 Notification & Alert Engine**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Project 2: 📊 Feature Flag & A/B Testing System
 
@@ -457,19 +443,13 @@ public class SlackNotificationSender implements NotificationSender {
 ```
 
 **Flow:**
-- PROJECT: FEATURE FLAG MANAGEMENT SYSTEM
-- ↓
-- WHAT IT IS:
-- ↓
-- and gradually roll out new features to users.
-- ↓
-- REAL-WORLD USAGE:
-- ↓
-- • Netflix: Testing new UI features on % of users
-- ↓
-- • Facebook: Gradual feature rollouts
-- ↓
-- • Amazon: A/B testing checkout flows
+1. PROJECT: FEATURE FLAG MANAGEMENT SYSTEM
+2. WHAT IT IS:
+3. and gradually roll out new features to users.
+4. REAL-WORLD USAGE:
+5. • Netflix: Testing new UI features on % of users
+6. • Facebook: Gradual feature rollouts
+7. • Amazon: A/B testing checkout flows
 
 ```mermaid
 flowchart TD
@@ -730,14 +710,14 @@ public class CheckoutController {
 
 
 
-> 🔬 **Section Challenge — Project 2: 📊 Feature Flag & A/B Testing System**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Project 2: 📊 Feature Flag & A/B Testing System**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Project 3: 📈 Real-Time Analytics Dashboard
 
@@ -778,19 +758,13 @@ public class CheckoutController {
 ```
 
 **Flow:**
-- PROJECT: REAL-TIME ANALYTICS & METRICS PLATFORM
-- ↓
-- WHAT IT IS:
-- ↓
-- Every enterprise needs this for monitoring.
-- ↓
-- REAL-WORLD USAGE:
-- ↓
-- • All companies: Application performance monitoring
-- ↓
-- • E-commerce: Real-time sales dashboards
-- ↓
-- • Social media: Engagement metrics
+1. PROJECT: REAL-TIME ANALYTICS & METRICS PLATFORM
+2. WHAT IT IS:
+3. Every enterprise needs this for monitoring.
+4. REAL-WORLD USAGE:
+5. • All companies: Application performance monitoring
+6. • E-commerce: Real-time sales dashboards
+7. • Social media: Engagement metrics
 
 ```mermaid
 flowchart TD
@@ -1109,19 +1083,13 @@ public class AnalyticsController {
 ```
 
 **Flow:**
-- PROJECT: WORKFLOW/APPROVAL ENGINE
-- ↓
-- WHAT IT IS:
-- ↓
-- conditions, and automated actions.
-- ↓
-- REAL-WORLD USAGE:
-- ↓
-- • HR: Leave approval, onboarding workflows
-- ↓
-- • Finance: Expense approval, purchase orders
-- ↓
-- • IT: Change management, access requests
+1. PROJECT: WORKFLOW/APPROVAL ENGINE
+2. WHAT IT IS:
+3. conditions, and automated actions.
+4. REAL-WORLD USAGE:
+5. • HR: Leave approval, onboarding workflows
+6. • Finance: Expense approval, purchase orders
+7. • IT: Change management, access requests
 
 ```mermaid
 flowchart TD
@@ -1469,14 +1437,14 @@ public class WorkflowEngine {
 
 
 
-> 🔬 **Section Challenge — Project 4: 🔄 Workflow Automation Engine**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Project 4: 🔄 Workflow Automation Engine**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Project 5: 🗓️ Resource Scheduling & Booking System
 
@@ -1513,19 +1481,13 @@ public class WorkflowEngine {
 ```
 
 **Flow:**
-- PROJECT: RESOURCE BOOKING & SCHEDULING SYSTEM
-- ↓
-- WHAT IT IS:
-- ↓
-- vehicles, employees' time, etc.
-- ↓
-- REAL-WORLD USAGE:
-- ↓
-- • Google/Microsoft: Meeting room booking
-- ↓
-- • Hospitals: Doctor appointments, equipment scheduling
-- ↓
-- • Car rentals: Vehicle availability
+1. PROJECT: RESOURCE BOOKING & SCHEDULING SYSTEM
+2. WHAT IT IS:
+3. vehicles, employees' time, etc.
+4. REAL-WORLD USAGE:
+5. • Google/Microsoft: Meeting room booking
+6. • Hospitals: Doctor appointments, equipment scheduling
+7. • Car rentals: Vehicle availability
 
 ```mermaid
 flowchart TD
@@ -1806,14 +1768,14 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 
 
 
-> 🔬 **Section Challenge — Project 5: 🗓️ Resource Scheduling & Booking System**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Project 5: 🗓️ Resource Scheduling & Booking System**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🏗️ More Project Ideas
 
@@ -1876,19 +1838,13 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 ```
 
 **Flow:**
-- MORE INDUSTRY-LEVEL PROJECT IDEAS
-- ↓
-- 6. 📝 AUDIT LOG & COMPLIANCE SYSTEM
-- ↓
-- Track all changes to data, who changed what, when
-- ↓
-- DSA: Append-only log, Merkle trees for integrity
-- ↓
-- Used by: Every regulated industry (finance, healthcare)
-- ↓
-- 7. 🔍 FULL-TEXT SEARCH SERVICE
-- ↓
-- Build your own search with inverted index
+1. MORE INDUSTRY-LEVEL PROJECT IDEAS
+2. 6. 📝 AUDIT LOG & COMPLIANCE SYSTEM
+3. Track all changes to data, who changed what, when
+4. DSA: Append-only log, Merkle trees for integrity
+5. Used by: Every regulated industry (finance, healthcare)
+6. 7. 🔍 FULL-TEXT SEARCH SERVICE
+7. Build your own search with inverted index
 
 ```mermaid
 flowchart TD
@@ -1959,19 +1915,13 @@ flowchart TD
 ```
 
 **Flow:**
-- PORTFOLIO STRATEGY FOR JOB INTERVIEWS
-- ↓
-- BUILD 2-3 OF THESE PROJECTS TO STAND OUT:
-- ↓
-- BEGINNER LEVEL (Start Here):
-- ↓
-- • Feature Flag System - Shows architectural thinking
-- ↓
-- INTERMEDIATE LEVEL:
-- ↓
-- • Booking System - Shows conflict handling, business lo
-- ↓
-- ADVANCED LEVEL:
+1. PORTFOLIO STRATEGY FOR JOB INTERVIEWS
+2. BUILD 2-3 OF THESE PROJECTS TO STAND OUT:
+3. BEGINNER LEVEL (Start Here):
+4. • Feature Flag System - Shows architectural thinking
+5. INTERMEDIATE LEVEL:
+6. • Booking System - Shows conflict handling, business lo
+7. ADVANCED LEVEL:
 
 ```mermaid
 flowchart TD

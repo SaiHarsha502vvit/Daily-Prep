@@ -1,9 +1,9 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch06_Functional_Programming.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch06_Functional_Programming.md)
 
 # 🗺️ SPRING BOOT MASTERY ROADMAP
 
-> **The Complete Learning Path - From Zero to Industry Expert**
-> _Follow this sequence for optimal learning_
+**The Complete Learning Path - From Zero to Industry Expert**
+_Follow this sequence for optimal learning_
 
 ---
 
@@ -194,13 +194,10 @@ Batch, HATEOAS, i18n, GraalVM
 ```
 
 **Flow:**
-- LEARNING PHILOSOPHY
-- ↓
-- EACH PHASE BUILDS ON THE PREVIOUS ONE
-- ↓
-- Don't skip phases unless you're already proficient!
-- ↓
-- ⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)
+1. LEARNING PHILOSOPHY
+2. EACH PHASE BUILDS ON THE PREVIOUS ONE
+3. Don't skip phases unless you're already proficient!
+4. ⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)
 
 ```mermaid
 flowchart TD
@@ -220,7 +217,7 @@ flowchart TD
 ---
 
 ## PREREQUISITES: MODERN JAVA FUNDAMENTALS (Week 0) 🟡
-> _"You cannot learn Spring Boot without modern Java"_
+_"You cannot learn Spring Boot without modern Java"_
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -256,19 +253,13 @@ flowchart TD
 ```
 
 **Flow:**
-- 📄 FUNCTIONAL PROGRAMMING IN JAVA
-- ↓
-- File: Ch06_Functional_Programming.md
-- ↓
-- TOPICS COVERED:
-- ↓
-- C. Stream API filter, map, reduce, collect
-- ↓
-- D. Method References Class::method shorthand
-- ↓
-- E. Optional Null-safe value handling
-- ↓
-- G. Java Records Immutable data carriers: record User(..
+1. 📄 FUNCTIONAL PROGRAMMING IN JAVA
+2. File: Ch06_Functional_Programming.md
+3. TOPICS COVERED:
+4. C. Stream API filter, map, reduce, collect
+5. D. Method References Class::method shorthand
+6. E. Optional Null-safe value handling
+7. G. Java Records Immutable data carriers: record User(..
 
 ```mermaid
 flowchart TD
@@ -292,7 +283,7 @@ flowchart TD
 ---
 
 ## PHASE 0: HIDDEN FOUNDATIONS (Week 1 - Read First!) ⚫
-> _"The invisible knowledge that tutorials never teach"_
+_"The invisible knowledge that tutorials never teach"_
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -323,19 +314,13 @@ flowchart TD
 ```
 
 **Flow:**
-- 📄 PART 0: THE HIDDEN FOUNDATIONS
-- ↓
-- File: Ch26_Pre_Spring_Part1.md
-- ↓
-- TOPICS COVERED:
-- ↓
-- A. Java Reflection How Spring reads @Autowired, @Compon
-- ↓
-- D. Servlet API What Spring Boot hides from you
-- ↓
-- E. Jackson Serialization How JSON ↔ Java conversion wor
-- ↓
-- F. Connection Pooling Why HikariCP matters
+1. 📄 PART 0: THE HIDDEN FOUNDATIONS
+2. File: Ch26_Pre_Spring_Part1.md
+3. TOPICS COVERED:
+4. A. Java Reflection How Spring reads @Autowired, @Compon
+5. D. Servlet API What Spring Boot hides from you
+6. E. Jackson Serialization How JSON ↔ Java conversion wor
+7. F. Connection Pooling Why HikariCP matters
 
 ```mermaid
 flowchart TD
@@ -371,7 +356,7 @@ flowchart TD
 
 ## PHASE 1: FOUNDATIONS (Week 1-2) 🟢
 
-> _"You cannot understand Spring without understanding Java internals"_
+_"You cannot understand Spring without understanding Java internals"_
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -391,23 +376,15 @@ flowchart TD
 ```
 
 **Flow:**
-- PART 1
-- ↓
-- PART 2
-- ↓
-- PART 3
-- ↓
-- 📄 PART 1 📄 PART 2 📄 PART 3
-- ↓
-- Java Spring Core AOP &
-- ↓
-- Foundations (IoC & DI) Auto-Config
-- ↓
-- File: Ch31_SB_Core_Part1.md
-- ↓
-- File: Ch32_SB_Data_Part2.md
-- ↓
-- File: Ch33_SB_Web_Part3.md
+1. PART 1
+2. PART 2
+3. PART 3
+4. 📄 PART 1 📄 PART 2 📄 PART 3
+5. Java Spring Core AOP &
+6. Foundations (IoC & DI) Auto-Config
+7. File: Ch31_SB_Core_Part1.md
+8. File: Ch32_SB_Data_Part2.md
+9. File: Ch33_SB_Web_Part3.md
 
 ```mermaid
 flowchart TD
@@ -490,7 +467,7 @@ flowchart TD
 
 ## PHASE 2: TOOLING & WEB BASICS (Week 2-3) 🟡
 
-> _"Learn HTTP before building REST APIs"_
+_"Learn HTTP before building REST APIs"_
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -510,23 +487,15 @@ flowchart TD
 ```
 
 **Flow:**
-- PART 5
-- ↓
-- PART 10
-- ↓
-- PART 4 (Overview)
-- ↓
-- 📄 PART 5 📄 PART 10 📄 PART 4
-- ↓
-- Lombok & HTTP Deep Quick Overview
-- ↓
-- DTOs Dive (Optional)
-- ↓
-- File: Ch35_SB_Lombok_DTOs.md
-- ↓
-- File: Ch42_SB_HTTP_Deep_Dive.md
-- ↓
-- File: Ch34_SB_Security_Part4.md (Optional overvi
+1. PART 5
+2. PART 10
+3. PART 4 (Overview)
+4. 📄 PART 5 📄 PART 10 📄 PART 4
+5. Lombok & HTTP Deep Quick Overview
+6. DTOs Dive (Optional)
+7. File: Ch35_SB_Lombok_DTOs.md
+8. File: Ch42_SB_HTTP_Deep_Dive.md
+9. File: Ch34_SB_Security_Part4.md (Optional overvi
 
 ```mermaid
 flowchart TD
@@ -584,18 +553,18 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 
 
-> 🔬 **Section Challenge — PHASE 2: TOOLING & WEB BASICS (Week 2-3) 🟡**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — PHASE 2: TOOLING & WEB BASICS (Week 2-3) 🟡**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## PHASE 3: APPLICATION LAYERS (Week 3-4) 🔵
 
-> _"Controller → Service → Repository - The layered architecture"_
+_"Controller → Service → Repository - The layered architecture"_
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -615,23 +584,15 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 ```
 
 **Flow:**
-- PART 7
-- ↓
-- PART 6
-- ↓
-- PART 8
-- ↓
-- 📄 PART 7 📄 PART 6 📄 PART 8
-- ↓
-- Controllers Service & JPA Deep
-- ↓
-- & REST API Repository Dive
-- ↓
-- File: Ch37_SB_Controllers_REST.md
-- ↓
-- File: Ch36_SB_Service_Repository.md
-- ↓
-- File: Ch40_SB_JPA_Deep_Dive.md
+1. PART 7
+2. PART 6
+3. PART 8
+4. 📄 PART 7 📄 PART 6 📄 PART 8
+5. Controllers Service & JPA Deep
+6. & REST API Repository Dive
+7. File: Ch37_SB_Controllers_REST.md
+8. File: Ch36_SB_Service_Repository.md
+9. File: Ch40_SB_JPA_Deep_Dive.md
 
 ```mermaid
 flowchart TD
@@ -705,7 +666,7 @@ flowchart TD
 
 ## PHASE 4: PRODUCTION FEATURES (Week 4-5) 🟠
 
-> _"Features that make your app production-ready"_
+_"Features that make your app production-ready"_
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -724,19 +685,13 @@ flowchart TD
 ```
 
 **Flow:**
-- PART 14
-- ↓
-- PART 11
-- ↓
-- 📄 PART 14 📄 PART 11
-- ↓
-- Essential Authentication
-- ↓
-- Topics & Security
-- ↓
-- File: Ch44_SB_Caching_Scheduling.md
-- ↓
-- File: Ch43_SB_Auth_Security.md
+1. PART 14
+2. PART 11
+3. 📄 PART 14 📄 PART 11
+4. Essential Authentication
+5. Topics & Security
+6. File: Ch44_SB_Caching_Scheduling.md
+7. File: Ch43_SB_Auth_Security.md
 
 ```mermaid
 flowchart TD
@@ -790,7 +745,7 @@ flowchart TD
 
 ## PHASE 5: MASTERY (Week 5-6+) 🔴
 
-> _"From developer to architect"_
+_"From developer to architect"_
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -810,23 +765,15 @@ flowchart TD
 ```
 
 **Flow:**
-- PART 9
-- ↓
-- PART 12
-- ↓
-- PART 13
-- ↓
-- 📄 PART 9 📄 PART 12 📄 PART 13
-- ↓
-- Clean DSA in Industry
-- ↓
-- Architecture Spring Boot Projects
-- ↓
-- File: Ch41_SB_Architecture_Quality.md
-- ↓
-- File: Ch50_SB_DSA_Applications.md
-- ↓
-- File: Ch51_SB_Industry_Projects.md
+1. PART 9
+2. PART 12
+3. PART 13
+4. 📄 PART 9 📄 PART 12 📄 PART 13
+5. Clean DSA in Industry
+6. Architecture Spring Boot Projects
+7. File: Ch41_SB_Architecture_Quality.md
+8. File: Ch50_SB_DSA_Applications.md
+9. File: Ch51_SB_Industry_Projects.md
 
 ```mermaid
 flowchart TD
@@ -891,7 +838,7 @@ flowchart TD
 
 ## PHASE 6: ENTERPRISE & CLOUD (Week 7-10+) 🟣
 
-> _"From monolith to microservices, from local to cloud"_
+_"From monolith to microservices, from local to cloud"_
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -923,27 +870,17 @@ flowchart TD
 ```
 
 **Flow:**
-- PART 15 / WebFlux / Reactive
-- ↓
-- PART 16 / SOLID / Principles
-- ↓
-- PART 17 / Database / Security
-- ↓
-- PART 16 / SOLID / Principles
-- ↓
-- PART 20 PART 21 / Microservices Cloud / Patterns Deploy
-- ↓
-- PART 17 / Database / Security
-- ↓
-- PART 18 / Distrib. / Tracing
-- ↓
-- PART 17 / Database / Security
-- ↓
-- PART 20 PART 21 / Microservices Cloud / Patterns Deploy
-- ↓
-- PART 18 / Distrib. / Tracing
-- ↓
-- PART 19 / Testing / Complete
+1. PART 15 / WebFlux / Reactive
+2. PART 16 / SOLID / Principles
+3. PART 17 / Database / Security
+4. PART 16 / SOLID / Principles
+5. PART 20 PART 21 / Microservices Cloud / Patterns Deploy
+6. PART 17 / Database / Security
+7. PART 18 / Distrib. / Tracing
+8. PART 17 / Database / Security
+9. PART 20 PART 21 / Microservices Cloud / Patterns Deploy
+10. PART 18 / Distrib. / Tracing
+11. PART 19 / Testing / Complete
 
 ```mermaid
 flowchart TD
@@ -1109,19 +1046,13 @@ flowchart TD
 ```
 
 **Flow:**
-- PART 22: ANNOTATIONS COMPLETE REFERENCE
-- ↓
-- • Security: @PreAuthorize, @PostAuthorize, @Secured
-- ↓
-- • Caching: @Cacheable, @CacheEvict, @CachePut
-- ↓
-- • Async: @Async, @Scheduled
-- ↓
-- • Testing: @SpringBootTest, @MockBean, @DataJpaTest
-- ↓
-- • Lombok: @Data, @Builder, @Slf4j, @Value
-- ↓
-- • Hibernate: @Formula, @Where, @BatchSize, @DynamicUpda
+1. PART 22: ANNOTATIONS COMPLETE REFERENCE
+2. • Security: @PreAuthorize, @PostAuthorize, @Secured
+3. • Caching: @Cacheable, @CacheEvict, @CachePut
+4. • Async: @Async, @Scheduled
+5. • Testing: @SpringBootTest, @MockBean, @DataJpaTest
+6. • Lombok: @Data, @Builder, @Slf4j, @Value
+7. • Hibernate: @Formula, @Where, @BatchSize, @DynamicUpda
 
 ```mermaid
 flowchart TD
@@ -1198,37 +1129,22 @@ flowchart TD
 ```
 
 **Flow:**
-- COMPLETE FILE LIST (IN LEARNING ORDER)
-- ↓
-- PHASE 0: HIDDEN FOUNDATIONS (Read First!)
-- ↓
-- PHASE 1: FOUNDATIONS
-- ↓
-- 📄 Ch31_SB_Core_Part1.md
-- ↓
-- Java Foundations
-- ↓
-- 📄 Ch31_SB_Core_Part1.md
-- ↓
-- Java Foundations
-- ↓
-- 📄 Ch32_SB_Data_Part2.md
-- ↓
-- IoC & DI
-- ↓
-- 📄 Ch32_SB_Data_Part2.md
-- ↓
-- IoC & DI
-- ↓
-- 📄 Ch33_SB_Web_Part3.md
-- ↓
-- AOP & Auto-Config
-- ↓
-- 📄 Ch33_SB_Web_Part3.md
-- ↓
-- AOP & Auto-Config
-- ↓
-- PHASE 2: TOOLING & WEB BASICS
+1. COMPLETE FILE LIST (IN LEARNING ORDER)
+2. PHASE 0: HIDDEN FOUNDATIONS (Read First!)
+3. PHASE 1: FOUNDATIONS
+4. 📄 Ch31_SB_Core_Part1.md
+5. Java Foundations
+6. 📄 Ch31_SB_Core_Part1.md
+7. Java Foundations
+8. 📄 Ch32_SB_Data_Part2.md
+9. IoC & DI
+10. 📄 Ch32_SB_Data_Part2.md
+11. IoC & DI
+12. 📄 Ch33_SB_Web_Part3.md
+13. AOP & Auto-Config
+14. 📄 Ch33_SB_Web_Part3.md
+15. AOP & Auto-Config
+16. PHASE 2: TOOLING & WEB BASICS
 
 ```mermaid
 flowchart TD
@@ -1316,14 +1232,14 @@ Part 19 (Testing Complete) → Part 22 (Testing annotations)
 
 
 
-> 🔬 **Section Challenge — Learning Paths By Goal**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Learning Paths By Goal**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # ✅ PHASE COMPLETION CHECKLIST
 

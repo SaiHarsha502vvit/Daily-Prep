@@ -160,9 +160,7 @@ D — Durability:   Once committed, data survives crashes
 ```
 
 **Flow:**
-- A — Atomicity: All or nothing (partial failure
-- ↓
-- rollback ALL)
+1. A — Atomicity: All or nothing (partial failure rollback ALL)
 
 ```mermaid
 flowchart LR
@@ -210,21 +208,14 @@ SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 ```
 
 **Flow:**
-- READ UNCOMMITTED
-- ↓
-- Can see uncommitted data (dirty reads)
-- ↓
-- READ COMMITTED
-- ↓
-- Only see committed data (default in PostgreSQL)
-- ↓
-- REPEATABLE READ
-- ↓
-- Same query returns same results within transaction
-- ↓
-- SERIALIZABLE
-- ↓
-- Full isolation (slowest, safest)
+1. READ UNCOMMITTED
+2. Can see uncommitted data (dirty reads)
+3. READ COMMITTED
+4. Only see committed data (default in PostgreSQL)
+5. REPEATABLE READ
+6. Same query returns same results within transaction
+7. SERIALIZABLE
+8. Full isolation (slowest, safest)
 
 ```mermaid
 flowchart LR
@@ -257,11 +248,9 @@ Output: [2,3]  ← removing this restores the tree
 ```
 
 **Flow:**
-- Tree with n nodes has exactly n-1 edges.
-- ↓
-- Input: edges = [[1,2],[1,3],[2,3]]
-- ↓
-- Output: [2,3] ← removing this restores the tree
+1. Tree with n nodes has exactly n-1 edges.
+2. Input: edges = [[1,2],[1,3],[2,3]]
+3. Output: [2,3] ← removing this restores the tree
 
 ```mermaid
 flowchart TD

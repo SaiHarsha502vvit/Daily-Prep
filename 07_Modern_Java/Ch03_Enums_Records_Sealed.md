@@ -1,6 +1,6 @@
 # 49. Java Enums, Records & Sealed Classes — Advanced Usage Deep Dive
 
-> **Navigation**: [< Events & Listeners](Ch11_Events_Listeners.md) | [Back to Index](../00_MASTER_INDEX.md) | [DateTime & Regex >](Ch05_DateTime_Regex.md)
+**Navigation**: [< Events & Listeners](Ch11_Events_Listeners.md) | [Back to Index](../00_MASTER_INDEX.md) | [DateTime & Regex >](Ch05_DateTime_Regex.md)
 
 ---
 
@@ -213,14 +213,14 @@ State Machine:
 
 
 
-> 🔬 **Section Challenge — 4. Enum as State Machine**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 4. Enum as State Machine**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 5. Enum Singleton Pattern — Thread-Safe by JVM Guarantee
 
@@ -271,14 +271,14 @@ Why enum singleton is BEST:
 
 
 
-> 🔬 **Section Challenge — 5. Enum Singleton Pattern — Thread-Safe by JVM Guarantee**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 5. Enum Singleton Pattern — Thread-Safe by JVM Guarantee**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 6. EnumSet and EnumMap — Specialized Collections
 
@@ -354,24 +354,24 @@ public final class Color extends Enum<Color> {
 // → values() returns a CLONE (creates array each call!)
 ```
 
-> **⚠️ Performance Note**: `values()` creates a new array every call.
-> If you call it in a loop, cache the result:
-> ```java
-> private static final Color[] VALUES = Color.values(); // Cache once
-> ```
+**⚠️ Performance Note**: `values()` creates a new array every call.
+If you call it in a loop, cache the result:
+```java
+private static final Color[] VALUES = Color.values(); // Cache once
+```
 
 ---
 
 
 
-> 🔬 **Section Challenge — 7. Enum Internals — What the Compiler Creates**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 7. Enum Internals — What the Compiler Creates**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## PART 2: RECORDS — Immutable Data Carriers (Java 16+)
 
@@ -574,14 +574,14 @@ public record UserResponse(Long id, String name) {}
 
 
 
-> 🔬 **Section Challenge — 11. Records with Jackson, JPA, and Spring**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 11. Records with Jackson, JPA, and Spring**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## PART 3: SEALED CLASSES — Controlled Inheritance (Java 17+)
 
@@ -589,14 +589,14 @@ public record UserResponse(Long id, String name) {}
 
 
 
-> 🔬 **Section Challenge — PART 3: SEALED CLASSES — Controlled Inheritance (Java 17+)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — PART 3: SEALED CLASSES — Controlled Inheritance (Java 17+)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 12. Sealed Classes — The Problem They Solve
 
@@ -700,14 +700,14 @@ public static String classify(Shape shape) {
 
 
 
-> 🔬 **Section Challenge — 13. Pattern Matching with Sealed Classes (Java 21+)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 13. Pattern Matching with Sealed Classes (Java 21+)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 14. Sealed Interfaces + Records = Algebraic Data Types
 
@@ -775,20 +775,20 @@ public sealed interface ApiResponse<T> {
 
 
 
-> 🔬 **Section Challenge — 14. Sealed Interfaces + Records = Algebraic Data Types**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — 14. Sealed Interfaces + Records = Algebraic Data Types**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## 15. The Three Keywords Comparison
 
@@ -873,40 +873,40 @@ public class OrderProcessor {
 
 
 
-> 🔬 **Section Challenge — 16. Putting It All Together — Complete Domain Model**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 16. Putting It All Together — Complete Domain Model**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 17. Interview Questions & Answers
 
 **Q: Can an enum have a constructor? What's the restriction?**
-> Yes, but it must be private (or package-private). You can't create enum instances with `new`. The JVM creates them when the enum class loads.
+Yes, but it must be private (or package-private). You can't create enum instances with `new`. The JVM creates them when the enum class loads.
 
 **Q: How would you implement a thread-safe singleton?**
-> Use an enum singleton. JVM guarantees single instantiation. It's safe against reflection, serialization, and threading attacks.
+Use an enum singleton. JVM guarantees single instantiation. It's safe against reflection, serialization, and threading attacks.
 
 **Q: What's the difference between enum `values()` and `valueOf()`?**
-> `values()` returns an array of all constants (creates a new array each call — cache it!). `valueOf(String)` converts a string to the enum constant (throws IllegalArgumentException if not found).
+`values()` returns an array of all constants (creates a new array each call — cache it!). `valueOf(String)` converts a string to the enum constant (throws IllegalArgumentException if not found).
 
 **Q: What are records for? Can they be JPA entities?**
-> Records are immutable data carriers — auto-generated constructor, accessors, equals/hashCode/toString. They CANNOT be JPA entities (need mutable state + no-arg constructor). Use them for DTOs, events, query projections.
+Records are immutable data carriers — auto-generated constructor, accessors, equals/hashCode/toString. They CANNOT be JPA entities (need mutable state + no-arg constructor). Use them for DTOs, events, query projections.
 
 **Q: What does 'sealed' mean and why use it?**
-> Sealed restricts which classes can extend/implement. It enables exhaustive switch expressions — the compiler knows all subtypes and verifies you handle each one. No default case needed.
+Sealed restricts which classes can extend/implement. It enables exhaustive switch expressions — the compiler knows all subtypes and verifies you handle each one. No default case needed.
 
 **Q: What's an Algebraic Data Type in Java?**
-> A sealed interface + records. Like `sealed interface Result<T> { record Success<T>(T value) implements Result<T> {} record Failure<T>(String error) implements Result<T> {} }`. The compiler ensures you handle both cases.
+A sealed interface + records. Like `sealed interface Result<T> { record Success<T>(T value) implements Result<T> {} record Failure<T>(String error) implements Result<T> {} }`. The compiler ensures you handle both cases.
 
 ---
 
-> **Key Takeaway**: Modern Java (16-21) gives you `enum` for fixed constants 
-> with behavior, `record` for immutable data, and `sealed` for controlled 
-> hierarchies. Combined with pattern matching, they eliminate entire categories 
-> of bugs by making illegal states unrepresentable.
+**Key Takeaway**: Modern Java (16-21) gives you `enum` for fixed constants 
+with behavior, `record` for immutable data, and `sealed` for controlled 
+hierarchies. Combined with pattern matching, they eliminate entire categories 
+of bugs by making illegal states unrepresentable.
 
-> **Navigation**: [< Events & Listeners](Ch11_Events_Listeners.md) | [Back to Index](../00_MASTER_INDEX.md) | [DateTime & Regex >](Ch05_DateTime_Regex.md)
+**Navigation**: [< Events & Listeners](Ch11_Events_Listeners.md) | [Back to Index](../00_MASTER_INDEX.md) | [DateTime & Regex >](Ch05_DateTime_Regex.md)

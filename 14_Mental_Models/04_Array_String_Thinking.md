@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](03_Graph_Tree_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Universal_Problem_Framework.md)
+**Navigation**: [< Previous](03_Graph_Tree_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Universal_Problem_Framework.md)
 
 # 🔍 Array & String Problem Thinking — Mental Model
 
-> **The key insight**: Arrays and strings have a SMALL set of core techniques. The skill is recognizing WHICH technique applies based on problem constraints. This decision tree will guide you.
+**The key insight**: Arrays and strings have a SMALL set of core techniques. The skill is recognizing WHICH technique applies based on problem constraints. This decision tree will guide you.
 
 ---
 
@@ -47,29 +47,18 @@ Q6: Limitation says O(n) and array has range [0, n-1]?
 ```
 
 **Flow:**
-- Read the problem
-- ↓
-- Ask these questions IN ORDER:
-- ↓
-- YES
-- ↓
-- TWO POINTERS (from both ends or same direction)
-- ↓
-- YES
-- ↓
-- SLIDING WINDOW or PREFIX SUM
-- ↓
-- YES
-- ↓
-- HASHMAP (frequency map)
-- ↓
-- YES
-- ↓
-- STACK (monotonic stack for Next Greater/Smaller)
-- ↓
-- YES
-- ↓
-- Dynamic Programming or Greedy
+1. Read the problem
+2. Ask these questions IN ORDER:
+3. YES
+4. TWO POINTERS (from both ends or same direction)
+5. YES
+6. SLIDING WINDOW or PREFIX SUM
+7. YES
+8. HASHMAP (frequency map)
+9. YES
+10. STACK (monotonic stack for Next Greater/Smaller)
+11. YES
+12. Dynamic Programming or Greedy
 
 ```mermaid
 flowchart TD
@@ -119,13 +108,10 @@ When: Merge two sorted arrays/lists, intersection of sorted arrays
 ```
 
 **Flow:**
-- L
-- ↓
-- ←R
-- ↓
-- S
-- ↓
-- F
+1. L
+2. ←R
+3. S
+4. F
 
 ```mermaid
 flowchart TD
@@ -149,8 +135,8 @@ while (left < right) {
 
 
 
-> 🔬 **Section Challenge — Part 2: Two Pointers — When and How**
->>
+🔬 **Section Challenge — Part 2: Two Pointers — When and How**
+>
 
 ## Part 3: Sliding Window — When and How
 
@@ -173,25 +159,12 @@ Template: Expand right always, shrink left while condition met
 ```
 
 **Flow:**
-- [a b c] d e f
-- ↓
-- compute for window
-- ↓
-- a [b c d] e f
-- ↓
-- slide right, update
-- ↓
-- a b [c d e] f
-- ↓
-- slide right, update
-- ↓
-- [a b c d] e f
-- ↓
-- expand right until valid
-- ↓
-- a [b c d e] f
-- ↓
-- shrink left while still valid
+1. [a b c] d e f compute for window
+2. a [b c d] e f slide right, update
+3. a b [c d e] f slide right, update
+4. [a b c d] e f expand right until valid
+5. a [b c d e] f
+6. shrink left while still valid
 
 ```mermaid
 flowchart TD
@@ -243,20 +216,20 @@ Works for: Subarrays with Exactly K Distinct Integers (LC 992)
 
 
 
-> 🔬 **Section Challenge — Part 3: Sliding Window — When and How**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — Part 3: Sliding Window — When and How**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## Part 4: Prefix Sum — When and How
 
@@ -271,13 +244,10 @@ Sum of [1..3] = prefix[4] - prefix[1] = 9 - 3 = 6  ✓ (1+4+1=6)
 ```
 
 **Flow:**
-- Array: [3, 1, 4, 1, 5, 9]
-- ↓
-- Prefix Sum: [0, 3, 4, 8, 9, 14, 23]
-- ↓
-- ↑ sentinel
-- ↓
-- Sum of subarray [i..j] = prefix[j+1] - prefix[i]
+1. Array: [3, 1, 4, 1, 5, 9]
+2. Prefix Sum: [0, 3, 4, 8, 9, 14, 23]
+3. ↑ sentinel
+4. Sum of subarray [i..j] = prefix[j+1] - prefix[i]
 
 ```mermaid
 flowchart TD
@@ -301,9 +271,8 @@ Key insight: If prefix[j] - prefix[i] = k, then subarray [i+1..j] sums to k
 ```
 
 **Flow:**
-- Problem: 'How many subarrays have sum equal to k?'
-- ↓
-- Equivalent to: prefix[j] - k = prefix[i]
+1. Problem: 'How many subarrays have sum equal to k?'
+2. Equivalent to: prefix[j] - k = prefix[i]
 
 ```mermaid
 flowchart TD
@@ -329,8 +298,8 @@ return count;
 
 
 
-> 🔬 **Section Challenge — Part 4: Prefix Sum — When and How**
->>
+🔬 **Section Challenge — Part 4: Prefix Sum — When and How**
+>
 
 ## Part 5: String-Specific Patterns
 
@@ -349,29 +318,18 @@ Problem Type:                         → Technique:
 ```
 
 **Flow:**
-- Problem Type:
-- ↓
-- Technique:
-- ↓
-- 'Are two strings anagrams?'
-- ↓
-- Sort both OR frequency count (int[26])
-- ↓
-- 'Find all anagrams in string'
-- ↓
-- Sliding window + frequency match
-- ↓
-- 'Longest palindromic substring'
-- ↓
-- Expand around center (O(n²)) or Manacher
-- ↓
-- 'Pattern matching'
-- ↓
-- KMP for exact, Rabin-Karp for rolling hash
-- ↓
-- 'All permutations of string'
-- ↓
-- Backtracking with frequency tracking
+1. Problem Type:
+2. Technique:
+3. 'Are two strings anagrams?'
+4. Sort both OR frequency count (int[26])
+5. 'Find all anagrams in string'
+6. Sliding window + frequency match
+7. 'Longest palindromic substring'
+8. Expand around center (O(n²)) or Manacher
+9. 'Pattern matching'
+10. KMP for exact, Rabin-Karp for rolling hash
+11. 'All permutations of string'
+12. Backtracking with frequency tracking
 
 ```mermaid
 flowchart TD
@@ -458,17 +416,10 @@ for (int num : nums) {
 ```
 
 **Flow:**
-- 'Find missing number'
-- ↓
-- XOR all values with all indices
-- ↓
-- 'Find duplicate'
-- ↓
-- Floyd's cycle detection on index chain
-- ↓
-- 'First missing positive'
-- ↓
-- Mark presence by negating at index
+1. 'Find missing number'
+2. XOR all values with all indices
+3. 'Find duplicate'
+4. Floyd's cycle detection on index chain 'First missing positive' Mark presence by negating at index
 
 ```mermaid
 flowchart LR
@@ -496,31 +447,12 @@ Three pointers: low, mid, high
 ```
 
 **Flow:**
-- When: Separate elements into groups (0s, 1s, 2s)
-- ↓
-- Three pointers: low, mid, high
-- ↓
-- [0s
-- ↓
-- 1s
-- ↓
-- unsorted
-- ↓
-- 2s]
-- ↓
-- [0s
-- ↓
-- 1s
-- ↓
-- unsorted
-- ↓
-- 2s]
-- ↓
-- ↑low ↑mid ↑high
-- ↓
-- - If arr[mid] == 0: swap with low, move both right
-- ↓
-- - If arr[mid] == 1: just move mid right
+1. When: Separate elements into groups (0s, 1s, 2s)
+2. Three pointers: low, mid, high
+3. [0s 1s unsorted 2s]
+4. ↑low ↑mid ↑high
+5. - If arr[mid] == 0: swap with low, move both right
+6. - If arr[mid] == 1: just move mid right
 
 ```mermaid
 flowchart TD
@@ -558,19 +490,13 @@ flowchart TD
 ```
 
 **Flow:**
-- □ Off-by-one: Is my loop bound < n or <= n?
-- ↓
-- □ Empty array/string: Does my code handle length 0?
-- ↓
-- □ Single element: Does it work for length 1?
-- ↓
-- □ All same elements: [5,5,5,5] — does my logic handle t
-- ↓
-- □ Integer overflow: Am I using long for sums?
-- ↓
-- □ Negative numbers: Does two-pointer still work?
-- ↓
-- □ Prefix sum: Did I include the sentinel prefix[0] = 0?
+1. □ Off-by-one: Is my loop bound < n or <= n?
+2. □ Empty array/string: Does my code handle length 0?
+3. □ Single element: Does it work for length 1?
+4. □ All same elements: [5,5,5,5] — does my logic handle t
+5. □ Integer overflow: Am I using long for sums?
+6. □ Negative numbers: Does two-pointer still work?
+7. □ Prefix sum: Did I include the sentinel prefix[0] = 0?
 
 ```mermaid
 flowchart TD
@@ -610,7 +536,7 @@ flowchart TD
 
 ## 🏋️ Practice & Interview Questions — Arrays
 
-> Attempt each before looking at the answer. Time yourself.
+Attempt each before looking at the answer. Time yourself.
 
 ### Predict / Trace
 **Q1.** What is the output? `int[] a = {1,2,3}; int[] b = a; b[0] = 99; System.out.println(a[0]);`
@@ -794,7 +720,7 @@ CPU loads data in cache lines (~64 bytes). Arrays store elements contiguously �
 
 ## 🧠 Deep Conceptual Questions — Arrays & Memory
 
-> These questions test your REASONING, not just recall. Think before expanding.
+These questions test your REASONING, not just recall. Think before expanding.
 
 **C1. Why is array access O(1)?**
 <details><summary>Deep Answer</summary>

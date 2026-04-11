@@ -57,9 +57,7 @@ BST INVARIANT: For every node N:
 ```
 
 **Flow:**
-- Inorder traversal
-- ↓
-- 1, 3, 4, 6, 7, 8, 10, 13, 14
+1. Inorder traversal 1, 3, 4, 6, 7, 8, 10, 13, 14
 
 ```mermaid
 flowchart LR
@@ -138,11 +136,9 @@ Step 3: Delete 4 from right subtree (it's a leaf, easy)
 ```
 
 **Flow:**
-- / \
-- ↓
-- Step 1: Find inorder successor of 3
-- ↓
-- smallest in right subtree
+1. / \
+2. Step 1: Find inorder successor of 3
+3. smallest in right subtree
 
 ```mermaid
 flowchart LR
@@ -182,25 +178,16 @@ Output: [[3], [9, 20], [15, 7]]
 ```
 
 **Flow:**
-- Step 1: Dequeue 3, enqueue 9,20
-- ↓
-- Q = [9, 20]
-- ↓
-- Step 2: Dequeue 9, no children
-- ↓
-- Q = [20]
-- ↓
-- Step 3: Dequeue 20, enqueue 15,7
-- ↓
-- Q = [15, 7]
-- ↓
-- Step 4: Dequeue 15, no children
-- ↓
-- Q = [7]
-- ↓
-- Step 5: Dequeue 7, no children
-- ↓
-- Q = []
+1. Step 1: Dequeue 3, enqueue 9,20
+2. Q = [9, 20]
+3. Step 2: Dequeue 9, no children
+4. Q = [20]
+5. Step 3: Dequeue 20, enqueue 15,7
+6. Q = [15, 7]
+7. Step 4: Dequeue 15, no children
+8. Q = [7]
+9. Step 5: Dequeue 7, no children
+10. Q = []
 
 ```mermaid
 flowchart TD
@@ -271,19 +258,13 @@ CRITICAL PATTERN:
 ```
 
 **Flow:**
-- DFS BFS
-- ↓
-- Data Struct Stack/Recursion Queue
-- ↓
-- Memory O(h) height O(w) width
-- ↓
-- Deep tree Uses less mem Uses more mem
-- ↓
-- Wide tree Uses more mem Uses less mem
-- ↓
-- Shortest path Not guaranteed YES (unweight)
-- ↓
-- Use case Path finding, Level-order,
+1. DFS BFS
+2. Data Struct Stack/Recursion Queue
+3. Memory O(h) height O(w) width
+4. Deep tree Uses less mem Uses more mem
+5. Wide tree Uses more mem Uses less mem
+6. Shortest path Not guaranteed YES (unweight)
+7. Use case Path finding, Level-order,
 
 ```mermaid
 flowchart TD
@@ -328,9 +309,8 @@ GROUP BY collapses rows:         Window functions KEEP rows:
 ```
 
 **Flow:**
-- dept COUNT(*) avg / IT 3 80k / HR 2 60k
-- ↓
-- name salary dept rank / Alice 90k IT 1 / Bob 80k IT 2 /
+1. dept COUNT(*) avg / IT 3 80k / HR 2 60k
+2. name salary dept rank / Alice 90k IT 1 / Bob 80k IT 2 /
 
 ```mermaid
 flowchart TD
@@ -375,33 +355,9 @@ DIFFERENCE:
 ```
 
 **Flow:**
-- DIFFERENCE:
-- ↓
-- If two people tie at position 2:
-- ↓
-- ROW_NUMBER: 1, 2, 3, 4 (always unique, arbitrary tie-br
-- ↓
-- RANK: 1, 2, 2, 4 (skip next rank after tie)
-- ↓
-- DENSE_RANK: 1, 2, 2, 3 (no gap after tie)
-- ↓
-- salary
-- ↓
-- ROW_NUMBER
-- ↓
-- RANK
-- ↓
-- DENSE_RANK
-- ↓
-- salary
-- ↓
-- ROW_NUMBER
-- ↓
-- RANK
-- ↓
-- DENSE_RANK
-- ↓
-- 70k 4 4 3 ← RANK skips 3, DENSE doesn't
+1. DIFFERENCE:
+2. If two people tie at position 2:
+3. ROW_NUMBER: 1, 2, 3, 4 (always unique, arbitrary tie-br RANK: 1, 2, 2, 4 (skip next rank after tie) DENSE_RANK: 1, 2, 2, 3 (no gap after tie) salary ROW_NUMBER RANK DENSE_RANK salary ROW_NUMBER RANK DENSE_RANK 70k 4 4 3 ← RANK skips 3, DENSE doesn't
 
 ```mermaid
 flowchart TD
@@ -508,17 +464,10 @@ Output: [[3], [9,20], [15,7]]
 ```
 
 **Flow:**
-- Level 0: queue=[3]
-- ↓
-- process 3, enqueue 9,20
-- ↓
-- Level 1: queue=[9,20]
-- ↓
-- process 9(no kids), 20(enqueue 15,7)
-- ↓
-- Level 2: queue=[15,7]
-- ↓
-- process 15, 7
+1. Level 0: queue=[3] process 3, enqueue 9,20
+2. Level 1: queue=[9,20]
+3. process 9(no kids), 20(enqueue 15,7)
+4. Level 2: queue=[15,7] process 15, 7
 
 ```mermaid
 flowchart LR
@@ -580,13 +529,10 @@ BFS POWERS:
 ```
 
 **Flow:**
-- TreeMap<K,V> in Java = Red-Black BST
-- ↓
-- O(log n) sorted map
-- ↓
-- TreeSet<K> in Java = Red-Black BST
-- ↓
-- O(log n) sorted set
+1. TreeMap<K,V> in Java = Red-Black BST
+2. O(log n) sorted map
+3. TreeSet<K> in Java = Red-Black BST
+4. O(log n) sorted set
 
 ```mermaid
 flowchart LR

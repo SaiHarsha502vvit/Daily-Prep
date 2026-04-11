@@ -64,9 +64,7 @@ TYPE 2: VARIABLE-SIZE WINDOW
 ```
 
 **Flow:**
-- Window size is given
-- ↓
-- just slide it
+1. Window size is given just slide it
 
 ```mermaid
 flowchart LR
@@ -208,21 +206,11 @@ TREE PROBLEM PATTERNS:
 ```
 
 **Flow:**
-- 1. 'Return a value'
-- ↓
-- return something from recursion
-- ↓
-- 2. 'Modify the tree'
-- ↓
-- return modified node
-- ↓
-- 3. 'Collect values'
-- ↓
-- pass list as parameter
-- ↓
-- 4. 'Check a property'
-- ↓
-- return boolean
+1. 'Return a value'
+2. return something from recursion
+3. 'Modify the tree' return modified node
+4. 'Collect values' pass list as parameter
+5. 'Check a property' return boolean
 
 ```mermaid
 flowchart LR
@@ -456,17 +444,11 @@ WHICH TYPE:
 ```
 
 **Flow:**
-- Fixed: '...of size K'
-- ↓
-- one pointer, fixed distance
-- ↓
-- Variable: 'smallest/longest that...'
-- ↓
-- two pointers, expand+shrink
-- ↓
-- HashMap: '...distinct/unique...'
-- ↓
-- track counts in map
+1. Fixed: '...of size K' one pointer, fixed distance
+2. Variable: 'smallest/longest that...'
+3. two pointers, expand+shrink
+4. HashMap: '...distinct/unique...'
+5. track counts in map
 
 ```mermaid
 flowchart LR

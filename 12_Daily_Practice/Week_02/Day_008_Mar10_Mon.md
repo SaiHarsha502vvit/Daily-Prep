@@ -71,11 +71,7 @@ KEY DIFFERENCE FROM ARRAY:
 ```
 
 **Flow:**
-- data / 10
-- ↓
-- data / 20
-- ↓
-- data null / 30
+1. data / 10 data / 20 data null / 30
 
 ```mermaid
 flowchart LR
@@ -101,19 +97,13 @@ Delete by value         O(n)      Must find it first
 ```
 
 **Flow:**
-- OPERATION TIME WHY?
-- ↓
-- Access by index O(n) Must traverse from head
-- ↓
-- Search O(n) Must traverse sequentially
-- ↓
-- Insert at head O(1) Just update head pointer
-- ↓
-- Insert at tail O(1)* *If you maintain tail pointer
-- ↓
-- Insert at position k O(k) Traverse to k, then O(1) link
-- ↓
-- Delete at head O(1) Just move head forward
+1. OPERATION TIME WHY?
+2. Access by index O(n) Must traverse from head
+3. Search O(n) Must traverse sequentially
+4. Insert at head O(1) Just update head pointer
+5. Insert at tail O(1)* *If you maintain tail pointer
+6. Insert at position k O(k) Traverse to k, then O(1) link
+7. Delete at head O(1) Just move head forward
 
 ```mermaid
 flowchart TD
@@ -250,19 +240,10 @@ public class SinglyLinkedList {
 ```
 
 **Flow:**
-- WHY MERGE SORT MATTERS:
-- ↓
-- • GUARANTEED O(n log n) — no worst case degradation
-- ↓
-- • STABLE sort (equal elements stay in original order)
-- ↓
-- • Tim Sort (Java's Arrays.sort for objects) is based on
-- ↓
-- • Teaches the Divide & Conquer paradigm perfectly
-- ↓
-- vs Quick Sort:
-- ↓
-- • Quick Sort: avg O(n log n), worst O(n²), in-place
+1. WHY MERGE SORT MATTERS:
+2. • GUARANTEED O(n log n) — no worst case degradation
+3. • STABLE sort (equal elements stay in original order)
+4. • Tim Sort (Java's Arrays.sort for objects) is based on • Teaches the Divide & Conquer paradigm perfectly vs Quick Sort: • Quick Sort: avg O(n log n), worst O(n²), in-place
 
 ```mermaid
 flowchart TD
@@ -313,23 +294,9 @@ MERGE STEP DETAIL (merging [27,38] and [3,43]):
 ```
 
 **Flow:**
-- Compare 27 vs 3
-- ↓
-- take 3
-- ↓
-- result: [3]
-- ↓
-- Compare 27 vs 43
-- ↓
-- take 27
-- ↓
-- result: [3, 27]
-- ↓
-- Compare 38 vs 43
-- ↓
-- take 38
-- ↓
-- result: [3, 27, 38]
+1. Compare 27 vs 3 take 3 result: [3]
+2. Compare 27 vs 43 take 27 result: [3, 27]
+3. Compare 38 vs 43 take 38 result: [3, 27, 38]
 
 ```mermaid
 flowchart TD
@@ -436,29 +403,12 @@ VISUAL:
 ```
 
 **Flow:**
-- Compare 1 vs 1: take l1's 1
-- ↓
-- result: 1
-- ↓
-- Compare 2 vs 1: take l2's 1
-- ↓
-- result: 1
-- ↓
-- Compare 2 vs 3: take l1's 2
-- ↓
-- result: 1
-- ↓
-- Compare 4 vs 3: take l2's 3
-- ↓
-- result: 1
-- ↓
-- Compare 4 vs 4: take l1's 4
-- ↓
-- result: 1
-- ↓
-- Remaining: l2's 4
-- ↓
-- result: 1
+1. Compare 1 vs 1: take l1's 1 result: 1 Compare 2 vs 1: take l2's 1
+2. result: 1
+3. Compare 2 vs 3: take l1's 2 result: 1 Compare 4 vs 3: take l2's 3
+4. result: 1
+5. Compare 4 vs 4: take l1's 4 result: 1 Remaining: l2's 4
+6. result: 1
 
 ```mermaid
 flowchart TD
@@ -525,17 +475,12 @@ If sort is unstable, Warehouse A's order might get pushed behind B's.
 ```
 
 **Flow:**
-- Order(1,'Laptop')
-- ↓
-- Order(2,'Phone')
-- ↓
-- Order(3,'Mouse')
-- ↓
-- Order(3,'Case')
-- ↓
-- Order(5,'Cable')
-- ↓
-- Order(7,'Charger')
+1. Order(1,'Laptop')
+2. Order(2,'Phone')
+3. Order(3,'Mouse')
+4. Order(3,'Case')
+5. Order(5,'Cable')
+6. Order(7,'Charger')
 
 ```mermaid
 flowchart LR
@@ -655,13 +600,8 @@ Step 5: prev=5→4→3→2→1, curr=null  (5 now points to 4) DONE!
 ```
 
 **Flow:**
-- Step 2: prev=2
-- ↓
-- 1, curr=3
-- ↓
-- 1, curr=4
-- ↓
-- 5 (3 now points to 2)
+1. Step 2: prev=2 1, curr=3 1, curr=4
+2. 5 (3 now points to 2)
 
 ```mermaid
 flowchart LR
@@ -709,13 +649,8 @@ Step 2: slow=3, fast=5  → fast.next=null → STOP → slow=3 ✓
 ```
 
 **Flow:**
-- Step 2: slow=3, fast=5
-- ↓
-- fast.next=null
-- ↓
-- STOP
-- ↓
-- slow=3 ✓
+1. Step 2: slow=3, fast=5 fast.next=null
+2. STOP slow=3 ✓
 
 ```mermaid
 flowchart LR

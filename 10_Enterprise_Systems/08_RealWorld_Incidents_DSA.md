@@ -58,9 +58,8 @@ For celebrity users following 10000 people = MELTDOWN
 ```
 
 **Flow:**
-- - For users following 5000 people
-- ↓
-- DISASTER
+1. - For users following 5000 people
+2. DISASTER
 
 ```mermaid
 flowchart LR
@@ -102,19 +101,13 @@ def get_timeline(user_id):
 ```
 
 **Flow:**
-- NEW APPROACH WITH CORRECT DATA STRUCTURE:
-- ↓
-- When user tweets:
-- ↓
-- 1. Get their follower list
-- ↓
-- DATA STRUCTURE: Redis List for each user's timeline
-- ↓
-- (capped at ~800 tweets)
-- ↓
-- def post_tweet(user_id, tweet):
-- ↓
-- # Write to main storage
+1. NEW APPROACH WITH CORRECT DATA STRUCTURE:
+2. When user tweets:
+3. 1. Get their follower list
+4. DATA STRUCTURE: Redis List for each user's timeline
+5. (capped at ~800 tweets)
+6. def post_tweet(user_id, tweet):
+7. # Write to main storage
 
 ```mermaid
 flowchart TD
@@ -158,19 +151,13 @@ flowchart TD
 ```
 
 **Flow:**
-- LESSON: TRADE-OFF - Read-Heavy vs Write-Heavy
-- ↓
-- READ-HEAVY APPROACH (Original Twitter):
-- ↓
-- Write: O(1)
-- ↓
-- Read: O(n × m + k log k) - DISASTER for high-follow use
-- ↓
-- WRITE-HEAVY APPROACH (Fixed Twitter):
-- ↓
-- Write: O(followers) - Push to each follower's list
-- ↓
-- Read: O(1) - Just read from cache
+1. LESSON: TRADE-OFF - Read-Heavy vs Write-Heavy
+2. READ-HEAVY APPROACH (Original Twitter):
+3. Write: O(1)
+4. Read: O(n × m + k log k) - DISASTER for high-follow use
+5. WRITE-HEAVY APPROACH (Fixed Twitter):
+6. Write: O(followers) - Push to each follower's list
+7. Read: O(1) - Just read from cache
 
 ```mermaid
 flowchart TD
@@ -235,19 +222,13 @@ PROBLEM: N+1 query pattern + O(k log k) sort ON EVERY PAGE LOAD
 ```
 
 **Flow:**
-- PRODUCT RECOMMENDATION SYSTEM - BEFORE:
-- ↓
-- def get_recommendations(user_id):
-- ↓
-- # Get user's purchase history
-- ↓
-- # For EACH purchased product, find similar products
-- ↓
-- similar = []
-- ↓
-- similar_products = db.query( # O(m) DB query EACH TIME
-- ↓
-- 'SELECT * FROM products WHERE category = ?',
+1. PRODUCT RECOMMENDATION SYSTEM - BEFORE:
+2. def get_recommendations(user_id):
+3. # Get user's purchase history
+4. # For EACH purchased product, find similar products
+5. similar = []
+6. similar_products = db.query( # O(m) DB query EACH TIME
+7. 'SELECT * FROM products WHERE category = ?',
 
 ```mermaid
 flowchart TD
@@ -341,21 +322,14 @@ public class RecommendationEngine {
 ```
 
 **Flow:**
-- LESSON: HEAP FOR TOP-K PROBLEMS
-- ↓
-- WRONG: Sort entire dataset, take first K
-- ↓
-- O(n log n)
-- ↓
-- WRONG: Sort entire dataset, take first K
-- ↓
-- O(n log n)
-- ↓
-- TOP-K PATTERNS:
-- ↓
-- WHEN YOU SEE 'Top 10', 'K most frequent', 'K nearest'
-- ↓
-- IMMEDIATELY think HEAP
+1. LESSON: HEAP FOR TOP-K PROBLEMS
+2. WRONG: Sort entire dataset, take first K
+3. O(n log n)
+4. WRONG: Sort entire dataset, take first K
+5. O(n log n)
+6. TOP-K PATTERNS:
+7. WHEN YOU SEE 'Top 10', 'K most frequent', 'K nearest'
+8. IMMEDIATELY think HEAP
 
 ```mermaid
 flowchart TD
@@ -401,15 +375,11 @@ At 500 million users: 500 MILLION string comparisons per search!
 ```
 
 **Flow:**
-- NAIVE SEARCH IMPLEMENTATION:
-- ↓
-- def search_people(query):
-- ↓
-- results = []
-- ↓
-- results.append(user)
-- ↓
-- return results[:20]
+1. NAIVE SEARCH IMPLEMENTATION:
+2. def search_people(query):
+3. results = []
+4. results.append(user)
+5. return results[:20]
 
 ```mermaid
 flowchart TD
@@ -512,21 +482,14 @@ public class SearchEngine {
 ```
 
 **Flow:**
-- LESSON: INVERTED INDEX + TRIE FOR SEARCH
-- ↓
-- INVERTED INDEX: O(query_words × result_set_size)
-- ↓
-- TRIE FOR AUTOCOMPLETE:
-- ↓
-- • Insert: O(word length)
-- ↓
-- • Search prefix: O(prefix length + results)
-- ↓
-- WHEN YOU SEE:
-- ↓
-- • 'Search'
-- ↓
-- Think Inverted Index
+1. LESSON: INVERTED INDEX + TRIE FOR SEARCH
+2. INVERTED INDEX: O(query_words × result_set_size)
+3. TRIE FOR AUTOCOMPLETE:
+4. • Insert: O(word length)
+5. • Search prefix: O(prefix length + results)
+6. WHEN YOU SEE:
+7. • 'Search'
+8. Think Inverted Index
 
 ```mermaid
 flowchart TD
@@ -638,19 +601,13 @@ func measureLatencyMonotonic(start, end time.Time) float64 {
 ```
 
 **Flow:**
-- LESSON: ALWAYS HANDLE EDGE CASES
-- ↓
-- COMMON EDGE CASES TO CHECK:
-- ↓
-- ARRAYS/STRINGS:
-- ↓
-- • Empty array/string
-- ↓
-- • Single element
-- ↓
-- • All same elements
-- ↓
-- • Negative numbers
+1. LESSON: ALWAYS HANDLE EDGE CASES
+2. COMMON EDGE CASES TO CHECK:
+3. ARRAYS/STRINGS:
+4. • Empty array/string
+5. • Single element
+6. • All same elements
+7. • Negative numbers
 
 ```mermaid
 flowchart TD
@@ -730,19 +687,13 @@ class RateLimiter {
 ```
 
 **Flow:**
-- THE BUG - INFINITE LOOP:
-- ↓
-- processOrder(); // No exit condition!
-- ↓
-- WHAT SHOULD HAVE EXISTED:
-- ↓
-- class RateLimiter {
-- ↓
-- private int tokens = 100; // Max burst
-- ↓
-- private long lastRefill = now();
-- ↓
-- private int refillRate = 10; // tokens per second
+1. THE BUG - INFINITE LOOP:
+2. processOrder(); // No exit condition!
+3. WHAT SHOULD HAVE EXISTED:
+4. class RateLimiter {
+5. private int tokens = 100; // Max burst
+6. private long lastRefill = now();
+7. private int refillRate = 10; // tokens per second
 
 ```mermaid
 flowchart TD
@@ -860,19 +811,13 @@ public class SlidingWindowRateLimiter {
 ```
 
 **Flow:**
-- LESSON: CIRCUIT BREAKERS & RATE LIMITERS
-- ↓
-- CIRCUIT BREAKER PATTERN:
-- ↓
-- RATE LIMITING ALGORITHMS:
-- ↓
-- • Token Bucket (allows bursts)
-- ↓
-- • Leaky Bucket (constant rate)
-- ↓
-- • Fixed Window (simple but spike at boundaries)
-- ↓
-- • Sliding Window (most accurate)
+1. LESSON: CIRCUIT BREAKERS & RATE LIMITERS
+2. CIRCUIT BREAKER PATTERN:
+3. RATE LIMITING ALGORITHMS:
+4. • Token Bucket (allows bursts)
+5. • Leaky Bucket (constant rate)
+6. • Fixed Window (simple but spike at boundaries)
+7. • Sliding Window (most accurate)
 
 ```mermaid
 flowchart TD
@@ -932,11 +877,9 @@ This is called "CACHE STAMPEDE" or "THUNDERING HERD"
 ```
 
 **Flow:**
-- PROBLEM: Cache expires
-- ↓
-- 10,000 concurrent requests
-- ↓
-- 10,000 DB queries!
+1. PROBLEM: Cache expires
+2. 10,000 concurrent requests
+3. 10,000 DB queries!
 
 ```mermaid
 flowchart LR
@@ -1031,27 +974,17 @@ public Article getArticleEarlyRefresh(String articleId) {
 ```
 
 **Flow:**
-- LESSON: CACHING STRATEGIES & PROBLEMS
-- ↓
-- CACHE PROBLEMS:
-- ↓
-- • Cache Stampede: Many requests hit DB when cache expir
-- ↓
-- • Cache Breakdown: Hot key expires, all requests hit DB
-- ↓
-- SOLUTIONS:
-- ↓
-- • Stampede
-- ↓
-- Locking or probabilistic early refresh
-- ↓
-- • Stampede
-- ↓
-- Locking or probabilistic early refresh
-- ↓
-- • Breakdown
-- ↓
-- Never expire hot keys, refresh in backgro
+1. LESSON: CACHING STRATEGIES & PROBLEMS
+2. CACHE PROBLEMS:
+3. • Cache Stampede: Many requests hit DB when cache expir
+4. • Cache Breakdown: Hot key expires, all requests hit DB
+5. SOLUTIONS:
+6. • Stampede
+7. Locking or probabilistic early refresh
+8. • Stampede
+9. Locking or probabilistic early refresh
+10. • Breakdown
+11. Never expire hot keys, refresh in backgro
 
 ```mermaid
 flowchart TD
@@ -1194,19 +1127,13 @@ public class SmartShuffle {
 ```
 
 **Flow:**
-- LESSON: CONSTRAINED RANDOM PLACEMENT
-- ↓
-- SIMILAR PROBLEMS:
-- ↓
-- • Reorganize String (LC 767) - No adjacent same charact
-- ↓
-- • Distant Barcodes (LC 1054) - No adjacent same barcode
-- ↓
-- PATTERN:
-- ↓
-- 1. Count frequency of each category
-- ↓
-- 2. Use Max-Heap (most frequent first)
+1. LESSON: CONSTRAINED RANDOM PLACEMENT
+2. SIMILAR PROBLEMS:
+3. • Reorganize String (LC 767) - No adjacent same charact
+4. • Distant Barcodes (LC 1054) - No adjacent same barcode
+5. PATTERN:
+6. 1. Count frequency of each category
+7. 2. Use Max-Heap (most frequent first)
 
 ```mermaid
 flowchart TD
@@ -1262,19 +1189,13 @@ BUG: If operator changed setting WHILE parameters were loading,
 ```
 
 **Flow:**
-- RACE CONDITION IN CRITICAL SYSTEM:
-- ↓
-- Two concurrent processes:
-- ↓
-- 1. UI Process: Read operator settings
-- ↓
-- 2. Control Process: Set radiation parameters
-- ↓
-- The code:
-- ↓
-- load_new_parameters(); // Takes time
-- ↓
-- apply_radiation();
+1. RACE CONDITION IN CRITICAL SYSTEM:
+2. Two concurrent processes:
+3. 1. UI Process: Read operator settings
+4. 2. Control Process: Set radiation parameters
+5. The code:
+6. load_new_parameters(); // Takes time
+7. apply_radiation();
 
 ```mermaid
 flowchart TD
@@ -1427,19 +1348,13 @@ public class TwoPhaseController {
 ```
 
 **Flow:**
-- LESSON: THREAD SAFETY PATTERNS
-- ↓
-- SOLUTIONS:
-- ↓
-- 1. IMMUTABILITY
-- ↓
-- Object can't change after creation
-- ↓
-- Thread-safe by design
-- ↓
-- String, Integer in Java
-- ↓
-- 2. ATOMIC OPERATIONS
+1. LESSON: THREAD SAFETY PATTERNS
+2. SOLUTIONS:
+3. 1. IMMUTABILITY
+4. Object can't change after creation
+5. Thread-safe by design
+6. String, Integer in Java
+7. 2. ATOMIC OPERATIONS
 
 ```mermaid
 flowchart TD
@@ -1494,11 +1409,9 @@ Same ride, same time, different prices!
 ```
 
 **Flow:**
-- Write
-- ↓
-- Primary DB
-- ↓
-- Replicas (async, slight delay)
+1. Write
+2. Primary DB
+3. Replicas (async, slight delay)
 
 ```mermaid
 flowchart LR
@@ -1606,19 +1519,13 @@ public class VersionedSurge {
 ```
 
 **Flow:**
-- LESSON: CAP THEOREM & CONSISTENCY LEVELS
-- ↓
-- CAP THEOREM: Can only have 2 of 3:
-- ↓
-- C - Consistency (all nodes see same data)
-- ↓
-- A - Availability (every request gets response)
-- ↓
-- CONSISTENCY LEVELS:
-- ↓
-- • Strong: All reads see latest write (like single serve
-- ↓
-- • Causal: If A causes B, everyone sees A before B
+1. LESSON: CAP THEOREM & CONSISTENCY LEVELS
+2. CAP THEOREM: Can only have 2 of 3:
+3. C - Consistency (all nodes see same data)
+4. A - Availability (every request gets response)
+5. CONSISTENCY LEVELS:
+6. • Strong: All reads see latest write (like single serve
+7. • Causal: If A causes B, everyone sees A before B
 
 ```mermaid
 flowchart TD
@@ -1676,19 +1583,13 @@ flowchart TD
 ```
 
 **Flow:**
-- INCIDENT TO DSA LESSON MAPPING
-- ↓
-- INCIDENT DSA LESSON KEY PATTERN
-- ↓
-- Amazon 2-Second Rule Heap for Top-K Priority Queue
-- ↓
-- LinkedIn Search Inverted Index + Trie Search optimizati
-- ↓
-- Cloudflare Leap Second Edge case handling Defensive cod
-- ↓
-- Knight Capital Rate limiting Token Bucket
-- ↓
-- Reddit Hug of Death Caching strategies LRU Cache
+1. INCIDENT TO DSA LESSON MAPPING
+2. INCIDENT DSA LESSON KEY PATTERN
+3. Amazon 2-Second Rule Heap for Top-K Priority Queue
+4. LinkedIn Search Inverted Index + Trie Search optimizati
+5. Cloudflare Leap Second Edge case handling Defensive cod
+6. Knight Capital Rate limiting Token Bucket
+7. Reddit Hug of Death Caching strategies LRU Cache
 
 ```mermaid
 flowchart TD

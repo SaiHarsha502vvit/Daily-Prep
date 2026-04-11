@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch33_SB_Web_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch35_SB_Lombok_DTOs.md)
+**Navigation**: [< Previous](Ch33_SB_Web_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch35_SB_Lombok_DTOs.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 4: Data Access, Web, Security & Testing
 
-> **The Practical Tiers - Building Real Applications**
-> _"JPA, REST APIs, Security, and Testing - the tools you use daily"_
+**The Practical Tiers - Building Real Applications**
+_"JPA, REST APIs, Security, and Testing - the tools you use daily"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why JPA/Hibernate is Essential? / • ORM magic: Map
-- ↓
-- HOW: How JPA Maps Objects to Database? / • @Entity: Cla
-- ↓
-- WHEN: When to Use Different Query Strategies? / • findB
-- ↓
-- WHICH: Which JPA Concepts to Master? / ESSENTIAL: @Enti
+1. WHY: Why JPA/Hibernate is Essential? / • ORM magic: Map
+2. HOW: How JPA Maps Objects to Database? / • @Entity: Cla
+3. WHEN: When to Use Different Query Strategies? / • findB
+4. WHICH: Which JPA Concepts to Master? / ESSENTIAL: @Enti
 
 ```mermaid
 flowchart TD
@@ -81,14 +78,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 1: Understanding JPA Architecture**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 1: Understanding JPA Architecture**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Jdbc Vs Jpa Comparison
 
@@ -166,19 +163,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 ```
 
 **Flow:**
-- YOUR APPLICATION CODE / UserService
-- ↓
-- UserRepository
-- ↓
-- SPRING DATA JPA / Query derivation, automatic repositor
-- ↓
-- JPA (API/Specification) / EntityManager, @Entity, JPQL,
-- ↓
-- HIBERNATE (JPA Implementation) / Session, 1st/2nd level
-- ↓
-- JDBC / DataSource / Connection pooling (HikariCP), actu
-- ↓
-- DATABASE / MySQL, PostgreSQL, Oracle, etc.
+1. YOUR APPLICATION CODE / UserService
+2. UserRepository
+3. SPRING DATA JPA / Query derivation, automatic repositor
+4. JPA (API/Specification) / EntityManager, @Entity, JPQL,
+5. HIBERNATE (JPA Implementation) / Session, 1st/2nd level
+6. JDBC / DataSource / Connection pooling (HikariCP), actu
+7. DATABASE / MySQL, PostgreSQL, Oracle, etc.
 
 ```mermaid
 flowchart TD
@@ -199,27 +190,27 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Jdbc Vs Jpa Comparison**
->
-> **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
-> <details><summary>Answer</summary>
->
-> ```java
-> // N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
-> List<Order> orders = orderRepo.findAll(); // 1 query
-> orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
->
-> // Fix 1: JOIN FETCH
-> @Query("SELECT o FROM Order o JOIN FETCH o.customer")
-> List<Order> findAllWithCustomer();
->
-> // Fix 2: EntityGraph
-> @EntityGraph(attributePaths = "customer")
-> List<Order> findAll();
-> ```
-> Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-> </details>
->
+🔬 **Section Challenge — Jdbc Vs Jpa Comparison**
+
+**Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+<details><summary>Answer</summary>
+
+```java
+// N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
+List<Order> orders = orderRepo.findAll(); // 1 query
+orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
+
+// Fix 1: JOIN FETCH
+@Query("SELECT o FROM Order o JOIN FETCH o.customer")
+List<Order> findAllWithCustomer();
+
+// Fix 2: EntityGraph
+@EntityGraph(attributePaths = "customer")
+List<Order> findAll();
+```
+Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+</details>
+
 
 ## Chapter 2: Entity Mapping
 
@@ -309,14 +300,14 @@ public class Address {
 
 
 
-> 🔬 **Section Challenge — Chapter 2: Entity Mapping**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 2: Entity Mapping**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 3: Entity Relationships
 
@@ -620,14 +611,14 @@ public class UserService {
 
 
 
-> 🔬 **Section Challenge — Chapter 4: Spring Data JPA Repositories**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 4: Spring Data JPA Repositories**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 5: Transaction Management
 
@@ -732,14 +723,14 @@ public class OrderService {
 
 
 
-> 🔬 **Section Challenge — Chapter 5: Transaction Management**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — Chapter 5: Transaction Management**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 # 🔌 Tier 6: Web & REST API
 
@@ -889,14 +880,14 @@ public record ErrorResponse(String message, List<String> errors) {}
 
 
 
-> 🔬 **Section Challenge — Chapter 6: Building REST APIs**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 6: Building REST APIs**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🌱 Tier 7: Spring Security
 
@@ -931,19 +922,13 @@ public record ErrorResponse(String message, List<String> errors) {}
 ```
 
 **Flow:**
-- AUTHENTICATION vs AUTHORIZATION
-- ↓
-- AUTHENTICATION = 'WHO are you?'
-- ↓
-- • Username/password login
-- ↓
-- • OAuth2/Social login
-- ↓
-- • JWT token validation
-- ↓
-- • Certificate verification
-- ↓
-- AUTHORIZATION = 'WHAT can you do?'
+1. AUTHENTICATION vs AUTHORIZATION
+2. AUTHENTICATION = 'WHO are you?'
+3. • Username/password login
+4. • OAuth2/Social login
+5. • JWT token validation
+6. • Certificate verification
+7. AUTHORIZATION = 'WHAT can you do?'
 
 ```mermaid
 flowchart TD
@@ -1057,14 +1042,14 @@ public class UserService {
 
 
 
-> 🔬 **Section Challenge — Chapter 7: Security Fundamentals**
->
-> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-> <details><summary>Answer</summary>
->
-> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-> </details>
->
+🔬 **Section Challenge — Chapter 7: Security Fundamentals**
+
+**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+<details><summary>Answer</summary>
+
+JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+</details>
+
 
 # 🧪 Tier 9: Testing
 
@@ -1098,11 +1083,9 @@ public class UserService {
 ```
 
 **Flow:**
-- E2E / Tests
-- ↓
-- Integration / Tests
-- ↓
-- Unit Tests / @Mock, no Spring context
+1. E2E / Tests
+2. Integration / Tests
+3. Unit Tests / @Mock, no Spring context
 
 ```mermaid
 flowchart TD
@@ -1289,14 +1272,14 @@ class UserRepositoryTest {
 ```yaml
 
 
-> 🔬 **Section Challenge — Chapter 8: Testing Spring Boot Applications**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 8: Testing Spring Boot Applications**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # application-test.yml
 spring:
@@ -1351,19 +1334,13 @@ TESTING:
 ```
 
 **Flow:**
-- JPA & DATA ACCESS:
-- ↓
-- □ Can map entities with all relationship types
-- ↓
-- □ Understand LAZY vs EAGER and N+1 problem
-- ↓
-- □ Can write derived queries and @Query methods
-- ↓
-- □ Can use projections and pagination
-- ↓
-- WEB & REST:
-- ↓
-- □ Can build complete REST API with all HTTP methods
+1. JPA & DATA ACCESS:
+2. □ Can map entities with all relationship types
+3. □ Understand LAZY vs EAGER and N+1 problem
+4. □ Can write derived queries and @Query methods
+5. □ Can use projections and pagination
+6. WEB & REST:
+7. □ Can build complete REST API with all HTTP methods
 
 ```mermaid
 flowchart TD
@@ -1428,19 +1405,13 @@ flowchart TD
 ```
 
 **Flow:**
-- SPRING BOOT MASTERY ROADMAP
-- ↓
-- TIER 1: Java Foundations
-- ↓
-- Memory, ClassLoading, Threading, Functional Programming
-- ↓
-- TIER 2: Spring Core
-- ↓
-- IoC, DI, Beans, Lifecycle, Events
-- ↓
-- TIER 3: AOP
-- ↓
-- Aspects, Pointcuts, Proxies
+1. SPRING BOOT MASTERY ROADMAP
+2. TIER 1: Java Foundations
+3. Memory, ClassLoading, Threading, Functional Programming
+4. TIER 2: Spring Core
+5. IoC, DI, Beans, Lifecycle, Events
+6. TIER 3: AOP
+7. Aspects, Pointcuts, Proxies
 
 ```mermaid
 flowchart TD

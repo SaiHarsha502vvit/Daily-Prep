@@ -47,13 +47,10 @@ RIGHT ROTATE by 2:
 ```
 
 **Flow:**
-- [1, 2, 3, 4, 5]
-- ↓
-- [3, 4, 5, 1, 2]
-- ↓
-- [1, 2, 3, 4, 5]
-- ↓
-- [4, 5, 1, 2, 3]
+1. [1, 2, 3, 4, 5]
+2. [3, 4, 5, 1, 2]
+3. [1, 2, 3, 4, 5]
+4. [4, 5, 1, 2, 3]
 
 ```mermaid
 flowchart LR
@@ -170,19 +167,12 @@ WHY THIS MATTERS:
 ```
 
 **Flow:**
-- STABLE SORT: Equal elements maintain their original ord
-- ↓
-- Example: Sort students by grade (ignore name):
-- ↓
-- STABLE sort by grade:
-- ↓
-- ↑ A's keep original order: Bob before Diana
-- ↓
-- ↑ B's keep original order: Alice before Charlie
-- ↓
-- UNSTABLE sort by grade (could produce):
-- ↓
-- ↑ Order among equals is NOT guaranteed
+1. STABLE SORT: Equal elements maintain their original ord
+2. Example: Sort students by grade (ignore name):
+3. STABLE sort by grade:
+4. ↑ A's keep original order: Bob before Diana ↑ B's keep original order: Alice before Charlie
+5. UNSTABLE sort by grade (could produce):
+6. ↑ Order among equals is NOT guaranteed
 
 ```mermaid
 flowchart TD
@@ -244,19 +234,11 @@ SURPRISE: Insertion Sort is OPTIMAL for:
 ```
 
 **Flow:**
-- SURPRISE: Insertion Sort is OPTIMAL for:
-- ↓
-- 1. Small arrays (n < 10-15): Less overhead than quic
-- ↓
-- Java's Arrays.sort() uses insertion sort for n < 4
-- ↓
-- 2. Nearly sorted arrays: O(n) best case
-- ↓
-- If only 1-2 elements are out of place, it's LINEAR
-- ↓
-- 3. Online sorting: Can sort as data arrives (streaming)
-- ↓
-- 4. Stable sorting needed with O(1) space
+1. SURPRISE: Insertion Sort is OPTIMAL for:
+2. Small arrays (n < 10-15): Less overhead than quic
+3. Java's Arrays.sort() uses insertion sort for n < 4 Nearly sorted arrays: O(n) best case If only 1-2 elements are out of place, it's LINEAR
+4. Online sorting: Can sort as data arrives (streaming)
+5. Stable sorting needed with O(1) space
 
 ```mermaid
 flowchart TD
@@ -300,27 +282,11 @@ KEY INSIGHT: Merge from the END to avoid overwriting!
 ```
 
 **Flow:**
-- i=2(
-- ↓
-- 3), j=2(
-- ↓
-- 6), k=5
-- ↓
-- Compare 3 vs 6: 6 is bigger
-- ↓
-- nums1[5]=6, j--, k--
-- ↓
-- Compare 3 vs 5: 5 is bigger
-- ↓
-- nums1[4]=5, j--, k--
-- ↓
-- Compare 3 vs 2: 3 is bigger
-- ↓
-- nums1[3]=3, i--, k--
-- ↓
-- Compare 2 vs 2: equal
-- ↓
-- nums1[2]=2, j--, k--
+1. i=2( 3), j=2( 6), k=5
+2. Compare 3 vs 6: 6 is bigger nums1[5]=6, j--, k--
+3. Compare 3 vs 5: 5 is bigger nums1[4]=5, j--, k--
+4. Compare 3 vs 2: 3 is bigger nums1[3]=3, i--, k--
+5. Compare 2 vs 2: equal nums1[2]=2, j--, k--
 
 ```mermaid
 flowchart TD
@@ -433,29 +399,12 @@ CHOOSING THE RIGHT TYPE:
 ```
 
 **Flow:**
-- Storing ages?
-- ↓
-- TINYINT (0-255, 1 byte) — NOT INT (wastes 3 bytes)
-- ↓
-- Storing money?
-- ↓
-- DECIMAL(10,2) — NEVER FLOAT (precision errors!)
-- ↓
-- Storing a name?
-- ↓
-- VARCHAR(100) — NOT CHAR (wastes space on short nam
-- ↓
-- Storing a password?
-- ↓
-- CHAR(60) — bcrypt hash is always 60 chars
-- ↓
-- Storing a country?
-- ↓
-- CHAR(2) — ISO codes are always 2 chars (IN, US, UK
-- ↓
-- Storing created_at?
-- ↓
-- TIMESTAMP — auto timezone conversion, 4 bytes
+1. Storing ages?
+2. TINYINT (0-255, 1 byte) — NOT INT (wastes 3 bytes)
+3. Storing money?
+4. DECIMAL(10,2) — NEVER FLOAT (precision errors!)
+5. Storing a name?
+6. VARCHAR(100) — NOT CHAR (wastes space on short nam Storing a password? CHAR(60) — bcrypt hash is always 60 chars Storing a country? CHAR(2) — ISO codes are always 2 chars (IN, US, UK Storing created_at? TIMESTAMP — auto timezone conversion, 4 bytes
 
 ```mermaid
 flowchart TD

@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](08_Array_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_HashMap_Plus_Counting.md)
+**Navigation**: [< Previous](08_Array_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_HashMap_Plus_Counting.md)
 
 # Array + Sliding Window — Combined Pattern Guide
 
-> **WHY this combination?** When you need to find optimal **contiguous subarrays** or **substrings**, the sliding window maintains a running computation as it moves across the array. Reduces O(n²) brute force → O(n).
+**WHY this combination?** When you need to find optimal **contiguous subarrays** or **substrings**, the sliding window maintains a running computation as it moves across the array. Reduces O(n²) brute force → O(n).
 
 ### 🧠 Deep Intuition — Why Sliding Window Is O(n)
 
@@ -52,19 +52,19 @@ Use when: size is given         Use when: find optimal size
 
 
 
-> 🔬 **Section Challenge — 🧠 WHEN TO RECOGNIZE THIS PATTERN**
->
-> **Challenge 1 (Reasoning):** A problem says "maximum sum of subarray with sum ≤ K, where array contains negative numbers." Why does sliding window fail here, and what's the correct approach?
-> <details><summary>Answer</summary>
->
-> Sliding window requires **monotonicity**: expanding the window must increase (or maintain) the sum, shrinking must decrease it. With negatives, expanding by adding a negative element *decreases* the sum — breaking the invariant. The window shrink logic becomes incorrect: if `sum > K`, shrinking from left might not help if there are negatives in the middle. **Correct approach**: Prefix Sum + HashMap. Compute cumulative sums, then for each `prefix[r]`, find the largest `prefix[l]` such that `prefix[r] - prefix[l] ≤ K`. Sort prefix sums or use a TreeMap for O(N log N).
-> </details>
->
-> **Challenge 2 (Reasoning):** "Sliding window is O(N) because left and right each move at most N times." Prove this rigorously — the inner `while` loop looks like it could make it O(N²).
-> <details><summary>Answer</summary>
->
-> **Amortized argument**: Count total pointer movements. `right` starts at 0 and moves right N times total (one per outer loop iteration). `left` starts at 0 and can only move right (never left). Since `left ≤ right ≤ N-1` always, `left` moves at most N times *total* across ALL iterations of the inner while loop — not N times per outer iteration. Total operations = right moves + left moves = N + N = 2N = O(N). The inner while loop's iterations are "paid for" by previous outer loop iterations that advanced `right`.
-> </details>
+🔬 **Section Challenge — 🧠 WHEN TO RECOGNIZE THIS PATTERN**
+
+**Challenge 1 (Reasoning):** A problem says "maximum sum of subarray with sum ≤ K, where array contains negative numbers." Why does sliding window fail here, and what's the correct approach?
+<details><summary>Answer</summary>
+
+Sliding window requires **monotonicity**: expanding the window must increase (or maintain) the sum, shrinking must decrease it. With negatives, expanding by adding a negative element *decreases* the sum — breaking the invariant. The window shrink logic becomes incorrect: if `sum > K`, shrinking from left might not help if there are negatives in the middle. **Correct approach**: Prefix Sum + HashMap. Compute cumulative sums, then for each `prefix[r]`, find the largest `prefix[l]` such that `prefix[r] - prefix[l] ≤ K`. Sort prefix sums or use a TreeMap for O(N log N).
+</details>
+
+**Challenge 2 (Reasoning):** "Sliding window is O(N) because left and right each move at most N times." Prove this rigorously — the inner `while` loop looks like it could make it O(N²).
+<details><summary>Answer</summary>
+
+**Amortized argument**: Count total pointer movements. `right` starts at 0 and moves right N times total (one per outer loop iteration). `left` starts at 0 and can only move right (never left). Since `left ≤ right ≤ N-1` always, `left` moves at most N times *total* across ALL iterations of the inner while loop — not N times per outer iteration. Total operations = right moves + left moves = N + N = 2N = O(N). The inner while loop's iterations are "paid for" by previous outer loop iterations that advanced `right`.
+</details>
 
 ## 📐 CORE TEMPLATES
 
@@ -160,13 +160,13 @@ Answer: 3
 
 
 
-> 🔬 **Section Challenge — 🔬 VISUAL: Variable Window**
->
-> **Challenge (Design):** Count the number of subarrays with sum exactly K (array has negatives). Why can't you use sliding window? Write the correct approach.
-> <details><summary>Answer</summary>
->
-> Negatives break monotonicity. Correct approach: **Prefix Sum + HashMap**. `count += prefixMap.getOrDefault(prefix - k, 0)` as you build the running prefix sum. The map stores `{prefixSum → count of times seen}`. When `prefix[r] - prefix[l] == k`, we found a valid subarray `(l, r]`. Time: O(N), Space: O(N). This is LC 560 — the classic harder version after sliding window.
-> </details>
+🔬 **Section Challenge — 🔬 VISUAL: Variable Window**
+
+**Challenge (Design):** Count the number of subarrays with sum exactly K (array has negatives). Why can't you use sliding window? Write the correct approach.
+<details><summary>Answer</summary>
+
+Negatives break monotonicity. Correct approach: **Prefix Sum + HashMap**. `count += prefixMap.getOrDefault(prefix - k, 0)` as you build the running prefix sum. The map stores `{prefixSum → count of times seen}`. When `prefix[r] - prefix[l] == k`, we found a valid subarray `(l, r]`. Time: O(N), Space: O(N). This is LC 560 — the classic harder version after sliding window.
+</details>
 
 ## 🔬 FULL WALKTHROUGH: Longest Substring Without Repeating Characters
 
@@ -296,7 +296,7 @@ WHY fixed window? Size is given (k=3), so just slide it.
 
 **When the interviewer gives you a Sliding Window problem, say this:**
 
-> "The brute force checks all O(n²) subarrays. Sliding window reduces to O(n) because instead of recomputing from scratch, we add the new right element and remove the old left element — maintaining a running result. Each element enters the window once and leaves once, so total operations are 2n = O(n). This is amortized O(1) per element."
+"The brute force checks all O(n²) subarrays. Sliding window reduces to O(n) because instead of recomputing from scratch, we add the new right element and remove the old left element — maintaining a running result. Each element enters the window once and leaves once, so total operations are 2n = O(n). This is amortized O(1) per element."
 
 **Key mathematical justification:**
 - "The inner while-loop looks O(n²), but each element is pushed at most once and popped at most once across ALL iterations. Total work = 2n."
@@ -323,7 +323,7 @@ WHY fixed window? Size is given (k=3), so just slide it.
 
 ## 🏋️ Practice & Interview Questions — Sliding Window
 
-> Attempt each before looking at the answer. Time yourself.
+Attempt each before looking at the answer. Time yourself.
 
 ### Predict / Trace
 **Q1.** `arr = [2,1,5,1,3,2]`, k=3. Trace the fixed window — what's the max sum?

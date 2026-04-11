@@ -43,19 +43,13 @@
 ```
 
 **Flow:**
-- COMPLETE PROJECT LIFECYCLE
-- ↓
-- 1. CLIENT DISCOVERY 2. REQUIREMENTS
-- ↓
-- First meeting Feature list
-- ↓
-- Understanding need User stories
-- ↓
-- Budget/Timeline Acceptance criteria
-- ↓
-- 3. DESIGN PHASE 4. ARCHITECTURE
-- ↓
-- UI/UX Design System design
+1. COMPLETE PROJECT LIFECYCLE
+2. 1. CLIENT DISCOVERY 2. REQUIREMENTS
+3. First meeting Feature list
+4. Understanding need User stories
+5. Budget/Timeline Acceptance criteria
+6. 3. DESIGN PHASE 4. ARCHITECTURE
+7. UI/UX Design System design
 
 ```mermaid
 flowchart TD
@@ -92,25 +86,16 @@ BEFORE THE MEETING:
 ```
 
 **Flow:**
-- BEFORE THE MEETING:
-- ↓
-- Research the client's business
-- ↓
-- BEFORE THE MEETING:
-- ↓
-- Understand their industry
-- ↓
-- BEFORE THE MEETING:
-- ↓
-- Look at competitors
-- ↓
-- BEFORE THE MEETING:
-- ↓
-- Prepare question list
-- ↓
-- BEFORE THE MEETING:
-- ↓
-- Set up note-taking system
+1. BEFORE THE MEETING:
+2. Research the client's business
+3. BEFORE THE MEETING:
+4. Understand their industry
+5. BEFORE THE MEETING:
+6. Look at competitors
+7. BEFORE THE MEETING:
+8. Prepare question list
+9. BEFORE THE MEETING:
+10. Set up note-taking system
 
 ```mermaid
 flowchart TD
@@ -286,21 +271,14 @@ ACCEPTANCE CRITERIA:
 ```
 
 **Flow:**
-- 'Users should login'
-- ↓
-- Auth system (OAuth/JWT/Session)
-- ↓
-- 'Show dashboard'
-- ↓
-- Real-time or cached data?
-- ↓
-- 'Process payments'
-- ↓
-- Payment gateway integration
-- ↓
-- 'Send notifications'
-- ↓
-- Email/SMS/Push/In-app?
+1. 'Users should login'
+2. Auth system (OAuth/JWT/Session)
+3. 'Show dashboard'
+4. Real-time or cached data?
+5. 'Process payments'
+6. Payment gateway integration
+7. 'Send notifications'
+8. Email/SMS/Push/In-app?
 
 ```mermaid
 flowchart LR
@@ -400,19 +378,13 @@ Date: [Date]
 ```
 
 **Flow:**
-- USER STORY: Account Balance View
-- ↓
-- AS A bank customer
-- ↓
-- I WANT TO see my account balance
-- ↓
-- SO THAT I can track my finances
-- ↓
-- ACCEPTANCE CRITERIA:
-- ↓
-- - Given I am logged in
-- ↓
-- - When I open the dashboard
+1. USER STORY: Account Balance View
+2. AS A bank customer
+3. I WANT TO see my account balance
+4. SO THAT I can track my finances
+5. ACCEPTANCE CRITERIA:
+6. - Given I am logged in
+7. - When I open the dashboard
 
 ```mermaid
 flowchart TD
@@ -472,19 +444,13 @@ KEY INSIGHT: Even a command-line tool has UX!
 ```
 
 **Flow:**
-- UX (User Experience) UI (User Interface)
-- ↓
-- How it WORKS How it LOOKS
-- ↓
-- User journey Colors, fonts
-- ↓
-- Information architecture Buttons, icons
-- ↓
-- Interaction design Visual hierarchy
-- ↓
-- Usability Aesthetics
-- ↓
-- APPLIES TO: APPLIES TO:
+1. UX (User Experience) UI (User Interface)
+2. How it WORKS How it LOOKS
+3. User journey Colors, fonts
+4. Information architecture Buttons, icons
+5. Interaction design Visual hierarchy
+6. Usability Aesthetics
+7. APPLIES TO: APPLIES TO:
 
 ```mermaid
 flowchart TD
@@ -760,29 +726,18 @@ ENTITIES FOR A FINANCE APPLICATION:
 ```
 
 **Flow:**
-- 1. IDENTIFY ENTITIES
-- ↓
-- What 'things' exist in the system?
-- ↓
-- 2. DEFINE ATTRIBUTES
-- ↓
-- What information about each thing?
-- ↓
-- 3. ESTABLISH RELATIONSHIPS
-- ↓
-- How do things relate to each other?
-- ↓
-- 4. NORMALIZE
-- ↓
-- Reduce redundancy, ensure integrity
-- ↓
-- 5. DENORMALIZE (if needed)
-- ↓
-- Optimize for read performance
-- ↓
-- 6. INDEX
-- ↓
-- Speed up frequent queries
+1. 1. IDENTIFY ENTITIES
+2. What 'things' exist in the system?
+3. 2. DEFINE ATTRIBUTES
+4. What information about each thing?
+5. 3. ESTABLISH RELATIONSHIPS
+6. How do things relate to each other?
+7. 4. NORMALIZE
+8. Reduce redundancy, ensure integrity
+9. 5. DENORMALIZE (if needed)
+10. Optimize for read performance
+11. 6. INDEX
+12. Speed up frequent queries
 
 ```mermaid
 flowchart TD

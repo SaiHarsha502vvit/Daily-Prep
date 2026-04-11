@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](00_INDEX.md) | [< Prev](27_Python_SQL_Visualization.md) | [Next >](29_Data_Analytics_Advanced.md)
+**Navigation**: [Back to Index](00_INDEX.md) | [< Prev](27_Python_SQL_Visualization.md) | [Next >](29_Data_Analytics_Advanced.md)
 
 # Chapter 28 — Data Analytics: Intermediate
 
@@ -399,25 +399,25 @@ ORDER BY total_revenue DESC;
 
 
 
-> 🔬 **Section Challenge — Part 5 — Customer Lifetime Value (CLV)**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — Part 5 — Customer Lifetime Value (CLV)**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## Part 6 — Churn Analysis
 
@@ -576,4 +576,4 @@ ORDER BY date;
 
 ---
 
-> **Navigation**: [Back to Index](00_INDEX.md) | [< Prev](27_Python_SQL_Visualization.md) | [Next >](29_Data_Analytics_Advanced.md)
+**Navigation**: [Back to Index](00_INDEX.md) | [< Prev](27_Python_SQL_Visualization.md) | [Next >](29_Data_Analytics_Advanced.md)

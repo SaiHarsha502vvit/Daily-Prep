@@ -118,35 +118,21 @@ public boolean isIsomorphicMap(String s, String t) {
 ```
 
 **Flow:**
-- WORD PATTERN
-- ↓
-- Check if string follows same pattern as given pattern.
-- ↓
-- Pattern char
-- ↓
-- word must be bijective (one-to-one).
-- ↓
-- Pattern char
-- ↓
-- word must be bijective (one-to-one).
-- ↓
-- Input: pattern = 'abba', s = 'dog cat cat dog'
-- ↓
-- Output: true
-- ↓
-- Explanation: a
-- ↓
-- dog, b
-- ↓
-- cat
-- ↓
-- Explanation: a
-- ↓
-- dog, b
-- ↓
-- cat
-- ↓
-- Input: pattern = 'abba', s = 'dog cat cat fish'
+1. WORD PATTERN
+2. Check if string follows same pattern as given pattern.
+3. Pattern char
+4. word must be bijective (one-to-one).
+5. Pattern char
+6. word must be bijective (one-to-one).
+7. Input: pattern = 'abba', s = 'dog cat cat dog'
+8. Output: true
+9. Explanation: a
+10. dog, b
+11. cat
+12. Explanation: a
+13. dog, b
+14. cat
+15. Input: pattern = 'abba', s = 'dog cat cat fish'
 
 ```mermaid
 flowchart TD
@@ -248,19 +234,13 @@ public boolean wordPattern(String pattern, String s) {
 ```
 
 **Flow:**
-- WORD PATTERN II
-- ↓
-- (LeetCode Premium - Full Problem Description)
-- ↓
-- between a letter in pattern and a non-empty substring i
-- ↓
-- You must determine where words begin and end.
-- ↓
-- Example 1:
-- ↓
-- Input: pattern = 'abab', s = 'redblueredblue'
-- ↓
-- Output: true
+1. WORD PATTERN II
+2. (LeetCode Premium - Full Problem Description)
+3. between a letter in pattern and a non-empty substring i
+4. You must determine where words begin and end.
+5. Example 1:
+6. Input: pattern = 'abab', s = 'redblueredblue'
+7. Output: true
 
 ```mermaid
 flowchart TD
@@ -372,19 +352,13 @@ private boolean backtrack(String pattern, int pIdx, String s, int sIdx,
 ```
 
 **Flow:**
-- FIND ALL ISOMORPHIC PAIRS
-- ↓
-- (Custom Premium-Style Problem)
-- ↓
-- Example 1:
-- ↓
-- Output: [['egg', 'add'], ['foo'], ['bar', 'abc', 'xyz']
-- ↓
-- ['paper', 'title']]
-- ↓
-- Explanation:
-- ↓
-- - 'egg' ↔ 'add' (pattern: 011)
+1. FIND ALL ISOMORPHIC PAIRS
+2. (Custom Premium-Style Problem)
+3. Example 1:
+4. Output: [['egg', 'add'], ['foo'], ['bar', 'abc', 'xyz']
+5. ['paper', 'title']]
+6. Explanation:
+7. - 'egg' ↔ 'add' (pattern: 011)
 
 ```mermaid
 flowchart TD
@@ -468,17 +442,12 @@ private String getPattern(String s) {
 ```
 
 **Flow:**
-- VALID ANAGRAM
-- ↓
-- Anagram = same characters, same frequency, different or
-- ↓
-- Input: s = 'anagram', t = 'nagaram'
-- ↓
-- Output: true
-- ↓
-- Input: s = 'rat', t = 'car'
-- ↓
-- Output: false
+1. VALID ANAGRAM
+2. Anagram = same characters, same frequency, different or
+3. Input: s = 'anagram', t = 'nagaram'
+4. Output: true
+5. Input: s = 'rat', t = 'car'
+6. Output: false
 
 ```mermaid
 flowchart TD
@@ -540,19 +509,13 @@ public boolean isAnagram(String s, String t) {
 ```
 
 **Flow:**
-- FIND ALL ANAGRAMS IN A STRING
-- ↓
-- Find all start indices of p's anagrams in s.
-- ↓
-- Input: s = 'cbaebabacd', p = 'abc'
-- ↓
-- Output: [0, 6]
-- ↓
-- Explanation:
-- ↓
-- Index 0: 'cba' is anagram of 'abc'
-- ↓
-- Index 6: 'bac' is anagram of 'abc'
+1. FIND ALL ANAGRAMS IN A STRING
+2. Find all start indices of p's anagrams in s.
+3. Input: s = 'cbaebabacd', p = 'abc'
+4. Output: [0, 6]
+5. Explanation:
+6. Index 0: 'cba' is anagram of 'abc'
+7. Index 6: 'bac' is anagram of 'abc'
 
 ```mermaid
 flowchart TD
@@ -659,19 +622,13 @@ public List<Integer> findAnagrams(String s, String p) {
 ```
 
 **Flow:**
-- STROBOGRAMMATIC NUMBER
-- ↓
-- (LeetCode Premium - Full Problem Description)
-- ↓
-- 180 degrees (looked at upside down).
-- ↓
-- strobogrammatic number.
-- ↓
-- Valid strobogrammatic digits:
-- ↓
-- - 0 rotated is 0
-- ↓
-- - 1 rotated is 1
+1. STROBOGRAMMATIC NUMBER
+2. (LeetCode Premium - Full Problem Description)
+3. 180 degrees (looked at upside down).
+4. strobogrammatic number.
+5. Valid strobogrammatic digits:
+6. - 0 rotated is 0
+7. - 1 rotated is 1
 
 ```mermaid
 flowchart TD
@@ -761,19 +718,13 @@ public boolean isStrobogrammatic(String num) {
 ```
 
 **Flow:**
-- STROBOGRAMMATIC NUMBER II
-- ↓
-- (LeetCode Premium - Full Problem Description)
-- ↓
-- when rotated 180 degrees.
-- ↓
-- You may return the answer in any order.
-- ↓
-- Example 1:
-- ↓
-- Input: n = 2
-- ↓
-- Output: ['11', '69', '88', '96']
+1. STROBOGRAMMATIC NUMBER II
+2. (LeetCode Premium - Full Problem Description)
+3. when rotated 180 degrees.
+4. You may return the answer in any order.
+5. Example 1:
+6. Input: n = 2
+7. Output: ['11', '69', '88', '96']
 
 ```mermaid
 flowchart TD
@@ -849,29 +800,18 @@ private List<String> helper(int n, int finalLength) {
 ```
 
 **Flow:**
-- VALID PALINDROME II
-- ↓
-- at most one character.
-- ↓
-- Input: s = 'abca'
-- ↓
-- Output: true
-- ↓
-- Explanation: Delete 'c'
-- ↓
-- 'aba' or delete 'b'
-- ↓
-- 'aca'
-- ↓
-- Explanation: Delete 'c'
-- ↓
-- 'aba' or delete 'b'
-- ↓
-- 'aca'
-- ↓
-- Input: s = 'abc'
-- ↓
-- Output: false
+1. VALID PALINDROME II
+2. at most one character.
+3. Input: s = 'abca'
+4. Output: true
+5. Explanation: Delete 'c'
+6. 'aba' or delete 'b'
+7. 'aca'
+8. Explanation: Delete 'c'
+9. 'aba' or delete 'b'
+10. 'aca'
+11. Input: s = 'abc'
+12. Output: false
 
 ```mermaid
 flowchart TD
@@ -965,19 +905,13 @@ private boolean isPalindrome(String s, int left, int right) {
 ```
 
 **Flow:**
-- PALINDROME PERMUTATION
-- ↓
-- (LeetCode Premium - Full Problem Description)
-- ↓
-- form a palindrome.
-- ↓
-- Example 1:
-- ↓
-- Input: s = 'code'
-- ↓
-- Output: false
-- ↓
-- Explanation: No permutation of 'code' is a palindrome.
+1. PALINDROME PERMUTATION
+2. (LeetCode Premium - Full Problem Description)
+3. form a palindrome.
+4. Example 1:
+5. Input: s = 'code'
+6. Output: false
+7. Explanation: No permutation of 'code' is a palindrome.
 
 ```mermaid
 flowchart TD

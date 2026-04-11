@@ -55,19 +55,13 @@ CLIENT (Browser/Mobile/Postman)
 ```
 
 **Flow:**
-- CLIENT (Browser/Mobile/Postman)
-- ↓
-- ↓ HTTP Request
-- ↓
-- @RestController ← Handles HTTP, validates input
-- ↓
-- ProductController Returns JSON responses
-- ↓
-- @Service ← Business logic
-- ↓
-- ProductService Validation rules, calculations
-- ↓
-- @Repository ← Data access
+1. CLIENT (Browser/Mobile/Postman)
+2. ↓ HTTP Request
+3. @RestController ← Handles HTTP, validates input
+4. ProductController Returns JSON responses
+5. @Service ← Business logic
+6. ProductService Validation rules, calculations
+7. @Repository ← Data access
 
 ```mermaid
 flowchart TD
@@ -169,19 +163,13 @@ public class ProductController {
 ```
 
 **Flow:**
-- HTTP CRUD URL Response Code
-- ↓
-- GET Read /products 200 OK
-- ↓
-- GET Read one /products/1 200 or 404
-- ↓
-- POST Create /products 201 Created
-- ↓
-- PUT Full update /products/1 200 OK
-- ↓
-- PATCH Partial /products/1 200 OK
-- ↓
-- DELETE Delete /products/1 204 No Content
+1. HTTP CRUD URL Response Code
+2. GET Read /products 200 OK
+3. GET Read one /products/1 200 or 404
+4. POST Create /products 201 Created
+5. PUT Full update /products/1 200 OK
+6. PATCH Partial /products/1 200 OK
+7. DELETE Delete /products/1 204 No Content
 
 ```mermaid
 flowchart TD
@@ -496,19 +484,13 @@ Spring Boot:
 ```
 
 **Flow:**
-- UNION/CASE
-- ↓
-- Window Functions
-- ↓
-- LAG/LEAD
-- ↓
-- CTEs
-- ↓
-- Controller
-- ↓
-- Service
-- ↓
-- Repository layers
+1. UNION/CASE
+2. Window Functions
+3. LAG/LEAD
+4. CTEs
+5. Controller
+6. Service
+7. Repository layers
 
 ```mermaid
 flowchart TD

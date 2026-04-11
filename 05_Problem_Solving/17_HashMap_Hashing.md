@@ -1,13 +1,13 @@
-> **Navigation**: [< Previous](16_Heap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_BitManipulation.md)
+**Navigation**: [< Previous](16_Heap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_BitManipulation.md)
 
-> **Problems 17/22** | [Prev](16_Heap.md) | [Index](../00_MASTER_INDEX.md) | [Next](18_BitManipulation.md)
+**Problems 17/22** | [Prev](16_Heap.md) | [Index](../00_MASTER_INDEX.md) | [Next](18_BitManipulation.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — HashMap & Hashing
 
-> **Which HashMap pattern should I use?**
->
+**Which HashMap pattern should I use?**
+
 
 | Signal / Problem Type | Pattern | Core Idea |
 |---|---|---|
@@ -18,22 +18,22 @@
 | `check if element seen before` | **HashSet visited** | `set.add(x)` → false if already present |
 | `find duplicates in O(n) O(1) space` | **In-place Hashing** | Negate at index `|val|-1` as visited marker |
 
->
-> **The Golden Rule:**
-> ```
-> "Brute force is O(n²)?  → Inner loop is a SEARCH → Replace with HashMap → O(n)"
->
-> Key reason:
->   Brute Two-Sum: for i → for j (search) → O(n²)
->   HashMap Two-Sum: for i → map.get(target-num) → O(n)
->
-> ⚠️ Java mod pitfall: -7 % 5 = -2 in Java. Fix: ((n % k) + k) % k
-> ⚠️ Java PQ is MIN-HEAP. Max-heap: new PriorityQueue<>(Comparator.reverseOrder())
-> ```
->
-> 📖 **Mental Model:** [04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md)
-> 📖 **Space-Time Tradeoff:** [12_Space_Time_Tradeoffs.md](../14_Mental_Models/12_Space_Time_Tradeoffs.md)
-> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**The Golden Rule:**
+```
+"Brute force is O(n²)?  → Inner loop is a SEARCH → Replace with HashMap → O(n)"
+
+Key reason:
+  Brute Two-Sum: for i → for j (search) → O(n²)
+  HashMap Two-Sum: for i → map.get(target-num) → O(n)
+
+⚠️ Java mod pitfall: -7 % 5 = -2 in Java. Fix: ((n % k) + k) % k
+⚠️ Java PQ is MIN-HEAP. Max-heap: new PriorityQueue<>(Comparator.reverseOrder())
+```
+
+📖 **Mental Model:** [04_Array_String_Thinking.md](../14_Mental_Models/04_Array_String_Thinking.md)
+📖 **Space-Time Tradeoff:** [12_Space_Time_Tradeoffs.md](../14_Mental_Models/12_Space_Time_Tradeoffs.md)
+📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
@@ -47,138 +47,138 @@
 ## PART 0: WHY HashMap — MIT/KTH STYLE
 
 
-> WHY HASHMAP? — THE O(1) LOOKUP ENGINE
->
-> WHY: HashMap reduces "search/lookup" from O(n) to O(1) average.
-> The most frequently used data structure in interviews — appears in ~40%
-> of solutions as a helper structure. If you're stuck, ask: "Would a
-> HashMap give me O(1) lookup for something I'm repeatedly searching?"
->
->
-> FORMAL DEFINITION (MIT 6.006 / KTH DD2350):
->
-> A hash function h: U → {0, 1, ..., m-1} maps a universe U of keys
-> to m slots (buckets).
->
-> Under Simple Uniform Hashing Assumption (SUHA):
-> Expected lookup time = O(1 + α)
-> where α = n/m is the load factor
-> n = number of stored elements, m = number of slots
->
-> Collision resolution:
-> - Chaining: each slot holds a linked list → E[search] = O(1 + α)
-> - Open addressing (linear/quadratic probing, double hashing)
-> - Cuckoo hashing: worst-case O(1) lookup, amortized O(1) insert
->
-> Amortized analysis of dynamic resizing:
-> When α exceeds threshold, double table size and rehash all elements.
-> By aggregate method: n insertions cost O(n) + O(n/2) + O(n/4) + ...
-> = O(2n) total → O(1) amortized per insertion.
->
->
-> FIVE CORE PATTERNS:
->
-> 1. FREQUENCY COUNT: map.merge(key, 1, Integer::sum)
-> → Count occurrences of each element. Foundation for Top-K, duplicates.
->
-> 2. TWO-SUM PATTERN: Store complement, lookup in O(1)
-> → "Does target - arr[i] exist?" Check map before/after inserting.
->
-> 3. PREFIX SUM + HASHMAP: "How many subarrays sum to K?"
-> → Store prefix sum frequencies. If prefixSum[j] - K was seen before,
-> a valid subarray exists. THE most important medium-level pattern.
->
-> 4. GROUPING: Group elements by some computed property
-> → Anagrams by sorted key, numbers by remainder, points by slope.
-> → map.computeIfAbsent(key, k -> new ArrayList<>()).add(value)
->
-> 5. SEEN/VISITED: Use HashSet as O(1) membership test
-> → Cycle detection, duplicate detection, sequence problems.
->
->
-> CRITICAL INSIGHT:
-> "If brute force is O(n²) because of nested search, HashMap makes the
-> inner search O(1) → total O(n)."
->
-> Brute force Two-Sum: for each i, for each j → O(n²)
-> HashMap Two-Sum:     for each i, lookup complement → O(n)
->
-> This is THE fundamental optimization principle for HashMap problems.
->
->
-> WHY NOT HashMap for sliding window with negative numbers?
->
-> Sliding window assumes: expanding window increases sum, shrinking
-> decreases it (monotonicity). With negative numbers, this breaks —
-> adding an element can decrease the sum. Therefore:
-> - Subarray sum = K with positives only → sliding window O(n)
-> - Subarray sum = K with negatives → prefix sum + HashMap O(n)
->
->
-> JAVA HashMap INTERNALS:
->
-> - Bucket array of Node<K,V> (linked list nodes)
-> - When chain length > 8 AND table size ≥ 64 → treeify to Red-Black Tree
-> - When chain length < 6 → untreeify back to linked list
-> - Default capacity: 16, load factor: 0.75
-> - Rehash: doubles capacity when size > capacity × loadFactor
-> - Hash perturbation: h = key.hashCode() ^ (h >>> 16)
-> Spreads higher bits into lower bits (power-of-2 table uses low bits)
->
->
-> COMMON MISTAKES (memorize these):
->
-> 1. hashCode/equals CONTRACT: If a.equals(b), then
-> a.hashCode() == b.hashCode(). Override BOTH or NEITHER.
-> Violating this → HashMap silently loses entries.
->
-> 2. ConcurrentModificationException: Never modify a HashMap while
-> iterating with for-each. Use Iterator.remove() or collect keys first.
->
-> 3. null key/value: HashMap allows ONE null key and multiple null values.
-> Hashtable/ConcurrentHashMap do NOT allow null. NPE surprises!
->
-> 4. Integer cache: Integer.valueOf caches -128 to 127. Outside this range,
-> new Integer(200) == new Integer(200) is FALSE. Use .equals() always.
->
-> 5. getOrDefault vs putIfAbsent:
-> - getOrDefault(key, 0): returns default but does NOT insert
-> - putIfAbsent(key, val): inserts only if key absent
-> - merge(key, 1, Integer::sum): best for frequency counting
->
-> 6. HashMap vs TreeMap: Need ordering? Use TreeMap O(log n).
-> Need O(1)? Use HashMap. Need insertion order? Use LinkedHashMap.
->
->
-> EXPECTED OUTPUTS:
->
-> After this section you should be able to:
-> □ Solve any "find pair/subarray" problem in O(n) using HashMap
-> □ Implement prefix sum + HashMap for subarray sum problems
-> □ Design O(1) data structures (LRU Cache, RandomizedSet)
-> □ Recognize when HashMap is the hidden helper in a problem
-> □ Handle Java HashMap edge cases in production code
->
+WHY HASHMAP? — THE O(1) LOOKUP ENGINE
+
+WHY: HashMap reduces "search/lookup" from O(n) to O(1) average.
+The most frequently used data structure in interviews — appears in ~40%
+of solutions as a helper structure. If you're stuck, ask: "Would a
+HashMap give me O(1) lookup for something I'm repeatedly searching?"
+
+
+FORMAL DEFINITION (MIT 6.006 / KTH DD2350):
+
+A hash function h: U → {0, 1, ..., m-1} maps a universe U of keys
+to m slots (buckets).
+
+Under Simple Uniform Hashing Assumption (SUHA):
+Expected lookup time = O(1 + α)
+where α = n/m is the load factor
+n = number of stored elements, m = number of slots
+
+Collision resolution:
+- Chaining: each slot holds a linked list → E[search] = O(1 + α)
+- Open addressing (linear/quadratic probing, double hashing)
+- Cuckoo hashing: worst-case O(1) lookup, amortized O(1) insert
+
+Amortized analysis of dynamic resizing:
+When α exceeds threshold, double table size and rehash all elements.
+By aggregate method: n insertions cost O(n) + O(n/2) + O(n/4) + ...
+= O(2n) total → O(1) amortized per insertion.
+
+
+FIVE CORE PATTERNS:
+
+1. FREQUENCY COUNT: map.merge(key, 1, Integer::sum)
+→ Count occurrences of each element. Foundation for Top-K, duplicates.
+
+2. TWO-SUM PATTERN: Store complement, lookup in O(1)
+→ "Does target - arr[i] exist?" Check map before/after inserting.
+
+3. PREFIX SUM + HASHMAP: "How many subarrays sum to K?"
+→ Store prefix sum frequencies. If prefixSum[j] - K was seen before,
+a valid subarray exists. THE most important medium-level pattern.
+
+4. GROUPING: Group elements by some computed property
+→ Anagrams by sorted key, numbers by remainder, points by slope.
+→ map.computeIfAbsent(key, k -> new ArrayList<>()).add(value)
+
+5. SEEN/VISITED: Use HashSet as O(1) membership test
+→ Cycle detection, duplicate detection, sequence problems.
+
+
+CRITICAL INSIGHT:
+"If brute force is O(n²) because of nested search, HashMap makes the
+inner search O(1) → total O(n)."
+
+Brute force Two-Sum: for each i, for each j → O(n²)
+HashMap Two-Sum:     for each i, lookup complement → O(n)
+
+This is THE fundamental optimization principle for HashMap problems.
+
+
+WHY NOT HashMap for sliding window with negative numbers?
+
+Sliding window assumes: expanding window increases sum, shrinking
+decreases it (monotonicity). With negative numbers, this breaks —
+adding an element can decrease the sum. Therefore:
+- Subarray sum = K with positives only → sliding window O(n)
+- Subarray sum = K with negatives → prefix sum + HashMap O(n)
+
+
+JAVA HashMap INTERNALS:
+
+- Bucket array of Node<K,V> (linked list nodes)
+- When chain length > 8 AND table size ≥ 64 → treeify to Red-Black Tree
+- When chain length < 6 → untreeify back to linked list
+- Default capacity: 16, load factor: 0.75
+- Rehash: doubles capacity when size > capacity × loadFactor
+- Hash perturbation: h = key.hashCode() ^ (h >>> 16)
+Spreads higher bits into lower bits (power-of-2 table uses low bits)
+
+
+COMMON MISTAKES (memorize these):
+
+1. hashCode/equals CONTRACT: If a.equals(b), then
+a.hashCode() == b.hashCode(). Override BOTH or NEITHER.
+Violating this → HashMap silently loses entries.
+
+2. ConcurrentModificationException: Never modify a HashMap while
+iterating with for-each. Use Iterator.remove() or collect keys first.
+
+3. null key/value: HashMap allows ONE null key and multiple null values.
+Hashtable/ConcurrentHashMap do NOT allow null. NPE surprises!
+
+4. Integer cache: Integer.valueOf caches -128 to 127. Outside this range,
+new Integer(200) == new Integer(200) is FALSE. Use .equals() always.
+
+5. getOrDefault vs putIfAbsent:
+- getOrDefault(key, 0): returns default but does NOT insert
+- putIfAbsent(key, val): inserts only if key absent
+- merge(key, 1, Integer::sum): best for frequency counting
+
+6. HashMap vs TreeMap: Need ordering? Use TreeMap O(log n).
+Need O(1)? Use HashMap. Need insertion order? Use LinkedHashMap.
+
+
+EXPECTED OUTPUTS:
+
+After this section you should be able to:
+□ Solve any "find pair/subarray" problem in O(n) using HashMap
+□ Implement prefix sum + HashMap for subarray sum problems
+□ Design O(1) data structures (LRU Cache, RandomizedSet)
+□ Recognize when HashMap is the hidden helper in a problem
+□ Handle Java HashMap edge cases in production code
+
 
 
 ---
 
 
 
-> 🔬 **Section Challenge — PART 0: WHY HashMap — MIT/KTH STYLE**
->
-> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-> <details><summary>Answer</summary>
->
-> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-> <details><summary>Answer</summary>
->
-> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-> </details>
->
+🔬 **Section Challenge — PART 0: WHY HashMap — MIT/KTH STYLE**
+
+**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+<details><summary>Answer</summary>
+
+Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+</details>
+
+**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+<details><summary>Answer</summary>
+
+Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+</details>
+
 
 ## 15.1 FREQUENCY COUNTING (Easy–Medium)
 
@@ -228,25 +228,16 @@ JAVA CODE:
 ```
 
 **Flow:**
-- Brute force checks all j ≠ i
-- ↓
-- O(n²).
-- ↓
-- HashMap stores {value
-- ↓
-- index} so complement lookup is O(1)
-- ↓
-- total O(n).
-- ↓
-- 1. Create HashMap<Integer, Integer> map (value
-- ↓
-- index)
-- ↓
-- Invariant: at iteration i, map contains {nums[0]
-- ↓
-- 0, nums[1]
-- ↓
-- 1, ..., nums[i-1]
+1. Brute force checks all j ≠ i
+2. O(n²).
+3. HashMap stores {value
+4. index} so complement lookup is O(1)
+5. total O(n).
+6. 1. Create HashMap<Integer, Integer> map (value
+7. index)
+8. Invariant: at iteration i, map contains {nums[0]
+9. 0, nums[1]
+10. 1, ..., nums[i-1]
 
 ```mermaid
 flowchart TD
@@ -342,9 +333,8 @@ JAVA CODE:
 ```
 
 **Flow:**
-- 3. Use this as HashMap key
-- ↓
-- groups anagrams without O(K log K) sort
+1. 3. Use this as HashMap key
+2. groups anagrams without O(K log K) sort
 
 ```mermaid
 flowchart LR
@@ -442,25 +432,16 @@ JAVA CODE:
 ```
 
 **Flow:**
-- If the element at that index is already negative
-- ↓
-- we've seen this value before
-- ↓
-- duplicate!
-- ↓
-- b. If nums[idx] < 0: // already visited
-- ↓
-- duplicate
-- ↓
-- • If nums[v-1] < 0: v was seen before (by invarian
-- ↓
-- v is a duplicate ✓
-- ↓
-- • If nums[v-1] > 0: v not seen before
-- ↓
-- negate to mark
-- ↓
-- invariant maintained ✓
+1. If the element at that index is already negative
+2. we've seen this value before
+3. duplicate!
+4. b. If nums[idx] < 0: // already visited
+5. duplicate
+6. • If nums[v-1] < 0: v was seen before (by invarian
+7. v is a duplicate ✓
+8. • If nums[v-1] > 0: v not seen before
+9. negate to mark
+10. invariant maintained ✓
 
 ```mermaid
 flowchart TD
@@ -551,9 +532,8 @@ APPROACH 3: HashSet
 ```
 
 **Flow:**
-- XOR all indices [0..n] with all array values. Pair
-- ↓
-- result is missing.
+1. XOR all indices [0..n] with all array values. Pair
+2. result is missing.
 
 ```mermaid
 flowchart LR
@@ -580,17 +560,12 @@ APPROACH: Cycle detection with HashSet
 ```
 
 **Flow:**
-- 2. If result = 1
-- ↓
-- happy. If result seen before
-- ↓
-- cycle
-- ↓
-- not happy.
-- ↓
-- The cycle always includes 4
-- ↓
-- can also check for 4.
+1. 2. If result = 1
+2. happy. If result seen before
+3. cycle
+4. not happy.
+5. The cycle always includes 4
+6. can also check for 4.
 
 ```mermaid
 flowchart LR
@@ -638,8 +613,8 @@ APPROACH: Vertical scan (no HashMap needed)
 
 ## 15.2 PREFIX SUM + HASHMAP (Medium–Hard)
 
-> **This is the single most important pattern in this section.**
-> Master #274 and #275 — they appear in interviews constantly.
+**This is the single most important pattern in this section.**
+Master #274 and #275 — they appear in interviews constantly.
 
 ---
 
@@ -901,9 +876,8 @@ VARIANTS:
 ```
 
 **Flow:**
-- • Largest subarray with equal 0s and 1s (replace 0
-- ↓
-- -1, find longest 0-sum)
+1. • Largest subarray with equal 0s and 1s (replace 0
+2. -1, find longest 0-sum)
 
 ```mermaid
 flowchart LR
@@ -1009,8 +983,8 @@ VARIANTS:
 
 
 
-> 🔬 **Section Challenge — 15.2 PREFIX SUM + HASHMAP (Medium–Hard)**
->>
+🔬 **Section Challenge — 15.2 PREFIX SUM + HASHMAP (Medium–Hard)**
+>
 
 ## #️⃣ 15.3 Design / Advanced Hashmap
 
@@ -1070,29 +1044,18 @@ JAVA CODE:
 ```
 
 **Flow:**
-- if val in map
-- ↓
-- return false
-- ↓
-- list.add(val), map.put(val, list.size()-1)
-- ↓
-- return true
-- ↓
-- if val not in map
-- ↓
-- return false
-- ↓
-- • insert: HashMap.put O(1), ArrayList.add O(1) amo
-- ↓
-- O(1)
-- ↓
-- HashMap.remove O(1), HashMap.put O(1)
-- ↓
-- O(1)
-- ↓
-- • getRandom: ArrayList.get O(1), Random.nextInt O(
-- ↓
-- O(1)
+1. if val in map
+2. return false
+3. list.add(val), map.put(val, list.size()-1)
+4. return true
+5. if val not in map
+6. return false
+7. • insert: HashMap.put O(1), ArrayList.add O(1) amo
+8. O(1)
+9. HashMap.remove O(1), HashMap.put O(1)
+10. O(1)
+11. • getRandom: ArrayList.get O(1), Random.nextInt O(
+12. O(1)
 
 ```mermaid
 flowchart TD
@@ -1163,9 +1126,8 @@ VARIANTS:
 ```
 
 **Flow:**
-- • Insert Delete GetRandom O(1) - Duplicates (LC 38
-- ↓
-- Set<Integer> of indices
+1. • Insert Delete GetRandom O(1) - Duplicates (LC 38
+2. Set<Integer> of indices
 
 ```mermaid
 flowchart LR
@@ -1232,29 +1194,18 @@ JAVA CODE:
 ```
 
 **Flow:**
-- Need O(1) lookup
-- ↓
-- HashMap.
-- ↓
-- Need O(1) insertion/removal at both ends + O(1) mo
-- ↓
-- Doubly Linked List.
-- ↓
-- if key not in map
-- ↓
-- return -1
-- ↓
-- • get: HashMap lookup O(1) + DLL move O(1)
-- ↓
-- O(1)
-- ↓
-- • put: HashMap lookup/insert O(1) + DLL add/remove
-- ↓
-- O(1)
-- ↓
-- Every access moves node to head
-- ↓
-- ordering is always correct. ∎
+1. Need O(1) lookup
+2. HashMap.
+3. Need O(1) insertion/removal at both ends + O(1) mo
+4. Doubly Linked List.
+5. if key not in map
+6. return -1
+7. • get: HashMap lookup O(1) + DLL move O(1)
+8. O(1)
+9. • put: HashMap lookup/insert O(1) + DLL add/remove
+10. O(1)
+11. Every access moves node to head
+12. ordering is always correct. ∎
 
 ```mermaid
 flowchart TD
@@ -1384,13 +1335,10 @@ APPROACH: In-place hashing (cyclic sort variant)
 ```
 
 **Flow:**
-- 2. Scan array: first index i where arr[i] ≠ i+1
-- ↓
-- answer is i+1
-- ↓
-- 3. If all correct
-- ↓
-- answer is n+1
+1. 2. Scan array: first index i where arr[i] ≠ i+1
+2. answer is i+1
+3. 3. If all correct
+4. answer is n+1
 
 ```mermaid
 flowchart LR
@@ -1406,20 +1354,20 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — ️⃣ 15.3 Design / Advanced Hashmap**
->
-> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-> <details><summary>Answer</summary>
->
-> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-> <details><summary>Answer</summary>
->
-> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-> </details>
->
+🔬 **Section Challenge — ️⃣ 15.3 Design / Advanced Hashmap**
+
+**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+<details><summary>Answer</summary>
+
+Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+</details>
+
+**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+<details><summary>Answer</summary>
+
+Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+</details>
+
 
 ## 📌 15.4 Hidden Gems
 
@@ -1438,19 +1386,13 @@ APPROACH: Stack + HashMap for bracket matching
 ```
 
 **Flow:**
-- 1. map = { ')'
-- ↓
-- '(', '}'
-- ↓
-- '{', ']'
-- ↓
-- '[' }
-- ↓
-- 2. For each char: if opening
-- ↓
-- push. If closing
-- ↓
-- pop and check match.
+1. 1. map = { ')'
+2. '(', '}'
+3. '{', ']'
+4. '[' }
+5. 2. For each char: if opening
+6. push. If closing
+7. pop and check match.
 
 ```mermaid
 flowchart TD
@@ -1485,27 +1427,17 @@ APPROACH: Two HashMaps for bijection
 ```
 
 **Flow:**
-- 1. map1: s[i]
-- ↓
-- t[i] (forward mapping)
-- ↓
-- 2. map2: t[i]
-- ↓
-- s[i] (reverse mapping)
-- ↓
-- 4. If any conflict
-- ↓
-- not isomorphic.
-- ↓
-- Why TWO maps? 'ab'
-- ↓
-- 'aa' should be false.
-- ↓
-- map1 alone would accept it (a
-- ↓
-- a, b
-- ↓
-- a), but map2 catches it (a
+1. 1. map1: s[i]
+2. t[i] (forward mapping)
+3. 2. map2: t[i]
+4. s[i] (reverse mapping)
+5. 4. If any conflict
+6. not isomorphic.
+7. Why TWO maps? 'ab'
+8. 'aa' should be false.
+9. map1 alone would accept it (a
+10. a, b
+11. a), but map2 catches it (a
 
 ```mermaid
 flowchart TD
@@ -1593,19 +1525,13 @@ APPROACH: DLL + HashMap
 ```
 
 **Flow:**
-- HASHMAP COMPLEXITY REFERENCE
-- ↓
-- Operation Average Worst Notes
-- ↓
-- HashMap.get(key) O(1) O(log n) Tree buckets in Java8
-- ↓
-- HashMap.remove(key) O(1) O(log n) Tree buckets
-- ↓
-- HashMap.containsKey(key) O(1) O(log n)
-- ↓
-- HashMap.containsValue(val) O(n) O(n) Full scan!
-- ↓
-- HashSet.add/remove/contains O(1) O(log n) Same as HashM
+1. HASHMAP COMPLEXITY REFERENCE
+2. Operation Average Worst Notes
+3. HashMap.get(key) O(1) O(log n) Tree buckets in Java8
+4. HashMap.remove(key) O(1) O(log n) Tree buckets
+5. HashMap.containsKey(key) O(1) O(log n)
+6. HashMap.containsValue(val) O(n) O(n) Full scan!
+7. HashSet.add/remove/contains O(1) O(log n) Same as HashM
 
 ```mermaid
 flowchart TD
@@ -1630,20 +1556,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — ️⃣ Hashmap Complexity Cheat Sheet**
->
-> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-> <details><summary>Answer</summary>
->
-> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-> <details><summary>Answer</summary>
->
-> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-> </details>
->
+🔬 **Section Challenge — ️⃣ Hashmap Complexity Cheat Sheet**
+
+**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+<details><summary>Answer</summary>
+
+Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+</details>
+
+**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+<details><summary>Answer</summary>
+
+Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+</details>
+
 
 ## 📌 Mastery Checklist
 
@@ -1695,19 +1621,13 @@ flowchart TD
 ```
 
 **Flow:**
-- HASHMAP MASTERY CHECKLIST
-- ↓
-- FUNDAMENTALS:
-- ↓
-- □ Can derive O(1) expected time under SUHA
-- ↓
-- □ Know Java HashMap internals (buckets, treeify, rehash
-- ↓
-- □ Understand hashCode/equals contract
-- ↓
-- FREQUENCY COUNTING:
-- ↓
-- □ Two Sum — one-pass complement lookup
+1. HASHMAP MASTERY CHECKLIST
+2. FUNDAMENTALS:
+3. □ Can derive O(1) expected time under SUHA
+4. □ Know Java HashMap internals (buckets, treeify, rehash
+5. □ Understand hashCode/equals contract
+6. FREQUENCY COUNTING:
+7. □ Two Sum — one-pass complement lookup
 
 ```mermaid
 flowchart TD
@@ -1730,8 +1650,8 @@ flowchart TD
 
 ---
 
-> **End of Section 15** | Problems #266–#285 (20 problems)
-> [Prev: Heap & Priority Queue](16_Heap.md) | [Index](../00_MASTER_INDEX.md) | [Next: Bit Manipulation](18_BitManipulation.md)
+**End of Section 15** | Problems #266–#285 (20 problems)
+[Prev: Heap & Priority Queue](16_Heap.md) | [Index](../00_MASTER_INDEX.md) | [Next: Bit Manipulation](18_BitManipulation.md)
 
 
 ---

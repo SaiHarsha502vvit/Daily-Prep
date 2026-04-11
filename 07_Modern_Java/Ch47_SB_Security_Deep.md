@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](Ch46_SB_Database_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch46_SB_Database_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -236,14 +236,14 @@ public interface SecureDocumentRepository extends JpaRepository<Document, Long> 
 
 
 
-> 🔬 **Section Challenge — Chapter 5: Filtering Data by User Context**
->
-> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-> <details><summary>Answer</summary>
->
-> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-> </details>
->
+🔬 **Section Challenge — Chapter 5: Filtering Data by User Context**
+
+**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+<details><summary>Answer</summary>
+
+Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+</details>
+
 
 # SECTION 6: AUDIT LOGGING
 
@@ -519,14 +519,14 @@ public class User implements Auditable {
 
 
 
-> 🔬 **Section Challenge — Chapter 6: Tracking Who Did What, When**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 6: Tracking Who Did What, When**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # SECTION 7: SQL INJECTION PREVENTION
 
@@ -688,14 +688,14 @@ public class UserSearchService {
 
 
 
-> 🔬 **Section Challenge — Chapter 7: Preventing SQL Injection Attacks**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 7: Preventing SQL Injection Attacks**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # SECTION 8: ENCRYPTING SENSITIVE DATA
 
@@ -866,14 +866,14 @@ public class EncryptionService {
 ```yaml
 
 
-> 🔬 **Section Challenge — Chapter 9: Securing Database Connections**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 9: Securing Database Connections**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # application.yml
 
@@ -1068,19 +1068,13 @@ public class CredentialRotationService {
 ```
 
 **Flow:**
-- DATABASE SECURITY CHECKLIST
-- ↓
-- AUTHENTICATION & AUTHORIZATION
-- ↓
-- □ Implement RBAC (Role-Based Access Control)
-- ↓
-- □ Use fine-grained permissions
-- ↓
-- □ Implement method-level security (@PreAuthorize)
-- ↓
-- □ Apply row-level security where needed
-- ↓
-- PASSWORD SECURITY
+1. DATABASE SECURITY CHECKLIST
+2. AUTHENTICATION & AUTHORIZATION
+3. □ Implement RBAC (Role-Based Access Control)
+4. □ Use fine-grained permissions
+5. □ Implement method-level security (@PreAuthorize)
+6. □ Apply row-level security where needed
+7. PASSWORD SECURITY
 
 ```mermaid
 flowchart TD

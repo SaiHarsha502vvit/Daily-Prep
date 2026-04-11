@@ -1,6 +1,6 @@
 # 50. Java Date/Time API & Regex Mastery — The Complete Deep Dive
 
-> **Navigation**: [< Enums, Records & Sealed](Ch03_Enums_Records_Sealed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Generics & Exceptions >](Ch04_Generics_Exceptions.md)
+**Navigation**: [< Enums, Records & Sealed](Ch03_Enums_Records_Sealed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Generics & Exceptions >](Ch04_Generics_Exceptions.md)
 
 ---
 
@@ -130,14 +130,14 @@ Instant back = ldt.atZone(ZoneId.systemDefault()).toInstant();
 
 
 
-> 🔬 **Section Challenge — 3. LocalTime, LocalDateTime, Instant**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 3. LocalTime, LocalDateTime, Instant**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 4. ZonedDateTime — The Real-World Necessity
 
@@ -214,14 +214,14 @@ long hoursBetween = ChronoUnit.HOURS.between(startDateTime, endDateTime);
 
 
 
-> 🔬 **Section Challenge — 5. Duration and Period — Measuring Time Gaps**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 5. Duration and Period — Measuring Time Gaps**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 6. DateTimeFormatter — Parsing and Formatting
 
@@ -274,14 +274,14 @@ Common Format Patterns:
 
 
 
-> 🔬 **Section Challenge — 6. DateTimeFormatter — Parsing and Formatting**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 6. DateTimeFormatter — Parsing and Formatting**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 7. Practical Patterns — Real-World Code
 
@@ -399,14 +399,14 @@ ANCHORS & GROUPS:
 
 
 
-> 🔬 **Section Challenge — 8. Regex Fundamentals — The Building Blocks**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 8. Regex Fundamentals — The Building Blocks**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 9. Pattern and Matcher — Java's Regex Engine
 
@@ -451,14 +451,14 @@ Pattern.compile("\\d+").matcher("hello123world").find() → true (found 123)
 
 
 
-> 🔬 **Section Challenge — 9. Pattern and Matcher — Java's Regex Engine**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 9. Pattern and Matcher — Java's Regex Engine**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 10. Capturing Groups — Extracting Data
 
@@ -501,14 +501,14 @@ if (m.find()) {
 
 
 
-> 🔬 **Section Challenge — 10. Capturing Groups — Extracting Data**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 10. Capturing Groups — Extracting Data**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 11. Practical Regex Patterns
 
@@ -600,14 +600,14 @@ String text = "<p>Hello <b>World</b></p>".replaceAll("<[^>]+>", "");
 
 
 
-> 🔬 **Section Challenge — 12. String Methods with Regex**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 12. String Methods with Regex**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 13. Performance — Pattern Compilation Matters
 
@@ -704,27 +704,27 @@ List<String> numbers = List.of("hello", "123", "world", "456")
 ## 16. Interview Questions & Answers
 
 **Q: Why should we use java.time instead of java.util.Date?**
-> java.time classes are immutable (thread-safe), have clear naming, correct month indexing (1=Jan), handle timezones properly, and avoid the design flaws of Date/Calendar.
+java.time classes are immutable (thread-safe), have clear naming, correct month indexing (1=Jan), handle timezones properly, and avoid the design flaws of Date/Calendar.
 
 **Q: Difference between LocalDateTime and ZonedDateTime?**
-> LocalDateTime has no timezone info — it's "March 8, 2:30 PM" without saying WHERE. ZonedDateTime includes timezone, so "March 8, 2:30 PM IST" is unambiguous globally. Use ZonedDateTime for anything cross-timezone.
+LocalDateTime has no timezone info — it's "March 8, 2:30 PM" without saying WHERE. ZonedDateTime includes timezone, so "March 8, 2:30 PM IST" is unambiguous globally. Use ZonedDateTime for anything cross-timezone.
 
 **Q: How do you store dates in a database?**
-> Store as `Instant` (UTC timestamp) or `TIMESTAMP WITH TIME ZONE`. Convert to user's timezone only when displaying. Never store as String.
+Store as `Instant` (UTC timestamp) or `TIMESTAMP WITH TIME ZONE`. Convert to user's timezone only when displaying. Never store as String.
 
 **Q: What's the difference between `matches()` and `find()`?**
-> `matches()` checks if the ENTIRE string matches the pattern. `find()` searches for ANY occurrence within the string.
+`matches()` checks if the ENTIRE string matches the pattern. `find()` searches for ANY occurrence within the string.
 
 **Q: How do you avoid ReDoS?**
-> Avoid nested quantifiers like `(a+)+`. Use possessive quantifiers `(a++)` or atomic groups. Set timeouts. Test with long adversarial inputs. Use `Pattern.compile()` with static constants.
+Avoid nested quantifiers like `(a+)+`. Use possessive quantifiers `(a++)` or atomic groups. Set timeouts. Test with long adversarial inputs. Use `Pattern.compile()` with static constants.
 
 **Q: Write regex to validate a password with 8+ chars, 1 uppercase, 1 lowercase, 1 digit.**
-> `^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$` — uses three lookaheads to assert each requirement without consuming characters.
+`^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$` — uses three lookaheads to assert each requirement without consuming characters.
 
 ---
 
-> **Key Takeaway**: `java.time` is non-negotiable for modern Java — always use it.
-> Regex is a powerful tool but compile patterns once and watch for ReDoS.
-> Both are daily-use skills in any Java role.
+**Key Takeaway**: `java.time` is non-negotiable for modern Java — always use it.
+Regex is a powerful tool but compile patterns once and watch for ReDoS.
+Both are daily-use skills in any Java role.
 
-> **Navigation**: [< Enums, Records & Sealed](Ch03_Enums_Records_Sealed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Generics & Exceptions >](Ch04_Generics_Exceptions.md)
+**Navigation**: [< Enums, Records & Sealed](Ch03_Enums_Records_Sealed.md) | [Back to Index](../00_MASTER_INDEX.md) | [Generics & Exceptions >](Ch04_Generics_Exceptions.md)

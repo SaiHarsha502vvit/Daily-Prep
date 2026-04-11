@@ -1,16 +1,16 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch16_Concurrency_Advanced.md)
-> 🧠 **Mental Model**: See [Space-Time Tradeoffs](../14_Mental_Models/12_Space_Time_Tradeoffs.md) — concurrency trades complexity for throughput
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch16_Concurrency_Advanced.md)
+🧠 **Mental Model**: See [Space-Time Tradeoffs](../14_Mental_Models/12_Space_Time_Tradeoffs.md) — concurrency trades complexity for throughput
 
 ---
 
 # ⚡ Java Concurrency — Core Foundations
 
-> Why every production Java application needs concurrency mastery
+Why every production Java application needs concurrency mastery
 
 ## 🔑 Critical Context: ARM vs x86 Memory Ordering
 
-> [!WARNING]
-> **This is why code "works on your laptop but fails on AWS".** AWS Graviton (ARM) processors use a weaker memory model than Intel/AMD (x86). Code with subtle data races passes testing locally and silently corrupts in production.
+[!WARNING]
+**This is why code "works on your laptop but fails on AWS".** AWS Graviton (ARM) processors use a weaker memory model than Intel/AMD (x86). Code with subtle data races passes testing locally and silently corrupts in production.
 
 ```
 MEMORY ORDERING — The Hidden Difference:
@@ -48,34 +48,32 @@ REAL EXAMPLE:
   volatile creates a happens-before relationship guaranteed by JMM.
 ```
 
-> 🔬 **Challenge:** You add `volatile` to `ready` but not `value`. Does the ARM race disappear?
-> <details><summary>Answer</summary>
->
-> Yes! The `volatile` write to `ready = true` in Thread 1 creates a happens-before with the `volatile` read of `ready` in Thread 2. JMM guarantees: ALL writes before a volatile write are visible to any thread that subsequently reads that volatile variable. So `value = "Hello"` (which happens before `ready = true`) is visible to Thread 2 after it reads `ready = true`. Only ONE volatile is needed: the "gate" variable.
-> </details>
+🔬 **Challenge:** You add `volatile` to `ready` but not `value`. Does the ARM race disappear?
+<details><summary>Answer</summary>
+
+Yes! The `volatile` write to `ready = true` in Thread 1 creates a happens-before with the `volatile` read of `ready` in Thread 2. JMM guarantees: ALL writes before a volatile write are visible to any thread that subsequently reads that volatile variable. So `value = "Hello"` (which happens before `ready = true`) is visible to Thread 2 after it reads `ready = true`. Only ONE volatile is needed: the "gate" variable.
+</details>
 
 ---
 
 ## ❓ Why This Matters
 
+REALITY CHECK
 
-> REALITY CHECK
->
-> Your REST API gets 1000 requests/second. Each request = 1 thread.
-> If each thread takes 200ms, you need 200 threads running simultaneously.
->
-> Without understanding concurrency:
-> ❌ Race conditions corrupt data
-> ❌ Deadlocks freeze your server
-> ❌ Thread leaks crash your JVM
-> ❌ You can't debug "works locally, fails in prod" issues
->
-> With mastery:
-> ✅ You write thread-safe code by default
-> ✅ You choose the right concurrency tool for each problem
-> ✅ You debug production issues others can't
-> ✅ You design systems that scale
+Your REST API gets 1000 requests/second. Each request = 1 thread.
+If each thread takes 200ms, you need 200 threads running simultaneously.
 
+Without understanding concurrency:
+❌ Race conditions corrupt data
+❌ Deadlocks freeze your server
+❌ Thread leaks crash your JVM
+❌ You can't debug "works locally, fails in prod" issues
+
+With mastery:
+✅ You write thread-safe code by default
+✅ You choose the right concurrency tool for each problem
+✅ You debug production issues others can't
+✅ You design systems that scale
 
 ---
 
@@ -119,19 +117,13 @@ REAL EXAMPLE:
 ```
 
 **Flow:**
-- PROCESS vs THREAD — The Apartment Analogy
-- ↓
-- PROCESS = An apartment
-- ↓
-- - Isolated from other apartments
-- ↓
-- - Expensive to create (need to allocate entire apartmen
-- ↓
-- THREAD = A person living in the apartment
-- ↓
-- - Shares the apartment's space (heap memory)
-- ↓
-- - Has own bed/desk (stack, program counter, registers)
+1. PROCESS vs THREAD — The Apartment Analogy
+2. PROCESS = An apartment
+3. - Isolated from other apartments
+4. - Expensive to create (need to allocate entire apartmen
+5. THREAD = A person living in the apartment
+6. - Shares the apartment's space (heap memory)
+7. - Has own bed/desk (stack, program counter, registers)
 
 ```mermaid
 flowchart TD
@@ -181,29 +173,31 @@ Thread t = new Thread(() -> {
 });
 t.start();
 
-> 🔬 **Section Challenge — Thread Creation**
->
-> **Challenge 1 (Reasoning):** You have a class `DataProcessor extends Thread`. Later you need `DataProcessor` to also extend `BaseService`. What breaks, and how do you redesign?
-> <details><summary>Answer</summary>
->
-> `extends Thread` blocks you — Java has no multiple inheritance. The fix: make `DataProcessor extends BaseService implements Runnable`, wrap in `new Thread(processor)` or submit to an `ExecutorService`. The task logic stays in `run()`, threading is handled externally. This is exactly why Runnable exists — decoupling.
-> </details>
->
-> **Challenge 2 (Trace):** A programmer writes `new Thread(task).run()` inside a `for` loop 1000 times. No new threads are created. Where's the bug and what's the actual execution behavior?
-> <details><summary>Answer</summary>
->
-> `run()` executes on the CALLING thread (sequential, blocking). All 1000 iterations run on the main thread, one after another. No parallelism whatsoever. Fix: `new Thread(task).start()` — or better: submit to `ExecutorService` which manages the pool.
-> </details>
->
-> **Challenge 3 (Design):** Why can the same `Runnable` instance be passed to multiple threads but it's dangerous if it has instance state?
-> <details><summary>Answer</summary>
->
-> `Runnable` is just a task description. Running the same `Runnable` on 5 threads = 5 threads sharing one object's fields. If `run()` reads/writes instance variables, you have a race condition. Solutions: (1) stateless Runnable (all data via parameters/local vars), (2) synchronized access, (3) create a new Runnable instance per thread with its own state.
-> </details>
+```
+
+🔬 **Section Challenge — Thread Creation**
+
+**Challenge 1 (Reasoning):** You have a class `DataProcessor extends Thread`. Later you need `DataProcessor` to also extend `BaseService`. What breaks, and how do you redesign?
+<details><summary>Answer</summary>
+
+`extends Thread` blocks you — Java has no multiple inheritance. The fix: make `DataProcessor extends BaseService implements Runnable`, wrap in `new Thread(processor)` or submit to an `ExecutorService`. The task logic stays in `run()`, threading is handled externally. This is exactly why Runnable exists — decoupling.
+</details>
+
+**Challenge 2 (Trace):** A programmer writes `new Thread(task).run()` inside a `for` loop 1000 times. No new threads are created. Where's the bug and what's the actual execution behavior?
+<details><summary>Answer</summary>
+
+`run()` executes on the CALLING thread (sequential, blocking). All 1000 iterations run on the main thread, one after another. No parallelism whatsoever. Fix: `new Thread(task).start()` — or better: submit to `ExecutorService` which manages the pool.
+</details>
+
+**Challenge 3 (Design):** Why can the same `Runnable` instance be passed to multiple threads but it's dangerous if it has instance state?
+<details><summary>Answer</summary>
+
+`Runnable` is just a task description. Running the same `Runnable` on 5 threads = 5 threads sharing one object's fields. If `run()` reads/writes instance variables, you have a race condition. Solutions: (1) stateless Runnable (all data via parameters/local vars), (2) synchronized access, (3) create a new Runnable instance per thread with its own state.
+</details>
 
 ## 🔴 WHY Does Runnable Exist? — The Design Reasoning
 
-> **Your exact question**: "Runnable is an interface. We implement it and write `run()` anyway. Then why not just extend Thread directly? What's the point of Runnable?"
+**Your exact question**: "Runnable is an interface. We implement it and write `run()` anyway. Then why not just extend Thread directly? What's the point of Runnable?"
 
 This is a **Senior Engineer interview question**. The answer goes deep into Object-Oriented design philosophy.
 
@@ -378,13 +372,13 @@ Thread t = new Thread(() -> System.out.println("Clean!"));
 ### Interview Q&A Section
 
 **Q: Why `implements Runnable` over `extends Thread`?**
-> Three reasons: (1) Java has single inheritance — `extends Thread` locks you out of extending another class. (2) Runnable separates the **task** (what to do) from the **executor** (how/when to run) — SRP. (3) The same `Runnable` can be passed to a thread pool, a scheduler, virtual threads, or called directly for testing — maximum **reusability**.
+Three reasons: (1) Java has single inheritance — `extends Thread` locks you out of extending another class. (2) Runnable separates the **task** (what to do) from the **executor** (how/when to run) — SRP. (3) The same `Runnable` can be passed to a thread pool, a scheduler, virtual threads, or called directly for testing — maximum **reusability**.
 
 **Q: If Runnable has only `run()`, why call `start()` on Thread? Why not call `run()`?**
-> `thread.run()` = calls `run()` on the **current thread** — no new thread is created. `thread.start()` = asks the **JVM + OS** to create a new native thread, allocate its stack, register it with the scheduler, and **then** call `run()` on that new thread. Calling `run()` directly is the #1 beginner mistake — it does all the work synchronously on your calling thread.
+`thread.run()` = calls `run()` on the **current thread** — no new thread is created. `thread.start()` = asks the **JVM + OS** to create a new native thread, allocate its stack, register it with the scheduler, and **then** call `run()` on that new thread. Calling `run()` directly is the #1 beginner mistake — it does all the work synchronously on your calling thread.
 
 **Q: What does Thread do with the Runnable passed to it?**
-> Thread stores it internally: `this.target = runnable`. When the JVM calls `thread.run()` on the new thread, Thread's own `run()` checks: `if (target != null) target.run()`. So Thread is essentially a **wrapper** that knows how to spin up an OS thread and then delegate to whatever Runnable you gave it.
+Thread stores it internally: `this.target = runnable`. When the JVM calls `thread.run()` on the new thread, Thread's own `run()` checks: `if (target != null) target.run()`. So Thread is essentially a **wrapper** that knows how to spin up an OS thread and then delegate to whatever Runnable you gave it.
 
 ```java
 // Thread's run() method source (simplified):
@@ -399,7 +393,7 @@ public void run() {
 ```
 
 **Q: Thread also implements Runnable. Why?**
-> Because Thread itself has a `run()` method — it IS a `Runnable`! This means a `Thread` can be passed wherever a `Runnable` is expected. It also means Thread can be used polymorphically in frameworks that accept `Runnable`. It's a design consistency: everything that can run is a `Runnable`.
+Because Thread itself has a `run()` method — it IS a `Runnable`! This means a `Thread` can be passed wherever a `Runnable` is expected. It also means Thread can be used polymorphically in frameworks that accept `Runnable`. It's a design consistency: everything that can run is a `Runnable`.
 
 **Q: Callable vs Runnable — what's the difference?**
 ```java
@@ -420,10 +414,11 @@ pool.execute(() -> logEvent());                          // Runnable lambda
 
 ## Thread Lifecycle — The State Machine
 
-
-│                                                                                 │
-│  t.start()  →  Creates NEW thread, runs run() in that thread  ✅                 │
-│  t.run()    →  Runs run() in CURRENT thread (no new thread!)   ❌                │
+```
+----------------------------------------------------------------------------------
+│                                                                                │
+│  t.start()  →  Creates NEW thread, runs run() in that thread  ✅               │
+│  t.run()    →  Runs run() in CURRENT thread (no new thread!)   ❌              │
 │                                                                                 │
 │  This is an interview classic. The JVM:                                         │
 │  1. Allocates new stack for the thread                                          │
@@ -434,31 +429,19 @@ pool.execute(() -> logEvent());                          // Runnable lambda
 ```
 
 **Flow:**
-- CRITICAL MISTAKE — start() vs run()
-- ↓
-- t.start()
-- ↓
-- Creates NEW thread, runs run() in that thre
-- ↓
-- t.start()
-- ↓
-- Creates NEW thread, runs run() in that thre
-- ↓
-- t.run()
-- ↓
-- Runs run() in CURRENT thread (no new thread!)
-- ↓
-- t.run()
-- ↓
-- Runs run() in CURRENT thread (no new thread!)
-- ↓
-- This is an interview classic. The JVM:
-- ↓
-- 1. Allocates new stack for the thread
-- ↓
-- 2. Registers thread with OS scheduler
-- ↓
-- 3. OS gives it CPU time
+1. CRITICAL MISTAKE — start() vs run()
+2. t.start()
+3. Creates NEW thread, runs run() in that thre
+4. t.start()
+5. Creates NEW thread, runs run() in that thre
+6. t.run()
+7. Runs run() in CURRENT thread (no new thread!)
+8. t.run()
+9. Runs run() in CURRENT thread (no new thread!)
+10. This is an interview classic. The JVM:
+11. 1. Allocates new stack for the thread
+12. 2. Registers thread with OS scheduler
+13. 3. OS gives it CPU time
 
 ```mermaid
 flowchart TD
@@ -516,19 +499,13 @@ flowchart TD
 ```
 
 **Flow:**
-- NEW --(start())--> RUNNABLE
-- ↓
-- NEW
-- ↓
-- BLOCKED
-- ↓
-- RUNNABLE
-- ↓
-- nized sleep()/ I/O wait / get wait() / ck) / ▼ ▼ ▼ / KE
-- ↓
-- BLOCKED
-- ↓
-- TERMINATED
+1. NEW --(start())--> RUNNABLE
+2. NEW
+3. BLOCKED
+4. RUNNABLE
+5. nized sleep()/ I/O wait / get wait() / ck) / ▼ ▼ ▼ / KE
+6. BLOCKED
+7. TERMINATED
 
 ```mermaid
 flowchart TD
@@ -583,25 +560,25 @@ daemon.start();
 
 ---
 
-> 🔬 **Section Challenge — Thread Lifecycle & Methods**
->
-> **Challenge 1 (Reasoning):** `Thread.sleep(0)` — does this do anything? Why would a programmer ever use it?
-> <details><summary>Answer</summary>
->
-> `sleep(0)` briefly yields the CPU, allowing the OS scheduler to run other threads. It's a hint — not a guarantee. Used to: (1) prevent a tight loop from monopolizing the CPU, (2) insert a safepoint for GC (JVM executes safepoint checks at certain call sites like `sleep`). You rarely need this explicitly — `Thread.yield()` is more idiomatic.
-> </details>
->
-> **Challenge 2 (Reasoning):** When is a daemon thread dangerous? Give a concrete production scenario.
-> <details><summary>Answer</summary>
->
-> Daemon threads are killed when all non-daemon threads finish. Danger: a daemon thread writing a file or DB record gets killed mid-write when the main app exits → corrupted file, incomplete DB transaction, partial message sent. Rule: only use daemon threads for truly disposable work (log flushing that can be lost, background cache warming). Never for I/O or DB operations that must complete.
-> </details>
->
-> **Challenge 3 (Predict):** `t.join(2000)` — the thread `t` takes 5 seconds. What happens?
-> <details><summary>Answer</summary>
->
-> `join(2000)` blocks the calling thread for AT MOST 2000ms. After 2 seconds, `join()` returns — regardless of whether `t` is done. `t` KEEPS RUNNING in the background. The caller continues. Use `t.isAlive()` after `join(timeout)` to check if `t` actually finished.
-> </details>
+🔬 **Section Challenge — Thread Lifecycle & Methods**
+
+**Challenge 1 (Reasoning):** `Thread.sleep(0)` — does this do anything? Why would a programmer ever use it?
+<details><summary>Answer</summary>
+
+`sleep(0)` briefly yields the CPU, allowing the OS scheduler to run other threads. It's a hint — not a guarantee. Used to: (1) prevent a tight loop from monopolizing the CPU, (2) insert a safepoint for GC (JVM executes safepoint checks at certain call sites like `sleep`). You rarely need this explicitly — `Thread.yield()` is more idiomatic.
+</details>
+
+**Challenge 2 (Reasoning):** When is a daemon thread dangerous? Give a concrete production scenario.
+<details><summary>Answer</summary>
+
+Daemon threads are killed when all non-daemon threads finish. Danger: a daemon thread writing a file or DB record gets killed mid-write when the main app exits → corrupted file, incomplete DB transaction, partial message sent. Rule: only use daemon threads for truly disposable work (log flushing that can be lost, background cache warming). Never for I/O or DB operations that must complete.
+</details>
+
+**Challenge 3 (Predict):** `t.join(2000)` — the thread `t` takes 5 seconds. What happens?
+<details><summary>Answer</summary>
+
+`join(2000)` blocks the calling thread for AT MOST 2000ms. After 2 seconds, `join()` returns — regardless of whether `t` is done. `t` KEEPS RUNNING in the background. The caller continues. Use `t.isAlive()` after `join(timeout)` to check if `t` actually finished.
+</details>
 
 # PART 2: THE VISIBILITY PROBLEM — Why Shared Data Breaks
 
@@ -633,9 +610,8 @@ daemon.start();
 ```
 
 **Flow:**
-- L1 Cache / flag = true
-- ↓
-- Main Memory / flag = true
+1. L1 Cache / flag = true
+2. Main Memory / flag = true
 
 ```mermaid
 flowchart TD
@@ -691,19 +667,13 @@ class CorrectStopFlag {
 ```
 
 **Flow:**
-- volatile GUARANTEES:
-- ↓
-- ✅ Visibility — writes visible to all threads immediatel
-- ↓
-- volatile DOES NOT GUARANTEE:
-- ↓
-- ❌ Atomicity — count++ is STILL broken even with volatil
-- ↓
-- (count++ = read + increment + write = 3 operations!)
-- ↓
-- WHEN TO USE volatile:
-- ↓
-- ✅ Boolean flags (stop, done, initialized)
+1. volatile GUARANTEES:
+2. ✅ Visibility — writes visible to all threads immediatel
+3. volatile DOES NOT GUARANTEE:
+4. ❌ Atomicity — count++ is STILL broken even with volatil
+5. (count++ = read + increment + write = 3 operations!)
+6. WHEN TO USE volatile:
+7. ✅ Boolean flags (stop, done, initialized)
 
 ```mermaid
 flowchart TD
@@ -767,19 +737,13 @@ class BankAccount {
 ```
 
 **Flow:**
-- and there's no synchronization.
-- ↓
-- Time Thread A Thread B balance
-- ↓
-- t1 read balance (1000) 1000
-- ↓
-- t2 read balance (1000) 1000
-- ↓
-- t3 check: 1000>=800 ✓ 1000
-- ↓
-- t4 check: 1000>=500 ✓ 1000
-- ↓
-- t5 balance = 1000-800 200
+1. and there's no synchronization.
+2. Time Thread A Thread B balance
+3. t1 read balance (1000) 1000
+4. t2 read balance (1000) 1000
+5. t3 check: 1000>=800 ✓ 1000
+6. t4 check: 1000>=500 ✓ 1000
+7. t5 balance = 1000-800 200
 
 ```mermaid
 flowchart TD
@@ -860,25 +824,16 @@ class SafeBankAccount {
 ```
 
 **Flow:**
-- HOW synchronized WORKS INTERNALLY
-- ↓
-- Thread A enters synchronized:
-- ↓
-- 1. Try to acquire the object's monitor
-- ↓
-- 2. If free
-- ↓
-- acquire it, enter critical section
-- ↓
-- 2. If free
-- ↓
-- acquire it, enter critical section
-- ↓
-- Object Monitor
-- ↓
-- Owner: Thread A
-- ↓
-- Entry Set: [B, C] ← Threads waiting to acquire
+1. HOW synchronized WORKS INTERNALLY
+2. Thread A enters synchronized:
+3. 1. Try to acquire the object's monitor
+4. 2. If free
+5. acquire it, enter critical section
+6. 2. If free
+7. acquire it, enter critical section
+8. Object Monitor
+9. Owner: Thread A
+10. Entry Set: [B, C] ← Threads waiting to acquire
 
 ```mermaid
 flowchart TD
@@ -952,19 +907,13 @@ class BoundedBuffer<T> {
 ```
 
 **Flow:**
-- wait() vs notify() vs notifyAll()
-- ↓
-- notify() — Wake ONE random thread from wait set
-- ↓
-- RULES:
-- ↓
-- • Must be called inside synchronized block (on same obj
-- ↓
-- The wait() + notify() Pattern:
-- ↓
-- synchronized(lock) {
-- ↓
-- lock.wait(); // Release lock and wait
+1. wait() vs notify() vs notifyAll()
+2. notify() — Wake ONE random thread from wait set
+3. RULES:
+4. • Must be called inside synchronized block (on same obj
+5. The wait() + notify() Pattern:
+6. synchronized(lock) {
+7. lock.wait(); // Release lock and wait
 
 ```mermaid
 flowchart TD
@@ -985,44 +934,44 @@ flowchart TD
 
 ---
 
-> 🔬 **Section Challenge — synchronized & wait/notify**
->
-> **Challenge 1 (Bug Hunt):** What's wrong with this code?
-> ```java
-> synchronized(lock) {
->     if (!conditionMet()) { lock.wait(); }
->     doWork();
-> }
-> ```
-> <details><summary>Answer</summary>
->
-> Uses `if` instead of `while`. After `wait()` returns, the condition may no longer be true (spurious wakeup, or another thread consumed the condition). Must use `while (!conditionMet()) { lock.wait(); }` — re-check the condition on every wakeup.
-> </details>
->
-> **Challenge 2 (Reasoning):** `notify()` vs `notifyAll()` — when does using `notify()` cause a deadlock-like hang?
-> <details><summary>Answer</summary>
->
-> If multiple threads wait on the same lock for DIFFERENT conditions, `notify()` wakes one random thread. If it wakes a thread whose condition still isn't met, that thread goes back to waiting — but the thread whose condition WAS met is never woken. The system hangs. Rule: use `notifyAll()` when multiple threads wait for different conditions on the same lock. Use `notify()` only when ALL waiting threads are waiting for the SAME condition.
-> </details>
->
-> **Challenge 3 (Design):** Implement a proper "done" gate — 1 thread signals done, N other threads wait for it. Write it with `wait/notify` AND with `CountDownLatch`. Which is better?
-> <details><summary>Answer</summary>
->
-> ```java
-> // wait/notify version — fragile
-> synchronized(gate) {
->     while (!done) gate.wait();
-> }
-> // Signaling thread:
-> synchronized(gate) { done = true; gate.notifyAll(); }
->
-> // CountDownLatch — much cleaner
-> CountDownLatch latch = new CountDownLatch(1);
-> // N waiters: latch.await();
-> // Signaling thread: latch.countDown();
-> ```
-> `CountDownLatch` is better: no missed signal risk, no spurious wakeup handling, self-documenting intent.
-> </details>
+🔬 **Section Challenge — synchronized & wait/notify**
+
+**Challenge 1 (Bug Hunt):** What's wrong with this code?
+```java
+synchronized(lock) {
+    if (!conditionMet()) { lock.wait(); }
+    doWork();
+}
+```
+<details><summary>Answer</summary>
+
+Uses `if` instead of `while`. After `wait()` returns, the condition may no longer be true (spurious wakeup, or another thread consumed the condition). Must use `while (!conditionMet()) { lock.wait(); }` — re-check the condition on every wakeup.
+</details>
+
+**Challenge 2 (Reasoning):** `notify()` vs `notifyAll()` — when does using `notify()` cause a deadlock-like hang?
+<details><summary>Answer</summary>
+
+If multiple threads wait on the same lock for DIFFERENT conditions, `notify()` wakes one random thread. If it wakes a thread whose condition still isn't met, that thread goes back to waiting — but the thread whose condition WAS met is never woken. The system hangs. Rule: use `notifyAll()` when multiple threads wait for different conditions on the same lock. Use `notify()` only when ALL waiting threads are waiting for the SAME condition.
+</details>
+
+**Challenge 3 (Design):** Implement a proper "done" gate — 1 thread signals done, N other threads wait for it. Write it with `wait/notify` AND with `CountDownLatch`. Which is better?
+<details><summary>Answer</summary>
+
+```java
+// wait/notify version — fragile
+synchronized(gate) {
+    while (!done) gate.wait();
+}
+// Signaling thread:
+synchronized(gate) { done = true; gate.notifyAll(); }
+
+// CountDownLatch — much cleaner
+CountDownLatch latch = new CountDownLatch(1);
+// N waiters: latch.await();
+// Signaling thread: latch.countDown();
+```
+`CountDownLatch` is better: no missed signal risk, no spurious wakeup handling, self-documenting intent.
+</details>
 
 # PART 4: DEADLOCKS — The Silent Killer
 
@@ -1051,19 +1000,13 @@ flowchart TD
 ```
 
 **Flow:**
-- DEADLOCK — Two threads each holding a lock the other ne
-- ↓
-- Thread A: Thread B:
-- ↓
-- lock(account1) lock(account2)
-- ↓
-- lock(account2) ← WAIT lock(account1) ← WAIT
-- ↓
-- ... forever ... ... forever ...
-- ↓
-- Thread A holds account1, waits for account2
-- ↓
-- Thread B holds account2, waits for account1
+1. DEADLOCK — Two threads each holding a lock the other ne
+2. Thread A: Thread B:
+3. lock(account1) lock(account2)
+4. lock(account2) ← WAIT lock(account1) ← WAIT
+5. ... forever ... ... forever ...
+6. Thread A holds account1, waits for account2
+7. Thread B holds account2, waits for account1
 
 ```mermaid
 flowchart TD
@@ -1121,38 +1064,38 @@ class SafeTransfer {
 
 ---
 
-> 🔬 **Section Challenge — Deadlocks**
->
-> **Challenge 1 (Diagnosis):** You have a thread dump. Thread A shows `BLOCKED on <0x12345> owned by Thread B`. Thread B shows `BLOCKED on <0x67890> owned by Thread A`. What is this and how do you fix it in code?
-> <details><summary>Answer</summary>
->
-> Classic deadlock — circular lock dependency. Fix strategies: (1) **Lock ordering**: always acquire locks in the same global order (sort by System.identityHashCode or a natural ID). (2) **tryLock with timeout**: `ReentrantLock.tryLock(100, ms)` — if can't acquire, release own locks and retry later. (3) **Single lock**: combine both operations under one lock if possible. (4) **Lock-free**: use `ConcurrentHashMap` + atomic operations to eliminate locks entirely.
-> </details>
->
-> **Challenge 2 (Design):** A money transfer system: `transfer(Account from, Account to, int amount)`. Multiple threads call this concurrently. Write a deadlock-free implementation.
-> <details><summary>Answer</summary>
->
-> ```java
-> void transfer(Account from, Account to, int amount) {
->     // Lock ordering by account ID — always acquire lower ID first
->     Account first  = from.id < to.id ? from : to;
->     Account second = from.id < to.id ? to : from;
->     synchronized(first) {
->         synchronized(second) {
->             from.balance -= amount;
->             to.balance   += amount;
->         }
->     }
-> }
-> ```
-> Same global order regardless of which direction the transfer goes → no circular wait → no deadlock.
-> </details>
->
-> **Challenge 3 (Reasoning):** Can `synchronized` on the same object cause a deadlock with itself?
-> <details><summary>Answer</summary>
->
-> No — `synchronized` in Java is **reentrant**. If Thread A holds lock X and calls a method also `synchronized` on X: it re-acquires without blocking (the JVM tracks the owning thread + reentry count). This is intentional — methods calling each other on the same object would deadlock in non-reentrant systems. `ReentrantLock` is also explicitly reentrant (hence the name).
-> </details>
+🔬 **Section Challenge — Deadlocks**
+
+**Challenge 1 (Diagnosis):** You have a thread dump. Thread A shows `BLOCKED on <0x12345> owned by Thread B`. Thread B shows `BLOCKED on <0x67890> owned by Thread A`. What is this and how do you fix it in code?
+<details><summary>Answer</summary>
+
+Classic deadlock — circular lock dependency. Fix strategies: (1) **Lock ordering**: always acquire locks in the same global order (sort by System.identityHashCode or a natural ID). (2) **tryLock with timeout**: `ReentrantLock.tryLock(100, ms)` — if can't acquire, release own locks and retry later. (3) **Single lock**: combine both operations under one lock if possible. (4) **Lock-free**: use `ConcurrentHashMap` + atomic operations to eliminate locks entirely.
+</details>
+
+**Challenge 2 (Design):** A money transfer system: `transfer(Account from, Account to, int amount)`. Multiple threads call this concurrently. Write a deadlock-free implementation.
+<details><summary>Answer</summary>
+
+```java
+void transfer(Account from, Account to, int amount) {
+    // Lock ordering by account ID — always acquire lower ID first
+    Account first  = from.id < to.id ? from : to;
+    Account second = from.id < to.id ? to : from;
+    synchronized(first) {
+        synchronized(second) {
+            from.balance -= amount;
+            to.balance   += amount;
+        }
+    }
+}
+```
+Same global order regardless of which direction the transfer goes → no circular wait → no deadlock.
+</details>
+
+**Challenge 3 (Reasoning):** Can `synchronized` on the same object cause a deadlock with itself?
+<details><summary>Answer</summary>
+
+No — `synchronized` in Java is **reentrant**. If Thread A holds lock X and calls a method also `synchronized` on X: it re-acquires without blocking (the JVM tracks the owning thread + reentry count). This is intentional — methods calling each other on the same object would deadlock in non-reentrant systems. `ReentrantLock` is also explicitly reentrant (hence the name).
+</details>
 
 # PART 5: ATOMIC CLASSES — Lock-Free Thread Safety
 
@@ -1176,19 +1119,13 @@ class SafeTransfer {
 ```
 
 **Flow:**
-- CAS: 'If value == expected, set to new. Otherwise, retr
-- ↓
-- CPU Instruction (single atomic operation):
-- ↓
-- compareAndSwap(memoryLocation, expectedValue, newValue)
-- ↓
-- Returns true if swapped, false if value changed
-- ↓
-- Available Atomic Types:
-- ↓
-- AtomicInteger AtomicLong AtomicBoolean
-- ↓
-- AtomicReference AtomicArray LongAdder
+1. CAS: 'If value == expected, set to new. Otherwise, retr
+2. CPU Instruction (single atomic operation):
+3. compareAndSwap(memoryLocation, expectedValue, newValue)
+4. Returns true if swapped, false if value changed
+5. Available Atomic Types:
+6. AtomicInteger AtomicLong AtomicBoolean
+7. AtomicReference AtomicArray LongAdder
 
 ```mermaid
 flowchart TD
@@ -1249,19 +1186,13 @@ adder.sum();         // Get final count (slightly delayed)
 ```
 
 **Flow:**
-- WHEN TO USE WHAT:
-- ↓
-- Need Use
-- ↓
-- Simple counter AtomicInteger / AtomicLong
-- ↓
-- High-contention counter LongAdder
-- ↓
-- Boolean flag volatile boolean or AtomicBoolean
-- ↓
-- Reference swap AtomicReference
-- ↓
-- Multiple fields together synchronized or Lock
+1. WHEN TO USE WHAT:
+2. Need Use
+3. Simple counter AtomicInteger / AtomicLong
+4. High-contention counter LongAdder
+5. Boolean flag volatile boolean or AtomicBoolean
+6. Reference swap AtomicReference
+7. Multiple fields together synchronized or Lock
 
 ```mermaid
 flowchart TD
@@ -1307,45 +1238,26 @@ flowchart TD
 ```
 
 **Flow:**
-- THREAD-SAFE COLLECTIONS HIERARCHY
-- ↓
-- DON'T USE: USE INSTEAD:
-- ↓
-- HashMap
-- ↓
-- ConcurrentHashMap
-- ↓
-- HashMap
-- ↓
-- ConcurrentHashMap
-- ↓
-- ArrayList
-- ↓
-- CopyOnWriteArrayList
-- ↓
-- ArrayList
-- ↓
-- CopyOnWriteArrayList
-- ↓
-- TreeMap
-- ↓
-- ConcurrentSkipListMap
-- ↓
-- TreeMap
-- ↓
-- ConcurrentSkipListMap
-- ↓
-- LinkedList (as queue)
-- ↓
-- ConcurrentLinkedQueue
-- ↓
-- LinkedList (as queue)
-- ↓
-- ConcurrentLinkedQueue
-- ↓
-- PriorityQueue
-- ↓
-- PriorityBlockingQueue
+1. THREAD-SAFE COLLECTIONS HIERARCHY
+2. DON'T USE: USE INSTEAD:
+3. HashMap
+4. ConcurrentHashMap
+5. HashMap
+6. ConcurrentHashMap
+7. ArrayList
+8. CopyOnWriteArrayList
+9. ArrayList
+10. CopyOnWriteArrayList
+11. TreeMap
+12. ConcurrentSkipListMap
+13. TreeMap
+14. ConcurrentSkipListMap
+15. LinkedList (as queue)
+16. ConcurrentLinkedQueue
+17. LinkedList (as queue)
+18. ConcurrentLinkedQueue
+19. PriorityQueue
+20. PriorityBlockingQueue
 
 ```mermaid
 flowchart TD
@@ -1428,19 +1340,13 @@ Task t = queue.take(); // Blocks if empty (consumer waits)
 ```
 
 **Flow:**
-- TOP 10 CONCURRENCY MISTAKES
-- ↓
-- 1. Using count++ instead of AtomicInteger
-- ↓
-- 3. Forgetting volatile on shared boolean flags
-- ↓
-- 4. Using if instead of while with wait()
-- ↓
-- 5. Calling run() instead of start()
-- ↓
-- 7. Locking on mutable objects ('test'.intern() disaster
-- ↓
-- 8. Holding locks while doing I/O
+1. TOP 10 CONCURRENCY MISTAKES
+2. 1. Using count++ instead of AtomicInteger
+3. 3. Forgetting volatile on shared boolean flags
+4. 4. Using if instead of while with wait()
+5. 5. Calling run() instead of start()
+6. 7. Locking on mutable objects ('test'.intern() disaster
+7. 8. Holding locks while doing I/O
 
 ```mermaid
 flowchart TD
@@ -1467,7 +1373,7 @@ flowchart TD
 
 # 🔴 PART 8: UNCAUGHT EXCEPTION HANDLER — The Silent Thread Killer
 
-> **The Problem:** Exceptions thrown inside `thread.run()` that are NOT caught there **silently kill the thread**. The thread dies, your program keeps running, and you have NO idea why.
+**The Problem:** Exceptions thrown inside `thread.run()` that are NOT caught there **silently kill the thread**. The thread dies, your program keeps running, and you have NO idea why.
 
 ```java
 // ❌ THE SILENT KILLER — happens in production constantly
@@ -1978,7 +1884,7 @@ Before shipping any multithreaded code, verify:
 
 # 🏋️ PART 11: PRACTICE PROBLEMS — Build Thread Muscle Memory
 
-> **How to use this**: For every problem, **write the answer first**, then check. Don't scroll to the solution immediately — that's how you build real retention.
+**How to use this**: For every problem, **write the answer first**, then check. Don't scroll to the solution immediately — that's how you build real retention.
 
 ---
 
@@ -2970,17 +2876,15 @@ Without hesitation, you should know:
 
 ---
 
-> **→ Continue to**: [Ch16 — ExecutorService, CompletableFuture, Virtual Threads →](Ch16_Concurrency_Advanced.md)
-> **→ Also see**: [Ch17 — CountDownLatch, CyclicBarrier, Phaser, Semaphore deep dive →](Ch17_Concurrency_Synchronizers.md)
-> **→ JMM foundation**: [Ch18 — Java Memory Model, happens-before →](Ch18_JMM_GC_Deep.md)
+**→ Continue to**: [Ch16 — ExecutorService, CompletableFuture, Virtual Threads →](Ch16_Concurrency_Advanced.md)
+**→ Also see**: [Ch17 — CountDownLatch, CyclicBarrier, Phaser, Semaphore deep dive →](Ch17_Concurrency_Synchronizers.md)
+**→ JMM foundation**: [Ch18 — Java Memory Model, happens-before →](Ch18_JMM_GC_Deep.md)
 
 ---
 
-> **Next**: [Part 2 — ExecutorService, CompletableFuture, Virtual Threads →](Ch16_Concurrency_Advanced.md)
-
+**Next**: [Part 2 — ExecutorService, CompletableFuture, Virtual Threads →](Ch16_Concurrency_Advanced.md)
 
 ---
-
 
 ---
 
@@ -3036,13 +2940,12 @@ These are NECESSARY conditions — ALL four must hold for deadlock to be possibl
 **C8. What happens inside the JVM when `synchronized` is acquired?**
 <details><summary>Deep Answer</summary>
 
-JVM uses **lock escalation** based on contention: 
+JVM uses **lock escalation** based on contention:
 1. **Biased lock** (no contention): object header records the thread ID. No CAS needed — just check header. Fastest path.
 2. **Thin/lightweight lock**: CAS on object header to change lock state. Stack-allocated lock record. No OS call.
 3. **Heavyweight/fat lock**: when multiple threads contend. OS mutex via `pthread_mutex_lock` — expensive (~μs for context switch). Thread parked by OS.
 
 LockSupport.park() (used by AQS and heavyweight locks) suspends the thread using OS primitives (futex on Linux). When `synchronized` is uncontested (> 95% of real-world cases): nearly free. Under contention: expensive. This is why `synchronized` in modern JVMs is much faster than pre-Java-6.
 </details>
-
 
 > **Navigation**: [< Previous](Ch25_Spring_Boot_50Day_Plan.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch16_Concurrency_Advanced.md)

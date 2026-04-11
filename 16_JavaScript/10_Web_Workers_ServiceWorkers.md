@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](09_Browser_Internals_Rendering.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Advanced_Web_APIs.md)
+**Navigation**: [< Previous](09_Browser_Internals_Rendering.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Advanced_Web_APIs.md)
 
 # ⚙️ Chapter 10 — Web Workers & Service Workers: Threading in the Browser
 
-> **"JavaScript is single-threaded, but the browser is NOT. Web Workers let you run expensive computation off the main thread so your UI stays smooth. Service Workers give your app superpowers — offline support, push notifications, and background sync."**
+**"JavaScript is single-threaded, but the browser is NOT. Web Workers let you run expensive computation off the main thread so your UI stays smooth. Service Workers give your app superpowers — offline support, push notifications, and background sync."**
 
 ---
 
@@ -433,8 +433,8 @@ if ('serviceWorker' in navigator) {
 
 
 
-> 🔬 **Section Challenge — 8. Service Workers — The Proxy Between Browser and Network**
->>
+🔬 **Section Challenge — 8. Service Workers — The Proxy Between Browser and Network**
+>
 
 ## 9. Service Worker Lifecycle
 
@@ -619,14 +619,14 @@ self.addEventListener('fetch', (event) => {
 
 
 
-> 🔬 **Section Challenge — 10. Caching Strategies — Offline-First Patterns**
->
-> **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-> <details><summary>Answer</summary>
->
-> Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-> </details>
->
+🔬 **Section Challenge — 10. Caching Strategies — Offline-First Patterns**
+
+**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+<details><summary>Answer</summary>
+
+Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+</details>
+
 
 ## 11. Background Sync & Push Notifications
 
@@ -780,7 +780,7 @@ registerRoute(
 
 ---
 
-> **Next Chapter**: [Advanced Web APIs →](11_Advanced_Web_APIs.md)
+**Next Chapter**: [Advanced Web APIs →](11_Advanced_Web_APIs.md)
 
 ---
 

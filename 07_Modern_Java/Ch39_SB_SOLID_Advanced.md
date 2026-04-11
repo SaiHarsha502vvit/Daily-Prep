@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](Ch38_SB_SOLID_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch38_SB_SOLID_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -27,19 +27,13 @@
 ```
 
 **Flow:**
-- INTERFACE SEGREGATION PRINCIPLE
-- ↓
-- FAT INTERFACE PROBLEMS:
-- ↓
-- • Changes to unused methods affect implementers
-- ↓
-- • Hard to understand what's actually needed
-- ↓
-- SOLUTION: Small, focused interfaces
-- ↓
-- • Each interface represents one capability
-- ↓
-- • Classes implement only what they need
+1. INTERFACE SEGREGATION PRINCIPLE
+2. FAT INTERFACE PROBLEMS:
+3. • Changes to unused methods affect implementers
+4. • Hard to understand what's actually needed
+5. SOLUTION: Small, focused interfaces
+6. • Each interface represents one capability
+7. • Classes implement only what they need
 
 ```mermaid
 flowchart TD
@@ -285,14 +279,14 @@ public interface OrderRepository extends JpaRepository<Order, Long> {}
 
 
 
-> 🔬 **Section Challenge — Chapter 4: "Clients should not be forced to depend on interfaces they don't use"**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 4: "Clients should not be forced to depend on interfaces they don't use"**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📐 Section 5: Dependency Inversion Principle (dip)
 
@@ -333,15 +327,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {}
 ```
 
 **Flow:**
-- OrderService / (High-level)
-- ↓
-- MySQLRepository / (Low-level)
-- ↓
-- OrderService / (High-level)
-- ↓
-- Repository / (Abstraction)
-- ↓
-- MySQLRepository / (Low-level)
+1. OrderService / (High-level)
+2. MySQLRepository / (Low-level)
+3. OrderService / (High-level)
+4. Repository / (Abstraction)
+5. MySQLRepository / (Low-level)
 
 ```mermaid
 flowchart TD
@@ -1060,20 +1050,20 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 
 
 
-> 🔬 **Section Challenge — Chapter 6: E-Commerce System Following SOLID**
->
-> **Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
-> <details><summary>Answer</summary>
->
-> No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
-> </details>
->
-> **Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
-> <details><summary>Answer</summary>
->
-> Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
-> </details>
->
+🔬 **Section Challenge — Chapter 6: E-Commerce System Following SOLID**
+
+**Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
+<details><summary>Answer</summary>
+
+No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
+</details>
+
+**Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
+<details><summary>Answer</summary>
+
+Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
+</details>
+
 
 # 📌 Section 7: Common Violations & Refactoring
 
@@ -1116,19 +1106,13 @@ public class OrderQueryRepositoryImpl implements OrderQueryRepository {
 ```
 
 **Flow:**
-- SOLID VIOLATION CODE SMELLS
-- ↓
-- SRP VIOLATIONS:
-- ↓
-- • Class name contains 'And' or 'Manager'
-- ↓
-- • Class has > 500 lines of code
-- ↓
-- • Multiple @Autowired fields (> 5-7)
-- ↓
-- • Methods using completely different sets of fields
-- ↓
-- OCP VIOLATIONS:
+1. SOLID VIOLATION CODE SMELLS
+2. SRP VIOLATIONS:
+3. • Class name contains 'And' or 'Manager'
+4. • Class has > 500 lines of code
+5. • Multiple @Autowired fields (> 5-7)
+6. • Methods using completely different sets of fields
+7. OCP VIOLATIONS:
 
 ```mermaid
 flowchart TD
@@ -1153,20 +1137,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Quick Reference: Spotting SOLID Violations**
->
-> **Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
-> <details><summary>Answer</summary>
->
-> No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
-> </details>
->
-> **Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
-> <details><summary>Answer</summary>
->
-> Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
-> </details>
->
+🔬 **Section Challenge — Quick Reference: Spotting SOLID Violations**
+
+**Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
+<details><summary>Answer</summary>
+
+No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
+</details>
+
+**Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
+<details><summary>Answer</summary>
+
+Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
+</details>
+
 
 # 🎤 Interview Questions
 

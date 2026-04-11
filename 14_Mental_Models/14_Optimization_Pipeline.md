@@ -74,19 +74,13 @@
 ```
 
 **Flow:**
-- GOAL: A correct but possibly slow solution
-- ↓
-- WHY START HERE?
-- ↓
-- • Proves you understand the problem
-- ↓
-- • Gives you a baseline to optimize FROM
-- ↓
-- HOW:
-- ↓
-- 2. For each candidate, check if it satisfies the constr
-- ↓
-- 3. Track the best answer
+1. GOAL: A correct but possibly slow solution
+2. WHY START HERE?
+3. • Proves you understand the problem
+4. • Gives you a baseline to optimize FROM
+5. HOW:
+6. For each candidate, check if it satisfies the constr
+7. Track the best answer
 
 ```mermaid
 flowchart TD
@@ -405,19 +399,13 @@ Topological order?     → TOPOLOGICAL SORT     O(V²) → O(V+E)
 ```
 
 **Flow:**
-- OPTIMIZATION CHEAT SHEET
-- ↓
-- Brute Force Optimization Technique
-- ↓
-- O(n²) pairs O(n) HashMap
-- ↓
-- O(n²) pairs O(n) or O(n log n) Sort + Two Pointers
-- ↓
-- O(n²) subarrays O(n) Sliding Window
-- ↓
-- O(n²) subarrays O(n) Prefix Sum + HashMap
-- ↓
-- O(n³) substrings O(n) Sliding Window + HashSet
+1. OPTIMIZATION CHEAT SHEET
+2. Brute Force Optimization Technique
+3. O(n²) pairs O(n) HashMap
+4. O(n²) pairs O(n) or O(n log n) Sort + Two Pointers
+5. O(n²) subarrays O(n) Sliding Window
+6. O(n²) subarrays O(n) Prefix Sum + HashMap
+7. O(n³) substrings O(n) Sliding Window + HashSet
 
 ```mermaid
 flowchart TD
@@ -456,9 +444,8 @@ flowchart TD
 ```
 
 **Flow:**
-- MISTAKE FIX
-- ↓
-- Wrong technique for redundancy Use the decision map
+1. MISTAKE FIX
+2. Wrong technique for redundancy Use the decision map
 
 ```mermaid
 flowchart TD

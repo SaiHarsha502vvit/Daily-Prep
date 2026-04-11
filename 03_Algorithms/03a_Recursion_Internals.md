@@ -1,5 +1,5 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03b_Recursion_Fundamentals.md)
-> 🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — call stack visualization and trust-the-recursion framework
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03b_Recursion_Fundamentals.md)
+🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — call stack visualization and trust-the-recursion framework
 
 ---
 
@@ -9,30 +9,28 @@
 
 ---
 
+🔬 **Section Challenge — Understanding Recursion from Brain's Perspective**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Understanding Recursion from Brain's Perspective**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 # 🔬 PART 0: Deep Internals — How Recursion Actually Works at CPU/Memory Level
 
-> **🎯 Chapter Goal:** Understand what *physically* happens when you call a recursive function.
+**🎯 Chapter Goal:** Understand what *physically* happens when you call a recursive function.
 
 **In this section you'll learn:**
 - Stack frame creation and destruction
@@ -110,29 +108,14 @@ HIGH ADDRESSES
 ```
 
 **Flow:**
-- Local variables of main / Return address (to JVM/OS) /
-- ↓
-- [FP+16] Return address
-- ↓
-- main+42 (8 bytes) / [FP+8] Pre
-- ↓
-- [FP+16] Return address
-- ↓
-- main+42 (8 bytes) / [FP+8] Pre
-- ↓
-- Return address
-- ↓
-- sum+15 (return point in sum(4)) / Prev
-- ↓
-- Return address
-- ↓
-- sum+15 (return point in sum(4)) / Prev
-- ↓
-- ... same structure ... / Parameter n = 2
-- ↓
-- Parameter n = 1
-- ↓
-- Parameter n = 0 / BASE CASE! Returns 0, no more recursi
+1. Local variables of main / Return address (to JVM/OS) /
+2. [FP+16] Return address
+3. main+42 (8 bytes) / [FP+8] Pre
+4. Return address
+5. sum+15 (return point in sum(4)) / Prev
+6. ... same structure ... / Parameter n = 2
+7. Parameter n = 1
+8. Parameter n = 0 / BASE CASE! Returns 0, no more recursi
 
 ```mermaid
 flowchart TD
@@ -149,18 +132,16 @@ flowchart TD
     N5 --> N6
 ```
 
-> 💡 **Key Insight:** Total stack size for `sum(4)` = 5 frames × ~32 bytes = **~160 bytes**
+💡 **Key Insight:** Total stack size for `sum(4)` = 5 frames × ~32 bytes = **~160 bytes**
 
+🔬 **Section Challenge — 📦 The Call Stack — Physical Memory View**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 📦 The Call Stack — Physical Memory View**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## ⚙️ CPU Instructions for Each Recursive Call
 
@@ -181,19 +162,12 @@ flowchart TD
 ```
 
 **Flow:**
-- 0: iload_1 // Load n onto operand stack
-- ↓
-- 1: ifgt 6 // If n > 0, jump to line 6
-- ↓
-- 4: iconst_0 // Push 0
-- ↓
-- 5: ireturn // Return 0 (base case)
-- ↓
-- 6: iload_1 // Load n
-- ↓
-- 7: iload_1 // Load n again
-- ↓
-- 8: iconst_1 // Push 1
+1. 0: iload_1 // Load n onto operand stack
+2. 1: ifgt 6 // If n > 0, jump to line 6
+3. 4: iconst_0 // Push 0
+4. 5: ireturn // Return 0 (base case)
+5. 6: iload_1 // Load n 7: iload_1 // Load n again
+6. 8: iconst_1 // Push 1
 
 ```mermaid
 flowchart TD
@@ -245,19 +219,13 @@ sum:
 ```
 
 **Flow:**
-- sum:
-- ↓
-- push rbp ; Save old frame pointer
-- ↓
-- mov rbp, rsp ; Set new frame pointer
-- ↓
-- sub rsp, 16 ; Allocate stack space
-- ↓
-- mov [rbp-4], edi ; Store parameter n
-- ↓
-- cmp dword [rbp-4], 0 ; Compare n with 0
-- ↓
-- jle .base_case ; If n <= 0, jump to base case
+1. sum:
+2. push rbp ; Save old frame pointer
+3. mov rbp, rsp ; Set new frame pointer
+4. sub rsp, 16 ; Allocate stack space
+5. mov [rbp-4], edi ; Store parameter n
+6. cmp dword [rbp-4], 0 ; Compare n with 0
+7. jle .base_case ; If n <= 0, jump to base case
 
 ```mermaid
 flowchart TD
@@ -292,11 +260,8 @@ flowchart TD
 | `pop` + `ret` | 2 | |
 | **TOTAL per level** | **~15–40** | **Varies by CPU** |
 
-> ⚠️ **Performance Impact:** For `sum(1000)` → **~20,000–40,000 cycles** just in call overhead!
-> Compare with iterative: **~3,000 cycles** (mostly loop overhead + adds)
-
-
-
+⚠️ **Performance Impact:** For `sum(1000)` → **~20,000–40,000 cycles** just in call overhead!
+Compare with iterative: **~3,000 cycles** (mostly loop overhead + adds)
 
 ## 💥 Stack Overflow — Why It Happens
 
@@ -342,19 +307,12 @@ Here's what it looks like when the stack is about to overflow:
 ```
 
 **Flow:**
-- Stack Memory: 0x7fff0000 (top/high)
-- ↓
-- Thread local storage, etc.
-- ↓
-- main() frame
-- ↓
-- sum(10000) frame
-- ↓
-- sum(9999) frame
-- ↓
-- (9998 more frames)
-- ↓
-- sum(1) frame
+1. Stack Memory: 0x7fff0000 (top/high)
+2. Thread local storage, etc.
+3. main() frame sum(10000) frame
+4. sum(9999) frame
+5. (9998 more frames)
+6. sum(1) frame
 
 ```mermaid
 flowchart TD
@@ -375,7 +333,7 @@ flowchart TD
     N7 --> N8
 ```
 
-> 🚨 **When SP crosses into the guard page → `StackOverflowError` is thrown**
+🚨 **When SP crosses into the guard page → `StackOverflowError` is thrown**
 
 ### Solutions to Stack Overflow
 
@@ -386,16 +344,14 @@ flowchart TD
 | 3 | **Use tail recursion** | If language supports it — *Java does NOT* |
 | 4 | **Trampoline pattern** | Manual tail call optimization |
 
+🔬 **Section Challenge — 💥 Stack Overflow — Why It Happens**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 💥 Stack Overflow — Why It Happens**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## 🔄 Converting Recursion to Iteration
 
@@ -470,28 +426,26 @@ void permute(int[] nums, List<Integer> curr, boolean[] used) {
 }
 ```
 
-> 💡 **Note:** For backtracking problems, recursion is generally **cleaner** than iterative. Iterative permutations require manually tracking: current permutation, next index to try, and used set.
+💡 **Note:** For backtracking problems, recursion is generally **cleaner** than iterative. Iterative permutations require manually tracking: current permutation, next index to try, and used set.
 
+🔬 **Section Challenge — 🔄 Converting Recursion to Iteration**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🔄 Converting Recursion to Iteration**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## 🚀 Tail Recursion — The Optimization That Java Doesn't Have
 
@@ -530,15 +484,11 @@ sumTail(0, 10):    return 10
 ```
 
 **Flow:**
-- sumTail(4, 0): Frame: n=4, acc=0
-- ↓
-- sumTail(3, 4): Frame: n=3, acc=4 (reused!)
-- ↓
-- sumTail(2, 7): Frame: n=2, acc=7 (reused!)
-- ↓
-- sumTail(1, 9): Frame: n=1, acc=9 (reused!)
-- ↓
-- sumTail(0, 10): return 10
+1. sumTail(4, 0): Frame: n=4, acc=0
+2. sumTail(3, 4): Frame: n=3, acc=4 (reused!)
+3. sumTail(2, 7): Frame: n=2, acc=7 (reused!)
+4. sumTail(1, 9): Frame: n=1, acc=9 (reused!)
+5. sumTail(0, 10): return 10
 
 ```mermaid
 flowchart TD
@@ -553,7 +503,7 @@ flowchart TD
     N4 --> N5
 ```
 
-> ✅ **CONSTANT STACK SPACE!** No stack overflow possible!
+✅ **CONSTANT STACK SPACE!** No stack overflow possible!
 
 ### Why Java Does NOT Support TCO
 
@@ -609,26 +559,24 @@ int result = sumTrampoline(100000, 0).get();  // No stack overflow!
 | **Kotlin** | With `tailrec` modifier |
 | **JavaScript** | ES6 spec, but limited browser support |
 
+🔬 **Section Challenge — 🚀 Tail Recursion — The Optimization That Java Doesn't Have**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🚀 Tail Recursion — The Optimization That Java Doesn't Have**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## 🧠 Memoization — Caching Recursive Results
 
@@ -664,9 +612,9 @@ The call tree for `fib(5)` shows **massive redundancy**:
 | `fib(1)` | 5 times |
 | `fib(0)` | 3 times |
 
-> ⚠️ **Time Complexity: O(2ⁿ) — exponential!**
-> - `fib(40)` takes ~1 second
-> - `fib(50)` takes ~2 minutes
+⚠️ **Time Complexity: O(2ⁿ) — exponential!**
+- `fib(40)` takes ~1 second
+- `fib(50)` takes ~2 minutes
 
 ### The Solution: Memoization
 
@@ -697,15 +645,11 @@ fib(1)  fib(0)
 ```
 
 **Flow:**
-- fib(5)
-- ↓
-- fib(4) fib(3) ← Cache hit!
-- ↓
-- fib(3) fib(2) ← Cache hit!
-- ↓
-- fib(2) fib(1)
-- ↓
-- fib(1) fib(0)
+1. fib(5)
+2. fib(4) fib(3) ← Cache hit!
+3. fib(3) fib(2) ← Cache hit!
+4. fib(2) fib(1)
+5. fib(1) fib(0)
 
 ```mermaid
 flowchart TD
@@ -720,8 +664,8 @@ flowchart TD
     N4 --> N5
 ```
 
-> ✅ Each `fib(k)` computed exactly **ONCE!**
-> **Time: O(n)** · **Space: O(n)**
+✅ Each `fib(k)` computed exactly **ONCE!**
+**Time: O(n)** · **Space: O(n)**
 
 ### Memory Layout with Memoization
 
@@ -737,17 +681,12 @@ STACK (much shorter!):
 ```
 
 **Flow:**
-- fib(5)
-- ↓
-- fib(4)
-- ↓
-- fib(3)
-- ↓
-- fib(2)
-- ↓
-- fib(1)
-- ↓
-- fib(0)
+1. fib(5)
+2. fib(4)
+3. fib(3)
+4. fib(2)
+5. fib(1)
+6. fib(0)
 
 ```mermaid
 flowchart TD
@@ -766,16 +705,13 @@ flowchart TD
 
 ---
 
-> **Navigation**: [< Back to Index](../00_MASTER_INDEX.md) | [Next: Recursion Fundamentals >](03b_Recursion_Fundamentals.md)
+**Navigation**: [< Back to Index](../00_MASTER_INDEX.md) | [Next: Recursion Fundamentals >](03b_Recursion_Fundamentals.md)
 
+🔬 **Section Challenge — 🧠 Memoization — Caching Recursive Results**
 
+**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🧠 Memoization — Caching Recursive Results**
->
-> **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-> <details><summary>Answer</summary>
->
-> Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-> </details>
->
+Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+</details>
 

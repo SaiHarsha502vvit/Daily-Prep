@@ -71,35 +71,15 @@ Java:
 ```
 
 **Flow:**
-- QUEUE (FIFO): DEQUE (Double-Ended):
-- ↓
-- enqueue(x)
-- ↓
-- addFirst(x)
-- ↓
-- ← addLast(x)
-- ↓
-- enqueue(x)
-- ↓
-- addFirst(x)
-- ↓
-- ← addLast(x)
-- ↓
-- A B C removeFirst()← A B C
-- ↓
-- removeLast()
-- ↓
-- A B C removeFirst()← A B C
-- ↓
-- removeLast()
-- ↓
-- dequeue() ←
-- ↓
-- (returns A) (can add/remove from BOTH ends)
-- ↓
-- Java:
-- ↓
-- Queue methods: offer(x), poll(), peek()
+1. QUEUE (FIFO): DEQUE (Double-Ended):
+2. enqueue(x)
+3. addFirst(x)
+4. ← addLast(x)
+5. A B C removeFirst()← A B C removeLast()
+6. dequeue() ←
+7. (returns A) (can add/remove from BOTH ends)
+8. Java:
+9. Queue methods: offer(x), poll(), peek()
 
 ```mermaid
 flowchart TD
@@ -175,15 +155,8 @@ RESULT: O(1) average for get/put/contains
 ```
 
 **Flow:**
-- 'apple'
-- ↓
-- price? Can't use 'apple' as array index!
-- ↓
-- hash('apple')
-- ↓
-- 42
-- ↓
-- store at bucket[42]
+1. 'apple'
+2. price? Can't use 'apple' as array index! hash('apple') 42 store at bucket[42]
 
 ```mermaid
 flowchart LR
@@ -229,61 +202,19 @@ flowchart LR
 ```
 
 **Flow:**
-- HashMap INTERNALS (Java 8+)
-- ↓
-- 1. Key
-- ↓
-- hashCode()
-- ↓
-- index = hash % capacity
-- ↓
-- 1. Key
-- ↓
-- hashCode()
-- ↓
-- index = hash % capacity
-- ↓
-- 2. Array of buckets:
-- ↓
-- [0]
-- ↓
-- null
-- ↓
-- [0]
-- ↓
-- null
-- ↓
-- [1]
-- ↓
-- ('apple',5)
-- ↓
-- ('kiwi',3)
-- ↓
-- null ← COLLISION!
-- ↓
-- [1]
-- ↓
-- ('apple',5)
-- ↓
-- ('kiwi',3)
-- ↓
-- null ← COLLISION!
-- ↓
-- [2]
-- ↓
-- ('banana',7)
-- ↓
-- null
-- ↓
-- [2]
-- ↓
-- ('banana',7)
-- ↓
-- null
-- ↓
-- [3]
-- ↓
-- null
+1. HashMap INTERNALS (Java 8+)
+2. Key hashCode()
+3. index = hash % capacity
+4. Array of buckets:
+5. [0] null
+6. [1]
+7. ('apple',5)
+8. ('kiwi',3)
+9. null ← COLLISION!
+10. [2]
+11. ('banana',7)
+12. null
+13. [3] null
 
 ```mermaid
 flowchart TD
@@ -347,13 +278,10 @@ APPROACH: HashMap for frequency + scan for first with count==1
 ```
 
 **Flow:**
-- Input: 'leetcode'
-- ↓
-- Output: 0 (first unique = 'l')
-- ↓
-- Input: 'loveleetcode'
-- ↓
-- Output: 2 (first unique = 'v')
+1. Input: 'leetcode'
+2. Output: 0 (first unique = 'l')
+3. Input: 'loveleetcode'
+4. Output: 2 (first unique = 'v')
 
 ```mermaid
 flowchart LR
@@ -406,17 +334,12 @@ WHY HashMap? O(1) lookup of each user's queue.
 ```
 
 **Flow:**
-- [T-55, T-40, T-30, T-20, T-10, T] ← 6 requests in
-- ↓
-- OK
-- ↓
-- HashMap<String, Queue<Long>> : userId
-- ↓
-- request timestamps
-- ↓
-- WHY Queue? Oldest timestamps naturally at front
-- ↓
-- easy to clean up.
+1. [T-55, T-40, T-30, T-20, T-10, T] ← 6 requests in
+2. OK
+3. HashMap<String, Queue<Long>> : userId
+4. request timestamps
+5. WHY Queue? Oldest timestamps naturally at front
+6. easy to clean up.
 
 ```mermaid
 flowchart LR
@@ -456,9 +379,8 @@ To see "Alice works in Engineering" → you need a JOIN.
 ```
 
 **Flow:**
-- To see 'Alice works in Engineering'
-- ↓
-- you need a JOIN.
+1. To see 'Alice works in Engineering'
+2. you need a JOIN.
 
 ```mermaid
 flowchart LR
@@ -574,17 +496,11 @@ pop() → returns 1
 ```
 
 **Flow:**
-- peek()
-- ↓
-- need to return 1 (first in)
-- ↓
-- Transfer: inStack
-- ↓
-- outStack: [3, 2, 1]
-- ↓
-- pop()
-- ↓
-- returns 1
+1. peek()
+2. need to return 1 (first in)
+3. Transfer: inStack outStack: [3, 2, 1]
+4. pop()
+5. returns 1
 
 ```mermaid
 flowchart LR

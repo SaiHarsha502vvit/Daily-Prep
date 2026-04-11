@@ -1,8 +1,8 @@
-> **Navigation**: [← IP Addressing](05_IP_Addressing_Subnets.md) | [Index](00_INDEX.md) | [Next → DNS](07_DNS_Complete.md)
+**Navigation**: [← IP Addressing](05_IP_Addressing_Subnets.md) | [Index](00_INDEX.md) | [Next → DNS](07_DNS_Complete.md)
 
 # 📡 Chapter 6: TCP & UDP Deep Dive — The Transport Layer Explained
 
-> _"TCP is a conversation. UDP is shouting into a crowd. Knowing when to use each — and exactly HOW each works under the hood — is the difference between 'it works on my machine' and 'it works in production at scale.'"_
+_"TCP is a conversation. UDP is shouting into a crowd. Knowing when to use each — and exactly HOW each works under the hood — is the difference between 'it works on my machine' and 'it works in production at scale.'"_
 
 ---
 
@@ -136,14 +136,14 @@ OPTIONS (variable):
 
 
 
-> 🔬 **Section Challenge — The TCP Segment Header**
->
-> **Challenge 1 (Reasoning):** A TCP connection is in TIME_WAIT state. What is it waiting for and why 2×MSL (Maximum Segment Lifetime)?
-> <details><summary>Answer</summary>
->
-> TIME_WAIT: the side that sent the last ACK waits before fully closing. Why 2×MSL (~60-120 seconds): (1) Ensure the final ACK reached the other side (if it was lost, the other side will retransmit FIN — we need to still be listening to send a new ACK). (2) Allow all old segments in the network to expire (segment with old sequence number arriving for a new connection could corrupt data). Fast servers on many short connections: TIME_WAIT exhaustion → `SO_REUSEADDR`, `tcp_time_wait_reuse`, or HTTP keep-alive.
-> </details>
->
+🔬 **Section Challenge — The TCP Segment Header**
+
+**Challenge 1 (Reasoning):** A TCP connection is in TIME_WAIT state. What is it waiting for and why 2×MSL (Maximum Segment Lifetime)?
+<details><summary>Answer</summary>
+
+TIME_WAIT: the side that sent the last ACK waits before fully closing. Why 2×MSL (~60-120 seconds): (1) Ensure the final ACK reached the other side (if it was lost, the other side will retransmit FIN — we need to still be listening to send a new ACK). (2) Allow all old segments in the network to expire (segment with old sequence number arriving for a new connection could corrupt data). Fast servers on many short connections: TIME_WAIT exhaustion → `SO_REUSEADDR`, `tcp_time_wait_reuse`, or HTTP keep-alive.
+</details>
+
 
 ## The Three-Way Handshake — In Detail
 
@@ -258,14 +258,14 @@ TIME_WAIT:
 ```bash
 
 
-> 🔬 **Section Challenge — TCP State Machine — The 11 States**
->
-> **Challenge 1 (Reasoning):** A TCP connection is in TIME_WAIT state. What is it waiting for and why 2×MSL (Maximum Segment Lifetime)?
-> <details><summary>Answer</summary>
->
-> TIME_WAIT: the side that sent the last ACK waits before fully closing. Why 2×MSL (~60-120 seconds): (1) Ensure the final ACK reached the other side (if it was lost, the other side will retransmit FIN — we need to still be listening to send a new ACK). (2) Allow all old segments in the network to expire (segment with old sequence number arriving for a new connection could corrupt data). Fast servers on many short connections: TIME_WAIT exhaustion → `SO_REUSEADDR`, `tcp_time_wait_reuse`, or HTTP keep-alive.
-> </details>
->
+🔬 **Section Challenge — TCP State Machine — The 11 States**
+
+**Challenge 1 (Reasoning):** A TCP connection is in TIME_WAIT state. What is it waiting for and why 2×MSL (Maximum Segment Lifetime)?
+<details><summary>Answer</summary>
+
+TIME_WAIT: the side that sent the last ACK waits before fully closing. Why 2×MSL (~60-120 seconds): (1) Ensure the final ACK reached the other side (if it was lost, the other side will retransmit FIN — we need to still be listening to send a new ACK). (2) Allow all old segments in the network to expire (segment with old sequence number arriving for a new connection could corrupt data). Fast servers on many short connections: TIME_WAIT exhaustion → `SO_REUSEADDR`, `tcp_time_wait_reuse`, or HTTP keep-alive.
+</details>
+
 
 # ── OBSERVE TCP STATES ON YOUR MACHINE ──
 
@@ -336,20 +336,20 @@ WINDOW SCALING:
 
 
 
-> 🔬 **Section Challenge — TCP Flow Control — Sliding Window**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — TCP Flow Control — Sliding Window**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## TCP Congestion Control — Don't Crash the Internet
 
@@ -428,14 +428,14 @@ MODERN ALGORITHMS:
 
 
 
-> 🔬 **Section Challenge — TCP Congestion Control — Don't Crash the Internet**
->
-> **Challenge 1 (Reasoning):** A TCP connection is in TIME_WAIT state. What is it waiting for and why 2×MSL (Maximum Segment Lifetime)?
-> <details><summary>Answer</summary>
->
-> TIME_WAIT: the side that sent the last ACK waits before fully closing. Why 2×MSL (~60-120 seconds): (1) Ensure the final ACK reached the other side (if it was lost, the other side will retransmit FIN — we need to still be listening to send a new ACK). (2) Allow all old segments in the network to expire (segment with old sequence number arriving for a new connection could corrupt data). Fast servers on many short connections: TIME_WAIT exhaustion → `SO_REUSEADDR`, `tcp_time_wait_reuse`, or HTTP keep-alive.
-> </details>
->
+🔬 **Section Challenge — TCP Congestion Control — Don't Crash the Internet**
+
+**Challenge 1 (Reasoning):** A TCP connection is in TIME_WAIT state. What is it waiting for and why 2×MSL (Maximum Segment Lifetime)?
+<details><summary>Answer</summary>
+
+TIME_WAIT: the side that sent the last ACK waits before fully closing. Why 2×MSL (~60-120 seconds): (1) Ensure the final ACK reached the other side (if it was lost, the other side will retransmit FIN — we need to still be listening to send a new ACK). (2) Allow all old segments in the network to expire (segment with old sequence number arriving for a new connection could corrupt data). Fast servers on many short connections: TIME_WAIT exhaustion → `SO_REUSEADDR`, `tcp_time_wait_reuse`, or HTTP keep-alive.
+</details>
+
 
 ## Nagle's Algorithm & Delayed ACKs
 
@@ -1036,4 +1036,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 </details>
 
 
-> **Navigation**: [← IP Addressing](05_IP_Addressing_Subnets.md) | [Index](00_INDEX.md) | [Next → DNS](07_DNS_Complete.md)
+**Navigation**: [← IP Addressing](05_IP_Addressing_Subnets.md) | [Index](00_INDEX.md) | [Next → DNS](07_DNS_Complete.md)

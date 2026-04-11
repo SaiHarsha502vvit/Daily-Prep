@@ -351,21 +351,14 @@ ORDER BY MIN(total);
 ```
 
 **Flow:**
-- dim_product / (Dimension)
-- ↓
-- dim_customer / (Dimension)
-- ↓
-- dim_product / (Dimension)
-- ↓
-- dim_date / (Dimension)
-- ↓
-- dim_customer / (Dimension)
-- ↓
-- fact_sales / (Fact)
-- ↓
-- dim_date / (Dimension)
-- ↓
-- fact_sales / (Fact)
+1. dim_product / (Dimension)
+2. dim_customer / (Dimension)
+3. dim_product / (Dimension)
+4. dim_date / (Dimension)
+5. dim_customer / (Dimension)
+6. fact_sales / (Fact)
+7. dim_date / (Dimension)
+8. fact_sales / (Fact)
 
 ```mermaid
 flowchart TD

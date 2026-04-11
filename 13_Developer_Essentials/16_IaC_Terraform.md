@@ -1,60 +1,60 @@
-> **Navigation**: [< Previous](15_Cloud_Services_Guide.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Servers_Ports_Networking.md)
+**Navigation**: [< Previous](15_Cloud_Services_Guide.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Servers_Ports_Networking.md)
 
 # Infrastructure as Code — Terraform & DevOps
 
 ## What is Infrastructure as Code (IaC)?
 
 
-> BEFORE IaC:
-> "Hey admin, can you create a server? 2 CPU, 8 GB RAM, Ubuntu"
-> → Email/ticket → wait 3 days → manual setup → no consistency
-> → "But it works on MY server!" (configuration drift)
->
-> AFTER IaC:
-> Write code → commit to Git → CI/CD creates infrastructure
-> → reproducible, versioned, reviewable, testable
-> → identical environments every time
->
-> IaC = Treat infrastructure the same way you treat application
-> code: version it, test it, review it, automate it.
+BEFORE IaC:
+"Hey admin, can you create a server? 2 CPU, 8 GB RAM, Ubuntu"
+→ Email/ticket → wait 3 days → manual setup → no consistency
+→ "But it works on MY server!" (configuration drift)
+
+AFTER IaC:
+Write code → commit to Git → CI/CD creates infrastructure
+→ reproducible, versioned, reviewable, testable
+→ identical environments every time
+
+IaC = Treat infrastructure the same way you treat application
+code: version it, test it, review it, automate it.
 
 
 ---
 
 
 
-> 🔬 **Section Challenge — What is Infrastructure as Code (IaC)?**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — What is Infrastructure as Code (IaC)?**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## IaC Tool Landscape
 
 
-> PROVISIONING (create infrastructure):
-> - Terraform — multi-cloud, declarative, HCL language
-> - Pulumi — multi-cloud, use real languages (Java/Python/TS)
-> - AWS CloudFormation — AWS only, JSON/YAML
-> - Azure ARM/Bicep — Azure only
-> - Google Cloud Deployment Manager — GCP only
->
-> CONFIGURATION MANAGEMENT (configure existing servers):
-> - Ansible — agentless, YAML playbooks, push-based
-> - Chef — Ruby DSL, pull-based, agent on servers
-> - Puppet — declarative, pull-based, agent on servers
->
-> CONTAINERS & ORCHESTRATION:
-> - Docker / Dockerfile — build container images
-> - Docker Compose — multi-container local development
-> - Kubernetes manifests — container orchestration
-> - Helm — Kubernetes package manager (templated manifests)
->
-> Most common combo: Terraform + Ansible + Docker + Kubernetes
-> For interviews: Know Terraform basics + Docker + K8s concepts
+PROVISIONING (create infrastructure):
+- Terraform — multi-cloud, declarative, HCL language
+- Pulumi — multi-cloud, use real languages (Java/Python/TS)
+- AWS CloudFormation — AWS only, JSON/YAML
+- Azure ARM/Bicep — Azure only
+- Google Cloud Deployment Manager — GCP only
+
+CONFIGURATION MANAGEMENT (configure existing servers):
+- Ansible — agentless, YAML playbooks, push-based
+- Chef — Ruby DSL, pull-based, agent on servers
+- Puppet — declarative, pull-based, agent on servers
+
+CONTAINERS & ORCHESTRATION:
+- Docker / Dockerfile — build container images
+- Docker Compose — multi-container local development
+- Kubernetes manifests — container orchestration
+- Helm — Kubernetes package manager (templated manifests)
+
+Most common combo: Terraform + Ansible + Docker + Kubernetes
+For interviews: Know Terraform basics + Docker + K8s concepts
 
 
 ---
@@ -64,41 +64,41 @@
 ### Declarative vs Imperative
 
 
-> IMPERATIVE (scripting):
-> "Create a VPC, then create a subnet, then create an EC2..."
-> → You describe the STEPS
-> → Bash scripts, AWS CLI commands
->
-> DECLARATIVE (Terraform):
-> "I want 3 EC2 instances, a VPC, and an RDS database"
-> → You describe the DESIRED STATE
-> → Terraform figures out the steps to get there
->
-> KEY BENEFIT: Terraform knows current state vs desired state.
-> It only changes what's DIFFERENT (idempotent).
+IMPERATIVE (scripting):
+"Create a VPC, then create a subnet, then create an EC2..."
+→ You describe the STEPS
+→ Bash scripts, AWS CLI commands
+
+DECLARATIVE (Terraform):
+"I want 3 EC2 instances, a VPC, and an RDS database"
+→ You describe the DESIRED STATE
+→ Terraform figures out the steps to get there
+
+KEY BENEFIT: Terraform knows current state vs desired state.
+It only changes what's DIFFERENT (idempotent).
 
 
 ### The Terraform Workflow
 
 
->
-> Write (.tf files)
-> │
-> ▼
-> terraform init        ← Download providers (AWS, Azure, etc.)
-> │
-> ▼
-> terraform plan        ← Preview changes (diff: + add, - remove)
-> │                    NEVER skip this step!
-> ▼
-> terraform apply       ← Execute changes (creates/updates)
-> │
-> ▼
-> terraform destroy     ← Tear down everything (cleanup)
->
-> State file (terraform.tfstate) tracks what exists.
-> NEVER edit this file manually. NEVER commit it to Git.
-> Store it remotely (S3 + DynamoDB lock, Terraform Cloud).
+
+Write (.tf files)
+│
+▼
+terraform init        ← Download providers (AWS, Azure, etc.)
+│
+▼
+terraform plan        ← Preview changes (diff: + add, - remove)
+│                    NEVER skip this step!
+▼
+terraform apply       ← Execute changes (creates/updates)
+│
+▼
+terraform destroy     ← Tear down everything (cleanup)
+
+State file (terraform.tfstate) tracks what exists.
+NEVER edit this file manually. NEVER commit it to Git.
+Store it remotely (S3 + DynamoDB lock, Terraform Cloud).
 
 
 ---
@@ -263,29 +263,10 @@ infrastructure/
 ```
 
 **Flow:**
-- infrastructure/
-- ↓
-- modules/
-- ↓
-- infrastructure/
-- ↓
-- vpc/
-- ↓
-- infrastructure/
-- ↓
-- main.tf
-- ↓
-- infrastructure/
-- ↓
-- variables.tf
-- ↓
-- infrastructure/
-- ↓
-- outputs.tf
-- ↓
-- infrastructure/
-- ↓
-- ec2/
+1. infrastructure/ modules/ infrastructure/
+2. vpc/ infrastructure/ main.tf infrastructure/
+3. variables.tf infrastructure/ outputs.tf
+4. infrastructure/ ec2/
 
 ```mermaid
 flowchart TD
@@ -321,14 +302,14 @@ flowchart TD
 ```hcl
 
 
-> 🔬 **Section Challenge — Terraform — Intermediate Patterns**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Terraform — Intermediate Patterns**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # modules/vpc/main.tf
 resource "aws_vpc" "this" {
@@ -556,19 +537,9 @@ resource "aws_db_instance" "main" {
 ```
 
 **Flow:**
-- STATE FILE — The Most Important Terraform Concept
-- ↓
-- .tf file says: 'I want an EC2 instance'
-- ↓
-- State file says: 'That's i-0abc123 in us-east-1'
-- ↓
-- RULES:
-- ↓
-- 1. NEVER edit state manually
-- ↓
-- 2. NEVER commit state to Git (contains secrets!)
-- ↓
-- 3. ALWAYS use remote state for teams:
+1. STATE FILE — The Most Important Terraform Concept
+2. .tf file says: 'I want an EC2 instance'
+3. State file says: 'That's i-0abc123 in us-east-1' RULES: NEVER edit state manually NEVER commit state to Git (contains secrets!) ALWAYS use remote state for teams:
 
 ```mermaid
 flowchart TD
@@ -612,13 +583,10 @@ RULE: Only CI/CD applies. Humans don't run apply.
 ```
 
 **Flow:**
-- Write / .tf --(push)--> Branch / + PR
-- ↓
-- Branch / + PR --(trigger)--> Pipeline
-- ↓
-- Pipeline
-- ↓
-- AWS
+1. Write / .tf --(push)--> Branch / + PR
+2. Branch / + PR --(trigger)--> Pipeline
+3. Pipeline
+4. AWS
 
 ```mermaid
 flowchart LR
@@ -636,14 +604,14 @@ flowchart LR
 ```yaml
 
 
-> 🔬 **Section Challenge — CI/CD for Infrastructure**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — CI/CD for Infrastructure**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # .github/workflows/terraform.yml
 name: Terraform
@@ -724,19 +692,13 @@ Q: What happens if you delete a resource from .tf without destroy?
 ```
 
 **Flow:**
-- Q: What is Terraform and why use it?
-- ↓
-- it figures out how to get there. Benefits: version cont
-- ↓
-- Q: Explain terraform plan vs apply.
-- ↓
-- Plan shows a preview (diff) without making changes.
-- ↓
-- Apply executes the changes. Always plan before apply.
-- ↓
-- Q: What is Terraform state? How do you manage it?
-- ↓
-- Q: How do you handle secrets in Terraform?
+1. Q: What is Terraform and why use it?
+2. it figures out how to get there. Benefits: version cont
+3. Q: Explain terraform plan vs apply.
+4. Plan shows a preview (diff) without making changes.
+5. Apply executes the changes. Always plan before apply.
+6. Q: What is Terraform state? How do you manage it?
+7. Q: How do you handle secrets in Terraform?
 
 ```mermaid
 flowchart TD
@@ -779,19 +741,10 @@ flowchart TD
 ```
 
 **Flow:**
-- 1. Version control everything — all .tf files in Git
-- ↓
-- 2. Use modules for reusable components
-- ↓
-- 3. Remote state with locking — never local for teams
-- ↓
-- 4. Separate environments — don't share state
-- ↓
-- 5. Use variables and outputs — no hardcoded values
-- ↓
-- 6. Pin provider versions — avoid surprise upgrades
-- ↓
-- 7. Run plan in CI — review changes before apply
+1. Version control everything — all .tf files in Git
+2. Use modules for reusable components
+3. Remote state with locking — never local for teams
+4. Separate environments — don't share state Use variables and outputs — no hardcoded values Pin provider versions — avoid surprise upgrades Run plan in CI — review changes before apply
 
 ```mermaid
 flowchart TD

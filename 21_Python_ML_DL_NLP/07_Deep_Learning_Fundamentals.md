@@ -1,14 +1,14 @@
-> **Navigation**: [< Previous](06_ML_Algorithms.md) | [Back to Index](00_INDEX.md) | [Next >](08_NLP_Complete.md)
+**Navigation**: [< Previous](06_ML_Algorithms.md) | [Back to Index](00_INDEX.md) | [Next >](08_NLP_Complete.md)
 
 # 🧠 Deep Learning Fundamentals — Complete Guide
 
-> _"Deep Learning is just linear algebra + calculus + a lot of compute. The concepts are surprisingly simple; the magic is in the scale."_
+_"Deep Learning is just linear algebra + calculus + a lot of compute. The concepts are surprisingly simple; the magic is in the scale."_
 
 ---
 
 # PART 0: The 5W+H Framework
 
-> **Mental Model:** If Machine Learning is learning to recognize a cat by measuring tail length and ear shape (manual features), Deep Learning is handing a neural network a million cat photos and letting it *discover its own features* — edges → textures → faces → entire cats.
+**Mental Model:** If Machine Learning is learning to recognize a cat by measuring tail length and ear shape (manual features), Deep Learning is handing a neural network a million cat photos and letting it *discover its own features* — edges → textures → faces → entire cats.
 
 | Question | Deep Learning Context |
 | :--- | :--- |
@@ -120,14 +120,14 @@ def softmax(z):
 
 
 
-> 🔬 **Section Challenge — 1.2 Activation Functions**
->>
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
+🔬 **Section Challenge — 1.2 Activation Functions**
 >
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 # Example
 z = np.array([-2, -1, 0, 1, 2])
@@ -195,14 +195,14 @@ MULTI-CLASS CLASSIFICATION:
 
 
 
-> 🔬 **Section Challenge — 2.2 Loss Functions**
->>
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
+🔬 **Section Challenge — 2.2 Loss Functions**
 >
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## 2.3 Backpropagation — How Networks Learn
 
@@ -247,8 +247,8 @@ THE VANISHING GRADIENT PROBLEM:
 ```python
 
 
-> 🔬 **Section Challenge — 2.3 Backpropagation — How Networks Learn**
->>
+🔬 **Section Challenge — 2.3 Backpropagation — How Networks Learn**
+>
 
 # Neural Network from SCRATCH (no PyTorch/TF)
 import numpy as np
@@ -528,7 +528,7 @@ flowchart TD
 
 # PART 6: Training Optimization — Making Networks Learn Faster
 
-> _MIT 6.S191-style: understanding WHY each optimizer exists and the math behind it_
+_MIT 6.S191-style: understanding WHY each optimizer exists and the math behind it_
 
 ---
 
@@ -587,14 +587,14 @@ ADAMW (Adam with Decoupled Weight Decay):
 
 
 
-> 🔬 **Section Challenge — 6.1 Gradient Descent Variants**
->
-> **Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
-> <details><summary>Answer</summary>
->
-> Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
-> </details>
->
+🔬 **Section Challenge — 6.1 Gradient Descent Variants**
+
+**Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
+<details><summary>Answer</summary>
+
+Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
+</details>
+
 
 ## 6.2 Learning Rate Scheduling
 
@@ -633,7 +633,7 @@ LR FINDER (practical trick):
 
 # PART 7: Regularization — Preventing Overfitting
 
-> _The art of making networks generalize to UNSEEN data_
+_The art of making networks generalize to UNSEEN data_
 
 ---
 
@@ -738,7 +738,7 @@ AUGMENTATION IS FREE REGULARIZATION:
 
 # PART 8: Transfer Learning & Fine-tuning
 
-> _How modern AI works: don't train from scratch, transfer knowledge._
+_How modern AI works: don't train from scratch, transfer knowledge._
 
 ---
 
@@ -1006,4 +1006,4 @@ def retry(n): return lambda fn: lambda *args: ... # 3 levels!
 </details>
 
 
-> **Navigation**: [< Previous](06_ML_Algorithms.md) | [Back to Index](00_INDEX.md) | [Next >](08_NLP_Complete.md)
+**Navigation**: [< Previous](06_ML_Algorithms.md) | [Back to Index](00_INDEX.md) | [Next >](08_NLP_Complete.md)

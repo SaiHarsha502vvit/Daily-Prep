@@ -63,19 +63,13 @@
 ```
 
 **Flow:**
-- BEAN SCOPES — Controls object lifecycle
-- ↓
-- SINGLETON (default):
-- ↓
-- ONE instance per application context. Shared by all.
-- ↓
-- @Scope('singleton') or just @Service / @Component
-- ↓
-- USE: Stateless services, repositories, controllers
-- ↓
-- PROTOTYPE:
-- ↓
-- NEW instance every time it's requested.
+1. BEAN SCOPES — Controls object lifecycle
+2. SINGLETON (default):
+3. ONE instance per application context. Shared by all.
+4. @Scope('singleton') or just @Service / @Component
+5. USE: Stateless services, repositories, controllers
+6. PROTOTYPE:
+7. NEW instance every time it's requested.
 
 ```mermaid
 flowchart TD
@@ -243,19 +237,13 @@ public class ProductController {
 ```
 
 **Flow:**
-- SPRING DI RULES:
-- ↓
-- 1. Always use constructor injection
-- ↓
-- 2. Make fields final
-- ↓
-- 3. One constructor = @Autowired optional
-- ↓
-- 4. Never use new XxxService() — let Spring manage it
-- ↓
-- 5. @Service for business logic, @Repository for data ac
-- ↓
-- 6. @Component for generic beans
+1. SPRING DI RULES:
+2. Always use constructor injection
+3. Make fields final
+4. One constructor = @Autowired optional
+5. Never use new XxxService() — let Spring manage it
+6. @Service for business logic, @Repository for data ac
+7. @Component for generic beans
 
 ```mermaid
 flowchart TD
@@ -359,17 +347,12 @@ PATTERNS:
 ```
 
 **Flow:**
-- Week 2: LinkedList (Singly + Doubly), Stack, Queue
-- ↓
-- You now know 7/10 essential data structures!
-- ↓
-- Week 2: Merge Sort, Quick Sort, Binary Search, Two
-- ↓
-- You now have O(n²) AND O(n log n) sorts + O(log n) sear
-- ↓
-- Week 2: WHERE, ORDER BY, LIMIT, JOINs, GROUP BY, H
-- ↓
-- You can now write 80% of real-world SQL queries!
+1. Week 2: LinkedList (Singly + Doubly), Stack, Queue
+2. You now know 7/10 essential data structures!
+3. Week 2: Merge Sort, Quick Sort, Binary Search, Two
+4. You now have O(n²) AND O(n log n) sorts + O(log n) sear
+5. Week 2: WHERE, ORDER BY, LIMIT, JOINs, GROUP BY, H
+6. You can now write 80% of real-world SQL queries!
 
 ```mermaid
 flowchart TD

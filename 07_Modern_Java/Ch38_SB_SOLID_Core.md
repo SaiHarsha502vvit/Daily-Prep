@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch39_SB_SOLID_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch39_SB_SOLID_Advanced.md)
 
 ---
 
 # 🏗️ SPRING BOOT MASTERY - Part 16: SOLID Principles Deep Dive
 
-> **Object-Oriented Design Principles with Real Spring Examples**
-> _"Write maintainable, flexible, and robust code"_
+**Object-Oriented Design Principles with Real Spring Examples**
+_"Write maintainable, flexible, and robust code"_
 
 ---
 
@@ -52,13 +52,10 @@
 ```
 
 **Flow:**
-- WHY: Why Learn SOLID Principles? / • Reduces bugs: Chan
-- ↓
-- HOW: How to Apply SOLID? / • S: One class = One respons
-- ↓
-- WHEN: When to Apply Each Principle? / • SRP: Class has
-- ↓
-- WHICH: Which Principles are Most Critical in Spring? /
+1. WHY: Why Learn SOLID Principles? / • Reduces bugs: Chan
+2. HOW: How to Apply SOLID? / • S: One class = One respons
+3. WHEN: When to Apply Each Principle? / • SRP: Class has
+4. WHICH: Which Principles are Most Critical in Spring? /
 
 ```mermaid
 flowchart TD
@@ -93,19 +90,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WHAT THIS PART COVERS
-- ↓
-- 1. S - Single Responsibility Principle (SRP)
-- ↓
-- 2. O - Open/Closed Principle (OCP)
-- ↓
-- 3. L - Liskov Substitution Principle (LSP)
-- ↓
-- 4. I - Interface Segregation Principle (ISP)
-- ↓
-- 5. D - Dependency Inversion Principle (DIP)
-- ↓
-- 6. Complete Spring Boot Project Example
+1. WHAT THIS PART COVERS
+2. 1. S - Single Responsibility Principle (SRP)
+3. 2. O - Open/Closed Principle (OCP)
+4. 3. L - Liskov Substitution Principle (LSP)
+5. 4. I - Interface Segregation Principle (ISP)
+6. 5. D - Dependency Inversion Principle (DIP)
+7. 6. Complete Spring Boot Project Example
 
 ```mermaid
 flowchart TD
@@ -153,19 +144,13 @@ flowchart TD
 ```
 
 **Flow:**
-- THE COST OF VIOLATING SOLID
-- ↓
-- WITHOUT SOLID:
-- ↓
-- • Adding features breaks existing code
-- ↓
-- • Testing requires complex setup
-- ↓
-- • Changes ripple through the codebase
-- ↓
-- • Code becomes 'fragile' - fix one bug, create three
-- ↓
-- • New team members struggle to understand
+1. THE COST OF VIOLATING SOLID
+2. WITHOUT SOLID:
+3. • Adding features breaks existing code
+4. • Testing requires complex setup
+5. • Changes ripple through the codebase
+6. • Code becomes 'fragile' - fix one bug, create three
+7. • New team members struggle to understand
 
 ```mermaid
 flowchart TD
@@ -212,35 +197,21 @@ flowchart TD
 ```
 
 **Flow:**
-- SINGLE RESPONSIBILITY PRINCIPLE
-- ↓
-- If your class changes because:
-- ↓
-- • Business rules change
-- ↓
-- One responsibility
-- ↓
-- • Business rules change
-- ↓
-- One responsibility
-- ↓
-- • Database schema changes
-- ↓
-- Another responsibility
-- ↓
-- • Database schema changes
-- ↓
-- Another responsibility
-- ↓
-- • UI requirements change
-- ↓
-- Another responsibility
-- ↓
-- • UI requirements change
-- ↓
-- Another responsibility
-- ↓
-- Then your class has MULTIPLE responsibilities!
+1. SINGLE RESPONSIBILITY PRINCIPLE
+2. If your class changes because:
+3. • Business rules change
+4. One responsibility
+5. • Business rules change
+6. One responsibility
+7. • Database schema changes
+8. Another responsibility
+9. • Database schema changes
+10. Another responsibility
+11. • UI requirements change
+12. Another responsibility
+13. • UI requirements change
+14. Another responsibility
+15. Then your class has MULTIPLE responsibilities!
 
 ```mermaid
 flowchart TD
@@ -574,19 +545,13 @@ public class ReportService {
 ```
 
 **Flow:**
-- OPEN/CLOSED PRINCIPLE
-- ↓
-- 'Open for extension' = You can add new functionality
-- ↓
-- 'Closed for modification' = Without changing existing c
-- ↓
-- ACHIEVED THROUGH:
-- ↓
-- • Abstraction (interfaces/abstract classes)
-- ↓
-- • Composition over inheritance
-- ↓
-- • Strategy pattern
+1. OPEN/CLOSED PRINCIPLE
+2. 'Open for extension' = You can add new functionality
+3. 'Closed for modification' = Without changing existing c
+4. ACHIEVED THROUGH:
+5. • Abstraction (interfaces/abstract classes)
+6. • Composition over inheritance
+7. • Strategy pattern
 
 ```mermaid
 flowchart TD
@@ -959,19 +924,13 @@ public class RetryableNotificationDecorator implements NotificationSender {
 ```
 
 **Flow:**
-- LISKOV SUBSTITUTION PRINCIPLE
-- ↓
-- with objects of type S without breaking the program.
-- ↓
-- IN PRACTICE:
-- ↓
-- • Subclass methods should not throw new exceptions
-- ↓
-- • Subclass methods should accept same or broader input
-- ↓
-- • Subclass methods should return same or narrower outpu
-- ↓
-- THE CLASSIC VIOLATION: Rectangle/Square problem
+1. LISKOV SUBSTITUTION PRINCIPLE
+2. with objects of type S without breaking the program.
+3. IN PRACTICE:
+4. • Subclass methods should not throw new exceptions
+5. • Subclass methods should accept same or broader input
+6. • Subclass methods should return same or narrower outpu
+7. THE CLASSIC VIOLATION: Rectangle/Square problem
 
 ```mermaid
 flowchart TD
@@ -1266,20 +1225,20 @@ public class DatabaseDataProcessor implements DataProcessor {
 
 
 
-> 🔬 **Section Challenge — Chapter 3: "Subtypes must be substitutable for their base types"**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — Chapter 3: "Subtypes must be substitutable for their base types"**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — OOP & Design Patterns
 

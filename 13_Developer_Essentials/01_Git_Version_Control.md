@@ -1,6 +1,6 @@
 # 🔀 Git & Version Control — Complete Guide
 
-> **Navigation**: [Index](00_INDEX.md) | [Next: Linux CLI >](02_Linux_CLI_Shell.md)
+**Navigation**: [Index](00_INDEX.md) | [Next: Linux CLI >](02_Linux_CLI_Shell.md)
 
 ---
 
@@ -10,10 +10,10 @@
 
 It's 2004. A team of 5 developers is building software. They share code via email... or a shared folder.
 
-> *Developer A*: "I'll work on login.java"
-> *Developer B*: "Me too, I need to fix a bug there"
->
-> **Result**: Developer B copies their version over A's work. 3 days of A's work = **gone forever**.
+*Developer A*: "I'll work on login.java"
+*Developer B*: "Me too, I need to fix a bug there"
+
+**Result**: Developer B copies their version over A's work. 3 days of A's work = **gone forever**.
 
 This happened *every day* in the 1990s–2000s at every company.
 
@@ -25,7 +25,7 @@ This happened *every day* in the 1990s–2000s at every company.
 | 2 | **History** | "The app worked yesterday, what changed?" → nobody knows |
 | 3 | **Experimentation** | "I want to try a new approach without breaking main code" → make a copy? |
 
-> ✅ **Git solves all three simultaneously.**
+✅ **Git solves all three simultaneously.**
 
 ## WHO: The Origin Story
 
@@ -37,20 +37,20 @@ This happened *every day* in the 1990s–2000s at every company.
 3. **Safe** — cryptographic integrity with SHA-1 hashes
 4. **Branching** — cheap, instant branch creation
 
-> The name "Git" comes from British slang for "unpleasant person." Linus: *"I name all my projects after myself."*
+The name "Git" comes from British slang for "unpleasant person." Linus: *"I name all my projects after myself."*
 
 ---
 
 
 
-> 🔬 **Section Challenge — WHO: The Origin Story**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — WHO: The Origin Story**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # WHAT: Core Mental Models
 
@@ -60,18 +60,18 @@ This happened *every day* in the 1990s–2000s at every company.
 
 **Git**: Store **snapshots** of the entire project state. Each version is a complete picture of every file. Unchanged files just point to the previous copy.
 
-> 💡 **Why snapshots?** Any version can be reconstructed instantly — no need to replay 500 deltas.
+💡 **Why snapshots?** Any version can be reconstructed instantly — no need to replay 500 deltas.
 
 
 
-> 🔬 **Section Challenge — Mental Model 1: Git is a SNAPSHOT Timeline**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Mental Model 1: Git is a SNAPSHOT Timeline**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Mental Model 2: Three Areas
 
@@ -99,20 +99,20 @@ flowchart RL
     C2 --> C1["commit_1<br>789abc · Initial commit"]
 ```
 
-> 💡 **Hash** = SHA-1 of content + parent hash + metadata. If ANY byte changes → completely different hash → tamper-proof history.
+💡 **Hash** = SHA-1 of content + parent hash + metadata. If ANY byte changes → completely different hash → tamper-proof history.
 
 ---
 
 
 
-> 🔬 **Section Challenge — Mental Model 3: Commits are a Linked List**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Mental Model 3: Commits are a Linked List**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # HOW: Essential Commands (Progressive)
 
@@ -220,8 +220,8 @@ gitGraph
     merge feature/login id: "merge"
 ```
 
-> **Bug fix?** Branch from main → fix → merge → deploy.
-> **Feature ready?** Merge feature into main.
+**Bug fix?** Branch from main → fix → merge → deploy.
+**Feature ready?** Merge feature into main.
 
 ### Branch Commands
 
@@ -285,16 +285,16 @@ gitGraph
     commit id: "v3"
 ```
 
-> **Recommendation**: Learning/personal → **GitHub Flow**. Enterprise/team → **Git Flow**.
+**Recommendation**: Learning/personal → **GitHub Flow**. Enterprise/team → **Git Flow**.
 
 ## Level 3: Merge Conflicts (The Hard Part)
 
 ### WHY Conflicts Happen
 
-> **You**: Edit line 10 of `app.java` → `"Hello World"`
-> **Friend**: Edit line 10 of `app.java` → `"Hello Universe"`
->
-> **Git**: *"Two different changes to the SAME line. I can't decide. Human, you must choose."*
+**You**: Edit line 10 of `app.java` → `"Hello World"`
+**Friend**: Edit line 10 of `app.java` → `"Hello Universe"`
+
+**Git**: *"Two different changes to the SAME line. I can't decide. Human, you must choose."*
 
 ### HOW to Resolve
 
@@ -307,7 +307,7 @@ git status   # Shows conflicted files in red
 System.out.println("Hello World");    ← YOUR change
 =======
 System.out.println("Hello Universe"); ← THEIR change
->>>>>>> feature/greeting
+>>>>>> feature/greeting
 
 # YOU decide — edit the file to keep what's correct:
 System.out.println("Hello Universe");
@@ -347,19 +347,10 @@ Result: Linear, clean history
 ```
 
 **Flow:**
-- BEFORE rebase:
-- ↓
-- main: A B C D
-- ↓
-- feature: E F G
-- ↓
-- AFTER git rebase main (from feature branch):
-- ↓
-- feature: E' F' G'
-- ↓
-- (E', F', G' are COPIES with new parent = D)
-- ↓
-- Result: Linear, clean history
+1. BEFORE rebase: main: A B C D feature: E F G
+2. AFTER git rebase main (from feature branch):
+3. feature: E' F' G' (E', F', G' are COPIES with new parent = D)
+4. Result: Linear, clean history
 
 ```mermaid
 flowchart TD
@@ -552,14 +543,14 @@ node_modules/
 
 
 
-> 🔬 **Section Challenge — Exercise 2: Branching**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Exercise 2: Branching**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Exercise 3: Conflict Resolution
 ```
@@ -570,9 +561,7 @@ node_modules/
 ```
 
 **Flow:**
-- 4. Try to merge the second
-- ↓
-- resolve conflict
+1. Try to merge the second resolve conflict
 
 ```mermaid
 flowchart LR
@@ -591,7 +580,7 @@ flowchart LR
 
 ---
 
-> **Next Chapter**: [Linux CLI & Shell →](02_Linux_CLI_Shell.md)
+**Next Chapter**: [Linux CLI & Shell →](02_Linux_CLI_Shell.md)
 
 
 ---

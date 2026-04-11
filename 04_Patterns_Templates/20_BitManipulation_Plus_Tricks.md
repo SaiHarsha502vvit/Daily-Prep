@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](19_Matrix_Plus_Grid_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Intervals_Pattern.md)
+**Navigation**: [< Previous](19_Matrix_Plus_Grid_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Intervals_Pattern.md)
 
 # Bit Manipulation + Tricks — Combined Pattern Guide
 
-> **WHY this matters?** Bit manipulation provides O(1) operations that replace expensive loops. XOR finds unique elements, bitmasks encode sets, and bit tricks optimize space and time.
+**WHY this matters?** Bit manipulation provides O(1) operations that replace expensive loops. XOR finds unique elements, bitmasks encode sets, and bit tricks optimize space and time.
 
 ### 🧠 Deep Intuition — Why Bit Operations Are So Powerful
 
@@ -27,7 +27,7 @@ In Java/C, negative numbers use **two's complement**: flip all bits and add 1. T
 
 A bitmask is an integer where each bit represents whether an element is "included" in a set. For n elements, there are 2ⁿ possible subsets, each represented by an n-bit integer. This allows DP over subsets: `dp[mask]` represents the answer for the subset encoded by `mask`. This is the foundation of solutions to TSP (Travelling Salesman Problem), assignment problems, and other NP-hard problems optimized from O(n!) to O(2ⁿ × n²).
 
-> ⚠️ **Limitation**: Bitmask DP only works for n ≤ 20-25, because 2²⁰ ≈ 1 million states is manageable but 2³⁰ ≈ 1 billion is not.
+⚠️ **Limitation**: Bitmask DP only works for n ≤ 20-25, because 2²⁰ ≈ 1 million states is manageable but 2³⁰ ≈ 1 billion is not.
 
 ---
 
@@ -44,9 +44,8 @@ THEN → Bit Manipulation
 ```
 
 **Flow:**
-- THEN
-- ↓
-- Bit Manipulation
+1. THEN
+2. Bit Manipulation
 
 ```mermaid
 flowchart LR
@@ -74,29 +73,18 @@ Count set bits         Integer.bitCount(n)     bitCount(1100) = 2
 ```
 
 **Flow:**
-- Operation Code Example (n=12 = 1100)
-- ↓
-- Check if bit i set (n >> i) & 1 bit 2: (1100>&
-- ↓
-- Set bit i n
-- ↓
-- (1 << i) set bit 0: 1100
-- ↓
-- 0001 = 110
-- ↓
-- Set bit i n
-- ↓
-- (1 << i) set bit 0: 1100
-- ↓
-- 0001 = 110
-- ↓
-- Clear bit i n & ~(1 << i) clear bit 2: 1100&1011
-- ↓
-- Toggle bit i n ^ (1 << i) toggle bit 3: 1100^1000
-- ↓
-- Lowest set bit n & (-n) 1100 & 0100 = 0100 (rightmost 1
-- ↓
-- Clear lowest set bit n & (n-1) 1100 & 1011 = 1000
+1. Operation Code Example (n=12 = 1100)
+2. Check if bit i set (n >> i) & 1 bit 2: (1100>&
+3. Set bit i n
+4. (1 << i) set bit 0: 1100
+5. 0001 = 110
+6. Set bit i n
+7. (1 << i) set bit 0: 1100
+8. 0001 = 110
+9. Clear bit i n & ~(1 << i) clear bit 2: 1100&1011
+10. Toggle bit i n ^ (1 << i) toggle bit 3: 1100^1000
+11. Lowest set bit n & (-n) 1100 & 0100 = 0100 (rightmost 1
+12. Clear lowest set bit n & (n-1) 1100 & 1011 = 1000
 
 ```mermaid
 flowchart TD
@@ -163,19 +151,13 @@ Why not HashMap? HashMap works but uses O(n) space. XOR uses O(1).
 ```
 
 **Flow:**
-- Problem: Every element appears twice EXCEPT one. Find i
-- ↓
-- nums = [4, 1, 2, 1, 2]
-- ↓
-- WHY it works:
-- ↓
-- Step-by-step:
-- ↓
-- result = 0
-- ↓
-- 0 ^ 4 = 4 (binary: 000 ^ 100 = 100)
-- ↓
-- 4 ^ 1 = 5 (binary: 100 ^ 001 = 101)
+1. Problem: Every element appears twice EXCEPT one. Find i
+2. nums = [4, 1, 2, 1, 2]
+3. WHY it works:
+4. Step-by-step:
+5. result = 0
+6. 0 ^ 4 = 4 (binary: 000 ^ 100 = 100)
+7. 4 ^ 1 = 5 (binary: 100 ^ 001 = 101)
 
 ```mermaid
 flowchart TD
@@ -236,29 +218,18 @@ WARNING: Only works for n ≤ 20-25. Beyond that, 2ⁿ explodes.
 ```
 
 **Flow:**
-- mask=000 (0): no bits set
-- ↓
-- []
-- ↓
-- mask=001 (1): bit 0 set
-- ↓
-- [a]
-- ↓
-- mask=010 (2): bit 1 set
-- ↓
-- [b]
-- ↓
-- mask=011 (3): bits 0,1 set
-- ↓
-- [a, b]
-- ↓
-- mask=100 (4): bit 2 set
-- ↓
-- [c]
-- ↓
-- mask=101 (5): bits 0,2 set
-- ↓
-- [a, c]
+1. mask=000 (0): no bits set
+2. []
+3. mask=001 (1): bit 0 set
+4. [a]
+5. mask=010 (2): bit 1 set
+6. [b]
+7. mask=011 (3): bits 0,1 set
+8. [a, b]
+9. mask=100 (4): bit 2 set
+10. [c]
+11. mask=101 (5): bits 0,2 set
+12. [a, c]
 
 ```mermaid
 flowchart TD
@@ -310,13 +281,10 @@ COMMON MISTAKES:
 ```
 
 **Flow:**
-- WRONG: if (mask & (1<<i) != 0)
-- ↓
-- this checks mask & (result of !=)
-- ↓
-- RIGHT: if ((mask & (1<<i)) != 0)
-- ↓
-- parentheses are ESSENTIAL!
+1. WRONG: if (mask & (1<<i) != 0)
+2. this checks mask & (result of !=)
+3. RIGHT: if ((mask & (1<<i)) != 0)
+4. parentheses are ESSENTIAL!
 
 ```mermaid
 flowchart LR
@@ -345,14 +313,14 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 | # | Problem | Key Insight |
@@ -428,12 +396,12 @@ flowchart LR
 [← 19 Matrix+Grid](19_Matrix_Plus_Grid_Traversal.md) | [Back to Index →](../00_MASTER_INDEX.md)
 
 
-> 🔬 **Section Challenge — 🔥 BIT TRICKS SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 🔥 BIT TRICKS SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 

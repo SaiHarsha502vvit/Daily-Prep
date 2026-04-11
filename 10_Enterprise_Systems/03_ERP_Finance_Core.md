@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04_ERP_Finance_RealWorld.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04_ERP_Finance_RealWorld.md)
 
 ---
 
@@ -49,25 +49,25 @@ Simple UI: Images, buttons, cart. Maybe 500 lines of code.
 A fresher can build this in a week.
 
 
-> 🔬 **Section Challenge — What Customer Sees (Frontend)**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — What Customer Sees (Frontend)**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## What Happens When You Click "Pay Now" (Backend Erp)
 
@@ -126,7 +126,7 @@ Backend code: Millions of lines, built over decades.
 ## 💰 Essential Finance Terms (With Code Context)
 
 
-> FINANCE TERMS EVERY DEVELOPER MUST KNOW
+FINANCE TERMS EVERY DEVELOPER MUST KNOW
 
 
 ### A. Basic Accounting Terms
@@ -666,14 +666,14 @@ public class Transaction {
 
 
 
-> 🔬 **Section Challenge — 💰 Essential Finance Terms (With Code Context)**
->
-> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-> <details><summary>Answer</summary>
->
-> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-> </details>
->
+🔬 **Section Challenge — 💰 Essential Finance Terms (With Code Context)**
+
+**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+<details><summary>Answer</summary>
+
+Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+</details>
+
 
 # ⚡ Part 3: Erp Optimization Strategies
 

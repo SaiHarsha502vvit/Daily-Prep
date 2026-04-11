@@ -1,26 +1,26 @@
-> **JavaScript Chapter 5/7** | [← Previous: Async & Promises](04_JS_Async_Promises.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern ES6+](06_JS_Modern_ES6Plus.md)
+**JavaScript Chapter 5/7** | [← Previous: Async & Promises](04_JS_Async_Promises.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern ES6+](06_JS_Modern_ES6Plus.md)
 
 # DOM Manipulation & Browser APIs
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: The DOM (Document Object Model) is the browser's in-memory
-> representation of your HTML. Browser APIs are the tools
-> the browser gives JS to interact with the page and more.
->
-> WHY:  React abstracts the DOM — but you MUST understand what's
-> underneath. Debugging, performance, third-party libraries,
-> vanilla JS projects, and interview questions require it.
->
-> WHO:  Every frontend developer. Even React devs need DOM
-> knowledge for refs, portals, and performance tuning.
->
-> WHEN: After understanding JS fundamentals + async.
->
-> WHERE: Only in browsers (not Node.js). Node has no DOM.
->
-> HOW:  HTML → Parser → DOM Tree. JS accesses via `document` API.
+WHAT: The DOM (Document Object Model) is the browser's in-memory
+representation of your HTML. Browser APIs are the tools
+the browser gives JS to interact with the page and more.
+
+WHY:  React abstracts the DOM — but you MUST understand what's
+underneath. Debugging, performance, third-party libraries,
+vanilla JS projects, and interview questions require it.
+
+WHO:  Every frontend developer. Even React devs need DOM
+knowledge for refs, portals, and performance tuning.
+
+WHEN: After understanding JS fundamentals + async.
+
+WHERE: Only in browsers (not Node.js). Node has no DOM.
+
+HOW:  HTML → Parser → DOM Tree. JS accesses via `document` API.
 
 
 ---
@@ -51,19 +51,13 @@ tree in memory. When JS modifies it, the page updates visually.
 ```
 
 **Flow:**
-- HTML FILE: DOM TREE (in memory):
-- ↓
-- <html> document
-- ↓
-- <head>
-- ↓
-- <title>Page</title>
-- ↓
-- </head> html (doctype)
-- ↓
-- <body>
-- ↓
-- <h1>Hello</h1> head body
+1. HTML FILE: DOM TREE (in memory):
+2. <html> document
+3. <head>
+4. <title>Page</title>
+5. </head> html (doctype)
+6. <body>
+7. <h1>Hello</h1> head body
 
 ```mermaid
 flowchart TD
@@ -163,27 +157,14 @@ cardsArray.filter(card => card.classList.contains("active"));
 ```
 
 **Flow:**
-- GIVEN THIS DOM:
-- ↓
-- <ul id='list'> ul#list
-- ↓
-- <li>First</li>
-- ↓
-- <li>Second</li> li li li
-- ↓
-- <li>Third</li>
-- ↓
-- PARENT: li.parentElement
-- ↓
-- ul
-- ↓
-- PARENT: li.parentElement
-- ↓
-- ul
-- ↓
-- CHILDREN: ul.children
-- ↓
-- [li, li, li] (elements)
+1. GIVEN THIS DOM:
+2. <ul id='list'> ul#list
+3. <li>First</li>
+4. <li>Second</li> li li li
+5. <li>Third</li>
+6. PARENT: li.parentElement ul
+7. CHILDREN: ul.children
+8. [li, li, li] (elements)
 
 ```mermaid
 flowchart TD
@@ -337,43 +318,13 @@ list.appendChild(fragment); // ONE DOM update!
 ```
 
 **Flow:**
-- scroll, load, resize, etc. Event listeners react to the
-- ↓
-- WHY: This is the bridge between user actions and your c
-- ↓
-- Every interactive web page uses events.
-- ↓
-- HOW: Events PROPAGATE through the DOM in 3 phases:
-- ↓
-- Phase 1: CAPTURING (top
-- ↓
-- target)
-- ↓
-- Phase 1: CAPTURING (top
-- ↓
-- target)
-- ↓
-- document
-- ↓
-- html
-- ↓
-- body
-- ↓
-- div
-- ↓
-- button
-- ↓
-- document
-- ↓
-- html
-- ↓
-- body
-- ↓
-- div
-- ↓
-- button
-- ↓
-- Phase 2: TARGET (the element that was clicked)
+1. scroll, load, resize, etc. Event listeners react to the
+2. WHY: This is the bridge between user actions and your c
+3. Every interactive web page uses events.
+4. HOW: Events PROPAGATE through the DOM in 3 phases:
+5. Phase 1: CAPTURING (top target)
+6. document html body div button
+7. Phase 2: TARGET (the element that was clicked)
 
 ```mermaid
 flowchart TD
@@ -414,13 +365,9 @@ EVENT PROPAGATION VISUAL:
 ```
 
 **Flow:**
-- EVENT PROPAGATION VISUAL: / document
-- ↓
-- body
-- ↓
-- div.container
-- ↓
-- button / ② TARGET — event fires here
+1. EVENT PROPAGATION VISUAL: / document
+2. body div.container
+3. button / ② TARGET — event fires here
 
 ```mermaid
 flowchart TD
@@ -513,19 +460,12 @@ document.querySelector("#todo-list").addEventListener("click", (e) => {
 ```
 
 **Flow:**
-- MOUSE: click, dblclick, mouseenter, mouseleave, mousemo
-- ↓
-- KEYBOARD: keydown, keyup, keypress (deprecated)
-- ↓
-- FORM: submit, change, input, focus, blur, reset
-- ↓
-- TOUCH: touchstart, touchmove, touchend
-- ↓
-- DRAG: dragstart, drag, dragover, drop, dragend
-- ↓
-- CLIPBOARD: copy, cut, paste
-- ↓
-- input vs change:
+1. MOUSE: click, dblclick, mouseenter, mouseleave, mousemo
+2. KEYBOARD: keydown, keyup, keypress (deprecated)
+3. FORM: submit, change, input, focus, blur, reset
+4. TOUCH: touchstart, touchmove, touchend
+5. DRAG: dragstart, drag, dragover, drop, dragend
+6. CLIPBOARD: copy, cut, paste input vs change:
 
 ```mermaid
 flowchart TD
@@ -619,19 +559,13 @@ USE CASES:
 ```
 
 **Flow:**
-- Feature localStorage session Cookies IndexedDB
-- ↓
-- Capacity ~5-10 MB ~5 MB ~4 KB Large
-- ↓
-- Persistence Forever Tab close Expires Forever
-- ↓
-- Sent to server No No Yes (!) No
-- ↓
-- Scope Origin Tab+origin Domain Origin
-- ↓
-- API Simple Simple Complex Complex
-- ↓
-- Data type String only String String Any
+1. Feature localStorage session Cookies IndexedDB
+2. Capacity ~5-10 MB ~5 MB ~4 KB Large
+3. Persistence Forever Tab close Expires Forever
+4. Sent to server No No Yes (!) No
+5. Scope Origin Tab+origin Domain Origin
+6. API Simple Simple Complex Complex
+7. Data type String only String String Any
 
 ```mermaid
 flowchart TD
@@ -726,14 +660,14 @@ response.ok;       // true if status 200-299
 
 
 
-> 🔬 **Section Challenge — 8. Fetch API — Making HTTP Requests**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — 8. Fetch API — Making HTTP Requests**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## 9. Other Essential Browser APIs
 
@@ -819,25 +753,14 @@ navigator.geolocation.getCurrentPosition(
 ```
 
 **Flow:**
-- THE PROBLEM WITH MANUAL DOM MANIPULATION:
-- ↓
-- 1. Imperative: You tell the DOM WHAT to do, step by ste
-- ↓
-- 'Find this element, change its text, add this class...'
-- ↓
-- Complex apps become spaghetti code.
-- ↓
-- 2. State Sync: Your data (state) and the DOM can get ou
-- ↓
-- sync. Update one, forget the other
-- ↓
-- bugs.
-- ↓
-- sync. Update one, forget the other
-- ↓
-- bugs.
-- ↓
-- 3. Performance: Each DOM change = reflow + repaint.
+1. THE PROBLEM WITH MANUAL DOM MANIPULATION:
+2. Imperative: You tell the DOM WHAT to do, step by ste
+3. 'Find this element, change its text, add this class...'
+4. Complex apps become spaghetti code.
+5. State Sync: Your data (state) and the DOM can get ou
+6. sync. Update one, forget the other
+7. bugs.
+8. Performance: Each DOM change = reflow + repaint.
 
 ```mermaid
 flowchart TD
@@ -893,15 +816,7 @@ Q: How does React's Virtual DOM relate to the real DOM?
 ```
 
 **Flow:**
-- button
-- ↓
-- div
-- ↓
-- body
-- ↓
-- html
-- ↓
-- document.
+1. button div body html document.
 
 ```mermaid
 flowchart LR
@@ -918,7 +833,7 @@ flowchart LR
 
 ---
 
-> [← Previous: Async & Promises](04_JS_Async_Promises.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern ES6+](06_JS_Modern_ES6Plus.md)
+[← Previous: Async & Promises](04_JS_Async_Promises.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern ES6+](06_JS_Modern_ES6Plus.md)
 
 ---
 

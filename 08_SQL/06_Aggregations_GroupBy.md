@@ -1,4 +1,4 @@
-> **SQL Chapter 06/20** | [← Previous](05_Queries_SELECT_WHERE.md) | [Index](../00_MASTER_INDEX.md) | [Next →](07_JOINs_Complete.md)
+**SQL Chapter 06/20** | [← Previous](05_Queries_SELECT_WHERE.md) | [Index](../00_MASTER_INDEX.md) | [Next →](07_JOINs_Complete.md)
 
 ---
 
@@ -27,7 +27,7 @@ This distinction confuses everyone at first, but it's simple once you understand
 
 Think of it this way: WHERE decides which employees to consider. HAVING decides which departments to show in the final result.
 
-> 💡 **Performance Tip:** Always prefer WHERE over HAVING when possible. Filtering rows early (with WHERE) means fewer rows to aggregate, which is faster. Only use HAVING for conditions that *require* aggregate values.
+💡 **Performance Tip:** Always prefer WHERE over HAVING when possible. Filtering rows early (with WHERE) means fewer rows to aggregate, which is faster. Only use HAVING for conditions that *require* aggregate values.
 
 #### 📝 Formal Syntax — Aggregate Functions
 
@@ -95,19 +95,13 @@ GROUP BY CUBE (<column1>, <column2>);            -- Subtotals for col1, col2, co
 ```
 
 **Flow:**
-- AGGREGATE FUNCTIONS - SUMMARY
-- ↓
-- a SINGLE value. They ignore NULL values (except COUNT(*
-- ↓
-- Function Description Example
-- ↓
-- COUNT(*) Count all rows COUNT(*)
-- ↓
-- COUNT(column) Count non-NULL values COUNT(email)
-- ↓
-- COUNT(DISTINCT) Count unique values COUNT(DISTINCT d)
-- ↓
-- SUM(column) Sum of all values SUM(salary)
+1. AGGREGATE FUNCTIONS - SUMMARY
+2. a SINGLE value. They ignore NULL values (except COUNT(*
+3. Function Description Example
+4. COUNT(*) Count all rows COUNT(*)
+5. COUNT(column) Count non-NULL values COUNT(email)
+6. COUNT(DISTINCT) Count unique values COUNT(DISTINCT d)
+7. SUM(column) Sum of all values SUM(salary)
 
 ```mermaid
 flowchart TD
@@ -201,9 +195,8 @@ FROM employees WHERE dept_id = 1;
 ```
 
 **Flow:**
-- emp_id dept salary / 1 1 100000 / 2 1 80000 / 3 1 10000
-- ↓
-- dept count sum_sal avg_sal / 1 3 280000 93333.33 / 2 2
+1. emp_id dept salary / 1 1 100000 / 2 1 80000 / 3 1 10000
+2. dept count sum_sal avg_sal / 1 3 280000 93333.33 / 2 2
 
 ```mermaid
 flowchart TD
@@ -368,20 +361,20 @@ GROUP BY GROUPING SETS (
 
 ---
 
-> **Navigation**: [< Previous](05_Queries_SELECT_WHERE.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_JOINs_Complete.md)
+**Navigation**: [< Previous](05_Queries_SELECT_WHERE.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_JOINs_Complete.md)
 
-> 🔬 **Section Challenge — Chapter 6: Aggregate Functions & GROUP BY**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — Chapter 6: Aggregate Functions & GROUP BY**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 

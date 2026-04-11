@@ -1,24 +1,24 @@
-> **Navigation**: [< Previous](03_CSS_Responsive_Animations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_CSS_Deep_Reasoning.md)
+**Navigation**: [< Previous](03_CSS_Responsive_Animations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_CSS_Deep_Reasoning.md)
 
-> **CSS Chapter 4/4** | [← Responsive & Animations](03_CSS_Responsive_Animations.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Frontend Integration](../19_Frontend_Integration/01_React_JS_CSS_Combined.md)
+**CSS Chapter 4/4** | [← Responsive & Animations](03_CSS_Responsive_Animations.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Frontend Integration](../19_Frontend_Integration/01_React_JS_CSS_Combined.md)
 
 # CSS Modern Architecture — Variables, Methodologies & Stunning UIs
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: Modern CSS techniques for building scalable, maintainable
-> design systems: Custom Properties, methodologies, modern
-> selectors, and production-quality UI patterns.
->
-> WHY:  Real projects have 1000+ CSS rules. Without organization,
-> CSS becomes unmaintainable spaghetti. Modern tools solve
-> specificity wars, naming conflicts, and design consistency.
->
-> WHO:  Any developer working on projects beyond a single page.
->
-> HOW:  CSS Custom Properties for design tokens. BEM or CSS
-> Modules for scoping. Building a design system.
+WHAT: Modern CSS techniques for building scalable, maintainable
+design systems: Custom Properties, methodologies, modern
+selectors, and production-quality UI patterns.
+
+WHY:  Real projects have 1000+ CSS rules. Without organization,
+CSS becomes unmaintainable spaghetti. Modern tools solve
+specificity wars, naming conflicts, and design consistency.
+
+WHO:  Any developer working on projects beyond a single page.
+
+HOW:  CSS Custom Properties for design tokens. BEM or CSS
+Modules for scoping. Building a design system.
 
 
 ---
@@ -134,25 +134,25 @@
 
 
 
-> 🔬 **Section Challenge — 1. CSS Custom Properties (Variables) — Design Tokens**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — 1. CSS Custom Properties (Variables) — Design Tokens**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## 2. CSS Naming Methodologies
 
@@ -187,19 +187,13 @@ no nesting conflicts, easy to understand relationship.
 ```
 
 **Flow:**
-- BEM: Block__Element--Modifier
-- ↓
-- Block: Independent component .card
-- ↓
-- Element: Part of a block .card__title
-- ↓
-- Modifier: Variation/state .card--featured
-- ↓
-- VISUAL:
-- ↓
-- .card ← Block
-- ↓
-- .card__image ← Element
+1. BEM: Block__Element--Modifier
+2. Block: Independent component .card
+3. Element: Part of a block .card__title
+4. Modifier: Variation/state .card--featured
+5. VISUAL:
+6. .card ← Block
+7. .card__image ← Element
 
 ```mermaid
 flowchart TD
@@ -650,19 +644,13 @@ form:has(:invalid) {
 ```
 
 **Flow:**
-- CSS APPROACH WHEN TO USE TRADE-OFFS
-- ↓
-- Plain CSS Small projects Global scope issues
-- ↓
-- CSS Modules React projects Best scoping (✅)
-- ↓
-- Tailwind CSS Rapid prototyping Verbose HTML, learn
-- ↓
-- styled-components Dynamic styling Runtime cost, bundle
-- ↓
-- CSS-in-JS (Panda) Design system libs Zero-runtime (✅)
-- ↓
-- INDUSTRY TREND (2024):
+1. CSS APPROACH WHEN TO USE TRADE-OFFS
+2. Plain CSS Small projects Global scope issues
+3. CSS Modules React projects Best scoping (✅)
+4. Tailwind CSS Rapid prototyping Verbose HTML, learn
+5. styled-components Dynamic styling Runtime cost, bundle
+6. CSS-in-JS (Panda) Design system libs Zero-runtime (✅)
+7. INDUSTRY TREND (2024):
 
 ```mermaid
 flowchart TD
@@ -751,9 +739,8 @@ Q: What is a design system?
 ```
 
 **Flow:**
-- Components use var(--color-bg)
-- ↓
-- automatically switch.
+1. Components use var(--color-bg)
+2. automatically switch.
 
 ```mermaid
 flowchart LR
@@ -1079,19 +1066,19 @@ border-left: 1px solid;     /* border-inline-start: 1px solid; */
 
 ---
 
-> [← Responsive & Animations](03_CSS_Responsive_Animations.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Frontend Integration](../19_Frontend_Integration/01_React_JS_CSS_Combined.md)
+[← Responsive & Animations](03_CSS_Responsive_Animations.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Frontend Integration](../19_Frontend_Integration/01_React_JS_CSS_Combined.md)
 
 ---
 
-> **Navigation**: [< Previous](03_CSS_Responsive_Animations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_CSS_Deep_Reasoning.md)
+**Navigation**: [< Previous](03_CSS_Responsive_Animations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_CSS_Deep_Reasoning.md)
 
 
-> 🔬 **Section Challenge — 11. Modern CSS Functions — The Power Tools**
->>
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
+🔬 **Section Challenge — 11. Modern CSS Functions — The Power Tools**
 >
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 

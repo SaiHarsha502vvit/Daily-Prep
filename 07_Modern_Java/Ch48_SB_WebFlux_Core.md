@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch49_SB_WebFlux_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch49_SB_WebFlux_Advanced.md)
 
 ---
 
 # 🌊 SPRING BOOT MASTERY - Part 15: Spring WebFlux & Reactive Programming
 
-> **The Complete Guide to Non-Blocking, Reactive Spring Applications**
-> _"Handle millions of connections with minimal resources"_
+**The Complete Guide to Non-Blocking, Reactive Spring Applications**
+_"Handle millions of connections with minimal resources"_
 
 ---
 
@@ -58,13 +58,10 @@
 ```
 
 **Flow:**
-- WHY: Why Learn Reactive Programming? / • Handle 10-100x
-- ↓
-- HOW: How Does WebFlux Work? / • Event loop model (not t
-- ↓
-- WHEN: When to Use WebFlux vs MVC? / USE WEBFLUX WHEN: /
-- ↓
-- WHICH: Which Components to Master? / ESSENTIAL: Mono, F
+1. WHY: Why Learn Reactive Programming? / • Handle 10-100x
+2. HOW: How Does WebFlux Work? / • Event loop model (not t
+3. WHEN: When to Use WebFlux vs MVC? / USE WEBFLUX WHEN: /
+4. WHICH: Which Components to Master? / ESSENTIAL: Mono, F
 
 ```mermaid
 flowchart TD
@@ -101,19 +98,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WHAT THIS PART COVERS
-- ↓
-- 1. Reactive Programming Fundamentals
-- ↓
-- 2. Project Reactor: Mono & Flux
-- ↓
-- 3. Spring WebFlux Basics
-- ↓
-- 4. Functional Endpoints (RouterFunction)
-- ↓
-- 5. Reactive Data Access (R2DBC)
-- ↓
-- 6. WebClient (Reactive HTTP Client)
+1. WHAT THIS PART COVERS
+2. 1. Reactive Programming Fundamentals
+3. 2. Project Reactor: Mono & Flux
+4. 3. Spring WebFlux Basics
+5. 4. Functional Endpoints (RouterFunction)
+6. 5. Reactive Data Access (R2DBC)
+7. 6. WebClient (Reactive HTTP Client)
 
 ```mermaid
 flowchart TD
@@ -174,13 +165,10 @@ flowchart TD
 ```
 
 **Flow:**
-- Request
-- ↓
-- Thread 1 (BLOCKED waiting for DB)
-- ↓
-- Response
-- ↓
-- Event Loop Thread (never blocks!) / Receives request 1
+1. Request
+2. Thread 1 (BLOCKED waiting for DB)
+3. Response
+4. Event Loop Thread (never blocks!) / Receives request 1
 
 ```mermaid
 flowchart TD
@@ -294,9 +282,8 @@ public interface Processor<T, R> extends Subscriber<T>, Publisher<R> {
 ```
 
 **Flow:**
-- Like Optional<T> but ASYNC / Mono.just('Hello') /
-- ↓
-- Like Stream<T> but ASYNC / Flux.just('A', 'B', 'C
+1. Like Optional<T> but ASYNC / Mono.just('Hello') /
+2. Like Stream<T> but ASYNC / Flux.just('A', 'B', 'C
 
 ```mermaid
 flowchart TD
@@ -716,20 +703,20 @@ public class ReactorOperators {
 
 
 
-> 🔬 **Section Challenge — Chapter 3: Operators - Transforming Reactive Streams**
->
-> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-> <details><summary>Answer</summary>
->
-> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-> <details><summary>Answer</summary>
->
-> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-> </details>
->
+🔬 **Section Challenge — Chapter 3: Operators - Transforming Reactive Streams**
+
+**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+<details><summary>Answer</summary>
+
+Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+</details>
+
+**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+<details><summary>Answer</summary>
+
+`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+</details>
+
 
 # 🌱 Section 3: Spring Webflux
 
@@ -1044,14 +1031,14 @@ public class UserHandler {
 
 
 
-> 🔬 **Section Challenge — Chapter 5: Functional Endpoints (RouterFunction)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 5: Functional Endpoints (RouterFunction)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # ⚛️ Section 4: Reactive Data Access (r2dbc)
 
@@ -1084,19 +1071,13 @@ public class UserHandler {
 ```
 
 **Flow:**
-- R2DBC vs JDBC
-- ↓
-- JDBC (Traditional):
-- ↓
-- • Blocking - Thread waits for database response
-- ↓
-- • Uses thread pool (HikariCP)
-- ↓
-- • Works with JPA/Hibernate
-- ↓
-- R2DBC (Reactive):
-- ↓
-- • Non-blocking - Event loop handles responses
+1. R2DBC vs JDBC
+2. JDBC (Traditional):
+3. • Blocking - Thread waits for database response
+4. • Uses thread pool (HikariCP)
+5. • Works with JPA/Hibernate
+6. R2DBC (Reactive):
+7. • Non-blocking - Event loop handles responses
 
 ```mermaid
 flowchart TD

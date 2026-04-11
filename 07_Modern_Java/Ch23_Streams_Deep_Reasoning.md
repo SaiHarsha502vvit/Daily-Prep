@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](Ch58_SB_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch19_JVM_Object_Model.md)
+**Navigation**: [< Previous](Ch58_SB_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch19_JVM_Object_Model.md)
 
 # Chapter 33 — Java Streams Deep Reasoning: WHY They Work the Way They Do
 
-> **"Anyone can write `.filter().map().collect()`. The senior engineer explains WHY streams are lazy, WHAT happens when you use `parallelStream()` on a LinkedList, and HOW `reduce()` actually accumulates — not just that it does."**
+**"Anyone can write `.filter().map().collect()`. The senior engineer explains WHY streams are lazy, WHAT happens when you use `parallelStream()` on a LinkedList, and HOW `reduce()` actually accumulates — not just that it does."**
 
 ---
 
@@ -26,7 +26,7 @@
 ## 1. WHY Are Streams Lazy?
 
 ### The Freeze Question
-> "Why are streams lazy? What does that actually mean?"
+"Why are streams lazy? What does that actually mean?"
 
 ### Surface Answer (Junior)
 "Streams don't process until a terminal operation is called."
@@ -34,27 +34,27 @@
 ### Deep Reasoning
 
 
-> THE SUSHI CONVEYOR BELT ANALOGY
->
-> Imagine a sushi restaurant with a conveyor belt:
->
-> EAGER approach (old Java loops):
-> → Chef makes ALL 100 sushi plates first
-> → Puts them ALL on the belt
-> → You pick the 3 you want
-> → 97 plates WASTED
->
-> LAZY approach (streams):
-> → Chef waits for your ORDER (terminal operation)
-> → Makes one plate at a time
-> → You take it, inspect it (filter), modify it (map)
-> → Stop when you have 3 (limit)
-> → Chef stops. Only 3 plates made.
->
-> WHY THIS MATTERS:
-> - findFirst() on 1 million items? Only processes until found
-> - limit(5) on infinite stream? Processes exactly 5 items
-> - filter().map().collect()? SINGLE PASS, not 3 separate loops
+THE SUSHI CONVEYOR BELT ANALOGY
+
+Imagine a sushi restaurant with a conveyor belt:
+
+EAGER approach (old Java loops):
+→ Chef makes ALL 100 sushi plates first
+→ Puts them ALL on the belt
+→ You pick the 3 you want
+→ 97 plates WASTED
+
+LAZY approach (streams):
+→ Chef waits for your ORDER (terminal operation)
+→ Makes one plate at a time
+→ You take it, inspect it (filter), modify it (map)
+→ Stop when you have 3 (limit)
+→ Chef stops. Only 3 plates made.
+
+WHY THIS MATTERS:
+- findFirst() on 1 million items? Only processes until found
+- limit(5) on infinite stream? Processes exactly 5 items
+- filter().map().collect()? SINGLE PASS, not 3 separate loops
 
 
 ### Code Proof — Laziness in Action
@@ -117,19 +117,13 @@ List<String> result = names.stream()
 ```
 
 **Flow:**
-- SHORT-CIRCUITING OPERATIONS:
-- ↓
-- Terminal: findFirst(), findAny(), anyMatch(),
-- ↓
-- allMatch(), noneMatch()
-- ↓
-- Intermediate: limit(), takeWhile() (Java 9+)
-- ↓
-- These can STOP the entire pipeline early:
-- ↓
-- users.stream()
-- ↓
-- .filter(u -> u.getAge() > 65)
+1. SHORT-CIRCUITING OPERATIONS:
+2. Terminal: findFirst(), findAny(), anyMatch(),
+3. allMatch(), noneMatch()
+4. Intermediate: limit(), takeWhile() (Java 9+)
+5. These can STOP the entire pipeline early:
+6. users.stream()
+7. .filter(u -> u.getAge() > 65)
 
 ```mermaid
 flowchart TD
@@ -151,7 +145,7 @@ flowchart TD
 ```
 
 ### Follow-Up Trap
-> "If streams are lazy, what happens if you never call a terminal operation?"
+"If streams are lazy, what happens if you never call a terminal operation?"
 
 **Nothing executes.** The intermediate operations return a new Stream object with instructions recorded, but zero computation happens. It's like writing a recipe but never cooking.
 
@@ -170,25 +164,25 @@ names.stream()
 
 
 
-> 🔬 **Section Challenge — 1. WHY Are Streams Lazy?**
->
-> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-> <details><summary>Answer</summary>
->
-> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-> <details><summary>Answer</summary>
->
-> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-> </details>
->
+🔬 **Section Challenge — 1. WHY Are Streams Lazy?**
+
+**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+<details><summary>Answer</summary>
+
+Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+</details>
+
+**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+<details><summary>Answer</summary>
+
+`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+</details>
+
 
 ## 2. Stream vs Collection: They Are NOT The Same Thing
 
 ### The Freeze Question
-> "What's the difference between a Stream and a Collection?"
+"What's the difference between a Stream and a Collection?"
 
 ### Deep Reasoning
 
@@ -217,19 +211,13 @@ names.stream()
 ```
 
 **Flow:**
-- THE DVD vs NETFLIX ANALOGY
-- ↓
-- Collection = DVD collection on your shelf
-- ↓
-- All data IN MEMORY right now
-- ↓
-- You can pick any DVD (random access)
-- ↓
-- You can count them (size)
-- ↓
-- You can add/remove DVDs (mutable)
-- ↓
-- Same DVDs, watch as many times as you want (reusable)
+1. THE DVD vs NETFLIX ANALOGY
+2. Collection = DVD collection on your shelf
+3. All data IN MEMORY right now
+4. You can pick any DVD (random access)
+5. You can count them (size)
+6. You can add/remove DVDs (mutable)
+7. Same DVDs, watch as many times as you want (reusable)
 
 ```mermaid
 flowchart TD
@@ -285,19 +273,13 @@ stream.forEach(System.out::println);
 ```
 
 **Flow:**
-- Feature Collection Stream
-- ↓
-- When computed Eagerly (all at once) Lazily (on demand)
-- ↓
-- Reusable ✅ Yes ❌ Once only
-- ↓
-- Mutable ✅ add/remove ❌ Immutable pipe
-- ↓
-- Size Known (.size()) May be infinite
-- ↓
-- Random access ✅ list.get(i) ❌ Sequential only
-- ↓
-- Can store data ✅ Primary purpose ❌ Passes through
+1. Feature Collection Stream
+2. When computed Eagerly (all at once) Lazily (on demand)
+3. Reusable ✅ Yes ❌ Once only
+4. Mutable ✅ add/remove ❌ Immutable pipe
+5. Size Known (.size()) May be infinite
+6. Random access ✅ list.get(i) ❌ Sequential only
+7. Can store data ✅ Primary purpose ❌ Passes through
 
 ```mermaid
 flowchart TD
@@ -322,20 +304,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 2. Stream vs Collection: They Are NOT The Same Thing**
->
-> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-> <details><summary>Answer</summary>
->
-> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-> <details><summary>Answer</summary>
->
-> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-> </details>
->
+🔬 **Section Challenge — 2. Stream vs Collection: They Are NOT The Same Thing**
+
+**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+<details><summary>Answer</summary>
+
+Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+</details>
+
+**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+<details><summary>Answer</summary>
+
+`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+</details>
+
 
 ## 3. Intermediate vs Terminal: When Code Actually Runs
 
@@ -363,19 +345,13 @@ flowchart TD
 ```
 
 **Flow:**
-- THE RESTAURANT ORDER ANALOGY
-- ↓
-- Intermediate Operations = Adding items to your order
-- ↓
-- 'I'd like the salad...' (filter)
-- ↓
-- '...with dressing on the side...' (map)
-- ↓
-- '...and only the first 3...' (limit)
-- ↓
-- Nothing is being prepared yet!
-- ↓
-- Terminal Operation = Saying 'That's my order' (submit)
+1. THE RESTAURANT ORDER ANALOGY
+2. Intermediate Operations = Adding items to your order
+3. 'I'd like the salad...' (filter)
+4. '...with dressing on the side...' (map)
+5. '...and only the first 3...' (limit)
+6. Nothing is being prepared yet!
+7. Terminal Operation = Saying 'That's my order' (submit)
 
 ```mermaid
 flowchart TD
@@ -421,19 +397,13 @@ flowchart TD
 ```
 
 **Flow:**
-- INTERMEDIATE (returns Stream — lazy, chainable):
-- ↓
-- Stateless (no memory between elements):
-- ↓
-- Stateful (must see all/some elements first):
-- ↓
-- sorted() ← must see ALL elements to sort
-- ↓
-- distinct() ← must remember what it's seen (HashSet)
-- ↓
-- skip(n) ← must count n elements to skip
-- ↓
-- limit(n) ← must count (but short-circuits)
+1. INTERMEDIATE (returns Stream — lazy, chainable):
+2. Stateless (no memory between elements):
+3. Stateful (must see all/some elements first):
+4. sorted() ← must see ALL elements to sort
+5. distinct() ← must remember what it's seen (HashSet)
+6. skip(n) ← must count n elements to skip
+7. limit(n) ← must count (but short-circuits)
 
 ```mermaid
 flowchart TD
@@ -472,19 +442,19 @@ list.stream().findFirst();              // No buffering needed
 
 
 
-> 🔬 **Section Challenge — 3. Intermediate vs Terminal: When Code Actually Runs**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 3. Intermediate vs Terminal: When Code Actually Runs**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 4. map() vs flatMap(): The Box-Inside-Box Problem
 
 ### The Freeze Question
-> "What's the difference between `map()` and `flatMap()`?"
+"What's the difference between `map()` and `flatMap()`?"
 
 ### Deep Reasoning
 
@@ -512,37 +482,22 @@ list.stream().findFirst();              // No buffering needed
 ```
 
 **Flow:**
-- THE GIFT BOX ANALOGY
-- ↓
-- You have 3 gift boxes, each containing smaller boxes:
-- ↓
-- Box1
-- ↓
-- [candy, toy]
-- ↓
-- Box1
-- ↓
-- [candy, toy]
-- ↓
-- Box2
-- ↓
-- [book]
-- ↓
-- Box2
-- ↓
-- [book]
-- ↓
-- Box3
-- ↓
-- [pen, eraser, ruler]
-- ↓
-- Box3
-- ↓
-- [pen, eraser, ruler]
-- ↓
-- map() = 'Open each box and look inside'
-- ↓
-- Result: [ [candy,toy], [book], [pen,eraser,ruler] ]
+1. THE GIFT BOX ANALOGY
+2. You have 3 gift boxes, each containing smaller boxes:
+3. Box1
+4. [candy, toy]
+5. Box1
+6. [candy, toy]
+7. Box2
+8. [book]
+9. Box2
+10. [book]
+11. Box3
+12. [pen, eraser, ruler]
+13. Box3
+14. [pen, eraser, ruler]
+15. map() = 'Open each box and look inside'
+16. Result: [ [candy,toy], [book], [pen,eraser,ruler] ]
 
 ```mermaid
 flowchart TD
@@ -615,65 +570,36 @@ customers.stream()
 ```
 
 **Flow:**
-- DECISION:
-- ↓
-- Your function returns ONE thing?
-- ↓
-- map()
-- ↓
-- Your function returns ONE thing?
-- ↓
-- map()
-- ↓
-- name
-- ↓
-- name.toUpperCase() (String
-- ↓
-- String)
-- ↓
-- name
-- ↓
-- name.toUpperCase() (String
-- ↓
-- String)
-- ↓
-- user
-- ↓
-- user.getAge() (User
-- ↓
-- Integer)
-- ↓
-- user
-- ↓
-- user.getAge() (User
-- ↓
-- Integer)
-- ↓
-- Your function returns a COLLECTION?
-- ↓
-- flatMap()
-- ↓
-- Your function returns a COLLECTION?
-- ↓
-- flatMap()
-- ↓
-- user
-- ↓
-- user.getOrders() (User
-- ↓
-- List<Order>)
-- ↓
-- user
-- ↓
-- user.getOrders() (User
-- ↓
-- List<Order>)
-- ↓
-- line
-- ↓
-- Arrays.asList(line.split(' ')) (String
-- ↓
-- List)
+1. DECISION:
+2. Your function returns ONE thing?
+3. map()
+4. Your function returns ONE thing?
+5. map()
+6. name
+7. name.toUpperCase() (String
+8. String)
+9. name
+10. name.toUpperCase() (String
+11. String)
+12. user
+13. user.getAge() (User
+14. Integer)
+15. user
+16. user.getAge() (User
+17. Integer)
+18. Your function returns a COLLECTION?
+19. flatMap()
+20. Your function returns a COLLECTION?
+21. flatMap()
+22. user
+23. user.getOrders() (User
+24. List<Order>)
+25. user
+26. user.getOrders() (User
+27. List<Order>)
+28. line
+29. Arrays.asList(line.split(' ')) (String
+30. List)
 
 ```mermaid
 flowchart TD
@@ -698,19 +624,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 4. map() vs flatMap(): The Box-Inside-Box Problem**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 4. map() vs flatMap(): The Box-Inside-Box Problem**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 5. reduce() Internals: The Accumulator Pattern
 
 ### The Freeze Question
-> "How does `reduce()` actually work? What's an accumulator?"
+"How does `reduce()` actually work? What's an accumulator?"
 
 ### Deep Reasoning
 
@@ -740,33 +666,20 @@ flowchart TD
 ```
 
 **Flow:**
-- THE SNOWBALL ROLLING DOWNHILL ANALOGY
-- ↓
-- reduce() is like rolling a snowball downhill:
-- ↓
-- identity (starting snowball) = 0
-- ↓
-- Elements: [3, 7, 2, 5]
-- ↓
-- Step 1: snowball=0, pick up 3
-- ↓
-- snowball=3
-- ↓
-- Step 1: snowball=0, pick up 3
-- ↓
-- snowball=3
-- ↓
-- Step 2: snowball=3, pick up 7
-- ↓
-- snowball=10
-- ↓
-- Step 2: snowball=3, pick up 7
-- ↓
-- snowball=10
-- ↓
-- Step 3: snowball=10, pick up 2
-- ↓
-- snowball=12
+1. THE SNOWBALL ROLLING DOWNHILL ANALOGY
+2. reduce() is like rolling a snowball downhill:
+3. identity (starting snowball) = 0
+4. Elements: [3, 7, 2, 5]
+5. Step 1: snowball=0, pick up 3
+6. snowball=3
+7. Step 1: snowball=0, pick up 3
+8. snowball=3
+9. Step 2: snowball=3, pick up 7
+10. snowball=10
+11. Step 2: snowball=3, pick up 7
+12. snowball=10
+13. Step 3: snowball=10, pick up 2
+14. snowball=12
 
 ```mermaid
 flowchart TD
@@ -840,19 +753,13 @@ int totalLength = words.stream()
 ```
 
 **Flow:**
-- reduce() = combine all into ONE value
-- ↓
-- Sum, product, min, max, concatenation
-- ↓
-- Creates NEW object each step (immutable accumulation)
-- ↓
-- collect() = pour all into a MUTABLE CONTAINER
-- ↓
-- List, Map, Set, StringBuilder, custom object
-- ↓
-- MUTATES the container (mutable accumulation)
-- ↓
-- WHY THE DISTINCTION?
+1. reduce() = combine all into ONE value
+2. Sum, product, min, max, concatenation
+3. Creates NEW object each step (immutable accumulation)
+4. collect() = pour all into a MUTABLE CONTAINER
+5. List, Map, Set, StringBuilder, custom object
+6. MUTATES the container (mutable accumulation)
+7. WHY THE DISTINCTION?
 
 ```mermaid
 flowchart TD
@@ -877,19 +784,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 5. reduce() Internals: The Accumulator Pattern**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 5. reduce() Internals: The Accumulator Pattern**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 6. Collector Internals: What Collectors.toList() Actually Does
 
 ### The Freeze Question
-> "What is a Collector? Can you write a custom one?"
+"What is a Collector? Can you write a custom one?"
 
 ### Deep Reasoning
 
@@ -916,33 +823,20 @@ flowchart TD
 ```
 
 **Flow:**
-- THE ASSEMBLY LINE WORKER ANALOGY
-- ↓
-- A Collector has 4 jobs (like 4 assembly line workers):
-- ↓
-- 1. supplier()
-- ↓
-- 'Bring an empty box'
-- ↓
-- 1. supplier()
-- ↓
-- 'Bring an empty box'
-- ↓
-- () -> new ArrayList<>()
-- ↓
-- 2. accumulator()
-- ↓
-- 'Put each item in the box'
-- ↓
-- 2. accumulator()
-- ↓
-- 'Put each item in the box'
-- ↓
-- (list, item) -> list.add(item)
-- ↓
-- 3. combiner()
-- ↓
-- 'Merge two boxes into one' (for paralle
+1. THE ASSEMBLY LINE WORKER ANALOGY
+2. A Collector has 4 jobs (like 4 assembly line workers):
+3. 1. supplier()
+4. 'Bring an empty box'
+5. 1. supplier()
+6. 'Bring an empty box'
+7. () -> new ArrayList<>()
+8. 2. accumulator()
+9. 'Put each item in the box'
+10. 2. accumulator()
+11. 'Put each item in the box'
+12. (list, item) -> list.add(item)
+13. 3. combiner()
+14. 'Merge two boxes into one' (for paralle
 
 ```mermaid
 flowchart TD
@@ -1029,19 +923,19 @@ Map<String, Long> countByDept = employees.stream()
 
 
 
-> 🔬 **Section Challenge — 6. Collector Internals: What Collectors.toList() Actually Does**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 6. Collector Internals: What Collectors.toList() Actually Does**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 7. parallelStream() Traps: Where It HURTS Performance
 
 ### The Freeze Question
-> "Should I use `parallelStream()` for better performance?"
+"Should I use `parallelStream()` for better performance?"
 
 ### Deep Reasoning
 
@@ -1067,19 +961,13 @@ Map<String, Long> countByDept = employees.stream()
 ```
 
 **Flow:**
-- THE COOKING ANALOGY — When More Chefs HURT
-- ↓
-- Sequential: 1 chef makes 100 dishes — predictable, orde
-- ↓
-- Parallel: 10 chefs share 1 kitchen — CHAOS potential!
-- ↓
-- WHEN 10 CHEFS HELP:
-- ↓
-- Independent tasks (each chef has own station)
-- ↓
-- CPU-heavy work (chopping, mixing — not waiting)
-- ↓
-- Large dataset (100+ dishes, not 5)
+1. THE COOKING ANALOGY — When More Chefs HURT
+2. Sequential: 1 chef makes 100 dishes — predictable, orde
+3. Parallel: 10 chefs share 1 kitchen — CHAOS potential!
+4. WHEN 10 CHEFS HELP:
+5. Independent tasks (each chef has own station)
+6. CPU-heavy work (chopping, mixing — not waiting)
+7. Large dataset (100+ dishes, not 5)
 
 ```mermaid
 flowchart TD
@@ -1166,19 +1054,13 @@ list.parallelStream()
 ```
 
 **Flow:**
-- USE parallelStream() WHEN ALL ARE TRUE:
-- ↓
-- ✅ Dataset > 10,000 elements (overhead worth it)
-- ↓
-- ✅ CPU-intensive computation per element
-- ↓
-- ✅ Data source splits cheaply (ArrayList, array, IntStre
-- ↓
-- ✅ No shared mutable state
-- ↓
-- ✅ Order doesn't matter (or you accept ordering overhead
-- ↓
-- ✅ No blocking IO
+1. USE parallelStream() WHEN ALL ARE TRUE:
+2. ✅ Dataset > 10,000 elements (overhead worth it)
+3. ✅ CPU-intensive computation per element
+4. ✅ Data source splits cheaply (ArrayList, array, IntStre
+5. ✅ No shared mutable state
+6. ✅ Order doesn't matter (or you accept ordering overhead
+7. ✅ No blocking IO
 
 ```mermaid
 flowchart TD
@@ -1203,20 +1085,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 7. parallelStream() Traps: Where It HURTS Performance**
->
-> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-> <details><summary>Answer</summary>
->
-> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-> <details><summary>Answer</summary>
->
-> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-> </details>
->
+🔬 **Section Challenge — 7. parallelStream() Traps: Where It HURTS Performance**
+
+**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+<details><summary>Answer</summary>
+
+Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+</details>
+
+**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+<details><summary>Answer</summary>
+
+`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+</details>
+
 
 ## 8. Stream Pipeline Fusion: How JVM Optimizes
 
@@ -1253,37 +1135,22 @@ flowchart TD
 ```
 
 **Flow:**
-- HOW THE JVM FUSES OPERATIONS
-- ↓
-- Your code:
-- ↓
-- Naive execution (3 loops):
-- ↓
-- Loop 1: filter all
-- ↓
-- temp list
-- ↓
-- Loop 1: filter all
-- ↓
-- temp list
-- ↓
-- Loop 2: map all
-- ↓
-- temp list
-- ↓
-- Loop 2: map all
-- ↓
-- temp list
-- ↓
-- Loop 3: collect
-- ↓
-- result
-- ↓
-- Loop 3: collect
-- ↓
-- result
-- ↓
-- Actual execution (FUSED into 1 loop):
+1. HOW THE JVM FUSES OPERATIONS
+2. Your code:
+3. Naive execution (3 loops):
+4. Loop 1: filter all
+5. temp list
+6. Loop 1: filter all
+7. temp list
+8. Loop 2: map all
+9. temp list
+10. Loop 2: map all
+11. temp list
+12. Loop 3: collect
+13. result
+14. Loop 3: collect
+15. result
+16. Actual execution (FUSED into 1 loop):
 
 ```mermaid
 flowchart TD
@@ -1308,25 +1175,25 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 8. Stream Pipeline Fusion: How JVM Optimizes**
->
-> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-> <details><summary>Answer</summary>
->
-> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-> <details><summary>Answer</summary>
->
-> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-> </details>
->
+🔬 **Section Challenge — 8. Stream Pipeline Fusion: How JVM Optimizes**
+
+**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+<details><summary>Answer</summary>
+
+Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+</details>
+
+**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+<details><summary>Answer</summary>
+
+`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+</details>
+
 
 ## 9. Optional Deep Reasoning: Why It Exists And When NOT to Use It
 
 ### The Freeze Question
-> "Why does Optional exist? Isn't it just a null check wrapper?"
+"Why does Optional exist? Isn't it just a null check wrapper?"
 
 ### Deep Reasoning
 
@@ -1349,25 +1216,16 @@ flowchart TD
 ```
 
 **Flow:**
-- THE GIFT BOX vs EMPTY BOX ANALOGY
-- ↓
-- null = Someone handed you NOTHING and said 'here's a th
-- ↓
-- You reach for the thing
-- ↓
-- NPE (you grabbed air)
-- ↓
-- You reach for the thing
-- ↓
-- NPE (you grabbed air)
-- ↓
-- Optional = Someone hands you a box.
-- ↓
-- Box might contain a value (Optional.of(value))
-- ↓
-- Box might be empty (Optional.empty())
-- ↓
-- The BOX ITSELF is never null
+1. THE GIFT BOX vs EMPTY BOX ANALOGY
+2. null = Someone handed you NOTHING and said 'here's a th
+3. You reach for the thing
+4. NPE (you grabbed air)
+5. You reach for the thing
+6. NPE (you grabbed air)
+7. Optional = Someone hands you a box.
+8. Box might contain a value (Optional.of(value))
+9. Box might be empty (Optional.empty())
+10. The BOX ITSELF is never null
 
 ```mermaid
 flowchart TD
@@ -1428,14 +1286,14 @@ return optional.map(transform).orElseThrow();
 
 
 
-> 🔬 **Section Challenge — 9. Optional Deep Reasoning: Why It Exists And When NOT to Use It**
->
-> **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
-> <details><summary>Answer</summary>
->
-> `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-> </details>
->
+🔬 **Section Challenge — 9. Optional Deep Reasoning: Why It Exists And When NOT to Use It**
+
+**Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+<details><summary>Answer</summary>
+
+`Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
+</details>
+
 
 ## 10. Method References: Not Just Syntactic Sugar
 
@@ -1471,19 +1329,13 @@ return optional.map(transform).orElseThrow();
 ```
 
 **Flow:**
-- THE 4 TYPES — And Why Each Exists
-- ↓
-- 1. Static method: ClassName::staticMethod
-- ↓
-- Lambda: x -> Math.abs(x)
-- ↓
-- Reference: Math::abs
-- ↓
-- Think: 'Call this class's static function'
-- ↓
-- 2. Instance method (bound): instance::method
-- ↓
-- Lambda: x -> System.out.println(x)
+1. THE 4 TYPES — And Why Each Exists
+2. 1. Static method: ClassName::staticMethod
+3. Lambda: x -> Math.abs(x)
+4. Reference: Math::abs
+5. Think: 'Call this class's static function'
+6. 2. Instance method (bound): instance::method
+7. Lambda: x -> System.out.println(x)
 
 ```mermaid
 flowchart TD
@@ -1601,20 +1453,20 @@ users.stream()
 
 
 
-> 🔬 **Section Challenge — 11. Real-World Stream Patterns: Production Code That Senior Engineers Write**
->
-> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-> <details><summary>Answer</summary>
->
-> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-> <details><summary>Answer</summary>
->
-> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-> </details>
->
+🔬 **Section Challenge — 11. Real-World Stream Patterns: Production Code That Senior Engineers Write**
+
+**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+<details><summary>Answer</summary>
+
+Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+</details>
+
+**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+<details><summary>Answer</summary>
+
+`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+</details>
+
 
 ## 12. Quick-Fire Table
 
@@ -1635,4 +1487,4 @@ users.stream()
 
 ---
 
-> **Navigation**: [< Java Deep Reasoning](Ch22_Java_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [JVM Object Model >](Ch19_JVM_Object_Model.md)
+**Navigation**: [< Java Deep Reasoning](Ch22_Java_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [JVM Object Model >](Ch19_JVM_Object_Model.md)

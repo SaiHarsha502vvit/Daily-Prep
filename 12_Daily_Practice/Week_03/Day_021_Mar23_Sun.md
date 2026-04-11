@@ -133,11 +133,7 @@ WHAT'S COMING:
 ```
 
 **Flow:**
-- Building on trees (
-- ↓
-- tries) and BFS (
-- ↓
-- Dijkstra)!
+1. Building on trees ( tries) and BFS ( Dijkstra)!
 
 ```mermaid
 flowchart LR
@@ -239,13 +235,9 @@ NEXT MILESTONE: 50 problems by end of Week 4!
 ```
 
 **Flow:**
-- Binary Search, Two Pointers, SQL WHERE
-- ↓
-- Subqueries, Spring DI
-- ↓
-- Week 2: 13 problems (Easy
-- ↓
-- Medium)
+1. Binary Search, Two Pointers, SQL WHERE
+2. Subqueries, Spring DI
+3. Week 2: 13 problems (Easy Medium)
 
 ```mermaid
 flowchart LR

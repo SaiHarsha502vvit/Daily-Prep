@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](Ch63_SB_Cloud_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch63_SB_Cloud_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -462,14 +462,14 @@ images:
 ```yaml
 
 
-> 🔬 **Section Challenge — CI/CD Pipelines**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — CI/CD Pipelines**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # .github/workflows/deploy.yml
 name: Build and Deploy
@@ -690,29 +690,18 @@ infrastructure/
 ```
 
 **Flow:**
-- infrastructure/
-- ↓
-- modules/
-- ↓
-- infrastructure/
-- ↓
-- kubernetes/
-- ↓
-- infrastructure/
-- ↓
-- main.tf
-- ↓
-- infrastructure/
-- ↓
-- variables.tf
-- ↓
-- infrastructure/
-- ↓
-- outputs.tf
-- ↓
-- infrastructure/
-- ↓
-- database/
+1. infrastructure/
+2. modules/
+3. infrastructure/
+4. kubernetes/
+5. infrastructure/
+6. main.tf
+7. infrastructure/
+8. variables.tf
+9. infrastructure/
+10. outputs.tf
+11. infrastructure/
+12. database/
 
 ```mermaid
 flowchart TD
@@ -756,14 +745,14 @@ flowchart TD
 ```hcl
 
 
-> 🔬 **Section Challenge — Infrastructure as Code**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Infrastructure as Code**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # modules/kubernetes/main.tf
 variable "cloud_provider" {
@@ -886,14 +875,14 @@ spec:
 ```yaml
 
 
-> 🔬 **Section Challenge — Monitoring and Logging**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Monitoring and Logging**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # prometheus-values.yaml for Helm
 prometheus:
@@ -1011,19 +1000,13 @@ management:
 ```
 
 **Flow:**
-- COST OPTIMIZATION STRATEGIES
-- ↓
-- COMPUTE
-- ↓
-- ✅ Right-size instances based on actual usage
-- ↓
-- ✅ Use Spot/Preemptible instances for non-critical workl
-- ↓
-- ✅ Implement auto-scaling with proper thresholds
-- ↓
-- ✅ Schedule non-prod environments to shut down
-- ↓
-- STORAGE
+1. COST OPTIMIZATION STRATEGIES
+2. COMPUTE
+3. ✅ Right-size instances based on actual usage
+4. ✅ Use Spot/Preemptible instances for non-critical workl
+5. ✅ Implement auto-scaling with proper thresholds
+6. ✅ Schedule non-prod environments to shut down
+7. STORAGE
 
 ```mermaid
 flowchart TD
@@ -1254,19 +1237,13 @@ Strategies:
 ```
 
 **Flow:**
-- CLOUD DEPLOYMENT CHEAT SHEET
-- ↓
-- DOCKER COMMANDS
-- ↓
-- docker build -t app . Build image
-- ↓
-- docker run -p 8080:8080 app Run container
-- ↓
-- docker push registry/app Push to registry
-- ↓
-- docker-compose up -d Start services
-- ↓
-- KUBECTL COMMANDS
+1. CLOUD DEPLOYMENT CHEAT SHEET
+2. DOCKER COMMANDS
+3. docker build -t app . Build image
+4. docker run -p 8080:8080 app Run container
+5. docker push registry/app Push to registry
+6. docker-compose up -d Start services
+7. KUBECTL COMMANDS
 
 ```mermaid
 flowchart TD
@@ -1301,7 +1278,7 @@ Cloud deployment requires understanding:
 6. **Observability** - Monitoring, logging, tracing
 7. **Security** - Secrets management, IAM
 
-> **Remember**: "Cloud is not a destination, it's a journey of continuous improvement and optimization"
+**Remember**: "Cloud is not a destination, it's a journey of continuous improvement and optimization"
 
 ---
 
@@ -1315,8 +1292,8 @@ Cloud deployment requires understanding:
 
 
 
-> 🔬 **Section Challenge — Summary**
->>
+🔬 **Section Challenge — Summary**
+>
 
 ## 🏋️ Practice & Interview Questions — DevOps & Networking
 

@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch62_SB_Microservices_Patterns.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch62_SB_Microservices_Patterns.md)
 
 ---
 
 # Spring Boot Part 20: Microservices Patterns
 ## Service Discovery, API Gateway, Circuit Breakers, and More
 
-> **"Microservices are about doing one thing well, and integrating elegantly"** - Distributed systems done right
+**"Microservices are about doing one thing well, and integrating elegantly"** - Distributed systems done right
 
 ---
 
@@ -55,13 +55,10 @@
 ```
 
 **Flow:**
-- WHY: Why Microservices? / • Scale independently: Scale
-- ↓
-- HOW: How Do Microservices Communicate? / • Service Disc
-- ↓
-- WHEN: When to Use Microservices? / USE MICROSERVICES: /
-- ↓
-- WHICH: Which Patterns to Master? / ESSENTIAL: API Gatew
+1. WHY: Why Microservices? / • Scale independently: Scale
+2. HOW: How Do Microservices Communicate? / • Service Disc
+3. WHEN: When to Use Microservices? / USE MICROSERVICES: /
+4. WHICH: Which Patterns to Master? / ESSENTIAL: API Gatew
 
 ```mermaid
 flowchart TD
@@ -135,29 +132,18 @@ flowchart TD
 ```
 
 **Flow:**
-- Load Balancer / Reverse Proxy
-- ↓
-- Order / Service
-- ↓
-- Load Balancer / Reverse Proxy
-- ↓
-- Payment / Service
-- ↓
-- User / Service
-- ↓
-- User DB / (Postgres)
-- ↓
-- User / Service
-- ↓
-- Order DB / (Mongo)
-- ↓
-- Order / Service
-- ↓
-- User DB / (Postgres)
-- ↓
-- Order / Service
-- ↓
-- Order DB / (Mongo)
+1. Load Balancer / Reverse Proxy
+2. Order / Service
+3. Load Balancer / Reverse Proxy
+4. Payment / Service
+5. User / Service
+6. User DB / (Postgres)
+7. User / Service
+8. Order DB / (Mongo)
+9. Order / Service
+10. User DB / (Postgres)
+11. Order / Service
+12. Order DB / (Mongo)
 
 ```mermaid
 flowchart TD
@@ -221,19 +207,13 @@ flowchart TD
 ```
 
 **Flow:**
-- Service / Discovery / (Eureka)
-- ↓
-- API Gateway / (Gateway)
-- ↓
-- Config Server / (Config)
-- ↓
-- Circuit / Breaker / (Resilience4j)
-- ↓
-- Distributed / Tracing / (Sleuth)
-- ↓
-- Load / Balancing / (LoadBalancer)
-- ↓
-- Message / Broker / (Stream)
+1. Service / Discovery / (Eureka)
+2. API Gateway / (Gateway)
+3. Config Server / (Config)
+4. Circuit / Breaker / (Resilience4j)
+5. Distributed / Tracing / (Sleuth)
+6. Load / Balancing / (LoadBalancer)
+7. Message / Broker / (Stream)
 
 ```mermaid
 flowchart TD
@@ -260,14 +240,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Microservices Architecture Overview**
->
-> **Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
-> <details><summary>Answer</summary>
->
-> Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
-> </details>
->
+🔬 **Section Challenge — Microservices Architecture Overview**
+
+**Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
+<details><summary>Answer</summary>
+
+Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
+</details>
+
 
 ## Service Discovery
 
@@ -292,9 +272,8 @@ With Service Discovery:
 ```
 
 **Flow:**
-- Service A needs to call Service B / ❌ Hard-coded URLs:
-- ↓
-- Service A calls 'order-service' (logical name) / ✅ Serv
+1. Service A needs to call Service B / ❌ Hard-coded URLs:
+2. Service A calls 'order-service' (logical name) / ✅ Serv
 
 ```mermaid
 flowchart TD
@@ -594,17 +573,12 @@ With API Gateway:
 ```
 
 **Flow:**
-- Client
-- ↓
-- User Service (port 8081) / Client
-- ↓
-- Order Serv
-- ↓
-- Client
-- ↓
-- API Gateway (port 8080) / Gateway
-- ↓
-- User/Order
+1. Client
+2. User Service (port 8081) / Client
+3. Order Serv
+4. Client
+5. API Gateway (port 8080) / Gateway
+6. User/Order
 
 ```mermaid
 flowchart TD
@@ -1005,11 +979,9 @@ With Circuit Breaker:
 ```
 
 **Flow:**
-- CLOSED / (Requests / pass through)
-- ↓
-- OPEN / (Requests / fail fast)
-- ↓
-- HALF-OPEN / (Limited / requests)
+1. CLOSED / (Requests / pass through)
+2. OPEN / (Requests / fail fast)
+3. HALF-OPEN / (Limited / requests)
 
 ```mermaid
 flowchart TD
@@ -1389,14 +1361,14 @@ public class UserServiceLoadBalancerConfig {
 
 
 
-> 🔬 **Section Challenge — Load Balancing**
->
-> **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-> <details><summary>Answer</summary>
->
-> Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
-> </details>
->
+🔬 **Section Challenge — Load Balancing**
+
+**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+<details><summary>Answer</summary>
+
+Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+</details>
+
 
 ## Configuration Management
 

@@ -1,13 +1,10 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02a_Sorting_Fundamentals.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02a_Sorting_Fundamentals.md)
 
 # 🧠 Algorithm Thinking: How to Approach Any Problem
 
 ## Learning the LOGIC, Not Just the Code
 
 ---
-
-
-
 
 # 📚 Part 0: Complete Understanding + Growth Mindset
 
@@ -19,7 +16,7 @@ Algorithmic thinking is a METHOD of thinking about problems that involves:
 - Creating STEP-BY-STEP solutions
 - GENERALIZING solutions to apply broadly
 
-> 💡 **KEY INSIGHT: It's NOT about memorizing algorithms - it's about developing**
+💡 **KEY INSIGHT: It's NOT about memorizing algorithms - it's about developing**
 a THINKING PROCESS that lets you CREATE solutions.
 
 **Historical Perspective**:
@@ -29,10 +26,7 @@ a THINKING PROCESS that lets you CREATE solutions.
 - 1960s: Structured programming - algorithms became science
 - Today: Millions of algorithms, but THINKING process is universal!
 
-
-
 ## What Problem Does Algorithmic Thinking Solve
-
 
 **Core Problem**: Humans naturally think in vague, incomplete ways.
 Computers need PRECISE, COMPLETE instructions.
@@ -52,8 +46,6 @@ REAL-WORLD APPLICATIONS:
 - Netflix: Recommend from thousands of shows
 - Compression: Make files smaller without losing data
 - Encryption: Secure communication across internet
-
-
 
 ## ⭐ The Growth Mindset For Creating Your Own Algorithms ⭐
 
@@ -88,8 +80,6 @@ sum(1,2,3) = sum(0,1,2) - a + d  → O(n)!
 
 **The Secret**: Every algorithm is just this process applied!
 
-
-
 ## How To Develop Algorithm Creation Skills
 
 1. ALWAYS START WITH BRUTE FORCE
@@ -118,6 +108,7 @@ DFS + Memoization = Tree DP
 Does it work for edge cases?
 Can it be simpler?
 Can it be faster?
+
 ## Creating Your Own Data Structures
 
 SAME GROWTH MINDSET APPLIES!
@@ -141,8 +132,6 @@ YOUR TURN - Try these exercises:
 
 **Hint**: Combine existing structures + maintain extra state!
 
-
-
 ## Difficulties & Common Mistakes
 
 1. JUMPING TO CODE TOO FAST:
@@ -163,6 +152,7 @@ Solution: For each solution, understand WHY it works
 6. GIVING UP TOO EARLY:
 "I don't know the algorithm for this"
 Solution: YOU can create the algorithm! Use the process above.
+
 ## Expected Outcomes
 
 - ✅ PROBLEM DECOMPOSITION: Break any problem into smaller pieces
@@ -182,9 +172,6 @@ Transform from "I need to know the algorithm" to
 # 🧩 Part 1: the Universal Problem — Solving Framework
 
 ## Step-by-Step Thinking Process
-
-
-
 
 ## The 5-Step Framework
 
@@ -238,11 +225,9 @@ Translate logic to code
 ```
 
 **Flow:**
-- Is data SORTED?
-- ↓
-- Need OPTIMAL / substructure?
-- ↓
-- Searching/ / Traversing?
+1. Is data SORTED?
+2. Need OPTIMAL / substructure?
+3. Searching/ / Traversing?
 
 ```mermaid
 flowchart TD
@@ -300,19 +285,13 @@ MENTAL MODEL:
 ```
 
 **Flow:**
-- SIGNAL PHRASES:
-- ↓
-- - 'Find two elements that...'
-- ↓
-- - 'Sorted array'
-- ↓
-- - 'Remove duplicates'
-- ↓
-- - 'Reverse'
-- ↓
-- - 'Palindrome'
-- ↓
-- MENTAL MODEL:
+1. SIGNAL PHRASES:
+2. - 'Find two elements that...'
+3. - 'Sorted array'
+4. - 'Remove duplicates'
+5. - 'Reverse'
+6. - 'Palindrome'
+7. MENTAL MODEL:
 
 ```mermaid
 flowchart TD
@@ -371,16 +350,14 @@ Time: O(n) ✓
 
 ---
 
+🔬 **Section Challenge — 1. Two Pointers Thinking**
 
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 1. Two Pointers Thinking**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## 2. Sliding Window Thinking
 
@@ -410,19 +387,13 @@ MENTAL MODEL:
 ```
 
 **Flow:**
-- SIGNAL PHRASES:
-- ↓
-- - 'Subarray/substring of size K'
-- ↓
-- - 'Longest/shortest subarray with condition'
-- ↓
-- - 'Consecutive elements'
-- ↓
-- - 'Sum of K elements'
-- ↓
-- MENTAL MODEL:
-- ↓
-- Instead of recalculating for each
+1. SIGNAL PHRASES:
+2. - 'Subarray/substring of size K'
+3. - 'Longest/shortest subarray with condition'
+4. - 'Consecutive elements'
+5. - 'Sum of K elements'
+6. MENTAL MODEL:
+7. Instead of recalculating for each
 
 ```mermaid
 flowchart TD
@@ -510,11 +481,7 @@ Time: O(n) ✓
 ```
 
 **Flow:**
-- Window: 'abc'
-- ↓
-- add 'a'
-- ↓
-- repeat found!
+1. Window: 'abc' add 'a' repeat found!
 
 ```mermaid
 flowchart LR
@@ -527,22 +494,20 @@ flowchart LR
 
 ---
 
+🔬 **Section Challenge — 2. Sliding Window Thinking**
 
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 2. Sliding Window Thinking**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## 3. Binary Search Thinking
 
@@ -573,19 +538,13 @@ MENTAL MODEL:
 ```
 
 **Flow:**
-- SIGNAL PHRASES:
-- ↓
-- - 'Sorted array'
-- ↓
-- - 'Find target'
-- ↓
-- - 'Search in O(log n)'
-- ↓
-- - 'Find first/last occurrence'
-- ↓
-- - 'Find minimum/maximum that satisfies condition'
-- ↓
-- MENTAL MODEL:
+1. SIGNAL PHRASES:
+2. - 'Sorted array'
+3. - 'Find target'
+4. - 'Search in O(log n)'
+5. - 'Find first/last occurrence'
+6. - 'Find minimum/maximum that satisfies condition'
+7. MENTAL MODEL:
 
 ```mermaid
 flowchart TD
@@ -627,19 +586,12 @@ VARIANT 4: Search on Answer
 ```
 
 **Flow:**
-- VARIANT 1: Exact Match
-- ↓
-- 'Find element equal to target'
-- ↓
-- Standard binary search
-- ↓
-- VARIANT 2: First Occurrence
-- ↓
-- 'Find first element >= target'
-- ↓
-- When found, DON'T STOP! Search left for earlier
-- ↓
-- VARIANT 3: Last Occurrence
+1. VARIANT 1: Exact Match
+2. 'Find element equal to target'
+3. Standard binary search
+4. VARIANT 2: First Occurrence
+5. 'Find first element >= target'
+6. When found, DON'T STOP! Search left for earlier VARIANT 3: Last Occurrence
 
 ```mermaid
 flowchart TD
@@ -698,19 +650,12 @@ Time: O(log n) ✓
 ```
 
 **Flow:**
-- PROBLEM:
-- ↓
-- nums = [1, 2, 3, 1]
-- ↓
-- Find any peak element (greater than neighbors).
-- ↓
-- LINEAR THINKING:
-- ↓
-- 'Check each element against neighbors'
-- ↓
-- return i
-- ↓
-- Time: O(n) - but can we do better?
+1. PROBLEM: nums = [1, 2, 3, 1]
+2. Find any peak element (greater than neighbors).
+3. LINEAR THINKING:
+4. 'Check each element against neighbors'
+5. return i
+6. Time: O(n) - but can we do better?
 
 ```mermaid
 flowchart TD
@@ -733,22 +678,20 @@ flowchart TD
 
 ---
 
+🔬 **Section Challenge — 3. Binary Search Thinking**
 
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 3. Binary Search Thinking**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## 4. Dynamic Programming Thinking
 
@@ -772,9 +715,8 @@ If BOTH yes → DP!
 ```
 
 **Flow:**
-- If BOTH yes
-- ↓
-- DP!
+1. If BOTH yes
+2. DP!
 
 ```mermaid
 flowchart LR
@@ -850,9 +792,8 @@ ANSWER: dp[4] = 12 ✓
 ```
 
 **Flow:**
-- 2^n combinations
-- ↓
-- O(2ⁿ) ❌
+1. 2^n combinations
+2. O(2ⁿ) ❌
 
 ```mermaid
 flowchart LR
@@ -863,22 +804,20 @@ flowchart LR
 
 ---
 
+🔬 **Section Challenge — 4. Dynamic Programming Thinking**
 
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 4. Dynamic Programming Thinking**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
 
 ## 5. BFS/DFS Thinking
 
@@ -966,9 +905,6 @@ Time: O(m × n) ✓
 
 ---
 
-
-
-
 # 💭 Part 4: Common Thinking Mistakes
 
 ## Mistake 1: Jumping to Code
@@ -984,21 +920,14 @@ See problem → Understand → Examples → Brute force → Optimize → Code
 ```
 
 **Flow:**
-- See problem
-- ↓
-- Start typing code
-- ↓
-- See problem
-- ↓
-- Understand
-- ↓
-- Examples
-- ↓
-- Brute force
-- ↓
-- Optimize
-- ↓
-- Code
+1. See problem
+2. Start typing code
+3. See problem
+4. Understand
+5. Examples
+6. Brute force
+7. Optimize
+8. Code
 
 ```mermaid
 flowchart TD
@@ -1017,9 +946,6 @@ flowchart TD
     N6 --> N7
 ```
 
-
-
-
 ## Mistake 2: Not Considering Edge Cases
 
 ```
@@ -1032,9 +958,6 @@ ALWAYS CHECK:
 - Negative numbers: [-1,-2,-3]
 - Maximum values: [10^9, 10^9]
 ```
-
-
-
 
 ## Mistake 3: Off-by-One Errors
 
@@ -1067,9 +990,6 @@ REMEMBER:
 
 ---
 
-
-
-
 # 💪 Part 5: Practice Methodology
 
 ## The 4-Phase Learning
@@ -1096,9 +1016,6 @@ PHASE 4: APPLY (Day 4+)
 - Apply with variations
 ```
 
-
-
-
 ## Time Boxing
 
 ```
@@ -1123,9 +1040,6 @@ ADVANCED (Week 5+):
 
 ---
 
-
-
-
 # 🎤 Part 6: Interview Thinking Out Loud
 
 ## The STAR Format for Problem Solving
@@ -1148,9 +1062,6 @@ R - REVIEW as you code
     "This condition checks for..."
     "Let me trace through an example..."
 ```
-
-
-
 
 ## Sample Think-Aloud
 
@@ -1181,19 +1092,13 @@ Let me code this up..."
 ```
 
 **Flow:**
-- PROBLEM: Two Sum
-- ↓
-- that would be O(n²). Not great for large inputs.
-- ↓
-- So my plan is:
-- ↓
-- 1. Create an empty HashMap
-- ↓
-- 3. If yes, return the indices
-- ↓
-- 4. If no, add current number to map
-- ↓
-- Let me trace through [2, 7, 11, 15] with target 9:
+1. PROBLEM: Two Sum
+2. that would be O(n²). Not great for large inputs.
+3. So my plan is:
+4. Create an empty HashMap
+5. If yes, return the indices
+6. If no, add current number to map
+7. Let me trace through [2, 7, 11, 15] with target 9:
 
 ```mermaid
 flowchart TD
@@ -1218,18 +1123,14 @@ flowchart TD
 
 _Practice this thinking framework every day!_ 🧠
 
-
 ---
 
-
 ---
-
-
-
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -1256,6 +1157,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -1290,6 +1192,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -1352,6 +1255,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -1386,6 +1290,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -1398,8 +1303,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -1465,5 +1368,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02a_Sorting_Fundamentals.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02a_Sorting_Fundamentals.md)

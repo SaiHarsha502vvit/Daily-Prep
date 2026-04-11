@@ -1,8 +1,9 @@
-> **Navigation**: [< Previous Chapter](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
 # 📌 Part 5: More Essential Algorithms
+
 # ═══════════════════════════════════════════════════════════
 
 ## Algorithm: Kadane's Algorithm (Maximum Subarray Sum) ⭐⭐⭐
@@ -65,16 +66,14 @@ public static int[] kadaneWithIndices(int[] arr) {
 
 ---
 
+🔬 **Section Challenge — Algorithm: Kadane's Algorithm (Maximum Subarray Sum) ⭐⭐⭐**
 
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Algorithm: Kadane's Algorithm (Maximum Subarray Sum) ⭐⭐⭐**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## Algorithm: Dutch National Flag (3-Way Partition) ⭐⭐
 
@@ -186,9 +185,6 @@ public static int majorityElement(int[] nums) {
 ```
 
 ---
-
-
-
 
 ## Algorithm: Tortoise and Hare (Cycle Detection) ⭐⭐
 
@@ -355,16 +351,14 @@ public static int largestRectangleInHistogram(int[] heights) {
 
 ---
 
+🔬 **Section Challenge — Algorithm: Monotonic Stack ⭐⭐**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Algorithm: Monotonic Stack ⭐⭐**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## Algorithm: Prefix Sum & Difference Array ⭐⭐
 
@@ -434,19 +428,19 @@ public static int[] reconstructFromDiff(int[] diff) {
 
 ---
 
+🔬 **Section Challenge — Algorithm: Prefix Sum & Difference Array ⭐⭐**
 
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Algorithm: Prefix Sum & Difference Array ⭐⭐**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 # ═══════════════════════════════════════════════════════════
+
 # 🧩 Part 6: Data Structure Problems With Why — How
+
 # ═══════════════════════════════════════════════════════════
 
 ## Stack Problems
@@ -521,16 +515,14 @@ class MinStack {
 
 ---
 
+🔬 **Section Challenge — Stack Problems**
 
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Stack Problems**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## Queue & Deque Problems
 
@@ -687,22 +679,20 @@ public static int longestConsecutive(int[] nums) {
 
 ---
 
+🔬 **Section Challenge — HashMap Problems**
 
+**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — HashMap Problems**
->
-> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-> <details><summary>Answer</summary>
->
-> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-> <details><summary>Answer</summary>
->
-> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-> </details>
->
+Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+</details>
+
+**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+<details><summary>Answer</summary>
+
+Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+</details>
+
 
 ## Tree Problems
 
@@ -770,7 +760,9 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # 📌 Part 7: Real — Life Incident → DSA Mapping Table
+
 # ═══════════════════════════════════════════════════════════
 
 ```
@@ -811,73 +803,25 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 ```
 
 **Flow:**
-- THE TABLE EVERY DEVELOPER SHOULD MEMORIZE
-- ↓
-- Real Incident
-- ↓
-- DSA Used
-- ↓
-- Why That DSA
-- ↓
-- Real Incident
-- ↓
-- DSA Used
-- ↓
-- Why That DSA
-- ↓
-- Database indexing
-- ↓
-- B+ Tree
-- ↓
-- Balanced search + range
-- ↓
-- Database indexing
-- ↓
-- B+ Tree
-- ↓
-- Balanced search + range
-- ↓
-- Redis cache eviction
-- ↓
-- LRU/LFU Cache
-- ↓
-- Space manageme
-- ↓
-- Redis cache eviction
-- ↓
-- LRU/LFU Cache
-- ↓
-- Space manageme
-- ↓
-- Load balancer
-- ↓
-- Consistent Hashing
-- ↓
-- Distribute evenl
-- ↓
-- Load balancer
-- ↓
-- Consistent Hashing
-- ↓
-- Distribute evenl
-- ↓
-- Browser back/forward
-- ↓
-- Stack
-- ↓
-- History management
-- ↓
-- Browser back/forward
-- ↓
-- Stack
-- ↓
-- History management
-- ↓
-- Connection pooling
-- ↓
-- Queue (bounded)
-- ↓
-- Reuse resource
+1. THE TABLE EVERY DEVELOPER SHOULD MEMORIZE
+2. Real Incident
+3. DSA Used
+4. Why That DSA
+5. Database indexing
+6. B+ Tree
+7. Balanced search + range
+8. Redis cache eviction
+9. LRU/LFU Cache
+10. Space manageme
+11. Load balancer
+12. Consistent Hashing
+13. Distribute evenl
+14. Browser back/forward
+15. Stack
+16. History management
+17. Connection pooling
+18. Queue (bounded)
+19. Reuse resource
 
 ```mermaid
 flowchart TD
@@ -905,7 +849,9 @@ flowchart TD
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 8: STUDY PLAN (Starting Feb 10, 2026)
+
 # ═══════════════════════════════════════════════════════════
 
 ```
@@ -1035,8 +981,8 @@ DAILY ROUTINE (apply 6 learning techniques):
 
 # 💪 Curated Practice Problems — Number Theory & Math
 
-> **HOW TO USE**: These problems apply GCD, primes, modular arithmetic, and combinatorics.
-> Section 1 = fundamentals. Section 2 = medium applications. Section 3 = advanced/competitive.
+**HOW TO USE**: These problems apply GCD, primes, modular arithmetic, and combinatorics.
+Section 1 = fundamentals. Section 2 = medium applications. Section 3 = advanced/competitive.
 
 ---
 
@@ -1069,9 +1015,6 @@ DAILY ROUTINE (apply 6 learning techniques):
 
 ---
 
-
-
-
 ## Section 3: Advanced Math / Competitive
 
 | # | Problem | Platform | Difficulty | Key Technique |
@@ -1097,4 +1040,4 @@ DAILY ROUTINE (apply 6 learning techniques):
 
 ---
 
-> **Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Pattern_Programs_Complete.md)
+**Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Pattern_Programs_Complete.md)

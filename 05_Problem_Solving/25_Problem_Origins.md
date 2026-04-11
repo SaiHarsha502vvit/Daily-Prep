@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
+**Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
 
 # 🌍 Real-World Problem Origins: Where DSA Concepts Were Born
 
@@ -158,13 +158,10 @@ FORMALIZATION:
 ```
 
 **Flow:**
-- 2. 'W' comes after 'M'
-- ↓
-- go to second half
-- ↓
-- 4. 'W' comes after 'T'
-- ↓
-- go to second half
+1. 2. 'W' comes after 'M'
+2. go to second half
+3. 4. 'W' comes after 'T'
+4. go to second half
 
 ```mermaid
 flowchart LR
@@ -210,20 +207,20 @@ THIS IS WHY GOOGLE IS FAST.
 
 
 
-> 🔬 **Section Challenge — Binary Search**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — Binary Search**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## Two Pointers
 
@@ -266,17 +263,12 @@ Time: O(n + m) - Much better!
 ```
 
 **Flow:**
-- 1 < 2
-- ↓
-- take 1, move i
-- ↓
-- 3 > 2
-- ↓
-- take 2, move j
-- ↓
-- 3 < 4
-- ↓
-- take 3, move i
+1. 1 < 2
+2. take 1, move i
+3. 3 > 2
+4. take 2, move j
+5. 3 < 4
+6. take 3, move i
 
 ```mermaid
 flowchart LR
@@ -326,14 +318,14 @@ THIS IS HOW:
 
 
 
-> 🔬 **Section Challenge — Two Pointers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — Two Pointers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## Sliding Window
 
@@ -377,19 +369,13 @@ IMPACT:
 ```
 
 **Flow:**
-- SETTING: ARPANET (Precursor to Internet)
-- ↓
-- PROBLEM:
-- ↓
-- - Computer A sending data to Computer B
-- ↓
-- - Network is unreliable
-- ↓
-- - Some packets get lost
-- ↓
-- - Need to resend lost packets
-- ↓
-- NAIVE APPROACH:
+1. SETTING: ARPANET (Precursor to Internet)
+2. PROBLEM:
+3. - Computer A sending data to Computer B
+4. - Network is unreliable
+5. - Some packets get lost
+6. - Need to resend lost packets
+7. NAIVE APPROACH:
 
 ```mermaid
 flowchart TD
@@ -453,20 +439,20 @@ THIS IS:
 
 
 
-> 🔬 **Section Challenge — Sliding Window**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — Sliding Window**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 # 🔄 Part 2: Sorting Algorithms
 
@@ -508,11 +494,9 @@ WHY IT WORKS:
 ```
 
 **Flow:**
-- SETTING: EDVAC Computer Project / PROBLEM: / - Need to
-- ↓
-- [3, 8] [1, 5] [2, 9] [4, 7] ← Merge (sorted)
-- ↓
-- WHY IT WORKS: / - Each level: n comparisons / - Number
+1. SETTING: EDVAC Computer Project / PROBLEM: / - Need to
+2. [3, 8] [1, 5] [2, 9] [4, 7] ← Merge (sorted)
+3. WHY IT WORKS: / - Each level: n comparisons / - Number
 
 ```mermaid
 flowchart TD
@@ -582,19 +566,13 @@ WHY IT CAN BE SLOW:
 ```
 
 **Flow:**
-- SETTING: Machine translation project, Moscow
-- ↓
-- PROBLEM:
-- ↓
-- - Sorting Russian words for dictionary
-- ↓
-- - Merge sort needs extra memory
-- ↓
-- - Can we sort 'in place'?
-- ↓
-- THE INSIGHT:
-- ↓
-- 'Pick a word. Put all words < it on left, > it on
+1. SETTING: Machine translation project, Moscow
+2. PROBLEM:
+3. - Sorting Russian words for dictionary
+4. - Merge sort needs extra memory
+5. - Can we sort 'in place'?
+6. THE INSIGHT:
+7. 'Pick a word. Put all words < it on left, > it on
 
 ```mermaid
 flowchart TD
@@ -684,23 +662,15 @@ Bellman chose the name to hide his research from politicians!
 ```
 
 **Flow:**
-- fib(5)
-- ↓
-- fib(4)
-- ↓
-- fib(3)
-- ↓
-- fib(2)
-- ↓
-- return 1
-- ↓
-- fib(1)
-- ↓
-- return 1
-- ↓
-- fib(2)
-- ↓
-- CACHED! return 1
+1. fib(5)
+2. fib(4)
+3. fib(3)
+4. fib(2)
+5. return 1
+6. fib(1)
+7. return 1
+8. fib(2)
+9. CACHED! return 1
 
 ```mermaid
 flowchart TD
@@ -823,20 +793,20 @@ RESULT:
 
 
 
-> 🔬 **Section Challenge — BFS - Breadth First Search**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — BFS - Breadth First Search**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## DFS - Depth First Search
 
@@ -907,19 +877,13 @@ THIS IS HOW:
 ```
 
 **Flow:**
-- Page A
-- ↓
-- follows link
-- ↓
-- Page B
-- ↓
-- follows link
-- ↓
-- Page C
-- ↓
-- no new links
-- ↓
-- backtrack
+1. Page A
+2. follows link
+3. Page B
+4. follows link
+5. Page C
+6. no new links
+7. backtrack
 
 ```mermaid
 flowchart TD
@@ -945,20 +909,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — DFS - Depth First Search**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — DFS - Depth First Search**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## Dijkstra's Algorithm
 
@@ -997,13 +961,10 @@ Result: Shortest paths from A to all nodes
 ```
 
 **Flow:**
-- A ----
-- ↓
-- B ----
-- ↓
-- C ----
-- ↓
-- E -----
+1. A ----
+2. B ----
+3. C ----
+4. E -----
 
 ```mermaid
 flowchart LR
@@ -1104,20 +1065,20 @@ THIS IS WHY:
 
 
 
-> 🔬 **Section Challenge — Binary Search Tree**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — Binary Search Tree**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 # #️⃣ Part 6: Hash Tables
 
@@ -1151,11 +1112,9 @@ Open Addressing: Cache-friendly, more complex
 ```
 
 **Flow:**
-- Index 5: alice
-- ↓
-- bob
-- ↓
-- null
+1. Index 5: alice
+2. bob
+3. null
 
 ```mermaid
 flowchart LR
@@ -1197,20 +1156,20 @@ THIS IS WHY:
 
 
 
-> 🔬 **Section Challenge — HashMap Collision Resolution**
->
-> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-> <details><summary>Answer</summary>
->
-> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-> <details><summary>Answer</summary>
->
-> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-> </details>
->
+🔬 **Section Challenge — HashMap Collision Resolution**
+
+**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+<details><summary>Answer</summary>
+
+Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+</details>
+
+**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+<details><summary>Answer</summary>
+
+Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+</details>
+
 
 # 🧩 Part 7: Specific Problem Origins
 
@@ -1256,14 +1215,14 @@ THIS BECAME:
 
 
 
-> 🔬 **Section Challenge — Two Sum - The Classic**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — Two Sum - The Classic**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## LRU Cache - The Interview Favorite
 
@@ -1308,15 +1267,11 @@ THIS IS NOW:
 ```
 
 **Flow:**
-- HashMap: key
-- ↓
-- Node in LinkedList
-- ↓
-- LinkedList: Most Recent ←
-- ↓
-- ... ←
-- ↓
-- Least Recent
+1. HashMap: key
+2. Node in LinkedList
+3. LinkedList: Most Recent ←
+4. ... ←
+5. Least Recent
 
 ```mermaid
 flowchart LR
@@ -1369,13 +1324,10 @@ THIS IS:
 ```
 
 **Flow:**
-- - See '('
-- ↓
-- expect ')' later
-- ↓
-- - See '{'
-- ↓
-- expect '}' later
+1. - See '('
+2. expect ')' later
+3. - See '{'
+4. expect '}' later
 
 ```mermaid
 flowchart LR

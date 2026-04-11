@@ -2,9 +2,11 @@
 > 🧠 **Mental Model**: See [Space-Time Tradeoffs](../14_Mental_Models/12_Space_Time_Tradeoffs.md) — bit tricks as O(1) space optimizations
 
 # 🔢 Bit Manipulation Complete Guide
+>
 > Master the Art of Binary Operations for Coding Interviews
 
 ## Table of Contents
+
 1. [Why Bit Manipulation?](#why-bit-manipulation)
 2. [Binary Number System Fundamentals](#binary-fundamentals)
 3. [Bitwise Operators Deep Dive](#bitwise-operators)
@@ -21,6 +23,7 @@
 ## Why Bit Manipulation? <a name="why-bit-manipulation"></a>
 
 ### Interview Reality
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │  WHY COMPANIES ASK BIT MANIPULATION                         │
@@ -34,17 +37,12 @@
 ```
 
 **Flow:**
-- WHY COMPANIES ASK BIT MANIPULATION
-- ↓
-- 1. Tests low-level understanding
-- ↓
-- 2. O(1) space solutions where others use O(n)
-- ↓
-- 3. Faster than arithmetic operations
-- ↓
-- 4. Essential for systems programming
-- ↓
-- 5. Shows mathematical thinking
+1. WHY COMPANIES ASK BIT MANIPULATION
+2. Tests low-level understanding
+3. O(1) space solutions where others use O(n)
+4. Faster than arithmetic operations
+5. Essential for systems programming
+6. Shows mathematical thinking
 
 ```mermaid
 flowchart TD
@@ -62,6 +60,7 @@ flowchart TD
 ```
 
 ### Where It's Used in Real World
+
 - **Cryptography** - XOR operations for encryption
 - **Graphics** - Color manipulation, image processing
 - **Networking** - IP address, subnet masks
@@ -88,13 +87,10 @@ Position:  7    6    5    4    3    2    1    0  (right to left, 0-indexed)
 ```
 
 **Flow:**
-- Decimal 13 in Binary:
-- ↓
-- 128 64 32 16 8 4 2 1 ← Powers of 2
-- ↓
-- 0 0 0 0 1 1 0 1 ← Binary: 00001101
-- ↓
-- Position: 7 6 5 4 3 2 1 0 (right to left, 0-indexed)
+1. Decimal 13 in Binary:
+2. 128 64 32 16 8 4 2 1 ← Powers of 2
+3. 0 0 0 0 1 1 0 1 ← Binary: 00001101
+4. Position: 7 6 5 4 3 2 1 0 (right to left, 0-indexed)
 
 ```mermaid
 flowchart TD
@@ -123,11 +119,9 @@ flowchart TD
 ```
 
 **Flow:**
-- Sign 31 Value Bits
-- ↓
-- MSB (Most Significant Bit)
-- ↓
-- 0 = positive, 1 = negative
+1. Sign 31 Value Bits
+2. MSB (Most Significant Bit)
+3. 0 = positive, 1 = negative
 
 ```mermaid
 flowchart TD
@@ -172,19 +166,11 @@ Integer.MIN_VALUE = -2147483648 (0x80000000)
 ```
 
 **Flow:**
-- Type Range
-- ↓
-- byte -128 to 127
-- ↓
-- short -32,768 to 32,767
-- ↓
-- int -2^31 to 2^31 - 1
-- ↓
-- ≈ -2.1 billion to 2.1 billion
-- ↓
-- long -2^63 to 2^63 - 1
-- ↓
-- Key Values:
+1. Type Range byte -128 to 127 short -32,768 to 32,767
+2. int -2^31 to 2^31 - 1
+3. ≈ -2.1 billion to 2.1 billion
+4. long -2^63 to 2^63 - 1
+5. Key Values:
 
 ```mermaid
 flowchart TD
@@ -207,9 +193,6 @@ flowchart TD
 
 ---
 
-
-
-
 ## Bitwise Operators Deep Dive <a name="bitwise-operators"></a>
 
 ### The 6 Bitwise Operators
@@ -229,25 +212,14 @@ flowchart TD
 ```
 
 **Flow:**
-- Operator Symbol Description
-- ↓
-- AND & Both bits must be 1
-- ↓
-- OR
-- ↓
-- At least one bit must be 1
-- ↓
-- OR
-- ↓
-- At least one bit must be 1
-- ↓
-- XOR ^ Exactly one bit must be 1
-- ↓
-- NOT ~ Flip all bits
-- ↓
-- L-Shift << Shift bits left (multiply by 2)
-- ↓
-- R-Shift >> Shift bits right (divide by 2)
+1. Operator Symbol Description
+2. AND & Both bits must be 1
+3. OR
+4. At least one bit must be 1
+5. XOR ^ Exactly one bit must be 1
+6. NOT ~ Flip all bits
+7. L-Shift << Shift bits left (multiply by 2)
+8. R-Shift >> Shift bits right (divide by 2)
 
 ```mermaid
 flowchart TD
@@ -293,19 +265,11 @@ XOR (^) - Exactly one is 1      NOT (~) - Flip the bit
 ```
 
 **Flow:**
-- A B A & B / 0 0 0 / 0 1 0 / 1 0 0 / 1 1 1
-- ↓
-- A B A
-- ↓
-- B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 1
-- ↓
-- A B A
-- ↓
-- B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 1
-- ↓
-- A B A ^ B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 0
-- ↓
-- A ~A / 0 1 / 1 0
+1. A B A & B / 0 0 0 / 0 1 0 / 1 0 0 / 1 1 1
+2. A B A
+3. B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 1
+4. A B A ^ B / 0 0 0 / 0 1 1 / 1 0 1 / 1 1 0
+5. A ~A / 0 1 / 1 0
 
 ```mermaid
 flowchart TD
@@ -396,11 +360,9 @@ UNSIGNED RIGHT SHIFT (>>>) - Always fills with 0s
 ```
 
 **Flow:**
-- 5 << 1 = 10 / Before: 0 0 0 0 0 1 0 1 (5) / ↓ ↓ ↓
-- ↓
-- 20 >> 2 = 5 / Before: 0 0 0 1 0 1 0 0 (20) / ↓ ↓
-- ↓
-- Used for negative numbers / -8 >>> 2 = 1073741
+1. 5 << 1 = 10 / Before: 0 0 0 0 0 1 0 1 (5) / ↓ ↓ ↓
+2. 20 >> 2 = 5 / Before: 0 0 0 1 0 1 0 0 (20) / ↓ ↓
+3. Used for negative numbers / -8 >>> 2 = 1073741
 
 ```mermaid
 flowchart TD
@@ -483,13 +445,10 @@ Pattern: Subtracting 1 flips bits from rightmost 1 to end
 ```
 
 **Flow:**
-- Why does n & (n-1) clear rightmost set bit?
-- ↓
-- Another example:
-- ↓
-- Pattern: Subtracting 1 flips bits from rightmost 1 to e
-- ↓
-- AND then clears that entire section
+1. Why does n & (n-1) clear rightmost set bit?
+2. Another example:
+3. Pattern: Subtracting 1 flips bits from rightmost 1 to e
+4. AND then clears that entire section
 
 ```mermaid
 flowchart TD
@@ -518,13 +477,8 @@ The rightmost 1 is at position 2 (value = 4)
 ```
 
 **Flow:**
-- Why does n & (-n) isolate rightmost set bit?
-- ↓
-- Remember: -n = ~n + 1 (Two's complement)
-- ↓
-- -n = = 11110100 (flip + add 1)
-- ↓
-- The rightmost 1 is at position 2 (value = 4)
+1. Why does n & (-n) isolate rightmost set bit?
+2. Remember: -n = ~n + 1 (Two's complement) -n = = 11110100 (flip + add 1) The rightmost 1 is at position 2 (value = 4)
 
 ```mermaid
 flowchart TD
@@ -598,15 +552,10 @@ n >> k    // n / 2^k
 ```
 
 **Flow:**
-- XOR PROPERTIES
-- ↓
-- 1. a ^ 0 = a (XOR with 0 gives same number)
-- ↓
-- 2. a ^ a = 0 (XOR with itself gives 0)
-- ↓
-- 3. a ^ b = b ^ a (Commutative - order doesn't matter)
-- ↓
-- 5. a ^ b ^ a = b (Self-inverse - cancels out)
+1. XOR PROPERTIES
+2. a ^ 0 = a (XOR with 0 gives same number)
+3. a ^ a = 0 (XOR with itself gives 0)
+4. a ^ b = b ^ a (Commutative - order doesn't matter) a ^ b ^ a = b (Self-inverse - cancels out)
 
 ```mermaid
 flowchart TD
@@ -819,9 +768,6 @@ public int tsp(int[][] dist) {
 
 ---
 
-
-
-
 ## Common Patterns & Templates <a name="patterns-templates"></a>
 
 ### Pattern 1: Count Set Bits
@@ -947,8 +893,6 @@ public boolean allBitsSet(int n, int i, int j) {
 ```
 
 ---
-
-
 
 ## Interview Problems with Solutions <a name="interview-problems"></a>
 
@@ -1321,19 +1265,13 @@ clearBit: n & ~(1 << i)
 ```
 
 **Flow:**
-- EDGE CASES TO WATCH
-- ↓
-- • Negative numbers (sign bit handling)
-- ↓
-- • Integer overflow (when shifting)
-- ↓
-- • Empty array (XOR of nothing = 0)
-- ↓
-- • n = 0 (special case for many operations)
-- ↓
-- • n = Integer.MIN_VALUE (-2^31, cannot negate)
-- ↓
-- • Shift by 32 or more (undefined behavior)
+1. EDGE CASES TO WATCH
+2. • Negative numbers (sign bit handling)
+3. • Integer overflow (when shifting)
+4. • Empty array (XOR of nothing = 0)
+5. • n = 0 (special case for many operations)
+6. • n = Integer.MIN_VALUE (-2^31, cannot negate)
+7. • Shift by 32 or more (undefined behavior)
 
 ```mermaid
 flowchart TD
@@ -1372,19 +1310,13 @@ flowchart TD
 ```
 
 **Flow:**
-- INTERVIEW STRATEGIES
-- ↓
-- 1. When you see 'O(1) space' - think bits
-- ↓
-- 2. When elements appear k times - think XOR or bit coun
-- ↓
-- 3. When dealing with subsets - think bitmask
-- ↓
-- 4. When finding unique/missing - think XOR
-- ↓
-- 5. When asked 'power of 2' - think n & (n-1)
-- ↓
-- 6. When optimizing arithmetic - think shifts
+1. INTERVIEW STRATEGIES
+2. When you see 'O(1) space' - think bits
+3. When elements appear k times - think XOR or bit coun
+4. When dealing with subsets - think bitmask
+5. When finding unique/missing - think XOR
+6. When asked 'power of 2' - think n & (n-1)
+7. When optimizing arithmetic - think shifts
 
 ```mermaid
 flowchart TD
@@ -1430,19 +1362,7 @@ flowchart TD
 ```
 
 **Flow:**
-- MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS
-- ↓
-- 1. XOR PROPERTIES
-- ↓
-- Find single/missing numbers
-- ↓
-- 2. n & (n-1) TRICK
-- ↓
-- Clears rightmost set bit
-- ↓
-- Count bits, check power of 2
-- ↓
-- 3. BITMASK FOR SUBSETS
+1. MASTER THESE 3 AND YOU'LL SOLVE 80% OF BIT PROBLEMS XOR PROPERTIES Find single/missing numbers n & (n-1) TRICK Clears rightmost set bit Count bits, check power of 2 BITMASK FOR SUBSETS
 
 ```mermaid
 flowchart TD
@@ -1473,9 +1393,6 @@ flowchart TD
 
 **Pro Tip:** When stuck on a bit problem, write out the binary representation and trace through manually. Visual understanding beats memorization!
 
-
 ---
 
 > **Navigation**: [< Previous](09_Pattern_Programs_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Backtracking_Complete.md)
-
-

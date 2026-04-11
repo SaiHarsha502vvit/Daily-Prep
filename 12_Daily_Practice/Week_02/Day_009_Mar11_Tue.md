@@ -64,13 +64,10 @@ TRADE-OFF:
 ```
 
 **Flow:**
-- null 10
-- ↓
-- ← 20
-- ↓
-- ← 30 null
-- ↓
-- ← 20
+1. null 10
+2. ← 20
+3. ← 30 null
+4. ← 20
 
 ```mermaid
 flowchart LR
@@ -162,13 +159,10 @@ public class DoublyLinkedList {
 ```
 
 **Flow:**
-- COMPARISON OF SORTING ALGORITHMS (what you know so far)
-- ↓
-- Algorithm Best Average Worst Space Stable
-- ↓
-- Quick Sort wins: in-place (O(log n) stack) + cache-frie
-- ↓
-- Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort
+1. COMPARISON OF SORTING ALGORITHMS (what you know so far)
+2. Algorithm Best Average Worst Space Stable
+3. Quick Sort wins: in-place (O(log n) stack) + cache-frie
+4. Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort
 
 ```mermaid
 flowchart TD
@@ -198,23 +192,13 @@ IDEA: Pick a "pivot". Put smaller elements LEFT, larger RIGHT. Repeat.
 ```
 
 **Flow:**
-- [3, 6, 8, 10, 1, 2, 1] pivot = 3
-- ↓
-- PARTITION:
-- ↓
-- Elements ≤ 3: [1, 2, 1]
-- ↓
-- Elements > 3: [6, 8, 10]
-- ↓
-- Elements ≤ 3: [1, 2, 1]
-- ↓
-- Elements > 3: [6, 8, 10]
-- ↓
-- Result: [1, 2, 1, 3, 6, 8, 10]
-- ↓
-- ↑ pivot is in its FINAL position!
-- ↓
-- Now recursively sort [1, 2, 1] and [6, 8, 10]
+1. [3, 6, 8, 10, 1, 2, 1] pivot = 3
+2. PARTITION:
+3. Elements ≤ 3: [1, 2, 1]
+4. Elements > 3: [6, 8, 10]
+5. Result: [1, 2, 1, 3, 6, 8, 10]
+6. ↑ pivot is in its FINAL position!
+7. Now recursively sort [1, 2, 1] and [6, 8, 10]
 
 ```mermaid
 flowchart TD
@@ -337,29 +321,14 @@ This is LeetCode 146 (Medium) — implement it as a bonus challenge!
 ```
 
 **Flow:**
-- access('home')
-- ↓
-- Cache: [home]
-- ↓
-- access('about')
-- ↓
-- Cache: [about, home]
-- ↓
-- access('products')
-- ↓
-- Cache: [products, about, home]
-- ↓
-- access('home')
-- ↓
-- Cache: [home, products, about] ← home moves to fro
-- ↓
-- access('blog')
-- ↓
-- Cache: [blog, home, products] ← about evicted (LRU
-- ↓
-- • HashMap for O(1) lookup: key
-- ↓
-- node reference
+1. access('home')
+2. Cache: [home] access('about')
+3. Cache: [about, home] access('products')
+4. Cache: [products, about, home]
+5. access('home')
+6. Cache: [home, products, about] ← home moves to fro
+7. access('blog')
+8. Cache: [blog, home, products] ← about evicted (LRU • HashMap for O(1) lookup: key node reference
 
 ```mermaid
 flowchart TD
@@ -467,17 +436,9 @@ WHY does it work?
 ```
 
 **Flow:**
-- If they MEET
-- ↓
-- cycle exists
-- ↓
-- If fast reaches null
-- ↓
-- no cycle
-- ↓
-- Eventually fast 'laps' slow
-- ↓
-- they meet inside the cycle.
+1. If they MEET cycle exists
+2. If fast reaches null no cycle
+3. Eventually fast 'laps' slow they meet inside the cycle.
 
 ```mermaid
 flowchart LR
@@ -530,13 +491,9 @@ TRICK: Two-pointer with gap of n
 ```
 
 **Flow:**
-- 3. slow is now at the node BEFORE the target
-- ↓
-- remove it
-- ↓
-- slow.next = slow.next.next
-- ↓
-- removes node 4 ✓
+1. slow is now at the node BEFORE the target
+2. remove it slow.next = slow.next.next
+3. removes node 4 ✓
 
 ```mermaid
 flowchart LR

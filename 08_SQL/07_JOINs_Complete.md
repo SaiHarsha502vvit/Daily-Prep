@@ -1,4 +1,4 @@
-> **SQL Chapter 07/20** | [← Previous](06_Aggregations_GroupBy.md) | [Index](../00_MASTER_INDEX.md) | [Next →](08_Subqueries_CTEs.md)
+**SQL Chapter 07/20** | [← Previous](06_Aggregations_GroupBy.md) | [Index](../00_MASTER_INDEX.md) | [Next →](08_Subqueries_CTEs.md)
 
 ---
 
@@ -14,7 +14,7 @@ Consider storing order data in a single table: `order_id, customer_name, custome
 
 The solution: **split data by topic**. Customers go in a `customers` table (one row per customer), orders go in an `orders` table (one row per order), and a `customer_id` in the orders table links back to the customer. This eliminates duplication and ensures one source of truth. But now, to get "which customer placed which order," you need to **JOIN** the tables back together.
 
-> 💡 **Core Insight:** JOINs are the price you pay for data integrity. Normalization prevents duplication and inconsistency; JOINs reassemble the data when you need to see the full picture.
+💡 **Core Insight:** JOINs are the price you pay for data integrity. Normalization prevents duplication and inconsistency; JOINs reassemble the data when you need to see the full picture.
 
 #### How JOIN Processing Actually Works
 
@@ -39,7 +39,7 @@ The database's **query optimizer** automatically chooses the best algorithm base
 | "Find **orphan records** (missing relationships)" | `LEFT JOIN ... WHERE right.id IS NULL` | Employees who don't belong to any department |
 | "Generate **all possible combinations**" | `CROSS JOIN` | Every employee paired with every project (for assignment planning) |
 
-> ⚠️ **Common Mistake:** Using `LEFT JOIN` when you actually want `INNER JOIN`. Left join returns NULL-padded rows for non-matches, which can silently produce incorrect aggregations (COUNT, SUM include NULLs differently). Always ask yourself: "Do I want rows with NO match?"
+⚠️ **Common Mistake:** Using `LEFT JOIN` when you actually want `INNER JOIN`. Left join returns NULL-padded rows for non-matches, which can silently produce incorrect aggregations (COUNT, SUM include NULLs differently). Always ask yourself: "Do I want rows with NO match?"
 
 #### 📝 Formal Syntax — JOIN Types
 
@@ -152,19 +152,13 @@ WHERE <table_B>.<column> IS NULL;               -- Rows in A with no match in B
 ```
 
 **Flow:**
-- emp_id name dept / 1 Alice 10 / 2 Bob 20 / 3 Carol 10 /
-- ↓
-- dept_id dept_name / 10 Engineering / 20 Marketing / 30
-- ↓
-- A ████ ████ B / ████ ████ / Result: Alice, Bob, Carol (
-- ↓
-- ████████ ████ B / ████████ ████ / Result: Alice, Bob, C
-- ↓
-- A ████ ████████ / ████ ████████ / Result: Alice, Bob, C
-- ↓
-- ████████ ████████ / ████████ ████████ / Result: Alice,
-- ↓
-- 4 employees × 3 departments = 12 rows / (Alice, Eng), (
+1. emp_id name dept / 1 Alice 10 / 2 Bob 20 / 3 Carol 10 /
+2. dept_id dept_name / 10 Engineering / 20 Marketing / 30
+3. A ████ ████ B / ████ ████ / Result: Alice, Bob, Carol (
+4. ████████ ████ B / ████████ ████ / Result: Alice, Bob, C
+5. A ████ ████████ / ████ ████████ / Result: Alice, Bob, C
+6. ████████ ████████ / ████████ ████████ / Result: Alice,
+7. 4 employees × 3 departments = 12 rows / (Alice, Eng), (
 
 ```mermaid
 flowchart TD
@@ -372,20 +366,20 @@ INNER JOIN departments d ON e.dept_id = d.dept_id;
 
 ---
 
-> **Navigation**: [< Previous](06_Aggregations_GroupBy.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Subqueries_CTEs.md)
+**Navigation**: [< Previous](06_Aggregations_GroupBy.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Subqueries_CTEs.md)
 
-> 🔬 **Section Challenge — Chapter 7: JOINs - Combining Tables**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — Chapter 7: JOINs - Combining Tables**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 

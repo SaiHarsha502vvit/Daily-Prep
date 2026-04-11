@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch45_SB_Actuator_Metrics.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch45_SB_Actuator_Metrics.md)
 
 ---
 
 # 🔧 SPRING BOOT MASTERY - Part 14: Essential Topics (Previously Missing)
 
-> **Everything Else You NEED to Know**
-> _"The gaps that separate amateurs from professionals"_
+**Everything Else You NEED to Know**
+_"The gaps that separate amateurs from professionals"_
 
 ---
 
@@ -52,13 +52,10 @@
 ```
 
 **Flow:**
-- WHY: Why These 'Essential Missing' Topics? / • Producti
-- ↓
-- HOW: How to Implement Each Feature? / • @Cacheable: Ann
-- ↓
-- WHEN: When to Use Each Feature? / • Caching: Expensive
-- ↓
-- WHICH: Which Topics to Prioritize? / ESSENTIAL: Caching
+1. WHY: Why These 'Essential Missing' Topics? / • Producti
+2. HOW: How to Implement Each Feature? / • @Cacheable: Ann
+3. WHEN: When to Use Each Feature? / • Caching: Expensive
+4. WHICH: Which Topics to Prioritize? / ESSENTIAL: Caching
 
 ```mermaid
 flowchart TD
@@ -97,19 +94,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WHAT THIS PART COVERS
-- ↓
-- 1. Caching (@Cacheable, @CacheEvict, Redis)
-- ↓
-- 2. Async Processing (@Async, @EnableAsync)
-- ↓
-- 3. Scheduling (@Scheduled, @EnableScheduling)
-- ↓
-- 4. Spring Boot Actuator (Health, Metrics, Info)
-- ↓
-- 5. API Documentation (Swagger/OpenAPI)
-- ↓
-- 6. File Upload/Download (Multipart)
+1. WHAT THIS PART COVERS
+2. 1. Caching (@Cacheable, @CacheEvict, Redis)
+3. 2. Async Processing (@Async, @EnableAsync)
+4. 3. Scheduling (@Scheduled, @EnableScheduling)
+5. 4. Spring Boot Actuator (Health, Metrics, Info)
+6. 5. API Documentation (Swagger/OpenAPI)
+7. 6. File Upload/Download (Multipart)
 
 ```mermaid
 flowchart TD
@@ -140,14 +131,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 1: Spring Cache Abstraction**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 1: Spring Cache Abstraction**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Why Caching Matters
 
@@ -430,14 +421,14 @@ public class RedisCacheConfig {
 
 
 
-> 🔬 **Section Challenge — Why Caching Matters**
->
-> **Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
-> <details><summary>Answer</summary>
->
-> Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
-> </details>
->
+🔬 **Section Challenge — Why Caching Matters**
+
+**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+<details><summary>Answer</summary>
+
+Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+</details>
+
 
 # 📌 Section 2: Async Processing
 
@@ -469,37 +460,22 @@ public class RedisCacheConfig {
 ```
 
 **Flow:**
-- ASYNC PROCESSING FLOW
-- ↓
-- SYNCHRONOUS (Default):
-- ↓
-- Request
-- ↓
-- processA()
-- ↓
-- processB()
-- ↓
-- sendEmail()
-- ↓
-- Respo
-- ↓
-- Request
-- ↓
-- processA()
-- ↓
-- processB()
-- ↓
-- sendEmail()
-- ↓
-- Respo
-- ↓
-- Total time: 100ms + 50ms + 2000ms = 2150ms
-- ↓
-- ASYNCHRONOUS (With @Async):
-- ↓
-- Total time: 100ms + 50ms = 150ms (email sends in parall
-- ↓
-- USE CASES:
+1. ASYNC PROCESSING FLOW
+2. SYNCHRONOUS (Default):
+3. Request
+4. processA()
+5. processB()
+6. sendEmail()
+7. Respo
+8. Request
+9. processA()
+10. processB()
+11. sendEmail()
+12. Respo
+13. Total time: 100ms + 50ms + 2000ms = 2150ms
+14. ASYNCHRONOUS (With @Async):
+15. Total time: 100ms + 50ms = 150ms (email sends in parall
+16. USE CASES:
 
 ```mermaid
 flowchart TD
@@ -726,20 +702,20 @@ public class TransactionalService {
 
 
 
-> 🔬 **Section Challenge — Chapter 2: @Async Deep Dive**
->
-> **Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
-> <details><summary>Answer</summary>
->
-> `Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
-> <details><summary>Answer</summary>
->
-> Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
-> </details>
->
+🔬 **Section Challenge — Chapter 2: @Async Deep Dive**
+
+**Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
+<details><summary>Answer</summary>
+
+`Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
+</details>
+
+**Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
+<details><summary>Answer</summary>
+
+Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
+</details>
+
 
 # 📌 Section 3: Scheduling
 
@@ -907,19 +883,13 @@ public class ScheduledTasks {
 ```
 
 **Flow:**
-- ACTUATOR - PRODUCTION MONITORING
-- ↓
-- WHAT ACTUATOR PROVIDES:
-- ↓
-- • /actuator/health - Is app healthy?
-- ↓
-- • /actuator/info - App version, git info
-- ↓
-- • /actuator/metrics - CPU, memory, requests
-- ↓
-- • /actuator/env - Environment properties
-- ↓
-- • /actuator/loggers - View/change log levels
+1. ACTUATOR - PRODUCTION MONITORING
+2. WHAT ACTUATOR PROVIDES:
+3. • /actuator/health - Is app healthy?
+4. • /actuator/info - App version, git info
+5. • /actuator/metrics - CPU, memory, requests
+6. • /actuator/env - Environment properties
+7. • /actuator/loggers - View/change log levels
 
 ```mermaid
 flowchart TD

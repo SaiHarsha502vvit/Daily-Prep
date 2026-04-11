@@ -1,27 +1,27 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_JS_Functions_Closures.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_JS_Functions_Closures.md)
 
-> **JavaScript Chapter 1/7** | [Index](../00_MASTER_INDEX.md) | [Next → Functions & Closures](02_JS_Functions_Closures.md)
+**JavaScript Chapter 1/7** | [Index](../00_MASTER_INDEX.md) | [Next → Functions & Closures](02_JS_Functions_Closures.md)
 
 # JavaScript Foundations — Types, Variables, Scope & Hoisting
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: The absolute foundations of JavaScript — types, variables,
-> scope, coercion, hoisting — things that trip up everyone.
->
-> WHY:  Every JS bug traces back to misunderstanding these basics.
-> Closures won't make sense without scope. Async won't make
-> sense without the event loop. This chapter is the bedrock.
->
-> WHO:  Anyone writing JS — frontend, backend (Node), full-stack.
->
-> WHEN: Before learning React, Node, or any framework.
->
-> WHERE: Browsers (Chrome V8), Node.js (V8), Deno, Bun.
->
-> HOW:  Read each concept → understand the reasoning → run the
-> examples in browser console (F12) → predict before you run.
+WHAT: The absolute foundations of JavaScript — types, variables,
+scope, coercion, hoisting — things that trip up everyone.
+
+WHY:  Every JS bug traces back to misunderstanding these basics.
+Closures won't make sense without scope. Async won't make
+sense without the event loop. This chapter is the bedrock.
+
+WHO:  Anyone writing JS — frontend, backend (Node), full-stack.
+
+WHEN: Before learning React, Node, or any framework.
+
+WHERE: Browsers (Chrome V8), Node.js (V8), Deno, Bun.
+
+HOW:  Read each concept → understand the reasoning → run the
+examples in browser console (F12) → predict before you run.
 
 
 ---
@@ -29,30 +29,30 @@
 ## 1. What IS JavaScript? (The Reasoning)
 
 
-> JavaScript is a DYNAMIC, WEAKLY-TYPED, SINGLE-THREADED language
-> with FIRST-CLASS FUNCTIONS and PROTOTYPE-BASED inheritance.
->
-> Let's break each word down:
->
-> DYNAMIC: Types are determined at RUNTIME, not compile-time.
-> → let x = 5; x = "hello"; // perfectly legal
-> WHY this matters: flexibility, but also bugs.
->
-> WEAKLY-TYPED: JS will COERCE types to make operations work.
-> → "5" + 3 = "53" (string wins), "5" - 3 = 2 (math wins)
-> WHY this matters: unexpected behavior if you don't know.
->
-> SINGLE-THREADED: Only ONE call stack. One thing at a time.
-> → But HOW does async work then? → The EVENT LOOP.
-> WHY this matters: no race conditions, but blocking is bad
->
-> FIRST-CLASS FUNCTIONS: Functions are values — pass them around.
-> → const greet = function() {}; // function in a variable
-> WHY this matters: enables callbacks, closures, FP style.
->
-> PROTOTYPE-BASED: No classical classes (until ES6 sugar).
-> → Objects inherit from other objects via prototype chain.
-> WHY this matters: understanding `this`, inheritance.
+JavaScript is a DYNAMIC, WEAKLY-TYPED, SINGLE-THREADED language
+with FIRST-CLASS FUNCTIONS and PROTOTYPE-BASED inheritance.
+
+Let's break each word down:
+
+DYNAMIC: Types are determined at RUNTIME, not compile-time.
+→ let x = 5; x = "hello"; // perfectly legal
+WHY this matters: flexibility, but also bugs.
+
+WEAKLY-TYPED: JS will COERCE types to make operations work.
+→ "5" + 3 = "53" (string wins), "5" - 3 = 2 (math wins)
+WHY this matters: unexpected behavior if you don't know.
+
+SINGLE-THREADED: Only ONE call stack. One thing at a time.
+→ But HOW does async work then? → The EVENT LOOP.
+WHY this matters: no race conditions, but blocking is bad
+
+FIRST-CLASS FUNCTIONS: Functions are values — pass them around.
+→ const greet = function() {}; // function in a variable
+WHY this matters: enables callbacks, closures, FP style.
+
+PROTOTYPE-BASED: No classical classes (until ES6 sugar).
+→ Objects inherit from other objects via prototype chain.
+WHY this matters: understanding `this`, inheritance.
 
 
 ### JS Engine — How Code Actually Runs
@@ -81,31 +81,15 @@ It interprets first (fast startup) then optimizes hot paths
 ```
 
 **Flow:**
-- Your JS code
-- ↓
-- Engine (V8 in Chrome/Node)
-- ↓
-- Machine cod
-- ↓
-- PARSER
-- ↓
-- Abstract Syntax Tree (AST)
-- ↓
-- PARSER
-- ↓
-- Abstract Syntax Tree (AST)
-- ↓
-- INTERPRETER (Ignition)
-- ↓
-- Bytecode (runs immediately)
-- ↓
-- INTERPRETER (Ignition)
-- ↓
-- Bytecode (runs immediately)
-- ↓
-- JIT COMPILER (TurboFan)
-- ↓
-- Optimized machine code / This
+1. Your JS code
+2. Engine (V8 in Chrome/Node)
+3. Machine cod
+4. PARSER
+5. Abstract Syntax Tree (AST)
+6. INTERPRETER (Ignition)
+7. Bytecode (runs immediately)
+8. JIT COMPILER (TurboFan)
+9. Optimized machine code / This
 
 ```mermaid
 flowchart TD
@@ -153,9 +137,7 @@ NON-PRIMITIVE (mutable, stored by REFERENCE):
 ```
 
 **Flow:**
-- Type Example typeof / number 42, 3.14, NaN, Infinity 'n
-- ↓
-- object {}, [], function, Date, RegExp, Map, / Set, Weak
+1. Type Example typeof / number 42, 3.14, NaN, Infinity 'n object {}, [], function, Date, RegExp, Map, / Set, Weak
 
 ```mermaid
 flowchart TD
@@ -205,9 +187,8 @@ Assignment copies what's on the stack (value OR pointer).
 ```
 
 **Flow:**
-- a: 10 / b: 20 / obj1: 0x1A / obj2: 0x1A
-- ↓
-- { name: 'Harsha' }
+1. a: 10 / b: 20 / obj1: 0x1A / obj2: 0x1A
+2. { name: 'Harsha' }
 
 ```mermaid
 flowchart TD
@@ -220,8 +201,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 2. Data Types — The 8 Types**
->>
+🔬 **Section Challenge — 2. Data Types — The 8 Types**
+>
 
 ## 3. Type Coercion — JS's Most Confusing Feature
 
@@ -238,11 +219,9 @@ flowchart TD
 ```
 
 **Flow:**
-- WHY: Brendan Eich designed JS in 10 days for beginners.
-- ↓
-- He wanted '5' + 3 to 'just work' instead of crashing.
-- ↓
-- HOW: Internal algorithms: ToPrimitive, ToNumber, ToStri
+1. WHY: Brendan Eich designed JS in 10 days for beginners.
+2. He wanted '5' + 3 to 'just work' instead of crashing.
+3. HOW: Internal algorithms: ToPrimitive, ToNumber, ToStri
 
 ```mermaid
 flowchart TD
@@ -304,13 +283,10 @@ if ([]) console.log("truthy!");  // PRINTS! empty array is truthy
 ```
 
 **Flow:**
-- == (loose equality): Converts types THEN compares
-- ↓
-- REASONING: == has 22 type conversion rules in the spec.
-- ↓
-- Predictable code > clever code.
-- ↓
-- The ONLY acceptable == use:
+1. == (loose equality): Converts types THEN compares
+2. REASONING: == has 22 type conversion rules in the spec.
+3. Predictable code > clever code.
+4. The ONLY acceptable == use:
 
 ```mermaid
 flowchart TD
@@ -327,8 +303,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 3. Type Coercion — JS's Most Confusing Feature**
->>
+🔬 **Section Challenge — 3. Type Coercion — JS's Most Confusing Feature**
+>
 
 ## 4. Variables — var vs let vs const
 
@@ -348,19 +324,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WHAT: var (1995), let (2015/ES6), const (2015/ES6)
-- ↓
-- were added to FIX those bugs while keeping var for back
-- ↓
-- compatibility.
-- ↓
-- WHEN to use each:
-- ↓
-- • const: DEFAULT choice. ~90% of variables.
-- ↓
-- • let: When you NEED to reassign (loops, accumulators).
-- ↓
-- • var: NEVER in modern code. Legacy only.
+1. WHAT: var (1995), let (2015/ES6), const (2015/ES6)
+2. were added to FIX those bugs while keeping var for back
+3. compatibility.
+4. WHEN to use each:
+5. • const: DEFAULT choice. ~90% of variables.
+6. • let: When you NEED to reassign (loops, accumulators).
+7. • var: NEVER in modern code. Legacy only.
 
 ```mermaid
 flowchart TD
@@ -427,19 +397,13 @@ declaration where accessing the variable throws an error)
 ```
 
 **Flow:**
-- COMPARISON TABLE:
-- ↓
-- Feature var let const
-- ↓
-- Scope function block block
-- ↓
-- Hoisting yes(undef) yes(TDZ) yes(TDZ)
-- ↓
-- Reassign yes yes NO
-- ↓
-- Redeclare yes no no
-- ↓
-- Use in never ~10% ~90%
+1. COMPARISON TABLE:
+2. Feature var let const
+3. Scope function block block
+4. Hoisting yes(undef) yes(TDZ) yes(TDZ)
+5. Reassign yes yes NO
+6. Redeclare yes no no
+7. Use in never ~10% ~90%
 
 ```mermaid
 flowchart TD
@@ -476,19 +440,11 @@ flowchart TD
 ```
 
 **Flow:**
-- WHAT: Scope determines WHERE a variable is accessible.
-- ↓
-- WHY: Without scope, all variables would be global
-- ↓
-- cha
-- ↓
-- WHY: Without scope, all variables would be global
-- ↓
-- cha
-- ↓
-- HOW: JS uses LEXICAL (static) scoping — scope is determ
-- ↓
-- by WHERE you WRITE the code, not where you call it.
+1. WHAT: Scope determines WHERE a variable is accessible.
+2. WHY: Without scope, all variables would be global
+3. cha
+4. HOW: JS uses LEXICAL (static) scoping — scope is determ
+5. by WHERE you WRITE the code, not where you call it.
 
 ```mermaid
 flowchart TD
@@ -533,19 +489,10 @@ This is the foundation of CLOSURES (next chapter).
 ```
 
 **Flow:**
-- THREE TYPES OF SCOPE:
-- ↓
-- GLOBAL SCOPE
-- ↓
-- const API_URL = 'https://api.example.com';
-- ↓
-- FUNCTION SCOPE
-- ↓
-- function greet(name) {
-- ↓
-- const msg = 'Hello ' + name;
-- ↓
-- BLOCK SCOPE
+1. THREE TYPES OF SCOPE:
+2. GLOBAL SCOPE
+3. const API_URL = 'https://api.example.com';
+4. FUNCTION SCOPE function greet(name) { const msg = 'Hello ' + name; BLOCK SCOPE
 
 ```mermaid
 flowchart TD
@@ -618,17 +565,7 @@ function outer() {
 ```
 
 **Flow:**
-- executing any code. (Technically, it's about creation
-- ↓
-- phase vs execution phase — nothing physically moves.)
-- ↓
-- WHY: The JS engine makes TWO passes:
-- ↓
-- Pass 1 (Creation): Find all declarations, allocate memo
-- ↓
-- Pass 2 (Execution): Run code line by line.
-- ↓
-- But BEHAVIOR differs between them.
+1. executing any code. (Technically, it's about creation phase vs execution phase — nothing physically moves.) WHY: The JS engine makes TWO passes: Pass 1 (Creation): Find all declarations, allocate memo Pass 2 (Execution): Run code line by line. But BEHAVIOR differs between them.
 
 ```mermaid
 flowchart TD
@@ -698,19 +635,13 @@ let/const throw immediately instead of silently being undefined.
 ```
 
 **Flow:**
-- HOISTING SUMMARY:
-- ↓
-- Declaration Hoisted? Value before line?
-- ↓
-- var x = 5 Yes undefined
-- ↓
-- let x = 5 Yes (TDZ) ReferenceError
-- ↓
-- const x = 5 Yes (TDZ) ReferenceError
-- ↓
-- function f() {} Yes (full) The function itself
-- ↓
-- var f = () => {} Yes undefined
+1. HOISTING SUMMARY:
+2. Declaration Hoisted? Value before line?
+3. var x = 5 Yes undefined
+4. let x = 5 Yes (TDZ) ReferenceError
+5. const x = 5 Yes (TDZ) ReferenceError
+6. function f() {} Yes (full) The function itself
+7. var f = () => {} Yes undefined
 
 ```mermaid
 flowchart TD
@@ -820,9 +751,7 @@ Stack Overflow = too many pushes without pops (infinite recursion)
 ```
 
 **Flow:**
-- EXECUTION CONTEXT contains: / 1. Variable Environment (
-- ↓
-- inner() / outer() / Global
+1. EXECUTION CONTEXT contains: / 1. Variable Environment ( inner() / outer() / Global
 
 ```mermaid
 flowchart TD
@@ -835,14 +764,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 8. Execution Context — How JS Runs Your Code**
->
-> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-> <details><summary>Answer</summary>
->
-> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-> </details>
->
+🔬 **Section Challenge — 8. Execution Context — How JS Runs Your Code**
+
+**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+<details><summary>Answer</summary>
+
+Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+</details>
+
 
 ## 9. Strict Mode
 
@@ -900,15 +829,10 @@ Q: "5" + 3 vs "5" - 3?
 ```
 
 **Flow:**
-- var
-- ↓
-- hoisted as undefined. let/const
-- ↓
-- hoisted but in TDZ.
-- ↓
-- function declarations
-- ↓
-- fully hoisted.
+1. var
+2. hoisted as undefined. let/const
+3. hoisted but in TDZ.
+4. function declarations fully hoisted.
 
 ```mermaid
 flowchart LR
@@ -924,7 +848,7 @@ flowchart LR
 
 ---
 
-> [Next → Chapter 2: Functions & Closures](02_JS_Functions_Closures.md)
+[Next → Chapter 2: Functions & Closures](02_JS_Functions_Closures.md)
 
 
 ---

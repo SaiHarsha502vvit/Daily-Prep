@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01b_Arrays.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01b_Arrays.md)
 
 ---
 
@@ -14,7 +14,7 @@
 # 🔬 PART 0A: HOW COMPUTER MEMORY ACTUALLY WORKS (The Foundation)
 
 
-> BEFORE YOU LEARN DATA STRUCTURES - UNDERSTAND THE MACHINE
+BEFORE YOU LEARN DATA STRUCTURES - UNDERSTAND THE MACHINE
 
 
 Why does this matter?
@@ -80,19 +80,13 @@ Let's go DEEP into how computers actually work!
 ```
 
 **Flow:**
-- CPU CORE
-- ↓
-- REGISTERS (64 bytes) / Access: 0.5 nanoseconds
-- ↓
-- L1 CACHE (32KB per core) / Access: 1 nanosecond
-- ↓
-- L2 CACHE (256KB per core) / Access: 4 nanoseconds
-- ↓
-- L3 CACHE (8MB shared) / Access: 15 nanoseconds
-- ↓
-- MAIN MEMORY / RAM (16GB) / Access: 100 nanoseconds
-- ↓
-- SSD / DISK (1TB) / Access: 100,000 nanoseconds
+1. CPU CORE
+2. REGISTERS (64 bytes) / Access: 0.5 nanoseconds
+3. L1 CACHE (32KB per core) / Access: 1 nanosecond
+4. L2 CACHE (256KB per core) / Access: 4 nanoseconds
+5. L3 CACHE (8MB shared) / Access: 15 nanoseconds
+6. MAIN MEMORY / RAM (16GB) / Access: 100 nanoseconds
+7. SSD / DISK (1TB) / Access: 100,000 nanoseconds
 
 ```mermaid
 flowchart TD
@@ -113,20 +107,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — THE MEMORY HIERARCHY - Why Some Operations Are Faster**
->
-> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-> <details><summary>Answer</summary>
->
-> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-> <details><summary>Answer</summary>
->
-> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
-> </details>
->
+🔬 **Section Challenge — THE MEMORY HIERARCHY - Why Some Operations Are Faster**
+
+**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+<details><summary>Answer</summary>
+
+`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+</details>
+
+**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+<details><summary>Answer</summary>
+
+1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+</details>
+
 
 ## HOW MEMORY IS ORGANIZED (Addresses & Bytes)
 
@@ -201,9 +195,8 @@ flowchart TD
 ```
 
 **Flow:**
-- Address 0x1000 0x1001 0x1002 0x1003 / Content 0x2A 0x00
-- ↓
-- Address 0x1000 0x1001 0x1002 0x1003 / Content 0x00 0x00
+1. Address 0x1000 0x1001 0x1002 0x1003 / Content 0x2A 0x00
+2. Address 0x1000 0x1001 0x1002 0x1003 / Content 0x00 0x00
 
 ```mermaid
 flowchart TD
@@ -335,14 +328,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — JAVA MEMORY MODEL - Stack vs Heap**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — JAVA MEMORY MODEL - Stack vs Heap**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## WHY ARRAYS ARE FAST - Memory Layout Explained
 
@@ -438,15 +431,11 @@ sum += arr[i];  // Most accesses are cache hits!
 ```
 
 **Flow:**
-- Node / value: 10 / next: 0x5F00 / prev: null
-- ↓
-- Node / value: 20 / next: 0x2A00 / prev: 0x1000
-- ↓
-- Node / value: 30 / next: 0x8B00 / prev: 0x5F00
-- ↓
-- Node / value: 40 / next: 0x3C00 / prev: 0x2A00
-- ↓
-- Node / value: 50 / next: null / prev: 0x8B00
+1. Node / value: 10 / next: 0x5F00 / prev: null
+2. Node / value: 20 / next: 0x2A00 / prev: 0x1000
+3. Node / value: 30 / next: 0x8B00 / prev: 0x5F00
+4. Node / value: 40 / next: 0x3C00 / prev: 0x2A00
+5. Node / value: 50 / next: null / prev: 0x8B00
 
 ```mermaid
 flowchart TD

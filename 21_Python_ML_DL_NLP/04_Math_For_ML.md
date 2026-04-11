@@ -1,14 +1,14 @@
-> **Navigation**: [< Previous](03_NumPy_Pandas_Essentials.md) | [Back to Index](00_INDEX.md) | [Next >](05_ML_Fundamentals.md)
+**Navigation**: [< Previous](03_NumPy_Pandas_Essentials.md) | [Back to Index](00_INDEX.md) | [Next >](05_ML_Fundamentals.md)
 
 # 📐 Math for Machine Learning — Complete Guide
 
-> _"Every ML algorithm is just math with a fancy name. Master the math, master ML."_
+_"Every ML algorithm is just math with a fancy name. Master the math, master ML."_
 
 ---
 
 # PART 0: The 5W+H Framework
 
-> **Mental Model:** Think of Math for ML as the grammar of a language. You can memorize phrases (use sklearn), but without grammar (math), you can't construct new sentences (design new models), debug errors (understand why a model fails), or appreciate poetry (read research papers).
+**Mental Model:** Think of Math for ML as the grammar of a language. You can memorize phrases (use sklearn), but without grammar (math), you can't construct new sentences (design new models), debug errors (understand why a model fails), or appreciate poetry (read research papers).
 
 | Question | Math for ML Context |
 | :--- | :--- |
@@ -39,7 +39,7 @@
 
 # PART 1: Linear Algebra — The Language of Data
 
-> Every dataset is a matrix. Every feature is a vector. ML *is* linear algebra.
+Every dataset is a matrix. Every feature is a vector. ML *is* linear algebra.
 
 ---
 
@@ -200,7 +200,7 @@ for i, ev in enumerate(eigenvalues):
 
 # PART 2: Calculus — How Models Learn
 
-> Calculus answers the question: *"How should I adjust my parameters to make my model better?"*
+Calculus answers the question: *"How should I adjust my parameters to make my model better?"*
 
 ---
 
@@ -253,14 +253,14 @@ EXAMPLE:
 
 
 
-> 🔬 **Section Challenge — 2.2 Partial Derivatives & Gradients**
->
-> **Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
-> <details><summary>Answer</summary>
->
-> Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
-> </details>
->
+🔬 **Section Challenge — 2.2 Partial Derivatives & Gradients**
+
+**Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
+<details><summary>Answer</summary>
+
+Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
+</details>
+
 
 ## 2.3 The Chain Rule — Backbone of Backpropagation
 
@@ -339,14 +339,14 @@ LEARNING RATE INTUITION:
 ```python
 
 
-> 🔬 **Section Challenge — 2.4 Gradient Descent — The Learning Algorithm**
->
-> **Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
-> <details><summary>Answer</summary>
->
-> Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
-> </details>
->
+🔬 **Section Challenge — 2.4 Gradient Descent — The Learning Algorithm**
+
+**Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
+<details><summary>Answer</summary>
+
+Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
+</details>
+
 
 # Gradient Descent from scratch — Linear Regression
 import numpy as np
@@ -387,7 +387,7 @@ for epoch in range(epochs):
 
 # PART 3: Probability & Statistics — Quantifying Uncertainty
 
-> ML models don't output *truth* — they output *probabilities*. Understanding probability is understanding ML.
+ML models don't output *truth* — they output *probabilities*. Understanding probability is understanding ML.
 
 ---
 
@@ -493,7 +493,7 @@ CROSS-ENTROPY LOSS:
 
 # PART 4: Optimization — Making Models Learn
 
-> Optimization is the *engine* of ML. Everything else is the car; optimization makes it move.
+Optimization is the *engine* of ML. Everything else is the car; optimization makes it move.
 
 ---
 
@@ -549,14 +549,14 @@ ADAM (Adaptive Moment Estimation) ← MOST POPULAR:
 ```python
 
 
-> 🔬 **Section Challenge — 4.2 Optimizers — Advanced Gradient Descent**
->
-> **Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
-> <details><summary>Answer</summary>
->
-> Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
-> </details>
->
+🔬 **Section Challenge — 4.2 Optimizers — Advanced Gradient Descent**
+
+**Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
+<details><summary>Answer</summary>
+
+Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
+</details>
+
 
 # Comparing optimizers
 import numpy as np
@@ -638,14 +638,14 @@ DROPOUT (Neural Networks):
 
 
 
-> 🔬 **Section Challenge — 4.3 Regularization — Preventing Overfitting**
->
-> **Challenge 1 (Reasoning):** Training accuracy 99%, validation accuracy 70%. What exactly is overfitting and what are 5 ways to fix it?
-> <details><summary>Answer</summary>
->
-> Overfitting: model memorized training data including noise — it doesn't generalize. Fixes: (1) More training data (more examples → harder to memorize). (2) Dropout — randomly zero neurons during training (prevents co-adaptation). (3) L1/L2 regularization — penalize large weights in loss function. (4) Reduce model complexity (fewer layers/parameters). (5) Early stopping — stop training when validation loss stops improving. (6) Data augmentation — create variant training examples.
-> </details>
->
+🔬 **Section Challenge — 4.3 Regularization — Preventing Overfitting**
+
+**Challenge 1 (Reasoning):** Training accuracy 99%, validation accuracy 70%. What exactly is overfitting and what are 5 ways to fix it?
+<details><summary>Answer</summary>
+
+Overfitting: model memorized training data including noise — it doesn't generalize. Fixes: (1) More training data (more examples → harder to memorize). (2) Dropout — randomly zero neurons during training (prevents co-adaptation). (3) L1/L2 regularization — penalize large weights in loss function. (4) Reduce model complexity (fewer layers/parameters). (5) Early stopping — stop training when validation loss stops improving. (6) Data augmentation — create variant training examples.
+</details>
+
 
 # Quick Reference — Key Formulas
 
@@ -792,4 +792,4 @@ def retry(n): return lambda fn: lambda *args: ... # 3 levels!
 </details>
 
 
-> **Navigation**: [< Previous](03_NumPy_Pandas_Essentials.md) | [Back to Index](00_INDEX.md) | [Next >](05_ML_Fundamentals.md)
+**Navigation**: [< Previous](03_NumPy_Pandas_Essentials.md) | [Back to Index](00_INDEX.md) | [Next >](05_ML_Fundamentals.md)

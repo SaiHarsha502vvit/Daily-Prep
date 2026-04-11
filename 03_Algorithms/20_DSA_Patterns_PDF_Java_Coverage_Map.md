@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | [Back to Index](00_INDEX.md)
+**Navigation**: [< Previous](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | [Back to Index](00_INDEX.md)
 
 # Chapter 20 - DSA Patterns PDF to Java Coverage Map
 
-> Purpose: Convert the DSA pattern list from your PDF into a Java-first revision map inside this folder.
+Purpose: Convert the DSA pattern list from your PDF into a Java-first revision map inside this folder.
 
 ---
 
@@ -33,31 +33,26 @@ This chapter is not theory-heavy; it is a navigation and execution layer.
   - `02_Sorting_Searching_Complete.md`
   - `17_DSA_Java_Implementation_Mastery.md`
 
-
-
-
 ## 2.2 Binary Search and Variants
 
 - Binary Search on answer / bounds
   - `02_Sorting_Searching_Complete.md`
   - `13_Binary_Search_Deep_Dive.md`
 
+🔬 **Section Challenge — 2.2 Binary Search and Variants**
 
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 2.2 Binary Search and Variants**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## 2.3 Recursion, Backtracking, DP
 
@@ -68,26 +63,24 @@ This chapter is not theory-heavy; it is a navigation and execution layer.
   - `04_Dynamic_Programming_Complete.md`
   - `14_Dynamic_Programming_Deep_Dive.md`
 
+🔬 **Section Challenge — 2.3 Recursion, Backtracking, DP**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 2.3 Recursion, Backtracking, DP**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## 2.4 Graphs and Trees
 
@@ -100,20 +93,20 @@ Why and what are the 3 fixes?
 
 
 
-> 🔬 **Section Challenge — 2.4 Graphs and Trees**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+🔬 **Section Challenge — 2.4 Graphs and Trees**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## 2.5 Bit Manipulation and XOR
 
@@ -221,14 +214,14 @@ Based on PDF-to-workspace matching done in this session:
 
 
 
-> 🔬 **Section Challenge — 5. Gap Closure Status from PDF**
->
-> **Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
-> <details><summary>Answer</summary>
->
-> A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference — GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener → data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
-> </details>
->
+🔬 **Section Challenge — 5. Gap Closure Status from PDF**
+
+**Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
+<details><summary>Answer</summary>
+
+A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference — GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener → data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
+</details>
+
 
 ## 6. Final Interview Positioning (What to Say)
 
@@ -266,6 +259,7 @@ class User {
 </details>
 
 ### Design Pattern Problems
+
 **Q3.** ⭐ Implement Strategy pattern for payment processing.
 <details><summary>Solution</summary>
 
@@ -322,6 +316,7 @@ class ServerConfig {
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | SOLID: O stands for | Open/Closed Principle |
@@ -332,8 +327,6 @@ class ServerConfig {
 | 6 | Proxy pattern types | Virtual, protective, remote, caching |
 | 7 | Command pattern encapsulates | Request as an object (supports undo/redo) |
 | 8 | Template Method pattern | Defines algorithm skeleton, subclasses fill in steps |
-
-
 
 ---
 
@@ -377,5 +370,4 @@ DIP: high-level modules should not depend on low-level modules — both should d
 **Observer**: subject holds direct references to observer objects. Subject explicitly notifies each one. Tightly coupled (subject knows about observers). Fine for: small systems, known observers at compile time. Breaks when: observers span different modules, dynamic subscription needed, observers need to be remote. **Event Bus / Message Queue**: publishers and subscribers decoupled. Publisher sends event with a TYPE to the bus. Subscribers register for event types — publisher doesn't know who's listening. De-facto standard in large systems: Spring ApplicationEventPublisher, Kafka, RabbitMQ are all event buses. Rule: Observer for in-process tightly-coupled notification. Event bus for loose coupling, cross-module, or distributed communication.
 </details>
 
-
-> **Navigation**: [< Previous](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | [Back to Index](00_INDEX.md)
+**Navigation**: [< Previous](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | [Back to Index](00_INDEX.md)

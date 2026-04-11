@@ -1,21 +1,21 @@
-> **Navigation**: [< Previous](10_Graphs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Backtracking.md)
+**Navigation**: [< Previous](10_Graphs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Backtracking.md)
 
-> **Problems 11/14** | [Prev](10_Graphs.md) | [Index](../00_MASTER_INDEX.md) | [Next](12_Backtracking.md)
+**Problems 11/14** | [Prev](10_Graphs.md) | [Index](../00_MASTER_INDEX.md) | [Next](12_Backtracking.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — Dynamic Programming
 
-> **DP Signal Words:** `minimum cost`, `maximum profit`, `number of ways`, `longest/shortest`, `can you reach`, `partition into`, `subsequence`, `subset sum`
->
-> **Quick Identification:**
-> ```
-> 1. Is there a CHOICE at each step?
-> 2. Do SUBPROBLEMS OVERLAP? (computed multiple times)
-> 3. Do you need MINIMUM/MAXIMUM/COUNT?
-> → ALL YES? → DP
-> ```
->
+**DP Signal Words:** `minimum cost`, `maximum profit`, `number of ways`, `longest/shortest`, `can you reach`, `partition into`, `subsequence`, `subset sum`
+
+**Quick Identification:**
+```
+1. Is there a CHOICE at each step?
+2. Do SUBPROBLEMS OVERLAP? (computed multiple times)
+3. Do you need MINIMUM/MAXIMUM/COUNT?
+→ ALL YES? → DP
+```
+
 
 | DP Category | State | Trigger Words |
 |---|---|---|
@@ -25,29 +25,29 @@
 | Knapsack | `dp[i][w]` = best with i items, capacity w | 0/1 knapsack, partition equal subset |
 | Subsequence | `dp[i]` = best ending at i | LIS, word break |
 
->
-> 📖 **Theory:** [04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md)
-> 📖 **Patterns:** [16_DP_Pattern_Recognition.md](../04_Patterns_Templates/16_DP_Pattern_Recognition.md)
-> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+📖 **Theory:** [04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md)
+📖 **Patterns:** [16_DP_Pattern_Recognition.md](../04_Patterns_Templates/16_DP_Pattern_Recognition.md)
+📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
 
 
-> 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Dynamic Programming**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Dynamic Programming**
+
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
+
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
 
 # 📚 SECTION 10: DYNAMIC PROGRAMMING PATTERNS
 
@@ -72,19 +72,13 @@
 ```
 
 **Flow:**
-- DP FUNDAMENTALS
-- ↓
-- KEY PATTERNS:
-- ↓
-- 1. 1D DP: Single array/sequence
-- ↓
-- 2. 2D DP: Two sequences or grid
-- ↓
-- 3. Interval DP: Subarray/substring problems
-- ↓
-- 4. State Machine DP: Multiple states
-- ↓
-- 5. Knapsack: Selection problems
+1. DP FUNDAMENTALS
+2. KEY PATTERNS:
+3. 1. 1D DP: Single array/sequence
+4. 2. 2D DP: Two sequences or grid
+5. 3. Interval DP: Subarray/substring problems
+6. 4. State Machine DP: Multiple states
+7. 5. Knapsack: Selection problems
 
 ```mermaid
 flowchart TD
@@ -396,8 +390,8 @@ int coinChangeBottomUp(int[] coins, int amount) {
 
 ## 10.1 1D Dynamic Programming
 
-> **Pattern:** `dp[i]` depends on previous 1-2 values. Often optimizable to O(1) space.
-> **Key insight:** Most 1D DP is a disguised Fibonacci or decision problem.
+**Pattern:** `dp[i]` depends on previous 1-2 values. Often optimizable to O(1) space.
+**Key insight:** Most 1D DP is a disguised Fibonacci or decision problem.
 
 ### Problem 159: Climbing Stairs
 
@@ -427,19 +421,13 @@ int coinChangeBottomUp(int[] coins, int amount) {
 ```
 
 **Flow:**
-- CLIMBING STAIRS - Ways to reach top (1 or 2 steps)
-- ↓
-- n = 4 stairs
-- ↓
-- Ways:
-- ↓
-- 1+1+1+1 4 ← Goal
-- ↓
-- 0 ← Start
-- ↓
-- dp[i] = dp[i-1] + dp[i-2] (Fibonacci!)
-- ↓
-- Output: 5 ways
+1. CLIMBING STAIRS - Ways to reach top (1 or 2 steps)
+2. n = 4 stairs
+3. Ways:
+4. 1+1+1+1 4 ← Goal
+5. 0 ← Start
+6. dp[i] = dp[i-1] + dp[i-2] (Fibonacci!)
+7. Output: 5 ways
 
 ```mermaid
 flowchart TD
@@ -501,19 +489,13 @@ public int climbStairs(int n) {
 ```
 
 **Flow:**
-- HOUSE ROBBER - Max money without robbing adjacent house
-- ↓
-- nums = [2, 7, 9, 3, 1]
-- ↓
-- Houses: [2] [7] [9] [3] [1]
-- ↓
-- Rob house 0, 2, 4: 2 + 9 + 1 = 12 ✓
-- ↓
-- Rob house 1, 3: 7 + 3 = 10
-- ↓
-- dp[i] = max(dp[i-1], dp[i-2] + nums[i])
-- ↓
-- 'Skip current' or 'Rob current + skip previous'
+1. HOUSE ROBBER - Max money without robbing adjacent house
+2. nums = [2, 7, 9, 3, 1]
+3. Houses: [2] [7] [9] [3] [1]
+4. Rob house 0, 2, 4: 2 + 9 + 1 = 12 ✓
+5. Rob house 1, 3: 7 + 3 = 10
+6. dp[i] = max(dp[i-1], dp[i-2] + nums[i])
+7. 'Skip current' or 'Rob current + skip previous'
 
 ```mermaid
 flowchart TD
@@ -576,17 +558,12 @@ public int rob(int[] nums) {
 ```
 
 **Flow:**
-- HOUSE ROBBER II - Houses in circle
-- ↓
-- nums = [2, 3, 2]
-- ↓
-- 2 ○ 3 First and last are adjacent!
-- ↓
-- Can't rob both first and last house.
-- ↓
-- Solution: max(rob[0..n-2], rob[1..n-1])
-- ↓
-- Output: 3 (rob house 1 only)
+1. HOUSE ROBBER II - Houses in circle
+2. nums = [2, 3, 2]
+3. 2 ○ 3 First and last are adjacent!
+4. Can't rob both first and last house.
+5. Solution: max(rob[0..n-2], rob[1..n-1])
+6. Output: 3 (rob house 1 only)
 
 ```mermaid
 flowchart TD
@@ -655,19 +632,13 @@ private int robRange(int[] nums, int start, int end) {
 ```
 
 **Flow:**
-- MAXIMUM SUBARRAY - Kadane's Algorithm
-- ↓
-- nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-- ↓
-- At each position, decide:
-- ↓
-- - Start new subarray here?
-- ↓
-- - Or extend previous subarray?
-- ↓
-- dp[i] = max(nums[i], dp[i-1] + nums[i])
-- ↓
-- Index: 0 1 2 3 4 5 6 7 8
+1. MAXIMUM SUBARRAY - Kadane's Algorithm
+2. nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+3. At each position, decide:
+4. - Start new subarray here?
+5. - Or extend previous subarray?
+6. dp[i] = max(nums[i], dp[i-1] + nums[i])
+7. Index: 0 1 2 3 4 5 6 7 8
 
 ```mermaid
 flowchart TD
@@ -708,11 +679,11 @@ public int maxSubArray(int[] nums) {
 
 ### Problem 163: Coin Change
 
-> 💡 **Approach:** Unbounded knapsack variant. `dp[amount]` = min coins to make that amount.
-> For each coin, check: `dp[i] = min(dp[i], dp[i - coin] + 1)`.
-> **Why BFS also works:** Think of it as shortest path where each coin is an edge.
-> **Greedy FAILS here:** Coins [1, 3, 4], amount 6 → Greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins.
-> **Time:** O(amount × coins) | **Space:** O(amount)
+💡 **Approach:** Unbounded knapsack variant. `dp[amount]` = min coins to make that amount.
+For each coin, check: `dp[i] = min(dp[i], dp[i - coin] + 1)`.
+**Why BFS also works:** Think of it as shortest path where each coin is an edge.
+**Greedy FAILS here:** Coins [1, 3, 4], amount 6 → Greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins.
+**Time:** O(amount × coins) | **Space:** O(amount)
 
 **LeetCode 322** 🔗 https://leetcode.com/problems/coin-change/
 
@@ -736,19 +707,13 @@ public int maxSubArray(int[] nums) {
 ```
 
 **Flow:**
-- COIN CHANGE - Minimum coins to make amount
-- ↓
-- coins = [1, 2, 5], amount = 11
-- ↓
-- dp[i] = min coins to make amount i
-- ↓
-- Amount: 0 1 2 3 4 5 6 7 8 9 10 11
-- ↓
-- For amount 11:
-- ↓
-- - Use coin 5: dp[11-5] + 1 = dp[6] + 1 = 3
-- ↓
-- - Use coin 2: dp[11-2] + 1 = dp[9] + 1 = 4
+1. COIN CHANGE - Minimum coins to make amount
+2. coins = [1, 2, 5], amount = 11
+3. dp[i] = min coins to make amount i
+4. Amount: 0 1 2 3 4 5 6 7 8 9 10 11
+5. For amount 11:
+6. - Use coin 5: dp[11-5] + 1 = dp[6] + 1 = 3
+7. - Use coin 2: dp[11-2] + 1 = dp[9] + 1 = 4
 
 ```mermaid
 flowchart TD
@@ -793,26 +758,26 @@ public int coinChange(int[] coins, int amount) {
 
 
 
-> 🔬 **Section Challenge — 10.1 1D Dynamic Programming**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+🔬 **Section Challenge — 10.1 1D Dynamic Programming**
+
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
+
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
 
 ## 10.2 2D Dynamic Programming
 
-> **Pattern:** `dp[i][j]` = answer at grid cell (i,j) or matching i elements of seq1 with j elements of seq2.
-> **Grid problems:** `dp[i][j] = dp[i-1][j] + dp[i][j-1]` (paths) or `min(dp[i-1][j], dp[i][j-1]) + grid[i][j]` (cost).
-> **Two-sequence:** Build a 2D table. Diagonal = match, else take best of skipping one from each sequence.
+**Pattern:** `dp[i][j]` = answer at grid cell (i,j) or matching i elements of seq1 with j elements of seq2.
+**Grid problems:** `dp[i][j] = dp[i-1][j] + dp[i][j-1]` (paths) or `min(dp[i-1][j], dp[i][j-1]) + grid[i][j]` (cost).
+**Two-sequence:** Build a 2D table. Diagonal = match, else take best of skipping one from each sequence.
 
 ### Problem 164: Unique Paths
 
@@ -838,11 +803,9 @@ public int coinChange(int[] coins, int amount) {
 ```
 
 **Flow:**
-- UNIQUE PATHS - Count paths from top-left to bottom-righ
-- ↓
-- m = 3, n = 7 (3 rows, 7 cols)
-- ↓
-- Output: 28 paths
+1. UNIQUE PATHS - Count paths from top-left to bottom-righ
+2. m = 3, n = 7 (3 rows, 7 cols)
+3. Output: 28 paths
 
 ```mermaid
 flowchart TD
@@ -897,15 +860,11 @@ public int uniquePaths(int m, int n) {
 ```
 
 **Flow:**
-- UNIQUE PATHS II - Grid with obstacles
-- ↓
-- grid = [[0,0,0],
-- ↓
-- [0,1,0], 1 = obstacle
-- ↓
-- 1 X 1 X = blocked
-- ↓
-- Output: 2 paths
+1. UNIQUE PATHS II - Grid with obstacles
+2. grid = [[0,0,0],
+3. [0,1,0], 1 = obstacle
+4. 1 X 1 X = blocked
+5. Output: 2 paths
 
 ```mermaid
 flowchart TD
@@ -972,9 +931,8 @@ public int uniquePathsWithObstacles(int[][] grid) {
 ```
 
 **Flow:**
-- 1 3 1 / 1 5 1 / 4 2 1
-- ↓
-- 1 4 5 / 2 7 6 / 6 8 7
+1. 1 3 1 / 1 5 1 / 4 2 1
+2. 1 4 5 / 2 7 6 / 6 8 7
 
 ```mermaid
 flowchart LR
@@ -1027,15 +985,11 @@ public int minPathSum(int[][] grid) {
 ```
 
 **Flow:**
-- LONGEST COMMON SUBSEQUENCE
-- ↓
-- text1 = 'abcde', text2 = 'ace'
-- ↓
-- a 0 1 1 1 If match: dp[i][j] = dp[i-1][j-1] + 1
-- ↓
-- b 0 1 1 1 Else: dp[i][j] = max(dp[i-1][j],
-- ↓
-- LCS = 'ace', length = 3
+1. LONGEST COMMON SUBSEQUENCE
+2. text1 = 'abcde', text2 = 'ace'
+3. a 0 1 1 1 If match: dp[i][j] = dp[i-1][j-1] + 1
+4. b 0 1 1 1 Else: dp[i][j] = max(dp[i-1][j],
+5. LCS = 'ace', length = 3
 
 ```mermaid
 flowchart TD
@@ -1075,11 +1029,11 @@ public int longestCommonSubsequence(String text1, String text2) {
 
 ### Problem 168: Edit Distance
 
-> 💡 **Approach:** Classic 2-sequence DP. `dp[i][j]` = min operations to convert `word1[0..i-1]` to `word2[0..j-1]`.
-> Three choices at each step: Insert (`dp[i][j-1]+1`), Delete (`dp[i-1][j]+1`), Replace (`dp[i-1][j-1]+1`).
-> If characters match: `dp[i][j] = dp[i-1][j-1]` (no operation needed).
-> **Why this matters:** Used in spell-check, DNA sequence alignment, diff tools.
-> **Time:** O(mn) | **Space:** O(mn), optimizable to O(min(m,n))
+💡 **Approach:** Classic 2-sequence DP. `dp[i][j]` = min operations to convert `word1[0..i-1]` to `word2[0..j-1]`.
+Three choices at each step: Insert (`dp[i][j-1]+1`), Delete (`dp[i-1][j]+1`), Replace (`dp[i-1][j-1]+1`).
+If characters match: `dp[i][j] = dp[i-1][j-1]` (no operation needed).
+**Why this matters:** Used in spell-check, DNA sequence alignment, diff tools.
+**Time:** O(mn) | **Space:** O(mn), optimizable to O(min(m,n))
 
 **LeetCode 72** 🔗 https://leetcode.com/problems/edit-distance/
 
@@ -1103,19 +1057,13 @@ public int longestCommonSubsequence(String text1, String text2) {
 ```
 
 **Flow:**
-- EDIT DISTANCE - Min operations to convert word1 to word
-- ↓
-- word1 = 'horse', word2 = 'ros'
-- ↓
-- Operations: Insert, Delete, Replace
-- ↓
-- h 1 1 2 3 If match: dp[i][j] = dp[i-1][j-1]
-- ↓
-- o 2 2 1 2 Else: 1 + min(dp[i-1][j], // delete
-- ↓
-- r 3 2 2 2 dp[i][j-1], // insert
-- ↓
-- s 4 3 3 2 dp[i-1][j-1]) // replace
+1. EDIT DISTANCE - Min operations to convert word1 to word
+2. word1 = 'horse', word2 = 'ros'
+3. Operations: Insert, Delete, Replace
+4. h 1 1 2 3 If match: dp[i][j] = dp[i-1][j-1]
+5. o 2 2 1 2 Else: 1 + min(dp[i-1][j], // delete
+6. r 3 2 2 2 dp[i][j-1], // insert
+7. s 4 3 3 2 dp[i-1][j-1]) // replace
 
 ```mermaid
 flowchart TD
@@ -1166,27 +1114,27 @@ public int minDistance(String word1, String word2) {
 
 
 
-> 🔬 **Section Challenge — 10.2 2D Dynamic Programming**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+🔬 **Section Challenge — 10.2 2D Dynamic Programming**
+
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
+
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
 
 ## 10.3 Knapsack Problems
 
-> **Pattern:** Given items with values/weights + a capacity, maximize value or check feasibility.
-> **0/1 Knapsack template:** `dp[i][w] = max(dp[i-1][w], dp[i-1][w-weight[i]] + value[i])`
-> **Space optimization:** Since each row only depends on previous row, use 1D array (iterate capacity BACKWARDS to avoid using updated values).
-> **Key insight:** "Partition into equal subsets" = "Is there a subset summing to total/2?" = Knapsack!
+**Pattern:** Given items with values/weights + a capacity, maximize value or check feasibility.
+**0/1 Knapsack template:** `dp[i][w] = max(dp[i-1][w], dp[i-1][w-weight[i]] + value[i])`
+**Space optimization:** Since each row only depends on previous row, use 1D array (iterate capacity BACKWARDS to avoid using updated values).
+**Key insight:** "Partition into equal subsets" = "Is there a subset summing to total/2?" = Knapsack!
 
 ### Problem 169: 0/1 Knapsack
 
@@ -1212,19 +1160,13 @@ public int minDistance(String word1, String word2) {
 ```
 
 **Flow:**
-- 0/1 KNAPSACK - Max value with weight limit
-- ↓
-- Item 0: weight=1, value=6
-- ↓
-- Item 1: weight=2, value=10
-- ↓
-- Item 2: weight=3, value=12
-- ↓
-- Take items 1 and 2: weight=5, value=22 ✓
-- ↓
-- Cap: 0 1 2 3 4 5
-- ↓
-- Item 0: 0 6 6 6 6 6
+1. 0/1 KNAPSACK - Max value with weight limit
+2. Item 0: weight=1, value=6
+3. Item 1: weight=2, value=10
+4. Item 2: weight=3, value=12
+5. Take items 1 and 2: weight=5, value=22 ✓
+6. Cap: 0 1 2 3 4 5
+7. Item 0: 0 6 6 6 6 6
 
 ```mermaid
 flowchart TD
@@ -1286,19 +1228,13 @@ public int knapsack(int[] weights, int[] values, int capacity) {
 ```
 
 **Flow:**
-- PARTITION EQUAL SUBSET SUM
-- ↓
-- nums = [1, 5, 11, 5]
-- ↓
-- Total = 22, Target = 11
-- ↓
-- Can we find subset with sum = 11?
-- ↓
-- Yes! [1, 5, 5] and [11]
-- ↓
-- This is 0/1 Knapsack with target = sum/2
-- ↓
-- dp[i] = true if sum i is achievable
+1. PARTITION EQUAL SUBSET SUM
+2. nums = [1, 5, 11, 5]
+3. Total = 22, Target = 11
+4. Can we find subset with sum = 11?
+5. Yes! [1, 5, 5] and [11]
+6. This is 0/1 Knapsack with target = sum/2
+7. dp[i] = true if sum i is achievable
 
 ```mermaid
 flowchart TD
@@ -1369,19 +1305,13 @@ public boolean canPartition(int[] nums) {
 ```
 
 **Flow:**
-- TARGET SUM - Assign + or - to reach target
-- ↓
-- nums = [1, 1, 1, 1, 1], target = 3
-- ↓
-- Ways to get 3:
-- ↓
-- Output: 5 ways
-- ↓
-- Let P = sum of positives, N = sum of negatives
-- ↓
-- P - N = target, P + N = sum
-- ↓
-- P = (target + sum) / 2
+1. TARGET SUM - Assign + or - to reach target
+2. nums = [1, 1, 1, 1, 1], target = 3
+3. Ways to get 3:
+4. Output: 5 ways
+5. Let P = sum of positives, N = sum of negatives
+6. P - N = target, P + N = sum
+7. P = (target + sum) / 2
 
 ```mermaid
 flowchart TD
@@ -1429,10 +1359,10 @@ public int findTargetSumWays(int[] nums, int target) {
 
 ## 10.4 Subsequence Problems
 
-> **Pattern:** Find optimal subsequence (elements don't need to be contiguous).
-> **LIS template:** `dp[i] = max length of increasing subsequence ending at i` → O(n²). Binary search optimization → O(n log n).
-> **Word Break:** `dp[i] = true if s[0..i-1] can be segmented`. Try all dictionary words as suffixes.
-> **Key insight:** Subsequence ≠ Substring. Subsequence can skip elements; substring must be contiguous.
+**Pattern:** Find optimal subsequence (elements don't need to be contiguous).
+**LIS template:** `dp[i] = max length of increasing subsequence ending at i` → O(n²). Binary search optimization → O(n log n).
+**Word Break:** `dp[i] = true if s[0..i-1] can be segmented`. Try all dictionary words as suffixes.
+**Key insight:** Subsequence ≠ Substring. Subsequence can skip elements; substring must be contiguous.
 
 ### Problem 172: Longest Increasing Subsequence
 
@@ -1457,19 +1387,13 @@ public int findTargetSumWays(int[] nums, int target) {
 ```
 
 **Flow:**
-- LONGEST INCREASING SUBSEQUENCE
-- ↓
-- nums = [10, 9, 2, 5, 3, 7, 101, 18]
-- ↓
-- LIS: [2, 3, 7, 101] or [2, 5, 7, 101]
-- ↓
-- Length = 4
-- ↓
-- O(n²) DP: dp[i] = max length ending at i
-- ↓
-- Index: 0 1 2 3 4 5 6 7
-- ↓
-- nums: 10 9 2 5 3 7 101 18
+1. LONGEST INCREASING SUBSEQUENCE
+2. nums = [10, 9, 2, 5, 3, 7, 101, 18]
+3. LIS: [2, 3, 7, 101] or [2, 5, 7, 101]
+4. Length = 4
+5. O(n²) DP: dp[i] = max length ending at i
+6. Index: 0 1 2 3 4 5 6 7
+7. nums: 10 9 2 5 3 7 101 18
 
 ```mermaid
 flowchart TD
@@ -1546,17 +1470,12 @@ private int binarySearch(List<Integer> tails, int target) {
 ```
 
 **Flow:**
-- WORD BREAK - Can string be segmented into dictionary wo
-- ↓
-- s = 'leetcode', wordDict = ['leet', 'code']
-- ↓
-- 'leetcode' = 'leet' + 'code' ✓
-- ↓
-- dp[i] = true if s[0..i) can be segmented
-- ↓
-- Index: 0 1 2 3 4 5 6 7 8
-- ↓
-- 'leet'↗ 'code'↗
+1. WORD BREAK - Can string be segmented into dictionary wo
+2. s = 'leetcode', wordDict = ['leet', 'code']
+3. 'leetcode' = 'leet' + 'code' ✓
+4. dp[i] = true if s[0..i) can be segmented
+5. Index: 0 1 2 3 4 5 6 7 8
+6. 'leet'↗ 'code'↗
 
 ```mermaid
 flowchart TD
@@ -1623,15 +1542,11 @@ public boolean wordBreak(String s, List<String> wordDict) {
 ```
 
 **Flow:**
-- LONGEST PALINDROMIC SUBSEQUENCE
-- ↓
-- s = 'bbbab'
-- ↓
-- LPS = 'bbbb', length = 4
-- ↓
-- dp[i][j] = LPS length in s[i..j]
-- ↓
-- Else: dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+1. LONGEST PALINDROMIC SUBSEQUENCE
+2. s = 'bbbab'
+3. LPS = 'bbbb', length = 4
+4. dp[i][j] = LPS length in s[i..j]
+5. Else: dp[i][j] = max(dp[i+1][j], dp[i][j-1])
 
 ```mermaid
 flowchart TD
@@ -1677,9 +1592,9 @@ public int longestPalindromeSubseq(String s) {
 
 ## 10.5 State Machine DP
 
-> **Pattern:** Multiple states at each step (e.g., holding stock, not holding, in cooldown).
-> **Template:** Define one dp variable per state. Transition between states based on actions.
-> **Key insight:** Draw the state machine diagram first! Then the recurrence writes itself.
+**Pattern:** Multiple states at each step (e.g., holding stock, not holding, in cooldown).
+**Template:** Define one dp variable per state. Transition between states based on actions.
+**Key insight:** Draw the state machine diagram first! Then the recurrence writes itself.
 
 ### Problem 175: Best Time to Buy and Sell Stock with Cooldown
 
@@ -1710,15 +1625,11 @@ public int longestPalindromeSubseq(String s) {
 ```
 
 **Flow:**
-- REST --(buy)--> HOLD
-- ↓
-- REST
-- ↓
-- COOLDOWN
-- ↓
-- HOLD
-- ↓
-- COOLDOWN
+1. REST --(buy)--> HOLD
+2. REST
+3. COOLDOWN
+4. HOLD
+5. COOLDOWN
 
 ```mermaid
 flowchart TD
@@ -1794,20 +1705,20 @@ public int maxProfit(int[] prices) {
 
 
 
-> 🔬 **Section Challenge — 🌍 Real-World Applications of Dynamic Programming**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+🔬 **Section Challenge — 🌍 Real-World Applications of Dynamic Programming**
+
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
+
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 

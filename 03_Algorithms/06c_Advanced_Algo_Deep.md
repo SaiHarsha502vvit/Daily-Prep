@@ -1113,7 +1113,6 @@ SAT → 3-SAT → CLIQUE → VERTEX COVER → HAMILTONIAN → TSP
 
 > **Next**: [Part B: Advanced Patterns & Competitive Programming](06e_Algorithm_Patterns.md)
 
-
 ---
 
 > **Navigation**: [< Previous](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06d_String_Algorithms.md)

@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](Ch30_Dependencies_Annotations_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch58_SB_Deep_Reasoning.md)
+**Navigation**: [< Previous](Ch30_Dependencies_Annotations_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch58_SB_Deep_Reasoning.md)
 
 # Chapter 31 — Java Deep Reasoning: The Questions That Freeze People
 
-> **"Anyone can say 'Java is object-oriented.' The senior engineer explains WHY String is immutable, HOW HashMap actually works under the hood, and WHAT happens when you write `Integer a = 127; Integer b = 127; a == b`."**
+**"Anyone can say 'Java is object-oriented.' The senior engineer explains WHY String is immutable, HOW HashMap actually works under the hood, and WHAT happens when you write `Integer a = 127; Integer b = 127; a == b`."**
 
 ---
 
@@ -27,27 +27,27 @@
 ## 1. Pass By Value: Java NEVER Passes By Reference
 
 ### The Freeze Question
-> "Is Java pass by value or pass by reference?"
+"Is Java pass by value or pass by reference?"
 
 ### Deep Reasoning
 
 
-> THE HOUSE ADDRESS ANALOGY
->
-> You have a house at 123 Main St.
-> You give me a COPY of the address (not the keys).
->
-> I can VISIT the house and rearrange furniture inside:
-> → modifyObject(dog) → dog.name = "Max" → ORIGINAL changes
->
-> But I CANNOT demolish your house and build a new one:
-> → dog = new Dog("Rex") → only MY copy of the address changes
-> → YOUR original variable still points to the old house
->
-> Java ALWAYS passes a COPY of the value.
-> For primitives: copy of the value (5, true, 'a')
-> For objects: copy of the REFERENCE (the address), not the
-> object itself. The reference is passed BY VALUE.
+THE HOUSE ADDRESS ANALOGY
+
+You have a house at 123 Main St.
+You give me a COPY of the address (not the keys).
+
+I can VISIT the house and rearrange furniture inside:
+→ modifyObject(dog) → dog.name = "Max" → ORIGINAL changes
+
+But I CANNOT demolish your house and build a new one:
+→ dog = new Dog("Rex") → only MY copy of the address changes
+→ YOUR original variable still points to the old house
+
+Java ALWAYS passes a COPY of the value.
+For primitives: copy of the value (5, true, 'a')
+For objects: copy of the REFERENCE (the address), not the
+object itself. The reference is passed BY VALUE.
 
 
 ```java
@@ -82,7 +82,7 @@ public class PassByValueDemo {
 ## 2. String Pool & Immutability: Why Strings Behave Strangely
 
 ### The Freeze Question
-> "Why is String immutable? What's the String pool?"
+"Why is String immutable? What's the String pool?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -110,33 +110,20 @@ public class PassByValueDemo {
 ```
 
 **Flow:**
-- THE PUBLIC LIBRARY ANALOGY
-- ↓
-- String pool = A public library with ONE copy of each bo
-- ↓
-- String a = 'hello';
-- ↓
-- Library: 'We have 'hello'. Here's
-- ↓
-- String a = 'hello';
-- ↓
-- Library: 'We have 'hello'. Here's
-- ↓
-- reference to the SAME copy.'
-- ↓
-- String b = 'hello';
-- ↓
-- Library: 'We already have 'hello'
-- ↓
-- String b = 'hello';
-- ↓
-- Library: 'We already have 'hello'
-- ↓
-- Here's the SAME reference.'
-- ↓
-- a == b
-- ↓
-- true! Same physical book (same object in pool)
+1. THE PUBLIC LIBRARY ANALOGY
+2. String pool = A public library with ONE copy of each bo
+3. String a = 'hello';
+4. Library: 'We have 'hello'. Here's
+5. String a = 'hello';
+6. Library: 'We have 'hello'. Here's
+7. reference to the SAME copy.'
+8. String b = 'hello';
+9. Library: 'We already have 'hello'
+10. String b = 'hello';
+11. Library: 'We already have 'hello'
+12. Here's the SAME reference.'
+13. a == b
+14. true! Same physical book (same object in pool)
 
 ```mermaid
 flowchart TD
@@ -180,25 +167,25 @@ System.out.println(original); // "hello" — unchanged!
 
 
 
-> 🔬 **Section Challenge — 2. String Pool & Immutability: Why Strings Behave Strangely**
->
-> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
-> <details><summary>Answer</summary>
->
-> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
-> </details>
->
-> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
-> <details><summary>Answer</summary>
->
-> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
-> </details>
->
+🔬 **Section Challenge — 2. String Pool & Immutability: Why Strings Behave Strangely**
+
+**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+<details><summary>Answer</summary>
+
+First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+</details>
+
+**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+<details><summary>Answer</summary>
+
+Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+</details>
+
 
 ## 3. `==` vs `.equals()`: The Identity vs Equality Trap
 
 ### The Freeze Question
-> "When do I use == and when do I use .equals()?"
+"When do I use == and when do I use .equals()?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -224,27 +211,17 @@ System.out.println(original); // "hello" — unchanged!
 ```
 
 **Flow:**
-- ==
-- ↓
-- 'Are these the SAME object in memory?'
-- ↓
-- (Compares references / addresses)
-- ↓
-- .equals()
-- ↓
-- 'Do these have the SAME content?'
-- ↓
-- .equals()
-- ↓
-- 'Do these have the SAME content?'
-- ↓
-- (Compares values — but MUST be overridden!)
-- ↓
-- For PRIMITIVES (int, char, boolean):
-- ↓
-- Use == (there's no .equals() for primitives)
-- ↓
-- 5 == 5 is true. Simple.
+1. ==
+2. 'Are these the SAME object in memory?'
+3. (Compares references / addresses)
+4. .equals()
+5. 'Do these have the SAME content?'
+6. .equals()
+7. 'Do these have the SAME content?'
+8. (Compares values — but MUST be overridden!)
+9. For PRIMITIVES (int, char, boolean):
+10. Use == (there's no .equals() for primitives)
+11. 5 == 5 is true. Simple.
 
 ```mermaid
 flowchart TD
@@ -300,7 +277,7 @@ class Point {
 ## 4. Integer Cache: Why 127 == 127 But 128 != 128
 
 ### The Freeze Question
-> "Why does `Integer a = 127; Integer b = 127; a == b` return true, but with 128 it returns false?"
+"Why does `Integer a = 127; Integer b = 127; a == b` return true, but with 128 it returns false?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -323,39 +300,23 @@ class Point {
 ```
 
 **Flow:**
-- THE VIP LOUNGE ANALOGY
-- ↓
-- Java has a VIP lounge for 'popular' integers: -128 to 1
-- ↓
-- These 256 Integer objects are pre-created and CACHED.
-- ↓
-- Integer a = 127
-- ↓
-- '127 is a VIP. Here's the cached obje
-- ↓
-- Integer a = 127
-- ↓
-- '127 is a VIP. Here's the cached obje
-- ↓
-- a == b
-- ↓
-- true (same object from cache!)
-- ↓
-- a == b
-- ↓
-- true (same object from cache!)
-- ↓
-- Integer c = 128
-- ↓
-- '128 is NOT a VIP. Create a NEW objec
-- ↓
-- Integer c = 128
-- ↓
-- '128 is NOT a VIP. Create a NEW objec
-- ↓
-- c == d
-- ↓
-- false (different objects!)
+1. THE VIP LOUNGE ANALOGY
+2. Java has a VIP lounge for 'popular' integers: -128 to 1
+3. These 256 Integer objects are pre-created and CACHED.
+4. Integer a = 127
+5. '127 is a VIP. Here's the cached obje
+6. Integer a = 127
+7. '127 is a VIP. Here's the cached obje
+8. a == b
+9. true (same object from cache!)
+10. a == b
+11. true (same object from cache!)
+12. Integer c = 128
+13. '128 is NOT a VIP. Create a NEW objec
+14. Integer c = 128
+15. '128 is NOT a VIP. Create a NEW objec
+16. c == d
+17. false (different objects!)
 
 ```mermaid
 flowchart TD
@@ -394,19 +355,19 @@ System.out.println(c.equals(d)); // true  — always use this
 
 
 
-> 🔬 **Section Challenge — 4. Integer Cache: Why 127 == 127 But 128 != 128**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 4. Integer Cache: Why 127 == 127 But 128 != 128**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 5. Generics Type Erasure: Why You Can't Do `new T()`
 
 ### The Freeze Question
-> "Why can't I write `new T()` or `instanceof T` in generics?"
+"Why can't I write `new T()` or `instanceof T` in generics?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -434,31 +395,19 @@ System.out.println(c.equals(d)); // true  — always use this
 ```
 
 **Flow:**
-- TYPE ERASURE = The Costume Party
-- ↓
-- At compile time, everyone wears name tags (types).
-- ↓
-- At runtime, all name tags are removed — everyone looks
-- ↓
-- same (raw types).
-- ↓
-- List<String> at compile time
-- ↓
-- List at runtime
-- ↓
-- List<String> at compile time
-- ↓
-- List at runtime
-- ↓
-- List<Integer> at compile time
-- ↓
-- List at runtime
-- ↓
-- List<Integer> at compile time
-- ↓
-- List at runtime
-- ↓
-- They're THE SAME class at runtime!
+1. TYPE ERASURE = The Costume Party
+2. At compile time, everyone wears name tags (types).
+3. At runtime, all name tags are removed — everyone looks
+4. same (raw types).
+5. List<String> at compile time
+6. List at runtime
+7. List<String> at compile time
+8. List at runtime
+9. List<Integer> at compile time
+10. List at runtime
+11. List<Integer> at compile time
+12. List at runtime
+13. They're THE SAME class at runtime!
 
 ```mermaid
 flowchart TD
@@ -508,25 +457,25 @@ Dog dog = create(Dog.class); // Works!
 
 
 
-> 🔬 **Section Challenge — 5. Generics Type Erasure: Why You Can't Do `new T()`**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — 5. Generics Type Erasure: Why You Can't Do `new T()`**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## 6. HashMap Internals: Not Just "Key-Value Store"
 
 ### The Freeze Question
-> "How does HashMap work internally? What happens on collision?"
+"How does HashMap work internally? What happens on collision?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -560,21 +509,14 @@ Dog dog = create(Dog.class); // Works!
 ```
 
 **Flow:**
-- THE FILING CABINET ANALOGY
-- ↓
-- 1. PUT('Alice', 25):
-- ↓
-- hashCode('Alice') = 92668751
-- ↓
-- Drawer index = 92668751 % 16 = 7
-- ↓
-- Put entry in Drawer 7.
-- ↓
-- 2. PUT('Bob', 30):
-- ↓
-- hashCode('Bob') = 66965
-- ↓
-- Drawer 5. No collision.
+1. THE FILING CABINET ANALOGY
+2. 1. PUT('Alice', 25):
+3. hashCode('Alice') = 92668751
+4. Drawer index = 92668751 % 16 = 7
+5. Put entry in Drawer 7.
+6. 2. PUT('Bob', 30):
+7. hashCode('Bob') = 66965
+8. Drawer 5. No collision.
 
 ```mermaid
 flowchart TD
@@ -615,25 +557,25 @@ Map<String, Integer> map = new HashMap<>(100); // avoids resizing
 
 
 
-> 🔬 **Section Challenge — 6. HashMap Internals: Not Just "Key-Value Store"**
->
-> **Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-> <details><summary>Answer</summary>
->
-> Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-> <details><summary>Answer</summary>
->
-> Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
-> </details>
->
+🔬 **Section Challenge — 6. HashMap Internals: Not Just "Key-Value Store"**
+
+**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+<details><summary>Answer</summary>
+
+Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+</details>
+
+**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+<details><summary>Answer</summary>
+
+Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+</details>
+
 
 ## 7. `final` Keyword: Three Different Meanings
 
 ### The Freeze Question
-> "What does `final` do?"
+"What does `final` do?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -657,25 +599,16 @@ Map<String, Integer> map = new HashMap<>(100); // avoids resizing
 ```
 
 **Flow:**
-- final List<String> list = new ArrayList<>()
-- ↓
-- list.add('hello'); // ✅ Modifying contents is fine
-- ↓
-- list = new ArrayList<>(); // ❌ Can't reassign the
-- ↓
-- ↑ Like a permanent parking spot — the car in it can cha
-- ↓
-- its color, but you can't move to a different spot.
-- ↓
-- final METHOD
-- ↓
-- can't be overridden by subclasses
-- ↓
-- final METHOD
-- ↓
-- can't be overridden by subclasses
-- ↓
-- public final void doWork() { ... }
+1. final List<String> list = new ArrayList<>()
+2. list.add('hello'); // ✅ Modifying contents is fine
+3. list = new ArrayList<>(); // ❌ Can't reassign the
+4. ↑ Like a permanent parking spot — the car in it can cha
+5. its color, but you can't move to a different spot.
+6. final METHOD
+7. can't be overridden by subclasses
+8. final METHOD
+9. can't be overridden by subclasses
+10. public final void doWork() { ... }
 
 ```mermaid
 flowchart TD
@@ -700,19 +633,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 7. `final` Keyword: Three Different Meanings**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 7. `final` Keyword: Three Different Meanings**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 8. Checked vs Unchecked Exceptions: The Design Philosophy
 
 ### The Freeze Question
-> "What's the difference? Why does Java have both?"
+"What's the difference? Why does Java have both?"
 
 ```
 CHECKED (compile-time) = "Expected problems you SHOULD handle"
@@ -740,21 +673,14 @@ exceptions extensively. The debate continues.
 ```
 
 **Flow:**
-- Throwable
-- ↓
-- Error (unchecked — JVM problems: OutOfMemoryError)
-- ↓
-- Throwable
-- ↓
-- Exception
-- ↓
-- Throwable
-- ↓
-- RuntimeException (unchecked — bugs)
-- ↓
-- Throwable
-- ↓
-- Everything else (checked — expected failures)
+1. Throwable
+2. Error (unchecked — JVM problems: OutOfMemoryError)
+3. Throwable
+4. Exception
+5. Throwable
+6. RuntimeException (unchecked — bugs)
+7. Throwable
+8. Everything else (checked — expected failures)
 
 ```mermaid
 flowchart TD
@@ -773,25 +699,25 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 8. Checked vs Unchecked Exceptions: The Design Philosophy**
->
-> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-> <details><summary>Answer</summary>
->
-> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-> <details><summary>Answer</summary>
->
-> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
-> </details>
->
+🔬 **Section Challenge — 8. Checked vs Unchecked Exceptions: The Design Philosophy**
+
+**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+<details><summary>Answer</summary>
+
+`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+</details>
+
+**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+<details><summary>Answer</summary>
+
+1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+</details>
+
 
 ## 9. Autoboxing Traps: Where Performance Silently Degrades
 
 ### The Freeze Question
-> "What's autoboxing and when is it a problem?"
+"What's autoboxing and when is it a problem?"
 
 ```java
 // Autoboxing: primitive → wrapper automatically
@@ -825,19 +751,19 @@ System.out.println(a == b); // false! (see Section 4 — cache only -128 to 127)
 
 
 
-> 🔬 **Section Challenge — 9. Autoboxing Traps: Where Performance Silently Degrades**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 9. Autoboxing Traps: Where Performance Silently Degrades**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 10. ConcurrentModificationException: Why Iterating + Modifying Fails
 
 ### The Freeze Question
-> "Why does this throw ConcurrentModificationException?"
+"Why does this throw ConcurrentModificationException?"
 
 ```java
 List<String> list = new ArrayList<>(Arrays.asList("A", "B", "C"));
@@ -865,19 +791,13 @@ for (String s : list) {
 ```
 
 **Flow:**
-- THE COUNTING CARDS ANALOGY
-- ↓
-- You: *removes a card from the middle*
-- ↓
-- Iterator: 'Wait — the deck changed! My count is wrong n
-- ↓
-- Throws ConcurrentModificationException
-- ↓
-- FAIL-FAST: Java collections track a modCount. The itera
-- ↓
-- checks modCount each step. If it changed (someone modif
-- ↓
-- the collection), it immediately fails rather than give
+1. THE COUNTING CARDS ANALOGY
+2. You: *removes a card from the middle*
+3. Iterator: 'Wait — the deck changed! My count is wrong n
+4. Throws ConcurrentModificationException
+5. FAIL-FAST: Java collections track a modCount. The itera
+6. checks modCount each step. If it changed (someone modif
+7. the collection), it immediately fails rather than give
 
 ```mermaid
 flowchart TD
@@ -928,19 +848,19 @@ list.removeAll(toRemove);
 
 
 
-> 🔬 **Section Challenge — 10. ConcurrentModificationException: Why Iterating + Modifying Fails**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 10. ConcurrentModificationException: Why Iterating + Modifying Fails**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 11. `synchronized`, `volatile`, `Atomic`: Three Levels of Thread Safety
 
 ### The Freeze Question
-> "What's the difference between synchronized, volatile, and Atomic?"
+"What's the difference between synchronized, volatile, and Atomic?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -964,19 +884,13 @@ list.removeAll(toRemove);
 ```
 
 **Flow:**
-- volatile = A shared whiteboard (visibility only)
-- ↓
-- Ensures ALL threads see the LATEST value
-- ↓
-- Does NOT prevent race conditions with compound action
-- ↓
-- Use for: flags (boolean isRunning), simple reads/writ
-- ↓
-- synchronized = A room with ONE key (mutual exclusion)
-- ↓
-- Only ONE thread can enter at a time
-- ↓
-- Provides both visibility AND atomicity
+1. volatile = A shared whiteboard (visibility only)
+2. Ensures ALL threads see the LATEST value
+3. Does NOT prevent race conditions with compound action
+4. Use for: flags (boolean isRunning), simple reads/writ
+5. synchronized = A room with ONE key (mutual exclusion)
+6. Only ONE thread can enter at a time
+7. Provides both visibility AND atomicity
 
 ```mermaid
 flowchart TD
@@ -1018,7 +932,7 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 ## 12. Abstract Class vs Interface: The Post-Java-8 Reality
 
 ### The Freeze Question
-> "When do you use abstract class vs interface?"
+"When do you use abstract class vs interface?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -1049,19 +963,13 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 ```
 
 **Flow:**
-- PRE-JAVA 8: Clear distinction
-- ↓
-- Abstract class = partial implementation + state
-- ↓
-- Interface = pure contract (all abstract)
-- ↓
-- POST-JAVA 8: Lines blurred (interfaces got default meth
-- ↓
-- REMAINING DIFFERENCES:
-- ↓
-- Abstract class:
-- ↓
-- CAN have instance fields (state)
+1. PRE-JAVA 8: Clear distinction
+2. Abstract class = partial implementation + state
+3. Interface = pure contract (all abstract)
+4. POST-JAVA 8: Lines blurred (interfaces got default meth
+5. REMAINING DIFFERENCES:
+6. Abstract class:
+7. CAN have instance fields (state)
 
 ```mermaid
 flowchart TD
@@ -1086,19 +994,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 12. Abstract Class vs Interface: The Post-Java-8 Reality**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 12. Abstract Class vs Interface: The Post-Java-8 Reality**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 13. Garbage Collection: What Actually Happens
 
 ### The Freeze Question
-> "How does garbage collection work?"
+"How does garbage collection work?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -1131,19 +1039,13 @@ flowchart TD
 ```
 
 **Flow:**
-- THE OFFICE CLEANING SERVICE ANALOGY
-- ↓
-- HEAP = An office building
-- ↓
-- Objects = Desks
-- ↓
-- References = Name plates on desks
-- ↓
-- GC = Cleaning service
-- ↓
-- GC asks: 'Which desks still have name plates? Keep thos
-- ↓
-- Any desk with NO name plate? Clean it up.'
+1. THE OFFICE CLEANING SERVICE ANALOGY
+2. HEAP = An office building
+3. Objects = Desks
+4. References = Name plates on desks
+5. GC = Cleaning service
+6. GC asks: 'Which desks still have name plates? Keep thos
+7. Any desk with NO name plate? Clean it up.'
 
 ```mermaid
 flowchart TD

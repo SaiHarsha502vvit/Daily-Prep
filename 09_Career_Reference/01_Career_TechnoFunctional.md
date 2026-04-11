@@ -1,12 +1,12 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Career_Guide_Part1B.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Career_Guide_Part1B.md)
 
-> **Career Guide** | See also: [04_Career_Projects_Part1.md](04_Career_Projects_Part1.md) | [05_Career_Projects_Part2.md](05_Career_Projects_Part2.md) | [Index](../00_MASTER_INDEX.md)
+**Career Guide** | See also: [04_Career_Projects_Part1.md](04_Career_Projects_Part1.md) | [05_Career_Projects_Part2.md](05_Career_Projects_Part2.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
 # 🚀 Complete Career & Techno-Functional Expert Guide
 
-> **Goal**: Transform from a "coder" to a "Problem-Solving Partner" with deep technical skills + domain expertise
+**Goal**: Transform from a "coder" to a "Problem-Solving Partner" with deep technical skills + domain expertise
 
 ---
 
@@ -39,19 +39,13 @@ Business Problem → Technical Solution → Business Impact → Continuous Impro
 ```
 
 **Flow:**
-- Code
-- ↓
-- Deploy
-- ↓
-- Done
-- ↓
-- Business Problem
-- ↓
-- Technical Solution
-- ↓
-- Business Impact
-- ↓
-- Continuous Improvement
+1. Code
+2. Deploy
+3. Done
+4. Business Problem
+5. Technical Solution
+6. Business Impact
+7. Continuous Improvement
 
 ```mermaid
 flowchart TD
@@ -87,19 +81,13 @@ flowchart TD
 ```
 
 **Flow:**
-- TECHNO-FUNCTIONAL EXPERT
-- ↓
-- TECHNICAL DOMAIN SOFT SKILLS
-- ↓
-- EXCELLENCE EXPERTISE MASTERY
-- ↓
-- • DSA • Banking • Product Mindset
-- ↓
-- • System Design • Healthcare • Solution Articulation
-- ↓
-- • Cloud (AWS/ • Telecom • Client Communication
-- ↓
-- Azure) • Insurance • Problem Ownership
+1. TECHNO-FUNCTIONAL EXPERT
+2. TECHNICAL DOMAIN SOFT SKILLS
+3. EXCELLENCE EXPERTISE MASTERY
+4. • DSA • Banking • Product Mindset
+5. • System Design • Healthcare • Solution Articulation
+6. • Cloud (AWS/ • Telecom • Client Communication
+7. Azure) • Insurance • Problem Ownership
 
 ```mermaid
 flowchart TD
@@ -134,14 +122,14 @@ Companies pay premium for people who understand BOTH technology AND business.
 
 
 
-> 🔬 **Section Challenge — The Techno-Functional Framework**
->>
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
+🔬 **Section Challenge — The Techno-Functional Framework**
 >
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## Technical Skills Deep Dive
 
@@ -170,25 +158,16 @@ Level 1: Fundamentals
 ```
 
 **Flow:**
-- Level 5: Architecture & Strategy
-- ↓
-- Design systems that scale to millions
-- ↓
-- Level 4: Optimization & Performance
-- ↓
-- Make existing systems 10x faster/cheaper
-- ↓
-- Level 3: System Integration
-- ↓
-- Connect multiple services seamlessly
-- ↓
-- Level 2: Implementation
-- ↓
-- Write clean, maintainable code
-- ↓
-- Level 1: Fundamentals
-- ↓
-- DSA, Programming basics
+1. Level 5: Architecture & Strategy
+2. Design systems that scale to millions
+3. Level 4: Optimization & Performance
+4. Make existing systems 10x faster/cheaper
+5. Level 3: System Integration
+6. Connect multiple services seamlessly
+7. Level 2: Implementation
+8. Write clean, maintainable code
+9. Level 1: Fundamentals
+10. DSA, Programming basics
 
 ```mermaid
 flowchart TD
@@ -266,13 +245,10 @@ System Designer thinks:
 ```
 
 **Flow:**
-- BIGGER / SERVER
-- ↓
-- S / 1
-- ↓
-- S / 2
-- ↓
-- S / 3
+1. BIGGER / SERVER
+2. S / 1
+3. S / 2
+4. S / 3
 
 ```mermaid
 flowchart TD
@@ -304,13 +280,10 @@ flowchart TD
 ```
 
 **Flow:**
-- APPLICATION
-- ↓
-- SHARD / I-P
-- ↓
-- APPLICATION
-- ↓
-- SHARD / Q-Z
+1. APPLICATION
+2. SHARD / I-P
+3. APPLICATION
+4. SHARD / Q-Z
 
 ```mermaid
 flowchart TD
@@ -339,17 +312,12 @@ flowchart TD
 ```
 
 **Flow:**
-- CACHING LAYERS
-- ↓
-- CLIENT CDN APP CACHE DB CACHE DB
-- ↓
-- Browser Cloudflare Redis Query Cache MySQL
-- ↓
-- LocalStorage Akamai Memcached Buffer Pool
-- ↓
-- Cache Hit Rate Target: > 95%
-- ↓
-- Latency: 1ms (cache) vs 50-200ms (DB)
+1. CACHING LAYERS
+2. CLIENT CDN APP CACHE DB CACHE DB
+3. Browser Cloudflare Redis Query Cache MySQL
+4. LocalStorage Akamai Memcached Buffer Pool
+5. Cache Hit Rate Target: > 95%
+6. Latency: 1ms (cache) vs 50-200ms (DB)
 
 ```mermaid
 flowchart TD
@@ -390,9 +358,8 @@ flowchart TD
 ```
 
 **Flow:**
-- LOAD BALANCER / (NGINX/HAProxy)
-- ↓
-- Server 2 / (Active)
+1. LOAD BALANCER / (NGINX/HAProxy)
+2. Server 2 / (Active)
 
 ```mermaid
 flowchart TD
@@ -437,29 +404,18 @@ Step 5: WRAP UP (5 min)
 ```
 
 **Flow:**
-- Step 1: CLARIFY (5 min)
-- ↓
-- Functional requirements
-- ↓
-- Step 1: CLARIFY (5 min)
-- ↓
-- Non-functional requirements (scale, latency, availabili
-- ↓
-- Step 1: CLARIFY (5 min)
-- ↓
-- Constraints and assumptions
-- ↓
-- Step 1: CLARIFY (5 min)
-- ↓
-- Core use cases
-- ↓
-- Step 2: ESTIMATE (5 min)
-- ↓
-- Daily active users
-- ↓
-- Step 2: ESTIMATE (5 min)
-- ↓
-- Read/Write ratio
+1. Step 1: CLARIFY (5 min)
+2. Functional requirements
+3. Step 1: CLARIFY (5 min)
+4. Non-functional requirements (scale, latency, availabili
+5. Step 1: CLARIFY (5 min)
+6. Constraints and assumptions
+7. Step 1: CLARIFY (5 min)
+8. Core use cases
+9. Step 2: ESTIMATE (5 min)
+10. Daily active users
+11. Step 2: ESTIMATE (5 min)
+12. Read/Write ratio
 
 ```mermaid
 flowchart TD
@@ -575,17 +531,12 @@ flowchart TD
 ```
 
 **Flow:**
-- EC2 / Lambda / ECS/EKS / Fargate
-- ↓
-- S3 / EBS / EFS / Glacier
-- ↓
-- RDS / DynamoDB / Aurora / ElastiC
-- ↓
-- VPC / Route53 / CloudFr / API GW
-- ↓
-- IAM / KMS / WAF / Shield
-- ↓
-- CloudWatch / X-Ray / CloudTrail / Config
+1. EC2 / Lambda / ECS/EKS / Fargate
+2. S3 / EBS / EFS / Glacier
+3. RDS / DynamoDB / Aurora / ElastiC
+4. VPC / Route53 / CloudFr / API GW
+5. IAM / KMS / WAF / Shield
+6. CloudWatch / X-Ray / CloudTrail / Config
 
 ```mermaid
 flowchart TD
@@ -624,19 +575,13 @@ flowchart TD
 ```
 
 **Flow:**
-- EC2 PRICING MODELS
-- ↓
-- ON-DEMAND RESERVED SPOT SAVINGS PLAN
-- ↓
-- Full price 30-75% off Up to 90% Flexible
-- ↓
-- 1-3 year off commitment
-- ↓
-- commitment
-- ↓
-- Use for: Use for: Use for: Use for:
-- ↓
-- Testing, Production Batch jobs, Variable
+1. EC2 PRICING MODELS
+2. ON-DEMAND RESERVED SPOT SAVINGS PLAN
+3. Full price 30-75% off Up to 90% Flexible
+4. 1-3 year off commitment
+5. commitment
+6. Use for: Use for: Use for: Use for:
+7. Testing, Production Batch jobs, Variable
 
 ```mermaid
 flowchart TD
@@ -703,19 +648,13 @@ Day 365+:    Glacier Deep Archive (save 96%)
 ```
 
 **Flow:**
-- S3 STORAGE CLASSES
-- ↓
-- STORAGE CLASS COST/GB USE CASE
-- ↓
-- S3 Standard $0.023 Frequent access
-- ↓
-- S3 IA $0.0125 Infrequent, quick retrieval
-- ↓
-- S3 Glacier IR $0.004 Rarely accessed archives
-- ↓
-- S3 Glacier DA $0.00099 Long-term archives
-- ↓
-- Lifecycle Policies:
+1. S3 STORAGE CLASSES
+2. STORAGE CLASS COST/GB USE CASE
+3. S3 Standard $0.023 Frequent access
+4. S3 IA $0.0125 Infrequent, quick retrieval
+5. S3 Glacier IR $0.004 Rarely accessed archives
+6. S3 Glacier DA $0.00099 Long-term archives
+7. Lifecycle Policies:
 
 ```mermaid
 flowchart TD
@@ -759,19 +698,13 @@ flowchart TD
 ```
 
 **Flow:**
-- AZURE SERVICE MAP
-- ↓
-- AWS AZURE
-- ↓
-- EC2 Virtual Machines
-- ↓
-- Lambda Azure Functions
-- ↓
-- S3 Blob Storage
-- ↓
-- RDS Azure SQL Database
-- ↓
-- DynamoDB Cosmos DB
+1. AZURE SERVICE MAP
+2. AWS AZURE
+3. EC2 Virtual Machines
+4. Lambda Azure Functions
+5. S3 Blob Storage
+6. RDS Azure SQL Database
+7. DynamoDB Cosmos DB
 
 ```mermaid
 flowchart TD
@@ -825,21 +758,14 @@ flowchart TD
 ```
 
 **Flow:**
-- API GATEWAY / (Authentication, Routing)
-- ↓
-- Order / Svc
-- ↓
-- User / Svc
-- ↓
-- User / DB
-- ↓
-- Order / Svc
-- ↓
-- Order / DB
-- ↓
-- Payment / Svc
-- ↓
-- Payment / DB
+1. API GATEWAY / (Authentication, Routing)
+2. Order / Svc
+3. User / Svc
+4. User / DB
+5. Order / Svc
+6. Order / DB
+7. Payment / Svc
+8. Payment / DB
 
 ```mermaid
 flowchart TD
@@ -882,11 +808,9 @@ flowchart TD
 ```
 
 **Flow:**
-- Order / Service
-- ↓
-- ORDER / CREATED / EVENT
-- ↓
-- Inventory / Service / Notification / Service / Analytic
+1. Order / Service
+2. ORDER / CREATED / EVENT
+3. Inventory / Service / Notification / Service / Analytic
 
 ```mermaid
 flowchart LR
@@ -921,19 +845,13 @@ flowchart LR
 ```
 
 **Flow:**
-- SERVERLESS PATTERN
-- ↓
-- Client API Gateway Lambda DynamoDB
-- ↓
-- Lambda S3
-- ↓
-- Pricing: Pay only for execution time
-- ↓
-- Scaling: Automatic (0 to millions)
-- ↓
-- Management: Zero server maintenance
-- ↓
-- Use Cases:
+1. SERVERLESS PATTERN
+2. Client API Gateway Lambda DynamoDB
+3. Lambda S3
+4. Pricing: Pay only for execution time
+5. Scaling: Automatic (0 to millions)
+6. Management: Zero server maintenance
+7. Use Cases:
 
 ```mermaid
 flowchart TD
@@ -979,29 +897,18 @@ SPECIALTY
 ```
 
 **Flow:**
-- BEGINNER
-- ↓
-- AWS Cloud Practitioner (CLF-C02)
-- ↓
-- BEGINNER
-- ↓
-- Azure Fundamentals (AZ-900)
-- ↓
-- BEGINNER
-- ↓
-- Google Cloud Digital Leader
-- ↓
-- INTERMEDIATE
-- ↓
-- AWS Solutions Architect Associate (SAA-C03)
-- ↓
-- INTERMEDIATE
-- ↓
-- Azure Administrator (AZ-104)
-- ↓
-- INTERMEDIATE
-- ↓
-- AWS Developer Associate (DVA-C02)
+1. BEGINNER
+2. AWS Cloud Practitioner (CLF-C02)
+3. BEGINNER
+4. Azure Fundamentals (AZ-900)
+5. BEGINNER
+6. Google Cloud Digital Leader
+7. INTERMEDIATE
+8. AWS Solutions Architect Associate (SAA-C03)
+9. INTERMEDIATE
+10. Azure Administrator (AZ-104)
+11. INTERMEDIATE
+12. AWS Developer Associate (DVA-C02)
 
 ```mermaid
 flowchart TD
@@ -1086,13 +993,10 @@ flowchart TD
 ```
 
 **Flow:**
-- CHANNELS / Mobile App / Web Banking / ATM / Branch / US
-- ↓
-- MIDDLEWARE / API Gateway / ESB / Integration / Layer
-- ↓
-- CORE SYSTEM / Account / Management / Transaction / Proc
-- ↓
-- DATABASE / (Oracle)
+1. CHANNELS / Mobile App / Web Banking / ATM / Branch / US
+2. MIDDLEWARE / API Gateway / ESB / Integration / Layer
+3. CORE SYSTEM / Account / Management / Transaction / Proc
+4. DATABASE / (Oracle)
 
 ```mermaid
 flowchart TD
@@ -1146,19 +1050,13 @@ flowchart TD
 ```
 
 **Flow:**
-- UPI PAYMENT FLOW
-- ↓
-- PAYER PSP NPCI PAYEE
-- ↓
-- Pay Req
-- ↓
-- Validate
-- ↓
-- Check Acct
-- ↓
-- Confirm
-- ↓
-- Route
+1. UPI PAYMENT FLOW
+2. PAYER PSP NPCI PAYEE
+3. Pay Req
+4. Validate
+5. Check Acct
+6. Confirm
+7. Route
 
 ```mermaid
 flowchart TD
@@ -1242,29 +1140,18 @@ Data Structures Used:
 ```
 
 **Flow:**
-- Features:
-- ↓
-- User registration/login
-- ↓
-- Features:
-- ↓
-- Add income/expense transactions
-- ↓
-- Features:
-- ↓
-- Categorize transactions
-- ↓
-- Features:
-- ↓
-- Monthly/yearly reports
-- ↓
-- Features:
-- ↓
-- Budget alerts
-- ↓
-- Features:
-- ↓
-- Export to CSV/PDF
+1. Features:
+2. User registration/login
+3. Features:
+4. Add income/expense transactions
+5. Features:
+6. Categorize transactions
+7. Features:
+8. Monthly/yearly reports
+9. Features:
+10. Budget alerts
+11. Features:
+12. Export to CSV/PDF
 
 ```mermaid
 flowchart TD
@@ -1337,29 +1224,18 @@ System Design Concepts:
 ```
 
 **Flow:**
-- Features:
-- ↓
-- Multiple payment methods (Card, UPI, Net Banking)
-- ↓
-- Features:
-- ↓
-- Secure tokenization
-- ↓
-- Features:
-- ↓
-- Webhook handling
-- ↓
-- Features:
-- ↓
-- Refund processing
-- ↓
-- Features:
-- ↓
-- Transaction reconciliation
-- ↓
-- Features:
-- ↓
-- Retry mechanism for failures
+1. Features:
+2. Multiple payment methods (Card, UPI, Net Banking)
+3. Features:
+4. Secure tokenization
+5. Features:
+6. Webhook handling
+7. Features:
+8. Refund processing
+9. Features:
+10. Transaction reconciliation
+11. Features:
+12. Retry mechanism for failures
 
 ```mermaid
 flowchart TD
@@ -1444,11 +1320,9 @@ ML Features:
 ```
 
 **Flow:**
-- Features: / Real-time transaction scoring / ML-based an
-- ↓
-- Rules Engine Alert
-- ↓
-- Dashboard / ML Features: / Transaction amount deviation
+1. Features: / Real-time transaction scoring / ML-based an
+2. Rules Engine Alert
+3. Dashboard / ML Features: / Transaction amount deviation
 
 ```mermaid
 flowchart TD
@@ -1500,29 +1374,18 @@ Tech Stack:
 ```
 
 **Flow:**
-- Modules:
-- ↓
-- Customer Management (KYC, CIF)
-- ↓
-- Modules:
-- ↓
-- Account Management (Open, Close, Dormant)
-- ↓
-- Modules:
-- ↓
-- Transaction Processing (Credit, Debit, Transfer)
-- ↓
-- Modules:
-- ↓
-- Interest Calculation (Daily, Monthly)
-- ↓
-- Modules:
-- ↓
-- Statement Generation
-- ↓
-- Modules:
-- ↓
-- GL Posting (Double-entry)
+1. Modules:
+2. Customer Management (KYC, CIF)
+3. Modules:
+4. Account Management (Open, Close, Dormant)
+5. Modules:
+6. Transaction Processing (Credit, Debit, Transfer)
+7. Modules:
+8. Interest Calculation (Daily, Monthly)
+9. Modules:
+10. Statement Generation
+11. Modules:
+12. GL Posting (Double-entry)
 
 ```mermaid
 flowchart TD
@@ -1617,15 +1480,11 @@ flowchart TD
 ```
 
 **Flow:**
-- ADMIN / SYSTEMS / Billing / Scheduling / Insurance / Cl
-- ↓
-- CLINICAL / SYSTEMS / EHR/EMR / Lab Systems / Imaging /
-- ↓
-- ANALYTICS / PLATFORM / Population / Health / AI/ML / Re
-- ↓
-- ADMIN / SYSTEMS / Billing / Scheduling / Insurance / Cl
-- ↓
-- INTEGRATION / ENGINE / (HL7/FHIR)
+1. ADMIN / SYSTEMS / Billing / Scheduling / Insurance / Cl
+2. CLINICAL / SYSTEMS / EHR/EMR / Lab Systems / Imaging /
+3. ANALYTICS / PLATFORM / Population / Health / AI/ML / Re
+4. ADMIN / SYSTEMS / Billing / Scheduling / Insurance / Cl
+5. INTEGRATION / ENGINE / (HL7/FHIR)
 
 ```mermaid
 flowchart TD
@@ -1712,29 +1571,18 @@ Data Models:
 ```
 
 **Flow:**
-- Features:
-- ↓
-- Patient registration
-- ↓
-- Features:
-- ↓
-- Doctor profiles
-- ↓
-- Features:
-- ↓
-- Appointment scheduling
-- ↓
-- Features:
-- ↓
-- Medical history tracking
-- ↓
-- Features:
-- ↓
-- Prescription management
-- ↓
-- Features:
-- ↓
-- Basic reporting
+1. Features:
+2. Patient registration
+3. Features:
+4. Doctor profiles
+5. Features:
+6. Appointment scheduling
+7. Features:
+8. Medical history tracking
+9. Features:
+10. Prescription management
+11. Features:
+12. Basic reporting
 
 ```mermaid
 flowchart TD
@@ -1803,29 +1651,18 @@ Security Considerations:
 ```
 
 **Flow:**
-- Features:
-- ↓
-- Video/audio consultation
-- ↓
-- Features:
-- ↓
-- Appointment booking
-- ↓
-- Features:
-- ↓
-- Digital prescriptions
-- ↓
-- Features:
-- ↓
-- Payment integration
-- ↓
-- Features:
-- ↓
-- Medical records access
-- ↓
-- Features:
-- ↓
-- Chat functionality
+1. Features:
+2. Video/audio consultation
+3. Features:
+4. Appointment booking
+5. Features:
+6. Digital prescriptions
+7. Features:
+8. Payment integration
+9. Features:
+10. Medical records access
+11. Features:
+12. Chat functionality
 
 ```mermaid
 flowchart TD
@@ -1908,19 +1745,13 @@ ML Approach:
 ```
 
 **Flow:**
-- Features:
-- ↓
-- DICOM image upload/viewing
-- ↓
-- AI-based anomaly detection
-- ↓
-- Report generation
-- ↓
-- Radiologist review workflow
-- ↓
-- Integration with PACS
-- ↓
-- Model explainability
+1. Features:
+2. DICOM image upload/viewing
+3. AI-based anomaly detection
+4. Report generation
+5. Radiologist review workflow
+6. Integration with PACS
+7. Model explainability
 
 ```mermaid
 flowchart TD
@@ -1992,15 +1823,11 @@ flowchart TD
 ```
 
 **Flow:**
-- ACCESS / NETWORK / Cell Towers / Wi-Fi / Fiber / 5G NR
-- ↓
-- CORE / NETWORK / Routing / Switching / Core (EPC) / IMS
-- ↓
-- SERVICES / LAYER / Billing / CRM / VAS / OTT
-- ↓
-- CORE / NETWORK / Routing / Switching / Core (EPC) / IMS
-- ↓
-- OSS/BSS / (Operations & / Business / Support)
+1. ACCESS / NETWORK / Cell Towers / Wi-Fi / Fiber / 5G NR
+2. CORE / NETWORK / Routing / Switching / Core (EPC) / IMS
+3. SERVICES / LAYER / Billing / CRM / VAS / OTT
+4. CORE / NETWORK / Routing / Switching / Core (EPC) / IMS
+5. OSS/BSS / (Operations & / Business / Support)
 
 ```mermaid
 flowchart TD
@@ -2050,19 +1877,13 @@ Raw CDR ──► Parser ──► Validation ──► Rating ──► Billing
 ```
 
 **Flow:**
-- CDR (Call Detail Record):
-- ↓
-- Calling Number: +91-9876543210
-- ↓
-- Called Number: +91-9123456789
-- ↓
-- Start Time: 2024-01-15 14:30:00
-- ↓
-- Duration: 180 seconds
-- ↓
-- Call Type: Voice
-- ↓
-- Cell Tower: MH-MUM-123
+1. CDR (Call Detail Record):
+2. Calling Number: +91-9876543210
+3. Called Number: +91-9123456789
+4. Start Time: 2024-01-15 14:30:00
+5. Duration: 180 seconds
+6. Call Type: Voice
+7. Cell Tower: MH-MUM-123
 
 ```mermaid
 flowchart TD
@@ -2114,29 +1935,18 @@ Key Data Structures:
 ```
 
 **Flow:**
-- Features:
-- ↓
-- User registration with mobile verification
-- ↓
-- Features:
-- ↓
-- Recharge plan display
-- ↓
-- Features:
-- ↓
-- Payment integration
-- ↓
-- Features:
-- ↓
-- Balance tracking
-- ↓
-- Features:
-- ↓
-- Transaction history
-- ↓
-- Features:
-- ↓
-- Plan recommendations
+1. Features:
+2. User registration with mobile verification
+3. Features:
+4. Recharge plan display
+5. Features:
+6. Payment integration
+7. Features:
+8. Balance tracking
+9. Features:
+10. Transaction history
+11. Features:
+12. Plan recommendations
 
 ```mermaid
 flowchart TD
@@ -2214,19 +2024,13 @@ Metrics to Track:
 ```
 
 **Flow:**
-- Features:
-- ↓
-- Real-time network metrics
-- ↓
-- Alert generation
-- ↓
-- Historical analysis
-- ↓
-- Topology visualization
-- ↓
-- Threshold configuration
-- ↓
-- Report generation
+1. Features:
+2. Real-time network metrics
+3. Alert generation
+4. Historical analysis
+5. Topology visualization
+6. Threshold configuration
+7. Report generation
 
 ```mermaid
 flowchart TD
@@ -2290,19 +2094,13 @@ Technical Challenges:
 ```
 
 **Flow:**
-- Features:
-- ↓
-- Real-time usage rating
-- ↓
-- Multiple pricing plans
-- ↓
-- Proration support
-- ↓
-- Invoice generation
-- ↓
-- Usage alerts
-- ↓
-- Revenue assurance
+1. Features:
+2. Real-time usage rating
+3. Multiple pricing plans
+4. Proration support
+5. Invoice generation
+6. Usage alerts
+7. Revenue assurance
 
 ```mermaid
 flowchart TD
@@ -2349,19 +2147,13 @@ flowchart TD
 ```
 
 **Flow:**
-- MINDSET TRANSFORMATION
-- ↓
-- EMPLOYEE MINDSET PRODUCT MINDSET
-- ↓
-- 'Tell me what to do' 'Let me solve this problem'
-- ↓
-- 'It's not my job' 'How can I help?'
-- ↓
-- 'Requirements are unclear' 'Let me clarify and propose'
-- ↓
-- 'It's working' 'Is it valuable to users?'
-- ↓
-- 'Feature is done' 'Let's measure the impact'
+1. MINDSET TRANSFORMATION
+2. EMPLOYEE MINDSET PRODUCT MINDSET
+3. 'Tell me what to do' 'Let me solve this problem'
+4. 'It's not my job' 'How can I help?'
+5. 'Requirements are unclear' 'Let me clarify and propose'
+6. 'It's working' 'Is it valuable to users?'
+7. 'Feature is done' 'Let's measure the impact'
 
 ```mermaid
 flowchart TD
@@ -2411,17 +2203,12 @@ For every feature, ask:
 ```
 
 **Flow:**
-- For every feature, ask:
-- ↓
-- WHO is the user?
-- ↓
-- WHAT problem are they facing?
-- ↓
-- WHY is this problem important?
-- ↓
-- HOW will we measure success?
-- ↓
-- WHAT's the simplest solution?
+1. For every feature, ask:
+2. WHO is the user?
+3. WHAT problem are they facing?
+4. WHY is this problem important?
+5. HOW will we measure success?
+6. WHAT's the simplest solution?
 
 ```mermaid
 flowchart TD
@@ -2460,19 +2247,13 @@ EFFORT  │                │                │    EFFORT
 ```
 
 **Flow:**
-- Prioritization Matrix:
-- ↓
-- HIGH IMPACT
-- ↓
-- QUICK WINS BIG BETS
-- ↓
-- (Do First) (Plan Well)
-- ↓
-- LOW HIGH
-- ↓
-- EFFORT EFFORT
-- ↓
-- FILL-INS MONEY PITS
+1. Prioritization Matrix:
+2. HIGH IMPACT
+3. QUICK WINS BIG BETS
+4. (Do First) (Plan Well)
+5. LOW HIGH
+6. EFFORT EFFORT
+7. FILL-INS MONEY PITS
 
 ```mermaid
 flowchart TD
@@ -2519,29 +2300,18 @@ Technical Metrics:
 ```
 
 **Flow:**
-- Business Metrics (North Stars):
-- ↓
-- Revenue impact
-- ↓
-- Business Metrics (North Stars):
-- ↓
-- Customer acquisition cost (CAC)
-- ↓
-- Business Metrics (North Stars):
-- ↓
-- Customer lifetime value (LTV)
-- ↓
-- Business Metrics (North Stars):
-- ↓
-- Net Promoter Score (NPS)
-- ↓
-- Business Metrics (North Stars):
-- ↓
-- Monthly recurring revenue (MRR)
-- ↓
-- Product Metrics:
-- ↓
-- Daily/Monthly Active Users (DAU/MAU)
+1. Business Metrics (North Stars):
+2. Revenue impact
+3. Business Metrics (North Stars):
+4. Customer acquisition cost (CAC)
+5. Business Metrics (North Stars):
+6. Customer lifetime value (LTV)
+7. Business Metrics (North Stars):
+8. Net Promoter Score (NPS)
+9. Business Metrics (North Stars):
+10. Monthly recurring revenue (MRR)
+11. Product Metrics:
+12. Daily/Monthly Active Users (DAU/MAU)
 
 ```mermaid
 flowchart TD
@@ -2661,29 +2431,18 @@ RESULT: Quantify the outcome
 ```
 
 **Flow:**
-- 1. HOOK (30 seconds)
-- ↓
-- Start with the problem impact
-- ↓
-- 1. HOOK (30 seconds)
-- ↓
-- 'We're losing $X / Users are frustrated by Y'
-- ↓
-- 2. CONTEXT (2 minutes)
-- ↓
-- Current situation
-- ↓
-- 2. CONTEXT (2 minutes)
-- ↓
-- Why it matters
-- ↓
-- 2. CONTEXT (2 minutes)
-- ↓
-- Scope and constraints
-- ↓
-- 3. SOLUTION (5 minutes)
-- ↓
-- High-level approach
+1. 1. HOOK (30 seconds)
+2. Start with the problem impact
+3. 1. HOOK (30 seconds)
+4. 'We're losing $X / Users are frustrated by Y'
+5. 2. CONTEXT (2 minutes)
+6. Current situation
+7. 2. CONTEXT (2 minutes)
+8. Why it matters
+9. 2. CONTEXT (2 minutes)
+10. Scope and constraints
+11. 3. SOLUTION (5 minutes)
+12. High-level approach
 
 ```mermaid
 flowchart TD
@@ -2741,19 +2500,13 @@ GOOD TECHNICAL WRITING:
 ```
 
 **Flow:**
-- GOOD TECHNICAL WRITING:
-- ↓
-- ✓ Executive summary first (TL;DR)
-- ↓
-- ✓ Clear problem statement
-- ↓
-- ✓ Visual diagrams > walls of text
-- ↓
-- ✓ Numbered steps for processes
-- ↓
-- ✓ Code examples for implementation
-- ↓
-- ✓ Trade-offs explicitly stated
+1. GOOD TECHNICAL WRITING:
+2. ✓ Executive summary first (TL;DR)
+3. ✓ Clear problem statement
+4. ✓ Visual diagrams > walls of text
+5. ✓ Numbered steps for processes
+6. ✓ Code examples for implementation
+7. ✓ Trade-offs explicitly stated
 
 ```mermaid
 flowchart TD
@@ -2831,11 +2584,9 @@ DO:
 ```
 
 **Flow:**
-- SENSORS / & DEVICES / Traffic / Air Quality / Water Met
-- ↓
-- DATA / PLATFORM / IoT Hub / Stream Proc / Data Lake / M
-- ↓
-- APPLICATIONS / Traffic Mgmt / Health Alert / Utility Bi
+1. SENSORS / & DEVICES / Traffic / Air Quality / Water Met
+2. DATA / PLATFORM / IoT Hub / Stream Proc / Data Lake / M
+3. APPLICATIONS / Traffic Mgmt / Health Alert / Utility Bi
 
 ```mermaid
 flowchart LR
@@ -2875,29 +2626,18 @@ MONTH 7+: Expert Projects
 ```
 
 **Flow:**
-- MONTH 1-2: Foundation Projects
-- ↓
-- Personal Finance Tracker (Banking)
-- ↓
-- MONTH 1-2: Foundation Projects
-- ↓
-- Patient Registration System (Healthcare)
-- ↓
-- MONTH 1-2: Foundation Projects
-- ↓
-- Prepaid Recharge System (Telecom)
-- ↓
-- MONTH 1-2: Foundation Projects
-- ↓
-- Focus: CRUD, APIs, Database design
-- ↓
-- MONTH 3-4: Intermediate Projects
-- ↓
-- Payment Gateway Integration (Banking)
-- ↓
-- MONTH 3-4: Intermediate Projects
-- ↓
-- Telemedicine Platform (Healthcare)
+1. MONTH 1-2: Foundation Projects
+2. Personal Finance Tracker (Banking)
+3. MONTH 1-2: Foundation Projects
+4. Patient Registration System (Healthcare)
+5. MONTH 1-2: Foundation Projects
+6. Prepaid Recharge System (Telecom)
+7. MONTH 1-2: Foundation Projects
+8. Focus: CRUD, APIs, Database design
+9. MONTH 3-4: Intermediate Projects
+10. Payment Gateway Integration (Banking)
+11. MONTH 3-4: Intermediate Projects
+12. Telemedicine Platform (Healthcare)
 
 ```mermaid
 flowchart TD
@@ -2978,29 +2718,18 @@ ADVANCED (Month 5-6)
 ```
 
 **Flow:**
-- FOUNDATION (Month 1-2)
-- ↓
-- Data Structures & Algorithms
-- ↓
-- FOUNDATION (Month 1-2)
-- ↓
-- LeetCode, AlgoExpert
-- ↓
-- FOUNDATION (Month 1-2)
-- ↓
-- System Design Basics
-- ↓
-- FOUNDATION (Month 1-2)
-- ↓
-- Designing Data-Intensive Applications (Book)
-- ↓
-- FOUNDATION (Month 1-2)
-- ↓
-- One Programming Language (Deep)
-- ↓
-- FOUNDATION (Month 1-2)
-- ↓
-- Java/Python - Official docs + practice
+1. FOUNDATION (Month 1-2)
+2. Data Structures & Algorithms
+3. FOUNDATION (Month 1-2)
+4. LeetCode, AlgoExpert
+5. FOUNDATION (Month 1-2)
+6. System Design Basics
+7. FOUNDATION (Month 1-2)
+8. Designing Data-Intensive Applications (Book)
+9. FOUNDATION (Month 1-2)
+10. One Programming Language (Deep)
+11. FOUNDATION (Month 1-2)
+12. Java/Python - Official docs + practice
 
 ```mermaid
 flowchart TD
@@ -3125,29 +2854,18 @@ AGILE/MANAGEMENT
 ```
 
 **Flow:**
-- CLOUD
-- ↓
-- AWS Cloud Practitioner (Entry)
-- ↓
-- CLOUD
-- ↓
-- AWS Solutions Architect Associate (Core)
-- ↓
-- CLOUD
-- ↓
-- AWS Solutions Architect Professional (Advanced)
-- ↓
-- CLOUD
-- ↓
-- Specialty: Security, Database, ML
-- ↓
-- DEVELOPMENT
-- ↓
-- Oracle Certified Java Professional
-- ↓
-- DEVELOPMENT
-- ↓
-- Kubernetes Administrator (CKA)
+1. CLOUD
+2. AWS Cloud Practitioner (Entry)
+3. CLOUD
+4. AWS Solutions Architect Associate (Core)
+5. CLOUD
+6. AWS Solutions Architect Professional (Advanced)
+7. CLOUD
+8. Specialty: Security, Database, ML
+9. DEVELOPMENT
+10. Oracle Certified Java Professional
+11. DEVELOPMENT
+12. Kubernetes Administrator (CKA)
 
 ```mermaid
 flowchart TD
@@ -3217,29 +2935,18 @@ Daily Routine:
 ```
 
 **Flow:**
-- Week 1-4: Technical Foundation
-- ↓
-- Complete DSA fundamentals
-- ↓
-- Week 1-4: Technical Foundation
-- ↓
-- System design basics
-- ↓
-- Week 1-4: Technical Foundation
-- ↓
-- Start cloud certification prep
-- ↓
-- Week 1-4: Technical Foundation
-- ↓
-- Deliverable: 50+ LeetCode problems
-- ↓
-- Week 5-8: Domain Introduction
-- ↓
-- Choose primary domain (Banking/Healthcare/Telecom)
-- ↓
-- Week 5-8: Domain Introduction
-- ↓
-- Learn domain terminology
+1. Week 1-4: Technical Foundation
+2. Complete DSA fundamentals
+3. Week 1-4: Technical Foundation
+4. System design basics
+5. Week 1-4: Technical Foundation
+6. Start cloud certification prep
+7. Week 1-4: Technical Foundation
+8. Deliverable: 50+ LeetCode problems
+9. Week 5-8: Domain Introduction
+10. Choose primary domain (Banking/Healthcare/Telecom)
+11. Week 5-8: Domain Introduction
+12. Learn domain terminology
 
 ```mermaid
 flowchart TD
@@ -3289,29 +2996,18 @@ Week 13-16: System Design + Product Thinking
 ```
 
 **Flow:**
-- Week 9-12: Cloud + Domain
-- ↓
-- Complete AWS/Azure certification
-- ↓
-- Week 9-12: Cloud + Domain
-- ↓
-- Deploy projects to cloud
-- ↓
-- Week 9-12: Cloud + Domain
-- ↓
-- Intermediate domain project
-- ↓
-- Week 9-12: Cloud + Domain
-- ↓
-- Deliverable: Payment Gateway OR Telemedicine Platform
-- ↓
-- Week 13-16: System Design + Product Thinking
-- ↓
-- Practice system design interviews
-- ↓
-- Week 13-16: System Design + Product Thinking
-- ↓
-- Start thinking in terms of business impact
+1. Week 9-12: Cloud + Domain
+2. Complete AWS/Azure certification
+3. Week 9-12: Cloud + Domain
+4. Deploy projects to cloud
+5. Week 9-12: Cloud + Domain
+6. Intermediate domain project
+7. Week 9-12: Cloud + Domain
+8. Deliverable: Payment Gateway OR Telemedicine Platform
+9. Week 13-16: System Design + Product Thinking
+10. Practice system design interviews
+11. Week 13-16: System Design + Product Thinking
+12. Start thinking in terms of business impact
 
 ```mermaid
 flowchart TD
@@ -3352,29 +3048,18 @@ Week 21-24: Portfolio & Presentation
 ```
 
 **Flow:**
-- Week 17-20: Advanced Implementation
-- ↓
-- Build advanced domain project
-- ↓
-- Week 17-20: Advanced Implementation
-- ↓
-- Focus on optimization
-- ↓
-- Week 17-20: Advanced Implementation
-- ↓
-- Contribute to open source
-- ↓
-- Week 17-20: Advanced Implementation
-- ↓
-- Deliverable: Fraud Detection OR Medical Imaging Analysi
-- ↓
-- Week 21-24: Portfolio & Presentation
-- ↓
-- Document all projects
-- ↓
-- Week 21-24: Portfolio & Presentation
-- ↓
-- Create portfolio website
+1. Week 17-20: Advanced Implementation
+2. Build advanced domain project
+3. Week 17-20: Advanced Implementation
+4. Focus on optimization
+5. Week 17-20: Advanced Implementation
+6. Contribute to open source
+7. Week 17-20: Advanced Implementation
+8. Deliverable: Fraud Detection OR Medical Imaging Analysi
+9. Week 21-24: Portfolio & Presentation
+10. Document all projects
+11. Week 21-24: Portfolio & Presentation
+12. Create portfolio website
 
 ```mermaid
 flowchart TD

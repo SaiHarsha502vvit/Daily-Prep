@@ -1,28 +1,28 @@
-> **Navigation**: [< Previous](16_IaC_Terraform.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Backend_Cloud_Integration.md)
+**Navigation**: [< Previous](16_IaC_Terraform.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Backend_Cloud_Integration.md)
 
-> **Developer Essentials Chapter 17** | [← IaC Terraform](16_IaC_Terraform.md) | [Index](../00_MASTER_INDEX.md) | [Next → Backend + Cloud](18_Backend_Cloud_Integration.md)
+**Developer Essentials Chapter 17** | [← IaC Terraform](16_IaC_Terraform.md) | [Index](../00_MASTER_INDEX.md) | [Next → Backend + Cloud](18_Backend_Cloud_Integration.md)
 
 # Servers, Ports & Networking — The Complete Theory
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: How computers communicate over networks — servers,
-> ports, protocols, DNS, firewalls, security groups.
->
-> WHY:  Every application you build runs ON a server,
-> communicates THROUGH ports, uses PROTOCOLS to talk.
-> If you don't understand this, you can't:
-> - Debug "connection refused" errors
-> - Configure deployment correctly
-> - Understand CORS, firewalls, load balancers
-> - Pass any infrastructure interview question
->
-> WHO:  Backend and full-stack developers.
->
-> WHEN: Before deploying anything. Before interviews.
->
-> HOW:  Through real-world analogies that make it stick.
+WHAT: How computers communicate over networks — servers,
+ports, protocols, DNS, firewalls, security groups.
+
+WHY:  Every application you build runs ON a server,
+communicates THROUGH ports, uses PROTOCOLS to talk.
+If you don't understand this, you can't:
+- Debug "connection refused" errors
+- Configure deployment correctly
+- Understand CORS, firewalls, load balancers
+- Pass any infrastructure interview question
+
+WHO:  Backend and full-stack developers.
+
+WHEN: Before deploying anything. Before interviews.
+
+HOW:  Through real-world analogies that make it stick.
 
 
 ---
@@ -57,19 +57,13 @@ TECHNICALLY:
 ```
 
 **Flow:**
-- ANALOGY: A Server is a RESTAURANT
-- ↓
-- RESTAURANT (= Server)
-- ↓
-- Has an ADDRESS (IP address = 192.168.1.100)
-- ↓
-- Is OPEN at certain hours (server process running)
-- ↓
-- Has a MENU (API endpoints)
-- ↓
-- Takes ORDERS (HTTP requests)
-- ↓
-- Cooks FOOD (processes request, queries DB)
+1. ANALOGY: A Server is a RESTAURANT
+2. RESTAURANT (= Server)
+3. Has an ADDRESS (IP address = 192.168.1.100)
+4. Is OPEN at certain hours (server process running)
+5. Has a MENU (API endpoints)
+6. Takes ORDERS (HTTP requests)
+7. Cooks FOOD (processes request, queries DB)
 
 ```mermaid
 flowchart TD
@@ -119,19 +113,13 @@ ANALOGY:
 ```
 
 **Flow:**
-- IP ADDRESS = The mailing address of a computer on a net
-- ↓
-- IPv4: 192.168.1.100 (4 numbers, 0-255 each)
-- ↓
-- IPv6: 2001:0db8:85a3:0000:0000:8a2e:0370:7334 (longer)
-- ↓
-- SPECIAL ADDRESSES:
-- ↓
-- 127.0.0.1 localhost — YOUR machine (loopback)
-- ↓
-- 0.0.0.0 'All interfaces' — listen on every
-- ↓
-- network adapter the machine has
+1. IP ADDRESS = The mailing address of a computer on a net
+2. IPv4: 192.168.1.100 (4 numbers, 0-255 each)
+3. IPv6: 2001:0db8:85a3:0000:0000:8a2e:0370:7334 (longer)
+4. SPECIAL ADDRESSES:
+5. 127.0.0.1 localhost — YOUR machine (loopback)
+6. 0.0.0.0 'All interfaces' — listen on every
+7. network adapter the machine has
 
 ```mermaid
 flowchart TD
@@ -200,9 +188,8 @@ WHY "Port already in use"?
 ```
 
 **Flow:**
-- Port Service What It Does / 20 FTP (data) File transfer
-- ↓
-- 3000 React dev server (Vite), Express.js / 3306 MySQL /
+1. Port Service What It Does / 20 FTP (data) File transfer
+2. 3000 React dev server (Vite), Express.js / 3306 MySQL /
 
 ```mermaid
 flowchart TD
@@ -255,19 +242,13 @@ TCP vs UDP:
 ```
 
 **Flow:**
-- PROTOCOL = Agreed-upon language/rules for communication
-- ↓
-- ANALOGY: Like languages — if you speak English and the
-- ↓
-- other person speaks French, communication fails.
-- ↓
-- Both sides must agree on the same protocol.
-- ↓
-- THE NETWORK LAYER CAKE:
-- ↓
-- APPLICATION LAYER (what you code with)
-- ↓
-- HTTP, HTTPS, WebSocket, gRPC, SMTP, FTP
+1. PROTOCOL = Agreed-upon language/rules for communication
+2. ANALOGY: Like languages — if you speak English and the
+3. other person speaks French, communication fails.
+4. Both sides must agree on the same protocol.
+5. THE NETWORK LAYER CAKE:
+6. APPLICATION LAYER (what you code with)
+7. HTTP, HTTPS, WebSocket, gRPC, SMTP, FTP
 
 ```mermaid
 flowchart TD
@@ -338,19 +319,11 @@ HTTPS = HTTP + TLS/SSL encryption
 ```
 
 **Flow:**
-- HTTP REQUEST ANATOMY:
-- ↓
-- Host: api.example.com ← Which server
-- ↓
-- Authorization: Bearer eyJhbGc... ← Auth token
-- ↓
-- Accept: application/json ← 'I want JSON back'
-- ↓
-- Content-Type: application/json ← 'I'm sending JSON'
-- ↓
-- {'name': 'Alice'} ← Body (POST/PUT only)
-- ↓
-- HTTP RESPONSE:
+1. HTTP REQUEST ANATOMY:
+2. Host: api.example.com ← Which server
+3. Authorization: Bearer eyJhbGc... ← Auth token
+4. Accept: application/json ← 'I want JSON back'
+5. Content-Type: application/json ← 'I'm sending JSON' {'name': 'Alice'} ← Body (POST/PUT only) HTTP RESPONSE:
 
 ```mermaid
 flowchart TD
@@ -375,14 +348,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 5. HTTP / HTTPS — What Developers Use Most**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — 5. HTTP / HTTPS — What Developers Use Most**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## 6. DNS — How Names Become IP Addresses
 
@@ -425,19 +398,13 @@ High TTL (86400s) = fewer queries but changes are slow.
 ```
 
 **Flow:**
-- DNS = Domain Name System
-- ↓
-- ANALOGY: DNS is the phone book of the internet.
-- ↓
-- WHAT HAPPENS when you type google.com:
-- ↓
-- 1. Browser checks its cache
-- ↓
-- (Have I looked this up recently?)
-- ↓
-- 2. OS checks its cache
-- ↓
-- (Has any app on this machine looked it up?)
+1. DNS = Domain Name System
+2. ANALOGY: DNS is the phone book of the internet.
+3. WHAT HAPPENS when you type google.com:
+4. Browser checks its cache
+5. (Have I looked this up recently?)
+6. OS checks its cache
+7. (Has any app on this machine looked it up?)
 
 ```mermaid
 flowchart TD
@@ -462,14 +429,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 6. DNS — How Names Become IP Addresses**
->
-> **Challenge 1 (Reasoning):** Your service's DNS TTL is 300s. You deploy to a new IP. When is traffic fully migrated?
-> <details><summary>Answer</summary>
->
-> Not immediately — each DNS resolver caches the old IP for up to its remaining TTL (up to 300s). As resolvers' caches expire, they re-query and get the new IP. Some ISP resolvers ignore TTL (cap at 5-10 minutes). Full migration: typically 5-30 minutes in practice despite low TTL. Strategy: lower TTL to 60s ONE WEEK before migration. After migration confirmed, restore TTL to normal. Never start migration with a high TTL (24h).
-> </details>
->
+🔬 **Section Challenge — 6. DNS — How Names Become IP Addresses**
+
+**Challenge 1 (Reasoning):** Your service's DNS TTL is 300s. You deploy to a new IP. When is traffic fully migrated?
+<details><summary>Answer</summary>
+
+Not immediately — each DNS resolver caches the old IP for up to its remaining TTL (up to 300s). As resolvers' caches expire, they re-query and get the new IP. Some ISP resolvers ignore TTL (cap at 5-10 minutes). Full migration: typically 5-30 minutes in practice despite low TTL. Strategy: lower TTL to 60s ONE WEEK before migration. After migration confirmed, restore TTL to normal. Never start migration with a high TTL (24h).
+</details>
+
 
 ## 7. Firewalls & Security Groups
 
@@ -529,13 +496,10 @@ Database is NEVER directly accessible from the internet.
 ```
 
 **Flow:**
-- Port Protocol Source Action / 22 TCP My IP only ALLOW /
-- ↓
-- Allow port 80, 443 from ANYWHERE (public internet) / Al
-- ↓
-- Allow port 8080 from Web Server SG ONLY / No public acc
-- ↓
-- Allow port 3306 from App Server SG ONLY / No public acc
+1. Port Protocol Source Action / 22 TCP My IP only ALLOW /
+2. Allow port 80, 443 from ANYWHERE (public internet) / Al
+3. Allow port 8080 from Web Server SG ONLY / No public acc
+4. Allow port 3306 from App Server SG ONLY / No public acc
 
 ```mermaid
 flowchart TD
@@ -552,14 +516,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 7. Firewalls & Security Groups**
->
-> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-> <details><summary>Answer</summary>
->
-> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-> </details>
->
+🔬 **Section Challenge — 7. Firewalls & Security Groups**
+
+**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+<details><summary>Answer</summary>
+
+JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+</details>
+
 
 ## 8. Load Balancers & Reverse Proxies
 
@@ -600,11 +564,8 @@ Sits in front of your app server. Handles:
 ```
 
 **Flow:**
-- LOAD BALANCER = Traffic cop that distributes requests /
-- ↓
-- LOAD BALANCER (Nginx, AWS ALB, Azure LB) / (Single entr
-- ↓
-- [App 1][App 2][App 3] ← Same application, 3 copies / ST
+1. LOAD BALANCER = Traffic cop that distributes requests /
+2. LOAD BALANCER (Nginx, AWS ALB, Azure LB) / (Single entr [App 1][App 2][App 3] ← Same application, 3 copies / ST
 
 ```mermaid
 flowchart TD
@@ -619,14 +580,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 8. Load Balancers & Reverse Proxies**
->
-> **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-> <details><summary>Answer</summary>
->
-> Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
-> </details>
->
+🔬 **Section Challenge — 8. Load Balancers & Reverse Proxies**
+
+**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+<details><summary>Answer</summary>
+
+Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+</details>
+
 
 ## 9. The Full Request Journey
 
@@ -662,19 +623,13 @@ Total time: 100-500ms for a typical API call.
 ```
 
 **Flow:**
-- 2. BROWSER
-- ↓
-- PORT 443 at 54.23.100.50
-- ↓
-- Spring Boot
-- ↓
-- Nginx
-- ↓
-- Load Balancer
-- ↓
-- Internet
-- ↓
-- Browser
+1. BROWSER
+2. PORT 443 at 54.23.100.50
+3. Spring Boot
+4. Nginx
+5. Load Balancer
+6. Internet
+7. Browser
 
 ```mermaid
 flowchart TD
@@ -697,45 +652,45 @@ flowchart TD
 ## 10. Common Networking Errors (What They Mean)
 
 
-> Error                          │ Cause → Fix
-> ───────────────────────────────┼────────────────────────────────
-> Connection refused             │ Nothing running on that port.
-> │ Start the server! Check port.
-> │
-> Connection timed out           │ Firewall blocking, wrong IP,
-> │ server unreachable. Check SG.
-> │
-> Port already in use            │ Another process has the port.
-> │ Kill it or use different port.
-> │
-> ECONNRESET                     │ Other side closed connection.
-> │ Server crashed mid-request.
-> │
-> DNS resolution failed          │ Domain doesn't exist or DNS
-> │ server down. Check domain name.
-> │
-> CORS error (browser only)      │ Server doesn't allow your
-> │ origin. Add CORS headers.
-> │
-> SSL handshake failed           │ Certificate expired or invalid.
-> │ Renew cert. Check date/domain.
-> │
-> 502 Bad Gateway                │ Load balancer can't reach
-> │ backend. Backend is down.
+Error                          │ Cause → Fix
+───────────────────────────────┼────────────────────────────────
+Connection refused             │ Nothing running on that port.
+│ Start the server! Check port.
+│
+Connection timed out           │ Firewall blocking, wrong IP,
+│ server unreachable. Check SG.
+│
+Port already in use            │ Another process has the port.
+│ Kill it or use different port.
+│
+ECONNRESET                     │ Other side closed connection.
+│ Server crashed mid-request.
+│
+DNS resolution failed          │ Domain doesn't exist or DNS
+│ server down. Check domain name.
+│
+CORS error (browser only)      │ Server doesn't allow your
+│ origin. Add CORS headers.
+│
+SSL handshake failed           │ Certificate expired or invalid.
+│ Renew cert. Check date/domain.
+│
+502 Bad Gateway                │ Load balancer can't reach
+│ backend. Backend is down.
 
 
 ---
 
 
 
-> 🔬 **Section Challenge — 10. Common Networking Errors (What They Mean)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 10. Common Networking Errors (What They Mean)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Interview Quick-Fire
 
@@ -767,21 +722,14 @@ Q: Explain what happens when I visit a URL.
 ```
 
 **Flow:**
-- DNS lookup
-- ↓
-- TCP connection
-- ↓
-- TLS handshake
-- ↓
-- HTTP request
-- ↓
-- Load balancer
-- ↓
-- App server
-- ↓
-- Database query
-- ↓
-- Response
+1. DNS lookup
+2. TCP connection
+3. TLS handshake
+4. HTTP request
+5. Load balancer
+6. App server
+7. Database query
+8. Response
 
 ```mermaid
 flowchart TD
@@ -806,7 +754,7 @@ flowchart TD
 
 ---
 
-> [← IaC Terraform](16_IaC_Terraform.md) | [Index](../00_MASTER_INDEX.md) | [Next → Backend + Cloud](18_Backend_Cloud_Integration.md)
+[← IaC Terraform](16_IaC_Terraform.md) | [Index](../00_MASTER_INDEX.md) | [Next → Backend + Cloud](18_Backend_Cloud_Integration.md)
 
 
 ---

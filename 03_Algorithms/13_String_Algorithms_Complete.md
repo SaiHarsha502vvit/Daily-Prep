@@ -1,10 +1,12 @@
-> **Navigation**: [< Previous](12_Greedy_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Union_Find_DSU_Complete.md)
-> 🧠 **Mental Model**: See [Array & String Thinking](../14_Mental_Models/04_Array_String_Thinking.md) — pointer patterns and string manipulation mental models
+**Navigation**: [< Previous](12_Greedy_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Union_Find_DSU_Complete.md)
+🧠 **Mental Model**: See [Array & String Thinking](../14_Mental_Models/04_Array_String_Thinking.md) — pointer patterns and string manipulation mental models
 
 # 🔤 String Algorithms Complete Guide
-> KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery
+
+KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery
 
 ## Table of Contents
+
 1. [Why String Algorithms?](#why-string-algorithms)
 2. [Naive Pattern Matching](#naive-matching)
 3. [KMP Algorithm](#kmp-algorithm)
@@ -38,19 +40,13 @@
 ```
 
 **Flow:**
-- WHERE STRING ALGORITHMS ARE USED
-- ↓
-- • Text Editors (Find & Replace)
-- ↓
-- • Search Engines (Pattern matching)
-- ↓
-- • DNA Sequencing (Substring search)
-- ↓
-- • Plagiarism Detection (Similarity)
-- ↓
-- • Antivirus (Signature matching)
-- ↓
-- • Network Intrusion Detection
+1. WHERE STRING ALGORITHMS ARE USED
+2. • Text Editors (Find & Replace)
+3. • Search Engines (Pattern matching)
+4. • DNA Sequencing (Substring search)
+5. • Plagiarism Detection (Similarity)
+6. • Antivirus (Signature matching)
+7. • Network Intrusion Detection
 
 ```mermaid
 flowchart TD
@@ -84,9 +80,6 @@ KMP:   O(n + m) - Linear time!
 ```
 
 ---
-
-
-
 
 ## Naive Pattern Matching <a name="naive-matching"></a>
 
@@ -133,17 +126,12 @@ KMP/Z-algo avoid this redundant work.
 ```
 
 **Flow:**
-- Attempt 1: A A A A A vs A A A A B
-- ↓
-- Mismatch at position 4
-- ↓
-- Attempt 2: A A A A A vs A A A A B
-- ↓
-- Mismatch at position 4
-- ↓
-- Attempt 3: A A A A A vs A A A A B
-- ↓
-- Mismatch at position 4
+1. Attempt 1: A A A A A vs A A A A B
+2. Mismatch at position 4
+3. Attempt 2: A A A A A vs A A A A B
+4. Mismatch at position 4
+5. Attempt 3: A A A A A vs A A A A B
+6. Mismatch at position 4
 
 ```mermaid
 flowchart LR
@@ -157,9 +145,6 @@ flowchart LR
 ```
 
 ---
-
-
-
 
 ## KMP Algorithm <a name="kmp-algorithm"></a>
 
@@ -199,23 +184,13 @@ LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]
 ```
 
 **Flow:**
-- i=0: 'A'
-- ↓
-- No proper prefix/suffix
-- ↓
-- LPS[0] = 0
-- ↓
-- i=1: 'AB'
-- ↓
-- Prefixes: {A}, Suffixes: {B}
-- ↓
-- None match
-- ↓
-- LPS[1] = 0
-- ↓
-- i=2: 'ABA'
-- ↓
-- Prefixes: {A, AB}, Suffixes: {A, BA}
+1. i=0: 'A'
+2. No proper prefix/suffix
+3. LPS[0] = 0 i=1: 'AB'
+4. Prefixes: {A}, Suffixes: {B}
+5. None match
+6. LPS[1] = 0 i=2: 'ABA'
+7. Prefixes: {A, AB}, Suffixes: {A, BA}
 
 ```mermaid
 flowchart TD
@@ -365,19 +340,13 @@ Step 4: Full match found at index 5!
 ```
 
 **Flow:**
-- TEXT: A B A B D A B A B C A B A B
-- ↓
-- PATTERN: A B A B C A B A B
-- ↓
-- LPS: 0 0 1 2 0 1 2 3 4
-- ↓
-- Step 1: Compare from start
-- ↓
-- ↑ Mismatch at index 4!
-- ↓
-- j = 4, lps[3] = 2
-- ↓
-- Skip: Instead of starting over, jump to j = 2
+1. TEXT: A B A B D A B A B C A B A B
+2. PATTERN: A B A B C A B A B
+3. LPS: 0 0 1 2 0 1 2 3 4
+4. Step 1: Compare from start
+5. ↑ Mismatch at index 4!
+6. j = 4, lps[3] = 2
+7. Skip: Instead of starting over, jump to j = 2
 
 ```mermaid
 flowchart TD
@@ -418,19 +387,13 @@ flowchart TD
 ```
 
 **Flow:**
-- KMP COMPLEXITY
-- ↓
-- LPS Construction: O(m) where m = pattern length
-- ↓
-- Search: O(n) where n = text length
-- ↓
-- Total: O(n + m)
-- ↓
-- Space: O(m) for LPS array
-- ↓
-- Why O(n)?
-- ↓
-- - i never decreases (always moves forward in text)
+1. KMP COMPLEXITY
+2. LPS Construction: O(m) where m = pattern length
+3. Search: O(n) where n = text length
+4. Total: O(n + m)
+5. Space: O(m) for LPS array
+6. Why O(n)?
+7. - i never decreases (always moves forward in text)
 
 ```mermaid
 flowchart TD
@@ -588,23 +551,14 @@ Final Z = [-, 1, 0, 3, 1, 0, 2, 2, 1]
 ```
 
 **Flow:**
-- Match: 'a'
-- ↓
-- Z[1] = 1
-- ↓
-- 'b...' vs 'a...'
-- ↓
-- No match
-- ↓
-- Z[2] = 0
-- ↓
-- Match: 'aab'
-- ↓
-- Z[3] = 3
-- ↓
-- s[1] = 'a', s[5] = 'b'
-- ↓
-- No extend
+1. Match: 'a'
+2. Z[1] = 1
+3. 'b...' vs 'a...'
+4. No match
+5. Z[2] = 0
+6. Match: 'aab'
+7. Z[3] = 3 s[1] = 'a', s[5] = 'b'
+8. No extend
 
 ```mermaid
 flowchart TD
@@ -650,19 +604,13 @@ flowchart TD
 ```
 
 **Flow:**
-- Z-ALGORITHM vs KMP
-- ↓
-- Both: O(n + m) time, O(m) space
-- ↓
-- Z-Algorithm:
-- ↓
-- ✓ Conceptually simpler
-- ↓
-- ✓ More intuitive (direct prefix matching)
-- ↓
-- ✓ Useful for many string problems
-- ↓
-- ✗ Requires concatenation (extra space for search)
+1. Z-ALGORITHM vs KMP
+2. Both: O(n + m) time, O(m) space
+3. Z-Algorithm:
+4. ✓ Conceptually simpler
+5. ✓ More intuitive (direct prefix matching)
+6. ✓ Useful for many string problems
+7. ✗ Requires concatenation (extra space for search)
 
 ```mermaid
 flowchart TD
@@ -831,25 +779,13 @@ Window 3: "BCD" (slide right)
 ```
 
 **Flow:**
-- RABIN-KARP USE CASES
-- ↓
-- ✓ Multiple pattern search (efficient)
-- ↓
-- Same text, many patterns
-- ↓
-- compute text hashes once
-- ↓
-- Same text, many patterns
-- ↓
-- compute text hashes once
-- ↓
-- ✓ 2D pattern matching
-- ↓
-- Find matrix in larger matrix
-- ↓
-- ✓ Finding repeated substrings
-- ↓
-- Hash all substrings of length k, find duplicates
+1. RABIN-KARP USE CASES
+2. ✓ Multiple pattern search (efficient)
+3. Same text, many patterns compute text hashes once
+4. ✓ 2D pattern matching
+5. Find matrix in larger matrix
+6. ✓ Finding repeated substrings
+7. Hash all substrings of length k, find duplicates
 
 ```mermaid
 flowchart TD
@@ -920,9 +856,6 @@ public Map<String, List<Integer>> multiSearch(String text, String[] patterns) {
 ```
 
 ---
-
-
-
 
 ## Manacher's Algorithm <a name="manachers"></a>
 
@@ -1013,19 +946,13 @@ The trick: When we know P[center] and we're at position i,
 ```
 
 **Flow:**
-- Original: 'abaaba'
-- ↓
-- Transformed: '#a#b#a#a#b#a#'
-- ↓
-- Index: 0 1 2 3 4 5 6 7 8 9 10 11 12
-- ↓
-- String: # a # b # a # a # b # a #
-- ↓
-- 'aba' 'abaaba'
-- ↓
-- P[6] = 6: Center at position 6 (#), radius 6
-- ↓
-- In original string: 'abaaba' (length 6)
+1. Original: 'abaaba'
+2. Transformed: '#a#b#a#a#b#a#'
+3. Index: 0 1 2 3 4 5 6 7 8 9 10 11 12
+4. String: # a # b # a # a # b # a #
+5. 'aba' 'abaaba'
+6. P[6] = 6: Center at position 6 (#), radius 6
+7. In original string: 'abaaba' (length 6)
 
 ```mermaid
 flowchart TD
@@ -1079,19 +1006,13 @@ Each node = character
 ```
 
 **Flow:**
-- Trie = Prefix Tree
-- ↓
-- Stores strings efficiently for:
-- ↓
-- - Prefix search
-- ↓
-- - Autocomplete
-- ↓
-- - Spell checking
-- ↓
-- - Word games (Boggle, Scrabble)
-- ↓
-- root
+1. Trie = Prefix Tree
+2. Stores strings efficiently for:
+3. - Prefix search
+4. - Autocomplete
+5. - Spell checking
+6. - Word games (Boggle, Scrabble)
+7. root
 
 ```mermaid
 flowchart TD
@@ -1532,19 +1453,13 @@ private String findDuplicateOfLength(String s, int len) {
 ```
 
 **Flow:**
-- Algorithm Time Space Best For
-- ↓
-- Naive O(n*m) O(1) Very short patterns
-- ↓
-- KMP O(n+m) O(m) Single pattern, streaming
-- ↓
-- Z-Algorithm O(n+m) O(n+m) Single pattern, intuitive
-- ↓
-- Rabin-Karp O(n+m) avg O(m) Multiple patterns
-- ↓
-- Trie O(m) query O(total) Prefix search, autocomplete
-- ↓
-- Suffix Array O(n log n) O(n) All substring queries
+1. Algorithm Time Space Best For
+2. Naive O(n*m) O(1) Very short patterns
+3. KMP O(n+m) O(m) Single pattern, streaming
+4. Z-Algorithm O(n+m) O(n+m) Single pattern, intuitive
+5. Rabin-Karp O(n+m) avg O(m) Multiple patterns
+6. Trie O(m) query O(total) Prefix search, autocomplete
+7. Suffix Array O(n log n) O(n) All substring queries
 
 ```mermaid
 flowchart TD
@@ -1594,19 +1509,13 @@ flowchart TD
 ```
 
 **Flow:**
-- ALGORITHM SELECTION GUIDE
-- ↓
-- 'Find pattern in text'
-- ↓
-- KMP or Z-algorithm (single pattern)
-- ↓
-- Rabin-Karp (multiple patterns)
-- ↓
-- 'Check if prefix exists' / 'Autocomplete'
-- ↓
-- Trie
-- ↓
-- 'Longest palindrome'
+1. ALGORITHM SELECTION GUIDE
+2. 'Find pattern in text'
+3. KMP or Z-algorithm (single pattern)
+4. Rabin-Karp (multiple patterns)
+5. 'Check if prefix exists' / 'Autocomplete'
+6. Trie
+7. 'Longest palindrome'
 
 ```mermaid
 flowchart TD
@@ -1698,19 +1607,13 @@ private int[] buildLPS(String pattern) {
 ```
 
 **Flow:**
-- STRING ALGORITHMS - MASTER THESE
-- ↓
-- 1. KMP - Pattern matching in O(n+m)
-- ↓
-- Key: LPS array, never recheck matched characters
-- ↓
-- 2. RABIN-KARP - Rolling hash for multiple patterns
-- ↓
-- Key: Hash comparison, verify on match
-- ↓
-- 3. Z-ALGORITHM - Alternative to KMP, more intuitive
-- ↓
-- Key: Z[i] = prefix match length at position i
+1. STRING ALGORITHMS - MASTER THESE
+2. KMP - Pattern matching in O(n+m)
+3. Key: LPS array, never recheck matched characters
+4. RABIN-KARP - Rolling hash for multiple patterns
+5. Key: Hash comparison, verify on match
+6. Z-ALGORITHM - Alternative to KMP, more intuitive
+7. Key: Z[i] = prefix match length at position i
 
 ```mermaid
 flowchart TD
@@ -1733,26 +1636,23 @@ flowchart TD
 
 **Pro Tip:** When explaining string algorithms in interviews, draw out the arrays (LPS, Z) step by step. Interviewers love to see you work through examples visually!
 
+---
 
 ---
 
+🔬 **Section Challenge — Summary**
 
----
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
 
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
 
-
-> 🔬 **Section Challenge — Summary**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -1779,6 +1679,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -1813,6 +1714,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -1875,6 +1777,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -1909,6 +1812,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -1921,8 +1825,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -1988,5 +1890,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [< Previous](12_Greedy_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Union_Find_DSU_Complete.md)
+**Navigation**: [< Previous](12_Greedy_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Union_Find_DSU_Complete.md)

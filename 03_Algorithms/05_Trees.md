@@ -1,27 +1,23 @@
 # TREES - Complete Guide
+
 ## From Binary Trees to Advanced Tree Algorithms
 
-> 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — tree traversal patterns and parent-child reasoning
-> **Split from Trees_Graphs.md for better navigation**
-> See also: [Graphs](05b_Graphs_Internals.md) | [Index](../00_MASTER_INDEX.md)
+🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — tree traversal patterns and parent-child reasoning
+**Split from Trees_Graphs.md for better navigation**
+See also: [Graphs](05b_Graphs_Internals.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
-
-
-
 # 🔬 PART 0: DEEP INTERNALS - HOW TREES & GRAPHS WORK AT CPU/MEMORY LEVEL
 
+TREES & GRAPHS AT THE HARDWARE LEVEL - WHAT REALLY HAPPENS
 
-> TREES & GRAPHS AT THE HARDWARE LEVEL - WHAT REALLY HAPPENS
->
-> Understanding the PHYSICAL reality of trees and graphs:
-> - How nodes are stored in memory
-> - What happens during tree traversal at CPU level
-> - Recursion stack deep dive
-> - Why tree operations are often cache-unfriendly
-> - Graph representation memory comparison
->
+Understanding the PHYSICAL reality of trees and graphs:
+- How nodes are stored in memory
+- What happens during tree traversal at CPU level
+- Recursion stack deep dive
+- Why tree operations are often cache-unfriendly
+- Graph representation memory comparison
 
 
 ## 🧠 Tree Node Memory Layout
@@ -85,9 +81,8 @@
 ```
 
 **Flow:**
-- TreeNode / val: 10 / left: 0x00110000 / right: 0x002200
-- ↓
-- val: 15 / left: 0x440000 / right: 0x660000
+1. TreeNode / val: 10 / left: 0x00110000 / right: 0x002200
+2. val: 15 / left: 0x440000 / right: 0x660000
 
 ```mermaid
 flowchart TD
@@ -195,39 +190,37 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+🔬 **Section Challenge — 📚 Recursion Stack — What Actually Happens**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 📚 Recursion Stack — What Actually Happens**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## 📚 Iterative Traversal — Explicit Stack
 
 
 
-> 🔬 **Section Challenge — 📚 Iterative Traversal — Explicit Stack**
->
-> **Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
-> <details><summary>Answer</summary>
->
-> In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
-> </details>
->
+🔬 **Section Challenge — 📚 Iterative Traversal — Explicit Stack**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
 
 ## Iterative Vs Recursive - Memory Comparison
 
@@ -257,12 +250,10 @@ curr = curr.right;
 }
 Uses HEAP STACK: ~8 bytes per node reference
 MEMORY COMPARISON (tree height h = 20):
-┬───────────────────┬
-| Method             | Memory Used       | Notes |
-┼───────────────────┼
-| Recursive          | 20 × 48 = 960 B   | Uses call stack (limited!) |
-| Iterative          | 20 × 8 = 160 B    | Uses heap (flexible) |
-┴───────────────────┴
+| Method | Memory Used | Notes |
+|---|---|---|
+| Recursive | 20 × 48 = 960 B | Uses call stack (limited) |
+| Iterative | 20 × 8 = 160 B | Uses heap (flexible) |
 For SKEWED tree (h = 100,000):
 - Recursive: 100,000 × 48 = 4.8 MB → STACK OVERFLOW on 1MB stack
 - Iterative: 100,000 × 8 = 800 KB → Works fine on heap
@@ -327,9 +318,8 @@ For SKEWED tree (h = 100,000):
 ```
 
 **Flow:**
-- Address 0x1000 0x1004 0x1008 0x100C 0x1010 0x1014 0x101
-- ↓
-- HEAP LAYOUT: / 0x1000: [Node A] left 0x5000: [Node B] /
+1. Address 0x1000 0x1004 0x1008 0x100C 0x1010 0x1014 0x101
+2. HEAP LAYOUT: / 0x1000: [Node A] left 0x5000: [Node B] /
 
 ```mermaid
 flowchart TD
@@ -338,29 +328,24 @@ flowchart TD
     N1 --> N2
 ```
 
-
-
-
 ## 🧠 Graph Representation — Memory Deep Dive
 
 ---
 
+🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 # 🌳 Part 1: Binary Tree Fundamentals
 
@@ -522,9 +507,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
-
 ## Tree Terminology
 
 ```
@@ -546,19 +528,13 @@ TERMINOLOGY:
 ```
 
 **Flow:**
-- [1] ← Root (level 0)
-- ↓
-- [2] [3] ← Level 1
-- ↓
-- [4] [5] [6] ← Level 2 (Leaves: 4, 5, 6)
-- ↓
-- TERMINOLOGY:
-- ↓
-- • Root: Top node (1)
-- ↓
-- • Parent: Node above (2 is parent of 4, 5)
-- ↓
-- • Child: Node below (4, 5 are children of 2)
+1. [1] ← Root (level 0)
+2. [2] [3] ← Level 1
+3. [4] [5] [6] ← Level 2 (Leaves: 4, 5, 6)
+4. TERMINOLOGY:
+5. • Root: Top node (1)
+6. • Parent: Node above (2 is parent of 4, 5)
+7. • Child: Node below (4, 5 are children of 2)
 
 ```mermaid
 flowchart TD
@@ -578,9 +554,6 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
-
-
-
 
 ## Tree Node Structure
 
@@ -1031,9 +1004,6 @@ public class LCABinaryLifting {
 }
 ```
 
-
-
-
 ## Tree Diameter
 
 ```java
@@ -1159,9 +1129,6 @@ public class EulerTour {
 
 ---
 
-
-
-
 # PART 14: Complete Tree Problems with Solutions
 
 ## Problem 1: Serialize and Deserialize Binary Tree
@@ -1222,9 +1189,6 @@ public class Codec {
 }
 ```
 
-
-
-
 ## Problem 2: Construct Binary Tree from Preorder and Inorder
 
 ```java
@@ -1258,9 +1222,6 @@ private TreeNode build(int[] preorder, int preStart, int preEnd,
 }
 ```
 
-
-
-
 ## Problem 3: Binary Tree Maximum Path Sum
 
 ```java
@@ -1286,9 +1247,6 @@ private int maxGain(TreeNode node, int[] maxSum) {
     return node.val + Math.max(leftGain, rightGain);
 }
 ```
-
-
-
 
 ## Problem 4: Flatten Binary Tree to Linked List
 
@@ -1329,9 +1287,6 @@ public void flatten(TreeNode root) {
 ```
 
 ---
-
-
-
 
 # 🌳 Part 10: Coderbyte & Interview Tree Challenges
 
@@ -1714,43 +1669,17 @@ public class TreeSerializer {
 ```
 
 **Flow:**
-- TREE PROBLEM RECOGNITION GUIDE
-- ↓
-- 'Find common ancestor...'
-- ↓
-- LCA algorithm
-- ↓
-- 'Find common ancestor...'
-- ↓
-- LCA algorithm
-- ↓
-- 'Path between nodes...'
-- ↓
-- Find LCA, then paths from LCA
-- ↓
-- 'Path between nodes...'
-- ↓
-- Find LCA, then paths from LCA
-- ↓
-- 'Serialize tree...'
-- ↓
-- Preorder with null markers
-- ↓
-- 'Serialize tree...'
-- ↓
-- Preorder with null markers
-- ↓
-- 'Validate BST...'
-- ↓
-- Inorder should be sorted
-- ↓
-- 'Validate BST...'
-- ↓
-- Inorder should be sorted
-- ↓
-- TREE ARRAY INDEX FORMULAS (0-indexed):
-- ↓
-- • Parent of i: (i - 1) / 2
+1. TREE PROBLEM RECOGNITION GUIDE
+2. 'Find common ancestor...'
+3. LCA algorithm
+4. 'Path between nodes...'
+5. Find LCA, then paths from LCA
+6. 'Serialize tree...'
+7. Preorder with null markers
+8. 'Validate BST...'
+9. Inorder should be sorted
+10. TREE ARRAY INDEX FORMULAS (0-indexed):
+11. • Parent of i: (i - 1) / 2
 
 ```mermaid
 flowchart TD
@@ -1835,15 +1764,14 @@ _Trees and graphs are everywhere - master them and unlock many problems!_
 | Check Completeness of Binary Tree | LC 958 | BFS — null before value = incomplete |
 | Count Complete Tree Nodes | LC 222 | O(log²n) using height comparison |
 
-
 ---
-
 
 ---
 
 ## 🏋️ Practice & Interview Questions — Trees & Heaps
 
 ### Predict / Trace
+
 **Q1.** BST insert 5,3,7,1,4. Draw the tree. What is inorder traversal?
 <details><summary>Answer</summary>
 
@@ -1864,6 +1792,7 @@ Inorder: 1, 3, 4, 5, 7 (always sorted for BST!)
 </details>
 
 ### LeetCode / Coding
+
 **Q3.** ⭐ Maximum Depth of Binary Tree.
 <details><summary>Solution</summary>
 
@@ -1979,6 +1908,7 @@ int dfs(TreeNode node){
 </details>
 
 ### Heap / Priority Queue Problems
+
 **Q12.** ⭐ Kth Largest Element in Array.
 <details><summary>Solution</summary>
 
@@ -2005,6 +1935,7 @@ double findMedian(){ return lo.size()>hi.size()?lo.peek():(lo.peek()+hi.peek())/
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | BST search avg/worst | O(log N) avg, O(N) worst (degenerate) |
@@ -2015,8 +1946,6 @@ double findMedian(){ return lo.size()>hi.size()?lo.peek():(lo.peek()+hi.peek())/
 | 6 | Tree DFS pre/in/post order uses | Stack (or recursion) |
 | 7 | Tree BFS uses | Queue |
 | 8 | Red-Black Tree guarantee | O(log N) worst case for search/insert/delete |
-
-
 
 ---
 
@@ -2070,5 +1999,4 @@ A path cannot branch twice — if you go left and right from a node, the path "b
 Maintain two properties: (1) bottom half of numbers in a max-heap (quick access to max of lower half), (2) top half in a min-heap (quick access to min of upper half). Median = either the top of one heap (odd total) or average of both tops (even total). Invariant: max-heap size ≥ min-heap size, and max-heap.top ≤ min-heap.top. Adding a number: if > min-heap.top → it's in the top half → add to min-heap; else bottom half → add to max-heap. Then rebalance if sizes differ by 2. Both heaps stay O(log N) operations per insert. This pattern generalizes: ANY running statistic that needs the "boundary" between two halves uses this two-heap technique.
 </details>
 
-
-> **Navigation**: [< Previous](04c_DP_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05b_Graphs_Internals.md)
+**Navigation**: [< Previous](04c_DP_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05b_Graphs_Internals.md)

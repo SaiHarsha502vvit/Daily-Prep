@@ -66,21 +66,13 @@ PATTERN 3: ACCUMULATOR RECURSION (Tail Recursion)
 ```
 
 **Flow:**
-- factorial(5)
-- ↓
-- 5 * factorial(4)
-- ↓
-- 4 * factorial(3)
-- ↓
-- ...
-- ↓
-- fib(4)
-- ↓
-- fib(3) + fib(2)
-- ↓
-- Carry result as parameter
-- ↓
-- no work after recursive call
+1. factorial(5)
+2. 5 * factorial(4)
+3. 4 * factorial(3)
+4. ...
+5. fib(4)
+6. fib(3) + fib(2)
+7. Carry result as parameter no work after recursive call
 
 ```mermaid
 flowchart TD
@@ -116,9 +108,7 @@ Example: Max depth of binary tree
 ```
 
 **Flow:**
-- 1. Base case: node == null
-- ↓
-- return 0
+1. Base case: node == null return 0
 
 ```mermaid
 flowchart LR
@@ -149,35 +139,16 @@ return 1 + max(1,2) = 3
 ```
 
 **Flow:**
-- maxDepth([3])
-- ↓
-- maxDepth([9])
-- ↓
-- maxDepth([3])
-- ↓
-- maxDepth(null)
-- ↓
-- 0
-- ↓
-- maxDepth([3])
-- ↓
-- maxDepth(null)
-- ↓
-- 0
-- ↓
-- return 1 + max(0,0) = 1
-- ↓
-- maxDepth([20])
-- ↓
-- return 1 + max(0,0) = 1
-- ↓
-- maxDepth([15])
-- ↓
-- return 1 + max(0,0) = 1
-- ↓
-- maxDepth(null)
-- ↓
-- 0
+1. maxDepth([3])
+2. maxDepth([9])
+3. maxDepth([3])
+4. maxDepth(null)
+5. 0 maxDepth([3])
+6. maxDepth(null)
+7. 0 return 1 + max(0,0) = 1 maxDepth([20])
+8. return 1 + max(0,0) = 1 maxDepth([15])
+9. return 1 + max(0,0) = 1 maxDepth(null)
+10. 0
 
 ```mermaid
 flowchart TD
@@ -252,17 +223,12 @@ At each node:
 ```
 
 **Flow:**
-- Input: [1, 2, 3]
-- ↓
-- Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]
-- ↓
-- At each node:
-- ↓
-- Add current to result
-- ↓
-- Try adding each remaining element
-- ↓
-- Undo (backtrack) after exploring
+1. Input: [1, 2, 3]
+2. Result: [], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]
+3. At each node:
+4. Add current to result
+5. Try adding each remaining element
+6. Undo (backtrack) after exploring
 
 ```mermaid
 flowchart TD
@@ -327,9 +293,8 @@ SELF-JOIN MENTAL MODEL:
 ```
 
 **Flow:**
-- id name mgr_id / 1 Alice NULL / 2 Bob 1 / 3 Carol 1
-- ↓
-- id name salary / 1 Alice 90k / 1 Alice 90k / 1 Alice 90
+1. id name mgr_id / 1 Alice NULL / 2 Bob 1 / 3 Carol 1
+2. id name salary / 1 Alice 90k / 1 Alice 90k / 1 Alice 90
 
 ```mermaid
 flowchart LR
@@ -359,17 +324,12 @@ EXECUTION ORDER:
 ```
 
 **Flow:**
-- FROM
-- ↓
-- WHERE
-- ↓
-- GROUP BY
-- ↓
-- HAVING
-- ↓
-- SELECT
-- ↓
-- ORDER BY
+1. FROM
+2. WHERE
+3. GROUP BY
+4. HAVING
+5. SELECT
+6. ORDER BY
 
 ```mermaid
 flowchart TD
@@ -472,29 +432,13 @@ TRACE for [1,2,3]:
 ```
 
 **Flow:**
-- backtrack([], 0)
-- ↓
-- add []
-- ↓
-- backtrack([1], 1)
-- ↓
-- add [1]
-- ↓
-- backtrack([1,2], 2)
-- ↓
-- add [1,2]
-- ↓
-- backtrack([1,2,3], 3)
-- ↓
-- add [1,2,3], return
-- ↓
-- backtrack([1,3], 3)
-- ↓
-- add [1,3], return
-- ↓
-- backtrack([2], 2)
-- ↓
-- add [2]
+1. backtrack([], 0)
+2. add [] backtrack([1], 1)
+3. add [1] backtrack([1,2], 2)
+4. add [1,2] backtrack([1,2,3], 3)
+5. add [1,2,3], return backtrack([1,3], 3)
+6. add [1,3], return backtrack([2], 2)
+7. add [2]
 
 ```mermaid
 flowchart TD

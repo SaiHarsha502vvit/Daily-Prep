@@ -71,11 +71,9 @@
 ```
 
 **Flow:**
-- KUBELET / • Agent running on each node / • Watches API
-- ↓
-- CONTAINER RUNTIME / (containerd/CRI-O) / Actually runs
-- ↓
-- Pod 3 / App
+1. KUBELET / • Agent running on each node / • Watches API
+2. CONTAINER RUNTIME / (containerd/CRI-O) / Actually runs
+3. Pod 3 / App
 
 ```mermaid
 flowchart TD
@@ -255,11 +253,9 @@ Ingress:
 ```
 
 **Flow:**
-- METRICS
-- ↓
-- LOGS
-- ↓
-- TRACES
+1. METRICS
+2. LOGS
+3. TRACES
 
 ```mermaid
 flowchart TD
@@ -642,29 +638,18 @@ Trace ID: abc123
 ```
 
 **Flow:**
-- Trace ID: abc123
-- ↓
-- API Gateway (2ms)
-- ↓
-- Trace ID: abc123
-- ↓
-- Auth check
-- ↓
-- Trace ID: abc123
-- ↓
-- Order Service (150ms)
-- ↓
-- Trace ID: abc123
-- ↓
-- Validate request (5ms)
-- ↓
-- Trace ID: abc123
-- ↓
-- Check inventory (50ms)
-- ↓
-- Inventory Service (45ms)
-- ↓
-- Query database (40ms)
+1. Trace ID: abc123
+2. API Gateway (2ms)
+3. Trace ID: abc123
+4. Auth check
+5. Trace ID: abc123
+6. Order Service (150ms)
+7. Trace ID: abc123
+8. Validate request (5ms)
+9. Trace ID: abc123
+10. Check inventory (50ms)
+11. Inventory Service (45ms)
+12. Query database (40ms)
 
 ```mermaid
 flowchart TD
@@ -754,21 +739,14 @@ _Stage 4 Complete! Ready for Stage 5: Complete Application Scenarios_
 ```
 
 **Flow:**
-- API Gateway / (Kong/AWS)
-- ↓
-- Account / Service / - Balance / - Statement / - KYC
-- ↓
-- Auth / Service / - Login/MFA / - JWT/OAuth / - Session
-- ↓
-- Redis / (Sessions)
-- ↓
-- Account / Service / - Balance / - Statement / - KYC
-- ↓
-- PostgreSQL / (Accounts)
-- ↓
-- Transaction / Service / - Transfer / - Payment / - Hist
-- ↓
-- PostgreSQL / (Ledger)
+1. API Gateway / (Kong/AWS)
+2. Account / Service / - Balance / - Statement / - KYC
+3. Auth / Service / - Login/MFA / - JWT/OAuth / - Session
+4. Redis / (Sessions)
+5. Account / Service / - Balance / - Statement / - KYC
+6. PostgreSQL / (Accounts)
+7. Transaction / Service / - Transfer / - Payment / - Hist
+8. PostgreSQL / (Ledger)
 
 ```mermaid
 flowchart TD
@@ -1042,27 +1020,17 @@ public class FinancialCalculations {
 ```
 
 **Flow:**
-- CDN / (CloudFront)
-- ↓
-- ▼ ▼ ▼ / React API Gateway Admin / SPA Portal
-- ↓
-- Cart / Service
-- ↓
-- ▼ ▼ ▼ / React API Gateway Admin / SPA Portal
-- ↓
-- Order / Service
-- ↓
-- ▼ ▼ ▼ / React API Gateway Admin / SPA Portal
-- ↓
-- Payment / Service
-- ↓
-- React / SPA
-- ↓
-- Product / Service
-- ↓
-- React / SPA
-- ↓
-- Cart / Service
+1. CDN / (CloudFront)
+2. ▼ ▼ ▼ / React API Gateway Admin / SPA Portal
+3. Cart / Service
+4. ▼ ▼ ▼ / React API Gateway Admin / SPA Portal
+5. Order / Service
+6. ▼ ▼ ▼ / React API Gateway Admin / SPA Portal
+7. Payment / Service
+8. React / SPA
+9. Product / Service
+10. React / SPA
+11. Cart / Service
 
 ```mermaid
 flowchart TD
@@ -1475,27 +1443,17 @@ public class ProductSearchService {
 ```
 
 **Flow:**
-- Client 1 / (React)
-- ↓
-- Chat / Server 1
-- ↓
-- Client 2 / (Mobile)
-- ↓
-- Load Balancer / (Sticky/WS)
-- ↓
-- Client N / (Web)
-- ↓
-- Chat / Server 3
-- ↓
-- Load Balancer / (Sticky/WS)
-- ↓
-- ▼ ▼ ▼ / t Chat Chat / er 1 Server 2 Server
-- ↓
-- Redis / Pub/Sub
-- ↓
-- Chat / Server 1
-- ↓
-- MongoDB / Messages / History
+1. Client 1 / (React)
+2. Chat / Server 1
+3. Client 2 / (Mobile)
+4. Load Balancer / (Sticky/WS)
+5. Client N / (Web)
+6. Chat / Server 3
+7. Load Balancer / (Sticky/WS)
+8. ▼ ▼ ▼ / t Chat Chat / er 1 Server 2 Server
+9. Redis / Pub/Sub
+10. Chat / Server 1
+11. MongoDB / Messages / History
 
 ```mermaid
 flowchart TD
@@ -1825,9 +1783,8 @@ export function useChat(token: string) {
 ```
 
 **Flow:**
-- CLOSED OPEN HALF-OPEN / ▲ / CLOSED: Normal operation, r
-- ↓
-- Service A Service B Service C / Pool: 10 Pool: 20 Pool:
+1. CLOSED OPEN HALF-OPEN / ▲ / CLOSED: Normal operation, r
+2. Service A Service B Service C / Pool: 10 Pool: 20 Pool:
 
 ```mermaid
 flowchart TD
@@ -2351,19 +2308,13 @@ DAILY PRACTICE:
 ```
 
 **Flow:**
-- YOUR JOURNEY MAP
-- ↓
-- PHASE 1: DSA FOUNDATION (Month 1-2)
-- ↓
-- Arrays, Strings, Hashing
-- ↓
-- Two Pointers, Sliding Window
-- ↓
-- Trees, Graphs, DP
-- ↓
-- ✅ See: 26_Ultimate_DataStructures_Algorithms_Guide.md
-- ↓
-- PHASE 2: SYSTEM DESIGN (Month 2-3)
+1. YOUR JOURNEY MAP
+2. PHASE 1: DSA FOUNDATION (Month 1-2)
+3. Arrays, Strings, Hashing
+4. Two Pointers, Sliding Window
+5. Trees, Graphs, DP
+6. ✅ See: 26_Ultimate_DataStructures_Algorithms_Guide.md
+7. PHASE 2: SYSTEM DESIGN (Month 2-3)
 
 ```mermaid
 flowchart TD
@@ -2430,19 +2381,13 @@ READY FOR:
 ```
 
 **Flow:**
-- TECHNICAL SKILLS:
-- ↓
-- □ Can solve medium DSA problems in 30 mins
-- ↓
-- □ Can design database schema for any app
-- ↓
-- □ Can build REST API from scratch
-- ↓
-- □ Can containerize and deploy applications
-- ↓
-- □ Can set up CI/CD pipeline
-- ↓
-- □ Can debug distributed systems
+1. TECHNICAL SKILLS:
+2. □ Can solve medium DSA problems in 30 mins
+3. □ Can design database schema for any app
+4. □ Can build REST API from scratch
+5. □ Can containerize and deploy applications
+6. □ Can set up CI/CD pipeline
+7. □ Can debug distributed systems
 
 ```mermaid
 flowchart TD

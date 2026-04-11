@@ -1,23 +1,23 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Design Patterns](02_Design_Patterns.md)
-> 🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Design Patterns](02_Design_Patterns.md)
+🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md)
 
 ---
 
 # 🏛️ LLD Solved Problems — Low-Level Design with SOLID & Patterns
 
-> 5 classic LLD interview problems solved with clean OOP, SOLID principles, and design patterns
+5 classic LLD interview problems solved with clean OOP, SOLID principles, and design patterns
 
 ---
 
 ## 🎤 The Lld Interview Framework
 
 
-> 1. CLARIFY requirements (2 min): What entities? What operations?
-> 2. IDENTIFY objects & relationships (5 min): Nouns → classes, Verbs → methods
-> 3. DEFINE interfaces first (3 min): Program to interfaces
-> 4. APPLY patterns (5 min): Strategy, Observer, Factory, etc.
-> 5. CODE key classes (15 min): Focus on core logic, not boilerplate
-> 6. DISCUSS extensibility (5 min): "What if we add X?"
+1. CLARIFY requirements (2 min): What entities? What operations?
+2. IDENTIFY objects & relationships (5 min): Nouns → classes, Verbs → methods
+3. DEFINE interfaces first (3 min): Program to interfaces
+4. APPLY patterns (5 min): Strategy, Observer, Factory, etc.
+5. CODE key classes (15 min): Focus on core logic, not boilerplate
+6. DISCUSS extensibility (5 min): "What if we add X?"
 
 
 ---
@@ -133,21 +133,14 @@ Singleton Pattern → ParkingLot instance (debatable, prefer DI)
 ```
 
 **Flow:**
-- Strategy Pattern
-- ↓
-- PricingStrategy (hourly, flat rate, weekend rates)
-- ↓
-- Factory Pattern
-- ↓
-- Could create vehicles from license plate scan
-- ↓
-- Observer Pattern
-- ↓
-- Notify display boards when spot count changes
-- ↓
-- Singleton Pattern
-- ↓
-- ParkingLot instance (debatable, prefer DI)
+1. Strategy Pattern
+2. PricingStrategy (hourly, flat rate, weekend rates)
+3. Factory Pattern
+4. Could create vehicles from license plate scan
+5. Observer Pattern
+6. Notify display boards when spot count changes
+7. Singleton Pattern
+8. ParkingLot instance (debatable, prefer DI)
 
 ```mermaid
 flowchart LR
@@ -169,20 +162,20 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — Class Design**
->
-> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
-> <details><summary>Answer</summary>
->
-> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-> </details>
->
-> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-> <details><summary>Answer</summary>
->
-> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
-> </details>
->
+🔬 **Section Challenge — Class Design**
+
+**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+<details><summary>Answer</summary>
+
+Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+</details>
+
+**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+<details><summary>Answer</summary>
+
+1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+</details>
+
 
 # PROBLEM 2: Design BookMyShow (Movie Booking)
 
@@ -278,23 +271,15 @@ class BookingService {
 ```
 
 **Flow:**
-- Timeline of concurrent booking:
-- ↓
-- User A pays at t=3
-- ↓
-- confirmBooking
-- ↓
-- BOOKED
-- ↓
-- User A pays at t=3
-- ↓
-- confirmBooking
-- ↓
-- BOOKED
-- ↓
-- OR optimistic lock with version column:
-- ↓
-- UPDATE seat_status SET status='LOCKED', version=version
+1. Timeline of concurrent booking:
+2. User A pays at t=3
+3. confirmBooking
+4. BOOKED
+5. User A pays at t=3
+6. confirmBooking
+7. BOOKED
+8. OR optimistic lock with version column:
+9. UPDATE seat_status SET status='LOCKED', version=version
 
 ```mermaid
 flowchart TD
@@ -554,20 +539,20 @@ class LoggerConfig {
 
 ---
 
-> **Navigation**: [< Previous](06_Distributed_Systems_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Design_Patterns_Java.md)
+**Navigation**: [< Previous](06_Distributed_Systems_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Design_Patterns_Java.md)
 
-> 🔬 **Section Challenge — SOLID Principles in Every Solution**
->
-> **Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
-> <details><summary>Answer</summary>
->
-> No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
-> </details>
->
-> **Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
-> <details><summary>Answer</summary>
->
-> Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
-> </details>
->
+🔬 **Section Challenge — SOLID Principles in Every Solution**
+
+**Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
+<details><summary>Answer</summary>
+
+No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
+</details>
+
+**Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
+<details><summary>Answer</summary>
+
+Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
+</details>
+
 

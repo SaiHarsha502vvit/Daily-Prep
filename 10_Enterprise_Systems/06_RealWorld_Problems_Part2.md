@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)
+**Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)
 
 # 🌍 Real-World Problems Solved with DSA - Part 2
 
@@ -8,29 +8,29 @@
 
 
 
-> 🔬 **Section Challenge — Streaming, Healthcare, Travel & More**
->
-> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-> <details><summary>Answer</summary>
->
-> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-> <details><summary>Answer</summary>
->
-> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-> </details>
->
+🔬 **Section Challenge — Streaming, Healthcare, Travel & More**
+
+**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+<details><summary>Answer</summary>
+
+Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+</details>
+
+**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+<details><summary>Answer</summary>
+
+`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+</details>
+
 
 # PART 6: STREAMING PLATFORMS (Netflix/Hotstar)
 
 ## Problem 13: Video Watch History - Recently Watched (LRU Cache)
 
 
-> COMPANY: Netflix / Hotstar / YouTube
-> SYSTEM: User Experience
-> FEATURE: "Continue Watching" shows last 20 videos you watched
+COMPANY: Netflix / Hotstar / YouTube
+SYSTEM: User Experience
+FEATURE: "Continue Watching" shows last 20 videos you watched
 
 
 THE REQUIREMENT:
@@ -172,11 +172,9 @@ public class WatchHistoryService {
 ```
 
 **Flow:**
-- COMPANY: Netflix / YouTube
-- ↓
-- SYSTEM: Recommendation Engine
-- ↓
-- FEATURE: 'Because you watched X, you might like Y'
+1. COMPANY: Netflix / YouTube
+2. SYSTEM: Recommendation Engine
+3. FEATURE: 'Because you watched X, you might like Y'
 
 ```mermaid
 flowchart TD
@@ -294,11 +292,9 @@ public class VideoRecommender {
 ```
 
 **Flow:**
-- COMPANY: YouTube / Netflix
-- ↓
-- SYSTEM: Video Player
-- ↓
-- CHALLENGE: Adjust video quality based on network speed
+1. COMPANY: YouTube / Netflix
+2. SYSTEM: Video Player
+3. CHALLENGE: Adjust video quality based on network speed
 
 ```mermaid
 flowchart TD
@@ -415,11 +411,9 @@ public class AdaptiveBitrateController {
 ```
 
 **Flow:**
-- COMPANY: Practo / Apollo247
-- ↓
-- SYSTEM: Appointment Booking
-- ↓
-- CHALLENGE: Find available slots, prevent double booking
+1. COMPANY: Practo / Apollo247
+2. SYSTEM: Appointment Booking
+3. CHALLENGE: Find available slots, prevent double booking
 
 ```mermaid
 flowchart TD
@@ -572,9 +566,8 @@ public class AppointmentScheduler {
 ```
 
 **Flow:**
-- COMPANY: Any Healthcare App
-- ↓
-- SYSTEM: Prescription Safety
+1. COMPANY: Any Healthcare App
+2. SYSTEM: Prescription Safety
 
 ```mermaid
 flowchart TD
@@ -677,8 +670,8 @@ public class MedicineInteractionChecker {
 
 
 
-> 🔬 **Section Challenge — Problem 17: Medicine Interaction Checker (Graph - Cycle Detection)**
->>>
+🔬 **Section Challenge — Problem 17: Medicine Interaction Checker (Graph - Cycle Detection)**
+>>
 
 # PART 8: TRAVEL BOOKING (MakeMyTrip/Goibibo)
 
@@ -693,11 +686,9 @@ public class MedicineInteractionChecker {
 ```
 
 **Flow:**
-- COMPANY: MakeMyTrip / Cleartrip
-- ↓
-- SYSTEM: Flight Search
-- ↓
-- FEATURE: Find cheapest flight route (with connections)
+1. COMPANY: MakeMyTrip / Cleartrip
+2. SYSTEM: Flight Search
+3. FEATURE: Find cheapest flight route (with connections)
 
 ```mermaid
 flowchart TD
@@ -844,9 +835,8 @@ public class FlightSearchEngine {
 ```
 
 **Flow:**
-- COMPANY: OYO / Booking.com
-- ↓
-- SYSTEM: Inventory Management
+1. COMPANY: OYO / Booking.com
+2. SYSTEM: Inventory Management
 
 ```mermaid
 flowchart TD
@@ -993,9 +983,8 @@ public class HotelRoomInventory {
 ```
 
 **Flow:**
-- COMPANY: Delhivery / Amazon Logistics
-- ↓
-- SYSTEM: Route Planning
+1. COMPANY: Delhivery / Amazon Logistics
+2. SYSTEM: Route Planning
 
 ```mermaid
 flowchart TD
@@ -1145,9 +1134,8 @@ public class DeliveryRouteOptimizer {
 ```
 
 **Flow:**
-- COMPANY: Any Logistics
-- ↓
-- SYSTEM: Shipment Tracking
+1. COMPANY: Any Logistics
+2. SYSTEM: Shipment Tracking
 
 ```mermaid
 flowchart TD
@@ -1305,19 +1293,13 @@ Without proper ordering, conversation looks wrong!
 ```
 
 **Flow:**
-- COMPANY: WhatsApp / Slack
-- ↓
-- SYSTEM: Messaging
-- ↓
-- THE PROBLEM:
-- ↓
-- User A sends 'Hi' at 10:00:00.001
-- ↓
-- User B sends 'Hello' at 10:00:00.002
-- ↓
-- Network latency causes:
-- ↓
-- - Server receives 'Hello' first
+1. COMPANY: WhatsApp / Slack
+2. SYSTEM: Messaging
+3. THE PROBLEM:
+4. User A sends 'Hi' at 10:00:00.001
+5. User B sends 'Hello' at 10:00:00.002
+6. Network latency causes:
+7. - Server receives 'Hello' first
 
 ```mermaid
 flowchart TD
@@ -1448,6 +1430,6 @@ _Continued in Part 3: Interview Practice Problems_
 
 ---
 
-> **Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)
+**Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)
 
 

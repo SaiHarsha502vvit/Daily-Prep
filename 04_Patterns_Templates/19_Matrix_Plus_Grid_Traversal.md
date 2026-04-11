@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](18_String_Plus_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_BitManipulation_Plus_Tricks.md)
+**Navigation**: [< Previous](18_String_Plus_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_BitManipulation_Plus_Tricks.md)
 
 # Matrix + Grid Traversal — Combined Pattern Guide
 
-> **WHY this combination?** 2D grids are graphs where each cell connects to its 4 (or 8) neighbors. BFS/DFS on grids solve island counting, flood fill, shortest path, and rotation problems.
+**WHY this combination?** 2D grids are graphs where each cell connects to its 4 (or 8) neighbors. BFS/DFS on grids solve island counting, flood fill, shortest path, and rotation problems.
 
 ### 🧠 Deep Intuition — Grids Are Implicit Graphs
 
@@ -37,9 +37,8 @@ THEN → Matrix + BFS/DFS/Math
 ```
 
 **Flow:**
-- THEN
-- ↓
-- Matrix + BFS/DFS/Math
+1. THEN
+2. Matrix + BFS/DFS/Math
 
 ```mermaid
 flowchart LR
@@ -163,27 +162,17 @@ Time: O(R×C) | Space: O(1) extra (output doesn't count)
 ```
 
 **Flow:**
-- Round 1:
-- ↓
-- top row: 1,2,3 (top++
-- ↓
-- 1)
-- ↓
-- ↓ right col: 6,9 (right--
-- ↓
-- 1)
-- ↓
-- ← bottom row: 8,7 (bottom--
-- ↓
-- 1)
-- ↓
-- ↑ left col: 4 (left++
-- ↓
-- 1)
-- ↓
-- Round 2:
-- ↓
-- top row: 5 (top=1, left=1, right=1)
+1. Round 1:
+2. top row: 1,2,3 (top++
+3. 1)
+4. ↓ right col: 6,9 (right--
+5. 1)
+6. ← bottom row: 8,7 (bottom--
+7. 1)
+8. ↑ left col: 4 (left++
+9. 1)
+10. Round 2:
+11. top row: 5 (top=1, left=1, right=1)
 
 ```mermaid
 flowchart TD
@@ -243,9 +232,8 @@ Time: O(R×C) | Space: O(R×C)
 ```
 
 **Flow:**
-- Neighbors: (2,2)✅
-- ↓
-- TARGET REACHED!
+1. Neighbors: (2,2)✅
+2. TARGET REACHED!
 
 ```mermaid
 flowchart LR
@@ -288,19 +276,13 @@ COMMON MISTAKES:
 ```
 
 **Flow:**
-- EDGE CASES:
-- ↓
-- Edge Case Handling
-- ↓
-- 1×1 matrix Spiral = [matrix[0][0]], path = 0 steps
-- ↓
-- Single row [1,2,3] Spiral = [1,2,3], no up/down movemen
-- ↓
-- Start/end blocked Return -1 (no path exists)
-- ↓
-- All walls Return -1
-- ↓
-- 8-directional movement Use 8-dir array instead of 4
+1. EDGE CASES:
+2. Edge Case Handling
+3. 1×1 matrix Spiral = [matrix[0][0]], path = 0 steps
+4. Single row [1,2,3] Spiral = [1,2,3], no up/down movemen
+5. Start/end blocked Return -1 (no path exists)
+6. All walls Return -1
+7. 8-directional movement Use 8-dir array instead of 4
 
 ```mermaid
 flowchart TD
@@ -338,14 +320,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 | # | Problem | Companies | Key Insight |
@@ -395,7 +377,7 @@ flowchart TD
 
 ## 🏋️ Practice & Interview Questions — Arrays
 
-> Attempt each before looking at the answer. Time yourself.
+Attempt each before looking at the answer. Time yourself.
 
 ### Predict / Trace
 **Q1.** What is the output? `int[] a = {1,2,3}; int[] b = a; b[0] = 99; System.out.println(a[0]);`
@@ -579,7 +561,7 @@ CPU loads data in cache lines (~64 bytes). Arrays store elements contiguously �
 
 ## 🧠 Deep Conceptual Questions — Arrays & Memory
 
-> These questions test your REASONING, not just recall. Think before expanding.
+These questions test your REASONING, not just recall. Think before expanding.
 
 **C1. Why is array access O(1)?**
 <details><summary>Deep Answer</summary>

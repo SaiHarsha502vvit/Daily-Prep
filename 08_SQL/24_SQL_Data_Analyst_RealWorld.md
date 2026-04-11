@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](23_SQL_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](23_SQL_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 24 — SQL for Data Analysts: Real-World Patterns That Get You Hired
 
-> **"Knowing SELECT and JOIN makes you a developer who queries databases. Knowing cohort analysis, funnel queries, retention curves, and A/B testing SQL makes you a DATA ANALYST. This chapter bridges the gap."**
+**"Knowing SELECT and JOIN makes you a developer who queries databases. Knowing cohort analysis, funnel queries, retention curves, and A/B testing SQL makes you a DATA ANALYST. This chapter bridges the gap."**
 
 ---
 
@@ -26,24 +26,24 @@
 ## 1. The Data Analyst SQL Mindset
 
 
-> DEVELOPER SQL vs ANALYST SQL
->
-> Developer: "Get me user #42's orders"
-> Analyst:   "Show me Week-1 retention for users who signed
-> up in January vs February, segmented by plan type"
->
-> Developer: SELECT → WHERE → JOIN → done
-> Analyst:   WITH → WINDOW → CASE → GROUP BY → HAVING → layers
->
-> Developer thinks in ROWS (fetch this record)
-> Analyst thinks in GROUPS and TRENDS (what's the pattern?)
->
-> KEY TOOLS FOR ANALYSTS:
-> → CTEs (WITH clause) — readable multi-step queries
-> → Window functions — calculations across related rows
-> → CASE WHEN — pivoting and conditional aggregation
-> → Date functions — time-based grouping and comparison
-> → Self-joins — comparing current vs historical data
+DEVELOPER SQL vs ANALYST SQL
+
+Developer: "Get me user #42's orders"
+Analyst:   "Show me Week-1 retention for users who signed
+up in January vs February, segmented by plan type"
+
+Developer: SELECT → WHERE → JOIN → done
+Analyst:   WITH → WINDOW → CASE → GROUP BY → HAVING → layers
+
+Developer thinks in ROWS (fetch this record)
+Analyst thinks in GROUPS and TRENDS (what's the pattern?)
+
+KEY TOOLS FOR ANALYSTS:
+→ CTEs (WITH clause) — readable multi-step queries
+→ Window functions — calculations across related rows
+→ CASE WHEN — pivoting and conditional aggregation
+→ Date functions — time-based grouping and comparison
+→ Self-joins — comparing current vs historical data
 
 
 ### Sample Schema (used throughout this chapter)
@@ -93,7 +93,7 @@ CREATE TABLE experiments (
 ## 2. Cohort Analysis: User Retention by Signup Month
 
 ### The Freeze Question
-> "Show me what percentage of users who signed up each month are still active in subsequent months."
+"Show me what percentage of users who signed up each month are still active in subsequent months."
 
 ### Deep Reasoning
 
@@ -120,19 +120,13 @@ CREATE TABLE experiments (
 ```
 
 **Flow:**
-- WHAT IS COHORT ANALYSIS?
-- ↓
-- A 'cohort' = a group of users who share a common trait
-- ↓
-- Usually: 'signed up in the same month'
-- ↓
-- You track each cohort OVER TIME:
-- ↓
-- Cohort Month 0 Month 1 Month 2 Month 3
-- ↓
-- Jan signup 1000 400 (40%) 250 (25%) 200 (20%)
-- ↓
-- Feb signup 1200 540 (45%) 360 (30%)
+1. WHAT IS COHORT ANALYSIS?
+2. A 'cohort' = a group of users who share a common trait
+3. Usually: 'signed up in the same month'
+4. You track each cohort OVER TIME:
+5. Cohort Month 0 Month 1 Month 2 Month 3
+6. Jan signup 1000 400 (40%) 250 (25%) 200 (20%)
+7. Feb signup 1200 540 (45%) 360 (30%)
 
 ```mermaid
 flowchart TD
@@ -248,19 +242,13 @@ Fix THAT step for maximum impact!
 ```
 
 **Flow:**
-- WHAT IS A FUNNEL?
-- ↓
-- Users flow through a sequence of steps:
-- ↓
-- Visit Homepage (10,000) 100%
-- ↓
-- View Product (6,000) 60% (40% dropped off!)
-- ↓
-- Add to Cart (2,000) 33% of viewers
-- ↓
-- Purchase(800) 40% of add-to-cart
-- ↓
-- 8% overall conversion!
+1. WHAT IS A FUNNEL?
+2. Users flow through a sequence of steps:
+3. Visit Homepage (10,000) 100%
+4. View Product (6,000) 60% (40% dropped off!)
+5. Add to Cart (2,000) 33% of viewers
+6. Purchase(800) 40% of add-to-cart
+7. 8% overall conversion!
 
 ```mermaid
 flowchart TD
@@ -428,31 +416,19 @@ GROUP BY c.cohort_month, cs.cohort_size;
 ```
 
 **Flow:**
-- A/B TESTING WITH SQL
-- ↓
-- Goal: 'Did changing the button color increase purchases
-- ↓
-- Control (A): Old blue button
-- ↓
-- 10,000 users
-- ↓
-- Control (A): Old blue button
-- ↓
-- 10,000 users
-- ↓
-- Treatment (B): New green button
-- ↓
-- 10,000 users
-- ↓
-- Treatment (B): New green button
-- ↓
-- 10,000 users
-- ↓
-- Metrics to compare:
-- ↓
-- Conversion rate (% who purchased)
-- ↓
-- Revenue per user
+1. A/B TESTING WITH SQL
+2. Goal: 'Did changing the button color increase purchases
+3. Control (A): Old blue button
+4. 10,000 users
+5. Control (A): Old blue button
+6. 10,000 users
+7. Treatment (B): New green button
+8. 10,000 users
+9. Treatment (B): New green button
+10. 10,000 users
+11. Metrics to compare:
+12. Conversion rate (% who purchased)
+13. Revenue per user
 
 ```mermaid
 flowchart TD
@@ -567,19 +543,13 @@ ORDER BY u.plan_type, e.variant;
 ```
 
 **Flow:**
-- RFM = Recency, Frequency, Monetary
-- ↓
-- Score each customer on 3 dimensions (1-5 each):
-- ↓
-- Recency: How RECENTLY did they purchase?
-- ↓
-- (5 = this week, 1 = 6+ months ago)
-- ↓
-- Frequency: How OFTEN do they purchase?
-- ↓
-- (5 = 50+ orders, 1 = 1 order)
-- ↓
-- Monetary: How much do they SPEND?
+1. RFM = Recency, Frequency, Monetary
+2. Score each customer on 3 dimensions (1-5 each):
+3. Recency: How RECENTLY did they purchase?
+4. (5 = this week, 1 = 6+ months ago)
+5. Frequency: How OFTEN do they purchase?
+6. (5 = 50+ orders, 1 = 1 order)
+7. Monetary: How much do they SPEND?
 
 ```mermaid
 flowchart TD
@@ -657,25 +627,25 @@ ORDER BY total_spend DESC;
 
 
 
-> 🔬 **Section Challenge — 6. Customer Segmentation & RFM Analysis**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — 6. Customer Segmentation & RFM Analysis**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## 7. KPI Dashboards: Business Metrics from SQL
 
@@ -856,19 +826,13 @@ ORDER BY order_date;
 ```
 
 **Flow:**
-- FUNCTION PURPOSE EXAMPLE
-- ↓
-- ROW_NUMBER() Sequential rank (no ties) Top N
-- ↓
-- RANK() Rank with gaps (1,2,2,4) Leaderboard
-- ↓
-- DENSE_RANK() Rank no gaps (1,2,2,3) Percentile
-- ↓
-- NTILE(n) Divide into n equal groups Quartiles
-- ↓
-- LAG(col, n) Previous row value Change
-- ↓
-- LEAD(col, n) Next row value Forecast
+1. FUNCTION PURPOSE EXAMPLE
+2. ROW_NUMBER() Sequential rank (no ties) Top N
+3. RANK() Rank with gaps (1,2,2,4) Leaderboard
+4. DENSE_RANK() Rank no gaps (1,2,2,3) Percentile
+5. NTILE(n) Divide into n equal groups Quartiles
+6. LAG(col, n) Previous row value Change
+7. LEAD(col, n) Next row value Forecast
 
 ```mermaid
 flowchart TD
@@ -942,20 +906,20 @@ ORDER BY ds.day;
 
 
 
-> 🔬 **Section Challenge — 9. Advanced Window Functions for Analytics**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — 9. Advanced Window Functions for Analytics**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## 10. Session Analysis & User Journey
 
@@ -1322,4 +1286,4 @@ Red flags: (1) **"Full Table Scan" / "Seq Scan"** on a large table → missing i
 </details>
 
 
-> **Navigation**: [< SQL Deep Reasoning](23_SQL_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [DSA Java Mastery >](../03_Algorithms/17_DSA_Java_Implementation_Mastery.md)
+**Navigation**: [< SQL Deep Reasoning](23_SQL_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [DSA Java Mastery >](../03_Algorithms/17_DSA_Java_Implementation_Mastery.md)

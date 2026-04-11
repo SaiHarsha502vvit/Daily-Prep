@@ -32,11 +32,6 @@
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Linked List**
 
 # 📚 SECTION 13: LINKED LIST PROBLEMS
@@ -66,95 +61,13 @@
 ```
 
 **Flow:**
-- LINKED LIST PATTERNS
-- ↓
-- SINGLY LINKED LIST:
-- ↓
-- head
-- ↓
-- [1
-- ↓
-- •]
-- ↓
-- [2
-- ↓
-- •]
-- ↓
-- [3
-- ↓
-- •]
-- ↓
-- [4
-- ↓
-- •]
-- ↓
-- null
-- ↓
-- head
-- ↓
-- [1
-- ↓
-- •]
-- ↓
-- [2
-- ↓
-- •]
-- ↓
-- [3
-- ↓
-- •]
-- ↓
-- [4
-- ↓
-- •]
-- ↓
-- null
-- ↓
-- val next val next val next val next
-- ↓
-- DOUBLY LINKED LIST:
-- ↓
-- null ← [•
-- ↓
-- 1
-- ↓
-- •] ⇄ [•
-- ↓
-- 2
-- ↓
-- •] ⇄ [•
-- ↓
-- 3
-- ↓
-- •] ⇄ [•
-- ↓
-- 4
-- ↓
-- •]
-- ↓
-- null
-- ↓
-- null ← [•
-- ↓
-- 1
-- ↓
-- •] ⇄ [•
-- ↓
-- 2
-- ↓
-- •] ⇄ [•
-- ↓
-- 3
-- ↓
-- •] ⇄ [•
-- ↓
-- 4
-- ↓
-- •]
-- ↓
-- null
-- ↓
-- prev val next
+1. Linked list patterns overview.
+2. Singly linked list: `head -> [1] -> [2] -> [3] -> [4] -> null`.
+3. Doubly linked list: `null <- [1] <-> [2] <-> [3] <-> [4] -> null`.
+4. Circular linked list: tail points back to the head.
+5. Core technique: Runner (slow/fast) for cycle, middle, and kth-from-end.
+6. Core technique: Dummy head to simplify head-changing operations.
+7. Core technique: Reverse-as-you-go for in-place O(1) space reversal.
 
 ```mermaid
 flowchart TD
@@ -179,11 +92,6 @@ flowchart TD
 
 ## PART 0: WHY Linked List — MIT/KTH Style Deep Understanding
 
-
-
-
-
-
 > 🔬 **Section Challenge — PART 0: WHY Linked List — MIT/KTH Style Deep Understanding**
 
 ## Why These Problems Matter
@@ -205,6 +113,7 @@ REAL-WORLD LINKED LISTS:
 - File systems (FAT table — each cluster points to next)
 - Undo/Redo stacks in editors (doubly linked command list)
 - Memory allocators (free list of available memory blocks)
+
 ## The Three Mental Models
 
 MODEL 1: "RUNNER TECHNIQUE" (slow/fast pointers)
@@ -237,6 +146,7 @@ Before: prev → null, curr → [1] → [2] → [3] → null
 After:  null ← [1] ← [2] ← [3] ← prev, curr → null
 Loop invariant: After iteration i, the first i nodes are reversed
 and prev points to the new head of the reversed portion.
+
 ## Formal Definition (Mit / Kth Style)
 
 A singly linked list L = (v₁, v₂, ..., vₙ) is a sequence of nodes
@@ -261,10 +171,6 @@ has a lower bound of Ω(i) comparisons/pointer traversals.
 | Merge sort               | O(n lgn) | O(n lgn) | ← LL uses O(1) space! |
 ┴──────────┴
 
-
-
-
-
 > 🔬 **Section Challenge — Formal Definition (Mit / Kth Style)**
 
 ## Decision Flowchart: Which Linked List Technique
@@ -279,10 +185,6 @@ DECISION FLOWCHART
 "Sort a linked list?"                  → Merge sort (natural)
 "Palindrome check?"                    → Find mid + reverse half
 "Partition around value?"              → Two dummy heads
-
-
-
-
 
 > 🔬 **Section Challenge — Decision Flowchart: Which Linked List Technique**
 
@@ -320,6 +222,7 @@ int val;
 ListNode next;
 ListNode(int val) { this.val = val; }
 }
+
 ## Difficulties & Common Mistakes
 
 MISTAKE 1: Losing reference to head
@@ -348,6 +251,7 @@ Writing special-case if-else instead of using a sentinel.
 
 **Fix**: ListNode dummy = new ListNode(0); dummy.next = head;
 Process uniformly. Return dummy.next.
+
 ## Expected Outcomes
 
 - ✅ See "reverse" → three-pointer template in 1 minute (iterative + recur.)
@@ -364,6 +268,7 @@ Process uniformly. Return dummy.next.
 **To**: "I draw the pointer diagram, identify which pointers change,
 save references before rewiring, and use dummy heads when the
 head might change. Every step maintains my loop invariant."
+
 ## Complexity Quick Reference
 
 ┬──────────┬──────────┬
@@ -375,7 +280,7 @@ head might change. Every step maintains my loop invariant."
 | Merge Two Sorted         | O(n+m)   | O(1)     | Dummy head |
 | Remove Nth from End      | O(n)     | O(1)     | Two-pointer gap |
 | Add Two Numbers          | O(max)   | O(max)   | Stack / reverse |
-| Copy Random Pointer      | O(n)     | O(1)*    | Interleave 3-pass |
+| Copy Random Pointer      | O(n)     | O(1)*| Interleave 3-pass |
 | Merge K Sorted           | O(N lgk) | O(k)     | Min-heap |
 | Reverse K-Group          | O(n)     | O(1)     | Iterative K-rev |
 | Sort Linked List         | O(n lgn) | O(1)*    | Bottom-up merge |
@@ -393,7 +298,7 @@ head might change. Every step maintains my loop invariant."
 
 ### Problem 216: Reverse Linked List ⭐ FULL SOLUTION
 
-**LeetCode 206** 🔗 https://leetcode.com/problems/reverse-linked-list/
+**LeetCode 206** 🔗 <https://leetcode.com/problems/reverse-linked-list/>
 
 ```
 PROBLEM (formal):
@@ -414,21 +319,12 @@ EXAMPLES:
 ```
 
 **Flow:**
-- [1]
-- ↓
-- [2]
-- ↓
-- [3]
-- ↓
-- [4]
-- ↓
-- [5]
-- ↓
-- null
-- ↓
-- [5]
-- ↓
-- [4]
+1. Input list: `[1] -> [2] -> [3] -> [4] -> [5] -> null`.
+2. Reverse pointers in-place from left to right.
+3. Output list: `[5] -> [4] -> [3] -> [2] -> [1] -> null`.
+4. Example map: `[1,2,3,4,5] -> [5,4,3,2,1]`.
+5. Example map: `[1,2] -> [2,1]`.
+6. Example map: `[] -> []`.
 
 ```mermaid
 flowchart TD
@@ -559,7 +455,7 @@ Approach 3 (Stack):
 
 ### Problem 217: Middle of Linked List ⭐ FULL SOLUTION
 
-**LeetCode 876** 🔗 https://leetcode.com/problems/middle-of-the-linked-list/
+**LeetCode 876** 🔗 <https://leetcode.com/problems/middle-of-the-linked-list/>
 
 ```
 PROBLEM (formal):
@@ -575,13 +471,10 @@ EXAMPLES:
 ```
 
 **Flow:**
-- Input: [1,2,3,4,5]
-- ↓
-- Output: node 3
-- ↓
-- Input: [1,2,3,4,5,6]
-- ↓
-- Output: node 4 (second middle)
+1. Input: [1,2,3,4,5]
+2. Output: node 3
+3. Input: [1,2,3,4,5,6]
+4. Output: node 4 (second middle)
 
 ```mermaid
 flowchart LR
@@ -650,7 +543,7 @@ To get FIRST middle when n is even:
 
 ### Problem 218: Merge Two Sorted Lists ⭐ FULL SOLUTION
 
-**LeetCode 21** 🔗 https://leetcode.com/problems/merge-two-sorted-lists/
+**LeetCode 21** 🔗 <https://leetcode.com/problems/merge-two-sorted-lists/>
 
 ```
 PROBLEM (formal):
@@ -667,21 +560,12 @@ EXAMPLES:
 ```
 
 **Flow:**
-- L₁: [1]
-- ↓
-- [2]
-- ↓
-- [4]
-- ↓
-- null
-- ↓
-- L₂: [1]
-- ↓
-- [3]
-- ↓
-- [4]
-- ↓
-- null
+1. Input list L₁: `[1] -> [2] -> [4] -> null`.
+2. Input list L₂: `[1] -> [3] -> [4] -> null`.
+3. Compare current heads and append the smaller node each step.
+4. Continue until one list is exhausted.
+5. Append the remaining tail.
+6. Output: `[1] -> [1] -> [2] -> [3] -> [4] -> [4] -> null`.
 
 ```mermaid
 flowchart TD
@@ -777,7 +661,7 @@ equal elements from L₁ appear before those from L₂.
 
 ### Problem 219: Linked List Cycle ⭐ FULL SOLUTION
 
-**LeetCode 141** 🔗 https://leetcode.com/problems/linked-list-cycle/
+**LeetCode 141** 🔗 <https://leetcode.com/problems/linked-list-cycle/>
 
 ```
 PROBLEM (formal):
@@ -797,19 +681,10 @@ EXAMPLES:
 ```
 
 **Flow:**
-- [3]
-- ↓
-- [2]
-- ↓
-- [0]
-- ↓
-- [-4] Input: head = [3,2,0,-4], pos = 1
-- ↓
-- [1]
-- ↓
-- [2]
-- ↓
-- null Input: head = [1,2], pos = -1
+1. Example A (cycle): `[3] -> [2] -> [0] -> [-4]`, tail links back to node `[2]` (`pos = 1`).
+2. Output A: `true`.
+3. Example B (no cycle): `[1] -> [2] -> null` (`pos = -1`).
+4. Output B: `false`.
 
 ```mermaid
 flowchart TD
@@ -841,9 +716,8 @@ Step 3: Return false  (fast reached end → no cycle)
 ```
 
 **Flow:**
-- Step 3: Return false (fast reached end
-- ↓
-- no cycle)
+1. If `fast` reaches `null`, traversal ended without collision.
+2. Return `false` because no cycle exists.
 
 ```mermaid
 flowchart LR
@@ -884,15 +758,11 @@ Why? When they first meet:
 ```
 
 **Flow:**
-- • After (c - g) steps, the gap becomes 0 mod c
-- ↓
-- they meet.
-- ↓
-- Since fast = 2 × slow: t + a + kc = 2(t + a)
-- ↓
-- kc = t + a
-- ↓
-- t = kc - a
+1. In the cycle, relative speed is 1 node per step.
+2. After at most `(c - g)` steps, the gap becomes `0 mod c`, so they meet.
+3. Meeting equation: `t + a + kc = 2(t + a)`.
+4. Rearrangement gives `kc = t + a`.
+5. Therefore `t = kc - a`, which aligns both pointers at cycle entry.
 
 ```mermaid
 flowchart LR
@@ -958,7 +828,7 @@ Floyd's is strictly better in space.
 
 ### Problem 220: Palindrome Linked List
 
-**LeetCode 234** 🔗 https://leetcode.com/problems/palindrome-linked-list/
+**LeetCode 234** 🔗 <https://leetcode.com/problems/palindrome-linked-list/>
 
 ```
 APPROACH:
@@ -1014,7 +884,7 @@ private ListNode reverse(ListNode head) {
 
 ### Problem 221: Remove Duplicates from Sorted List
 
-**LeetCode 83** 🔗 https://leetcode.com/problems/remove-duplicates-from-sorted-list/
+**LeetCode 83** 🔗 <https://leetcode.com/problems/remove-duplicates-from-sorted-list/>
 
 ```
 APPROACH:
@@ -1045,7 +915,7 @@ public ListNode deleteDuplicates(ListNode head) {
 
 ### Problem 222: Intersection of Two Linked Lists
 
-**LeetCode 160** 🔗 https://leetcode.com/problems/intersection-of-two-linked-lists/
+**LeetCode 160** 🔗 <https://leetcode.com/problems/intersection-of-two-linked-lists/>
 
 ```
 APPROACH (Length-Difference Technique):
@@ -1081,7 +951,7 @@ public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
 
 ### Problem 223: Delete Node (Pointer Only)
 
-**GFG** 🔗 https://www.geeksforgeeks.org/delete-a-given-node-in-linked-list-under-given-constraints/
+**GFG** 🔗 <https://www.geeksforgeeks.org/delete-a-given-node-in-linked-list-under-given-constraints/>
 
 ```
 APPROACH:
@@ -1102,7 +972,7 @@ TEMPLATE: Value-copy trick.
 
 ### Problem 224: Convert Binary Number in Linked List to Integer
 
-**LeetCode 1290** 🔗 https://leetcode.com/problems/convert-binary-number-in-a-linked-list-to-integer/
+**LeetCode 1290** 🔗 <https://leetcode.com/problems/convert-binary-number-in-a-linked-list-to-integer/>
 
 ```
 APPROACH:
@@ -1115,9 +985,9 @@ TEMPLATE: Single-pass accumulation.
 ```
 
 **Flow:**
-- This is Horner's method for binary
-- ↓
-- decimal conversion.
+1. Traverse bits from head to tail.
+2. Update each step: `result = result * 2 + bit`.
+3. This is Horner's method for binary-to-decimal conversion.
 
 ```mermaid
 flowchart LR
@@ -1150,7 +1020,7 @@ public int getDecimalValue(ListNode head) {
 
 ### Problem 225: Remove Nth Node From End of List ⭐ FULL SOLUTION
 
-**LeetCode 19** 🔗 https://leetcode.com/problems/remove-nth-node-from-end-of-list/
+**LeetCode 19** 🔗 <https://leetcode.com/problems/remove-nth-node-from-end-of-list/>
 
 ```
 PROBLEM (formal):
@@ -1167,13 +1037,10 @@ EXAMPLES:
 ```
 
 **Flow:**
-- Input: [1,2,3,4,5], n = 2
-- ↓
-- Output: [1,2,3,5] (removed 4)
-- ↓
-- Input: [1], n = 1
-- ↓
-- Output: [] (removed head)
+1. Input: [1,2,3,4,5], n = 2
+2. Output: [1,2,3,5] (removed 4)
+3. Input: [1], n = 1
+4. Output: [] (removed head)
 
 ```mermaid
 flowchart LR
@@ -1199,9 +1066,9 @@ Step 5: Return dummy.next
 ```
 
 **Flow:**
-- Step 1: Create dummy
-- ↓
-- head. Set fast = dummy, slow = dummy.
+1. Initialize sentinel list: `dummy -> head`.
+2. Set both pointers at sentinel: `fast = dummy`, `slow = dummy`.
+3. Move `fast` first to create an `n+1` gap.
 
 ```mermaid
 flowchart LR
@@ -1262,7 +1129,7 @@ Space: O(1) — three pointers + dummy node
 
 ### Problem 226: Reverse Linked List II ⭐ FULL SOLUTION
 
-**LeetCode 92** 🔗 https://leetcode.com/problems/reverse-linked-list-ii/
+**LeetCode 92** 🔗 <https://leetcode.com/problems/reverse-linked-list-ii/>
 
 ```
 PROBLEM (formal):
@@ -1280,19 +1147,11 @@ EXAMPLES:
 ```
 
 **Flow:**
-- PROBLEM (formal):
-- ↓
-- only the sublist from position left to right inclusive.
-- ↓
-- INPUT: head, left, right (1 ≤ left ≤ right ≤ n)
-- ↓
-- OUTPUT: head of modified list
-- ↓
-- EXAMPLES:
-- ↓
-- Input: [1,2,3,4,5], left=2, right=4
-- ↓
-- Output: [1,4,3,2,5]
+1. Input: linked list with boundaries `left` and `right`.
+2. Goal: reverse only nodes in the inclusive range `[left, right]`.
+3. Example input: `[1,2,3,4,5]`, `left=2`, `right=4`.
+4. Example output: `[1,4,3,2,5]`.
+5. Nodes outside the range keep their original order.
 
 ```mermaid
 flowchart TD
@@ -1327,9 +1186,9 @@ Step 4: Return dummy.next.
 ```
 
 **Flow:**
-- Step 1: Create dummy
-- ↓
-- head. Navigate prev to position (left - 1).
+1. Build sentinel list: `dummy -> head`.
+2. Move `prev` to node just before position `left`.
+3. Reverse only the `[left, right]` window by front-insertion.
 
 ```mermaid
 flowchart LR
@@ -1379,7 +1238,7 @@ Space: O(1) — in-place pointer rewiring
 
 ### Problem 227: Add Two Numbers II ⭐ FULL SOLUTION
 
-**LeetCode 445** 🔗 https://leetcode.com/problems/add-two-numbers-ii/
+**LeetCode 445** 🔗 <https://leetcode.com/problems/add-two-numbers-ii/>
 
 ```
 PROBLEM (formal):
@@ -1397,23 +1256,11 @@ EXAMPLES:
 ```
 
 **Flow:**
-- l1: [7]
-- ↓
-- [2]
-- ↓
-- [4]
-- ↓
-- [3] (represents 7243)
-- ↓
-- l2: [5]
-- ↓
-- [6]
-- ↓
-- [4] (represents 564)
-- ↓
-- out: [7]
-- ↓
-- [8]
+1. Number 1 list: `[7] -> [2] -> [4] -> [3]` (7243).
+2. Number 2 list: `[5] -> [6] -> [4]` (564).
+3. Add from right to left using two stacks plus carry.
+4. Prepend each new digit to keep MSB-first order.
+5. Output list: `[7] -> [8] -> [0] -> [7]` (7807).
 
 ```mermaid
 flowchart TD
@@ -1492,7 +1339,7 @@ Alternative O(1) space: reverse both lists, add like LC 2, reverse result.
 
 ### Problem 228: Copy List with Random Pointer ⭐ FULL SOLUTION
 
-**LeetCode 138** 🔗 https://leetcode.com/problems/copy-list-with-random-pointer/
+**LeetCode 138** 🔗 <https://leetcode.com/problems/copy-list-with-random-pointer/>
 
 ```
 PROBLEM (formal):
@@ -1522,9 +1369,9 @@ Pass 3 — Separate: Extract cloned nodes into their own list.
 ```
 
 **Flow:**
-- C becomes A
-- ↓
-- A'
+1. Interleave clones: `A -> B -> C` becomes `A -> A' -> B -> B' -> C -> C'`.
+2. Assign clone random pointers via `original.random.next`.
+3. Detach clone list and restore original list.
 
 ```mermaid
 flowchart LR
@@ -1581,9 +1428,8 @@ Alternative (HashMap): O(n) time, O(n) space — map original → clone
 ```
 
 **Flow:**
-- Alternative (HashMap): O(n) time, O(n) space — map
-- ↓
-- clone
+1. HashMap alternative stores mapping `originalNode -> clonedNode`.
+2. First pass creates clone nodes; second pass wires `next` and `random`.
 
 ```mermaid
 flowchart LR
@@ -1596,7 +1442,7 @@ flowchart LR
 
 ### Problem 229: Partition List
 
-**LeetCode 86** 🔗 https://leetcode.com/problems/partition-list/
+**LeetCode 86** 🔗 <https://leetcode.com/problems/partition-list/>
 
 ```
 APPROACH:
@@ -1608,9 +1454,10 @@ TEMPLATE: Two dummy heads + single pass.
 ```
 
 **Flow:**
-- Connect less.tail
-- ↓
-- greaterOrEqual.head. Set greaterOrEqual.tail.next
+1. Partition nodes into two chains: `< x` and `>= x`.
+2. Connect `less.tail -> greaterOrEqual.head`.
+3. Set `greaterOrEqual.tail.next = null`.
+4. Return `less` chain head.
 
 ```mermaid
 flowchart LR
@@ -1640,7 +1487,7 @@ public ListNode partition(ListNode head, int x) {
 
 ### Problem 230: Flatten a Multilevel Doubly Linked List
 
-**LeetCode 430** 🔗 https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/
+**LeetCode 430** 🔗 <https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/>
 
 ```
 APPROACH:
@@ -1656,9 +1503,10 @@ TEMPLATE: DFS flattening.
 ```
 
 **Flow:**
-- Stack approach: push next, then push child
-- ↓
-- DFS order.
+1. When a child appears, save current `next` as tail.
+2. Splice child list immediately after current node.
+3. Continue DFS (stack or recursion) through child first.
+4. Reconnect flattened child tail back to saved tail.
 
 ```mermaid
 flowchart LR
@@ -1673,7 +1521,7 @@ flowchart LR
 
 ### Problem 231: Remove Duplicates from Sorted List II
 
-**LeetCode 82** 🔗 https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/
+**LeetCode 82** 🔗 <https://leetcode.com/problems/remove-duplicates-from-sorted-list-ii/>
 
 ```
 APPROACH:
@@ -1714,7 +1562,7 @@ public ListNode deleteDuplicates(ListNode head) {
 
 ### Problem 232: Segregate Even and Odd Nodes
 
-**GFG** 🔗 https://www.geeksforgeeks.org/segregate-even-and-odd-elements-in-a-linked-list/
+**GFG** 🔗 <https://www.geeksforgeeks.org/segregate-even-and-odd-elements-in-a-linked-list/>
 
 ```
 APPROACH:
@@ -1725,9 +1573,9 @@ TEMPLATE: Two dummy heads.
 ```
 
 **Flow:**
-- Traverse and distribute, then connect even
-- ↓
-- odd.
+1. Traverse once and split nodes into `even` and `odd` chains.
+2. Connect `even.tail -> odd.head`.
+3. Preserve relative order inside each chain.
 
 ```mermaid
 flowchart LR
@@ -1742,7 +1590,7 @@ flowchart LR
 
 ### Problem 233: Sort a Linked List of 0s, 1s, and 2s
 
-**GFG** 🔗 https://www.geeksforgeeks.org/sort-a-linked-list-of-0s-1s-and-2s/
+**GFG** 🔗 <https://www.geeksforgeeks.org/sort-a-linked-list-of-0s-1s-and-2s/>
 
 ```
 APPROACH (Dutch National Flag adaptation):
@@ -1757,11 +1605,10 @@ TEMPLATE: Three dummy heads + single pass.
 ```
 
 **Flow:**
-- Connect: zero.tail
-- ↓
-- one.head
-- ↓
-- two.head. Set two.tail.next = null.
+1. Distribute nodes into three chains: `0`, `1`, and `2`.
+2. Connect `zero.tail -> one.head -> two.head`.
+3. Set `two.tail.next = null` to terminate.
+4. Return the first non-empty head in order `zero`, `one`, `two`.
 
 ```mermaid
 flowchart LR
@@ -1776,11 +1623,6 @@ flowchart LR
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — 13.2 Pointer Manipulation (Medium)**
 
 ## 13.3 Advanced Operations (Hard)
@@ -1792,7 +1634,7 @@ flowchart LR
 
 ### Problem 234: Merge K Sorted Lists ⭐ FULL SOLUTION
 
-**LeetCode 23** 🔗 https://leetcode.com/problems/merge-k-sorted-lists/
+**LeetCode 23** 🔗 <https://leetcode.com/problems/merge-k-sorted-lists/>
 
 ```
 PROBLEM (formal):
@@ -1893,7 +1735,7 @@ Both optimal approaches achieve O(N log k). Heap is simpler to implement.
 
 ### Problem 235: Reverse Nodes in K-Group ⭐ FULL SOLUTION
 
-**LeetCode 25** 🔗 https://leetcode.com/problems/reverse-nodes-in-k-group/
+**LeetCode 25** 🔗 <https://leetcode.com/problems/reverse-nodes-in-k-group/>
 
 ```
 PROBLEM (formal):
@@ -1909,13 +1751,10 @@ EXAMPLES:
 ```
 
 **Flow:**
-- Input: [1,2,3,4,5], k=2
-- ↓
-- Output: [2,1,4,3,5]
-- ↓
-- Input: [1,2,3,4,5], k=3
-- ↓
-- Output: [3,2,1,4,5]
+1. Input: [1,2,3,4,5], k=2
+2. Output: [2,1,4,3,5]
+3. Input: [1,2,3,4,5], k=3
+4. Output: [3,2,1,4,5]
 
 ```mermaid
 flowchart LR
@@ -1940,15 +1779,11 @@ Step 4: Repeat from Step 2.
 ```
 
 **Flow:**
-- Step 1: Create dummy
-- ↓
-- head, groupPrev = dummy.
-- ↓
-- Connect: groupPrev
-- ↓
-- reversed group
-- ↓
-- rest.
+1. Initialize `dummy -> head` and set `groupPrev = dummy`.
+2. Check whether the next `k` nodes exist.
+3. Reverse exactly those `k` nodes in place.
+4. Connect `groupPrev -> reversedGroup -> remainingList`.
+5. Move `groupPrev` to the new group tail and repeat.
 
 ```mermaid
 flowchart LR
@@ -2007,7 +1842,7 @@ Space: O(1) — in-place pointer manipulation
 
 ### Problem 236: Merge Sort for Linked List ⭐ FULL SOLUTION
 
-**GFG** 🔗 https://www.geeksforgeeks.org/merge-sort-for-linked-list/
+**GFG** 🔗 <https://www.geeksforgeeks.org/merge-sort-for-linked-list/>
 
 ```
 PROBLEM (formal):
@@ -2090,7 +1925,7 @@ WHY NOT QUICKSORT?
 
 ### Problem 237: Flatten a Linked List
 
-**GFG** 🔗 https://www.geeksforgeeks.org/flattening-a-linked-list/
+**GFG** 🔗 <https://www.geeksforgeeks.org/flattening-a-linked-list/>
 
 ```
 APPROACH:
@@ -2109,7 +1944,7 @@ TEMPLATE: Recursive merge from right to left.
 
 ### Problem 238: First Non-Repeating Character in a Stream
 
-**GFG** 🔗 https://www.geeksforgeeks.org/find-first-non-repeating-character-from-a-stream-of-characters/
+**GFG** 🔗 <https://www.geeksforgeeks.org/find-first-non-repeating-character-from-a-stream-of-characters/>
 
 ```
 APPROACH (DLL + HashMap):
@@ -2174,7 +2009,7 @@ TEMPLATE: Three-pointer / hash set.
 
 ### Problem 241: Linked List Random Node (Reservoir Sampling)
 
-**LeetCode 382** 🔗 https://leetcode.com/problems/linked-list-random-node/
+**LeetCode 382** 🔗 <https://leetcode.com/problems/linked-list-random-node/>
 
 ```
 APPROACH (Reservoir Sampling):
@@ -2243,11 +2078,6 @@ TEMPLATE: Two-pointer on sorted DLL.
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — 13.4 Hidden Gems — Advanced Linked List**
 
 ## 🏆 MASTERY CHECKLIST
@@ -2297,19 +2127,12 @@ TEMPLATE: Two-pointer on sorted DLL.
 ```
 
 **Flow:**
-- ✅ LINKED LIST MASTERY — TRACK YOUR PROGRESS
-- ↓
-- FUNDAMENTALS:
-- ↓
-- - [ ] Can find the middle using slow/fast runner
-- ↓
-- - [ ] Can merge two sorted lists with dummy head
-- ↓
-- - [ ] Can remove nth from end using two-pointer gap
-- ↓
-- INTERMEDIATE:
-- ↓
-- - [ ] Can reverse a sublist (positions left to right)
+1. Linked List Mastery checklist overview.
+2. Fundamentals: reversal, cycle, middle, merge, remove-nth.
+3. Intermediate: sublist reverse, random-copy, partition, add-two-numbers.
+4. Advanced: merge-K, k-group reverse, merge sort, reservoir sampling.
+5. Theory: invariants, Floyd proof, and `O(N log k)` reasoning.
+6. Speed targets: timed benchmarks for core interview problems.
 
 ```mermaid
 flowchart TD
@@ -2320,7 +2143,7 @@ flowchart TD
     N5["- [ ] Can remove nth from end using two-pointer gap"]
     N6["INTERMEDIATE:"]
     N7["- [ ] Can reverse a sublist (positions left to right)"]
-    N8["- [ ] Can partition a list around a value (two dummy he"]
+    N8["- [ ] Can partition a list around a value (two dummy heads)"]
     N1 --> N2
     N2 --> N3
     N3 --> N4
@@ -2333,7 +2156,6 @@ flowchart TD
 ---
 
 > **Problems 15/22** | [Prev](14_Mixed_Competitive.md) | [Index](../00_MASTER_INDEX.md) | [Next](16_Heap.md)
-
 
 ---
 
@@ -2349,11 +2171,6 @@ flowchart TD
 | K-th Symbol | [CF 1201C](https://codeforces.com/problemset/problem/1201/C) | Recursive + pointer logic | ⭐⭐ Medium |
 
 ---
-
-
-
-
-
 
 > 🔬 **Section Challenge — 🏆 Competitive Programming — Codeforces Problems**
 
@@ -2377,19 +2194,14 @@ flowchart TD
 
 ---
 
-
 ---
-
-
-
-
-
 
 > 🔬 **Section Challenge — 🌍 Real-World Applications of Linked Lists**
 
 ## 🏋️ Practice & Interview Questions — Linked Lists
 
 ### Predict / Trace
+
 **Q1.** Trace: reverse a linked list `1→2→3→null` manually. Show prev/curr at each step.
 <details><summary>Answer</summary>
 
@@ -2406,6 +2218,7 @@ Fast moves 2 steps per iteration. For odd length N: fast reaches null at step (N
 </details>
 
 ### LeetCode / Coding
+
 **Q3.** ⭐ Reverse a Linked List (iterative + recursive).
 <details><summary>Solution</summary>
 
@@ -2531,6 +2344,7 @@ return dummy.next;
 </details>
 
 ### Interview Questions
+
 **Q12.** Why is deleting from the middle of a LinkedList O(1) if you have the node reference, but finding it is O(N)?
 <details><summary>Answer</summary>
 
@@ -2544,6 +2358,7 @@ For random access (get by index), sorting, or bulk iteration — ArrayList wins 
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | Singly linked list deletion from tail | O(N) — must find second-to-last |
@@ -2554,8 +2369,6 @@ For random access (get by index), sorting, or bulk iteration — ArrayList wins 
 | 6 | Reversing a linked list space complexity | O(1) iterative, O(N) recursive |
 | 7 | Sentinel/dummy node purpose | Simplifies edge cases (empty list, single node) |
 | 8 | Skip List uses linked lists for | O(log N) average search |
-
-
 
 ---
 
@@ -2602,6 +2415,5 @@ Two reasons: (1) **Single pass**: length counting needs one full traversal, then
 
 It reduces the problem to: at each step, pick the smaller head from two lists and advance that pointer. The dummy node holds the result list start. This mirrors merge-sort's merge step exactly. The invariant: `curr` always points to the last node of the merged list, ready to accept the next smallest. Time O(M+N), space O(1) (just pointer manipulation, no new nodes). The final `curr.next = l1 != null ? l1 : l2` handles the remaining tail in O(1) — no loop needed since one list is already sorted.
 </details>
-
 
 > **Navigation**: [< Previous](14_Mixed_Competitive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_Heap.md)

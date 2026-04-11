@@ -1,14 +1,14 @@
-> **Navigation**: [< Previous](09_Frameworks_PyTorch_TF.md) | [Back to Index](00_INDEX.md)
+**Navigation**: [< Previous](09_Frameworks_PyTorch_TF.md) | [Back to Index](00_INDEX.md)
 
 # 🔮 LLMs & RAG — From Language Models to Knowledge-Augmented AI
 
-> _"A language model without retrieval is a student taking an exam from memory. A language model WITH retrieval is a student who can open the textbook."_
+_"A language model without retrieval is a student taking an exam from memory. A language model WITH retrieval is a student who can open the textbook."_
 
 ---
 
 # PART 0: The 5W+H Framework
 
-> **Mental Model:** This guide builds PROGRESSIVELY. Each PART depends on the previous one. Don't skip ahead — each concept is a building block for the next. Think of it as a university course: Lecture 1 → 2 → 3 → ... → Final Project (RAG system).
+**Mental Model:** This guide builds PROGRESSIVELY. Each PART depends on the previous one. Don't skip ahead — each concept is a building block for the next. Think of it as a university course: Lecture 1 → 2 → 3 → ... → Final Project (RAG system).
 
 | Question | LLMs & RAG Context |
 | :--- | :--- |
@@ -23,7 +23,7 @@
 
 # PART 1: How Language Models Actually Work
 
-> _Prerequisites: understand backpropagation, Transformers, and attention — see [Deep Learning Guide](07_Deep_Learning_Fundamentals.md)_
+_Prerequisites: understand backpropagation, Transformers, and attention — see [Deep Learning Guide](07_Deep_Learning_Fundamentals.md)_
 
 ---
 
@@ -136,7 +136,7 @@ BEAM SEARCH:
 
 # PART 2: Embeddings at Scale — The Foundation of Retrieval
 
-> _This is where NLP meets information retrieval. Master this before RAG._
+_This is where NLP meets information retrieval. Master this before RAG._
 
 ---
 
@@ -231,8 +231,8 @@ VECTOR DATABASES:
 ```python
 
 
-> 🔬 **Section Challenge — 2.2 Vector Similarity Search**
->>>
+🔬 **Section Challenge — 2.2 Vector Similarity Search**
+>>
 
 # Practical example: embed + search with sentence-transformers
 from sentence_transformers import SentenceTransformer
@@ -272,7 +272,7 @@ for i in top_k:
 
 # PART 3: RAG — Retrieval-Augmented Generation
 
-> _The architecture that makes LLMs actually useful in production._
+_The architecture that makes LLMs actually useful in production._
 
 ---
 
@@ -643,4 +643,4 @@ def retry(n): return lambda fn: lambda *args: ... # 3 levels!
 </details>
 
 
-> **Navigation**: [< Previous](09_Frameworks_PyTorch_TF.md) | [Back to Index](00_INDEX.md)
+**Navigation**: [< Previous](09_Frameworks_PyTorch_TF.md) | [Back to Index](00_INDEX.md)

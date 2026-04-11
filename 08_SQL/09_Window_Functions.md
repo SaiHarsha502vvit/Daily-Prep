@@ -1,4 +1,4 @@
-> **SQL Chapter 09/20** | [← Previous](08_Subqueries_CTEs.md) | [Index](../00_MASTER_INDEX.md) | [Next →](10_Normalization.md)
+**SQL Chapter 09/20** | [← Previous](08_Subqueries_CTEs.md) | [Index](../00_MASTER_INDEX.md) | [Next →](10_Normalization.md)
 
 ---
 
@@ -49,19 +49,13 @@
 ```
 
 **Flow:**
-- WINDOW FUNCTIONS - OVERVIEW
-- ↓
-- Syntax:
-- ↓
-- function_name() OVER (
-- ↓
-- [PARTITION BY column1, column2] ← Groups for calculatio
-- ↓
-- [ORDER BY column3] ← Order within group
-- ↓
-- [ROWS/RANGE frame_clause] ← Which rows to consider
-- ↓
-- WINDOW FUNCTION CATEGORIES:
+1. WINDOW FUNCTIONS - OVERVIEW
+2. Syntax:
+3. function_name() OVER (
+4. [PARTITION BY column1, column2] ← Groups for calculatio
+5. [ORDER BY column3] ← Order within group
+6. [ROWS/RANGE frame_clause] ← Which rows to consider
+7. WINDOW FUNCTION CATEGORIES:
 
 ```mermaid
 flowchart TD
@@ -381,20 +375,20 @@ WINDOW w AS (PARTITION BY dept_id ORDER BY salary DESC);
 
 
 
-> 🔬 **Section Challenge — Chapter 9: Window Functions**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — Chapter 9: Window Functions**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## 📝 PRACTICE EXERCISES - PART 2
 
@@ -580,8 +574,8 @@ _"Part 2 Complete! You now understand Aggregates, GROUP BY, JOINs, Subqueries, C
 
 # 📊 SQL FOR DATA ANALYSIS - Complete Guide
 
-> **From Analyst Queries to Data Engineering Patterns**
-> _"Turn raw data into business insights with SQL mastery"_
+**From Analyst Queries to Data Engineering Patterns**
+_"Turn raw data into business insights with SQL mastery"_
 
 ---
 
@@ -624,29 +618,18 @@ Level 6: ADVANCED ANALYTICS (Week 11-12)
 ```
 
 **Flow:**
-- Level 1: BASIC QUERIES (Week 1-2)
-- ↓
-- SELECT, WHERE, ORDER BY, LIMIT
-- ↓
-- Level 1: BASIC QUERIES (Week 1-2)
-- ↓
-- Comparison & Logical Operators
-- ↓
-- Level 1: BASIC QUERIES (Week 1-2)
-- ↓
-- Basic filtering and sorting
-- ↓
-- Level 2: AGGREGATIONS (Week 3-4)
-- ↓
-- GROUP BY, HAVING
-- ↓
-- Level 2: AGGREGATIONS (Week 3-4)
-- ↓
-- COUNT, SUM, AVG, MIN, MAX
-- ↓
-- Level 2: AGGREGATIONS (Week 3-4)
-- ↓
-- Aggregate with conditions
+1. Level 1: BASIC QUERIES (Week 1-2)
+2. SELECT, WHERE, ORDER BY, LIMIT
+3. Level 1: BASIC QUERIES (Week 1-2)
+4. Comparison & Logical Operators
+5. Level 1: BASIC QUERIES (Week 1-2)
+6. Basic filtering and sorting
+7. Level 2: AGGREGATIONS (Week 3-4)
+8. GROUP BY, HAVING
+9. Level 2: AGGREGATIONS (Week 3-4)
+10. COUNT, SUM, AVG, MIN, MAX
+11. Level 2: AGGREGATIONS (Week 3-4)
+12. Aggregate with conditions
 
 ```mermaid
 flowchart TD
@@ -757,11 +740,9 @@ flowchart TD
 ```
 
 **Flow:**
-- order_id customer_name customer_email product_name pric
-- ↓
-- id name email / 1 John Doe john@ / 2 Jane Smith jane@
-- ↓
-- id customer_id product_id / 1 1 101 / 2 1 102 / 3 1 103
+1. order_id customer_name customer_email product_name pric
+2. id name email / 1 John Doe john@ / 2 Jane Smith jane@
+3. id customer_id product_id / 1 1 101 / 2 1 102 / 3 1 103
 
 ```mermaid
 flowchart TD
@@ -1043,20 +1024,20 @@ WHERE c.customer_id IN (
 
 
 
-> 🔬 **Section Challenge — Chapter 1: Understanding JOINs**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — Chapter 1: Understanding JOINs**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 
 # 📌 Part 2: Aggregate Functions & Group By
 
@@ -1103,9 +1084,8 @@ WHERE c.customer_id IN (
 ```
 
 **Flow:**
-- order_id customer_id product_id quantity price order_da
-- ↓
-- 📊 EXECUTIVE DASHBOARD - January 2024 / Total Revenue: $
+1. order_id customer_id product_id quantity price order_da
+2. 📊 EXECUTIVE DASHBOARD - January 2024 / Total Revenue: $
 
 ```mermaid
 flowchart TD
@@ -1349,9 +1329,8 @@ GROUP BY o.order_id, o.order_date;
 ```
 
 **Flow:**
-- emp dept salary / A IT 60000 / B IT 70000 / C HR 50000
-- ↓
-- dept avg_sal / IT 65000 / HR 50000
+1. emp dept salary / A IT 60000 / B IT 70000 / C HR 50000
+2. dept avg_sal / IT 65000 / HR 50000
 
 ```mermaid
 flowchart TD
@@ -1630,19 +1609,13 @@ SELECT * FROM ranked_customers WHERE percentile >= 0.90;
 ```
 
 **Flow:**
-- WHY CTEs EXIST
-- ↓
-- THE PROBLEM: Nested Subqueries are Hard to Read
-- ↓
-- -- Then show their spending rank
-- ↓
-- SELECT customer_id, name, total_spent, rank_num FROM (
-- ↓
-- SELECT c.customer_id, c.name, total_spent,
-- ↓
-- RANK() OVER (ORDER BY total_spent DESC) as rank_num
-- ↓
-- FROM customers c
+1. WHY CTEs EXIST
+2. THE PROBLEM: Nested Subqueries are Hard to Read
+3. -- Then show their spending rank
+4. SELECT customer_id, name, total_spent, rank_num FROM (
+5. SELECT c.customer_id, c.name, total_spent,
+6. RANK() OVER (ORDER BY total_spent DESC) as rank_num
+7. FROM customers c
 
 ```mermaid
 flowchart TD
@@ -2108,19 +2081,13 @@ FROM orders;
 ```
 
 **Flow:**
-- SQL FOR DATA ANALYSIS - CHEAT SHEET
-- ↓
-- JOIN TYPES:
-- ↓
-- INNER JOIN - Only matching rows
-- ↓
-- LEFT JOIN - All left + matching right (NULL if no match
-- ↓
-- RIGHT JOIN - All right + matching left
-- ↓
-- FULL JOIN - Everything from both
-- ↓
-- SELF JOIN - Table joined to itself (hierarchies)
+1. SQL FOR DATA ANALYSIS - CHEAT SHEET
+2. JOIN TYPES:
+3. INNER JOIN - Only matching rows
+4. LEFT JOIN - All left + matching right (NULL if no match
+5. RIGHT JOIN - All right + matching left
+6. FULL JOIN - Everything from both
+7. SELF JOIN - Table joined to itself (hierarchies)
 
 ```mermaid
 flowchart TD

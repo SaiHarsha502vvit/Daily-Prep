@@ -66,17 +66,12 @@ Delete at index i   O(n)      Must shift elements left
 ```
 
 **Flow:**
-- OPERATION TIME WHY?
-- ↓
-- Access arr[i] O(1) Direct address calculation
-- ↓
-- Search (unsorted) O(n) Must check every element
-- ↓
-- Search (sorted) O(log n) Binary search possible
-- ↓
-- Insert at index i O(n) Must shift elements right
-- ↓
-- Delete at index i O(n) Must shift elements left
+1. OPERATION TIME WHY?
+2. Access arr[i] O(1) Direct address calculation
+3. Search (unsorted) O(n) Must check every element
+4. Search (sorted) O(log n) Binary search possible
+5. Insert at index i O(n) Must shift elements right
+6. Delete at index i O(n) Must shift elements left
 
 ```mermaid
 flowchart TD
@@ -110,21 +105,14 @@ DON'T USE ARRAY WHEN:
 ```
 
 **Flow:**
-- - Frequent insertions/deletions in middle
-- ↓
-- LinkedList
-- ↓
-- - Need key-value lookup
-- ↓
-- HashMap
-- ↓
-- - Need sorted dynamic data
-- ↓
-- TreeSet/BST
-- ↓
-- - Size changes dramatically
-- ↓
-- ArrayList (dynamic array)
+1. - Frequent insertions/deletions in middle
+2. LinkedList
+3. - Need key-value lookup
+4. HashMap
+5. - Need sorted dynamic data
+6. TreeSet/BST
+7. - Size changes dramatically
+8. ArrayList (dynamic array)
 
 ```mermaid
 flowchart LR
@@ -290,11 +278,9 @@ Bubble Sort      O(n)     O(n^2)    O(n^2)   O(1)   Yes       Yes
 ```
 
 **Flow:**
-- Algorithm Best Average Worst Space Stable? Adaptive?
-- ↓
-- 'Adaptive' = performs better on partially sorted data
-- ↓
-- 'Stable' = equal elements keep their relative order
+1. Algorithm Best Average Worst Space Stable? Adaptive?
+2. 'Adaptive' = performs better on partially sorted data
+3. 'Stable' = equal elements keep their relative order
 
 ```mermaid
 flowchart TD
@@ -477,23 +463,15 @@ There are 4 types of SQL commands:
 ```
 
 **Flow:**
-- YOU
-- ↓
-- SQL Query
-- ↓
-- DATABASE ENGINE
-- ↓
-- DISK
-- ↓
-- Results back to YOU
-- ↓
-- DDL (Define) : CREATE, ALTER, DROP
-- ↓
-- Build the structure
-- ↓
-- DML (Data) : SELECT, INSERT, UPDATE, DELETE
-- ↓
-- Work with data
+1. YOU
+2. SQL Query
+3. DATABASE ENGINE
+4. DISK
+5. Results back to YOU
+6. DDL (Define) : CREATE, ALTER, DROP
+7. Build the structure
+8. DML (Data) : SELECT, INSERT, UPDATE, DELETE
+9. Work with data
 
 ```mermaid
 flowchart TD
@@ -646,17 +624,12 @@ Example 3: nums = [9,6,4,2,3,5,7,0,1] → Output: 8
 ```
 
 **Flow:**
-- Example 1: nums = [3, 0, 1]
-- ↓
-- Output: 2
-- ↓
-- Example 2: nums = [0, 1]
-- ↓
-- Output: 2
-- ↓
-- Example 3: nums = [9,6,4,2,3,5,7,0,1]
-- ↓
-- Output: 8
+1. Example 1: nums = [3, 0, 1]
+2. Output: 2
+3. Example 2: nums = [0, 1]
+4. Output: 2
+5. Example 3: nums = [9,6,4,2,3,5,7,0,1]
+6. Output: 8
 
 ```mermaid
 flowchart LR
@@ -729,17 +702,12 @@ Example 3: [7]                    → Output: 7
 ```
 
 **Flow:**
-- Example 1: [2, 3, 5, 4, 5, 3, 4]
-- ↓
-- Output: 2
-- ↓
-- Example 2: [1, 1, 2]
-- ↓
-- Output: 2
-- ↓
-- Example 3: [7]
-- ↓
-- Output: 7
+1. Example 1: [2, 3, 5, 4, 5, 3, 4]
+2. Output: 2
+3. Example 2: [1, 1, 2]
+4. Output: 2
+5. Example 3: [7]
+6. Output: 7
 
 ```mermaid
 flowchart LR
@@ -766,11 +734,9 @@ So: 2 ^ 3 ^ 5 ^ 4 ^ 5 ^ 3 ^ 4
 ```
 
 **Flow:**
-- PROPERTY: a ^ a = 0 (any number XOR itself = 0)
-- ↓
-- PROPERTY: a ^ 0 = a (any number XOR 0 = itself)
-- ↓
-- = 2 ← The single element!
+1. PROPERTY: a ^ a = 0 (any number XOR itself = 0)
+2. PROPERTY: a ^ 0 = a (any number XOR 0 = itself)
+3. = 2 ← The single element!
 
 ```mermaid
 flowchart TD

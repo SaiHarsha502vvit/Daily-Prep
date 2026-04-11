@@ -1,5 +1,5 @@
-> **Navigation**: [< Previous Chapter](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
-> 🧠 **Mental Model**: See [Complexity Intuition](../14_Mental_Models/09_Complexity_Intuition.md) — heap sort, counting sort, and non-comparison bounds
+**Navigation**: [< Previous Chapter](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+🧠 **Mental Model**: See [Complexity Intuition](../14_Mental_Models/09_Complexity_Intuition.md) — heap sort, counting sort, and non-comparison bounds
 
 ---
 
@@ -50,9 +50,7 @@ STEP 2: Extract max and heapify
 ```
 
 **Flow:**
-- 10 3
-- ↓
-- 5 3
+1. 10 3 5 3
 
 ```mermaid
 flowchart LR
@@ -240,9 +238,6 @@ public int[] countingSort(int[] arr) {
 // Cumulative: [1, 3, 5, 6, 6, 6, 6, 7]
 // Output: [1, 2, 2, 3, 3, 4, 8]
 ```
-
-
-
 
 ## Radix Sort
 
@@ -459,9 +454,6 @@ private void introsortHelper(int[] arr, int low, int high, int depthLimit) {
 
 ---
 
-
-
-
 # PART 13: Sorting Algorithm Variations
 
 ## QuickSelect (Finding Kth Element)
@@ -508,9 +500,6 @@ private int partition(int[] arr, int low, int high) {
 // TIME: O(n) average, O(n²) worst
 // SPACE: O(1)
 ```
-
-
-
 
 ## Count Inversions (Modified Merge Sort)
 
@@ -560,9 +549,6 @@ private long merge(int[] arr, int[] temp, int left, int mid, int right) {
 // Array: [8, 4, 2, 1]
 // Inversions: (8,4), (8,2), (8,1), (4,2), (4,1), (2,1) = 6
 ```
-
-
-
 
 ## Dutch National Flag (3-way Partition)
 
@@ -634,27 +620,25 @@ Arrays.sort(nums, (a, b) -> (b + "" + a).compareTo(a + "" + b));
 Arrays.sort(arr, fromIndex, toIndex);
 ```
 
+🔬 **Section Challenge — Custom Comparators in Java**
 
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Custom Comparators in Java**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## Sorting Linked Lists
 
@@ -700,16 +684,14 @@ private ListNode merge(ListNode l1, ListNode l2) {
 }
 ```
 
+🔬 **Section Challenge — Sorting Linked Lists**
 
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Sorting Linked Lists**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## External Sorting (Large Files)
 
@@ -755,16 +737,14 @@ public void kWayMerge(List<Scanner> sortedFiles, PrintWriter output) {
 
 ---
 
+🔬 **Section Challenge — External Sorting (Large Files)**
 
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — External Sorting (Large Files)**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 # PART 15: Sorting-Based Interview Problems
 
@@ -796,9 +776,6 @@ public int[][] merge(int[][] intervals) {
 }
 ```
 
-
-
-
 ## Problem 2: Meeting Rooms II (Min Rooms Needed)
 
 ```java
@@ -827,9 +804,6 @@ public int minMeetingRooms(int[][] intervals) {
     return rooms;
 }
 ```
-
-
-
 
 ## Problem 3: Largest Number
 
@@ -992,16 +966,14 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+🔬 **Section Challenge — 🔄 Radix Sort — Non — Comparison Based Sorting**
 
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🔄 Radix Sort — Non — Comparison Based Sorting**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## 🔄 Timsort — the Real — World Champion
 
@@ -1067,19 +1039,13 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 ```
 
 **Flow:**
-- TIMSORT - USED BY JAVA, PYTHON, ANDROID
-- ↓
-- Created by Tim Peters for Python in 2002
-- ↓
-- KEY INSIGHT: Real-world data is often partially sorted!
-- ↓
-- Examples of 'natural runs':
-- ↓
-- • Log files (sorted by timestamp, new entries appended)
-- ↓
-- • Database results (often sorted by ID)
-- ↓
-- • User actions (recent activity lists)
+1. TIMSORT - USED BY JAVA, PYTHON, ANDROID
+2. Created by Tim Peters for Python in 2002
+3. KEY INSIGHT: Real-world data is often partially sorted!
+4. Examples of 'natural runs':
+5. • Log files (sorted by timestamp, new entries appended)
+6. • Database results (often sorted by ID)
+7. • User actions (recent activity lists)
 
 ```mermaid
 flowchart TD
@@ -1161,19 +1127,13 @@ flowchart TD
 ```
 
 **Flow:**
-- EXTERNAL MERGE SORT - SORTING 1TB OF DATA
-- ↓
-- PROBLEM: Need to sort 1 TB of data, but only have 8 GB
-- ↓
-- SOLUTION: External Merge Sort
-- ↓
-- PHASE 1: CREATE SORTED RUNS
-- ↓
-- 1. Read 8 GB chunk from disk
-- ↓
-- 2. Sort in memory (QuickSort)
-- ↓
-- 3. Write sorted chunk to temp file
+1. EXTERNAL MERGE SORT - SORTING 1TB OF DATA
+2. PROBLEM: Need to sort 1 TB of data, but only have 8 GB
+3. SOLUTION: External Merge Sort
+4. PHASE 1: CREATE SORTED RUNS
+5. Read 8 GB chunk from disk
+6. Sort in memory (QuickSort)
+7. Write sorted chunk to temp file
 
 ```mermaid
 flowchart TD
@@ -1194,16 +1154,14 @@ flowchart TD
     N7 --> N8
 ```
 
+🔬 **Section Challenge — 🧠 External Sorting — When Data Doesn't Fit in Memory**
 
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🧠 External Sorting — When Data Doesn't Fit in Memory**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## 🔄 Parallel Sorting — Using Multiple CPU Cores
 
@@ -1266,9 +1224,8 @@ flowchart TD
 ```
 
 **Flow:**
-- Original Array: [##############################] / Spli
-- ↓
-- Method Time Speedup / Arrays.sort() 950 ms 1x (baseline
+1. Original Array: [##############################] / Spli
+2. Method Time Speedup / Arrays.sort() 950 ms 1x (baseline
 
 ```mermaid
 flowchart TD
@@ -1277,16 +1234,14 @@ flowchart TD
     N1 --> N2
 ```
 
+🔬 **Section Challenge — 🔄 Parallel Sorting — Using Multiple CPU Cores**
 
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🔄 Parallel Sorting — Using Multiple CPU Cores**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## 🔄 Sorting Stability — Deep Explanation
 
@@ -1356,19 +1311,13 @@ flowchart TD
 ```
 
 **Flow:**
-- STABILITY - WHY IT MATTERS IN REAL APPLICATIONS
-- ↓
-- EXAMPLE:
-- ↓
-- Input: [(Alice, 25), (Bob, 30), (Charlie, 25)]
-- ↓
-- Sort by age:
-- ↓
-- STABLE: [(Alice, 25), (Charlie, 25), (Bob, 30)]
-- ↓
-- Alice still before Charlie (original order preserved)
-- ↓
-- UNSTABLE: [(Charlie, 25), (Alice, 25), (Bob, 30)]
+1. STABILITY - WHY IT MATTERS IN REAL APPLICATIONS
+2. EXAMPLE:
+3. Input: [(Alice, 25), (Bob, 30), (Charlie, 25)]
+4. Sort by age:
+5. STABLE: [(Alice, 25), (Charlie, 25), (Bob, 30)]
+6. Alice still before Charlie (original order preserved)
+7. UNSTABLE: [(Charlie, 25), (Alice, 25), (Bob, 30)]
 
 ```mermaid
 flowchart TD
@@ -1389,16 +1338,14 @@ flowchart TD
     N7 --> N8
 ```
 
+🔬 **Section Challenge — 🔄 Sorting Stability — Deep Explanation**
 
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🔄 Sorting Stability — Deep Explanation**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## 🔄 Sorting in Competitive Programming
 
@@ -1486,19 +1433,13 @@ flowchart TD
 ```
 
 **Flow:**
-- COMPETITIVE PROGRAMMING SORTING TRICKS
-- ↓
-- TRICK 1: COORDINATE COMPRESSION
-- ↓
-- Solution: Map values to 0 to n-1
-- ↓
-- int[] arr = {1000000000, 1, 50000};
-- ↓
-- int[][] sorted = new int[n][2];
-- ↓
-- sorted[i] = new int[]{arr[i], i};
-- ↓
-- Arrays.sort(sorted, (a, b) -> a[0] - b[0]);
+1. COMPETITIVE PROGRAMMING SORTING TRICKS
+2. TRICK 1: COORDINATE COMPRESSION
+3. Solution: Map values to 0 to n-1
+4. int[] arr = {1000000000, 1, 50000};
+5. int[][] sorted = new int[n][2];
+6. sorted[i] = new int[]{arr[i], i};
+7. Arrays.sort(sorted, (a, b) -> a[0] - b[0]);
 
 ```mermaid
 flowchart TD
@@ -1525,16 +1466,14 @@ _Master sorting and you master a huge portion of algorithm problems!_
 
 ---
 
+🔬 **Section Challenge — 🔄 Sorting in Competitive Programming**
 
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🔄 Sorting in Competitive Programming**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## PRACTICE PROBLEMS — Sorting & Searching
 
@@ -1582,15 +1521,14 @@ _Master sorting and you master a huge portion of algorithm problems!_
 | Count of Smaller Numbers After Self | Hard LC 315 | Merge sort + counting inversions |
 | Magnetic Force Between Two Balls | Medium LC 1552 | Binary search on answer (like Aggressive Cows) |
 
-
 ---
-
 
 ---
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -1617,6 +1555,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -1651,6 +1590,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -1713,6 +1653,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -1747,6 +1688,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -1759,8 +1701,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -1826,5 +1766,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [< Previous](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02c_Divide_And_Conquer.md)
+**Navigation**: [< Previous](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02c_Divide_And_Conquer.md)

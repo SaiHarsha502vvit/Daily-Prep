@@ -8,7 +8,6 @@
 
 ---
 
-
 > WHY THIS FILE EXISTS
 >
 > GCD, LCM, Primes, Modular Arithmetic → appear in:
@@ -21,11 +20,12 @@
 >
 > START DATE: February 10, 2026
 
-
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 1: GCD (Greatest Common Divisor) - COMPLETE
+
 # ═══════════════════════════════════════════════════════════
 
 ## 🎯 WHY GCD Matters
@@ -48,19 +48,10 @@ Maximum groups possible? GCD helps!
 ```
 
 **Flow:**
-- REAL LIFE:
-- ↓
-- You have 12 chocolates and 18 toffees.
-- ↓
-- You want to distribute equally in boxes with NO leftove
-- ↓
-- What's the LARGEST number of boxes you can make?
-- ↓
-- GCD(12, 18) = 6 boxes
-- ↓
-- Each box: 2 chocolates + 3 toffees
-- ↓
-- PRODUCTION SYSTEM:
+1. REAL LIFE:
+2. You have 12 chocolates and 18 toffees.
+3. You want to distribute equally in boxes with NO leftove
+4. What's the LARGEST number of boxes you can make? GCD(12, 18) = 6 boxes Each box: 2 chocolates + 3 toffees PRODUCTION SYSTEM:
 
 ```mermaid
 flowchart TD
@@ -244,11 +235,6 @@ public static int binaryGCD(int a, int b) {
 ```
 
 ---
-
-
-
-
-
 
 > 🔬 **Section Challenge — Algorithm 4: Binary GCD (Stein's Algorithm)**
 
@@ -473,7 +459,9 @@ public static int countCoprimePairs(int[] arr) {
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # 📚 Part 2: Prime Numbers — Complete
+
 # ═══════════════════════════════════════════════════════════
 
 ## Why Primes Matter
@@ -704,15 +692,12 @@ public static List<Integer> getAllDivisors(int n) {
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — Problem P4: Count Divisors Using Prime Factorization**
 
 # ═══════════════════════════════════════════════════════════
+
 # 📌 Part 3: Modular Arithmetic
+
 # ═══════════════════════════════════════════════════════════
 
 ```
@@ -726,9 +711,7 @@ WHY MODULAR ARITHMETIC?
 ```
 
 **Flow:**
-- 5. Clock arithmetic (14:00
-- ↓
-- 2:00 PM = 14 % 12)
+1. Clock arithmetic (14:00 2:00 PM = 14 % 12)
 
 ```mermaid
 flowchart LR
@@ -824,7 +807,9 @@ public class ModularArithmetic {
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 4: PATTERN PROGRAMS ⭐ (Loop Mastery)
+
 # ═══════════════════════════════════════════════════════════
 
 ```
@@ -844,27 +829,13 @@ public class ModularArithmetic {
 ```
 
 **Flow:**
-- WHY PATTERN PROGRAMS?
-- ↓
-- They teach:
-- ↓
-- 1. Nested loop thinking
-- ↓
-- Essential for 2D arrays, matr
-- ↓
-- 1. Nested loop thinking
-- ↓
-- Essential for 2D arrays, matr
-- ↓
-- 3. Space management
-- ↓
-- Teaches precision with boundaries
-- ↓
-- 3. Space management
-- ↓
-- Teaches precision with boundaries
-- ↓
-- 4. How to convert visual output to code logic
+1. WHY PATTERN PROGRAMS?
+2. They teach:
+3. Nested loop thinking
+4. Essential for 2D arrays, matr
+5. Space management
+6. Teaches precision with boundaries
+7. How to convert visual output to code logic
 
 ```mermaid
 flowchart TD
@@ -1271,7 +1242,6 @@ public static String zigzagConvert(String s, int numRows) {
 ---
 
 # ═══════════════════════════════════════════════════════════
-
 
 ---
 

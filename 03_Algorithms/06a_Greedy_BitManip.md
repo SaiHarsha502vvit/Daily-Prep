@@ -1,5 +1,5 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](06c_Advanced_Algo_Deep.md)
-> 🧠 **Mental Model**: See [Greedy vs DP Decision](../14_Mental_Models/11_Greedy_vs_DP_Decision.md) — when greedy works and when you need DP
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](06c_Advanced_Algo_Deep.md)
+🧠 **Mental Model**: See [Greedy vs DP Decision](../14_Mental_Models/11_Greedy_vs_DP_Decision.md) — when greedy works and when you need DP
 
 ---
 
@@ -8,10 +8,9 @@
 ## From Divide & Conquer to NP-Complete
 
 ---
-> **Navigation**: [Part A: Core Techniques] | [Part B: Advanced Patterns](06e_Algorithm_Patterns.md)
+**Navigation**: [Part A: Core Techniques] | [Part B: Advanced Patterns](06e_Algorithm_Patterns.md)
 
 ---
-
 
 # 🔬 PART 0: DEEP INTERNALS - HOW ALGORITHMS ACTUALLY WORK AT CPU/MEMORY LEVEL
 
@@ -51,8 +50,6 @@ Linear Search (sequential access):
 For n < 64, linear search can be FASTER than binary search!
 Because cache effects dominate for small n.
 
-
-
 ## Operation Costs - What They Don'T Teach You
 
 INSTRUCTION LATENCIES (cycles on modern x86-64):
@@ -78,17 +75,18 @@ INSTRUCTION LATENCIES (cycles on modern x86-64):
 - Avoid: n / 2
 - Prefer: n >> 1 (right shift, 1 cycle)
 - Compiler often optimizes, but not always
-2. Memory access is the REAL bottleneck
+1. Memory access is the REAL bottleneck
 - 1 cache miss = 200 cycles = 200 integer operations!
 - Design algorithms for cache locality
-3. Branch prediction matters
+1. Branch prediction matters
 - Predictable patterns: for (i=0; i<n; i++) → ~99% predicted
 - Unpredictable: if (random < 50%) → ~50% misprediction
 - Binary search: ~log(n) mispredictions guaranteed
-4. Function calls have overhead
+1. Function calls have overhead
 - Recursive algorithms pay per recursion level
 - Java virtual calls even more expensive
 - JIT inlining helps but has limits
+
 ## What Actually Happens During Recursion
 
 Java code:
@@ -147,25 +145,24 @@ Return                              │ 1-3
 TOTAL per recursion level           │ ~30-40 cycles
 For factorial(1000): ~35,000 cycles in overhead alone!
 
+🔬 **Section Challenge — What Actually Happens During Recursion**
 
-> 🔬 **Section Challenge — What Actually Happens During Recursion**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
+
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## Tail Call Optimization - What It Means
 
@@ -310,9 +307,9 @@ For ArrayList: Φ = 2(size - capacity/2)
 
 ---
 
-> ⚠️ **MOVED**: Unit 1 (Algorithm Analysis + Divide & Conquer + Binary Search + Master Theorem)
-> has been extracted to its own dedicated file for discoverability:
-> **→ [02c_Divide_And_Conquer.md](02c_Divide_And_Conquer.md)**
+⚠️ **MOVED**: Unit 1 (Algorithm Analysis + Divide & Conquer + Binary Search + Master Theorem)
+has been extracted to its own dedicated file for discoverability:
+**→ [02c_Divide_And_Conquer.md](02c_Divide_And_Conquer.md)**
 
 ---
 
@@ -346,19 +343,12 @@ WHEN GREEDY FAILS:
 ```
 
 **Flow:**
-- GREEDY APPROACH:
-- ↓
-- Make the locally optimal choice at each step,
-- ↓
-- hoping to find a global optimum.
-- ↓
-- GREEDY STRATEGY
-- ↓
-- 1. FEASIBILITY: Check if choice valid
-- ↓
-- 2. LOCAL OPTIMUM: Pick best option NOW
-- ↓
-- 3. IRREVOCABLE: Never reconsider
+1. GREEDY APPROACH:
+2. Make the locally optimal choice at each step, hoping to find a global optimum.
+3. GREEDY STRATEGY
+4. FEASIBILITY: Check if choice valid
+5. LOCAL OPTIMUM: Pick best option NOW
+6. IRREVOCABLE: Never reconsider
 
 ```mermaid
 flowchart TD
@@ -379,15 +369,14 @@ flowchart TD
     N7 --> N8
 ```
 
-
 ---
-
 
 ---
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -414,6 +403,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -448,6 +438,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -510,6 +501,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -544,6 +536,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -556,8 +549,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -623,5 +614,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [< Previous](05e_Graphs_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06c_Advanced_Algo_Deep.md)
+**Navigation**: [< Previous](05e_Graphs_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06c_Advanced_Algo_Deep.md)

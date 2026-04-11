@@ -62,17 +62,12 @@
 ```
 
 **Flow:**
-- BAD: SELECT * FROM large_table WHERE id = 1; / GOOD: SE
-- ↓
-- • Index columns in WHERE, JOIN, ORDER BY / • Composite
-- ↓
-- BAD: WHERE YEAR(created_at) = 2024 / GOOD: WHERE create
-- ↓
-- BAD: WHERE id IN (SELECT id FROM other_table WHERE ...)
-- ↓
-- • Use LIMIT to reduce result set / • Filter in subqueri
-- ↓
-- • INSERT multiple rows in single statement / • DELETE/U
+1. BAD: SELECT * FROM large_table WHERE id = 1; / GOOD: SE
+2. • Index columns in WHERE, JOIN, ORDER BY / • Composite
+3. BAD: WHERE YEAR(created_at) = 2024 / GOOD: WHERE create
+4. BAD: WHERE id IN (SELECT id FROM other_table WHERE ...)
+5. • Use LIMIT to reduce result set / • Filter in subqueri
+6. • INSERT multiple rows in single statement / • DELETE/U
 
 ```mermaid
 flowchart TD

@@ -1,11 +1,11 @@
-> **Navigation**: [< Previous](06_Binary_Search_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Array_Plus_TwoPointers.md)
+**Navigation**: [< Previous](06_Binary_Search_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Array_Plus_TwoPointers.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — Two Pointers
 
-> **Which Two Pointer variant do I need?**
->
+**Which Two Pointer variant do I need?**
+
 
 | Signal in problem | Variant | Movement direction |
 |---|---|---|
@@ -16,35 +16,35 @@
 | `detect cycle`, `find middle` in linked list | **Fast & Slow (Floyd)** | `fast=2x speed` of slow |
 | `merge two sorted arrays` | **Multi-array merge** | Each array has own pointer |
 
->
-> **Key decision:**
-> ```
-> "Is array SORTED?"   Yes → Opposite direction (O(n))
->                      No  → Sort first then use 2P, or use HashMap instead
->
-> "Linked list cycle?"      → Fast (2x) & Slow (1x) → meet inside cycle
-> "Remove in-place?"        → Reader stays ahead of writer
-> ```
->
-> 🔗 **Practice problems:** [Two Pointers PS](../05_Problem_Solving/03_TwoPointers.md)
-> 🔗 **Related:** [Sliding Window template](01_Sliding_Window.md) — sliding window IS two pointers + window state
-> 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
+
+**Key decision:**
+```
+"Is array SORTED?"   Yes → Opposite direction (O(n))
+                     No  → Sort first then use 2P, or use HashMap instead
+
+"Linked list cycle?"      → Fast (2x) & Slow (1x) → meet inside cycle
+"Remove in-place?"        → Reader stays ahead of writer
+```
+
+🔗 **Practice problems:** [Two Pointers PS](../05_Problem_Solving/03_TwoPointers.md)
+🔗 **Related:** [Sliding Window template](01_Sliding_Window.md) — sliding window IS two pointers + window state
+📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
 
 
-> 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Two Pointers**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Two Pointers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 # 👆👆 Two Pointers Pattern Complete Guide
-> From Simple Traversals to Complex Multi-Pointer Techniques
+From Simple Traversals to Complex Multi-Pointer Techniques
 
 ## Table of Contents
 1. [Two Pointers Fundamentals](#fundamentals)
@@ -65,16 +65,16 @@
 ### The Core Concept
 
 
-> TWO POINTERS IN ONE SENTENCE
->
-> "Use two references to traverse data structure
-> efficiently, reducing O(n²) to O(n)."
->
-> Why it works:
-> - Avoids nested loops by moving pointers intelligently
-> - Makes decisions based on current state
-> - Exploits sorted/structured properties of data
->
+TWO POINTERS IN ONE SENTENCE
+
+"Use two references to traverse data structure
+efficiently, reducing O(n²) to O(n)."
+
+Why it works:
+- Avoids nested loops by moving pointers intelligently
+- Makes decisions based on current state
+- Exploits sorted/structured properties of data
+
 
 
 ### Visual: The Power of Two Pointers
@@ -98,11 +98,9 @@ Two Pointers: At most 6 moves
 ```
 
 **Flow:**
-- for i = 0 to n: / for j = i+1 to n: / check(i,j)
-- ↓
-- left
-- ↓
-- ... ... ← right / Move based on sum: / sum <
+1. for i = 0 to n: / for j = i+1 to n: / check(i,j)
+2. left
+3. ... ... ← right / Move based on sum: / sum <
 
 ```mermaid
 flowchart TD
@@ -115,14 +113,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Two Pointers Fundamentals <a name="fundamentals"></a>**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — Two Pointers Fundamentals <a name="fundamentals"></a>**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## Pattern Categories <a name="categories"></a>
 
@@ -206,13 +204,10 @@ Answer: [1, 2]
 ```
 
 **Flow:**
-- sum = 2 + 15 = 17 > 9
-- ↓
-- right--
-- ↓
-- sum = 2 + 11 = 13 > 9
-- ↓
-- right--
+1. sum = 2 + 15 = 17 > 9
+2. right--
+3. sum = 2 + 11 = 13 > 9
+4. right--
 
 ```mermaid
 flowchart LR
@@ -360,13 +355,10 @@ Step 2: Move shorter (left=0 has height 1)
 ```
 
 **Flow:**
-- height = [1,8,6,2,5,4,8,3,7]
-- ↓
-- Step 1: left=0, right=8
-- ↓
-- Step 2: Move shorter (left=0 has height 1)
-- ↓
-- left=1, right=8
+1. height = [1,8,6,2,5,4,8,3,7]
+2. Step 1: left=0, right=8
+3. Step 2: Move shorter (left=0 has height 1)
+4. left=1, right=8
 
 ```mermaid
 flowchart TD
@@ -509,13 +501,10 @@ Step 2: writer=1, reader=2
 ```
 
 **Flow:**
-- nums[1] == nums[0]
-- ↓
-- skip
-- ↓
-- nums[2] != nums[1]
-- ↓
-- write!
+1. nums[1] == nums[0]
+2. skip
+3. nums[2] != nums[1]
+4. write!
 
 ```mermaid
 flowchart LR
@@ -672,19 +661,13 @@ Step 9: S=6, F=6 ✓ MEET!
 ```
 
 **Flow:**
-- List with cycle:
-- ↓
-- Step 0: S=1, F=1
-- ↓
-- Step 1: S=2, F=3
-- ↓
-- Step 2: S=3, F=5
-- ↓
-- Step 3: S=4, F=6
-- ↓
-- Step 4: S=5, F=8
-- ↓
-- Step 5: S=6, F=4
+1. List with cycle:
+2. Step 0: S=1, F=1
+3. Step 1: S=2, F=3
+4. Step 2: S=3, F=5
+5. Step 3: S=4, F=6
+6. Step 4: S=5, F=8
+7. Step 5: S=6, F=4
 
 ```mermaid
 flowchart TD
@@ -859,19 +842,13 @@ public int findDuplicate(int[] nums) {
 ```
 
 **Flow:**
-- SLIDING WINDOW = TWO POINTERS + WINDOW STATE
-- ↓
-- Sliding Window Template:
-- ↓
-- left = 0
-- ↓
-- # Expand: add element at right to window
-- ↓
-- window.add(arr[right])
-- ↓
-- # Shrink: while window is invalid/too large
-- ↓
-- window.remove(arr[left])
+1. SLIDING WINDOW = TWO POINTERS + WINDOW STATE
+2. Sliding Window Template:
+3. left = 0
+4. # Expand: add element at right to window
+5. window.add(arr[right])
+6. # Shrink: while window is invalid/too large
+7. window.remove(arr[left])
 
 ```mermaid
 flowchart TD
@@ -970,20 +947,20 @@ public int lengthOfLongestSubstring(String s) {
 
 
 
-> 🔬 **Section Challenge — Sliding Window Connection <a name="sliding-window"></a>**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — Sliding Window Connection <a name="sliding-window"></a>**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## Multi-Array Two Pointers <a name="multi-array"></a>
 
@@ -1091,14 +1068,14 @@ public int compareVersion(String version1, String version2) {
 
 
 
-> 🔬 **Section Challenge — Multi-Array Two Pointers <a name="multi-array"></a>**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — Multi-Array Two Pointers <a name="multi-array"></a>**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## Advanced Patterns <a name="advanced"></a>
 
@@ -1277,19 +1254,13 @@ public int numRescueBoats(int[] people, int limit) {
 ```
 
 **Flow:**
-- TWO POINTER PROBLEM MAP
-- ↓
-- PAIR FINDING (Opposite Direction):
-- ↓
-- • Two Sum II, 3Sum, 4Sum, 3Sum Closest
-- ↓
-- • Container With Most Water
-- ↓
-- PALINDROME/REVERSE:
-- ↓
-- • Valid Palindrome I/II, Reverse String
-- ↓
-- ARRAY MODIFICATION (Same Direction):
+1. TWO POINTER PROBLEM MAP
+2. PAIR FINDING (Opposite Direction):
+3. • Two Sum II, 3Sum, 4Sum, 3Sum Closest
+4. • Container With Most Water
+5. PALINDROME/REVERSE:
+6. • Valid Palindrome I/II, Reverse String
+7. ARRAY MODIFICATION (Same Direction):
 
 ```mermaid
 flowchart TD
@@ -1445,19 +1416,13 @@ private int getNextValidIndex(String str, int index) {
 ```
 
 **Flow:**
-- WHICH TWO POINTER PATTERN?
-- ↓
-- 'Find pair/triplet with sum'
-- ↓
-- Opposite direction (sorted array)
-- ↓
-- 'Remove/Move elements in-place'
-- ↓
-- Same direction (reader-writer)
-- ↓
-- 'Detect cycle' or 'Find middle'
-- ↓
-- Fast & slow pointers
+1. WHICH TWO POINTER PATTERN?
+2. 'Find pair/triplet with sum'
+3. Opposite direction (sorted array)
+4. 'Remove/Move elements in-place'
+5. Same direction (reader-writer)
+6. 'Detect cycle' or 'Find middle'
+7. Fast & slow pointers
 
 ```mermaid
 flowchart TD
@@ -1538,19 +1503,13 @@ while (p1 < m && p2 < n) {
 ```
 
 **Flow:**
-- TWO POINTER COMPLEXITIES
-- ↓
-- Two Sum II (sorted): O(n) time, O(1) space
-- ↓
-- 3Sum: O(n²) time, O(1) space
-- ↓
-- 4Sum: O(n³) time, O(1) space
-- ↓
-- Container With Most Water: O(n) time, O(1) space
-- ↓
-- Trapping Rain Water: O(n) time, O(1) space
-- ↓
-- Remove Duplicates: O(n) time, O(1) space
+1. TWO POINTER COMPLEXITIES
+2. Two Sum II (sorted): O(n) time, O(1) space
+3. 3Sum: O(n²) time, O(1) space
+4. 4Sum: O(n³) time, O(1) space
+5. Container With Most Water: O(n) time, O(1) space
+6. Trapping Rain Water: O(n) time, O(1) space
+7. Remove Duplicates: O(n) time, O(1) space
 
 ```mermaid
 flowchart TD
@@ -1606,43 +1565,25 @@ flowchart TD
 ```
 
 **Flow:**
-- TWO POINTERS - MASTER CHECKLIST
-- ↓
-- 1. IDENTIFY THE PATTERN
-- ↓
-- - Pair with sum
-- ↓
-- Opposite direction
-- ↓
-- - Pair with sum
-- ↓
-- Opposite direction
-- ↓
-- - In-place modify
-- ↓
-- Same direction (reader-writer)
-- ↓
-- - In-place modify
-- ↓
-- Same direction (reader-writer)
-- ↓
-- - Cycle/Middle
-- ↓
-- Fast & slow
-- ↓
-- - Cycle/Middle
-- ↓
-- Fast & slow
-- ↓
-- - Merge/Compare
-- ↓
-- Multi-array
-- ↓
-- - Merge/Compare
-- ↓
-- Multi-array
-- ↓
-- 2. KEY INSIGHTS
+1. TWO POINTERS - MASTER CHECKLIST
+2. 1. IDENTIFY THE PATTERN
+3. - Pair with sum
+4. Opposite direction
+5. - Pair with sum
+6. Opposite direction
+7. - In-place modify
+8. Same direction (reader-writer)
+9. - In-place modify
+10. Same direction (reader-writer)
+11. - Cycle/Middle
+12. Fast & slow
+13. - Cycle/Middle
+14. Fast & slow
+15. - Merge/Compare
+16. Multi-array
+17. - Merge/Compare
+18. Multi-array
+19. 2. KEY INSIGHTS
 
 ```mermaid
 flowchart TD
@@ -1668,14 +1609,14 @@ flowchart TD
 
 ---
 
-> **Navigation**: [< Previous](06_Binary_Search_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Array_Plus_TwoPointers.md)
+**Navigation**: [< Previous](06_Binary_Search_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Array_Plus_TwoPointers.md)
 
-> 🔬 **Section Challenge — Summary**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — Summary**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 

@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch37_SB_Controllers_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch41_SB_Architecture_Quality.md)
+**Navigation**: [< Previous](Ch37_SB_Controllers_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch41_SB_Architecture_Quality.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 8: JPA & Hibernate Deep Dive
 
-> **Object-Relational Mapping Mastery**
-> _"Understand the magic behind the annotations"_
+**Object-Relational Mapping Mastery**
+_"Understand the magic behind the annotations"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why Deep JPA Knowledge? / • N+1 queries: #1 perfor
-- ↓
-- HOW: How JPA/Hibernate Works Under the Hood? / • Persis
-- ↓
-- WHEN: When to Use Different Fetch Strategies? / • LAZY
-- ↓
-- WHICH: Which JPA Concepts to Master? / ESSENTIAL: Entit
+1. WHY: Why Deep JPA Knowledge? / • N+1 queries: #1 perfor
+2. HOW: How JPA/Hibernate Works Under the Hood? / • Persis
+3. WHEN: When to Use Different Fetch Strategies? / • LAZY
+4. WHICH: Which JPA Concepts to Master? / ESSENTIAL: Entit
 
 ```mermaid
 flowchart TD
@@ -146,15 +143,11 @@ flowchart TD
 ```
 
 **Flow:**
-- YOUR APPLICATION CODE / @Entity, @Repository, @Service
-- ↓
-- SPRING DATA JPA / • Repository interfaces (JpaRepositor
-- ↓
-- JPA (Jakarta Persistence API) / • SPECIFICATION (not im
-- ↓
-- HIBERNATE (JPA Implementation) / • MOST POPULAR JPA imp
-- ↓
-- JDBC / • Low-level database access / • SQL execution /
+1. YOUR APPLICATION CODE / @Entity, @Repository, @Service
+2. SPRING DATA JPA / • Repository interfaces (JpaRepositor
+3. JPA (Jakarta Persistence API) / • SPECIFICATION (not im
+4. HIBERNATE (JPA Implementation) / • MOST POPULAR JPA imp
+5. JDBC / • Low-level database access / • SQL execution /
 
 ```mermaid
 flowchart TD
@@ -173,27 +166,27 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 1: JPA vs Hibernate vs Spring Data JPA**
->
-> **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
-> <details><summary>Answer</summary>
->
-> ```java
-> // N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
-> List<Order> orders = orderRepo.findAll(); // 1 query
-> orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
->
-> // Fix 1: JOIN FETCH
-> @Query("SELECT o FROM Order o JOIN FETCH o.customer")
-> List<Order> findAllWithCustomer();
->
-> // Fix 2: EntityGraph
-> @EntityGraph(attributePaths = "customer")
-> List<Order> findAll();
-> ```
-> Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-> </details>
->
+🔬 **Section Challenge — Chapter 1: JPA vs Hibernate vs Spring Data JPA**
+
+**Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+<details><summary>Answer</summary>
+
+```java
+// N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
+List<Order> orders = orderRepo.findAll(); // 1 query
+orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
+
+// Fix 1: JOIN FETCH
+@Query("SELECT o FROM Order o JOIN FETCH o.customer")
+List<Order> findAllWithCustomer();
+
+// Fix 2: EntityGraph
+@EntityGraph(attributePaths = "customer")
+List<Order> findAll();
+```
+Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+</details>
+
 
 ## Chapter 2: Entity Mapping Deep Dive
 
@@ -446,14 +439,14 @@ public class Address {
 
 
 
-> 🔬 **Section Challenge — Chapter 2: Entity Mapping Deep Dive**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 2: Entity Mapping Deep Dive**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 3: Entity Relationships
 
@@ -474,15 +467,11 @@ public class Address {
 ```
 
 **Flow:**
-- JPA RELATIONSHIP TYPES
-- ↓
-- @OneToOne User Address (One user has one address)
-- ↓
-- @OneToMany User << Order (One user has many order
-- ↓
-- @ManyToOne Order >> User (Many orders belong to o
-- ↓
-- @ManyToMany User >> << Role (Many users hav
+1. JPA RELATIONSHIP TYPES
+2. @OneToOne User Address (One user has one address)
+3. @OneToMany User << Order (One user has many order
+4. @ManyToOne Order >> User (Many orders belong to o
+5. @ManyToMany User >> << Role (Many users hav
 
 ```mermaid
 flowchart TD
@@ -817,19 +806,13 @@ public class UserRoleId implements Serializable {
 ```
 
 **Flow:**
-- THE N+1 PROBLEM
-- ↓
-- RESULT: 1 + 10 = 11 queries for just 10 users!
-- ↓
-- With 1000 users = 1001 queries! 🔥 DATABASE MELTS
-- ↓
-- Query 1: SELECT * FROM users
-- ↓
-- Query 2: SELECT * FROM orders WHERE user_id = 1
-- ↓
-- Query 3: SELECT * FROM orders WHERE user_id = 2
-- ↓
-- Query 4: SELECT * FROM orders WHERE user_id = 3
+1. THE N+1 PROBLEM
+2. RESULT: 1 + 10 = 11 queries for just 10 users!
+3. With 1000 users = 1001 queries! 🔥 DATABASE MELTS
+4. Query 1: SELECT * FROM users
+5. Query 2: SELECT * FROM orders WHERE user_id = 1
+6. Query 3: SELECT * FROM orders WHERE user_id = 2
+7. Query 4: SELECT * FROM orders WHERE user_id = 3
 
 ```mermaid
 flowchart TD
@@ -920,19 +903,13 @@ flowchart TD
 ```
 
 **Flow:**
-- N+1 PROBLEM — VISUAL SEQUENCE COMPARISON
-- ↓
-- BAD: N+1 Queries (Lazy Loading)
-- ↓
-- Application Hibernate Database
-- ↓
-- findAllUsers()
-- ↓
-- SELECT * FROM
-- ↓
-- users ← Query 1
-- ↓
-- 10 User rows
+1. N+1 PROBLEM — VISUAL SEQUENCE COMPARISON
+2. BAD: N+1 Queries (Lazy Loading)
+3. Application Hibernate Database
+4. findAllUsers()
+5. SELECT * FROM
+6. users ← Query 1
+7. 10 User rows
 
 ```mermaid
 flowchart TD
@@ -1078,43 +1055,25 @@ public record UserWithOrderCount(Long id, String name, String email, Long orderC
 ```
 
 **Flow:**
-- FETCH TYPE RECOMMENDATIONS
-- ↓
-- Relationship Default Recommendation
-- ↓
-- @OneToOne EAGER
-- ↓
-- Change to LAZY
-- ↓
-- @OneToOne EAGER
-- ↓
-- Change to LAZY
-- ↓
-- @ManyToOne EAGER
-- ↓
-- Change to LAZY
-- ↓
-- @ManyToOne EAGER
-- ↓
-- Change to LAZY
-- ↓
-- @OneToMany LAZY
-- ↓
-- Keep LAZY ✓
-- ↓
-- @OneToMany LAZY
-- ↓
-- Keep LAZY ✓
-- ↓
-- @ManyToMany LAZY
-- ↓
-- Keep LAZY ✓
-- ↓
-- @ManyToMany LAZY
-- ↓
-- Keep LAZY ✓
-- ↓
-- Then fetch when needed:
+1. FETCH TYPE RECOMMENDATIONS
+2. Relationship Default Recommendation
+3. @OneToOne EAGER
+4. Change to LAZY
+5. @OneToOne EAGER
+6. Change to LAZY
+7. @ManyToOne EAGER
+8. Change to LAZY
+9. @ManyToOne EAGER
+10. Change to LAZY
+11. @OneToMany LAZY
+12. Keep LAZY ✓
+13. @OneToMany LAZY
+14. Keep LAZY ✓
+15. @ManyToMany LAZY
+16. Keep LAZY ✓
+17. @ManyToMany LAZY
+18. Keep LAZY ✓
+19. Then fetch when needed:
 
 ```mermaid
 flowchart TD
@@ -1177,9 +1136,8 @@ flowchart TD
 ```
 
 **Flow:**
-- NEW / (no ID)
-- ↓
-- PERSISTENCE CONTEXT / (1st Level Cache) / MANAGED find(
+1. NEW / (no ID)
+2. PERSISTENCE CONTEXT / (1st Level Cache) / MANAGED find(
 
 ```mermaid
 flowchart TD
@@ -1293,14 +1251,14 @@ public class EntityLifecycleDemo {
 
 
 
-> 🔬 **Section Challenge — Chapter 5: Entity Lifecycle & Persistence Context**
->
-> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-> <details><summary>Answer</summary>
->
-> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-> </details>
->
+🔬 **Section Challenge — Chapter 5: Entity Lifecycle & Persistence Context**
+
+**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+<details><summary>Answer</summary>
+
+Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+</details>
+
 
 ## Chapter 6: Cascade Types
 
@@ -1394,20 +1352,20 @@ public class User {
 
 
 
-> 🔬 **Section Challenge — Chapter 6: Cascade Types**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — Chapter 6: Cascade Types**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## Chapter 7: Transactions
 
@@ -1597,14 +1555,14 @@ public class BrokenService {
 
 
 
-> 🔬 **Section Challenge — Chapter 7: Transactions**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — Chapter 7: Transactions**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## Chapter 8: JPA Best Practices Summary
 
@@ -1647,19 +1605,13 @@ public class BrokenService {
 ```
 
 **Flow:**
-- JPA BEST PRACTICES CHECKLIST
-- ↓
-- ENTITY DESIGN:
-- ↓
-- □ Use LAZY fetch for all relationships
-- ↓
-- □ Override equals/hashCode using only business key or I
-- ↓
-- □ Exclude collections from toString to prevent lazy loa
-- ↓
-- □ Use @Version for optimistic locking
-- ↓
-- □ Use Set (not List) for @ManyToMany
+1. JPA BEST PRACTICES CHECKLIST
+2. ENTITY DESIGN:
+3. □ Use LAZY fetch for all relationships
+4. □ Override equals/hashCode using only business key or I
+5. □ Exclude collections from toString to prevent lazy loa
+6. □ Use @Version for optimistic locking
+7. □ Use Set (not List) for @ManyToMany
 
 ```mermaid
 flowchart TD

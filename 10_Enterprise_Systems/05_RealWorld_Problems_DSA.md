@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Problems_Part2.md)
+**Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Problems_Part2.md)
 
 # 🌍 Real-World Problems Solved with DSA
 
@@ -11,9 +11,9 @@
 ## Problem 1: Find Duplicate Orders (HashMap)
 
 
-> COMPANY: Flipkart / Amazon
-> SYSTEM: Order Management
-> INCIDENT: Customer clicked "Place Order" twice due to slow network
+COMPANY: Flipkart / Amazon
+SYSTEM: Order Management
+INCIDENT: Customer clicked "Place Order" twice due to slow network
 
 
 THE REAL PROBLEM:
@@ -123,21 +123,14 @@ Write a function that calculates final price applying all applicable discounts
 ```
 
 **Flow:**
-- 1. If cart total > ₹5000
-- ↓
-- 10% discount
-- ↓
-- 2. If cart has 5+ items
-- ↓
-- extra 5% discount
-- ↓
-- 3. Coupon code 'SAVE200'
-- ↓
-- flat ₹200 off (if total > ₹1000)
-- ↓
-- 4. First order
-- ↓
-- extra ₹100 off
+1. 1. If cart total > ₹5000
+2. 10% discount
+3. 2. If cart has 5+ items
+4. extra 5% discount
+5. 3. Coupon code 'SAVE200'
+6. flat ₹200 off (if total > ₹1000)
+7. 4. First order
+8. extra ₹100 off
 
 ```mermaid
 flowchart LR
@@ -274,9 +267,8 @@ Build autocomplete that returns top 5 suggestions for a prefix
 ```
 
 **Flow:**
-- User types 'sam'
-- ↓
-- Show: 'samsung phone', 'samsung tv', 'samsonite ba
+1. User types 'sam'
+2. Show: 'samsung phone', 'samsung tv', 'samsonite ba
 
 ```mermaid
 flowchart LR
@@ -371,8 +363,8 @@ public class ProductAutocomplete {
 
 
 
-> 🔬 **Section Challenge — Problem 3: Product Search Autocomplete (Trie)**
->>>
+🔬 **Section Challenge — Problem 3: Product Search Autocomplete (Trie)**
+>>
 
 # 🧩 Part 2: Banking & Finance Problems
 
@@ -396,17 +388,12 @@ Given transaction stream, flag suspicious activity in real-time
 ```
 
 **Flow:**
-- 1. More than 3 transactions in 5 minutes
-- ↓
-- SUSPICIOUS
-- ↓
-- 2. Total amount > ₹50,000 in 10 minutes
-- ↓
-- SUSPICIOUS
-- ↓
-- 3. Transactions from 2+ cities in 30 minutes
-- ↓
-- SUSPICIOUS
+1. 1. More than 3 transactions in 5 minutes
+2. SUSPICIOUS
+3. 2. Total amount > ₹50,000 in 10 minutes
+4. SUSPICIOUS
+5. 3. Transactions from 2+ cities in 30 minutes
+6. SUSPICIOUS
 
 ```mermaid
 flowchart LR
@@ -495,20 +482,20 @@ public class FraudDetector {
 
 
 
-> 🔬 **Section Challenge — Problem 4: Transaction Fraud Detection (Sliding Window)**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — Problem 4: Transaction Fraud Detection (Sliding Window)**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## Problem 5: Loan EMI Calculator (Math + Loops)
 
@@ -527,17 +514,12 @@ REQUIREMENTS:
 ```
 
 **Flow:**
-- COMPANY: HDFC / ICICI / Any Bank
-- ↓
-- SYSTEM: Loan Management
-- ↓
-- FEATURE: Calculate EMI and generate amortization schedu
-- ↓
-- REQUIREMENTS:
-- ↓
-- 1. Calculate monthly EMI
-- ↓
-- 3. Handle prepayment scenarios
+1. COMPANY: HDFC / ICICI / Any Bank
+2. SYSTEM: Loan Management
+3. FEATURE: Calculate EMI and generate amortization schedu
+4. REQUIREMENTS:
+5. 1. Calculate monthly EMI
+6. 3. Handle prepayment scenarios
 
 ```mermaid
 flowchart TD
@@ -665,11 +647,9 @@ Make transfer operation thread-safe
 ```
 
 **Flow:**
-- Both read balance as ₹10,000
-- ↓
-- Both think transfer is valid
-- ↓
-- ₹12,000 sent!
+1. Both read balance as ₹10,000
+2. Both think transfer is valid
+3. ₹12,000 sent!
 
 ```mermaid
 flowchart LR
@@ -805,19 +785,13 @@ REQUIREMENTS:
 ```
 
 **Flow:**
-- COMPANY: Swiggy / Zomato
-- ↓
-- SYSTEM: Partner Assignment
-- ↓
-- FEATURE: Find 3 nearest available delivery partners
-- ↓
-- REQUIREMENTS:
-- ↓
-- - Customer places order at location (lat, lng)
-- ↓
-- - Find 3 nearest available delivery partners
-- ↓
-- - Must be available (not on another delivery)
+1. COMPANY: Swiggy / Zomato
+2. SYSTEM: Partner Assignment
+3. FEATURE: Find 3 nearest available delivery partners
+4. REQUIREMENTS:
+5. - Customer places order at location (lat, lng)
+6. - Find 3 nearest available delivery partners
+7. - Must be available (not on another delivery)
 
 ```mermaid
 flowchart TD
@@ -968,17 +942,12 @@ REQUIREMENTS:
 ```
 
 **Flow:**
-- COMPANY: Zomato / Google Maps
-- ↓
-- SYSTEM: Rating & Reviews
-- ↓
-- established restaurant with 4.8 from 500 reviews
-- ↓
-- REQUIREMENTS:
-- ↓
-- - Need weighted score considering number of reviews
-- ↓
-- - Recent reviews should matter more
+1. COMPANY: Zomato / Google Maps
+2. SYSTEM: Rating & Reviews
+3. established restaurant with 4.8 from 500 reviews
+4. REQUIREMENTS:
+5. - Need weighted score considering number of reviews
+6. - Recent reviews should matter more
 
 ```mermaid
 flowchart TD
@@ -1103,11 +1072,9 @@ public class RatingCalculator {
 ```
 
 **Flow:**
-- COMPANY: Facebook / LinkedIn
-- ↓
-- SYSTEM: Friend Suggestions
-- ↓
-- FEATURE: 'You have 15 mutual friends with John'
+1. COMPANY: Facebook / LinkedIn
+2. SYSTEM: Friend Suggestions
+3. FEATURE: 'You have 15 mutual friends with John'
 
 ```mermaid
 flowchart TD
@@ -1225,9 +1192,8 @@ public class MutualFriendsFinder {
 ```
 
 **Flow:**
-- COMPANY: Twitter / Instagram / Facebook
-- ↓
-- SYSTEM: Feed Generation
+1. COMPANY: Twitter / Instagram / Facebook
+2. SYSTEM: Feed Generation
 
 ```mermaid
 flowchart TD
@@ -1322,11 +1288,9 @@ public class NewsFeedGenerator {
 ```
 
 **Flow:**
-- COMPANY: Uber / Ola
-- ↓
-- SYSTEM: Dynamic Pricing
-- ↓
-- FEATURE: Increase price when demand > supply
+1. COMPANY: Uber / Ola
+2. SYSTEM: Dynamic Pricing
+3. FEATURE: Increase price when demand > supply
 
 ```mermaid
 flowchart TD
@@ -1444,11 +1408,9 @@ public class SurgePricingCalculator {
 ```
 
 **Flow:**
-- COMPANY: Uber / Ola
-- ↓
-- SYSTEM: Dispatch
-- ↓
-- CHALLENGE: Match N riders with M drivers optimally
+1. COMPANY: Uber / Ola
+2. SYSTEM: Dispatch
+3. CHALLENGE: Match N riders with M drivers optimally
 
 ```mermaid
 flowchart TD
@@ -1543,6 +1505,6 @@ _More problems in next part..._
 
 ---
 
-> **Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Problems_Part2.md)
+**Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Problems_Part2.md)
 
 

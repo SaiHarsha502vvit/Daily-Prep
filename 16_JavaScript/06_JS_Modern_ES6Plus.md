@@ -1,23 +1,23 @@
-> **JavaScript Chapter 6/7** | [← Previous: DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md) | [Index](../00_MASTER_INDEX.md) | [Next → Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
+**JavaScript Chapter 6/7** | [← Previous: DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md) | [Index](../00_MASTER_INDEX.md) | [Next → Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
 
 # Modern ES6+ Features — The Complete Guide
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: ES6 (2015) was the biggest upgrade in JS history. Since
-> then, yearly releases add new features. This chapter
-> covers everything from ES6 through ES2024.
->
-> WHY:  Modern JS is a DIFFERENT language from pre-2015 JS.
-> React, Node, and all modern frameworks assume ES6+.
-> Interview questions heavily test ES6+ understanding.
->
-> WHO:  Every JS developer writing code after 2015.
->
-> HOW:  We cover: template literals, destructuring (recap),
-> modules, Map/Set, WeakRef, Proxy, iterators/generators,
-> optional chaining, and newer additions through 2024.
+WHAT: ES6 (2015) was the biggest upgrade in JS history. Since
+then, yearly releases add new features. This chapter
+covers everything from ES6 through ES2024.
+
+WHY:  Modern JS is a DIFFERENT language from pre-2015 JS.
+React, Node, and all modern frameworks assume ES6+.
+Interview questions heavily test ES6+ understanding.
+
+WHO:  Every JS developer writing code after 2015.
+
+HOW:  We cover: template literals, destructuring (recap),
+modules, Map/Set, WeakRef, Proxy, iterators/generators,
+optional chaining, and newer additions through 2024.
 
 
 ---
@@ -117,19 +117,13 @@ const merged = { ...defaults, ...prefs };
 ```
 
 **Flow:**
-- WHAT: ES Modules let you split code into separate files
-- ↓
-- import/export between them.
-- ↓
-- WHY: Before modules, all JS shared one global scope.
-- ↓
-- Variable collisions, dependency chaos, huge files.
-- ↓
-- Modules give each file its own scope + explicit deps.
-- ↓
-- HOW: Two module systems exist:
-- ↓
-- • ES Modules (ESM): import/export — standard, browser+N
+1. WHAT: ES Modules let you split code into separate files
+2. import/export between them.
+3. WHY: Before modules, all JS shared one global scope.
+4. Variable collisions, dependency chaos, huge files.
+5. Modules give each file its own scope + explicit deps.
+6. HOW: Two module systems exist:
+7. • ES Modules (ESM): import/export — standard, browser+N
 
 ```mermaid
 flowchart TD
@@ -217,19 +211,13 @@ CommonJS is dynamic — bundler can't know what's used.
 ```
 
 **Flow:**
-- ESM vs CommonJS:
-- ↓
-- Feature ESM CommonJS
-- ↓
-- Syntax import/export require/module.
-- ↓
-- exports
-- ↓
-- Loading Async (parallel) Sync (blocking)
-- ↓
-- Tree-shaking Yes (static) No (dynamic)
-- ↓
-- Top-level await Yes No
+1. ESM vs CommonJS:
+2. Feature ESM CommonJS
+3. Syntax import/export require/module.
+4. exports
+5. Loading Async (parallel) Sync (blocking)
+6. Tree-shaking Yes (static) No (dynamic)
+7. Top-level await Yes No
 
 ```mermaid
 flowchart TD
@@ -558,18 +546,18 @@ function* combined() {
 
 
 
-> 🔬 **Section Challenge — 7. Iterators & Generators (Deep Dive)**
->
-> **Challenge 1 (Reasoning):** A generator that yields 1,000,000 numbers — what's its memory footprint vs a list?
-> <details><summary>Answer</summary>
->
-> Generator: O(1) — stores only the current execution state (stack frame: local variables, instruction pointer). ~200-300 bytes total, regardless of N. List: O(N) — stores all 1M integer objects. 1M Python ints ≈ 28MB (small ints cached, but larger ints ~28 bytes each). Generators are essential for: large file processing (yield one line at a time), infinite sequences, streaming pipelines where you process and discard data.
-> </details>
->
+🔬 **Section Challenge — 7. Iterators & Generators (Deep Dive)**
+
+**Challenge 1 (Reasoning):** A generator that yields 1,000,000 numbers — what's its memory footprint vs a list?
+<details><summary>Answer</summary>
+
+Generator: O(1) — stores only the current execution state (stack frame: local variables, instruction pointer). ~200-300 bytes total, regardless of N. List: O(N) — stores all 1M integer objects. 1M Python ints ≈ 28MB (small ints cached, but larger ints ~28 bytes each). Generators are essential for: large file processing (yield one line at a time), infinite sequences, streaming pipelines where you process and discard data.
+</details>
+
 
 ## 7b. Symbols — The Hidden Language of JavaScript
 
-> _Content enriched from Educative "Front End Developer" — Symbols & Well-Known Symbols_
+_Content enriched from Educative "Front End Developer" — Symbols & Well-Known Symbols_
 
 ```javascript
 // SYMBOL: A unique, immutable primitive. Never collides with anything.
@@ -632,7 +620,7 @@ price + 10;       // 52 (default hint)
 
 ## 7c. WeakRef & FinalizationRegistry — Memory Management
 
-> _Content enriched from Educative "Front End Developer" — Memory Management_
+_Content enriched from Educative "Front End Developer" — Memory Management_
 
 ```javascript
 // WEAKREF: A reference that does NOT prevent garbage collection.
@@ -689,7 +677,7 @@ resource = null; // Eventually: "Object with key "db-connection" was GC'd"
 
 ## 7d. Advanced Proxy Patterns
 
-> _Content enriched from Educative "Front End Developer" — Reactive Systems_
+_Content enriched from Educative "Front End Developer" — Reactive Systems_
 
 ```javascript
 // REACTIVE STATE (Vue 3 simplified):
@@ -793,19 +781,13 @@ ES15  │ Map.groupBy, Promise.withResolvers, well-formed
 ```
 
 **Flow:**
-- YEAR KEY FEATURES
-- ↓
-- ES6 let/const, arrow fn, class, template lit, destructu
-- ↓
-- 2015 modules, Promise, Map/Set, Symbol, generators, for
-- ↓
-- ES7 Array.includes(), ** (exponent)
-- ↓
-- ES8 async/await, Object.entries/values, string padding
-- ↓
-- ES9 rest/spread for objects, for await...of, finally
-- ↓
-- ES10 flat/flatMap, Object.fromEntries, trimStart/End
+1. YEAR KEY FEATURES
+2. ES6 let/const, arrow fn, class, template lit, destructu
+3. 2015 modules, Promise, Map/Set, Symbol, generators, for
+4. ES7 Array.includes(), ** (exponent)
+5. ES8 async/await, Object.entries/values, string padding
+6. ES9 rest/spread for objects, for await...of, finally
+7. ES10 flat/flatMap, Object.fromEntries, trimStart/End
 
 ```mermaid
 flowchart TD
@@ -858,19 +840,13 @@ Q: What is the Proxy object?
 ```
 
 **Flow:**
-- Q: What is tree-shaking?
-- ↓
-- imports are static and can be analyzed at build time.
-- ↓
-- Q: Difference between Map and Object?
-- ↓
-- Q: What is a Symbol?
-- ↓
-- Used for non-colliding property keys and internal proto
-- ↓
-- (Symbol.iterator, Symbol.toPrimitive).
-- ↓
-- Q: Explain ES6 modules.
+1. Q: What is tree-shaking?
+2. imports are static and can be analyzed at build time.
+3. Q: Difference between Map and Object?
+4. Q: What is a Symbol?
+5. Used for non-colliding property keys and internal proto
+6. (Symbol.iterator, Symbol.toPrimitive).
+7. Q: Explain ES6 modules.
 
 ```mermaid
 flowchart TD
@@ -1165,7 +1141,7 @@ COMMON MEMORY LEAKS IN JS:
 
 ---
 
-> [← Previous: DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md) | [Index](../00_MASTER_INDEX.md) | [Next → Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
+[← Previous: DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md) | [Index](../00_MASTER_INDEX.md) | [Next → Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
 
 ---
 

@@ -60,19 +60,13 @@ A **binary tree** is a tree where each node has at most **two children** (left, 
 ```
 
 **Flow:**
-- TERMINOLOGY MAP
-- ↓
-- [10] ← Root (depth 0, level 1)
-- ↓
-- [5] [15] ← depth 1, level 2
-- ↓
-- [3] [7] [20] ← depth 2, level 3 (leaves)
-- ↓
-- Node = { value, left, right }
-- ↓
-- Root = Node with no parent
-- ↓
-- Leaf = Node with no children
+1. TERMINOLOGY MAP
+2. [10] ← Root (depth 0, level 1)
+3. [5] [15] ← depth 1, level 2
+4. [3] [7] [20] ← depth 2, level 3 (leaves)
+5. Node = { value, left, right }
+6. Root = Node with no parent
+7. Leaf = Node with no children
 
 ```mermaid
 flowchart TD
@@ -107,9 +101,7 @@ Balanced tree   |height(left) - height(right)| ≤ 1 for every node
 ```
 
 **Flow:**
-- Complete tree All levels full except last (filled
-- ↓
-- right)
+1. Complete tree All levels full except last (filled right)
 
 ```mermaid
 flowchart LR
@@ -202,23 +194,9 @@ POSTORDER (Left → Right → Root):  4, 5, 2, 3, 1
 ```
 
 **Flow:**
-- PREORDER (Root
-- ↓
-- Left
-- ↓
-- Right): 1, 2, 4, 5, 3
-- ↓
-- INORDER (Left
-- ↓
-- Root
-- ↓
-- Right): 4, 2, 5, 1, 3
-- ↓
-- POSTORDER (Left
-- ↓
-- Right
-- ↓
-- Root): 4, 5, 2, 3, 1
+1. PREORDER (Root Left Right): 1, 2, 4, 5, 3
+2. INORDER (Left Root Right): 4, 2, 5, 1, 3
+3. POSTORDER (Left Right Root): 4, 5, 2, 3, 1
 
 ```mermaid
 flowchart TD
@@ -264,9 +242,8 @@ After returning from 4:
 ```
 
 **Flow:**
-- preorder(4) / preorder(2) / preorder(1)
-- ↓
-- preorder(5) / preorder(2) / preorder(1)
+1. preorder(4) / preorder(2) / preorder(1)
+2. preorder(5) / preorder(2) / preorder(1)
 
 ```mermaid
 flowchart TD
@@ -374,11 +351,9 @@ employees:        contractors:      UNION result:
 ```
 
 **Flow:**
-- Alice / Bob / Carol
-- ↓
-- Alice / Carol / Dave
-- ↓
-- Alice / Bob / Carol / Dave
+1. Alice / Bob / Carol
+2. Alice / Carol / Dave
+3. Alice / Bob / Carol / Dave
 
 ```mermaid
 flowchart TD
@@ -414,17 +389,11 @@ HOW CASE WORKS:
 ```
 
 **Flow:**
-- Step 1: Evaluate WHEN conditions top
-- ↓
-- bottom
-- ↓
-- Step 2: First TRUE match
-- ↓
-- return its THEN value
-- ↓
-- Step 3: No match
-- ↓
-- return ELSE value (NULL if no ELSE)
+1. Step 1: Evaluate WHEN conditions top
+2. bottom
+3. Step 2: First TRUE match return its THEN value
+4. Step 3: No match
+5. return ELSE value (NULL if no ELSE)
 
 ```mermaid
 flowchart LR
@@ -518,23 +487,12 @@ Output: [1, 2, 3]
 ```
 
 **Flow:**
-- Pop 1
-- ↓
-- result=[1], push right=2
-- ↓
-- Stack: [2]
-- ↓
-- Pop 2
-- ↓
-- result=[1,2], push left=3
-- ↓
-- Stack: [3]
-- ↓
-- Pop 3
-- ↓
-- result=[1,2,3], no children
-- ↓
-- Stack: []
+1. Pop 1 result=[1], push right=2
+2. Stack: [2]
+3. Pop 2 result=[1,2], push left=3
+4. Stack: [3]
+5. Pop 3 result=[1,2,3], no children
+6. Stack: []
 
 ```mermaid
 flowchart TD
@@ -631,27 +589,15 @@ Output: [1, 3, 2]
 ```
 
 **Flow:**
-- Inorder = Left
-- ↓
-- Root
-- ↓
-- Right
-- ↓
-- Call inorder(null)
-- ↓
-- return (no left)
-- ↓
-- Add 1
-- ↓
-- result=[1]
-- ↓
-- Call inorder(null)
-- ↓
-- return
-- ↓
-- Add 3
-- ↓
-- result=[1,3]
+1. Inorder = Left
+2. Root
+3. Right
+4. Call inorder(null)
+5. return (no left)
+6. Add 1 result=[1]
+7. Call inorder(null)
+8. return
+9. Add 3 result=[1,3]
 
 ```mermaid
 flowchart TD
@@ -742,21 +688,13 @@ WHERE YOU'LL SEE TREES:
 ```
 
 **Flow:**
-- C:\
-- ↓
-- Users
-- ↓
-- Documents
-- ↓
-- file.txt
-- ↓
-- <html>
-- ↓
-- <body>
-- ↓
-- <div>
-- ↓
-- <p>
+1. C:\
+2. Users
+3. Documents file.txt
+4. <html>
+5. <body>
+6. <div>
+7. <p>
 
 ```mermaid
 flowchart TD

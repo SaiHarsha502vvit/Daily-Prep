@@ -1,7 +1,7 @@
 # JVM Internals Deep Dive
 
-> **Part 3 of Ultimate DSA Guide**
-> **Navigation**: [Part 1: Data Structures](07_DSA_Guide_Foundations.md) | [Part 2: Advanced](09_Ultimate_DSA_Advanced.md) | [Part 3: JVM Internals]
+**Part 3 of Ultimate DSA Guide**
+**Navigation**: [Part 1: Data Structures](07_DSA_Guide_Foundations.md) | [Part 2: Advanced](09_Ultimate_DSA_Advanced.md) | [Part 3: JVM Internals]
 
 ---
 
@@ -184,9 +184,8 @@
 ```
 
 **Flow:**
-- CLASS LOADING MECHANISM / THE THREE PHASES OF CLASS LOA
-- ↓
-- • Execute static initializers and static blocks / • Ass
+1. CLASS LOADING MECHANISM / THE THREE PHASES OF CLASS LOA
+2. • Execute static initializers and static blocks / • Ass
 
 ```mermaid
 flowchart TD
@@ -238,14 +237,14 @@ protected Class<?> loadClass(String name, boolean resolve) {
 
 
 
-> 🔬 **Section Challenge — ⚙️ Class Loader Subsystem — Deep Dive**
->
-> **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-> <details><summary>Answer</summary>
->
-> Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
-> </details>
->
+🔬 **Section Challenge — ⚙️ Class Loader Subsystem — Deep Dive**
+
+**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+<details><summary>Answer</summary>
+
+Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+</details>
+
 
 ## 📌 Creating Custom Class Loaders
 
@@ -328,25 +327,25 @@ public class HotReloadClassLoader extends ClassLoader {
 
 
 
-> 🔬 **Section Challenge — 📌 Creating Custom Class Loaders**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — 📌 Creating Custom Class Loaders**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## 🧠 JVM Memory Model — Complete Deep Dive
 
@@ -432,9 +431,8 @@ public class HotReloadClassLoader extends ClassLoader {
 ```
 
 **Flow:**
-- YOUNG GENERATION (-Xmn) / EDEN Survivor 0 Survivor 1 /
-- ↓
-- OLD GENERATION (Tenured) / Long-lived objects / Major G
+1. YOUNG GENERATION (-Xmn) / EDEN Survivor 0 Survivor 1 /
+2. OLD GENERATION (Tenured) / Long-lived objects / Major G
 
 ```mermaid
 flowchart TD
@@ -495,9 +493,8 @@ flowchart TD
 ```
 
 **Flow:**
-- Slot 0: this (for instance methods) / Slot 1: param1 /
-- ↓
-- Used for: arithmetic, method params, return values / Ex
+1. Slot 0: this (for instance methods) / Slot 1: param1 /
+2. Used for: arithmetic, method params, return values / Ex
 
 ```mermaid
 flowchart TD
@@ -540,8 +537,8 @@ public int calculate(int a, int b) {
 
 
 
-> 🔬 **Section Challenge — 📚 Stack Frame Structure**
->>
+🔬 **Section Challenge — 📚 Stack Frame Structure**
+>
 
 ## 📚 Garbage Collection — Complete Guide
 
@@ -588,11 +585,9 @@ public int calculate(int a, int b) {
 ```
 
 **Flow:**
-- GARBAGE COLLECTION FUNDAMENTALS / REACHABILITY ANALYSIS
-- ↓
-- A B ← REACHABLE (will NOT be collected)
-- ↓
-- C D E ← REACHABLE / X Y ← UNREACHABLE (will be collecte
+1. GARBAGE COLLECTION FUNDAMENTALS / REACHABILITY ANALYSIS
+2. A B ← REACHABLE (will NOT be collected)
+3. C D E ← REACHABLE / X Y ← UNREACHABLE (will be collecte
 
 ```mermaid
 flowchart TD
@@ -670,11 +665,9 @@ public static void memoryInfo() {
 ```
 
 **Flow:**
-- JUST-IN-TIME (JIT) COMPILATION / TIERED COMPILATION (De
-- ↓
-- Level 1-3: C1 Compiler (Client) / • Quick compilation /
-- ↓
-- Level 4: C2 Compiler (Server) / • Aggressive optimizati
+1. JUST-IN-TIME (JIT) COMPILATION / TIERED COMPILATION (De
+2. Level 1-3: C1 Compiler (Client) / • Quick compilation /
+3. Level 4: C2 Compiler (Server) / • Aggressive optimizati
 
 ```mermaid
 flowchart TD
@@ -1020,19 +1013,13 @@ User user = service.getUser(123);
 ```
 
 **Flow:**
-- JVM TUNING QUICK REFERENCE
-- ↓
-- MEMORY SETTINGS:
-- ↓
-- -Xms<size> Initial heap size -Xms2g
-- ↓
-- -Xmx<size> Maximum heap size -Xmx8g
-- ↓
-- -Xmn<size> Young generation size -Xmn2g
-- ↓
-- -Xss<size> Thread stack size -Xss512k
-- ↓
-- -XX:MetaspaceSize=<size> -XX:MetaspaceSize=256m
+1. JVM TUNING QUICK REFERENCE
+2. MEMORY SETTINGS:
+3. -Xms<size> Initial heap size -Xms2g
+4. -Xmx<size> Maximum heap size -Xmx8g
+5. -Xmn<size> Young generation size -Xmn2g
+6. -Xss<size> Thread stack size -Xss512k
+7. -XX:MetaspaceSize=<size> -XX:MetaspaceSize=256m
 
 ```mermaid
 flowchart TD
@@ -1109,29 +1096,18 @@ flowchart TD
 ```
 
 **Flow:**
-- JVM INTERNALS MASTERY CHECKLIST
-- ↓
-- CLASS LOADING:
-- ↓
-- □ Know parent delegation model and why it exists
-- ↓
-- □ Can implement custom ClassLoader for hot-reload/plugi
-- ↓
-- □ Understand Loading
-- ↓
-- Linking
-- ↓
-- Initialization phases
-- ↓
-- □ Understand Loading
-- ↓
-- Linking
-- ↓
-- Initialization phases
-- ↓
-- MEMORY MODEL:
-- ↓
-- □ Know Heap structure: Eden, Survivor, Old Generation
+1. JVM INTERNALS MASTERY CHECKLIST
+2. CLASS LOADING:
+3. □ Know parent delegation model and why it exists
+4. □ Can implement custom ClassLoader for hot-reload/plugi
+5. □ Understand Loading
+6. Linking
+7. Initialization phases
+8. □ Understand Loading
+9. Linking
+10. Initialization phases
+11. MEMORY MODEL:
+12. □ Know Heap structure: Eden, Survivor, Old Generation
 
 ```mermaid
 flowchart TD
@@ -1166,11 +1142,11 @@ _"Data structures + Algorithms = Programs. Master both, master programming."_
 
 ---
 
-> **Prev**: [Part 2: Advanced Algorithms](09_Ultimate_DSA_Advanced.md)
+**Prev**: [Part 2: Advanced Algorithms](09_Ultimate_DSA_Advanced.md)
 
 
 ---
 
-> **Navigation**: [< Previous](09_Ultimate_DSA_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Quick_Reference.md)
+**Navigation**: [< Previous](09_Ultimate_DSA_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Quick_Reference.md)
 
 

@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](10_Custom_Hooks_Library.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Complex_UI_Pages_Patterns.md)
+**Navigation**: [< Previous](10_Custom_Hooks_Library.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Complex_UI_Pages_Patterns.md)
 
 # 🪝 Chapter 10 — Custom Hooks Library: Production-Ready Patterns
 
-> **"Custom hooks are React's composition model. Every repeated pattern in your components — fetching data, tracking window size, debouncing input, detecting clicks outside — should be extracted into a reusable hook. Here's the complete library."**
+**"Custom hooks are React's composition model. Every repeated pattern in your components — fetching data, tracking window size, debouncing input, detecting clicks outside — should be extracted into a reusable hook. Here's the complete library."**
 
 ---
 
@@ -606,20 +606,20 @@ function SubmitForm() {
 
 
 
-> 🔬 **Section Challenge — 10. useAsync — Generic Async Operation Handler**
->
-> **Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
-> <details><summary>Answer</summary>
->
-> `Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
-> <details><summary>Answer</summary>
->
-> Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
-> </details>
->
+🔬 **Section Challenge — 10. useAsync — Generic Async Operation Handler**
+
+**Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
+<details><summary>Answer</summary>
+
+`Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
+</details>
+
+**Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
+<details><summary>Answer</summary>
+
+Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
+</details>
+
 
 ## 11. useEventListener — Declarative Event Binding
 
@@ -921,7 +921,7 @@ function SearchPage() {
 
 ---
 
-> **Next Chapter**: [Complex UI Pages & Patterns →](11_Complex_UI_Pages_Patterns.md)
+**Next Chapter**: [Complex UI Pages & Patterns →](11_Complex_UI_Pages_Patterns.md)
 
 
 

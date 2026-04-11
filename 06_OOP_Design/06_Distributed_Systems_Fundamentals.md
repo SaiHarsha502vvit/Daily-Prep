@@ -1,32 +1,32 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [System Design Problems](05_SD_Interview_Problems.md)
-> 🧠 **Mental Model**: See [Distributed Systems Thinking](../14_Mental_Models/16_Distributed_Systems_Thinking.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [System Design Problems](05_SD_Interview_Problems.md)
+🧠 **Mental Model**: See [Distributed Systems Thinking](../14_Mental_Models/16_Distributed_Systems_Thinking.md)
 
 ---
 
 # 🌐 Distributed Systems Fundamentals — CAP, Consistency, Partitioning
 
-> Everything you need to reason about systems that span multiple machines
+Everything you need to reason about systems that span multiple machines
 
 ---
 
 ## Part 1: Why Distributed Systems?
 
 
-> THE FUNDAMENTAL PROBLEM
->
-> Single machine:  Simple, consistent, but limited
-> → CPU/Memory/Disk have hard ceilings
-> → Single point of failure (SPOF)
->
-> Distributed system: Multiple machines working together
-> → Scale beyond single machine limits
-> → Survive individual machine failures
-> → BUT: introduces network as unreliable component
->
-> REAL-WORLD ANALOGY: One chef vs a restaurant kitchen
-> One chef: Perfect coordination, limited throughput
-> Kitchen team: High throughput, but needs communication protocols
-> → Miscommunication = wrong orders, duplicate dishes, lost tickets
+THE FUNDAMENTAL PROBLEM
+
+Single machine:  Simple, consistent, but limited
+→ CPU/Memory/Disk have hard ceilings
+→ Single point of failure (SPOF)
+
+Distributed system: Multiple machines working together
+→ Scale beyond single machine limits
+→ Survive individual machine failures
+→ BUT: introduces network as unreliable component
+
+REAL-WORLD ANALOGY: One chef vs a restaurant kitchen
+One chef: Perfect coordination, limited throughput
+Kitchen team: High throughput, but needs communication protocols
+→ Miscommunication = wrong orders, duplicate dishes, lost tickets
 
 
 ---
@@ -67,13 +67,10 @@
 ```
 
 **Flow:**
-- When partition happens
-- ↓
-- system blocks/errors rather than return stale data
-- ↓
-- When partition happens
-- ↓
-- system returns potentially stale data
+1. When partition happens
+2. system blocks/errors rather than return stale data
+3. When partition happens
+4. system returns potentially stale data
 
 ```mermaid
 flowchart LR
@@ -86,21 +83,21 @@ flowchart LR
 
 ### CAP in Plain English
 
-> SCENARIO: You run 2 database replicas (Node A, Node B)
-> A network partition splits them — they can't talk to each other
->
-> [Node A]  ✂️ network partition ✂️  [Node B]
->
-> A write comes to Node A: "Set balance = $100"
-> A read comes to Node B: "What's the balance?"
->
-> CHOICE 1 (CP): Node B says "Sorry, I can't answer — I might be stale"
-> → Consistent ✅  Available ❌
->
-> CHOICE 2 (AP): Node B returns old value "$80"
-> → Available ✅  Consistent ❌
->
-> You CANNOT have both during a partition. Period.
+SCENARIO: You run 2 database replicas (Node A, Node B)
+A network partition splits them — they can't talk to each other
+
+[Node A]  ✂️ network partition ✂️  [Node B]
+
+A write comes to Node A: "Set balance = $100"
+A read comes to Node B: "What's the balance?"
+
+CHOICE 1 (CP): Node B says "Sorry, I can't answer — I might be stale"
+→ Consistent ✅  Available ❌
+
+CHOICE 2 (AP): Node B returns old value "$80"
+→ Available ✅  Consistent ❌
+
+You CANNOT have both during a partition. Period.
 
 
 ---
@@ -143,21 +140,14 @@ flowchart LR
 ```
 
 **Flow:**
-- SPECTRUM: Strong ←
-- ↓
-- Weak
-- ↓
-- 1. STRONG CONSISTENCY (Linearizability)
-- ↓
-- Every read returns the most recent write
-- ↓
-- As if there's only one copy of data
-- ↓
-- Cost: High latency (must coordinate all replicas)
-- ↓
-- Example: Single PostgreSQL instance, Google Spanner
-- ↓
-- 2. SEQUENTIAL CONSISTENCY
+1. SPECTRUM: Strong ←
+2. Weak
+3. 1. STRONG CONSISTENCY (Linearizability)
+4. Every read returns the most recent write
+5. As if there's only one copy of data
+6. Cost: High latency (must coordinate all replicas)
+7. Example: Single PostgreSQL instance, Google Spanner
+8. 2. SEQUENTIAL CONSISTENCY
 
 ```mermaid
 flowchart TD
@@ -218,9 +208,8 @@ flowchart TD
 ```
 
 **Flow:**
-- Client --(writes)-->
-- ↓
-- Leader
+1. Client --(writes)-->
+2. Leader
 
 ```mermaid
 flowchart LR
@@ -274,19 +263,13 @@ flowchart LR
 ```
 
 **Flow:**
-- STRATEGY 1: Range-Based Partitioning
-- ↓
-- Shard 1: Users A-F Shard 2: Users G-M Shard 3: Users N-
-- ↓
-- STRATEGY 2: Hash-Based Partitioning
-- ↓
-- shard = hash(userId) % num_shards
-- ↓
-- ✅ Even distribution (no hot spots for simple partition
-- ↓
-- ❌ Range queries require scatter-gather (hit all shards)
-- ↓
-- ❌ Adding/removing shard requires massive data movement
+1. STRATEGY 1: Range-Based Partitioning
+2. Shard 1: Users A-F Shard 2: Users G-M Shard 3: Users N-
+3. STRATEGY 2: Hash-Based Partitioning
+4. shard = hash(userId) % num_shards
+5. ✅ Even distribution (no hot spots for simple partition
+6. ❌ Range queries require scatter-gather (hit all shards)
+7. ❌ Adding/removing shard requires massive data movement
 
 ```mermaid
 flowchart TD
@@ -315,31 +298,31 @@ flowchart TD
 ## Part 6: Consensus Algorithms
 
 
-> PROBLEM: Multiple nodes must agree on a value (leader, transaction, order)
->
-> RAFT (Understandable Consensus)
-> ────────────────────────────────
-> 3 roles: Leader, Follower, Candidate
->
-> 1. Leader Election:
-> → Followers wait for heartbeat from leader
-> → No heartbeat → timeout → become Candidate
-> → Candidate requests votes from all nodes
-> → Majority votes → become Leader
->
-> 2. Log Replication:
-> → Client sends write to Leader
-> → Leader appends to log, sends to Followers
-> → Majority acknowledge → Leader commits
-> → Leader tells Followers to commit
->
-> WHY MAJORITY (Quorum)?
-> → 5 nodes: need 3 to agree
-> → Can tolerate 2 failures
-> → Any two majorities overlap by at least 1 node
-> → Guarantees the committed value is never lost
->
-> USED BY: etcd (Kubernetes), CockroachDB, TiKV, Consul
+PROBLEM: Multiple nodes must agree on a value (leader, transaction, order)
+
+RAFT (Understandable Consensus)
+────────────────────────────────
+3 roles: Leader, Follower, Candidate
+
+1. Leader Election:
+→ Followers wait for heartbeat from leader
+→ No heartbeat → timeout → become Candidate
+→ Candidate requests votes from all nodes
+→ Majority votes → become Leader
+
+2. Log Replication:
+→ Client sends write to Leader
+→ Leader appends to log, sends to Followers
+→ Majority acknowledge → Leader commits
+→ Leader tells Followers to commit
+
+WHY MAJORITY (Quorum)?
+→ 5 nodes: need 3 to agree
+→ Can tolerate 2 failures
+→ Any two majorities overlap by at least 1 node
+→ Guarantees the committed value is never lost
+
+USED BY: etcd (Kubernetes), CockroachDB, TiKV, Consul
 
 
 ---
@@ -377,29 +360,18 @@ flowchart TD
 ```
 
 **Flow:**
-- PATTERN WHAT USED IN
-- ↓
-- to prevent cascade failures Resilience4J
-- ↓
-- Bulkhead Isolate failures to one Thread pool per servic
-- ↓
-- component, protect others
-- ↓
-- Saga Distributed transaction as Order
-- ↓
-- Pay
-- ↓
-- Ship
-- ↓
-- Saga Distributed transaction as Order
-- ↓
-- Pay
-- ↓
-- Ship
-- ↓
-- sequence of local txns + with compensation
-- ↓
-- compensations
+1. PATTERN WHAT USED IN
+2. to prevent cascade failures Resilience4J
+3. Bulkhead Isolate failures to one Thread pool per servic
+4. component, protect others
+5. Saga Distributed transaction as Order
+6. Pay
+7. Ship
+8. Saga Distributed transaction as Order
+9. Pay
+10. Ship
+11. sequence of local txns + with compensation
+12. compensations
 
 ```mermaid
 flowchart TD
@@ -424,20 +396,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Part 7: Common Distributed System Patterns**
->
-> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
-> <details><summary>Answer</summary>
->
-> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-> </details>
->
-> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-> <details><summary>Answer</summary>
->
-> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
-> </details>
->
+🔬 **Section Challenge — Part 7: Common Distributed System Patterns**
+
+**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+<details><summary>Answer</summary>
+
+Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+</details>
+
+**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+<details><summary>Answer</summary>
+
+1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+</details>
+
 
 ## Part 8: Interview Quick-Fire Questions
 
@@ -465,13 +437,10 @@ A: Vertical: bigger machine (more CPU/RAM). Simple but has ceiling.
 ```
 
 **Flow:**
-- Banking
-- ↓
-- CP (refuse stale reads, accept downtime).
-- ↓
-- Social media
-- ↓
-- AP (serve stale data, stay available).
+1. Banking
+2. CP (refuse stale reads, accept downtime).
+3. Social media
+4. AP (serve stale data, stay available).
 
 ```mermaid
 flowchart LR

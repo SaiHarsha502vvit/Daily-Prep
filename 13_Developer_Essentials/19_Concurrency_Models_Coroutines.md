@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](18_Backend_Cloud_Integration.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](18_Backend_Cloud_Integration.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 19 — Concurrency Models, Coroutines & Continuations: Deep Reasoning
 
-> **"Anyone can say 'threads run in parallel.' The senior engineer explains WHY coroutines aren't threads, WHAT a continuation actually is, and HOW async/await works differently in Java, Kotlin, JavaScript, and Go."**
+**"Anyone can say 'threads run in parallel.' The senior engineer explains WHY coroutines aren't threads, WHAT a continuation actually is, and HOW async/await works differently in Java, Kotlin, JavaScript, and Go."**
 
 ---
 
@@ -26,35 +26,35 @@
 ## 1. Process vs Thread vs Coroutine: The Complete Picture
 
 ### The Freeze Question
-> "What's the difference between a process, thread, and coroutine?"
+"What's the difference between a process, thread, and coroutine?"
 
 
-> THE RESTAURANT ANALOGY
->
-> PROCESS = A separate restaurant
-> → Own building (memory space), own kitchen, own staff
-> → Can't share ingredients directly (IPC needed)
-> → One restaurant crash doesn't affect others
-> → EXPENSIVE to open (fork/exec = heavy)
->
-> THREAD = A chef in the same restaurant
-> → Shares kitchen (memory space) with other chefs
-> → Can grab same ingredients (shared state → race conditions!)
-> → One chef dropping a knife → whole kitchen affected
-> → MEDIUM cost to hire (create thread ~1MB stack per thread)
-> → Scheduled by the OS (preemptive — OS decides who cooks when)
->
-> COROUTINE = A recipe step a chef can pause and resume
-> → Chef says "pasta is boiling, I'll do the sauce meanwhile"
-> → Chef VOLUNTARILY pauses pasta, switches to sauce
-> → NO OS involvement — the program decides when to switch
-> → EXTREMELY cheap (~few KB, no OS thread needed)
-> → Runs on top of threads (many coroutines per thread)
->
-> NUMBERS:
-> Processes: ~10-100 (expensive)
-> OS Threads: ~1000-10000 (each needs ~1MB stack)
-> Coroutines: ~100,000-1,000,000+ (each needs ~few KB)
+THE RESTAURANT ANALOGY
+
+PROCESS = A separate restaurant
+→ Own building (memory space), own kitchen, own staff
+→ Can't share ingredients directly (IPC needed)
+→ One restaurant crash doesn't affect others
+→ EXPENSIVE to open (fork/exec = heavy)
+
+THREAD = A chef in the same restaurant
+→ Shares kitchen (memory space) with other chefs
+→ Can grab same ingredients (shared state → race conditions!)
+→ One chef dropping a knife → whole kitchen affected
+→ MEDIUM cost to hire (create thread ~1MB stack per thread)
+→ Scheduled by the OS (preemptive — OS decides who cooks when)
+
+COROUTINE = A recipe step a chef can pause and resume
+→ Chef says "pasta is boiling, I'll do the sauce meanwhile"
+→ Chef VOLUNTARILY pauses pasta, switches to sauce
+→ NO OS involvement — the program decides when to switch
+→ EXTREMELY cheap (~few KB, no OS thread needed)
+→ Runs on top of threads (many coroutines per thread)
+
+NUMBERS:
+Processes: ~10-100 (expensive)
+OS Threads: ~1000-10000 (each needs ~1MB stack)
+Coroutines: ~100,000-1,000,000+ (each needs ~few KB)
 
 
 ```
@@ -84,11 +84,9 @@ WITHIN A THREAD:
 ```
 
 **Flow:**
-- Code / Data/Heap / Thread Thrd / Stack Stck
-- ↓
-- Code / Data/Heap / Thread / Stack
-- ↓
-- Thread (OS-managed, ~1MB stack) / Coroutine1 Coroutine2
+1. Code / Data/Heap / Thread Thrd / Stack Stck
+2. Code / Data/Heap / Thread / Stack
+3. Thread (OS-managed, ~1MB stack) / Coroutine1 Coroutine2
 
 ```mermaid
 flowchart TD
@@ -103,19 +101,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 1. Process vs Thread vs Coroutine: The Complete Picture**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 1. Process vs Thread vs Coroutine: The Complete Picture**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 2. Coroutines: What They Actually Are
 
 ### The Freeze Question
-> "What is a coroutine? Is it a lightweight thread?"
+"What is a coroutine? Is it a lightweight thread?"
 
 ### Deep Reasoning
 
@@ -144,19 +142,9 @@ vs PREEMPTIVE multitasking (OS preempts threads).
 ```
 
 **Flow:**
-- start --(
-- ↓
-- runs
-- ↓
-- )-->
-- ↓
-- SUSPEND
-- ↓
-- SUSPEND --(
-- ↓
-- ...
-- ↓
-- )--> RESUME
+1. start --( runs )-->
+2. SUSPEND
+3. SUSPEND --( ... )--> RESUME
 
 ```mermaid
 flowchart TD
@@ -189,19 +177,19 @@ suspend fun fetchUserData(): User {
 
 
 
-> 🔬 **Section Challenge — 2. Coroutines: What They Actually Are**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 2. Coroutines: What They Actually Are**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 3. Continuations: The Foundation Under Everything
 
 ### The Freeze Question
-> "What is a continuation?"
+"What is a continuation?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
@@ -234,19 +222,10 @@ suspend fun fetchUserData(): User {
 ```
 
 **Flow:**
-- A CONTINUATION = 'The rest of the computation'
-- ↓
-- THE BOOKMARK ANALOGY
-- ↓
-- You're reading a book. At page 50, you place a bookmark
-- ↓
-- what's left to read.
-- ↓
-- The CONTINUATION is 'everything from the bookmark forwa
-- ↓
-- In code:
-- ↓
-- int x = 5; ← Already done
+1. A CONTINUATION = 'The rest of the computation'
+2. THE BOOKMARK ANALOGY
+3. You're reading a book. At page 50, you place a bookmark what's left to read.
+4. The CONTINUATION is 'everything from the bookmark forwa In code: int x = 5; ← Already done
 
 ```mermaid
 flowchart TD
@@ -294,19 +273,19 @@ add(3, 4, function(result) {
 
 
 
-> 🔬 **Section Challenge — 3. Continuations: The Foundation Under Everything**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 3. Continuations: The Foundation Under Everything**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 4. Coroutines vs Continuations: The Precise Difference
 
 ### The Freeze Question
-> "What's the difference between a coroutine and a continuation?"
+"What's the difference between a coroutine and a continuation?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
@@ -348,19 +327,13 @@ add(3, 4, function(result) {
 ```
 
 **Flow:**
-- CONTINUATION = The concept (a snapshot of 'the rest')
-- ↓
-- COROUTINE = A mechanism that USES continuations
-- ↓
-- Analogy:
-- ↓
-- Continuation = A saved game state
-- ↓
-- Coroutine = A game that can save and load
-- ↓
-- When a coroutine SUSPENDS:
-- ↓
-- It captures a CONTINUATION (saves its state)
+1. CONTINUATION = The concept (a snapshot of 'the rest')
+2. COROUTINE = A mechanism that USES continuations
+3. Analogy:
+4. Continuation = A saved game state
+5. Coroutine = A game that can save and load
+6. When a coroutine SUSPENDS:
+7. It captures a CONTINUATION (saves its state)
 
 ```mermaid
 flowchart TD
@@ -385,19 +358,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 4. Coroutines vs Continuations: The Precise Difference**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 4. Coroutines vs Continuations: The Precise Difference**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 5. How async/await Works In Different Languages
 
 ### The Freeze Question
-> "How does async/await actually work? Is it the same everywhere?"
+"How does async/await actually work? Is it the same everywhere?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
@@ -439,19 +412,13 @@ flowchart TD
 ```
 
 **Flow:**
-- But the UNDERLYING MODEL varies dramatically:
-- ↓
-- JAVASCRIPT:
-- ↓
-- Single-threaded event loop
-- ↓
-- async function returns a Promise
-- ↓
-- NO parallelism (one thread), just concurrency
-- ↓
-- KOTLIN:
-- ↓
-- Compiler transforms suspend functions into state mach
+1. But the UNDERLYING MODEL varies dramatically:
+2. JAVASCRIPT:
+3. Single-threaded event loop
+4. async function returns a Promise
+5. NO parallelism (one thread), just concurrency
+6. KOTLIN:
+7. Compiler transforms suspend functions into state mach
 
 ```mermaid
 flowchart TD
@@ -476,25 +443,25 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 5. How async/await Works In Different Languages**
->
-> **Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
-> <details><summary>Answer</summary>
->
-> `Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
-> <details><summary>Answer</summary>
->
-> Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
-> </details>
->
+🔬 **Section Challenge — 5. How async/await Works In Different Languages**
+
+**Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
+<details><summary>Answer</summary>
+
+`Promise.all`: both fetches START simultaneously (concurrent). Total time = max(timeA, timeB). Sequential awaits: fetch B doesn't start until fetch A completes. Total time = timeA + timeB. For independent requests, ALWAYS use `Promise.all`. Sequential await is only appropriate when B depends on A's result.
+</details>
+
+**Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
+<details><summary>Answer</summary>
+
+Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
+</details>
+
 
 ## 6. Java Virtual Threads (Project Loom): The Game Changer
 
 ### The Freeze Question
-> "What are virtual threads? How are they different from regular threads?"
+"What are virtual threads? How are they different from regular threads?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
@@ -522,19 +489,13 @@ flowchart TD
 ```
 
 **Flow:**
-- THE POSTAL SERVICE ANALOGY
-- ↓
-- Platform Thread (OS Thread) = A dedicated postal truck
-- ↓
-- Limited (can only have so many trucks)
-- ↓
-- Virtual Thread = A package (letter)
-- ↓
-- Extremely cheap (just a piece of paper = ~few KB)
-- ↓
-- Millions possible
-- ↓
-- delivers other packages. When the house opens the door,
+1. THE POSTAL SERVICE ANALOGY
+2. Platform Thread (OS Thread) = A dedicated postal truck
+3. Limited (can only have so many trucks)
+4. Virtual Thread = A package (letter)
+5. Extremely cheap (just a piece of paper = ~few KB)
+6. Millions possible
+7. delivers other packages. When the house opens the door,
 
 ```mermaid
 flowchart TD
@@ -581,7 +542,7 @@ executor.submit(() -> {
 ## 7. Green Threads vs OS Threads vs Virtual Threads
 
 ### The Freeze Question
-> "What are green threads?"
+"What are green threads?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
@@ -610,19 +571,13 @@ executor.submit(() -> {
 ```
 
 **Flow:**
-- OS THREAD (Platform Thread):
-- ↓
-- Managed by the operating system
-- ↓
-- ~1MB stack, expensive context switch
-- ↓
-- OS scheduler decides when to run (preemptive)
-- ↓
-- Used by: Java (traditional), C, C++, Rust
-- ↓
-- GREEN THREAD:
-- ↓
-- Managed by the RUNTIME/VM, not the OS
+1. OS THREAD (Platform Thread):
+2. Managed by the operating system
+3. ~1MB stack, expensive context switch
+4. OS scheduler decides when to run (preemptive)
+5. Used by: Java (traditional), C, C++, Rust
+6. GREEN THREAD:
+7. Managed by the RUNTIME/VM, not the OS
 
 ```mermaid
 flowchart TD
@@ -679,19 +634,13 @@ Solution: Worker Threads, or offload to microservices.
 ```
 
 **Flow:**
-- THE SINGLE-THREADED EVENT LOOP
-- ↓
-- model comparison)
-- ↓
-- Call Stack (single thread — runs JS code)
-- ↓
-- Currently executing function
-- ↓
-- ↓ when stack is empty ↓
-- ↓
-- Microtask Queue (Promises, queueM) ← checked FIRST
-- ↓
-- Macrotask Queue (setTimeout, IO) ← checked AFTER
+1. THE SINGLE-THREADED EVENT LOOP
+2. model comparison)
+3. Call Stack (single thread — runs JS code)
+4. Currently executing function
+5. ↓ when stack is empty ↓
+6. Microtask Queue (Promises, queueM) ← checked FIRST
+7. Macrotask Queue (setTimeout, IO) ← checked AFTER
 
 ```mermaid
 flowchart TD
@@ -747,19 +696,8 @@ flowchart TD
 ```
 
 **Flow:**
-- Go's approach: 'Don't communicate by sharing memory.
-- ↓
-- Share memory by communicating.' — Go proverb
-- ↓
-- GOROUTINE = Lightweight coroutine (starts at ~2KB stack
-- ↓
-- M:N scheduling: M goroutines on N OS threads
-- ↓
-- go func() { ... } — that's it, it's running
-- ↓
-- Millions possible (vs thousands of OS threads)
-- ↓
-- CHANNEL = Typed pipe for goroutine communication
+1. Go's approach: 'Don't communicate by sharing memory. Share memory by communicating.' — Go proverb
+2. GOROUTINE = Lightweight coroutine (starts at ~2KB stack M:N scheduling: M goroutines on N OS threads go func() { ... } — that's it, it's running Millions possible (vs thousands of OS threads) CHANNEL = Typed pipe for goroutine communication
 
 ```mermaid
 flowchart TD
@@ -784,19 +722,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 9. Go Goroutines: The CSP Model**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 9. Go Goroutines: The CSP Model**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 10. Concurrency vs Parallelism: The Definition That Matters
 
 ### The Freeze Question
-> "Are concurrency and parallelism the same thing?"
+"Are concurrency and parallelism the same thing?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════════╗
@@ -829,19 +767,7 @@ flowchart TD
 ```
 
 **Flow:**
-- THE JUGGLING ANALOGY (Rob Pike's definition):
-- ↓
-- CONCURRENCY = Dealing with multiple things at once.
-- ↓
-- One juggler with 3 balls — only holds ONE at a time
-- ↓
-- Switches rapidly between them (interleaving)
-- ↓
-- STRUCTURE of the program
-- ↓
-- PARALLELISM = Doing multiple things at once.
-- ↓
-- THREE jugglers, each with 1 ball — truly simultaneous
+1. THE JUGGLING ANALOGY (Rob Pike's definition): CONCURRENCY = Dealing with multiple things at once. One juggler with 3 balls — only holds ONE at a time Switches rapidly between them (interleaving) STRUCTURE of the program PARALLELISM = Doing multiple things at once. THREE jugglers, each with 1 ball — truly simultaneous
 
 ```mermaid
 flowchart TD
@@ -866,14 +792,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 10. Concurrency vs Parallelism: The Definition That Matters**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 10. Concurrency vs Parallelism: The Definition That Matters**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 11. Deadlock, Livelock, Starvation: The Three Concurrency Diseases
 
@@ -899,15 +825,7 @@ flowchart TD
 ```
 
 **Flow:**
-- other's to eat. Neither releases. Both starve forever.
-- ↓
-- Both STOPPED. No progress.
-- ↓
-- Fix: Lock ordering, timeout, lock-free algorithms
-- ↓
-- Both MOVING but still no progress.
-- ↓
-- Fix: Fair locks, priority aging, FIFO scheduling
+1. other's to eat. Neither releases. Both starve forever. Both STOPPED. No progress. Fix: Lock ordering, timeout, lock-free algorithms Both MOVING but still no progress. Fix: Fair locks, priority aging, FIFO scheduling
 
 ```mermaid
 flowchart TD
@@ -957,19 +875,13 @@ flowchart TD
 ```
 
 **Flow:**
-- DECISION MATRIX
-- ↓
-- Problem Best Model
-- ↓
-- High-concurrency web Virtual threads (Java 21) or
-- ↓
-- server (IO-bound) Go goroutines or Node.js event loop
-- ↓
-- CPU-intensive computation OS threads / parallel streams
-- ↓
-- (number crunching) Rust rayon / Java ForkJoinPool
-- ↓
-- UI responsiveness Event loop (JS) / Main thread +
+1. DECISION MATRIX
+2. Problem Best Model
+3. High-concurrency web Virtual threads (Java 21) or
+4. server (IO-bound) Go goroutines or Node.js event loop
+5. CPU-intensive computation OS threads / parallel streams
+6. (number crunching) Rust rayon / Java ForkJoinPool
+7. UI responsiveness Event loop (JS) / Main thread +
 
 ```mermaid
 flowchart TD
@@ -1011,8 +923,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Summary Comparison Table**
->>
+🔬 **Section Challenge — Summary Comparison Table**
+>
 
 ## Interview Quick-Fire: Concurrency Freeze Busters
 

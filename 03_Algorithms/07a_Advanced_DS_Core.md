@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](07b_Advanced_DS_Patterns.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](07b_Advanced_DS_Patterns.md)
 
 ---
 
@@ -10,15 +10,13 @@
 
 # 🔬 PART 0: DEEP INTERNALS - HOW ADVANCED DATA STRUCTURES WORK AT MEMORY LEVEL
 
+ADVANCED DATA STRUCTURES AT THE HARDWARE LEVEL - MINUTE DETAILS
 
-> ADVANCED DATA STRUCTURES AT THE HARDWARE LEVEL - MINUTE DETAILS
->
-> Understanding the PHYSICAL implementation of these powerful structures:
-> - Memory layout and allocation patterns
-> - Cache behavior and optimization techniques
-> - Bit manipulation in Fenwick trees
-> - Why certain structures are faster in practice
->
+Understanding the PHYSICAL implementation of these powerful structures:
+- Memory layout and allocation patterns
+- Cache behavior and optimization techniques
+- Bit manipulation in Fenwick trees
+- Why certain structures are faster in practice
 
 
 ## 🧠 Trie Node Memory Layout
@@ -128,8 +126,7 @@ n = 1M → log₂(1M) ≈ 20 cache misses per query
 
 ## Fenwick Tree (Bit) - The Magic Of Binary
 
-
-> 💡 **KEY INSIGHT: Use lowest set bit for range calculation!**
+💡 **KEY INSIGHT: Use lowest set bit for range calculation!**
 LOWEST SET BIT (LSB):
 For number i, LSB = i & (-i)
 
@@ -182,21 +179,16 @@ i = 4:  BIT[4] += 5,  i += LSB(4) = 4+4 = 8
 i = 8:  BIT[8] += 5,  i += LSB(8) = 8+8 = 16 > n, STOP
 Updates all ranges that include index 3!
 
-
-
-
 ## 📌 Union — Find — Path Compression Visualization
 
+🔬 **Section Challenge — 📌 Union — Find — Path Compression Visualization**
 
+**Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 📌 Union — Find — Path Compression Visualization**
->
-> **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
-> <details><summary>Answer</summary>
->
-> Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-> </details>
->
+Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
+</details>
+
 
 ## Union-Find - Path Compression Deep Dive
 
@@ -250,16 +242,14 @@ Now find(7) is O(1)!
 - α(n) ≤ 4 for any practical n (even n = atoms in universe)
 - Effectively O(1) per operation!
 
+🔬 **Section Challenge — Union-Find - Path Compression Deep Dive**
 
+**Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Union-Find - Path Compression Deep Dive**
->
-> **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
-> <details><summary>Answer</summary>
->
-> Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-> </details>
->
+Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
+</details>
+
 
 ## 🧠 Skip List — Probabilistic Memory Layout
 
@@ -332,11 +322,9 @@ Now find(7) is O(1)!
 ```
 
 **Flow:**
-- SKIP LIST NODE (value = 25, level = 3): / value: 25 for
-- ↓
-- Start at head, level 4 / Level 4: head
-- ↓
-- nil (no nodes)
+1. SKIP LIST NODE (value = 25, level = 3): / value: 25 for
+2. Start at head, level 4 / Level 4: head
+3. nil (no nodes)
 
 ```mermaid
 flowchart TD
@@ -347,11 +335,7 @@ flowchart TD
 
 ## 📊 Bloom Filter — Bit Array Internals
 
-
-
-
 ## Bloom Filter - Probabilistic Membership
-
 
 **Memory Layout**:
 Bit array (m = 32 bits for example):
@@ -392,11 +376,7 @@ OPTIMAL k = (m/n) × ln(2) ≈ 0.693 × (m/n)
 
 ## 🔗 LRU Cache — Doubly Linked List + Hashmap
 
-
-
-
 ## Lru Cache - O(1) Get And Put
-
 
 **Structure**:
 1. HashMap<Key, Node>: O(1) lookup by key
@@ -431,8 +411,8 @@ GET(key):
 2. If found, move node to head: O(1)
 3. Return value
 PUT(key, value):
-1. If key exists: update value, move to head
-2. If key doesn't exist:
+4. If key exists: update value, move to head
+5. If key doesn't exist:
 a. Create new node, add to head
 b. Add to HashMap
 c. If over capacity, remove tail node (LRU item)
@@ -492,29 +472,18 @@ LRU CACHE:
 ```
 
 **Flow:**
-- TRIE:
-- ↓
-- Autocomplete in Google Search
-- ↓
-- TRIE:
-- ↓
-- Spell checkers
-- ↓
-- TRIE:
-- ↓
-- IP routing tables
-- ↓
-- TRIE:
-- ↓
-- DNA sequence matching
-- ↓
-- SEGMENT TREE:
-- ↓
-- Range queries in databases
-- ↓
-- SEGMENT TREE:
-- ↓
-- Graphics rendering (visibility)
+1. TRIE:
+2. Autocomplete in Google Search
+3. TRIE:
+4. Spell checkers
+5. TRIE:
+6. IP routing tables
+7. TRIE:
+8. DNA sequence matching
+9. SEGMENT TREE:
+10. Range queries in databases
+11. SEGMENT TREE:
+12. Graphics rendering (visibility)
 
 ```mermaid
 flowchart TD
@@ -1166,4 +1135,4 @@ class SegmentTree {
 
 ---
 
-> **Navigation**: [< Previous](06e_Algorithm_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07b_Advanced_DS_Patterns.md)
+**Navigation**: [< Previous](06e_Algorithm_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07b_Advanced_DS_Patterns.md)

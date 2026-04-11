@@ -1,8 +1,8 @@
-> **Navigation**: [← Fundamentals](04_Networking_Complete.md) | [Index](00_INDEX.md) | [Next → TCP/UDP](06_TCP_UDP_Deep_Dive.md)
+**Navigation**: [← Fundamentals](04_Networking_Complete.md) | [Index](00_INDEX.md) | [Next → TCP/UDP](06_TCP_UDP_Deep_Dive.md)
 
 # 🌍 Chapter 5: IP Addressing, Subnets & Routing — The Internet's Postal System
 
-> _"Every device on the internet has an address. Understanding IP addressing is like understanding how the postal system works — without it, you can't send or receive anything."_
+_"Every device on the internet has an address. Understanding IP addressing is like understanding how the postal system works — without it, you can't send or receive anything."_
 
 ---
 
@@ -238,8 +238,8 @@ PROBLEMS WITH NAT:
 
 
 
-> 🔬 **Section Challenge — NAT (Network Address Translation) — The Deep Dive**
->>
+🔬 **Section Challenge — NAT (Network Address Translation) — The Deep Dive**
+>
 
 # PART 4: ARP (Address Resolution Protocol) — IP → MAC
 
@@ -714,4 +714,4 @@ DNS uses hierarchical caching. Each DNS record has a TTL (time-to-live). When yo
 </details>
 
 
-> **Navigation**: [← Fundamentals](04_Networking_Complete.md) | [Index](00_INDEX.md) | [Next → TCP/UDP](06_TCP_UDP_Deep_Dive.md)
+**Navigation**: [← Fundamentals](04_Networking_Complete.md) | [Index](00_INDEX.md) | [Next → TCP/UDP](06_TCP_UDP_Deep_Dive.md)

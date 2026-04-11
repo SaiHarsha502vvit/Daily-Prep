@@ -1,6 +1,6 @@
-> **Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Knapsack_Family.md)
+**Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Knapsack_Family.md)
 
-> **Pattern 22** | [Prev](21_Intervals_Pattern.md) | [Index](../00_MASTER_INDEX.md)
+**Pattern 22** | [Prev](21_Intervals_Pattern.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -28,25 +28,16 @@
 ```
 
 **Flow:**
-- CYCLIC SORT PATTERN
-- ↓
-- WHEN YOU SEE: 'Find the missing/duplicate number in ran
-- ↓
-- [1..n] using O(1) extra space'
-- ↓
-- CYCLIC SORT.
-- ↓
-- [1..n] using O(1) extra space'
-- ↓
-- CYCLIC SORT.
-- ↓
-- CORE IDEA: Numbers in range [1..n] or [0..n] should eac
-- ↓
-- sit at their 'correct' index. Place each number at its
-- ↓
-- index, then scan for mismatches.
-- ↓
-- TEMPLATE:
+1. CYCLIC SORT PATTERN
+2. WHEN YOU SEE: 'Find the missing/duplicate number in ran
+3. [1..n] using O(1) extra space'
+4. CYCLIC SORT.
+5. [1..n] using O(1) extra space'
+6. CYCLIC SORT.
+7. CORE IDEA: Numbers in range [1..n] or [0..n] should eac
+8. sit at their 'correct' index. Place each number at its
+9. index, then scan for mismatches.
+10. TEMPLATE:
 
 ```mermaid
 flowchart TD
@@ -152,13 +143,10 @@ flowchart TD
 ```
 
 **Flow:**
-- for (int i = 0; i < n; i++) { / while (nums[i] != nu
-- ↓
-- for (int i = 0; i < n; i++) { / if (nums[i] != i + 1
-- ↓
-- COMMON MISTAKES / 1. Off-by-one: [1..n]
-- ↓
-- index = val-1
+1. for (int i = 0; i < n; i++) { / while (nums[i] != nu
+2. for (int i = 0; i < n; i++) { / if (nums[i] != i + 1
+3. COMMON MISTAKES / 1. Off-by-one: [1..n]
+4. index = val-1
 
 ```mermaid
 flowchart TD
@@ -196,29 +184,18 @@ SOLUTION:
 ```
 
 **Flow:**
-- Input: [3, 0, 1]
-- ↓
-- Output: 2
-- ↓
-- Input: [9,6,4,2,3,5,7,0,1]
-- ↓
-- Output: 8
-- ↓
-- i=0: nums[0]=3, correct idx=3 (out of bounds for s
-- ↓
-- skip
-- ↓
-- i=1: nums[1]=0, correct idx=0, swap
-- ↓
-- [0, 3, 1]
-- ↓
-- nums[1]=3, correct idx=3 (out of bounds)
-- ↓
-- skip
-- ↓
-- i=2: nums[2]=1, correct idx=1, swap
-- ↓
-- [0, 1, 3]
+1. Input: [3, 0, 1]
+2. Output: 2
+3. Input: [9,6,4,2,3,5,7,0,1]
+4. Output: 8
+5. i=0: nums[0]=3, correct idx=3 (out of bounds for s
+6. skip
+7. i=1: nums[1]=0, correct idx=0, swap
+8. [0, 3, 1]
+9. nums[1]=3, correct idx=3 (out of bounds)
+10. skip
+11. i=2: nums[2]=1, correct idx=1, swap
+12. [0, 1, 3]
 
 ```mermaid
 flowchart TD
@@ -296,9 +273,8 @@ SOLUTION:
 ```
 
 **Flow:**
-- Input: [4,3,2,7,8,2,3,1]
-- ↓
-- Output: [5, 6]
+1. Input: [4,3,2,7,8,2,3,1]
+2. Output: [5, 6]
 
 ```mermaid
 flowchart LR
@@ -350,9 +326,8 @@ SOLUTION:
 ```
 
 **Flow:**
-- Input: [4,3,2,7,8,2,3,1]
-- ↓
-- Output: [2, 3]
+1. Input: [4,3,2,7,8,2,3,1]
+2. Output: [2, 3]
 
 ```mermaid
 flowchart LR
@@ -422,29 +397,18 @@ SOLUTION:
 ```
 
 **Flow:**
-- Input: [3,4,-1,1]
-- ↓
-- Output: 2
-- ↓
-- Input: [7,8,9,11,12]
-- ↓
-- Output: 1
-- ↓
-- i=0: nums[0]=3, correctIdx=2, swap
-- ↓
-- [-1, 4, 3, 1]
-- ↓
-- nums[0]=-1, out of range
-- ↓
-- skip
-- ↓
-- i=1: nums[1]=4, correctIdx=3, swap
-- ↓
-- [-1, 1, 3, 4]
-- ↓
-- nums[1]=1, correctIdx=0, swap
-- ↓
-- [1, -1, 3, 4]
+1. Input: [3,4,-1,1]
+2. Output: 2
+3. Input: [7,8,9,11,12]
+4. Output: 1
+5. i=0: nums[0]=3, correctIdx=2, swap
+6. [-1, 4, 3, 1]
+7. nums[0]=-1, out of range
+8. skip
+9. i=1: nums[1]=4, correctIdx=3, swap
+10. [-1, 1, 3, 4]
+11. nums[1]=1, correctIdx=0, swap
+12. [1, -1, 3, 4]
 
 ```mermaid
 flowchart TD
@@ -545,11 +509,9 @@ APPROACH 2: Floyd's Cycle Detection (O(1) space, no modification)
 ```
 
 **Flow:**
-- Treat array as linked list: index
-- ↓
-- value
-- ↓
-- next index.
+1. Treat array as linked list: index
+2. value
+3. next index.
 
 ```mermaid
 flowchart LR
@@ -600,9 +562,8 @@ SOLUTION:
 ```
 
 **Flow:**
-- Input: [1,2,2,4]
-- ↓
-- Output: [2, 3]
+1. Input: [1,2,2,4]
+2. Output: [2, 3]
 
 ```mermaid
 flowchart LR
@@ -666,19 +627,13 @@ COMPLEXITY: Time O(n) | Space O(1)
 ```
 
 **Flow:**
-- CYCLIC SORT CHEATSHEET
-- ↓
-- PROBLEM RANGE SCAN FOR LC#
-- ↓
-- Missing Number [0..n] nums[i] ≠ i 268
-- ↓
-- All Disappeared [1..n] nums[i] ≠ i+1 448
-- ↓
-- All Duplicates [1..n] nums[i] ≠ i+1 442
-- ↓
-- First Missing +ve [1..n] nums[i] ≠ i+1 41
-- ↓
-- Find Duplicate [1..n] nums[i] ≠ i+1 287
+1. CYCLIC SORT CHEATSHEET
+2. PROBLEM RANGE SCAN FOR LC#
+3. Missing Number [0..n] nums[i] ≠ i 268
+4. All Disappeared [1..n] nums[i] ≠ i+1 448
+5. All Duplicates [1..n] nums[i] ≠ i+1 442
+6. First Missing +ve [1..n] nums[i] ≠ i+1 41
+7. Find Duplicate [1..n] nums[i] ≠ i+1 287
 
 ```mermaid
 flowchart TD
@@ -703,14 +658,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 🔄 Summary: Cyclic Sort Decision Table**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 🔄 Summary: Cyclic Sort Decision Table**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 CURATED PRACTICE PROBLEMS
 
@@ -969,4 +924,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 </details>
 
 
-> **Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md)

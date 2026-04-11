@@ -1,6 +1,6 @@
 # 🐧 Linux CLI & Shell — Complete Guide
 
-> **Navigation**: [< Git](01_Git_Version_Control.md) | [Index](00_INDEX.md) | [Next: Docker >](03_Docker_Containers.md)
+**Navigation**: [< Git](01_Git_Version_Control.md) | [Index](00_INDEX.md) | [Next: Docker >](03_Docker_Containers.md)
 
 ---
 
@@ -20,9 +20,7 @@ manage ANY production application.
 ```
 
 **Flow:**
-- If you can't use Linux CLI
-- ↓
-- you can't deploy, debug, or
+1. If you can't use Linux CLI you can't deploy, debug, or
 
 ```mermaid
 flowchart LR
@@ -49,19 +47,8 @@ Today: Powers everything from your phone to Mars rovers
 ```
 
 **Flow:**
-- 1991: Linus Torvalds (Finnish CS student, age 21)
-- ↓
-- 'I'm doing a free operating system (just a hobby)'
-- ↓
-- Inspired by: UNIX (1969, Bell Labs)
-- ↓
-- Expensive, proprietary
-- ↓
-- GNU Project (1983, Richard Stallman)
-- ↓
-- Free tools but NO KERNEL
-- ↓
-- Linux = GNU tools + Linux kernel = FREE complete OS
+1. 1991: Linus Torvalds (Finnish CS student, age 21)
+2. 'I'm doing a free operating system (just a hobby)' Inspired by: UNIX (1969, Bell Labs) Expensive, proprietary GNU Project (1983, Richard Stallman) Free tools but NO KERNEL Linux = GNU tools + Linux kernel = FREE complete OS
 
 ```mermaid
 flowchart TD
@@ -86,14 +73,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — WHO: Origin Story**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — WHO: Origin Story**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # WHAT: Core Concepts
 
@@ -133,9 +120,8 @@ Shell = text-based interface to the operating system
 ```
 
 **Flow:**
-- SHELL / (Interpreter) / Translates / commands to / kern
-- ↓
-- KERNEL / Controls: / - CPU / - Memory / - Disk / - Netw
+1. SHELL / (Interpreter) / Translates / commands to / kern
+2. KERNEL / Controls: / - CPU / - Memory / - Disk / - Netw
 
 ```mermaid
 flowchart TD
@@ -176,29 +162,18 @@ KEY INSIGHT: Everything in Linux is a FILE
 ```
 
 **Flow:**
-- /bin/
-- ↓
-- Essential commands (ls, cp, cat)
-- ↓
-- /sbin/
-- ↓
-- System admin commands (iptables, mount)
-- ↓
-- /etc/
-- ↓
-- Configuration files (ALL config lives here)
-- ↓
-- /home/
-- ↓
-- User home directories
-- ↓
-- /var/
-- ↓
-- Variable data (logs, databases)
-- ↓
-- /tmp/
-- ↓
-- Temporary files (cleared on reboot)
+1. /bin/
+2. Essential commands (ls, cp, cat)
+3. /sbin/
+4. System admin commands (iptables, mount)
+5. /etc/
+6. Configuration files (ALL config lives here)
+7. /home/
+8. User home directories
+9. /var/
+10. Variable data (logs, databases)
+11. /tmp/
+12. Temporary files (cleared on reboot)
 
 ```mermaid
 flowchart TD
@@ -248,20 +223,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — File System Hierarchy**
->
-> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-> <details><summary>Answer</summary>
->
-> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-> <details><summary>Answer</summary>
->
-> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
-> </details>
->
+🔬 **Section Challenge — File System Hierarchy**
+
+**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+<details><summary>Answer</summary>
+
+`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+</details>
+
+**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+<details><summary>Answer</summary>
+
+1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+</details>
+
 
 # HOW: Essential Commands (Progressive)
 
@@ -540,14 +515,14 @@ deploy "production"
 ```bash
 
 
-> 🔬 **Section Challenge — Debugging a Production Issue**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Debugging a Production Issue**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 1. SSH into server
 ssh admin@prod-server-01
@@ -577,14 +552,14 @@ ss -tlnp | grep 8080
 ```bash
 
 
-> 🔬 **Section Challenge — Log Analysis One-Liners**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Log Analysis One-Liners**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # Count errors per hour
 grep "ERROR" app.log | awk '{print $1, $2}' | cut -c1-13 | sort | uniq -c
@@ -638,14 +613,14 @@ Find the most common error message
 
 
 
-> 🔬 **Section Challenge — Exercise 2: Text Processing Pipeline**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Exercise 2: Text Processing Pipeline**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Exercise 3: Write a Backup Script
 ```
@@ -658,7 +633,7 @@ Script that:
 
 ---
 
-> **Next Chapter**: [Docker & Containers →](03_Docker_Containers.md)
+**Next Chapter**: [Docker & Containers →](03_Docker_Containers.md)
 
 
 ---

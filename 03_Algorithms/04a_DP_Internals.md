@@ -1,5 +1,5 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04b_DP_Fundamentals.md)
-> 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04b_DP_Fundamentals.md)
+🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
 
 ---
 
@@ -9,26 +9,24 @@
 
 ---
 
+🔬 **Section Challenge — From Recursion to Optimal Solutions**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — From Recursion to Optimal Solutions**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 # 🔬 PART 0: DEEP INTERNALS - HOW DP ACTUALLY WORKS AT CPU/MEMORY LEVEL
 
@@ -156,9 +154,6 @@ Why and what are the 3 fixes?
 │                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
-
-
-
 ## SPACE OPTIMIZATION - ROLLING ARRAY TECHNIQUE
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -257,11 +252,9 @@ return dp[n];
 ```
 
 **Flow:**
-- MEMORY SAVINGS:
-- ↓
-- Array Size Full 2D Two Rows Single Row
-- ↓
-- Savings baseline 500x less 1000x less
+1. MEMORY SAVINGS:
+2. Array Size Full 2D Two Rows Single Row
+3. Savings baseline 500x less 1000x less
 
 ```mermaid
 flowchart TD
@@ -272,13 +265,7 @@ flowchart TD
     N2 --> N3
 ```
 
-
-
-
-
-
 ## 🖥️ Memoization vs Tabulation — CPU Perspective
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -349,19 +336,8 @@ flowchart TD
 ```
 
 **Flow:**
-- TOP-DOWN VS BOTTOM-UP: HARDWARE DIFFERENCES
-- ↓
-- TOP-DOWN (MEMOIZATION):
-- ↓
-- int fib(int n, int[] memo) {
-- ↓
-- memo[n] = fib(n-1, memo) + fib(n-2, memo);
-- ↓
-- return memo[n];
-- ↓
-- CPU Operations per call:
-- ↓
-- • Function call overhead: ~15-30 cycles
+1. TOP-DOWN VS BOTTOM-UP: HARDWARE DIFFERENCES
+2. TOP-DOWN (MEMOIZATION): int fib(int n, int[] memo) { memo[n] = fib(n-1, memo) + fib(n-2, memo); return memo[n]; CPU Operations per call: • Function call overhead: ~15-30 cycles
 
 ```mermaid
 flowchart TD
@@ -382,10 +358,7 @@ flowchart TD
     N7 --> N8
 ```
 
-
-
 ## 🧠 State Representation — Memory Efficiency
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -423,25 +396,11 @@ flowchart TD
 ```
 
 **Flow:**
-- STATE REPRESENTATION TECHNIQUES
-- ↓
-- TECHNIQUE 1: BITMASK DP
-- ↓
-- Instead of boolean[] visited
-- ↓
-- use int bitmask
-- ↓
-- Instead of boolean[] visited
-- ↓
-- use int bitmask
-- ↓
-- Example: Traveling Salesman (n ≤ 20 cities)
-- ↓
-- int[][] dp = new int[1 << n][n]; // dp[mask][last
-- ↓
-- Memory for n=20:
-- ↓
-- • Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!)
+1. STATE REPRESENTATION TECHNIQUES
+2. TECHNIQUE 1: BITMASK DP
+3. Instead of boolean[] visited use int bitmask
+4. Example: Traveling Salesman (n ≤ 20 cities)
+5. int[][] dp = new int[1 << n][n]; // dp[mask][last Memory for n=20: • Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!)
 
 ```mermaid
 flowchart TD
@@ -461,7 +420,6 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
-
 
 ```java
 // Compress coordinates
@@ -491,17 +449,12 @@ for (int i = 0; i < sorted.length; i++) {
 ```
 
 **Flow:**
-- TECHNIQUE 3: STATE ENCODING
-- ↓
-- Combine multiple small states into one integer
-- ↓
-- Example: Track (position, direction, speed) where:
-- ↓
-- • position: 0-999
-- ↓
-- • direction: 0-3
-- ↓
-- • speed: 0-9
+1. TECHNIQUE 3: STATE ENCODING
+2. Combine multiple small states into one integer
+3. Example: Track (position, direction, speed) where:
+4. • position: 0-999
+5. • direction: 0-3
+6. • speed: 0-9
 
 ```mermaid
 flowchart TD
@@ -517,7 +470,6 @@ flowchart TD
     N4 --> N5
     N5 --> N6
 ```
-
 
 ```java
 // Instead of: int[][][] dp = new int[1000][4][10];
@@ -544,10 +496,7 @@ int decodeSpd(int state) { return state % 10; }
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
-
 ## 📌 DP Transition Cost Analysis
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -578,19 +527,13 @@ int decodeSpd(int state) { return state % 10; }
 ```
 
 **Flow:**
-- TRANSITION OPERATION COSTS
-- ↓
-- COMMON DP TRANSITION OPERATIONS AND THEIR COSTS:
-- ↓
-- Operation CPU Cycles Notes
-- ↓
-- dp[i] = dp[i-1] + 1 3-5 Cache hit likely
-- ↓
-- dp[i][j] = dp[i-1][j-1] 5-10 Depends on cache
-- ↓
-- dp[i] = max(dp[i], dp[j] + val) 4-6 Comparison + maybe
-- ↓
-- dp[i] = min(dp[i], dp[j] + val) 4-6 Same as max
+1. TRANSITION OPERATION COSTS
+2. COMMON DP TRANSITION OPERATIONS AND THEIR COSTS:
+3. Operation CPU Cycles Notes
+4. dp[i] = dp[i-1] + 1 3-5 Cache hit likely
+5. dp[i][j] = dp[i-1][j-1] 5-10 Depends on cache
+6. dp[i] = max(dp[i], dp[j] + val) 4-6 Comparison + maybe
+7. dp[i] = min(dp[i], dp[j] + val) 4-6 Same as max
 
 ```mermaid
 flowchart TD
@@ -610,7 +553,6 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
-
 
 ```java
 // SLOW: Modulo on every operation
@@ -644,13 +586,10 @@ for (int i = 2; i <= n; i++) {
 ```
 
 **Flow:**
-- BENCHMARK (n=10^7 Fibonacci mod 10^9+7):
-- ↓
-- • With % every iter: 180 ms
-- ↓
-- • With conditional: 65 ms
-- ↓
-- • ~2.8x speedup!
+1. BENCHMARK (n=10^7 Fibonacci mod 10^9+7):
+2. • With % every iter: 180 ms
+3. • With conditional: 65 ms
+4. • ~2.8x speedup!
 
 ```mermaid
 flowchart TD
@@ -663,10 +602,7 @@ flowchart TD
     N3 --> N4
 ```
 
-
-
 ## 🧠 Memory Allocation Patterns
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -678,9 +614,8 @@ flowchart TD
 ```
 
 **Flow:**
-- DP ARRAY ALLOCATION STRATEGIES
-- ↓
-- STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)
+1. DP ARRAY ALLOCATION STRATEGIES
+2. STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)
 
 ```mermaid
 flowchart TD
@@ -688,7 +623,6 @@ flowchart TD
     N2["STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)"]
     N1 --> N2
 ```
-
 
 ```java
 // GOOD: Single allocation
@@ -723,13 +657,10 @@ for (int i = 0; i < tests; i++) {
 ```
 
 **Flow:**
-- ALLOCATION COSTS:
-- ↓
-- • new int[1000]: ~50-100 ns
-- ↓
-- • new int[1000000]: ~500-2000 ns
-- ↓
-- STRATEGY 2: LAZY INITIALIZATION (When sparse)
+1. ALLOCATION COSTS:
+2. • new int[1000]: ~50-100 ns
+3. • new int[1000000]: ~500-2000 ns
+4. STRATEGY 2: LAZY INITIALIZATION (When sparse)
 
 ```mermaid
 flowchart TD
@@ -741,7 +672,6 @@ flowchart TD
     N2 --> N3
     N3 --> N4
 ```
-
 
 ```java
 // When most values stay at default, don't fill!
@@ -774,19 +704,13 @@ int[] dp = new int[n + 1];
 ```
 
 **Flow:**
-- STRATEGY 3: USE PRIMITIVES, NOT OBJECTS
-- ↓
-- Storage Memory per element Access time
-- ↓
-- int[] 4 bytes ~3-4 cycles
-- ↓
-- Integer[] 16+ bytes ~10-15 cycles
-- ↓
-- ArrayList<Integer> 20+ bytes ~15-20 cycles
-- ↓
-- HashMap<Integer,Integer> 48+ bytes ~50-200 cycles
-- ↓
-- Rule: Use primitive arrays for DP whenever possible!
+1. STRATEGY 3: USE PRIMITIVES, NOT OBJECTS
+2. Storage Memory per element Access time
+3. int[] 4 bytes ~3-4 cycles
+4. Integer[] 16+ bytes ~10-15 cycles
+5. ArrayList<Integer> 20+ bytes ~15-20 cycles
+6. HashMap<Integer,Integer> 48+ bytes ~50-200 cycles
+7. Rule: Use primitive arrays for DP whenever possible!
 
 ```mermaid
 flowchart TD
@@ -805,19 +729,14 @@ flowchart TD
     N6 --> N7
 ```
 
-
-
-
 ---
 
-
 ---
-
-
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -844,6 +763,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -878,6 +798,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -940,6 +861,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -974,6 +896,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -986,8 +909,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -1053,5 +974,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [< Previous](03c_Recursion_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04b_DP_Fundamentals.md)
+**Navigation**: [< Previous](03c_Recursion_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04b_DP_Fundamentals.md)

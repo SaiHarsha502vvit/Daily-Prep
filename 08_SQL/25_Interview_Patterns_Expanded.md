@@ -1,23 +1,23 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Database_Internals.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Database_Internals.md)
 
 # SQL Interview — Top 50 Problems & Patterns
 
 ## How to Use This Guide
 
 
-> This is your SQL interview ready-reckoner.
->
-> 50 problems organized by pattern, not by difficulty.
-> Each problem has: Schema, Question, Solution, Explanation.
-> Focus on PATTERNS — once you learn the pattern, you can
-> solve any variation.
->
-> COMMON INTERVIEW DATASETS (used throughout):
-> - Employees (id, name, dept_id, salary, hire_date, mgr_id)
-> - Departments (id, name, location)
-> - Orders (id, customer_id, amount, order_date, status)
-> - Products (id, name, category, price, stock)
-> - Students (id, name, score, class)
+This is your SQL interview ready-reckoner.
+
+50 problems organized by pattern, not by difficulty.
+Each problem has: Schema, Question, Solution, Explanation.
+Focus on PATTERNS — once you learn the pattern, you can
+solve any variation.
+
+COMMON INTERVIEW DATASETS (used throughout):
+- Employees (id, name, dept_id, salary, hire_date, mgr_id)
+- Departments (id, name, location)
+- Orders (id, customer_id, amount, order_date, status)
+- Products (id, name, category, price, stock)
+- Students (id, name, score, class)
 
 
 ---
@@ -279,17 +279,12 @@ FROM employees;
 ```
 
 **Flow:**
-- ROW_NUMBER vs RANK vs DENSE_RANK
-- ↓
-- Salary: 100, 100, 90, 80
-- ↓
-- ROW_NUMBER: 1, 2, 3, 4 (unique, arbitrary for ties)
-- ↓
-- RANK: 1, 1, 3, 4 (ties get same rank, gaps after)
-- ↓
-- DENSE_RANK: 1, 1, 2, 3 (ties get same rank, NO gaps)
-- ↓
-- Use ROW_NUMBER for pagination, DENSE_RANK for 'Nth high
+1. ROW_NUMBER vs RANK vs DENSE_RANK
+2. Salary: 100, 100, 90, 80
+3. ROW_NUMBER: 1, 2, 3, 4 (unique, arbitrary for ties)
+4. RANK: 1, 1, 3, 4 (ties get same rank, gaps after)
+5. DENSE_RANK: 1, 1, 2, 3 (ties get same rank, NO gaps)
+6. Use ROW_NUMBER for pagination, DENSE_RANK for 'Nth high
 
 ```mermaid
 flowchart TD
@@ -442,20 +437,20 @@ GROUP BY product_name;
 
 
 
-> 🔬 **Section Challenge — Pattern 3: Window Functions (Q13-Q20)**
->
-> **Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-> <details><summary>Answer</summary>
->
-> Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-> </details>
->
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
->
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+🔬 **Section Challenge — Pattern 3: Window Functions (Q13-Q20)**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## Pattern 4: Joins & Subqueries (Q21-Q30)
 
@@ -619,20 +614,20 @@ JOIN employees e2 ON e1.dept_id = e2.dept_id AND e1.id < e2.id;
 
 
 
-> 🔬 **Section Challenge — Pattern 4: Joins & Subqueries (Q21-Q30)**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — Pattern 4: Joins & Subqueries (Q21-Q30)**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 
 ## Pattern 5: Data Modification & Transactions (Q31-Q37)
 
@@ -722,15 +717,11 @@ COMMIT;
 ```
 
 **Flow:**
-- Isolation Level Dirty Read Non-Repeatable Phantom
-- ↓
-- READ UNCOMMITTED Yes Yes Yes
-- ↓
-- READ COMMITTED No Yes Yes
-- ↓
-- REPEATABLE READ No No Yes
-- ↓
-- SERIALIZABLE No No No
+1. Isolation Level Dirty Read Non-Repeatable Phantom
+2. READ UNCOMMITTED Yes Yes Yes
+3. READ COMMITTED No Yes Yes
+4. REPEATABLE READ No No Yes
+5. SERIALIZABLE No No No
 
 ```mermaid
 flowchart TD
@@ -784,14 +775,14 @@ WHERE id = 1 AND version = 5;  -- fails if someone else updated
 
 
 
-> 🔬 **Section Challenge — Pattern 5: Data Modification & Transactions (Q31-Q37)**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — Pattern 5: Data Modification & Transactions (Q31-Q37)**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## Pattern 6: Performance & Indexing (Q38-Q44)
 
@@ -823,43 +814,25 @@ EXPLAIN SELECT * FROM orders WHERE customer_id = 42 AND status = 'SHIPPED';
 ```
 
 **Flow:**
-- EXPLAIN type (best
-- ↓
-- worst):
-- ↓
-- const
-- ↓
-- eq_ref
-- ↓
-- ref
-- ↓
-- range
-- ↓
-- index
-- ↓
-- ALL
-- ↓
-- const
-- ↓
-- eq_ref
-- ↓
-- ref
-- ↓
-- range
-- ↓
-- index
-- ↓
-- ALL
-- ↓
-- const: WHERE primary_key = 42
-- ↓
-- eq_ref: JOIN on primary key (unique match)
-- ↓
-- ref: JOIN on non-unique index
-- ↓
-- range: WHERE price BETWEEN 10 AND 50
-- ↓
-- index: Full index scan (better than ALL but still slow)
+1. EXPLAIN type (best
+2. worst):
+3. const
+4. eq_ref
+5. ref
+6. range
+7. index
+8. ALL
+9. const
+10. eq_ref
+11. ref
+12. range
+13. index
+14. ALL
+15. const: WHERE primary_key = 42
+16. eq_ref: JOIN on primary key (unique match)
+17. ref: JOIN on non-unique index
+18. range: WHERE price BETWEEN 10 AND 50
+19. index: Full index scan (better than ALL but still slow)
 
 ```mermaid
 flowchart TD
@@ -1007,19 +980,13 @@ CREATE TABLE orders (
 ```
 
 **Flow:**
-- Query is slow? Follow this checklist:
-- ↓
-- 1. Run EXPLAIN — is it ALL (full table scan)?
-- ↓
-- 2. Is there an index on the WHERE/JOIN columns?
-- ↓
-- 3. Is a function breaking index usage?
-- ↓
-- 4. Is the query returning too many rows? (add LIMIT)
-- ↓
-- 5. Is SELECT * fetching unnecessary columns?
-- ↓
-- 6. Is there an N+1 query problem in the app code?
+1. Query is slow? Follow this checklist:
+2. 1. Run EXPLAIN — is it ALL (full table scan)?
+3. 2. Is there an index on the WHERE/JOIN columns?
+4. 3. Is a function breaking index usage?
+5. 4. Is the query returning too many rows? (add LIMIT)
+6. 5. Is SELECT * fetching unnecessary columns?
+7. 6. Is there an N+1 query problem in the app code?
 
 ```mermaid
 flowchart TD
@@ -1196,19 +1163,13 @@ JOIN logs l3 ON l3.id = l1.id + 2 AND l3.value = l1.value;
 ```
 
 **Flow:**
-- PATTERN SQL TOOL
-- ↓
-- Nth highest/lowest DENSE_RANK() or LIMIT OFFSET
-- ↓
-- Top N per group RANK() PARTITION BY
-- ↓
-- Running total SUM() OVER (ORDER BY ...)
-- ↓
-- Moving average AVG() OVER (ROWS BETWEEN)
-- ↓
-- Previous/Next row LAG() / LEAD()
-- ↓
-- Compare with previous period LAG() with date grouping
+1. PATTERN SQL TOOL
+2. Nth highest/lowest DENSE_RANK() or LIMIT OFFSET
+3. Top N per group RANK() PARTITION BY
+4. Running total SUM() OVER (ORDER BY ...)
+5. Moving average AVG() OVER (ROWS BETWEEN)
+6. Previous/Next row LAG() / LEAD()
+7. Compare with previous period LAG() with date grouping
 
 ```mermaid
 flowchart TD

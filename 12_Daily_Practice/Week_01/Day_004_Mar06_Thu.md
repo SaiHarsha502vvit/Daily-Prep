@@ -79,9 +79,7 @@ OPTIMAL: Kadane's Algorithm → O(n)  (next block!)
 ```
 
 **Flow:**
-- OPTIMAL: Kadane's Algorithm
-- ↓
-- O(n) (next block!)
+1. OPTIMAL: Kadane's Algorithm O(n) (next block!)
 
 ```mermaid
 flowchart LR
@@ -117,17 +115,12 @@ KEY IDEA: At each position, decide:
 ```
 
 **Flow:**
-- KEY IDEA: At each position, decide:
-- ↓
-- currentMax = max(arr[i], currentMax + arr[i])
-- ↓
-- If currentMax + arr[i] < arr[i]
-- ↓
-- Previous subarray has negative sum, better to start f
-- ↓
-- If currentMax + arr[i] >= arr[i]
-- ↓
-- Extending is beneficial (or at least not harmful)
+1. KEY IDEA: At each position, decide:
+2. currentMax = max(arr[i], currentMax + arr[i])
+3. If currentMax + arr[i] < arr[i]
+4. Previous subarray has negative sum, better to start f
+5. If currentMax + arr[i] >= arr[i]
+6. Extending is beneficial (or at least not harmful)
 
 ```mermaid
 flowchart TD
@@ -315,13 +308,10 @@ DML (today)     → changes data within tables
 ```
 
 **Flow:**
-- DDL (yesterday)
-- ↓
-- changes schema (tables, columns)
-- ↓
-- DML (today)
-- ↓
-- changes data within tables
+1. DDL (yesterday)
+2. changes schema (tables, columns)
+3. DML (today)
+4. changes data within tables
 
 ```mermaid
 flowchart LR

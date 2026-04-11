@@ -39,19 +39,13 @@ AFTER Spring Boot:
 ```
 
 **Flow:**
-- BEFORE Spring Boot (traditional Java web dev):
-- ↓
-- 1. Write 200+ lines of XML configuration
-- ↓
-- 2. Set up a Tomcat server manually
-- ↓
-- 3. Add 30+ library dependencies with exact versions
-- ↓
-- 4. Configure database connection pools
-- ↓
-- 5. Write boilerplate code for every endpoint
-- ↓
-- 2-3 DAYS just to get 'Hello World' running
+1. BEFORE Spring Boot (traditional Java web dev):
+2. Write 200+ lines of XML configuration
+3. Set up a Tomcat server manually
+4. Add 30+ library dependencies with exact versions
+5. Configure database connection pools
+6. Write boilerplate code for every endpoint
+7. 2-3 DAYS just to get 'Hello World' running
 
 ```mermaid
 flowchart TD
@@ -116,29 +110,15 @@ WHY layers?
 ```
 
 **Flow:**
-- Spring Boot Architecture:
-- ↓
-- YOUR APPLICATION
-- ↓
-- Controller Service Repository
-- ↓
-- (REST API)
-- ↓
-- (Business)
-- ↓
-- (Database)
-- ↓
-- (REST API)
-- ↓
-- (Business)
-- ↓
-- (Database)
-- ↓
-- SPRING BOOT AUTO-CONFIG
-- ↓
-- (Tomcat, Jackson, DataSource, Security)
-- ↓
-- SPRING FRAMEWORK
+1. Spring Boot Architecture:
+2. YOUR APPLICATION
+3. Controller Service Repository
+4. (REST API)
+5. (Business)
+6. (Database)
+7. SPRING BOOT AUTO-CONFIG
+8. (Tomcat, Jackson, DataSource, Security)
+9. SPRING FRAMEWORK
 
 ```mermaid
 flowchart TD
@@ -193,9 +173,8 @@ IoC CONTAINER:
 ```
 
 **Flow:**
-- // Switch MySQL
-- ↓
-- PostgreSQL by changing ONE config line
+1. // Switch MySQL
+2. PostgreSQL by changing ONE config line
 
 ```mermaid
 flowchart LR
@@ -274,19 +253,13 @@ STEP 2: Project structure generated:
 ```
 
 **Flow:**
-- STEP 1: Go to https://start.spring.io
-- ↓
-- - Project: Maven
-- ↓
-- - Language: Java
-- ↓
-- - Spring Boot: 3.x
-- ↓
-- - Dependencies: Spring Web, Spring Data JPA, H2 Databas
-- ↓
-- STEP 2: Project structure generated:
-- ↓
-- src/
+1. STEP 1: Go to https://start.spring.io
+2. - Project: Maven
+3. - Language: Java
+4. - Spring Boot: 3.x
+5. - Dependencies: Spring Web, Spring Data JPA, H2 Databas
+6. STEP 2: Project structure generated:
+7. src/
 
 ```mermaid
 flowchart TD
@@ -407,19 +380,13 @@ GET http://localhost:8080/api/products/1
 ```
 
 **Flow:**
-- START: mvn spring-boot:run
-- ↓
-- Tomcat starts on port 8080
-- ↓
-- GET http://localhost:8080/api/products
-- ↓
-- Returns: []
-- ↓
-- POST http://localhost:8080/api/products
-- ↓
-- Body: {'name': 'Laptop', 'price': 999.99}
-- ↓
-- Returns: {'id': 1, 'name': 'Laptop', 'price': 999.99}
+1. START: mvn spring-boot:run
+2. Tomcat starts on port 8080
+3. GET http://localhost:8080/api/products
+4. Returns: []
+5. POST http://localhost:8080/api/products
+6. Body: {'name': 'Laptop', 'price': 999.99}
+7. Returns: {'id': 1, 'name': 'Laptop', 'price': 999.99}
 
 ```mermaid
 flowchart TD

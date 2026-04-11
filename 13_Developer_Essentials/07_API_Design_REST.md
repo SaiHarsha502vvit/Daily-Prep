@@ -1,6 +1,6 @@
 # 🌐 API Design & REST — Complete Guide
 
-> **Navigation**: [< Testing](06_Testing_Fundamentals.md) | [Index](00_INDEX.md) | [Next: Security >](08_Security_Fundamentals.md)
+**Navigation**: [< Testing](06_Testing_Fundamentals.md) | [Index](00_INDEX.md) | [Next: Security >](08_Security_Fundamentals.md)
 
 ---
 
@@ -30,11 +30,9 @@ Your API = a CONTRACT. Once published, breaking changes = TRUST broken.
 ```
 
 **Flow:**
-- Frontend / (React/ / Angular) --(HTTP Request)--> Backend / (Spring / Boot)
-- ↓
-- Mobile / App --(HTTP Request)--> Your API
-- ↓
-- Partner / Company --(HTTP Request)--> Your API
+1. Frontend / (React/ / Angular) --(HTTP Request)--> Backend / (Spring / Boot)
+2. Mobile / App --(HTTP Request)--> Your API
+3. Partner / Company --(HTTP Request)--> Your API
 
 ```mermaid
 flowchart TD
@@ -85,17 +83,12 @@ Example:
 ```
 
 **Flow:**
-- GET /users/42
-- ↓
-- Returns user 42 (no change)
-- ↓
-- DELETE /users/42
-- ↓
-- Deletes user 42 (calling again = same state)
-- ↓
-- POST /users
-- ↓
-- Creates new user (calling twice = TWO users!)
+1. GET /users/42
+2. Returns user 42 (no change)
+3. DELETE /users/42
+4. Deletes user 42 (calling again = same state)
+5. POST /users
+6. Creates new user (calling twice = TWO users!)
 
 ```mermaid
 flowchart LR
@@ -112,14 +105,14 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — HTTP Methods (Verbs)**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — HTTP Methods (Verbs)**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## HTTP Status Codes
 
@@ -149,29 +142,16 @@ flowchart LR
 ```
 
 **Flow:**
-- 200 OK
-- ↓
-- GET/PUT/PATCH succeeded
-- ↓
-- 201 Created
-- ↓
-- POST succeeded, new resource created
-- ↓
-- 204 No Content
-- ↓
-- DELETE succeeded, nothing to return
-- ↓
-- 301 Moved Permanently
-- ↓
-- Resource has new URL forever
-- ↓
-- 304 Not Modified
-- ↓
-- Cached version is still valid
-- ↓
-- 400 Bad Request
-- ↓
-- Malformed JSON, missing required field
+1. 200 OK
+2. GET/PUT/PATCH succeeded 201 Created
+3. POST succeeded, new resource created
+4. 204 No Content
+5. DELETE succeeded, nothing to return
+6. 301 Moved Permanently
+7. Resource has new URL forever 304 Not Modified
+8. Cached version is still valid
+9. 400 Bad Request
+10. Malformed JSON, missing required field
 
 ```mermaid
 flowchart TD
@@ -226,14 +206,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — HTTP Status Codes**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — HTTP Status Codes**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 # HOW: Designing Good APIs
 
@@ -268,29 +248,18 @@ PATH rules:
 ```
 
 **Flow:**
-- GET /api/users
-- ↓
-- List all users
-- ↓
-- GET /api/users/42
-- ↓
-- Get user 42
-- ↓
-- POST /api/users
-- ↓
-- Create user
-- ↓
-- PUT /api/users/42
-- ↓
-- Update user 42
-- ↓
-- DELETE /api/users/42
-- ↓
-- Delete user 42
-- ↓
-- GET /api/users/42/orders
-- ↓
-- All orders for user 42
+1. GET /api/users
+2. List all users
+3. GET /api/users/42
+4. Get user 42
+5. POST /api/users
+6. Create user
+7. PUT /api/users/42
+8. Update user 42
+9. DELETE /api/users/42
+10. Delete user 42
+11. GET /api/users/42/orders
+12. All orders for user 42
 
 ```mermaid
 flowchart TD
@@ -442,23 +411,14 @@ CHANGING URL      → BREAKING change (new version)
 ```
 
 **Flow:**
-- ADDING fields
-- ↓
-- NOT a breaking change (backward compatible)
-- ↓
-- REMOVING fields
-- ↓
-- BREAKING change (must version)
-- ↓
-- CHANGING types
-- ↓
-- BREAKING change (string
-- ↓
-- int)
-- ↓
-- CHANGING URL
-- ↓
-- BREAKING change (new version)
+1. ADDING fields
+2. NOT a breaking change (backward compatible)
+3. REMOVING fields
+4. BREAKING change (must version)
+5. CHANGING types
+6. BREAKING change (string int)
+7. CHANGING URL
+8. BREAKING change (new version)
 
 ```mermaid
 flowchart TD
@@ -498,14 +458,14 @@ SEARCH:
 
 
 
-> 🔬 **Section Challenge — Level 6 — Filtering, Sorting, Field Selection**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+🔬 **Section Challenge — Level 6 — Filtering, Sorting, Field Selection**
+
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
+
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 # WHERE: Real-World Patterns
 
@@ -570,14 +530,14 @@ Common limits:
 
 
 
-> 🔬 **Section Challenge — Rate Limiting**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Rate Limiting**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🧭 API Design Cheat Sheet
 
@@ -620,7 +580,7 @@ Using Spring Boot, implement a REST API for a TODO app:
 
 ---
 
-> **Next Chapter**: [Security Fundamentals →](08_Security_Fundamentals.md)
+**Next Chapter**: [Security Fundamentals →](08_Security_Fundamentals.md)
 
 
 ---

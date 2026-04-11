@@ -1,6 +1,6 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Edge_Cases.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Edge_Cases.md)
 
-> **Problems 01/14** |  | [Index](../00_MASTER_INDEX.md) | [Next](02_Math_Numbers.md)
+**Problems 01/14** |  | [Index](../00_MASTER_INDEX.md) | [Next](02_Math_Numbers.md)
 
 ---
 
@@ -29,24 +29,24 @@
 ### Problem 1: Container With Most Water
 
 
-> PROBLEM: Container With Most Water
->
-> Given array of heights, find two lines that form container with
-> maximum water.
->
-> Visual:
+PROBLEM: Container With Most Water
+
+Given array of heights, find two lines that form container with
+maximum water.
+
+Visual:
 
 |
 |     |     |
 |  |  |  |  |  |
 |  |  |  |  |  |  |  |
 
-> ─────────────────────
-> 1  8  6  2  5  4  8  3  7
-> ↑                       ↑
-> These two lines form max area
-> Area = min(8, 7) × distance = 7 × 7 = 49
->
+─────────────────────
+1  8  6  2  5  4  8  3  7
+↑                       ↑
+These two lines form max area
+Area = min(8, 7) × distance = 7 × 7 = 49
+
 
 
 **Try it yourself first!**
@@ -112,19 +112,13 @@ public int maxArea(int[] height) {
 ```
 
 **Flow:**
-- PROBLEM: 3Sum
-- ↓
-- Find all unique triplets that sum to zero.
-- ↓
-- Input: [-1, 0, 1, 2, -1, -4]
-- ↓
-- Output: [[-1, -1, 2], [-1, 0, 1]]
-- ↓
-- Approach:
-- ↓
-- 1. Sort array
-- ↓
-- 2. For each element, use two pointers to find pairs
+1. PROBLEM: 3Sum
+2. Find all unique triplets that sum to zero.
+3. Input: [-1, 0, 1, 2, -1, -4]
+4. Output: [[-1, -1, 2], [-1, 0, 1]]
+5. Approach:
+6. 1. Sort array
+7. 2. For each element, use two pointers to find pairs
 
 ```mermaid
 flowchart TD
@@ -194,14 +188,14 @@ public List<List<Integer>> threeSum(int[] nums) {
 
 
 
-> 🔬 **Section Challenge — 🧩 Two Pointers Problems**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — 🧩 Two Pointers Problems**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## 🧩 Sliding Window Problems
 
@@ -227,13 +221,10 @@ When we see repeat, shrink window from left
 ```
 
 **Flow:**
-- Root
-- ↓
-- 'abc' length 3
-- ↓
-- Root
-- ↓
-- 'bca' length 3
+1. Root
+2. 'abc' length 3
+3. Root
+4. 'bca' length 3
 
 ```mermaid
 flowchart TD
@@ -304,11 +295,9 @@ Visual:
 ```
 
 **Flow:**
-- 2 1 5 1
-- ↓
-- 1 5 1 3
-- ↓
-- 5 1 3 2
+1. 2 1 5 1
+2. 1 5 1 3
+3. 5 1 3 2
 
 ```mermaid
 flowchart TD
@@ -350,20 +339,20 @@ public int maxSumSubarrayK(int[] arr, int k) {
 
 
 
-> 🔬 **Section Challenge — 🧩 Sliding Window Problems**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — 🧩 Sliding Window Problems**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## 🔍 Binary Search Problems
 
@@ -395,19 +384,13 @@ public int maxSumSubarrayK(int[] arr, int k) {
 ```
 
 **Flow:**
-- PROBLEM: Search in Rotated Sorted Array
-- ↓
-- Array was sorted, then rotated at some pivot.
-- ↓
-- Find target in O(log N).
-- ↓
-- Original: [0, 1, 2, 4, 5, 6, 7]
-- ↓
-- Rotated: [4, 5, 6, 7, 0, 1, 2] (rotated at pivot 4)
-- ↓
-- Target: 0
-- ↓
-- Output: 4 (index of 0)
+1. PROBLEM: Search in Rotated Sorted Array
+2. Array was sorted, then rotated at some pivot.
+3. Find target in O(log N).
+4. Original: [0, 1, 2, 4, 5, 6, 7]
+5. Rotated: [4, 5, 6, 7, 0, 1, 2] (rotated at pivot 4)
+6. Target: 0
+7. Output: 4 (index of 0)
 
 ```mermaid
 flowchart TD
@@ -496,19 +479,13 @@ public int search(int[] nums, int target) {
 ```
 
 **Flow:**
-- PROBLEM: Find Peak Element
-- ↓
-- Peak = element greater than its neighbors.
-- ↓
-- nums[-1] and nums[n] are considered -∞.
-- ↓
-- Input: [1, 2, 3, 1]
-- ↓
-- Output: 2 (index of element 3)
-- ↓
-- Visual:
-- ↓
-- 3 ← peak
+1. PROBLEM: Find Peak Element
+2. Peak = element greater than its neighbors.
+3. nums[-1] and nums[n] are considered -∞.
+4. Input: [1, 2, 3, 1]
+5. Output: 2 (index of element 3)
+6. Visual:
+7. 3 ← peak
 
 ```mermaid
 flowchart TD
@@ -560,20 +537,20 @@ public int findPeakElement(int[] nums) {
 
 
 
-> 🔬 **Section Challenge — 🔍 Binary Search Problems**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — 🔍 Binary Search Problems**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## 📊 Array Problems
 
@@ -600,19 +577,13 @@ public int findPeakElement(int[] nums) {
 ```
 
 **Flow:**
-- PROBLEM: Rotate Array
-- ↓
-- Rotate array to the right by k steps.
-- ↓
-- Input: [1, 2, 3, 4, 5, 6, 7], k = 3
-- ↓
-- Output: [5, 6, 7, 1, 2, 3, 4]
-- ↓
-- Approach: Three reverses
-- ↓
-- Original: [1, 2, 3, 4, 5, 6, 7]
-- ↓
-- Reverse all: [7, 6, 5, 4, 3, 2, 1]
+1. PROBLEM: Rotate Array
+2. Rotate array to the right by k steps.
+3. Input: [1, 2, 3, 4, 5, 6, 7], k = 3
+4. Output: [5, 6, 7, 1, 2, 3, 4]
+5. Approach: Three reverses
+6. Original: [1, 2, 3, 4, 5, 6, 7]
+7. Reverse all: [7, 6, 5, 4, 3, 2, 1]
 
 ```mermaid
 flowchart TD
@@ -691,19 +662,13 @@ private void reverse(int[] nums, int start, int end) {
 ```
 
 **Flow:**
-- PROBLEM: Product of Array Except Self
-- ↓
-- Cannot use division.
-- ↓
-- Input: [1, 2, 3, 4]
-- ↓
-- Output: [24, 12, 8, 6]
-- ↓
-- output[0] = 2 * 3 * 4 = 24
-- ↓
-- output[1] = 1 * 3 * 4 = 12
-- ↓
-- output[2] = 1 * 2 * 4 = 8
+1. PROBLEM: Product of Array Except Self
+2. Cannot use division.
+3. Input: [1, 2, 3, 4]
+4. Output: [24, 12, 8, 6]
+5. output[0] = 2 * 3 * 4 = 24
+6. output[1] = 1 * 3 * 4 = 12
+7. output[2] = 1 * 2 * 4 = 8
 
 ```mermaid
 flowchart TD
@@ -781,19 +746,13 @@ public int[] productExceptSelf(int[] nums) {
 ```
 
 **Flow:**
-- PROBLEM: Valid Palindrome
-- ↓
-- case).
-- ↓
-- Input: 'A man, a plan, a canal: Panama'
-- ↓
-- Output: true
-- ↓
-- After cleaning: 'amanaplanacanalpanama'
-- ↓
-- left right
-- ↓
-- Two pointers from both ends, skip non-alphanumeric
+1. PROBLEM: Valid Palindrome
+2. case).
+3. Input: 'A man, a plan, a canal: Panama'
+4. Output: true
+5. After cleaning: 'amanaplanacanalpanama'
+6. left right
+7. Two pointers from both ends, skip non-alphanumeric
 
 ```mermaid
 flowchart TD
@@ -872,27 +831,17 @@ public boolean isPalindrome(String s) {
 ```
 
 **Flow:**
-- PROBLEM: Group Anagrams
-- ↓
-- Group words that are anagrams of each other.
-- ↓
-- Input: ['eat', 'tea', 'tan', 'ate', 'nat', 'bat']
-- ↓
-- Output: [['eat','tea','ate'], ['tan','nat'], ['bat']]
-- ↓
-- Key insight: Anagrams have same SORTED form
-- ↓
-- eat
-- ↓
-- aet
-- ↓
-- eat
-- ↓
-- aet
-- ↓
-- tea
-- ↓
-- aet (same!)
+1. PROBLEM: Group Anagrams
+2. Group words that are anagrams of each other.
+3. Input: ['eat', 'tea', 'tan', 'ate', 'nat', 'bat']
+4. Output: [['eat','tea','ate'], ['tan','nat'], ['bat']]
+5. Key insight: Anagrams have same SORTED form
+6. eat
+7. aet
+8. eat
+9. aet
+10. tea
+11. aet (same!)
 
 ```mermaid
 flowchart TD
@@ -992,19 +941,13 @@ public List<List<String>> groupAnagramsV2(String[] strs) {
 ```
 
 **Flow:**
-- PROBLEM: Missing Number
-- ↓
-- Input: [3, 0, 1]
-- ↓
-- Output: 2
-- ↓
-- Method 1: Math (Sum formula)
-- ↓
-- Expected sum = n * (n + 1) / 2
-- ↓
-- Missing = Expected sum - Actual sum
-- ↓
-- Method 2: XOR
+1. PROBLEM: Missing Number
+2. Input: [3, 0, 1]
+3. Output: 2
+4. Method 1: Math (Sum formula)
+5. Expected sum = n * (n + 1) / 2
+6. Missing = Expected sum - Actual sum
+7. Method 2: XOR
 
 ```mermaid
 flowchart TD
@@ -1083,19 +1026,13 @@ public int missingNumberXOR(int[] nums) {
 ```
 
 **Flow:**
-- PROBLEM: Single Number
-- ↓
-- Every element appears twice except one. Find that one.
-- ↓
-- Input: [4, 1, 2, 1, 2]
-- ↓
-- Output: 4
-- ↓
-- XOR property:
-- ↓
-- a ^ a = 0 (same numbers cancel)
-- ↓
-- a ^ 0 = a (XOR with 0 gives same number)
+1. PROBLEM: Single Number
+2. Every element appears twice except one. Find that one.
+3. Input: [4, 1, 2, 1, 2]
+4. Output: 4
+5. XOR property:
+6. a ^ a = 0 (same numbers cancel)
+7. a ^ 0 = a (XOR with 0 gives same number)
 
 ```mermaid
 flowchart TD
@@ -1193,6 +1130,6 @@ Here are problem names to search on LeetCode/HackerRank:
 
 ---
 
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Edge_Cases.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Edge_Cases.md)
 
 

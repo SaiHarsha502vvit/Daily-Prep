@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch21_AlgoEng_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch21_AlgoEng_Advanced.md)
 
 ---
 
@@ -10,14 +10,14 @@
 
 
 
-> 🔬 **Section Challenge — How to Think Like Top Engineers and Craft Your Own Solutions**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — How to Think Like Top Engineers and Craft Your Own Solutions**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📚 Part 0: Complete Understanding + the Creator's Mindset
 
@@ -44,14 +44,14 @@ THEY WERE NOT BORN KNOWING THESE - THEY CREATED THEM!
 AND YOU CAN CREATE NEW ALGORITHMS TOO!
 
 
-> 🔬 **Section Challenge — ⭐ The Fundamental Shift - Fixed Vs Growth Mindset ⭐**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — ⭐ The Fundamental Shift - Fixed Vs Growth Mindset ⭐**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## What Is An "Engineering Mindset"?
 
@@ -77,14 +77,14 @@ memorized patterns.
 5. ITERATION: Improve through feedback
 
 
-> 🔬 **Section Challenge — What Is An "Engineering Mindset"?**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — What Is An "Engineering Mindset"?**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## ⭐⭐⭐ How To Create Your Own Algorithm - Step By Step ⭐⭐⭐
 
@@ -264,14 +264,14 @@ Components:
 Algorithm: Trie traversal + PQ ranking + LRU caching
 
 
-> 🔬 **Section Challenge — Combining Algorithms + Data Structures (Advanced Technique)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Combining Algorithms + Data Structures (Advanced Technique)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## The Practice Framework For Growth
 
@@ -351,14 +351,14 @@ GREAT ENGINEER:
 
 
 
-> 🔬 **Section Challenge — What Separates Good Engineers from Great Engineers**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — What Separates Good Engineers from Great Engineers**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## The Three Pillars of Engineering Thinking
 
@@ -379,17 +379,12 @@ GREAT ENGINEER:
 ```
 
 **Flow:**
-- FIRST PRINCIPLES
-- ↓
-- PATTERN SYSTEMS
-- ↓
-- RECOGNITION THINKING
-- ↓
-- 1. FIRST PRINCIPLES: Break problem to fundamental truth
-- ↓
-- 2. PATTERN RECOGNITION: See structures across domains
-- ↓
-- 3. SYSTEMS THINKING: Understand interactions and trade-
+1. FIRST PRINCIPLES
+2. PATTERN SYSTEMS
+3. RECOGNITION THINKING
+4. 1. FIRST PRINCIPLES: Break problem to fundamental truth
+5. 2. PATTERN RECOGNITION: See structures across domains
+6. 3. SYSTEMS THINKING: Understand interactions and trade-
 
 ```mermaid
 flowchart TD
@@ -410,14 +405,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — The Three Pillars of Engineering Thinking**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — The Three Pillars of Engineering Thinking**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 💭 Part 2: First Principles Thinking
 
@@ -446,19 +441,13 @@ LESSON: Solve the ROOT problem, not the SYMPTOM.
 ```
 
 **Flow:**
-- PROBLEM: 'I need to find if array has duplicates'
-- ↓
-- WHY do I need to find duplicates?
-- ↓
-- To ensure data integrity
-- ↓
-- WHY does data need integrity?
-- ↓
-- Because duplicates cause incorrect calculations
-- ↓
-- WHY are calculations incorrect?
-- ↓
-- Because we're counting unique items
+1. PROBLEM: 'I need to find if array has duplicates'
+2. WHY do I need to find duplicates?
+3. To ensure data integrity
+4. WHY does data need integrity?
+5. Because duplicates cause incorrect calculations
+6. WHY are calculations incorrect?
+7. Because we're counting unique items
 
 ```mermaid
 flowchart TD
@@ -501,19 +490,13 @@ Then ask:
 ```
 
 **Flow:**
-- ANY PROBLEM can be broken into:
-- ↓
-- THE PROBLEM
-- ↓
-- INPUT What data do I have? What's its structure?
-- ↓
-- OUTPUT What do I need to produce? Exact format?
-- ↓
-- CONSTRAINTS Size limits? Time limits? Space limits?
-- ↓
-- EDGE CASES Empty? Single? Max? Negative? Duplicates?
-- ↓
-- Then ask:
+1. ANY PROBLEM can be broken into:
+2. THE PROBLEM
+3. INPUT What data do I have? What's its structure?
+4. OUTPUT What do I need to produce? Exact format?
+5. CONSTRAINTS Size limits? Time limits? Space limits?
+6. EDGE CASES Empty? Single? Max? Negative? Duplicates?
+7. Then ask:
 
 ```mermaid
 flowchart TD
@@ -562,19 +545,13 @@ COMMON COMBINATIONS:
 ```
 
 **Flow:**
-- SINGLE PATTERNS are Level 1.
-- ↓
-- COMBINED PATTERNS are Level 2-3.
-- ↓
-- CREATED PATTERNS are Level 4.
-- ↓
-- COMMON COMBINATIONS:
-- ↓
-- Pattern 1 Pattern 2 Creates
-- ↓
-- Binary Search Greedy Optimization problems
-- ↓
-- Two Pointers Sorting 3Sum, Container problems
+1. SINGLE PATTERNS are Level 1.
+2. COMBINED PATTERNS are Level 2-3.
+3. CREATED PATTERNS are Level 4.
+4. COMMON COMBINATIONS:
+5. Pattern 1 Pattern 2 Creates
+6. Binary Search Greedy Optimization problems
+7. Two Pointers Sorting 3Sum, Container problems
 
 ```mermaid
 flowchart TD
@@ -597,14 +574,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — The Combination Matrix**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — The Combination Matrix**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Example: Building a Complex Solution
 
@@ -625,19 +602,13 @@ STEP 3: IMPLEMENT COMBINATION
 ```
 
 **Flow:**
-- - 'Substring'
-- ↓
-- Sliding Window
-- ↓
-- - 'At most k'
-- ↓
-- Counting
-- ↓
-- HashMap
-- ↓
-- - 'Longest'
-- ↓
-- Track maximum
+1. - 'Substring'
+2. Sliding Window
+3. - 'At most k'
+4. Counting
+5. HashMap
+6. - 'Longest'
+7. Track maximum
 
 ```mermaid
 flowchart LR
@@ -689,14 +660,14 @@ public int lengthOfLongestSubstringKDistinct(String s, int k) {
 
 
 
-> 🔬 **Section Challenge — Example: Building a Complex Solution**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Example: Building a Complex Solution**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🎨 Part 4: the Art of Creating New Patterns
 
@@ -725,11 +696,9 @@ YOUR JOB: Make observations → Extract insights → Create patterns
 ```
 
 **Flow:**
-- YOUR JOB: Make observations
-- ↓
-- Extract insights
-- ↓
-- Create patterns
+1. YOUR JOB: Make observations
+2. Extract insights
+3. Create patterns
 
 ```mermaid
 flowchart LR
@@ -742,14 +711,14 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — Observation → Insight → Pattern**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Observation → Insight → Pattern**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## The Pattern Creation Framework
 
@@ -815,14 +784,14 @@ ENGINEER'S JOB: Choose the RIGHT trade-off for the CONTEXT
 
 
 
-> 🔬 **Section Challenge — Understanding Trade-offs**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Understanding Trade-offs**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## The Decision Tree
 
@@ -851,29 +820,18 @@ Is it about ORDERING?
 ```
 
 **Flow:**
-- Sorted data?
-- ↓
-- Binary Search
-- ↓
-- Graph/Tree?
-- ↓
-- BFS/DFS
-- ↓
-- Can build solution greedily?
-- ↓
-- Greedy
-- ↓
-- Overlapping subproblems?
-- ↓
-- DP
-- ↓
-- Fixed window?
-- ↓
-- Array/Map
-- ↓
-- Variable window?
-- ↓
-- Sliding Window + Map
+1. Sorted data?
+2. Binary Search
+3. Graph/Tree?
+4. BFS/DFS
+5. Can build solution greedily?
+6. Greedy
+7. Overlapping subproblems?
+8. DP
+9. Fixed window?
+10. Array/Map
+11. Variable window?
+12. Sliding Window + Map
 
 ```mermaid
 flowchart TD
@@ -940,8 +898,8 @@ public int[] closestPairSum(int[] arr, int target) {
 
 
 
-> 🔬 **Section Challenge — Example 1: Binary Search + Two Pointers**
->>>
+🔬 **Section Challenge — Example 1: Binary Search + Two Pointers**
+>>
 
 ## Example 2: DFS + Memoization (Tree DP)
 
@@ -1041,8 +999,8 @@ private void dfs(char[][] board, int i, int j, TrieNode node, List<String> resul
 
 
 
-> 🔬 **Section Challenge — Example 3: Trie + DFS (Word Search II)**
->>>
+🔬 **Section Challenge — Example 3: Trie + DFS (Word Search II)**
+>>
 
 ## Example 4: Union-Find + Binary Search
 
@@ -1093,8 +1051,8 @@ private boolean canConnect(int n, int[][] edges, int maxCost) {
 
 
 
-> 🔬 **Section Challenge — Example 4: Union-Find + Binary Search**
->>>
+🔬 **Section Challenge — Example 4: Union-Find + Binary Search**
+>>
 
 # 🧩 Part 7: Mental Models for Problem Solving
 
@@ -1116,9 +1074,8 @@ L: Use DFS with visited marking and backtracking
 ```
 
 **Flow:**
-- I: This is a 'find all paths' problem
-- ↓
-- likely DFS/backtracking
+1. I: This is a 'find all paths' problem
+2. likely DFS/backtracking
 
 ```mermaid
 flowchart LR
@@ -1144,29 +1101,18 @@ USE THIS TO ELIMINATE APPROACHES QUICKLY!
 ```
 
 **Flow:**
-- n ≤ 10: O(n!), O(2^n) ok
-- ↓
-- Brute force, backtracking
-- ↓
-- n ≤ 20: O(2^n) ok
-- ↓
-- Bitmask DP, backtracking with pruning
-- ↓
-- n ≤ 100: O(n³) ok
-- ↓
-- Floyd-Warshall, 3D DP
-- ↓
-- n ≤ 1000: O(n²) ok
-- ↓
-- Simple DP, nested loops
-- ↓
-- n ≤ 10^5: O(n log n) ok
-- ↓
-- Sorting, Binary search, Heap
-- ↓
-- n ≤ 10^6: O(n) required
-- ↓
-- Linear scan, Two pointers
+1. n ≤ 10: O(n!), O(2^n) ok
+2. Brute force, backtracking
+3. n ≤ 20: O(2^n) ok
+4. Bitmask DP, backtracking with pruning
+5. n ≤ 100: O(n³) ok
+6. Floyd-Warshall, 3D DP
+7. n ≤ 1000: O(n²) ok
+8. Simple DP, nested loops
+9. n ≤ 10^5: O(n log n) ok
+10. Sorting, Binary search, Heap
+11. n ≤ 10^6: O(n) required
+12. Linear scan, Two pointers
 
 ```mermaid
 flowchart TD
@@ -1195,14 +1141,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — The Constraint Analysis Method**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — The Constraint Analysis Method**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## The "What Changes?" Technique
 
@@ -1226,17 +1172,12 @@ EXAMPLE: Recursion problems
 ```
 
 **Flow:**
-- - Window moves
-- ↓
-- Add new element, remove old element
-- ↓
-- - State changes
-- ↓
-- Track what's different
-- ↓
-- - Subproblem changes
-- ↓
-- What's reduced?
+1. - Window moves
+2. Add new element, remove old element
+3. - State changes
+4. Track what's different
+5. - Subproblem changes
+6. What's reduced?
 
 ```mermaid
 flowchart LR
@@ -1325,19 +1266,13 @@ STEP 5: REFINE
 ```
 
 **Flow:**
-- - Edge: Empty array
-- ↓
-- 0, single element
-- ↓
-- that element
-- ↓
-- - Negative numbers
-- ↓
-- handled by max operation
-- ↓
-- - Only need dp[i-1] and dp[i-2]
-- ↓
-- O(1) space!
+1. - Edge: Empty array
+2. 0, single element
+3. that element
+4. - Negative numbers
+5. handled by max operation
+6. - Only need dp[i-1] and dp[i-2]
+7. O(1) space!
 
 ```mermaid
 flowchart LR
@@ -1376,14 +1311,14 @@ public int maxNonAdjacentSum(int[] arr) {
 
 
 
-> 🔬 **Section Challenge — Case Study: Creating an Algorithm**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Case Study: Creating an Algorithm**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📌 Part 9: the Engineer's Toolkit
 
@@ -1411,19 +1346,13 @@ AFTER CODING:
 ```
 
 **Flow:**
-- BEFORE CODING:
-- ↓
-- □ Do I truly understand the problem?
-- ↓
-- □ What are the constraints?
-- ↓
-- □ What patterns might apply?
-- ↓
-- □ What data structure fits best?
-- ↓
-- □ What's my approach in plain English?
-- ↓
-- WHILE CODING:
+1. BEFORE CODING:
+2. □ Do I truly understand the problem?
+3. □ What are the constraints?
+4. □ What patterns might apply?
+5. □ What data structure fits best?
+6. □ What's my approach in plain English?
+7. WHILE CODING:
 
 ```mermaid
 flowchart TD
@@ -1490,14 +1419,14 @@ Expensive operations that happen often = Problem
 
 
 
-> 🔬 **Section Challenge — Amortized Analysis Thinking**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Amortized Analysis Thinking**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Invariant Maintenance
 
@@ -1524,14 +1453,14 @@ USE INVARIANTS TO:
 
 
 
-> 🔬 **Section Challenge — Invariant Maintenance**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Invariant Maintenance**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Problem Transformation
 
@@ -1554,29 +1483,18 @@ THE SKILL: See the UNDERLYING structure
 ```
 
 **Flow:**
-- Transform
-- ↓
-- 'Maximum overlapping intervals at any point'
-- ↓
-- Transform
-- ↓
-- 'Start = +1, End = -1, find max running sum'
-- ↓
-- Transform
-- ↓
-- Graph problem! Words are nodes, edge if differ by
-- ↓
-- Solve
-- ↓
-- BFS for shortest path
-- ↓
-- Transform
-- ↓
-- Events: building start = +height, end = -height
-- ↓
-- Solve
-- ↓
-- Process events, track max height at each point
+1. Transform
+2. 'Maximum overlapping intervals at any point'
+3. Transform
+4. 'Start = +1, End = -1, find max running sum'
+5. Transform
+6. Graph problem! Words are nodes, edge if differ by
+7. Solve
+8. BFS for shortest path
+9. Transform
+10. Events: building start = +height, end = -height
+11. Solve
+12. Process events, track max height at each point
 
 ```mermaid
 flowchart TD
@@ -1618,14 +1536,14 @@ HINTS:
 
 
 
-> 🔬 **Section Challenge — Exercise 1: Combine Two Patterns**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Exercise 1: Combine Two Patterns**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Exercise 2: Design New Pattern
 
@@ -1661,14 +1579,14 @@ YOUR TASK:
 
 
 
-> 🔬 **Section Challenge — Exercise 3: First Principles**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Exercise 3: First Principles**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📌 Part 12: Key Takeaways
 

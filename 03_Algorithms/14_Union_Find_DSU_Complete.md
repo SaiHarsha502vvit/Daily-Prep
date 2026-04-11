@@ -1,9 +1,11 @@
-> **Navigation**: [< Previous](13_String_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Monotonic_Stack_Queue_Complete.md)
+**Navigation**: [< Previous](13_String_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Monotonic_Stack_Queue_Complete.md)
 
 # 🌲 Union-Find / Disjoint Set Union (DSU) Complete Guide
-> The Data Structure That Solves Connectivity Problems in Near-Constant Time
+
+The Data Structure That Solves Connectivity Problems in Near-Constant Time
 
 ## Table of Contents
+
 0. [PART 0: Complete Understanding](#part-0)
 1. [Union-Find Fundamentals](#fundamentals)
 2. [Basic Implementation](#basic-implementation)
@@ -352,9 +354,6 @@ class UnionFind {
 
 ---
 
-
-
-
 ## Union-Find Fundamentals <a name="fundamentals"></a>
 
 ### What is Union-Find?
@@ -378,19 +377,8 @@ class UnionFind {
 ```
 
 **Flow:**
-- UNION-FIND IN ONE SENTENCE
-- ↓
-- 'Track which elements belong to the same group,
-- ↓
-- supporting UNION (merge groups) and FIND (check group).
-- ↓
-- Time Complexity with optimizations:
-- ↓
-- • Find: O(α(n)) ≈ O(1) amortized
-- ↓
-- • Union: O(α(n)) ≈ O(1) amortized
-- ↓
-- α(n) = Inverse Ackermann function, grows EXTREMELY slow
+1. UNION-FIND IN ONE SENTENCE
+2. 'Track which elements belong to the same group, supporting UNION (merge groups) and FIND (check group). Time Complexity with optimizations: • Find: O(α(n)) ≈ O(1) amortized • Union: O(α(n)) ≈ O(1) amortized α(n) = Inverse Ackermann function, grows EXTREMELY slow
 
 ```mermaid
 flowchart TD
@@ -440,9 +428,8 @@ Now: find(1) → 0, find(3) → 0
 ```
 
 **Flow:**
-- Now: find(1)
-- ↓
-- 0, find(3)
+1. Now: find(1)
+2. 0, find(3)
 
 ```mermaid
 flowchart LR
@@ -473,19 +460,9 @@ flowchart LR
 ```
 
 **Flow:**
-- THE TWO OPERATIONS
-- ↓
-- 1. FIND(x)
-- ↓
-- • Returns the 'representative' (root) of x's group
-- ↓
-- • If find(a) == find(b), then a and b are connected
-- ↓
-- 2. UNION(x, y)
-- ↓
-- • Merges the groups containing x and y
-- ↓
-- • After union, find(x) == find(y)
+1. THE TWO OPERATIONS
+2. FIND(x)
+3. • Returns the 'representative' (root) of x's group • If find(a) == find(b), then a and b are connected UNION(x, y) • Merges the groups containing x and y • After union, find(x) == find(y)
 
 ```mermaid
 flowchart TD
@@ -508,16 +485,14 @@ flowchart TD
 
 ---
 
+🔬 **Section Challenge — Union-Find Fundamentals <a name="fundamentals"></a>**
 
+**Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Union-Find Fundamentals <a name="fundamentals"></a>**
->
-> **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
-> <details><summary>Answer</summary>
->
-> Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-> </details>
->
+Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
+</details>
+
 
 ## Basic Implementation <a name="basic-implementation"></a>
 
@@ -612,15 +587,11 @@ This is why we need optimizations.
 ```
 
 **Flow:**
-- PATH COMPRESSION
-- ↓
-- Idea: When we find the root, make all nodes on the path
-- ↓
-- point DIRECTLY to the root.
-- ↓
-- Before find(0): After find(0):
-- ↓
-- Next find(0) is O(1)!
+1. PATH COMPRESSION
+2. Idea: When we find the root, make all nodes on the path
+3. point DIRECTLY to the root.
+4. Before find(0): After find(0):
+5. Next find(0) is O(1)!
 
 ```mermaid
 flowchart TD
@@ -708,17 +679,12 @@ Future find(0) = O(1)!
 ```
 
 **Flow:**
-- Step 1: find(0)
-- ↓
-- find(1)
-- ↓
-- find(2)
-- ↓
-- find(3)
-- ↓
-- find(4)
-- ↓
-- return 4
+1. Step 1: find(0)
+2. find(1)
+3. find(2)
+4. find(3)
+5. find(4)
+6. return 4
 
 ```mermaid
 flowchart TD
@@ -856,16 +822,14 @@ class UnionFindBySize {
 
 ---
 
+🔬 **Section Challenge — Union by Rank/Size <a name="union-by-rank"></a>**
 
+**Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Union by Rank/Size <a name="union-by-rank"></a>**
->
-> **Challenge 1 (Reasoning):** Without path compression in Union-Find, what's the worst-case tree height after N unions? With path compression?
-> <details><summary>Answer</summary>
->
-> Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
-> </details>
->
+Without path compression + union by rank: O(N) height possible (linear chain). With union by rank only: O(log N). With path compression only: amortized O(log N). With BOTH: amortized O(α(N)) where α is the inverse Ackermann function — practically constant (4 for any N up to 10^80). Union by rank prevents tall trees from forming. Path compression flattens existing trees. Together they're nearly optimal.
+</details>
+
 
 ## Optimized Implementation <a name="optimized"></a>
 
@@ -1056,17 +1020,12 @@ Step 3: union(2,3) → FAIL! (1,2,3 already connected)
 ```
 
 **Flow:**
-- Step 1: union(1,2)
-- ↓
-- Success
-- ↓
-- Step 2: union(1,3)
-- ↓
-- Success
-- ↓
-- Step 3: union(2,3)
-- ↓
-- FAIL! (1,2,3 already connected)
+1. Step 1: union(1,2)
+2. Success
+3. Step 2: union(1,3)
+4. Success
+5. Step 3: union(2,3)
+6. FAIL! (1,2,3 already connected)
 
 ```mermaid
 flowchart LR
@@ -1251,22 +1210,20 @@ public List<Integer> numIslands2(int m, int n, int[][] positions) {
 
 ---
 
+🔬 **Section Challenge — Graph Problems <a name="graph-problems"></a>**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Graph Problems <a name="graph-problems"></a>**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## Advanced Techniques <a name="advanced"></a>
 
@@ -1465,19 +1422,13 @@ class UnionFindWithUndo {
 ```
 
 **Flow:**
-- UNION-FIND PROBLEM TYPES
-- ↓
-- CONNECTED COMPONENTS:
-- ↓
-- • Number of Connected Components
-- ↓
-- • Number of Provinces
-- ↓
-- • Making a Large Island
-- ↓
-- CYCLE DETECTION:
-- ↓
-- • Redundant Connection I/II
+1. UNION-FIND PROBLEM TYPES
+2. CONNECTED COMPONENTS:
+3. • Number of Connected Components
+4. • Number of Provinces
+5. • Making a Large Island
+6. CYCLE DETECTION:
+7. • Redundant Connection I/II
 
 ```mermaid
 flowchart TD
@@ -1729,19 +1680,12 @@ public int largestIsland(int[][] grid) {
 ```
 
 **Flow:**
-- UNION-FIND vs OTHER APPROACHES
-- ↓
-- USE UNION-FIND WHEN:
-- ↓
-- • Need to merge groups dynamically
-- ↓
-- • Need to query if elements are in same group
-- ↓
-- • Process edges to build connected components
-- ↓
-- • Need MST with Kruskal's algorithm
-- ↓
-- USE DFS/BFS INSTEAD WHEN:
+1. UNION-FIND vs OTHER APPROACHES
+2. USE UNION-FIND WHEN:
+3. • Need to merge groups dynamically
+4. • Need to query if elements are in same group
+5. • Process edges to build connected components
+6. • Need MST with Kruskal's algorithm USE DFS/BFS INSTEAD WHEN:
 
 ```mermaid
 flowchart TD
@@ -1820,17 +1764,12 @@ class UnionFind {
 ```
 
 **Flow:**
-- UNION-FIND COMPLEXITIES
-- ↓
-- OPERATION NAIVE PATH COMP RANK BOTH
-- ↓
-- * Amortized
-- ↓
-- Space: O(n) for parent and rank arrays
-- ↓
-- α(n) = Inverse Ackermann, practically O(1):
-- ↓
-- α(10^80) = 4 (# of atoms in universe!)
+1. UNION-FIND COMPLEXITIES
+2. OPERATION NAIVE PATH COMP RANK BOTH
+3. - Amortized
+4. Space: O(n) for parent and rank arrays
+5. α(n) = Inverse Ackermann, practically O(1):
+6. α(10^80) = 4 (# of atoms in universe!)
 
 ```mermaid
 flowchart TD
@@ -1884,19 +1823,9 @@ flowchart TD
 ```
 
 **Flow:**
-- UNION-FIND - MASTER CHECKLIST
-- ↓
-- 1. CORE OPERATIONS
-- ↓
-- • find(x): Get representative of x's group
-- ↓
-- • union(x,y): Merge groups of x and y
-- ↓
-- • connected(x,y): Check if same group
-- ↓
-- 2. OPTIMIZATIONS (ALWAYS USE BOTH!)
-- ↓
-- • Path Compression: On find, make nodes point to root
+1. UNION-FIND - MASTER CHECKLIST
+2. CORE OPERATIONS
+3. • find(x): Get representative of x's group • union(x,y): Merge groups of x and y • connected(x,y): Check if same group OPTIMIZATIONS (ALWAYS USE BOTH!) • Path Compression: On find, make nodes point to root
 
 ```mermaid
 flowchart TD
@@ -1919,17 +1848,15 @@ flowchart TD
 
 **Pro Tip:** When you see problems involving merging groups, checking connectivity, or building spanning trees, Union-Find should be your first thought!
 
-
 ---
 
-> **Navigation**: [< Previous](13_String_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Monotonic_Stack_Queue_Complete.md)
+**Navigation**: [< Previous](13_String_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Monotonic_Stack_Queue_Complete.md)
 
-> 🔬 **Section Challenge — Summary**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — Summary**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
 

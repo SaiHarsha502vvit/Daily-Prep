@@ -86,9 +86,10 @@ PAGERANK                 │ • Original Google search ranking (Larry Page, 199
 ## Part 2: Deep Dive into Production Architectures
 
 ### 1. React's Virtual DOM (The O(N) Diffing Heuristic)
+
 **The Academic Problem:** Finding the minimum number of operations to transform one tree into another (Tree Edit Distance) is **O(N³)** algorithmically. If a React app has 1,000 components, an O(N³) algorithm would take 1,000,000,000 operations every single frame. The app would freeze.
 
-**The Production Reality:** React engineers realized they didn't need the *mathematically perfect* shortest edit distance. They just needed a fast approximation. They created an **O(N) heuristic algorithm** based on two assumptions:
+**The Production Reality:** React engineers realized they didn't need the _mathematically perfect_ shortest edit distance. They just needed a fast approximation. They created an **O(N) heuristic algorithm** based on two assumptions:
 1. Two elements of different types (e.g., `<div>` vs `<span>`) will produce completely different trees. (React tears down the old tree and builds a new one).
 2. Developers can hint at which child elements are stable across renders using a `key` prop.
 
@@ -97,17 +98,19 @@ By turning an O(N³) academic problem into an O(N) heuristic, React revolutioniz
 ---
 
 ### 2. Google Maps Routing (Contraction Hierarchies)
-**The Academic Problem:** Dijkstra's Algorithm finds the shortest path, but it searches *everywhere* circularly. If you route from New York to LA, Dijkstra will search every small residential street in Chicago along the way. Even A* search (which biases toward the destination) is too slow for continental routing.
+
+**The Academic Problem:** Dijkstra's Algorithm finds the shortest path, but it searches _everywhere_ circularly. If you route from New York to LA, Dijkstra will search every small residential street in Chicago along the way. Even A* search (which biases toward the destination) is too slow for continental routing.
 
 **The Production Reality:** Google Maps uses **Contraction Hierarchies (CH)**.
 1. **Preprocessing (The "Contraction" phase):** The algorithm assigns an "importance" rank to every road. High-speed interstates get high ranks. Small residential cul-de-sacs get low ranks. It pre-calculates the fastest routes between important nodes.
-2. **Querying (The "Hierarchy" phase):** When you ask for a route, the algorithm only looks at local roads near your house, then rapidly jumps up the hierarchy to search *ONLY* highways, jumping back down to local roads only when near the destination.
+2. **Querying (The "Hierarchy" phase):** When you ask for a route, the algorithm only looks at local roads near your house, then rapidly jumps up the hierarchy to search _ONLY_ highways, jumping back down to local roads only when near the destination.
 
 This reduces a 3-second Dijkstra search across 50 million nodes into a 2-millisecond lookup.
 
 ---
 
 ### 3. Git Core (Directed Acyclic Graphs & Merkle Trees)
+
 **The Academic Problem:** How do you track the exact history of millions of lines of code locally, branching instantly, and verifying absolute data integrity across distributed servers?
 
 **The Production Reality:** Git is merely a brilliant application of two data structures:
@@ -117,6 +120,7 @@ This reduces a 3-second Dijkstra search across 50 million nodes into a 2-millise
 ---
 
 ### 4. Recommendation Engines (Matrix Factorization)
+
 **The Academic Problem:** You have 100 million users and 10 million movies (Netflix). You want an algorithm matrix (Users x Movies) to predict which movies a user will rate 5-stars. The matrix is 99% empty (sparse) because no user has watched 10 million movies.
 
 **The Production Reality:** Netflix and Spotify use **Collaborative Filtering via Matrix Factorization** (specifically Singular Value Decomposition or Alternating Least Squares).
@@ -127,11 +131,6 @@ Instead of keeping a 100M x 10M matrix, they use linear algebra to factor it int
 To predict if User A will like Movie B, the system simply takes the dot product of their two 50-dimensional vectors. This compresses petabytes of data into gigabytes, allowing real-time recommendations.
 
 ---
-
-
-
-
-
 
 > 🔬 **Section Challenge — Part 2: Deep Dive into Production Architectures**
 
@@ -160,11 +159,6 @@ To predict if User A will like Movie B, the system simply takes the dot product 
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — Algorithm History Timeline**
 
 ## 🔗 Cross-References
@@ -180,12 +174,12 @@ To predict if User A will like Movie B, the system simply takes the dot product 
 
 ---
 
-
 ---
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -212,6 +206,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -246,6 +241,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -308,6 +304,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -342,6 +339,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -354,8 +352,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -420,6 +416,5 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
-
 
 > **Navigation**: [← Greedy/BitManip](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md)

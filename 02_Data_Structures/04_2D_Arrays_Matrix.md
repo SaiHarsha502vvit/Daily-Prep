@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](03_Collections_Java.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](03_Collections_Java.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # 🔲 2D Arrays & Matrix: Complete Deep Dive
 
@@ -13,10 +13,10 @@
 A 2D array is a COLLECTION OF ARRAYS, organized in rows and columns.
 Think of it as a TABLE or GRID.
 
-> 💡 **KEY INSIGHT: In memory, it's still LINEAR!**
+💡 **KEY INSIGHT: In memory, it's still LINEAR!**
 The "2D" is just an abstraction for human understanding.
 
-> 💡 **ANALOGY:**
+💡 **ANALOGY:**
 - Excel Spreadsheet: Rows and columns of cells
 - Chess Board: 8x8 grid of squares
 - Seating Chart: Rows of seats in a theater
@@ -27,6 +27,7 @@ The "2D" is just an abstraction for human understanding.
 - 1979: VisiCalc (first spreadsheet) = 2D array in action
 - 1980s: Image processing using matrices
 - Today: Every screen you see is a 2D array of pixels!
+
 ## What Problem Do 2D Arrays Solve
 
 PROBLEM 1: Representing GRID-BASED data
@@ -44,6 +45,7 @@ WITHOUT 2D ARRAYS:
 - Would need multiple 1D arrays with manual coordination
 - Prone to index mismatch errors
 - Harder to visualize and reason about
+
 ## Why Learn 2D Arrays Deeply
 
 1. INTERVIEW ESSENTIAL:
@@ -62,6 +64,7 @@ Matrix problems have common patterns:
 - Traversal patterns (row, column, diagonal, spiral)
 - Search patterns (DFS, BFS on grid)
 - Transform patterns (rotate, flip, transpose)
+
 ## When To Use 2D Arrays
 
 USE 2D ARRAY WHEN:
@@ -82,6 +85,7 @@ USE 2D ARRAY WHEN:
 - Sparse matrix → Use HashMap of coordinates
 - Very large grid → Use coordinate compression
 - Dynamic size → Use ArrayList of ArrayLists
+
 ## Difficulties & Common Mistakes
 
 1. INDEX CONFUSION:
@@ -99,6 +103,7 @@ Solution: Use visited array or mark with special value
 5. JAGGED ARRAYS:
 "Rows have different lengths!"
 Solution: Use matrix[i].length for each row's column count
+
 ## Expected Outcomes
 
 - ✅ INSTANT TRAVERSAL: Write any traversal pattern without thinking
@@ -139,9 +144,8 @@ arr[0][0], arr[1][0], arr[2][0], arr[0][1], arr[1][1]...
 ```
 
 **Flow:**
-- 1 2 3 4 / 5 6 7 8 / 9 10 11 12
-- ↓
-- 1 2 3 4 5 6 7 8 9 10 11 12
+1. Start with a row-column grid view: `1 2 3 4 / 5 6 7 8 / 9 10 11 12`.
+2. Store the same values linearly in row-major order: `1 2 3 4 5 6 7 8 9 10 11 12`.
 
 ```mermaid
 flowchart TD
@@ -170,9 +174,6 @@ YOUR PHONE CAMERA:
 ```
 
 ---
-
-
-
 
 # 📌 Part 2: Declaration & Initialization
 
@@ -258,8 +259,6 @@ for (int i = 0; i < rows; i++) {
 // i=2: j=0→7, j=1→8, j=2→9  Output: 7 8 9
 ```
 
-
-
 ## Pattern 2: Column-by-Column
 
 ```java
@@ -277,8 +276,6 @@ for (int j = 0; j < cols; j++) {
 // j=1: i=0→2, i=1→5, i=2→8  Output: 2 5 8
 // j=2: i=0→3, i=1→6, i=2→9  Output: 3 6 9
 ```
-
-
 
 ## Pattern 3: Diagonal Traversal
 
@@ -299,8 +296,6 @@ for (int i = 0; i < n; i++) {
 // ALL DIAGONALS (Diagonal Traverse Problem)
 // Complex pattern - see below
 ```
-
-
 
 ## Pattern 4: Spiral Traversal (⭐ COMMON INTERVIEW QUESTION)
 
@@ -393,8 +388,6 @@ public void printBoundary(int[][] matrix) {
 ```
 
 ---
-
-
 
 # 📌 Part 4: Matrix Transformations
 
@@ -504,9 +497,6 @@ public boolean searchMatrix(int[][] matrix, int target) {
 // (1,1) = 5 = target, FOUND!
 ```
 
-
-
-
 ## Problem 2: Set Matrix Zeroes
 
 ```java
@@ -602,10 +592,8 @@ private int kadane(int[] arr) {
 
 ---
 
-
-
-> 🔬 **Section Challenge — Problem 3: Maximum Sum Rectangle (⭐ NETCRACKER LEVEL)**
->>
+🔬 **Section Challenge — Problem 3: Maximum Sum Rectangle (⭐ NETCRACKER LEVEL)**
+>
 
 # 🕸️ Part 6: Matrix in Graph Problems
 
@@ -663,10 +651,8 @@ public void bfsOnGrid(int[][] grid, int startRow, int startCol) {
 }
 ```
 
-
-
-> 🔬 **Section Challenge — Grid as Graph**
->>>
+🔬 **Section Challenge — Grid as Graph**
+>>
 
 ## Number of Islands (Classic)
 
@@ -1109,43 +1095,17 @@ private static void dfsIsland(int[][] grid, int r, int c,
 ```
 
 **Flow:**
-- MATRIX PROBLEM RECOGNITION GUIDE
-- ↓
-- 'Find shortest distance...'
-- ↓
-- BFS
-- ↓
-- 'Find shortest distance...'
-- ↓
-- BFS
-- ↓
-- 'Count distinct shapes...'
-- ↓
-- DFS + normalize coordinate
-- ↓
-- 'Count distinct shapes...'
-- ↓
-- DFS + normalize coordinate
-- ↓
-- 'Path from A to B...'
-- ↓
-- BFS (shortest) or DFS (any path
-- ↓
-- 'Path from A to B...'
-- ↓
-- BFS (shortest) or DFS (any path
-- ↓
-- 'Rotate matrix...'
-- ↓
-- Formula: new[j][n-1-i] = old[i][j]
-- ↓
-- 'Rotate matrix...'
-- ↓
-- Formula: new[j][n-1-i] = old[i][j]
-- ↓
-- COMMON EDGE CASES:
-- ↓
-- • Empty matrix • Single cell
+1. Read the problem statement and identify the key phrase.
+2. Map phrase to pattern quickly:
+    - `Find shortest distance` -> `BFS`
+    - `Can wrap around edges` -> modulo indexing
+    - `Count distinct shapes` -> `DFS + coordinate normalization`
+    - `Path from A to B` -> `BFS` (shortest) or `DFS` (any path)
+    - `Rotate matrix` -> `new[j][n-1-i] = old[i][j]`
+3. Validate edge cases before finalizing:
+    - empty matrix, single cell
+    - no valid path, target not found
+    - all cells identical, wrap-around boundaries
 
 ```mermaid
 flowchart TD
@@ -1215,7 +1175,7 @@ flowchart TD
 
 # 📊 Curated Practice Problems — 2d Arrays & Matrix
 
-> **HOW TO USE**: Section 1 = traversal basics. Section 2 = search/transform. Section 3 = advanced.
+**HOW TO USE**: Section 1 = traversal basics. Section 2 = search/transform. Section 3 = advanced.
 
 ---
 
@@ -1246,22 +1206,19 @@ flowchart TD
 
 ---
 
+🔬 **Section Challenge — Section 2: Matrix Search & Transform**
 
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Section 2: Matrix Search & Transform**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
 
 ## Section 3: Advanced Matrix (DP/BFS on Grid)
 
@@ -1290,17 +1247,16 @@ flowchart TD
 
 _Master 2D arrays = Master half of interview problems!_ 🔲
 
-
 ---
-
 
 ---
 
 ## 🏋️ Practice & Interview Questions — Arrays
 
-> Attempt each before looking at the answer. Time yourself.
+Attempt each before looking at the answer. Time yourself.
 
 ### Predict / Trace
+
 **Q1.** What is the output? `int[] a = {1,2,3}; int[] b = a; b[0] = 99; System.out.println(a[0]);`
 <details><summary>Answer</summary>
 
@@ -1320,6 +1276,7 @@ lo=0,hi=4 → mid=2 (value=5) → lo=3,hi=4 → mid=3 (value=7) → lo=3,hi=2 �
 </details>
 
 ### LeetCode / Coding
+
 **Q4.** ⭐ Two Sum — find indices of two numbers that add to target. O(N) solution.
 <details><summary>Solution</summary>
 
@@ -1444,6 +1401,7 @@ while(l<r){
 </details>
 
 ### Interview Questions
+
 **Q13.** What's the difference between `ArrayList` and `LinkedList` for index access?
 <details><summary>Answer</summary>
 
@@ -1463,6 +1421,7 @@ CPU loads data in cache lines (~64 bytes). Arrays store elements contiguously �
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | Array access a[i] time complexity | O(1) |
@@ -1476,13 +1435,11 @@ CPU loads data in cache lines (~64 bytes). Arrays store elements contiguously �
 | 9 | Multi-dim array a[3][4] — total elements? | 12 |
 | 10 | Arrays.binarySearch requires? | Sorted array |
 
-
-
 ---
 
 ## 🧠 Deep Conceptual Questions — Arrays & Memory
 
-> These questions test your REASONING, not just recall. Think before expanding.
+These questions test your REASONING, not just recall. Think before expanding.
 
 **C1. Why is array access O(1)?**
 <details><summary>Deep Answer</summary>
@@ -1550,6 +1507,5 @@ The key insight: at each position i, the maximum subarray ending at i is either:
 
 **Integer overflow!** If `lo + hi` exceeds `Integer.MAX_VALUE` (2,147,483,647), the sum wraps to a negative number. For huge arrays (lo=1B, hi=2B), `lo + hi = 3B > 2.1B`. This bug brought down a famous JDK implementation of binary search in 2006 (Joshua Bloch's blog post). `lo + (hi - lo) / 2` can never overflow since `hi - lo` is always positive and smaller than either value alone.
 </details>
-
 
 > **Navigation**: [< Previous](03_Collections_Java.md) | [Back to Index](../00_MASTER_INDEX.md)

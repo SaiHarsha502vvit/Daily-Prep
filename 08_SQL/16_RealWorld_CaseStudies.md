@@ -1,4 +1,4 @@
-> **SQL Chapter 16/20** | [← Previous](15_Analytics_Warehousing_ETL.md) | [Index](../00_MASTER_INDEX.md) | [Next →](17_Practice_100_Problems.md)
+**SQL Chapter 16/20** | [← Previous](15_Analytics_Warehousing_ETL.md) | [Index](../00_MASTER_INDEX.md) | [Next →](17_Practice_100_Problems.md)
 
 ---
 
@@ -245,7 +245,7 @@ _"Part 4 Complete! You now understand Query Optimization, Analytics Patterns, Da
 
 # 🔥 SQL Production Disasters & Lessons Learned
 
-> "Every senior developer has at least one horror story. Learn from ours so you don't have to create your own."
+"Every senior developer has at least one horror story. Learn from ours so you don't have to create your own."
 
 ---
 
@@ -334,7 +334,7 @@ SELECT COUNT(*) FROM table_about_to_modify;
 ```
 
 ### Interview Answer Template
-> "I learned from the GitLab incident that backups are worthless unless tested. In my projects, I always verify backup file sizes, test restoration periodically, and NEVER run destructive commands without a transaction."
+"I learned from the GitLab incident that backups are worthless unless tested. In my projects, I always verify backup file sizes, test restoration periodically, and NEVER run destructive commands without a transaction."
 
 ---
 
@@ -573,7 +573,7 @@ HAVING COUNT(*) > 1000  -- Unusual volume?
 ```
 
 ### Interview Answer
-> "Data breaches often go undetected because there's no anomaly detection. I always implement audit logging and periodic queries to detect unusual access patterns—like bulk SELECTs happening off-hours or from new IP addresses."
+"Data breaches often go undetected because there's no anomaly detection. I always implement audit logging and periodic queries to detect unusual access patterns—like bulk SELECTs happening off-hours or from new IP addresses."
 
 ---
 
@@ -584,7 +584,7 @@ HAVING COUNT(*) > 1000  -- Unusual volume?
 ## 🟡 Disaster Type 1: The Missing WHERE Clause
 
 ### Real Story
-> "It was my first week. I ran `UPDATE users SET is_active = false` to deactivate one user. I forgot the WHERE clause. All 2 million users were deactivated. Support tickets flooded in."
+"It was my first week. I ran `UPDATE users SET is_active = false` to deactivate one user. I forgot the WHERE clause. All 2 million users were deactivated. Support tickets flooded in."
 
 ```sql
 -- ❌ What was typed:
@@ -651,13 +651,13 @@ WHERE last_login > NOW() - INTERVAL '30 days';
 
 
 
-> 🔬 **Section Challenge — 🟡 Disaster Type 1: The Missing WHERE Clause**
->>
+🔬 **Section Challenge — 🟡 Disaster Type 1: The Missing WHERE Clause**
+>
 
 ## 🟡 Disaster Type 2: The Accidental Cartesian Join
 
 ### Real Story
-> "My report query was running for 2 hours. When I checked, it was trying to create 50 billion rows. I forgot the ON clause in my JOIN."
+"My report query was running for 2 hours. When I checked, it was trying to create 50 billion rows. I forgot the ON clause in my JOIN."
 
 ```sql
 -- ❌ What was written:
@@ -704,25 +704,25 @@ SELECT COUNT(*) FROM order_items;      -- 500,000
 
 
 
-> 🔬 **Section Challenge — 🟡 Disaster Type 2: The Accidental Cartesian Join**
->
-> **Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
-> <details><summary>Answer</summary>
->
-> When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-> <details><summary>Answer</summary>
->
-> It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
-> </details>
->
+🔬 **Section Challenge — 🟡 Disaster Type 2: The Accidental Cartesian Join**
+
+**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+<details><summary>Answer</summary>
+
+When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+</details>
+
+**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+<details><summary>Answer</summary>
+
+It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+</details>
+
 
 ## 🟡 Disaster Type 3: The N+1 Query Problem
 
 ### Real Story
-> "Our API response time went from 50ms to 15 seconds. Turned out we were making 1000 database calls for a single page load."
+"Our API response time went from 50ms to 15 seconds. Turned out we were making 1000 database calls for a single page load."
 
 ```sql
 -- ❌ The N+1 pattern (application code):
@@ -773,13 +773,13 @@ ORDER BY execution_count DESC;
 
 
 
-> 🔬 **Section Challenge — 🟡 Disaster Type 3: The N+1 Query Problem**
->>
+🔬 **Section Challenge — 🟡 Disaster Type 3: The N+1 Query Problem**
+>
 
 ## 🟡 Disaster Type 4: The Implicit Type Conversion
 
 ### Real Story
-> "Our query was correct but returning wrong results. Turned out comparing string '10' with integer caused unexpected behavior."
+"Our query was correct but returning wrong results. Turned out comparing string '10' with integer caused unexpected behavior."
 
 ```sql
 -- ❌ The silent bug:
@@ -813,13 +813,13 @@ EXPLAIN SELECT * FROM users WHERE phone = 1234567890;
 
 
 
-> 🔬 **Section Challenge — 🟡 Disaster Type 4: The Implicit Type Conversion**
->>
+🔬 **Section Challenge — 🟡 Disaster Type 4: The Implicit Type Conversion**
+>
 
 ## 🟡 Disaster Type 5: The Timezone Trap
 
 ### Real Story
-> "All transactions on December 31st appeared on January 1st in reports. We stored timestamps without timezone info, and the report server was in a different timezone."
+"All transactions on December 31st appeared on January 1st in reports. We stored timestamps without timezone info, and the report server was in a different timezone."
 
 ```sql
 -- ❌ The problem setup:
@@ -865,8 +865,8 @@ WHERE created_at >= '2024-12-31 00:00:00 UTC'
 
 
 
-> 🔬 **Section Challenge — 🟡 Disaster Type 5: The Timezone Trap**
->>
+🔬 **Section Challenge — 🟡 Disaster Type 5: The Timezone Trap**
+>
 
 # ⚡ Part 3: Performance Disasters
 
@@ -875,7 +875,7 @@ WHERE created_at >= '2024-12-31 00:00:00 UTC'
 ## 🟠 Case 1: The Index That Wasn't Used
 
 ### Real Story
-> "We added an index but queries were still slow. Took us 3 days to realize the index wasn't being used because of a function in WHERE clause."
+"We added an index but queries were still slow. Took us 3 days to realize the index wasn't being used because of a function in WHERE clause."
 
 ```sql
 -- Table with index:
@@ -928,7 +928,7 @@ WHERE idx_scan = 0
 ## 🟠 Case 2: The Deadly SELECT *
 
 ### Real Story
-> "Production went down during peak hours. Someone had deployed a dashboard that did SELECT * from a table with a 10MB BLOB column, loading 1000 rows = 10GB data transfer."
+"Production went down during peak hours. Someone had deployed a dashboard that did SELECT * from a table with a 10MB BLOB column, loading 1000 rows = 10GB data transfer."
 
 ```sql
 -- ❌ The query:
@@ -971,7 +971,7 @@ WHERE status = 'active';
 ## 🟠 Case 3: The OFFSET Pagination Disaster
 
 ### Real Story
-> "Page 1 loaded in 100ms. Page 1000 loaded in 45 seconds. Our pagination was using OFFSET."
+"Page 1 loaded in 100ms. Page 1000 loaded in 45 seconds. Our pagination was using OFFSET."
 
 ```sql
 -- ❌ OFFSET gets slower as you go deeper:
@@ -1030,7 +1030,7 @@ WHERE page_number = 500;
 ## 🟠 Case 4: The Correlated Subquery Death
 
 ### Real Story
-> "A simple report query ran for 12 hours. It had a correlated subquery that ran once per row in the outer query."
+"A simple report query ran for 12 hours. It had a correlated subquery that ran once per row in the outer query."
 
 ```sql
 -- ❌ Correlated subquery (O(n²) complexity):
@@ -1173,13 +1173,13 @@ END $$;
 When asked "Tell me about a SQL disaster you've experienced or learned from":
 
 ### Story 1: The Missing WHERE
-> "Early in my career, I ran an UPDATE without a WHERE clause on a test database I thought was safe—turned out it was connected to production. It taught me to always verify my connection first with `SELECT current_database()` and to use transactions for any data modifications."
+"Early in my career, I ran an UPDATE without a WHERE clause on a test database I thought was safe—turned out it was connected to production. It taught me to always verify my connection first with `SELECT current_database()` and to use transactions for any data modifications."
 
 ### Story 2: The Performance Surprise
-> "I wrote a report query that worked fine in development with 1,000 rows. In production with 10 million rows, it timed out. The EXPLAIN showed a full table scan because I had a function on an indexed column. I learned to always test with production-scale data and check execution plans."
+"I wrote a report query that worked fine in development with 1,000 rows. In production with 10 million rows, it timed out. The EXPLAIN showed a full table scan because I had a function on an indexed column. I learned to always test with production-scale data and check execution plans."
 
 ### Story 3: The Backup Failure
-> "I learned from the GitLab incident to never trust backups without testing them. I implemented a practice of periodically restoring backups to a test environment to verify they're actually usable."
+"I learned from the GitLab incident to never trust backups without testing them. I implemented a practice of periodically restoring backups to a test environment to verify they're actually usable."
 
 ---
 

@@ -49,17 +49,12 @@ STEP 5: EDGE CASES (At the very end)
 ```
 
 **Flow:**
-- 'This is _______ pattern' / (Sliding Window / Two Point
-- ↓
-- public static void solve(int[] arr) { / for (int j = 0;
-- ↓
-- // window size = j - i + 1 / // OR: sum of window = cur
-- ↓
-- First: Add the core operation / Then: Add the condition
-- ↓
-- if (arr == null
-- ↓
-- arr.length == 0) return; / if (n &lt
+1. 'This is _______ pattern' / (Sliding Window / Two Point
+2. public static void solve(int[] arr) { / for (int j = 0;
+3. // window size = j - i + 1 / // OR: sum of window = cur
+4. First: Add the core operation / Then: Add the condition
+5. if (arr == null
+6. arr.length == 0) return; / if (n &lt
 
 ```mermaid
 flowchart TD
@@ -113,37 +108,22 @@ flowchart TD
 ```
 
 **Flow:**
-- WHICH PATTERN DO I USE? (Decision Tree)
-- ↓
-- Does problem involve ARRAY/STRING?
-- ↓
-- ▼ YES ▼ NO
-- ↓
-- 'window of size K'?
-- ↓
-- SLIDING WINDOW
-- ↓
-- 'window of size K'?
-- ↓
-- SLIDING WINDOW
-- ↓
-- 'tree structure'?
-- ↓
-- 'two elements sum'?
-- ↓
-- TWO POINTERS
-- ↓
-- BFS/DFS
-- ↓
-- 'two elements sum'?
-- ↓
-- TWO POINTERS
-- ↓
-- BFS/DFS
-- ↓
-- 'count frequency'?
-- ↓
-- HASHMAP 'graph/nodes'?
+1. WHICH PATTERN DO I USE? (Decision Tree)
+2. Does problem involve ARRAY/STRING?
+3. ▼ YES ▼ NO
+4. 'window of size K'?
+5. SLIDING WINDOW
+6. 'window of size K'?
+7. SLIDING WINDOW
+8. 'tree structure'?
+9. 'two elements sum'?
+10. TWO POINTERS
+11. BFS/DFS
+12. 'two elements sum'?
+13. TWO POINTERS
+14. BFS/DFS
+15. 'count frequency'?
+16. HASHMAP 'graph/nodes'?
 
 ```mermaid
 flowchart TD
@@ -194,9 +174,8 @@ User Input: n = ?
 ```
 
 **Flow:**
-- n == 0 ?
-- ↓
-- n < 0 ?
+1. n == 0 ?
+2. n < 0 ?
 
 ```mermaid
 flowchart TD
@@ -296,9 +275,8 @@ slow fast
 ```
 
 **Flow:**
-- r a c e c a r
-- ↓
-- 1 1 2 2 2 3 4
+1. r a c e c a r
+2. 1 1 2 2 2 3 4
 
 ```mermaid
 flowchart TD
@@ -351,17 +329,12 @@ If arr[mid] > target:  hi = mid - 1  (search left)
 ```
 
 **Flow:**
-- BINARY SEARCH VISUALIZATION
-- ↓
-- Array: [1, 3, 5, 7, 9, 11, 13, 15] Target: 7
-- ↓
-- Iteration 1:
-- ↓
-- lo mid hi
-- ↓
-- If arr[mid] < target: lo = mid + 1 (search right)
-- ↓
-- If arr[mid] > target: hi = mid - 1 (search left)
+1. BINARY SEARCH VISUALIZATION
+2. Array: [1, 3, 5, 7, 9, 11, 13, 15] Target: 7
+3. Iteration 1:
+4. lo mid hi
+5. If arr[mid] < target: lo = mid + 1 (search right)
+6. If arr[mid] > target: hi = mid - 1 (search left)
 
 ```mermaid
 flowchart TD
@@ -422,11 +395,9 @@ Final: Stack empty → BALANCED ✓
 ```
 
 **Flow:**
-- [ / (
-- ↓
-- { / [ / (
-- ↓
-- [ / (
+1. [ / (
+2. { / [ / (
+3. [ / (
 
 ```mermaid
 flowchart TD
@@ -500,19 +471,13 @@ public static boolean isBalanced(String s) {
 ```
 
 **Flow:**
-- COMMON MISTAKES VISUAL GUIDE
-- ↓
-- MISTAKE #1: Sliding Window Index Confusion
-- ↓
-- ❌ WRONG: for (j = i; j < i + k) ← 'Is it < or &lt
-- ↓
-- MISTAKE #2: Off-by-One in Range
-- ↓
-- Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers)
-- ↓
-- ❌ WRONG: for (i = 3; i < 7) ← misses 7!
-- ↓
-- ✅ RIGHT: for (i = 3; i <= 7) ← includes 7 ✓
+1. COMMON MISTAKES VISUAL GUIDE
+2. MISTAKE #1: Sliding Window Index Confusion
+3. ❌ WRONG: for (j = i; j < i + k) ← 'Is it < or &lt
+4. MISTAKE #2: Off-by-One in Range
+5. Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers)
+6. ❌ WRONG: for (i = 3; i < 7) ← misses 7!
+7. ✅ RIGHT: for (i = 3; i <= 7) ← includes 7 ✓
 
 ```mermaid
 flowchart TD

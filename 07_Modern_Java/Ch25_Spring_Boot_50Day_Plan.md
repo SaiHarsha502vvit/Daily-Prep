@@ -1,11 +1,11 @@
-> **Navigation**: [< Previous](Ch52_SB_WebSocket_GraphQL_gRPC.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch15_Concurrency_Core.md)
+**Navigation**: [< Previous](Ch52_SB_WebSocket_GraphQL_gRPC.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch15_Concurrency_Core.md)
 
 # 🚀 SPRING BOOT COMPLETE CURRICULUM — Separate Study Plan
 
-> **Duration:** 10 Weeks (alongside your DSA plan or standalone)
-> **Who:** Beginner → Intermediate → Expert (covers everything)
-> **Framework:** Every topic uses WHY → HOW → EXAMPLE → PITFALL → INTERVIEW Q
-> **Files covered:** Parts 0-23 (25 files, 26 files total in 07_Modern_Java)
+**Duration:** 10 Weeks (alongside your DSA plan or standalone)
+**Who:** Beginner → Intermediate → Expert (covers everything)
+**Framework:** Every topic uses WHY → HOW → EXAMPLE → PITFALL → INTERVIEW Q
+**Files covered:** Parts 0-23 (25 files, 26 files total in 07_Modern_Java)
 
 ---
 
@@ -18,17 +18,12 @@ Phase 3: EXPERT/CLOUD (Week 7-10)    → Microservices, Cloud, Advanced
 ```
 
 **Flow:**
-- Phase 1: FOUNDATIONS (Week 1-3)
-- ↓
-- Build your first REST API
-- ↓
-- Phase 2: PRODUCTION (Week 4-6)
-- ↓
-- Security, Testing, Performance
-- ↓
-- Phase 3: EXPERT/CLOUD (Week 7-10)
-- ↓
-- Microservices, Cloud, Advanced
+1. Phase 1: FOUNDATIONS (Week 1-3)
+2. Build your first REST API
+3. Phase 2: PRODUCTION (Week 4-6)
+4. Security, Testing, Performance
+5. Phase 3: EXPERT/CLOUD (Week 7-10)
+6. Microservices, Cloud, Advanced
 
 ```mermaid
 flowchart LR
@@ -60,7 +55,7 @@ Each day: ~2-3 hours
 
 # PHASE 1: FOUNDATIONS (Week 1-3) 🟢
 
-> **Goal:** Go from zero to building a complete REST API with database
+**Goal:** Go from zero to building a complete REST API with database
 
 ---
 
@@ -152,14 +147,14 @@ Each day: ~2-3 hours
 
 
 
-> 🔬 **Section Challenge — Week 1: Java Internals + Spring Core**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Week 1: Java Internals + Spring Core**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Week 2: AOP + HTTP + Building APIs
 
@@ -249,14 +244,14 @@ Each day: ~2-3 hours
 
 
 
-> 🔬 **Section Challenge — Week 2: AOP + HTTP + Building APIs**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — Week 2: AOP + HTTP + Building APIs**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## Week 3: JPA Deep Dive + Data Access
 
@@ -346,31 +341,31 @@ Each day: ~2-3 hours
 
 
 
-> 🔬 **Section Challenge — Week 3: JPA Deep Dive + Data Access**
->
-> **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
-> <details><summary>Answer</summary>
->
-> ```java
-> // N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
-> List<Order> orders = orderRepo.findAll(); // 1 query
-> orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
->
-> // Fix 1: JOIN FETCH
-> @Query("SELECT o FROM Order o JOIN FETCH o.customer")
-> List<Order> findAllWithCustomer();
->
-> // Fix 2: EntityGraph
-> @EntityGraph(attributePaths = "customer")
-> List<Order> findAll();
-> ```
-> Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-> </details>
->
+🔬 **Section Challenge — Week 3: JPA Deep Dive + Data Access**
+
+**Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+<details><summary>Answer</summary>
+
+```java
+// N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
+List<Order> orders = orderRepo.findAll(); // 1 query
+orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
+
+// Fix 1: JOIN FETCH
+@Query("SELECT o FROM Order o JOIN FETCH o.customer")
+List<Order> findAllWithCustomer();
+
+// Fix 2: EntityGraph
+@EntityGraph(attributePaths = "customer")
+List<Order> findAll();
+```
+Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+</details>
+
 
 # PHASE 2: PRODUCTION READY (Week 4-6) 🟡
 
-> **Goal:** Security, Testing, Caching, Essential production features
+**Goal:** Security, Testing, Caching, Essential production features
 
 ---
 
@@ -426,14 +421,14 @@ Each day: ~2-3 hours
 
 
 
-> 🔬 **Section Challenge — Week 4: Security + Auth**
->
-> **Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-> <details><summary>Answer</summary>
->
-> JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
-> </details>
->
+🔬 **Section Challenge — Week 4: Security + Auth**
+
+**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+<details><summary>Answer</summary>
+
+JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+</details>
+
 
 ## Week 5: Testing + Production Features
 
@@ -499,14 +494,14 @@ Each day: ~2-3 hours
 
 
 
-> 🔬 **Section Challenge — Week 5: Testing + Production Features**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Week 5: Testing + Production Features**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Week 6: Database Migrations + Annotations Reference
 
@@ -560,7 +555,7 @@ Each day: ~2-3 hours
 
 # PHASE 3: EXPERT / CLOUD (Week 7-10) 🔴
 
-> **Goal:** Advanced patterns, Microservices, Cloud deployment, Expert topics
+**Goal:** Advanced patterns, Microservices, Cloud deployment, Expert topics
 
 ---
 
@@ -616,14 +611,14 @@ Each day: ~2-3 hours
 
 
 
-> 🔬 **Section Challenge — Week 7: Messaging + Reactive**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Week 7: Messaging + Reactive**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Week 8: Microservices
 
@@ -677,14 +672,14 @@ Each day: ~2-3 hours
 
 
 
-> 🔬 **Section Challenge — Week 8: Microservices**
->
-> **Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
-> <details><summary>Answer</summary>
->
-> Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
-> </details>
->
+🔬 **Section Challenge — Week 8: Microservices**
+
+**Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
+<details><summary>Answer</summary>
+
+Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
+</details>
+
 
 ## Week 9: Cloud + Docker + GraphQL + gRPC
 
@@ -738,8 +733,8 @@ Each day: ~2-3 hours
 
 
 
-> 🔬 **Section Challenge — Week 9: Cloud + Docker + GraphQL + gRPC**
->>>
+🔬 **Section Challenge — Week 9: Cloud + Docker + GraphQL + gRPC**
+>>
 
 ## Week 10: Expert Topics + Capstone
 

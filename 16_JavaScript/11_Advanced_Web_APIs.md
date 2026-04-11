@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](10_Web_Workers_ServiceWorkers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](../07_Modern_Java/Ch08_Collections_Internals.md)
+**Navigation**: [< Previous](10_Web_Workers_ServiceWorkers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](../07_Modern_Java/Ch08_Collections_Internals.md)
 
 # 🌐 Chapter 11 — Advanced Web APIs: The Browser's Hidden Powers
 
-> **"The browser is an operating system. Beyond DOM manipulation, it has APIs for storage, networking, observation, geolocation, clipboard, notifications, and more. Senior devs know these APIs — they're what separate toy apps from production apps."**
+**"The browser is an operating system. Beyond DOM manipulation, it has APIs for storage, networking, observation, geolocation, clipboard, notifications, and more. Senior devs know these APIs — they're what separate toy apps from production apps."**
 
 ---
 
@@ -479,20 +479,20 @@ eventSource.close();
 
 
 
-> 🔬 **Section Challenge — 7. Server-Sent Events — One-Way Streaming**
->
-> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-> <details><summary>Answer</summary>
->
-> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-> <details><summary>Answer</summary>
->
-> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-> </details>
->
+🔬 **Section Challenge — 7. Server-Sent Events — One-Way Streaming**
+
+**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+<details><summary>Answer</summary>
+
+Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+</details>
+
+**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+<details><summary>Answer</summary>
+
+`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+</details>
+
 
 ## 8. Fetch API — Advanced Patterns
 
@@ -740,7 +740,7 @@ themeChannel.onmessage = (event) => {
 
 ---
 
-> **Next Chapter**: [Java Collections Internals →](../07_Modern_Java/Ch08_Collections_Internals.md)
+**Next Chapter**: [Java Collections Internals →](../07_Modern_Java/Ch08_Collections_Internals.md)
 
 ---
 

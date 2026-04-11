@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](11_Stack_Plus_MonotonicPattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Tree_Plus_DFS_BFS.md)
+**Navigation**: [< Previous](11_Stack_Plus_MonotonicPattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Tree_Plus_DFS_BFS.md)
 
 # LinkedList + Two Pointers — Combined Pattern Guide
 
-> **WHY this combination?** LinkedLists have no random access — you can't use indices. Two pointers (fast/slow) let you find midpoints, detect cycles, and locate k-th from end in a single pass.
+**WHY this combination?** LinkedLists have no random access — you can't use indices. Two pointers (fast/slow) let you find midpoints, detect cycles, and locate k-th from end in a single pass.
 
 ### 🧠 Deep Intuition — Why Pointer Techniques Are Essential for Linked Lists
 
@@ -45,9 +45,8 @@ THEN → LinkedList + Two Pointers
 ```
 
 **Flow:**
-- THEN
-- ↓
-- LinkedList + Two Pointers
+1. THEN
+2. LinkedList + Two Pointers
 
 ```mermaid
 flowchart LR
@@ -154,9 +153,8 @@ Find cycle start:
 ```
 
 **Flow:**
-- Both at 3!
-- ↓
-- Cycle starts at 3 ✅
+1. Both at 3!
+2. Cycle starts at 3 ✅
 
 ```mermaid
 flowchart LR
@@ -201,57 +199,32 @@ you lose the reference to the rest of the list.
 ```
 
 **Flow:**
-- Problem: Reverse 1
-- ↓
-- 2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- 5
-- ↓
-- null to 5
-- ↓
-- 4
-- ↓
-- 3
-- ↓
-- 2
-- ↓
-- 1
-- ↓
-- null
-- ↓
-- Approach: Three pointers: prev, curr, next.
-- ↓
-- At each step: save next, reverse the link, advance.
-- ↓
-- Step-by-step:
-- ↓
-- prev=null, curr=1
-- ↓
-- null ← 1 2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- 5
-- ↓
-- null ← 1 2
-- ↓
-- 3
-- ↓
-- 4
-- ↓
-- 5
-- ↓
-- null ← 1 ← 2 3
-- ↓
-- 4
-- ↓
-- 5
+1. Problem: Reverse 1
+2. 2
+3. 3
+4. 4
+5. 5
+6. null to 5
+7. 4
+8. 3
+9. 2
+10. 1
+11. null
+12. Approach: Three pointers: prev, curr, next.
+13. At each step: save next, reverse the link, advance.
+14. Step-by-step:
+15. prev=null, curr=1
+16. null ← 1 2
+17. 3
+18. 4
+19. 5
+20. null ← 1 2
+21. 3
+22. 4
+23. 5
+24. null ← 1 ← 2 3
+25. 4
+26. 5
 
 ```mermaid
 flowchart TD
@@ -312,17 +285,12 @@ Time: O(n) | Space: O(1)
 ```
 
 **Flow:**
-- Step 3: slow=4, fast=4
-- ↓
-- MEET! Cycle exists.
-- ↓
-- Step 2: ptr1=3, ptr2=3
-- ↓
-- MEET at node 3 = cycle start! ✅
-- ↓
-- Fast is 2× slow: 2(a + b) = a + b + c
-- ↓
-- a = c - b
+1. Step 3: slow=4, fast=4
+2. MEET! Cycle exists.
+3. Step 2: ptr1=3, ptr2=3
+4. MEET at node 3 = cycle start! ✅
+5. Fast is 2× slow: 2(a + b) = a + b + c
+6. a = c - b
 
 ```mermaid
 flowchart LR
@@ -369,31 +337,19 @@ COMMON MISTAKES:
 ```
 
 **Flow:**
-- EDGE CASES:
-- ↓
-- Edge Case Handling
-- ↓
-- Empty list (null) Return immediately
-- ↓
-- Single node, no cycle fast.next is null
-- ↓
-- no cycle
-- ↓
-- Single node, no cycle fast.next is null
-- ↓
-- no cycle
-- ↓
-- Single node, self-cycle 1
-- ↓
-- 1. fast == slow after 1 ste
-- ↓
-- Single node, self-cycle 1
-- ↓
-- 1. fast == slow after 1 ste
-- ↓
-- Cycle at head a = 0, cycle start = head
-- ↓
-- Cycle at tail Long path before cycle
+1. EDGE CASES:
+2. Edge Case Handling
+3. Empty list (null) Return immediately
+4. Single node, no cycle fast.next is null
+5. no cycle
+6. Single node, no cycle fast.next is null
+7. no cycle
+8. Single node, self-cycle 1
+9. 1. fast == slow after 1 ste
+10. Single node, self-cycle 1
+11. 1. fast == slow after 1 ste
+12. Cycle at head a = 0, cycle start = head
+13. Cycle at tail Long path before cycle
 
 ```mermaid
 flowchart TD
@@ -432,14 +388,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 | # | Problem | Companies | Key Insight |

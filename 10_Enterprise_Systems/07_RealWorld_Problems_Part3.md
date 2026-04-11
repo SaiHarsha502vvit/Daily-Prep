@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](06_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_RealWorld_Incidents_DSA.md)
+**Navigation**: [< Previous](06_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_RealWorld_Incidents_DSA.md)
 
 # 🎯 Real-World Problems - Part 3: Interview Favorites
 
@@ -11,9 +11,9 @@
 ## Problem 23: Split Bill Among Friends (Simplify Debts)
 
 
-> COMPANY: Splitwise / PhonePe
-> SYSTEM: Bill Splitting
-> CHALLENGE: Minimize number of transactions to settle debts
+COMPANY: Splitwise / PhonePe
+SYSTEM: Bill Splitting
+CHALLENGE: Minimize number of transactions to settle debts
 
 
 EXAMPLE:
@@ -163,19 +163,13 @@ ALGORITHMS:
 ```
 
 **Flow:**
-- COMPANY: Every API-based company
-- ↓
-- SYSTEM: API Gateway
-- ↓
-- CHALLENGE: Limit requests to 100 per minute per user
-- ↓
-- WHY NEEDED:
-- ↓
-- - Prevent abuse
-- ↓
-- - Fair usage
-- ↓
-- - Protect servers
+1. COMPANY: Every API-based company
+2. SYSTEM: API Gateway
+3. CHALLENGE: Limit requests to 100 per minute per user
+4. WHY NEEDED:
+5. - Prevent abuse
+6. - Fair usage
+7. - Protect servers
 
 ```mermaid
 flowchart TD
@@ -364,20 +358,20 @@ public class RateLimiterService {
 
 
 
-> 🔬 **Section Challenge — Problem 24: Rate Limiter (Sliding Window / Token Bucket)**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — Problem 24: Rate Limiter (Sliding Window / Token Bucket)**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 # PART 12: SEARCH SYSTEMS (Google/Elasticsearch)
 
@@ -392,11 +386,9 @@ public class RateLimiterService {
 ```
 
 **Flow:**
-- COMPANY: Google / Amazon Search
-- ↓
-- SYSTEM: Search Bar
-- ↓
-- FEATURE: Show top 5 suggestions as user types
+1. COMPANY: Google / Amazon Search
+2. SYSTEM: Search Bar
+3. FEATURE: Show top 5 suggestions as user types
 
 ```mermaid
 flowchart TD
@@ -570,9 +562,8 @@ public class SearchAutocomplete {
 ```
 
 **Flow:**
-- COMPANY: Twitter / Reddit
-- ↓
-- SYSTEM: Trending Topics
+1. COMPANY: Twitter / Reddit
+2. SYSTEM: Trending Topics
 
 ```mermaid
 flowchart TD
@@ -737,11 +728,9 @@ public class TrendingTopicsService {
 ```
 
 **Flow:**
-- COMPANY: Any Data Company
-- ↓
-- SYSTEM: ETL Pipeline
-- ↓
-- CHALLENGE: Sort 100GB CSV file with only 4GB RAM
+1. COMPANY: Any Data Company
+2. SYSTEM: ETL Pipeline
+3. CHALLENGE: Sort 100GB CSV file with only 4GB RAM
 
 ```mermaid
 flowchart TD
@@ -922,11 +911,9 @@ public class ExternalSort {
 ```
 
 **Flow:**
-- COMPANY: Google Drive / Dropbox
-- ↓
-- SYSTEM: Storage Optimization
-- ↓
-- CHALLENGE: Find and remove duplicate files to save stor
+1. COMPANY: Google Drive / Dropbox
+2. SYSTEM: Storage Optimization
+3. CHALLENGE: Find and remove duplicate files to save stor
 
 ```mermaid
 flowchart TD
@@ -1105,9 +1092,8 @@ public class DuplicateFileFinder {
 ```
 
 **Flow:**
-- COMPANY: Ludo King / PUBG
-- ↓
-- SYSTEM: Gaming Leaderboard
+1. COMPANY: Ludo King / PUBG
+2. SYSTEM: Gaming Leaderboard
 
 ```mermaid
 flowchart TD
@@ -1281,11 +1267,9 @@ public class GameLeaderboard {
 ```
 
 **Flow:**
-- COMPANY: PUBG / Valorant / Chess.com
-- ↓
-- SYSTEM: Multiplayer Matchmaking
-- ↓
-- CHALLENGE: Match players with similar skill for fair ga
+1. COMPANY: PUBG / Valorant / Chess.com
+2. SYSTEM: Multiplayer Matchmaking
+3. CHALLENGE: Match players with similar skill for fair ga
 
 ```mermaid
 flowchart TD

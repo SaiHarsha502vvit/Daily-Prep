@@ -1,7 +1,7 @@
 # Chapter 45 — Interview-Grade Scenario Explanations Part 2: Concurrency, Transactions & Locks
 
-> **What:** 10+ advanced scenarios explained with senior-level precision — covering the hardest interview topics: deadlocks, race conditions, isolation levels, distributed transactions
-> **Why These Matter:** Concurrency questions separate mid-level from senior engineers in interviews. If you can explain deadlocks and isolation levels with real examples, you're immediately in the top 10%.
+**What:** 10+ advanced scenarios explained with senior-level precision — covering the hardest interview topics: deadlocks, race conditions, isolation levels, distributed transactions
+**Why These Matter:** Concurrency questions separate mid-level from senior engineers in interviews. If you can explain deadlocks and isolation levels with real examples, you're immediately in the top 10%.
 
 ---
 
@@ -28,7 +28,7 @@
 ## S11: Deadlock Between Two Transactions
 
 ### 🎤 Interview Question
-> "Explain how deadlocks happen and what you'd do to prevent them."
+"Explain how deadlocks happen and what you'd do to prevent them."
 
 ### ✅ Professional Answer
 
@@ -149,19 +149,19 @@ SHOW ENGINE INNODB STATUS;
 
 
 
-> 🔬 **Section Challenge — S11: Deadlock Between Two Transactions**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — S11: Deadlock Between Two Transactions**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## S12: Lost Update (Read-Modify-Write Race Condition)
 
 ### 🎤 Interview Question
-> "How do you handle concurrent updates to the same data?"
+"How do you handle concurrent updates to the same data?"
 
 ### ✅ Professional Answer
 
@@ -277,7 +277,7 @@ int decrementStock(@Param("id") Long id);
 ## S13: Phantom Reads in Financial Reports
 
 ### 🎤 Interview Question
-> "Explain isolation levels with a real production example."
+"Explain isolation levels with a real production example."
 
 ### ✅ Professional Answer
 
@@ -393,7 +393,7 @@ public void reconcile() {
 ## S14: Long Transaction Blocking Schema Migration
 
 ### 🎤 Interview Question
-> "How do you run database migrations in production without downtime?"
+"How do you run database migrations in production without downtime?"
 
 ### ✅ Professional Answer
 
@@ -469,19 +469,19 @@ PostgreSQL 11+ "Virtual Column" Trick:
 
 
 
-> 🔬 **Section Challenge — S14: Long Transaction Blocking Schema Migration**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — S14: Long Transaction Blocking Schema Migration**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## S15: Distributed Transaction Failure (Saga Pattern)
 
 ### 🎤 Interview Question
-> "How do you maintain data consistency across microservices?"
+"How do you maintain data consistency across microservices?"
 
 ### ✅ Professional Answer
 
@@ -596,19 +596,19 @@ Each compensating action must be idempotent because:
 
 
 
-> 🔬 **Section Challenge — S15: Distributed Transaction Failure (Saga Pattern)**
->
-> **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
-> <details><summary>Answer</summary>
->
-> READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-> </details>
->
+🔬 **Section Challenge — S15: Distributed Transaction Failure (Saga Pattern)**
+
+**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+<details><summary>Answer</summary>
+
+READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+</details>
+
 
 ## S16: Optimistic vs Pessimistic Locking (Deep Dive)
 
 ### 🎤 Interview Question
-> "When would you choose optimistic vs pessimistic locking?"
+"When would you choose optimistic vs pessimistic locking?"
 
 ### ✅ Professional Answer
 
@@ -660,7 +660,7 @@ public void updateStock(Long productId, int quantity) {
 ## S17: Queue Table Hot Row Problem
 
 ### 🎤 Interview Question
-> "How would you implement a reliable job queue using a database?"
+"How would you implement a reliable job queue using a database?"
 
 ### ✅ Professional Answer
 
@@ -729,7 +729,7 @@ public void processNextJob(String workerId) {
 ## S18: Gap Lock Surprises in MySQL InnoDB
 
 ### 🎤 Interview Question
-> "Have you encountered unexpected locking behavior?"
+"Have you encountered unexpected locking behavior?"
 
 ### ✅ Professional Answer
 
@@ -763,7 +763,7 @@ INSERT INTO items (id, name) VALUES (8, 'Widget');
 ## S19: Connection Leak (Unreturned Connections)
 
 ### 🎤 Interview Question
-> "What causes intermittent connection timeouts that are hard to reproduce?"
+"What causes intermittent connection timeouts that are hard to reproduce?"
 
 ### ✅ Professional Answer
 
@@ -824,7 +824,7 @@ spring:
 ## S20: Retry Storm After Partial Failure
 
 ### 🎤 Interview Question
-> "How do you handle retries without causing cascading failures?"
+"How do you handle retries without causing cascading failures?"
 
 ### ✅ Professional Answer
 

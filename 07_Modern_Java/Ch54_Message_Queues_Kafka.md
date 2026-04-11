@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Production Practices](../13_Developer_Essentials/11_Production_Code_Practices.md)
-> 🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Production Practices](../13_Developer_Essentials/11_Production_Code_Practices.md)
+🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md)
 
 ---
 
 # 📨 Message Queues & Kafka — Event-Driven Architecture
 
-> How production systems communicate asynchronously — from simple queues to streaming platforms
+How production systems communicate asynchronously — from simple queues to streaming platforms
 
 ---
 
@@ -20,9 +20,8 @@
 ```
 
 **Flow:**
-- Order Service --(HTTP)--> Payment Service
-- ↓
-- Payment Service --(HTTP)--> Email Service
+1. Order Service --(HTTP)--> Payment Service
+2. Payment Service --(HTTP)--> Email Service
 
 ```mermaid
 flowchart LR
@@ -42,19 +41,13 @@ flowchart LR
 ```
 
 **Flow:**
-- Order Service
-- ↓
-- [ MESSAGE QUEUE ]
-- ↓
-- Payment Worker
-- ↓
-- [ MESSAGE QUEUE ]
-- ↓
-- Email Worker
-- ↓
-- [ MESSAGE QUEUE ]
-- ↓
-- Analytics Worker
+1. Order Service
+2. [ MESSAGE QUEUE ]
+3. Payment Worker
+4. [ MESSAGE QUEUE ]
+5. Email Worker
+6. [ MESSAGE QUEUE ]
+7. Analytics Worker
 
 ```mermaid
 flowchart LR
@@ -97,21 +90,14 @@ PUB/SUB (Publish-Subscribe):
 ```
 
 **Flow:**
-- Producer
-- ↓
-- [Queue]
-- ↓
-- Consumer A (only ONE consumer gets each message)
-- ↓
-- Publisher
-- ↓
-- [Topic]
-- ↓
-- Subscriber A (ALL subscribers get each message)
-- ↓
-- Use case: Event broadcasting (order placed
-- ↓
-- notify warehouse, email, analytics)
+1. Producer
+2. [Queue]
+3. Consumer A (only ONE consumer gets each message)
+4. Publisher
+5. [Topic]
+6. Subscriber A (ALL subscribers get each message)
+7. Use case: Event broadcasting (order placed
+8. notify warehouse, email, analytics)
 
 ```mermaid
 flowchart TD
@@ -134,20 +120,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Part 2: Queue Types — Point-to-Point vs Pub/Sub**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — Part 2: Queue Types — Point-to-Point vs Pub/Sub**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## Part 3: Apache Kafka — Deep Dive
 
@@ -173,11 +159,9 @@ flowchart TD
 ```
 
 **Flow:**
-- Producer A / (app 1)
-- ↓
-- Producer B / (app 2)
-- ↓
-- KAFKA CLUSTER / (Broker Servers)
+1. Producer A / (app 1)
+2. Producer B / (app 2)
+3. KAFKA CLUSTER / (Broker Servers)
 
 ```mermaid
 flowchart TD
@@ -188,7 +172,7 @@ flowchart TD
     N2 --> N3
 ```
 
-> **Topic** = A named feed of messages — think of it like a **database table** you write records into.
+**Topic** = A named feed of messages — think of it like a **database table** you write records into.
 
 **Step 2 — Topic is split into Partitions for parallelism:**
 
@@ -203,11 +187,9 @@ flowchart TD
 ```
 
 **Flow:**
-- Partition 0 / [0] [1] [2] / ← offset
-- ↓
-- Partition 1 / [0][1][2][3] / ← offset
-- ↓
-- Partition 2 / [0] [1] / ← offset
+1. Partition 0 / [0] [1] [2] / ← offset
+2. Partition 1 / [0][1][2][3] / ← offset
+3. Partition 2 / [0] [1] / ← offset
 
 ```mermaid
 flowchart TD
@@ -218,9 +200,9 @@ flowchart TD
     N2 --> N3
 ```
 
-> **Partition** = An ordered, immutable log. Messages append to the end.
-> Each message gets an **offset** (like an array index).
-> Kafka achieves massive throughput because partitions process **in parallel**.
+**Partition** = An ordered, immutable log. Messages append to the end.
+Each message gets an **offset** (like an array index).
+Kafka achieves massive throughput because partitions process **in parallel**.
 
 **Step 3 — Consumer Group reads partitions (1:1 mapping):**
 
@@ -237,11 +219,9 @@ flowchart TD
 ```
 
 **Flow:**
-- Consumer A
-- ↓
-- Consumer B
-- ↓
-- Consumer
+1. Consumer A
+2. Consumer B
+3. Consumer
 
 ```mermaid
 flowchart TD
@@ -252,17 +232,17 @@ flowchart TD
     N2 --> N3
 ```
 
-> **Consumer Group** = Consumers that share the work. Add more consumers = more parallelism!
->
-> **Broker** = A Kafka server. A cluster has multiple brokers for fault tolerance.
+**Consumer Group** = Consumers that share the work. Add more consumers = more parallelism!
+
+**Broker** = A Kafka server. A cluster has multiple brokers for fault tolerance.
 
 ### Kafka Guarantees & Config
 
 **Ordering:**
 
-> Messages are guaranteed in order **within a partition**, NOT across partitions.
-> To order all messages for `user123`: use `userId` as the **partition key**.
-> `hash("user123") % num_partitions` → always the same partition.
+Messages are guaranteed in order **within a partition**, NOT across partitions.
+To order all messages for `user123`: use `userId` as the **partition key**.
+`hash("user123") % num_partitions` → always the same partition.
 
 **Delivery Semantics:**
 
@@ -274,8 +254,8 @@ flowchart TD
 
 **Replication:**
 
-> Each partition has **1 leader** + N-1 **followers** (ISR = in-sync replicas).
-> Writes go to leader, then replicated to followers.
+Each partition has **1 leader** + N-1 **followers** (ISR = in-sync replicas).
+Writes go to leader, then replicated to followers.
 
 | `acks` Setting | Behavior | Trade-off |
 |----------------|----------|-----------|
@@ -349,14 +329,14 @@ public class PaymentEventConsumer {
 
 
 
-> 🔬 **Section Challenge — Part 4: Spring Boot + Kafka (Production Code)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Part 4: Spring Boot + Kafka (Production Code)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Part 5: RabbitMQ vs Kafka vs SQS
 
@@ -372,7 +352,7 @@ public class PaymentEventConsumer {
 | **Complexity** | High (ZK/KRaft) | Medium | Low (fully managed) |
 | **When to use** | High throughput, event sourcing | Complex routing, low latency | AWS ecosystem, simple queuing |
 
-> 💡 **Quick Decision**: Need **event replay** + high throughput? → **Kafka**. Complex routing? → **RabbitMQ**. Simple managed queue? → **SQS**.
+💡 **Quick Decision**: Need **event replay** + high throughput? → **Kafka**. Complex routing? → **RabbitMQ**. Simple managed queue? → **SQS**.
 
 ---
 
@@ -381,22 +361,22 @@ public class PaymentEventConsumer {
 
 ### Pattern 1: Event Notification
 
-> Order Service publishes: `{ type: "ORDER_CREATED", orderId: "123" }`
-> Consumers react: send email, update analytics, reserve inventory.
->
-> → **Lightweight events** — consumers fetch full details if needed.
+Order Service publishes: `{ type: "ORDER_CREATED", orderId: "123" }`
+Consumers react: send email, update analytics, reserve inventory.
+
+→ **Lightweight events** — consumers fetch full details if needed.
 
 ### Pattern 2: Event-Carried State Transfer
 
-> Order Service publishes the **full payload**:
-> `{ type: "ORDER_CREATED", orderId: "123", customer: "John", items: [...], total: 99.99 }`
->
-> → **Fat events** — consumers don't need to call back for details.
-> → Trade-off: larger messages, but **fully decoupled**.
+Order Service publishes the **full payload**:
+`{ type: "ORDER_CREATED", orderId: "123", customer: "John", items: [...], total: 99.99 }`
+
+→ **Fat events** — consumers don't need to call back for details.
+→ Trade-off: larger messages, but **fully decoupled**.
 
 ### Pattern 3: Event Sourcing
 
-> Don't store current state — **store all events as the source of truth**.
+Don't store current state — **store all events as the source of truth**.
 
 ```
   AccountCreated → Deposited($100) → Withdrawn($30) → Deposited($50)
@@ -405,13 +385,10 @@ public class PaymentEventConsumer {
 ```
 
 **Flow:**
-- AccountCreated
-- ↓
-- Deposited($100)
-- ↓
-- Withdrawn($30)
-- ↓
-- Deposited($50)
+1. AccountCreated
+2. Deposited($100)
+3. Withdrawn($30)
+4. Deposited($50)
 
 ```mermaid
 flowchart LR
@@ -424,12 +401,12 @@ flowchart LR
     N3 --> N4
 ```
 
-> → Complete **audit trail** — rebuild state at any point in time.
-> → Complex: need snapshots for performance, eventual consistency.
+→ Complete **audit trail** — rebuild state at any point in time.
+→ Complex: need snapshots for performance, eventual consistency.
 
 ### Pattern 4: Outbox Pattern (Transactional Messaging)
 
-> **Problem**: How to atomically update the DB AND publish an event?
+**Problem**: How to atomically update the DB AND publish an event?
 
 ```
   ┌─────────────────────────────────────────────────────────┐
@@ -447,19 +424,13 @@ flowchart LR
 ```
 
 **Flow:**
-- OUTBOX PATTERN — 3 Steps
-- ↓
-- 1. In SAME DB transaction:
-- ↓
-- UPDATE orders SET status = 'paid'
-- ↓
-- INSERT INTO outbox (event_type, payload, ...)
-- ↓
-- 2. Separate process polls the outbox table
-- ↓
-- publishes pending events to Kafka
-- ↓
-- 3. Mark outbox row as published
+1. OUTBOX PATTERN — 3 Steps
+2. 1. In SAME DB transaction:
+3. UPDATE orders SET status = 'paid'
+4. INSERT INTO outbox (event_type, payload, ...)
+5. 2. Separate process polls the outbox table
+6. publishes pending events to Kafka
+7. 3. Mark outbox row as published
 
 ```mermaid
 flowchart TD
@@ -478,7 +449,7 @@ flowchart TD
     N6 --> N7
 ```
 
-> → **Guarantee**: If the DB is updated, the event **WILL** be published (eventually).
+→ **Guarantee**: If the DB is updated, the event **WILL** be published (eventually).
 
 ---
 

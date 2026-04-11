@@ -1,25 +1,25 @@
-> **JavaScript Chapter 7/7** | [← Previous: Modern ES6+](06_JS_Modern_ES6Plus.md) | [Index](../00_MASTER_INDEX.md)
+**JavaScript Chapter 7/7** | [← Previous: Modern ES6+](06_JS_Modern_ES6Plus.md) | [Index](../00_MASTER_INDEX.md)
 
 # Error Handling & Debugging — Writing Bulletproof Code
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: How to catch, handle, and debug errors in JavaScript.
-> Covers try/catch, custom errors, debugging tools, and
-> patterns for production-ready error handling.
->
-> WHY:  Every app has errors. The difference between a junior and
-> senior developer is how they HANDLE errors. Unhandled
-> errors crash apps, lose data, and frustrate users.
->
-> WHO:  Everyone — frontend (API failures, user input), backend
-> (DB errors, network issues), React (error boundaries).
->
-> WHEN: From day one. Error handling isn't an afterthought.
->
-> HOW:  try/catch for sync, .catch for promises, Error Boundaries
-> for React, global handlers as safety nets.
+WHAT: How to catch, handle, and debug errors in JavaScript.
+Covers try/catch, custom errors, debugging tools, and
+patterns for production-ready error handling.
+
+WHY:  Every app has errors. The difference between a junior and
+senior developer is how they HANDLE errors. Unhandled
+errors crash apps, lose data, and frustrate users.
+
+WHO:  Everyone — frontend (API failures, user input), backend
+(DB errors, network issues), React (error boundaries).
+
+WHEN: From day one. Error handling isn't an afterthought.
+
+HOW:  try/catch for sync, .catch for promises, Error Boundaries
+for React, global handlers as safety nets.
 
 
 ---
@@ -49,25 +49,9 @@ ReferenceError (variable is not defined)
 ```
 
 **Flow:**
-- BUILT-IN ERROR TYPES:
-- ↓
-- Type When It Occurs
-- ↓
-- SyntaxError Invalid code: if ( {
-- ↓
-- parsing fails
-- ↓
-- SyntaxError Invalid code: if ( {
-- ↓
-- parsing fails
-- ↓
-- ReferenceError Accessing undefined variable
-- ↓
-- TypeError Wrong type operation: null.map()
-- ↓
-- RangeError Number out of range: new Array(-1)
-- ↓
-- URIError Bad URI: decodeURI('%')
+1. BUILT-IN ERROR TYPES:
+2. Type When It Occurs
+3. SyntaxError Invalid code: if ( { parsing fails SyntaxError Invalid code: if ( { parsing fails ReferenceError Accessing undefined variable TypeError Wrong type operation: null.map() RangeError Number out of range: new Array(-1) URIError Bad URI: decodeURI('%')
 
 ```mermaid
 flowchart TD
@@ -111,8 +95,8 @@ try {
 
 
 
-> 🔬 **Section Challenge — 1. Error Types in JavaScript**
->>
+🔬 **Section Challenge — 1. Error Types in JavaScript**
+>
 
 ## 2. try/catch/finally
 
@@ -239,25 +223,25 @@ try {
 
 
 
-> 🔬 **Section Challenge — 3. Custom Error Classes**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — 3. Custom Error Classes**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## 4. Error Handling Patterns
 
@@ -403,37 +387,7 @@ CONSOLE TAB:
 ```
 
 **Flow:**
-- OPENING DEVTOOLS: F12 or Ctrl+Shift+I (Cmd+Opt+I on Mac
-- ↓
-- CONSOLE
-- ↓
-- SOURCES
-- ↓
-- NETWORK
-- ↓
-- PERFORMANCE
-- ↓
-- MEMORY
-- ↓
-- CONSOLE
-- ↓
-- SOURCES
-- ↓
-- NETWORK
-- ↓
-- PERFORMANCE
-- ↓
-- MEMORY
-- ↓
-- CONSOLE TAB:
-- ↓
-- • console.log() — general output
-- ↓
-- • console.error() — red, with stack trace
-- ↓
-- • console.warn() — yellow warning
-- ↓
-- • console.table() — display arrays/objects as TABLE
+1. OPENING DEVTOOLS: F12 or Ctrl+Shift+I (Cmd+Opt+I on Mac CONSOLE SOURCES NETWORK PERFORMANCE MEMORY CONSOLE SOURCES NETWORK PERFORMANCE MEMORY CONSOLE TAB: • console.log() — general output • console.error() — red, with stack trace • console.warn() — yellow warning • console.table() — display arrays/objects as TABLE
 
 ```mermaid
 flowchart TD
@@ -518,31 +472,17 @@ CALL STACK: See the chain of function calls.
 ```
 
 **Flow:**
-- SOURCES TAB — Step through code line by line:
-- ↓
-- BREAKPOINT TYPES:
-- ↓
-- 1. Click line number in Sources tab
-- ↓
-- line breakpoint
-- ↓
-- 1. Click line number in Sources tab
-- ↓
-- line breakpoint
-- ↓
-- 2. debugger; statement in code
-- ↓
-- programmatic breakpoin
-- ↓
-- 2. debugger; statement in code
-- ↓
-- programmatic breakpoin
-- ↓
-- 5. XHR/fetch breakpoint (break when URL matches)
-- ↓
-- 6. Event listener breakpoint (break on specific events)
-- ↓
-- STEPPING CONTROLS:
+1. SOURCES TAB — Step through code line by line:
+2. BREAKPOINT TYPES:
+3. Click line number in Sources tab
+4. line breakpoint
+5. Click line number in Sources tab
+6. line breakpoint debugger; statement in code
+7. programmatic breakpoin debugger; statement in code
+8. programmatic breakpoin
+9. XHR/fetch breakpoint (break when URL matches)
+10. Event listener breakpoint (break on specific events)
+11. STEPPING CONTROLS:
 
 ```mermaid
 flowchart TD
@@ -615,19 +555,13 @@ if (process.env.NODE_ENV === "development") {
 ```
 
 **Flow:**
-- STRATEGY 1: 'BINARY SEARCH' DEBUGGING
-- ↓
-- • Put a console.log halfway through the suspect code.
-- ↓
-- • Is the data correct at that point?
-- ↓
-- STRATEGY 2: 'RUBBER DUCK' DEBUGGING
-- ↓
-- STRATEGY 3: 'WHAT CHANGED?' DEBUGGING
-- ↓
-- • It was working before. What changed?
-- ↓
-- • git diff to see recent changes.
+1. STRATEGY 1: 'BINARY SEARCH' DEBUGGING
+2. • Put a console.log halfway through the suspect code.
+3. • Is the data correct at that point?
+4. STRATEGY 2: 'RUBBER DUCK' DEBUGGING
+5. STRATEGY 3: 'WHAT CHANGED?' DEBUGGING
+6. • It was working before. What changed?
+7. • git diff to see recent changes.
 
 ```mermaid
 flowchart TD
@@ -745,19 +679,7 @@ class ErrorBoundary extends React.Component {
 ```
 
 **Flow:**
-- ✅ ALWAYS handle promise rejections (.catch or try/catch
-- ↓
-- ✅ NEVER swallow errors silently (catch(e) { /* empty */
-- ↓
-- ✅ Use specific error types (ValidationError, NotFoundEr
-- ↓
-- ✅ Validate inputs at module boundaries (API, user input
-- ↓
-- ✅ Add global error handlers as safety nets
-- ↓
-- ✅ Use Error.cause to chain errors (preserve original)
-- ↓
-- ✅ Have an error monitoring service in production
+1. ✅ ALWAYS handle promise rejections (.catch or try/catch ✅ NEVER swallow errors silently (catch(e) { /* empty */ ✅ Use specific error types (ValidationError, NotFoundEr ✅ Validate inputs at module boundaries (API, user input ✅ Add global error handlers as safety nets ✅ Use Error.cause to chain errors (preserve original) ✅ Have an error monitoring service in production
 
 ```mermaid
 flowchart TD
@@ -811,19 +733,13 @@ Q: Custom Error classes — when and why?
 ```
 
 **Flow:**
-- Q: How do you handle errors in async/await?
-- ↓
-- Q: What is the difference between throw and return?
-- ↓
-- return just exits the current function with a value.
-- ↓
-- Q: What is an Error Boundary in React?
-- ↓
-- A class component with getDerivedStateFromError and/o
-- ↓
-- componentDidCatch. Catches errors in child component tr
-- ↓
-- during rendering. Can't catch: events, async, server-si
+1. Q: How do you handle errors in async/await?
+2. Q: What is the difference between throw and return?
+3. return just exits the current function with a value.
+4. Q: What is an Error Boundary in React?
+5. A class component with getDerivedStateFromError and/o
+6. componentDidCatch. Catches errors in child component tr
+7. during rendering. Can't catch: events, async, server-si
 
 ```mermaid
 flowchart TD
@@ -846,9 +762,9 @@ flowchart TD
 
 ---
 
-> **End of JavaScript Series** | [← Previous: Modern ES6+](06_JS_Modern_ES6Plus.md) | [Index](../00_MASTER_INDEX.md)
->
-> **Next Series:** [TypeScript Foundations →](../17_TypeScript/01_TS_Foundations.md)
+**End of JavaScript Series** | [← Previous: Modern ES6+](06_JS_Modern_ES6Plus.md) | [Index](../00_MASTER_INDEX.md)
+
+**Next Series:** [TypeScript Foundations →](../17_TypeScript/01_TS_Foundations.md)
 
 ---
 

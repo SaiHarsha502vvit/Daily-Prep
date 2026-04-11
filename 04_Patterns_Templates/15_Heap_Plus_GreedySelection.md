@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)
+**Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)
 
 # Heap + Greedy Selection — Combined Pattern Guide
 
-> **WHY this combination?** Heaps give O(log n) access to the min/max element. Combined with greedy strategy (always pick the best available), they solve "Top K", "merge K sorted", and scheduling problems efficiently.
+**WHY this combination?** Heaps give O(log n) access to the min/max element. Combined with greedy strategy (always pick the best available), they solve "Top K", "merge K sorted", and scheduling problems efficiently.
 
 ### 🧠 Deep Intuition — Heaps and Greedy Correctness
 
@@ -42,9 +42,8 @@ THEN → Heap (Priority Queue) + Greedy
 ```
 
 **Flow:**
-- THEN
-- ↓
-- Heap (Priority Queue) + Greedy
+1. THEN
+2. Heap (Priority Queue) + Greedy
 
 ```mermaid
 flowchart LR
@@ -66,9 +65,8 @@ Use for: K largest              Use for: K smallest
 ```
 
 **Flow:**
-- Top element: smallest
-- ↓
-- Top element: largest
+1. Top element: smallest
+2. Top element: largest
 
 ```mermaid
 flowchart LR
@@ -162,21 +160,14 @@ Why not sort? Sorting is O(n log n). Heap is O(n log k) — better when k << n.
 ```
 
 **Flow:**
-- Process 1: 1 < heap.peek()=2
-- ↓
-- skip (too small)
-- ↓
-- Process 5: 5 > heap.peek()=2
-- ↓
-- poll 2, add 5
-- ↓
-- Process 6: 6 > heap.peek()=3
-- ↓
-- poll 3, add 6
-- ↓
-- Process 4: 4 < heap.peek()=5
-- ↓
-- skip
+1. Process 1: 1 < heap.peek()=2
+2. skip (too small)
+3. Process 5: 5 > heap.peek()=2
+4. poll 2, add 5
+5. Process 6: 6 > heap.peek()=3
+6. poll 3, add 6
+7. Process 4: 4 < heap.peek()=5
+8. skip
 
 ```mermaid
 flowchart LR
@@ -235,29 +226,18 @@ Time: addNum O(log n), findMedian O(1) | Space: O(n)
 ```
 
 **Flow:**
-- Stream: addNum(1), addNum(2), findMedian()
-- ↓
-- 1.5, addNum(3), findMedian()
-- ↓
-- Sizes: 1, 0
-- ↓
-- OK (left can be 1 bigger)
-- ↓
-- Sizes: 1, 1
-- ↓
-- OK
-- ↓
-- findMedian(): Both same size
-- ↓
-- (maxHeap.peek() + minHeap.peek()) / 2
-- ↓
-- 3 > minHeap.peek(2)
-- ↓
-- move 3 to minHeap.
-- ↓
-- maxHeap=[1], minHeap=[2,3]. Sizes: 1, 2
-- ↓
-- rebalance!
+1. Stream: addNum(1), addNum(2), findMedian()
+2. 1.5, addNum(3), findMedian()
+3. Sizes: 1, 0
+4. OK (left can be 1 bigger)
+5. Sizes: 1, 1
+6. OK
+7. findMedian(): Both same size
+8. (maxHeap.peek() + minHeap.peek()) / 2
+9. 3 > minHeap.peek(2)
+10. move 3 to minHeap.
+11. maxHeap=[1], minHeap=[2,3]. Sizes: 1, 2
+12. rebalance!
 
 ```mermaid
 flowchart TD
@@ -290,20 +270,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Find Median from Data Stream (Two Heaps)**
->
-> **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-> <details><summary>Answer</summary>
->
-> Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-> <details><summary>Answer</summary>
->
-> `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-> </details>
->
+🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Find Median from Data Stream (Two Heaps)**
+
+**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+<details><summary>Answer</summary>
+
+Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+</details>
+
+**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
+<details><summary>Answer</summary>
+
+`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+</details>
+
 
 ## 🛡️ EDGE CASES & COMMON MISTAKES
 
@@ -332,25 +312,16 @@ COMMON MISTAKES:
 ```
 
 **Flow:**
-- EDGE CASES:
-- ↓
-- Edge Case Handling
-- ↓
-- k = 1 Heap of size 1 = max element
-- ↓
-- k = n Heap of size n
-- ↓
-- just min of all
-- ↓
-- k = n Heap of size n
-- ↓
-- just min of all
-- ↓
-- All same values [3,3,3,3] Works correctly, peek always
-- ↓
-- Negative numbers PQ handles naturally
-- ↓
-- Single element stream Median = that element
+1. EDGE CASES:
+2. Edge Case Handling
+3. k = 1 Heap of size 1 = max element
+4. k = n Heap of size n
+5. just min of all
+6. k = n Heap of size n
+7. just min of all
+8. All same values [3,3,3,3] Works correctly, peek always
+9. Negative numbers PQ handles naturally
+10. Single element stream Median = that element
 
 ```mermaid
 flowchart TD
@@ -388,14 +359,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 | # | Problem | Key Insight |
@@ -451,10 +422,10 @@ flowchart TD
 
 **When the interviewer gives you a top-K or scheduling problem, say this:**
 
-> "Sorting all n elements would be O(n log n), but we only need the K largest/smallest. A min-heap of size K keeps only the K largest: for each new element, compare with heap top (the smallest of our K). If larger, swap it in. Total: O(n log K), and only O(K) space — optimal for streaming data."
+"Sorting all n elements would be O(n log n), but we only need the K largest/smallest. A min-heap of size K keeps only the K largest: for each new element, compare with heap top (the smallest of our K). If larger, swap it in. Total: O(n log K), and only O(K) space — optimal for streaming data."
 
 **For greedy problems:**
-> "At each step, I make the locally optimal choice. This works here because the greedy choice property holds — swapping any decision for the greedy decision never makes the solution worse. I can show this with an exchange argument."
+"At each step, I make the locally optimal choice. This works here because the greedy choice property holds — swapping any decision for the greedy decision never makes the solution worse. I can show this with an exchange argument."
 
 **Key mathematical justification:**
 - "Min-heap for K-largest is counterintuitive. The heap top is the *smallest* of the K we kept. If a new element beats the smallest, it replaces it. At the end, heap contains exactly the K largest."

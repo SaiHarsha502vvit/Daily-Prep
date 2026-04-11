@@ -1,6 +1,6 @@
-> **Navigation**: [< Previous](21_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](21_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
 
-> **Problems 22** | [Prev](21_Design.md) | [Index](../00_MASTER_INDEX.md) | [Next](../06_OOP_Design/01_OOPS_Principles.md)
+**Problems 22** | [Prev](21_Design.md) | [Index](../00_MASTER_INDEX.md) | [Next](../06_OOP_Design/01_OOPS_Principles.md)
 
 ---
 
@@ -38,23 +38,15 @@
 ```
 
 **Flow:**
-- RECURSION & SUBSETS FUNDAMENTALS
-- ↓
-- THE SUBSET UNIVERSE:
-- ↓
-- Generate Power Set, Combinations, Permutations
-- ↓
-- Count Count subsets with sum K, Target Sum
-- ↓
-- Optimize Partition Equal Subset, Min Diff Partition
-- ↓
-- Constrain Subsets without duplicates, K-size subsets
-- ↓
-- RECURSION
-- ↓
-- MEMOIZATION
-- ↓
-- DP PIPELINE:
+1. RECURSION & SUBSETS FUNDAMENTALS
+2. THE SUBSET UNIVERSE:
+3. Generate Power Set, Combinations, Permutations
+4. Count Count subsets with sum K, Target Sum
+5. Optimize Partition Equal Subset, Min Diff Partition
+6. Constrain Subsets without duplicates, K-size subsets
+7. RECURSION
+8. MEMOIZATION
+9. DP PIPELINE:
 
 ```mermaid
 flowchart TD
@@ -81,24 +73,24 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — PART 0: WHY Recursion & Subsets — The Heart of Combinatorial Thinking**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — PART 0: WHY Recursion & Subsets — The Heart of Combinatorial Thinking**
+
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
+
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## The Real-World Origin
 
@@ -154,24 +146,24 @@ solve(index + 1, nums, <state>);
 - Enumerate with constraints → Backtracking + Pruning
 
 
-> 🔬 **Section Challenge — The Mental Model: "Include Or Exclude — That'S All Recursion Is"**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — The Mental Model: "Include Or Exclude — That'S All Recursion Is"**
+
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
+
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## The Recursion → Dp Pipeline (Mit 6.006 Framework)
 
@@ -212,24 +204,24 @@ for each num: for t = target to num: dp[t] += dp[t - num]
 Time: O(n × target), Space: O(target)
 
 
-> 🔬 **Section Challenge — The Recursion → Dp Pipeline (Mit 6.006 Framework)**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — The Recursion → Dp Pipeline (Mit 6.006 Framework)**
+
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
+
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## Difficulties & Common Mistakes
 
@@ -271,17 +263,12 @@ SOLUTION:
 ```
 
 **Flow:**
-- Index 0 (1): Include
-- ↓
-- [1]
-- ↓
-- Exclude
-- ↓
-- [1]
-- ↓
-- Exclude
-- ↓
-- []
+1. Index 0 (1): Include
+2. [1]
+3. Exclude
+4. [1]
+5. Exclude
+6. []
 
 ```mermaid
 flowchart LR
@@ -352,19 +339,13 @@ SOLUTION:
 ```
 
 **Flow:**
-- DIFFICULTY: Medium
-- ↓
-- COMPANIES: Amazon, Facebook, Bloomberg
-- ↓
-- PATTERN: Backtracking + Skip Duplicates
-- ↓
-- Input: [1, 2, 2]
-- ↓
-- Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]
-- ↓
-- THE DUPLICATE HANDLING TRICK:
-- ↓
-- 1. SORT the array first
+1. DIFFICULTY: Medium
+2. COMPANIES: Amazon, Facebook, Bloomberg
+3. PATTERN: Backtracking + Skip Duplicates
+4. Input: [1, 2, 2]
+5. Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]
+6. THE DUPLICATE HANDLING TRICK:
+7. 1. SORT the array first
 
 ```mermaid
 flowchart TD
@@ -444,21 +425,14 @@ SOLUTION:
 ```
 
 **Flow:**
-- Pick 2: sum=2
-- ↓
-- Pick 2: sum=4
-- ↓
-- Pick 2: sum=6
-- ↓
-- Pick 2: sum=8 ✗ (over)
-- ↓
-- Pick 3: sum=7 ✓
-- ↓
-- found [2,2,3]
-- ↓
-- Pick 7: sum=7 ✓
-- ↓
-- found [7]
+1. Pick 2: sum=2
+2. Pick 2: sum=4
+3. Pick 2: sum=6
+4. Pick 2: sum=8 ✗ (over)
+5. Pick 3: sum=7 ✓
+6. found [2,2,3]
+7. Pick 7: sum=7 ✓
+8. found [7]
 
 ```mermaid
 flowchart TD
@@ -526,13 +500,10 @@ SOLUTION:
 ```
 
 **Flow:**
-- 1. Use element once
-- ↓
-- recurse with i+1
-- ↓
-- 2. Skip duplicates
-- ↓
-- if (i > start && nums[i] == nums[i-1]) continue
+1. 1. Use element once
+2. recurse with i+1
+3. 2. Skip duplicates
+4. if (i > start && nums[i] == nums[i-1]) continue
 
 ```mermaid
 flowchart LR
@@ -582,19 +553,13 @@ COMPARISON TABLE:
 ```
 
 **Flow:**
-- COMPARISON TABLE:
-- ↓
-- Problem Reuse? Recurse at Skip dups?
-- ↓
-- Combination Sum Unlimited i (same index) No
-- ↓
-- Combination Sum II Once each i+1 Yes (sort!)
-- ↓
-- Subsets Once each i+1 No
-- ↓
-- Subsets II Once each i+1 Yes (sort!)
-- ↓
-- Permutations Once each 0 (use visited[]) No
+1. COMPARISON TABLE:
+2. Problem Reuse? Recurse at Skip dups?
+3. Combination Sum Unlimited i (same index) No
+4. Combination Sum II Once each i+1 Yes (sort!)
+5. Subsets Once each i+1 No
+6. Subsets II Once each i+1 Yes (sort!)
+7. Permutations Once each 0 (use visited[]) No
 
 ```mermaid
 flowchart TD
@@ -639,11 +604,9 @@ STEP 1 — PURE RECURSION:
 ```
 
 **Flow:**
-- PATTERN: Recursion
-- ↓
-- Memoization
-- ↓
-- DP
+1. PATTERN: Recursion
+2. Memoization
+3. DP
 
 ```mermaid
 flowchart LR
@@ -737,8 +700,8 @@ num, causing it to be counted multiple times (unbounded knapsack behavior).
 
 
 
-> 🔬 **Section Challenge — PROBLEM 5: Subset Sum — Count Subsets with Given Sum**
->>
+🔬 **Section Challenge — PROBLEM 5: Subset Sum — Count Subsets with Given Sum**
+>
 
 ## PROBLEM 6: Partition Equal Subset Sum (LC 416)
 
@@ -762,13 +725,10 @@ SOLUTION:
 ```
 
 **Flow:**
-- Output: true
-- ↓
-- {1, 5, 5} and {11}
-- ↓
-- If total is odd
-- ↓
-- immediately false.
+1. Output: true
+2. {1, 5, 5} and {11}
+3. If total is odd
+4. immediately false.
 
 ```mermaid
 flowchart LR
@@ -808,17 +768,12 @@ EDGE CASES:
 ```
 
 **Flow:**
-- - Single element
-- ↓
-- false
-- ↓
-- - All same elements, even count
-- ↓
-- true
-- ↓
-- - Sum is odd
-- ↓
-- false immediately
+1. - Single element
+2. false
+3. - All same elements, even count
+4. true
+5. - Sum is odd
+6. false immediately
 
 ```mermaid
 flowchart LR
@@ -837,8 +792,8 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — PROBLEM 6: Partition Equal Subset Sum (LC 416)**
->>
+🔬 **Section Challenge — PROBLEM 6: Partition Equal Subset Sum (LC 416)**
+>
 
 ## PROBLEM 7: Target Sum (LC 494)
 
@@ -866,19 +821,13 @@ SOLUTION:
 ```
 
 **Flow:**
-- DIFFICULTY: Medium
-- ↓
-- COMPANIES: Facebook, Google, Amazon
-- ↓
-- PATTERN: Subset Sum variant / Count partitions
-- ↓
-- PROBLEM: Assign + or - to each number to reach target s
-- ↓
-- Input: nums = [1, 1, 1, 1, 1], target = 3
-- ↓
-- MATHEMATICAL TRANSFORMATION:
-- ↓
-- sum(P) - sum(N) = target
+1. DIFFICULTY: Medium
+2. COMPANIES: Facebook, Google, Amazon
+3. PATTERN: Subset Sum variant / Count partitions
+4. PROBLEM: Assign + or - to each number to reach target s
+5. Input: nums = [1, 1, 1, 1, 1], target = 3
+6. MATHEMATICAL TRANSFORMATION:
+7. sum(P) - sum(N) = target
 
 ```mermaid
 flowchart TD
@@ -930,8 +879,8 @@ BRILLIANT REDUCTION: +/- assignment → subset partition → subset sum count!
 
 
 
-> 🔬 **Section Challenge — PROBLEM 7: Target Sum (LC 494)**
->>
+🔬 **Section Challenge — PROBLEM 7: Target Sum (LC 494)**
+>
 
 ## PROBLEM 8: Letter Combinations of Phone Number (LC 17)
 
@@ -950,19 +899,13 @@ SOLUTION:
 ```
 
 **Flow:**
-- abc, 3
-- ↓
-- def, 4
-- ↓
-- ghi, 5
-- ↓
-- jkl, 6
-- ↓
-- mno, 7
-- ↓
-- pqrs, 8
-- ↓
-- tuv, 9
+1. abc, 3
+2. def, 4
+3. ghi, 5
+4. jkl, 6
+5. mno, 7
+6. pqrs, 8
+7. tuv, 9
 
 ```mermaid
 flowchart TD
@@ -1172,20 +1115,20 @@ TRICK: Modify board in-place to mark visited (avoid boolean[][] array).
 
 
 
-> 🔬 **Section Challenge — PROBLEM 11: Word Search (LC 79)**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — PROBLEM 11: Word Search (LC 79)**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## PROBLEM 12: Generate Parentheses (LC 22)
 
@@ -1259,21 +1202,14 @@ The nth Catalan number C(n) = (2n)! / ((n+1)! × n!)
 ```
 
 **Flow:**
-- PALINDROME PARTITIONING (LeetCode 131 - Medium)
-- ↓
-- Partition string s so every substring is a palindrome.
-- ↓
-- Return all possible partitions.
-- ↓
-- Example: s = 'aab'
-- ↓
-- Output: [['a','a','b'], ['aa','b']]
-- ↓
-- on remaining suffix.
-- ↓
-- TIME: O(n × 2^n)
-- ↓
-- SPACE: O(n) recursion depth
+1. PALINDROME PARTITIONING (LeetCode 131 - Medium)
+2. Partition string s so every substring is a palindrome.
+3. Return all possible partitions.
+4. Example: s = 'aab'
+5. Output: [['a','a','b'], ['aa','b']]
+6. on remaining suffix.
+7. TIME: O(n × 2^n)
+8. SPACE: O(n) recursion depth
 
 ```mermaid
 flowchart TD
@@ -1347,19 +1283,13 @@ private boolean isPalindrome(String s) {
 ```
 
 **Flow:**
-- COMBINATIONS (LeetCode 77 - Medium)
-- ↓
-- chosen from range [1, n].
-- ↓
-- Example: n = 4, k = 2
-- ↓
-- Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
-- ↓
-- KEY: Standard backtracking. Prune when remaining < n
-- ↓
-- TIME: O(C(n,k) × k)
-- ↓
-- SPACE: O(k)
+1. COMBINATIONS (LeetCode 77 - Medium)
+2. chosen from range [1, n].
+3. Example: n = 4, k = 2
+4. Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
+5. KEY: Standard backtracking. Prune when remaining < n
+6. TIME: O(C(n,k) × k)
+7. SPACE: O(k)
 
 ```mermaid
 flowchart TD
@@ -1422,17 +1352,12 @@ private void backtrack(int n, int k, int start, List<Integer> path,
 ```
 
 **Flow:**
-- N-QUEENS (LeetCode 51 - Hard)
-- ↓
-- Return all distinct solutions.
-- ↓
-- Example: n = 4
-- ↓
-- Output: [['.Q..','...Q','Q...','..Q.'],
-- ↓
-- TIME: O(n!)
-- ↓
-- SPACE: O(n²)
+1. N-QUEENS (LeetCode 51 - Hard)
+2. Return all distinct solutions.
+3. Example: n = 4
+4. Output: [['.Q..','...Q','Q...','..Q.'],
+5. TIME: O(n!)
+6. SPACE: O(n²)
 
 ```mermaid
 flowchart TD
@@ -1527,4 +1452,4 @@ private void backtrack(char[][] board, int row,
 
 ---
 
-> **Navigation**: [< Previous](21_Design.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](../06_OOP_Design/01_OOPS_Principles.md)
+**Navigation**: [< Previous](21_Design.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](../06_OOP_Design/01_OOPS_Principles.md)

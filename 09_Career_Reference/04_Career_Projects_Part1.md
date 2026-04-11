@@ -1,8 +1,8 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05_Career_Projects_Part2.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05_Career_Projects_Part2.md)
 
 ---
 
-> **Career Guide** | See also: [01_Career_TechnoFunctional.md](01_Career_TechnoFunctional.md) | [04_Career_Projects_Part1.md](04_Career_Projects_Part1.md) | [Index](../00_MASTER_INDEX.md)
+**Career Guide** | See also: [01_Career_TechnoFunctional.md](01_Career_TechnoFunctional.md) | [04_Career_Projects_Part1.md](04_Career_Projects_Part1.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -51,11 +51,9 @@
 ```
 
 **Flow:**
-- FRONTEND / React Angular Vue Svelte / ▼ / State Mgmt Re
-- ↓
-- BACKEND / Node.js Java Python Go / Express Spring FastA
-- ↓
-- DATA LAYER / PostgreSQL MongoDB Redis Elastic
+1. FRONTEND / React Angular Vue Svelte / ▼ / State Mgmt Re
+2. BACKEND / Node.js Java Python Go / Express Spring FastA
+3. DATA LAYER / PostgreSQL MongoDB Redis Elastic
 
 ```mermaid
 flowchart TD
@@ -142,29 +140,18 @@ my-react-app/
 ```
 
 **Flow:**
-- my-react-app/
-- ↓
-- public/
-- ↓
-- my-react-app/
-- ↓
-- index.html
-- ↓
-- my-react-app/
-- ↓
-- favicon.ico
-- ↓
-- my-react-app/
-- ↓
-- assets/
-- ↓
-- my-react-app/
-- ↓
-- src/
-- ↓
-- my-react-app/
-- ↓
-- components/ # Reusable UI components
+1. my-react-app/
+2. public/
+3. my-react-app/
+4. index.html
+5. my-react-app/
+6. favicon.ico
+7. my-react-app/
+8. assets/
+9. my-react-app/
+10. src/
+11. my-react-app/
+12. components/ # Reusable UI components
 
 ```mermaid
 flowchart TD
@@ -699,29 +686,18 @@ my-spring-app/
 ```
 
 **Flow:**
-- my-spring-app/
-- ↓
-- src/
-- ↓
-- my-spring-app/
-- ↓
-- main/
-- ↓
-- my-spring-app/
-- ↓
-- java/com/example/app/
-- ↓
-- my-spring-app/
-- ↓
-- config/ # Configuration classes
-- ↓
-- my-spring-app/
-- ↓
-- SecurityConfig.java
-- ↓
-- my-spring-app/
-- ↓
-- CorsConfig.java
+1. my-spring-app/
+2. src/
+3. my-spring-app/
+4. main/
+5. my-spring-app/
+6. java/com/example/app/
+7. my-spring-app/
+8. config/ # Configuration classes
+9. my-spring-app/
+10. SecurityConfig.java
+11. my-spring-app/
+12. CorsConfig.java
 
 ```mermaid
 flowchart TD
@@ -1475,8 +1451,8 @@ const useWebSocket = (url: string) => {
 ```dockerfile
 
 
-> 🔬 **Section Challenge — Phase 6: Full-Stack Development - Complete Guide**
->>
+🔬 **Section Challenge — Phase 6: Full-Stack Development - Complete Guide**
+>
 
 # ============================================
 # MULTI-STAGE DOCKERFILE - Spring Boot
@@ -2372,33 +2348,20 @@ _Stage 3 Complete! Ready for Stage 4: DevOps & Networking Deep Dive_
 ```
 
 **Flow:**
-- DEVOPS INFINITY LOOP
-- ↓
-- PLAN
-- ↓
-- CODE
-- ↓
-- BUILD
-- ↓
-- TEST
-- ↓
-- PLAN
-- ↓
-- CODE
-- ↓
-- BUILD
-- ↓
-- TEST
-- ↓
-- MONITOR RELEASE
-- ↓
-- OPERATE ← DEPLOY ← RELEASE
-- ↓
-- DEV SIDE (Left): OPS SIDE (Right):
-- ↓
-- Plan Release
-- ↓
-- Code Deploy
+1. DEVOPS INFINITY LOOP
+2. PLAN
+3. CODE
+4. BUILD
+5. TEST
+6. PLAN
+7. CODE
+8. BUILD
+9. TEST
+10. MONITOR RELEASE
+11. OPERATE ← DEPLOY ← RELEASE
+12. DEV SIDE (Left): OPS SIDE (Right):
+13. Plan Release
+14. Code Deploy
 
 ```mermaid
 flowchart TD
@@ -2466,9 +2429,8 @@ flowchart TD
 ```
 
 **Flow:**
-- Cloud / Controller / Manager / (Optional)
-- ↓
-- NODE 1 NODE 2 / Kubelet Kubelet / Kube-Proxy Kube-Proxy
+1. Cloud / Controller / Manager / (Optional)
+2. NODE 1 NODE 2 / Kubelet Kubelet / Kube-Proxy Kube-Proxy
 
 ```mermaid
 flowchart TD

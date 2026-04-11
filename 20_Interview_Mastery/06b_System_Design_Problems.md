@@ -1,14 +1,14 @@
-> **Navigation**: [< Previous](06_System_Design_Blueprint.md) | [Back to Index](00_INDEX.md) | [Next >](06c_System_Design_Internals.md)
+**Navigation**: [< Previous](06_System_Design_Blueprint.md) | [Back to Index](00_INDEX.md) | [Next >](06c_System_Design_Internals.md)
 
 # 🏗️ System Design Problems — Complete Guide
 
-> _"System design is not about finding the perfect solution — it's about making the right trade-offs under constraints."_
+_"System design is not about finding the perfect solution — it's about making the right trade-offs under constraints."_
 
 ---
 
 # PART 0: The 5W+H Framework
 
-> **Mental Model:** System design is like being an architect for a skyscraper. You don't start by choosing the color of the walls — you start with load-bearing capacity, foundation type, earthquake resistance, and fire codes. Similarly, you start with **scalability, availability, consistency, and latency** before worrying about specific technologies.
+**Mental Model:** System design is like being an architect for a skyscraper. You don't start by choosing the color of the walls — you start with load-bearing capacity, foundation type, earthquake resistance, and fire codes. Similarly, you start with **scalability, availability, consistency, and latency** before worrying about specific technologies.
 
 | Question | System Design Context |
 | :--- | :--- |
@@ -23,7 +23,7 @@
 
 # PART 1: The RESHADED Framework
 
-> _Enriched from Educative "Deep Dive into System Design Interview" — RESHADED Approach_
+_Enriched from Educative "Deep Dive into System Design Interview" — RESHADED Approach_
 
 ---
 
@@ -95,7 +95,7 @@ D — Distinctive Components
 
 ## 2.1 Design a URL Shortener (TinyURL)
 
-> _Enriched from Educative "Deep Dive SD" — Design a URL Shortening Service_
+_Enriched from Educative "Deep Dive SD" — Design a URL Shortening Service_
 
 ```
 REQUIREMENTS:
@@ -165,7 +165,7 @@ TRADE-OFFS:
 
 ## 2.2 Design Twitter / X
 
-> _Enriched from Educative "Deep Dive SD" — Design Twitter_
+_Enriched from Educative "Deep Dive SD" — Design Twitter_
 
 ```
 REQUIREMENTS:
@@ -228,7 +228,7 @@ ARCHITECTURE:
 
 ## 2.3 Design Instagram
 
-> _Enriched from Educative "Deep Dive SD" — Design Instagram_
+_Enriched from Educative "Deep Dive SD" — Design Instagram_
 
 ```
 REQUIREMENTS:
@@ -272,7 +272,7 @@ STORAGE ESTIMATES:
 
 ## 2.4 Design WhatsApp
 
-> _Enriched from Educative "Deep Dive SD" — Design WhatsApp_
+_Enriched from Educative "Deep Dive SD" — Design WhatsApp_
 
 ```
 REQUIREMENTS:
@@ -322,7 +322,7 @@ GROUP CHAT DESIGN:
 
 ## 2.5 Design YouTube
 
-> _Enriched from Educative "Deep Dive SD" — Design YouTube_
+_Enriched from Educative "Deep Dive SD" — Design YouTube_
 
 ```
 REQUIREMENTS:
@@ -367,7 +367,7 @@ RECOMMENDATION ENGINE:
 
 ## 2.6 Design Uber
 
-> _Enriched from Educative "Deep Dive SD" — Design Uber_
+_Enriched from Educative "Deep Dive SD" — Design Uber_
 
 ```
 REQUIREMENTS:
@@ -424,7 +424,7 @@ FARE CALCULATION:
 
 ## 2.7 Design Google Maps
 
-> _Enriched from Educative "Deep Dive SD" — Design Google Maps_
+_Enriched from Educative "Deep Dive SD" — Design Google Maps_
 
 ```
 REQUIREMENTS:
@@ -474,7 +474,7 @@ REAL-TIME TRAFFIC:
 
 ## 2.8 Design a Web Crawler
 
-> _Enriched from Educative "Deep Dive SD" — Design a Web Crawler_
+_Enriched from Educative "Deep Dive SD" — Design a Web Crawler_
 
 ```
 REQUIREMENTS:
@@ -520,7 +520,7 @@ CRAWLER TRAPS:
 
 ## 2.9 Design a Newsfeed System
 
-> _Enriched from Educative "Deep Dive SD" — Design Newsfeed System_
+_Enriched from Educative "Deep Dive SD" — Design Newsfeed System_
 
 ```
 REQUIREMENTS:
@@ -564,7 +564,7 @@ RANKING ALGORITHM:
 
 ## 2.10 Design a Typeahead / Autocomplete System
 
-> _Enriched from Educative "Deep Dive SD" — Design Typeahead Suggestion_
+_Enriched from Educative "Deep Dive SD" — Design Typeahead Suggestion_
 
 ```
 REQUIREMENTS:
@@ -608,20 +608,20 @@ PERSONALIZATION:
 
 
 
-> 🔬 **Section Challenge — 2.10 Design a Typeahead / Autocomplete System**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — 2.10 Design a Typeahead / Autocomplete System**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 # Quick Reference — System Design Cheat Sheet
 
@@ -797,4 +797,4 @@ DIP: high-level modules should not depend on low-level modules — both should d
 </details>
 
 
-> **Navigation**: [< Previous](06_System_Design_Blueprint.md) | [Back to Index](00_INDEX.md) | [Next >](06c_System_Design_Internals.md)
+**Navigation**: [< Previous](06_System_Design_Blueprint.md) | [Back to Index](00_INDEX.md) | [Next >](06c_System_Design_Internals.md)

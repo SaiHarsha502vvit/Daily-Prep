@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
+**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
 
 # String + Advanced Tricks — Combined Pattern Guide
 
-> **WHY this combination?** Strings combine array access, hashing, sliding window, DP, and specialized algorithms (KMP, Rabin-Karp). Most "string" problems are actually pattern problems in disguise.
+**WHY this combination?** Strings combine array access, hashing, sliding window, DP, and specialized algorithms (KMP, Rabin-Karp). Most "string" problems are actually pattern problems in disguise.
 
 ### 🧠 Deep Intuition — Strings Are Disguised Pattern Problems
 
@@ -46,29 +46,18 @@ String problem?
 ```
 
 **Flow:**
-- 'Parentheses'
-- ↓
-- Stack
-- ↓
-- 'Anagram/permutation'
-- ↓
-- HashMap frequency / sorted key
-- ↓
-- 'Substring with condition'
-- ↓
-- Sliding Window + HashMap
-- ↓
-- 'Palindrome'
-- ↓
-- Two Pointers (expand from center) or DP
-- ↓
-- 'Pattern matching'
-- ↓
-- KMP / Rabin-Karp / Z-algorithm
-- ↓
-- 'Transform A to B'
-- ↓
-- DP (Edit Distance)
+1. 'Parentheses'
+2. Stack
+3. 'Anagram/permutation'
+4. HashMap frequency / sorted key
+5. 'Substring with condition'
+6. Sliding Window + HashMap
+7. 'Palindrome'
+8. Two Pointers (expand from center) or DP
+9. 'Pattern matching'
+10. KMP / Rabin-Karp / Z-algorithm
+11. 'Transform A to B'
+12. DP (Edit Distance)
 
 ```mermaid
 flowchart TD
@@ -174,23 +163,15 @@ Optimization: Use int[26] frequency as key instead of sorting → O(nk)
 ```
 
 **Flow:**
-- Approach: Sort each word
-- ↓
-- use as HashMap key
-- ↓
-- group by key.
-- ↓
-- Sorted form: 'eat'
-- ↓
-- 'aet', 'tea'
-- ↓
-- 'aet', 'ate'
-- ↓
-- 'aet' — all same key!
-- ↓
-- 'eat'
-- ↓
-- sort
+1. Approach: Sort each word
+2. use as HashMap key
+3. group by key.
+4. Sorted form: 'eat'
+5. 'aet', 'tea'
+6. 'aet', 'ate'
+7. 'aet' — all same key!
+8. 'eat'
+9. sort
 
 ```mermaid
 flowchart TD
@@ -273,25 +254,16 @@ NOTE: Manacher's algorithm does this in O(n) but is rarely asked.
 ```
 
 **Flow:**
-- Center at 'b'(0): 'b'
-- ↓
-- expand
-- ↓
-- 'b' (length 1)
-- ↓
-- Center at 'a'(1): 'a'
-- ↓
-- expand
-- ↓
-- s[0]='b' ≠ s[2]='b'? Wait...
-- ↓
-- Actually: s[0]='b', s[2]='b'
-- ↓
-- 'bab' (length 3) ✅
-- ↓
-- Expand more: s[-1] out of bounds
-- ↓
-- stop.
+1. Center at 'b'(0): 'b'
+2. expand
+3. 'b' (length 1)
+4. Center at 'a'(1): 'a'
+5. expand
+6. s[0]='b' ≠ s[2]='b'? Wait...
+7. Actually: s[0]='b', s[2]='b'
+8. 'bab' (length 3) ✅
+9. Expand more: s[-1] out of bounds
+10. stop.
 
 ```mermaid
 flowchart TD
@@ -366,14 +338,14 @@ COMMON MISTAKES:
 
 
 
-> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 | # | Problem | Companies | Key Insight |
@@ -444,6 +416,6 @@ COMMON MISTAKES:
 
 ---
 
-> **Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
+**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
 
 

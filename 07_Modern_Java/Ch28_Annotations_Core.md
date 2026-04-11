@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch29_Annotations_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch29_Annotations_Advanced.md)
 
 ---
 
 # Spring Boot Part 22: Complete Annotations Reference
 ## Every Important Annotation You Need to Know
 
-> **"Annotations are the DNA of Spring Boot - they define behavior without boilerplate"**
+**"Annotations are the DNA of Spring Boot - they define behavior without boilerplate"**
 
 ---
 
@@ -52,13 +52,10 @@
 ```
 
 **Flow:**
-- WHY: Why Learn All These Annotations? / • Annotations A
-- ↓
-- HOW: How Annotations Work? / • Metadata: Annotations ar
-- ↓
-- WHEN: When to Use Each Annotation Category? / • JPA Lif
-- ↓
-- WHICH: Which Annotations are Most Critical? / ESSENTIAL
+1. WHY: Why Learn All These Annotations? / • Annotations A
+2. HOW: How Annotations Work? / • Metadata: Annotations ar
+3. WHEN: When to Use Each Annotation Category? / • JPA Lif
+4. WHICH: Which Annotations are Most Critical? / ESSENTIAL
 
 ```mermaid
 flowchart TD
@@ -143,17 +140,12 @@ flowchart TD
 ```
 
 **Flow:**
-- @PrePersist
-- ↓
-- @PostPersist
-- ↓
-- @PreUpdate
-- ↓
-- @PostUpdate
-- ↓
-- @PreRemove
-- ↓
-- @PostRemove
+1. @PrePersist
+2. @PostPersist
+3. @PreUpdate
+4. @PostUpdate
+5. @PreRemove
+6. @PostRemove
 
 ```mermaid
 flowchart TD
@@ -373,27 +365,27 @@ public class CustomEntityListener {
 
 
 
-> 🔬 **Section Challenge — JPA Entity Lifecycle Annotations**
->
-> **Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
-> <details><summary>Answer</summary>
->
-> ```java
-> // N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
-> List<Order> orders = orderRepo.findAll(); // 1 query
-> orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
->
-> // Fix 1: JOIN FETCH
-> @Query("SELECT o FROM Order o JOIN FETCH o.customer")
-> List<Order> findAllWithCustomer();
->
-> // Fix 2: EntityGraph
-> @EntityGraph(attributePaths = "customer")
-> List<Order> findAll();
-> ```
-> Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
-> </details>
->
+🔬 **Section Challenge — JPA Entity Lifecycle Annotations**
+
+**Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+<details><summary>Answer</summary>
+
+```java
+// N+1: fetches all orders (1 query), then for EACH order fetches customer (N queries)
+List<Order> orders = orderRepo.findAll(); // 1 query
+orders.forEach(o -> System.out.println(o.getCustomer().getName())); // N queries!
+
+// Fix 1: JOIN FETCH
+@Query("SELECT o FROM Order o JOIN FETCH o.customer")
+List<Order> findAllWithCustomer();
+
+// Fix 2: EntityGraph
+@EntityGraph(attributePaths = "customer")
+List<Order> findAll();
+```
+Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL log in development.
+</details>
+
 
 ## JPA Mapping Annotations
 
@@ -795,14 +787,14 @@ public class Car extends Vehicle {
 
 
 
-> 🔬 **Section Challenge — JPA Mapping Annotations**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — JPA Mapping Annotations**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Spring Data Auditing
 
@@ -899,14 +891,14 @@ public class Product extends Auditable {
 
 
 
-> 🔬 **Section Challenge — Spring Data Auditing**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Spring Data Auditing**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Validation Annotations
 
@@ -1435,14 +1427,14 @@ public class MailProperties {
 
 ---
 
-> **Navigation**: [< Previous](Ch64_SB_Cloud_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch29_Annotations_Advanced.md)
+**Navigation**: [< Previous](Ch64_SB_Cloud_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch29_Annotations_Advanced.md)
 
-> 🔬 **Section Challenge — Spring Core Annotations**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Spring Core Annotations**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 

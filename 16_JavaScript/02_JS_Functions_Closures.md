@@ -1,25 +1,25 @@
-> **JavaScript Chapter 2/7** | [← Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
+**JavaScript Chapter 2/7** | [← Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
 
 # Functions & Closures — The Heart of JavaScript
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: Functions are FIRST-CLASS citizens in JS. They can be
-> stored in variables, passed as arguments, returned from
-> other functions. Closures emerge from this + lexical scope.
->
-> WHY:  Closures power React hooks, event handlers, callbacks,
-> module patterns, currying, memoization — everything.
-> "If you understand closures, you understand JS."
->
-> WHO:  Every JS developer. Every React developer (useState IS
-> a closure). Every Node developer (callbacks are closures).
->
-> WHEN: After understanding scope (Chapter 1).
->
-> HOW:  Functions create scope → inner functions remember outer
-> scope → that's a closure. It's that simple (and profound).
+WHAT: Functions are FIRST-CLASS citizens in JS. They can be
+stored in variables, passed as arguments, returned from
+other functions. Closures emerge from this + lexical scope.
+
+WHY:  Closures power React hooks, event handlers, callbacks,
+module patterns, currying, memoization — everything.
+"If you understand closures, you understand JS."
+
+WHO:  Every JS developer. Every React developer (useState IS
+a closure). Every Node developer (callbacks are closures).
+
+WHEN: After understanding scope (Chapter 1).
+
+HOW:  Functions create scope → inner functions remember outer
+scope → that's a closure. It's that simple (and profound).
 
 
 ---
@@ -66,19 +66,12 @@ hoisted, which some teams consider cleaner for readability.
 ```
 
 **Flow:**
-- WHEN TO USE WHICH:
-- ↓
-- Type Best For
-- ↓
-- Declaration Main functions, utility functions
-- ↓
-- Arrow (const) Callbacks, array methods, short fns
-- ↓
-- Expression Conditional function assignment
-- ↓
-- REASONING: Arrow functions are shorter but can't be use
-- ↓
-- hoisted, which some teams consider cleaner for readabil
+1. WHEN TO USE WHICH:
+2. Type Best For
+3. Declaration Main functions, utility functions
+4. Arrow (const) Callbacks, array methods, short fns
+5. Expression Conditional function assignment
+6. REASONING: Arrow functions are shorter but can't be use hoisted, which some teams consider cleaner for readabil
 
 ```mermaid
 flowchart TD
@@ -101,14 +94,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 1. Function Declarations vs Expressions**
->>
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
+🔬 **Section Challenge — 1. Function Declarations vs Expressions**
 >
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## 2. Parameters — Default, Rest, Destructuring
 
@@ -167,13 +160,8 @@ createComponent({ tag: "h1", className: "title", children: ["Hello"] });
 ```
 
 **Flow:**
-- function. But WHICH object depends on HOW the function
-- ↓
-- called, not where it's written.
-- ↓
-- In JS, `this` changes based on CALL SITE — 4 rules + ar
-- ↓
-- 'I', it refers to you. When I say 'I', it refers to me.
+1. function. But WHICH object depends on HOW the function
+2. called, not where it's written. In JS, `this` changes based on CALL SITE — 4 rules + ar 'I', it refers to you. When I say 'I', it refers to me.
 
 ```mermaid
 flowchart TD
@@ -263,21 +251,8 @@ Default: `this` = window (or undefined in strict mode)
 ```
 
 **Flow:**
-- YES
-- ↓
-- `this` = enclosing lexical scope's `this`
-- ↓
-- YES
-- ↓
-- `this` = newly created object
-- ↓
-- YES
-- ↓
-- `this` = specified object
-- ↓
-- YES
-- ↓
-- `this` = object before the dot
+1. YES
+2. `this` = enclosing lexical scope's `this` YES `this` = newly created object YES `this` = specified object YES `this` = object before the dot
 
 ```mermaid
 flowchart LR
@@ -322,17 +297,12 @@ flowchart LR
 ```
 
 **Flow:**
-- its outer (enclosing) scope even AFTER the outer functi
-- ↓
-- has returned.
-- ↓
-- application, memoization, and React hooks (useState).
-- ↓
-- surrounding scope (not a copy). This reference persists
-- ↓
-- even after the outer function finishes executing.
-- ↓
-- house), the inner function still carries those variable
+1. its outer (enclosing) scope even AFTER the outer functi
+2. has returned.
+3. application, memoization, and React hooks (useState).
+4. surrounding scope (not a copy). This reference persists
+5. even after the outer function finishes executing.
+6. house), the inner function still carries those variable
 
 ```mermaid
 flowchart TD
@@ -391,25 +361,11 @@ count alive because inner still references it.
 ```
 
 **Flow:**
-- CLOSURE MEMORY VISUALIZATION:
-- ↓
-- After outer() returns:
-- ↓
-- counter variable
-- ↓
-- Points to inner function
-- ↓
-- inner function carries a 'backpack':
-- ↓
-- Closure Scope
-- ↓
-- count: 0
-- ↓
-- 1
-- ↓
-- 2
-- ↓
-- 3 (persists!)
+1. CLOSURE MEMORY VISUALIZATION:
+2. After outer() returns: counter variable
+3. Points to inner function
+4. inner function carries a 'backpack':
+5. Closure Scope count: 0 1 2 3 (persists!)
 
 ```mermaid
 flowchart TD
@@ -556,14 +512,14 @@ for (var i = 0; i < 3; i++) {
 
 
 
-> 🔬 **Section Challenge — 4. Closures — The Most Important Concept**
->
-> **Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
-> <details><summary>Answer</summary>
->
-> A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference — GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener → data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
-> </details>
->
+🔬 **Section Challenge — 4. Closures — The Most Important Concept**
+
+**Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
+<details><summary>Answer</summary>
+
+A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference — GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener → data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
+</details>
+
 
 ## 5. Higher-Order Functions
 
@@ -580,11 +536,9 @@ for (var i = 0; i < 3; i++) {
 ```
 
 **Flow:**
-- WHAT: A function that takes another function as argumen
-- ↓
-- returns a function.
-- ↓
-- middleware, React components.
+1. WHAT: A function that takes another function as argumen
+2. returns a function.
+3. middleware, React components.
 
 ```mermaid
 flowchart TD
@@ -641,14 +595,14 @@ const result = numbers
 
 
 
-> 🔬 **Section Challenge — 5. Higher-Order Functions**
->>
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
+🔬 **Section Challenge — 5. Higher-Order Functions**
 >
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 ## 6. IIFE — Immediately Invoked Function Expression
 
@@ -798,18 +752,18 @@ function deepClone(obj) {
 
 
 
-> 🔬 **Section Challenge — 9. Recursion (JS-Specific Notes)**
->>
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — 9. Recursion (JS-Specific Notes)**
+>
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## Interview Quick-Fire
 
@@ -845,19 +799,12 @@ Q: What is a higher-order function?
 ```
 
 **Flow:**
-- Q: What is a closure?
-- ↓
-- after the outer function has returned.
-- ↓
-- Q: Give a practical use of closures.
-- ↓
-- React hooks (useState), factory functions.
-- ↓
-- Q: What does `this` refer to in an arrow function?
-- ↓
-- don't have their own `this`.
-- ↓
-- Q: What's the difference between call, apply, and bind?
+1. Q: What is a closure?
+2. after the outer function has returned.
+3. Q: Give a practical use of closures.
+4. React hooks (useState), factory functions.
+5. Q: What does `this` refer to in an arrow function?
+6. don't have their own `this`. Q: What's the difference between call, apply, and bind?
 
 ```mermaid
 flowchart TD
@@ -880,7 +827,7 @@ flowchart TD
 
 ---
 
-> [← Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
+[← Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
 
 ---
 

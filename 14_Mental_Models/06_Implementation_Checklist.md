@@ -20,19 +20,7 @@
 ```
 
 **Flow:**
-- □ What data structures am I using? (Declared them menta
-- ↓
-- □ What are my key variables? (Named them meaningfully)
-- ↓
-- □ Did I handle the edge cases in my head?
-- ↓
-- □ Empty input (null, length 0)
-- ↓
-- □ Single element
-- ↓
-- □ All same values
-- ↓
-- □ Very large input (will my approach TLE?)
+1. □ What data structures am I using? (Declared them menta □ What are my key variables? (Named them meaningfully) □ Did I handle the edge cases in my head? □ Empty input (null, length 0) □ Single element □ All same values □ Very large input (will my approach TLE?)
 
 ```mermaid
 flowchart TD
@@ -272,19 +260,9 @@ After writing code, verify:
 ```
 
 **Flow:**
-- □ What's my time complexity? _____
-- ↓
-- □ What's my space complexity? _____
-- ↓
-- Am I using unnecessary extra space?
-- ↓
-- □ Am I creating objects in a loop?
-- ↓
-- Can I reuse them? (StringBuilder, arrays)
-- ↓
-- □ Am I using recursion?
-- ↓
-- Max stack depth? (Java default ~10,000 frames)
+1. □ What's my time complexity? _____ □ What's my space complexity? _____ Am I using unnecessary extra space?
+2. □ Am I creating objects in a loop? Can I reuse them? (StringBuilder, arrays)
+3. □ Am I using recursion? Max stack depth? (Java default ~10,000 frames)
 
 ```mermaid
 flowchart TD
@@ -323,19 +301,7 @@ flowchart TD
 ```
 
 **Flow:**
-- □ Variable names won't confuse me
-- ↓
-- □ No leftover debug print statements
-- ↓
-- □ Edge cases handled (empty, null, single, negative)
-- ↓
-- □ Correct loop bounds (< vs <=)
-- ↓
-- □ Used long where overflow is possible
-- ↓
-- □ HashMap: used getOrDefault
-- ↓
-- □ ArrayList: added copies in backtracking
+1. □ Variable names won't confuse me □ No leftover debug print statements □ Edge cases handled (empty, null, single, negative) □ Correct loop bounds (< vs <=) □ Used long where overflow is possible □ HashMap: used getOrDefault □ ArrayList: added copies in backtracking
 
 ```mermaid
 flowchart TD

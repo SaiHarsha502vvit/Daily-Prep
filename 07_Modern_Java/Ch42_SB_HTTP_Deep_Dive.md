@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch41_SB_Architecture_Quality.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch43_SB_Auth_Security.md)
+**Navigation**: [< Previous](Ch41_SB_Architecture_Quality.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch43_SB_Auth_Security.md)
 
 # 🌐 SPRING BOOT MASTERY - Part 10: HTTP Deep Dive
 
-> **Understanding How the Internet Really Works**
-> _"Every API call is a journey through layers of protocols"_
+**Understanding How the Internet Really Works**
+_"Every API call is a journey through layers of protocols"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why Understand HTTP Deeply? / • Debug network issu
-- ↓
-- HOW: How HTTP Request/Response Cycle Works? / • DNS loo
-- ↓
-- WHEN: When to Use Each HTTP Method? / • GET: Retrieve d
-- ↓
-- WHICH: Which HTTP Concepts to Master? / ESSENTIAL: Stat
+1. WHY: Why Understand HTTP Deeply? / • Debug network issu
+2. HOW: How HTTP Request/Response Cycle Works? / • DNS loo
+3. WHEN: When to Use Each HTTP Method? / • GET: Retrieve d
+4. WHICH: Which HTTP Concepts to Master? / ESSENTIAL: Stat
 
 ```mermaid
 flowchart TD
@@ -176,14 +173,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 2: HTTP Request Structure**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — Chapter 2: HTTP Request Structure**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## Anatomy Of An Http Request
 
@@ -235,27 +232,27 @@ Content-Encoding │ gzip
 
 
 
-> 🔬 **Section Challenge — Anatomy Of An Http Request**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — Anatomy Of An Http Request**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## Chapter 3: HTTP Response Structure
 
 
 
-> 🔬 **Section Challenge — Chapter 3: HTTP Response Structure**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — Chapter 3: HTTP Response Structure**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## Anatomy Of An Http Response
 
@@ -310,14 +307,14 @@ RESPONSE BODY
 
 
 
-> 🔬 **Section Challenge — Anatomy Of An Http Response**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — Anatomy Of An Http Response**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 # SECTION 2: PATH VARIABLES vs QUERY PARAMETERS
 
@@ -373,19 +370,13 @@ RESPONSE BODY
 ```
 
 **Flow:**
-- URL STRUCTURE BREAKDOWN
-- ↓
-- SCHEME HOST PORT PATH QUERY STRING
-- ↓
-- BREAKING DOWN THE PATH:
-- ↓
-- /api/v1/users/123/orders
-- ↓
-- Resource: orders
-- ↓
-- PATH VARIABLE: 123 (user ID)
-- ↓
-- Resource: users
+1. URL STRUCTURE BREAKDOWN
+2. SCHEME HOST PORT PATH QUERY STRING
+3. BREAKING DOWN THE PATH:
+4. /api/v1/users/123/orders
+5. Resource: orders
+6. PATH VARIABLE: 123 (user ID)
+7. Resource: users
 
 ```mermaid
 flowchart TD
@@ -410,14 +401,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 4: Understanding URL Structure**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 4: Understanding URL Structure**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 5: @PathVariable - Deep Dive
 
@@ -850,19 +841,13 @@ public class RequestParamExamplesController {
 ```
 
 **Flow:**
-- @PathVariable vs @RequestParam DECISION GUIDE
-- ↓
-- @PathVariable @RequestParam
-- ↓
-- /users/123 /users?name=John
-- ↓
-- /orders/abc-def-123 /orders?status=pending
-- ↓
-- /products/electronics/laptops /products?page=2&size=10
-- ↓
-- IDENTIFIES a resource FILTERS or MODIFIES the request
-- ↓
-- Required (part of URL) Usually optional
+1. @PathVariable vs @RequestParam DECISION GUIDE
+2. @PathVariable @RequestParam
+3. /users/123 /users?name=John
+4. /orders/abc-def-123 /orders?status=pending
+5. /products/electronics/laptops /products?page=2&size=10
+6. IDENTIFIES a resource FILTERS or MODIFIES the request
+7. Required (part of URL) Usually optional
 
 ```mermaid
 flowchart TD
@@ -1066,19 +1051,13 @@ flowchart TD
 ```
 
 **Flow:**
-- POSTMAN PRO TIPS
-- ↓
-- ENVIRONMENT VARIABLES
-- ↓
-- Create environments: Development, Staging, Production
-- ↓
-- Variables:
-- ↓
-- Variable Value
-- ↓
-- baseUrl http://localhost:8080 ← Dev
-- ↓
-- baseUrl https://api.staging.myapp.com ← Staging
+1. POSTMAN PRO TIPS
+2. ENVIRONMENT VARIABLES
+3. Create environments: Development, Staging, Production
+4. Variables:
+5. Variable Value
+6. baseUrl http://localhost:8080 ← Dev
+7. baseUrl https://api.staging.myapp.com ← Staging
 
 ```mermaid
 flowchart TD
@@ -1167,19 +1146,13 @@ flowchart TD
 ```
 
 **Flow:**
-- NETWORK PROTOCOLS OVERVIEW
-- ↓
-- OSI MODEL LAYERS:
-- ↓
-- Layer 6: PRESENTATION SSL/TLS, JPEG, ASCII
-- ↓
-- Layer 5: SESSION NetBIOS, PPTP
-- ↓
-- Layer 4: TRANSPORT TCP, UDP
-- ↓
-- Layer 3: NETWORK IP, ICMP
-- ↓
-- Layer 2: DATA LINK Ethernet, WiFi
+1. NETWORK PROTOCOLS OVERVIEW
+2. OSI MODEL LAYERS:
+3. Layer 6: PRESENTATION SSL/TLS, JPEG, ASCII
+4. Layer 5: SESSION NetBIOS, PPTP
+5. Layer 4: TRANSPORT TCP, UDP
+6. Layer 3: NETWORK IP, ICMP
+7. Layer 2: DATA LINK Ethernet, WiFi
 
 ```mermaid
 flowchart TD
@@ -1611,14 +1584,14 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
 
 
 
-> 🔬 **Section Challenge — Chapter 11: Building Protocol Clients in Spring Boot**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 11: Building Protocol Clients in Spring Boot**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 12: HTTP Client Implementations
 
@@ -1779,14 +1752,14 @@ _Continue to Part 11: Authentication & Authorization_
 
 ---
 
-> **Navigation**: [< Previous](Ch41_SB_Architecture_Quality.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch43_SB_Auth_Security.md)
+**Navigation**: [< Previous](Ch41_SB_Architecture_Quality.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch43_SB_Auth_Security.md)
 
-> 🔬 **Section Challenge — Chapter 12: HTTP Client Implementations**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — Chapter 12: HTTP Client Implementations**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 

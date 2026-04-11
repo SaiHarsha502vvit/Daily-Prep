@@ -1,22 +1,22 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
-> 🧠 **Mental Model**: See [Optimization Pipeline](../14_Mental_Models/14_Optimization_Pipeline.md) — new Java features as optimization tools
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+🧠 **Mental Model**: See [Optimization Pipeline](../14_Mental_Models/14_Optimization_Pipeline.md) — new Java features as optimization tools
 
 ---
 
 # 🆕 Modern Java Features (Java 9–21)
 
-> Every feature that changed how production Java is written
+Every feature that changed how production Java is written
 
 ---
 
 ## ❓ Why This Matters
 
 
-> Interviewers ask: "What Java version do you use? What features?"
-> Senior devs MUST know: Records, Sealed classes, Pattern matching, Var,
-> Text blocks, Switch expressions, Virtual threads, Structured concurrency
->
-> If you write Java 8-style code in 2026, you look outdated.
+Interviewers ask: "What Java version do you use? What features?"
+Senior devs MUST know: Records, Sealed classes, Pattern matching, Var,
+Text blocks, Switch expressions, Virtual threads, Structured concurrency
+
+If you write Java 8-style code in 2026, you look outdated.
 
 
 ---
@@ -61,15 +61,11 @@ var entry = Map.entry("key", 42);       // Map.Entry<String, Integer>
 ```
 
 **Flow:**
-- WHEN TO USE var:
-- ↓
-- ✅ Long generic types: var map = service.getComplexMap()
-- ↓
-- WHEN NOT TO USE:
-- ↓
-- ❌ Numeric literals: var count = 0 // int? long? byte?
-- ↓
-- ❌ When it hurts readability
+1. WHEN TO USE var:
+2. ✅ Long generic types: var map = service.getComplexMap()
+3. WHEN NOT TO USE:
+4. ❌ Numeric literals: var count = 0 // int? long? byte?
+5. ❌ When it hurts readability
 
 ```mermaid
 flowchart TD
@@ -165,15 +161,11 @@ public record User(String name, int age) {
 ```
 
 **Flow:**
-- WHEN TO USE RECORDS:
-- ↓
-- ✅ API responses record ApiResponse<T>(T data, int
-- ↓
-- ✅ Compound map keys record CacheKey(String type, long i
-- ↓
-- DON'T USE WHEN:
-- ↓
-- ❌ Complex inheritance needed
+1. WHEN TO USE RECORDS:
+2. ✅ API responses record ApiResponse<T>(T data, int
+3. ✅ Compound map keys record CacheKey(String type, long i
+4. DON'T USE WHEN:
+5. ❌ Complex inheritance needed
 
 ```mermaid
 flowchart TD
@@ -241,19 +233,13 @@ public record Crypto(double amount, String wallet) implements Payment {}
 ```
 
 **Flow:**
-- WHY SEALED CLASSES?
-- ↓
-- 2. DOMAIN MODELING — exactly represents business rules
-- ↓
-- 'A payment can ONLY be CreditCard, BankTransfer, or Cry
-- ↓
-- 3. LIB DESIGN — allow extension by known types only
-- ↓
-- sealed = 'these classes and NO others can extend me'
-- ↓
-- final = 'nobody can extend me'
-- ↓
-- non-sealed = 'anyone can extend me' (escape hatch)
+1. WHY SEALED CLASSES?
+2. 2. DOMAIN MODELING — exactly represents business rules
+3. 'A payment can ONLY be CreditCard, BankTransfer, or Cry
+4. 3. LIB DESIGN — allow extension by known types only
+5. sealed = 'these classes and NO others can extend me'
+6. final = 'nobody can extend me'
+7. non-sealed = 'anyone can extend me' (escape hatch)
 
 ```mermaid
 flowchart TD
@@ -301,14 +287,14 @@ if (obj instanceof String s && s.length() > 5) {
 
 
 
-> 🔬 **Section Challenge — instanceof Pattern Matching (Java 16)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — instanceof Pattern Matching (Java 16)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Switch Expressions (Java 14) + Pattern Matching (Java 21)
 
@@ -366,14 +352,14 @@ double area(Shape shape) {
 
 
 
-> 🔬 **Section Challenge — Switch Expressions (Java 14) + Pattern Matching (Java 21)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Switch Expressions (Java 14) + Pattern Matching (Java 21)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Record Patterns — Destructuring (Java 21)
 
@@ -407,14 +393,14 @@ String describe(Object obj) {
 
 
 
-> 🔬 **Section Challenge — Record Patterns — Destructuring (Java 21)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Record Patterns — Destructuring (Java 21)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # PART 5: Text Blocks (Java 15) & String Enhancements
 
@@ -535,14 +521,14 @@ List<String> names = optionalList.stream()
 
 
 
-> 🔬 **Section Challenge — Optional Enhancements (Java 9-11)**
->
-> **Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
-> <details><summary>Answer</summary>
->
-> `Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
-> </details>
->
+🔬 **Section Challenge — Optional Enhancements (Java 9-11)**
+
+**Challenge 1 (Reasoning):** `Optional.get()` without `isPresent()` check — what's the point of Optional then?
+<details><summary>Answer</summary>
+
+`Optional.get()` is a code smell. The right API: `orElse(default)`, `orElseGet(supplier)`, `orElseThrow()`, `map(fn)`, `ifPresent(consumer)`. Optional's value: it makes the ABSENCE of a value explicit in the type signature — callers MUST handle the empty case. Using `get()` defeats this. Rule: never call `get()` unless you've already verified presence through the Optional API.
+</details>
+
 
 ## HTTP Client (Java 11)
 
@@ -571,14 +557,14 @@ CompletableFuture<HttpResponse<String>> future = client.sendAsync(request,
 
 
 
-> 🔬 **Section Challenge — HTTP Client (Java 11)**
->
-> **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-> <details><summary>Answer</summary>
->
-> HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-> </details>
->
+🔬 **Section Challenge — HTTP Client (Java 11)**
+
+**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+<details><summary>Answer</summary>
+
+HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+</details>
+
 
 ## Helpful NullPointerExceptions (Java 14)
 
@@ -597,14 +583,14 @@ user.getAddress().getCity().toUpperCase();
 
 
 
-> 🔬 **Section Challenge — Helpful NullPointerExceptions (Java 14)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Helpful NullPointerExceptions (Java 14)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📋 Part 8: Feature Summary Table
 
@@ -641,19 +627,13 @@ user.getAddress().getCity().toUpperCase();
 ```
 
 **Flow:**
-- Java Version Key Features
-- ↓
-- dropWhile, Optional.or/ifPresentOrElse, private interfa
-- ↓
-- methods, compact Strings internally
-- ↓
-- Java 10 var (local variable type inference), List.copyO
-- ↓
-- Collectors.toUnmodifiable*, G1 GC improvements
-- ↓
-- Java 11 LTS HttpClient, String strip/isBlank/lines/repe
-- ↓
-- Files.readString/writeString, Optional.isEmpty
+1. Java Version Key Features
+2. dropWhile, Optional.or/ifPresentOrElse, private interfa
+3. methods, compact Strings internally
+4. Java 10 var (local variable type inference), List.copyO
+5. Collectors.toUnmodifiable*, G1 GC improvements
+6. Java 11 LTS HttpClient, String strip/isBlank/lines/repe
+7. Files.readString/writeString, Optional.isEmpty
 
 ```mermaid
 flowchart TD
@@ -696,19 +676,13 @@ flowchart TD
 ```
 
 **Flow:**
-- INTERVIEW MUST-KNOWS:
-- ↓
-- Q: 'What Java version do you use?'
-- ↓
-- Q: 'Records vs Lombok @Value?'
-- ↓
-- Q: 'When would you use sealed classes?'
-- ↓
-- state machines. Enables exhaustive switch without defau
-- ↓
-- Q: 'var vs explicit types — your preference?'
-- ↓
-- Never in public API signatures.'
+1. INTERVIEW MUST-KNOWS:
+2. Q: 'What Java version do you use?'
+3. Q: 'Records vs Lombok @Value?'
+4. Q: 'When would you use sealed classes?'
+5. state machines. Enables exhaustive switch without defau
+6. Q: 'var vs explicit types — your preference?'
+7. Never in public API signatures.'
 
 ```mermaid
 flowchart TD

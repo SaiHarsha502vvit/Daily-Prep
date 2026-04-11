@@ -118,19 +118,13 @@ public int[] twoSum(int[] nums, int target) {
 ```
 
 **Flow:**
-- TWO SUM III - DATA STRUCTURE DESIGN
-- ↓
-- (LeetCode Premium - Full Problem Description)
-- ↓
-- Implement the TwoSum class:
-- ↓
-- - TwoSum() Initializes the TwoSum object
-- ↓
-- - void add(int number) Adds number to the data structur
-- ↓
-- Example 1:
-- ↓
-- Input:
+1. TWO SUM III - DATA STRUCTURE DESIGN
+2. (LeetCode Premium - Full Problem Description)
+3. Implement the TwoSum class:
+4. - TwoSum() Initializes the TwoSum object
+5. - void add(int number) Adds number to the data structur
+6. Example 1:
+7. Input:
 
 ```mermaid
 flowchart TD
@@ -203,15 +197,11 @@ class TwoSum {
 ```
 
 **Flow:**
-- CONTAINS DUPLICATE
-- ↓
-- Input: nums = [1, 2, 3, 1]
-- ↓
-- Output: true
-- ↓
-- Input: nums = [1, 2, 3, 4]
-- ↓
-- Output: false
+1. CONTAINS DUPLICATE
+2. Input: nums = [1, 2, 3, 1]
+3. Output: true
+4. Input: nums = [1, 2, 3, 4]
+5. Output: false
 
 ```mermaid
 flowchart TD
@@ -279,19 +269,13 @@ public boolean containsDuplicate(int[] nums) {
 ```
 
 **Flow:**
-- CONTAINS DUPLICATE III
-- ↓
-- (Premium-Level Difficulty)
-- ↓
-- find a pair of indices (i, j) such that:
-- ↓
-- - abs(i - j) <= indexDiff
-- ↓
-- - abs(nums[i] - nums[j]) <= valueDiff
-- ↓
-- Return true if such pair exists, false otherwise.
-- ↓
-- Example 1:
+1. CONTAINS DUPLICATE III
+2. (Premium-Level Difficulty)
+3. find a pair of indices (i, j) such that:
+4. - abs(i - j) <= indexDiff
+5. - abs(nums[i] - nums[j]) <= valueDiff
+6. Return true if such pair exists, false otherwise.
+7. Example 1:
 
 ```mermaid
 flowchart TD
@@ -369,13 +353,10 @@ private long getBucket(int num, long bucketSize) {
 ```
 
 **Flow:**
-- MOVE ZEROES
-- ↓
-- elements. Do it in-place.
-- ↓
-- Input: nums = [0, 1, 0, 3, 12]
-- ↓
-- Output: [1, 3, 12, 0, 0]
+1. MOVE ZEROES
+2. elements. Do it in-place.
+3. Input: nums = [0, 1, 0, 3, 12]
+4. Output: [1, 3, 12, 0, 0]
 
 ```mermaid
 flowchart TD
@@ -458,19 +439,13 @@ public void moveZeroes(int[] nums) {
 ```
 
 **Flow:**
-- MEETING ROOMS
-- ↓
-- (LeetCode Premium - Full Problem Description)
-- ↓
-- Example 1:
-- ↓
-- Input: intervals = [[0,30], [5,10], [15,20]]
-- ↓
-- Output: false
-- ↓
-- Explanation: [0,30] overlaps with [5,10] and [15,20]
-- ↓
-- Example 2:
+1. MEETING ROOMS
+2. (LeetCode Premium - Full Problem Description)
+3. Example 1:
+4. Input: intervals = [[0,30], [5,10], [15,20]]
+5. Output: false
+6. Explanation: [0,30] overlaps with [5,10] and [15,20]
+7. Example 2:
 
 ```mermaid
 flowchart TD
@@ -558,19 +533,13 @@ public boolean canAttendMeetings(int[][] intervals) {
 ```
 
 **Flow:**
-- MEETING ROOMS II
-- ↓
-- (LeetCode Premium - Full Problem Description)
-- ↓
-- conference rooms required.
-- ↓
-- Example 1:
-- ↓
-- Input: intervals = [[0,30], [5,10], [15,20]]
-- ↓
-- Output: 2
-- ↓
-- Explanation:
+1. MEETING ROOMS II
+2. (LeetCode Premium - Full Problem Description)
+3. conference rooms required.
+4. Example 1:
+5. Input: intervals = [[0,30], [5,10], [15,20]]
+6. Output: 2
+7. Explanation:
 
 ```mermaid
 flowchart TD
@@ -699,19 +668,13 @@ public int minMeetingRoomsV2(int[][] intervals) {
 ```
 
 **Flow:**
-- MISSING RANGES
-- ↓
-- (LeetCode Premium - Full Problem Description)
-- ↓
-- and each missing number is in one of the ranges.
-- ↓
-- Each range [a,b] in the list should be output as:
-- ↓
-- Example 1:
-- ↓
-- Output: ['2', '4->49', '51->74', '76->99']
-- ↓
-- Explanation:
+1. MISSING RANGES
+2. (LeetCode Premium - Full Problem Description)
+3. and each missing number is in one of the ranges.
+4. Each range [a,b] in the list should be output as:
+5. Example 1:
+6. Output: ['2', '4->49', '51->74', '76->99']
+7. Explanation:
 
 ```mermaid
 flowchart TD

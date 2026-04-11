@@ -1,44 +1,44 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
-> 🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md) — structured approach to any "Design X" question
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md) — structured approach to any "Design X" question
 
 ---
 
 # 🏗️ System Design Interview Problems — Complete Walkthroughs
 
-> 8 classic problems solved step-by-step using the same framework interviewers expect
+8 classic problems solved step-by-step using the same framework interviewers expect
 
 ---
 
 ## THE FRAMEWORK (Use for EVERY Problem)
 
 
-> SYSTEM DESIGN INTERVIEW FRAMEWORK (45 minutes)
->
-> STEP 1: Requirements (5 min)
-> → Functional: What can users do?
-> → Non-functional: Scale? Latency? Consistency?
-> → Constraints: Users? QPS? Storage?
->
-> STEP 2: High-Level Design (10 min)
-> → Draw API endpoints
-> → Core components (services, databases, caches)
-> → Data flow diagram
->
-> STEP 3: Detailed Design (15 min)
-> → Database schema & choice (SQL vs NoSQL)
-> → API design (endpoints, payloads)
-> → Key algorithms (hashing, ranking, etc.)
->
-> STEP 4: Scale & Bottlenecks (10 min)
-> → Identify bottlenecks
-> → Caching strategy
-> → Database sharding/replication
-> → Load balancing
->
-> STEP 5: Trade-offs & Edge Cases (5 min)
-> → What would break at 100x scale?
-> → CAP theorem trade-offs
-> → Failure scenarios & recovery
+SYSTEM DESIGN INTERVIEW FRAMEWORK (45 minutes)
+
+STEP 1: Requirements (5 min)
+→ Functional: What can users do?
+→ Non-functional: Scale? Latency? Consistency?
+→ Constraints: Users? QPS? Storage?
+
+STEP 2: High-Level Design (10 min)
+→ Draw API endpoints
+→ Core components (services, databases, caches)
+→ Data flow diagram
+
+STEP 3: Detailed Design (15 min)
+→ Database schema & choice (SQL vs NoSQL)
+→ API design (endpoints, payloads)
+→ Key algorithms (hashing, ranking, etc.)
+
+STEP 4: Scale & Bottlenecks (10 min)
+→ Identify bottlenecks
+→ Caching strategy
+→ Database sharding/replication
+→ Load balancing
+
+STEP 5: Trade-offs & Edge Cases (5 min)
+→ What would break at 100x scale?
+→ CAP theorem trade-offs
+→ Failure scenarios & recovery
 
 
 ---
@@ -76,20 +76,20 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — High-Level Design**
->
-> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
-> <details><summary>Answer</summary>
->
-> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-> </details>
->
-> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-> <details><summary>Answer</summary>
->
-> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
-> </details>
->
+🔬 **Section Challenge — High-Level Design**
+
+**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+<details><summary>Answer</summary>
+
+Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+</details>
+
+**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+<details><summary>Answer</summary>
+
+1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+</details>
+
 
 ## Key Design Decisions
 
@@ -127,35 +127,21 @@ flowchart LR
 ```
 
 **Flow:**
-- SHORT URL GENERATION — 3 Approaches
-- ↓
-- 1. Hash + Truncate:
-- ↓
-- MD5(longURL)
-- ↓
-- take first 7 chars of base62
-- ↓
-- MD5(longURL)
-- ↓
-- take first 7 chars of base62
-- ↓
-- Problem: collisions! Need to check DB, retry with salt.
-- ↓
-- 2. Auto-increment ID + Base62: ← RECOMMENDED
-- ↓
-- Database gives ID 12345
-- ↓
-- convert to base62
-- ↓
-- 'dnh'
-- ↓
-- Database gives ID 12345
-- ↓
-- convert to base62
-- ↓
-- 'dnh'
-- ↓
-- No collisions! But IDs are predictable (sequential).
+1. SHORT URL GENERATION — 3 Approaches
+2. 1. Hash + Truncate:
+3. MD5(longURL)
+4. take first 7 chars of base62
+5. MD5(longURL)
+6. take first 7 chars of base62
+7. Problem: collisions! Need to check DB, retry with salt.
+8. 2. Auto-increment ID + Base62: ← RECOMMENDED
+9. Database gives ID 12345
+10. convert to base62
+11. 'dnh'
+12. Database gives ID 12345
+13. convert to base62
+14. 'dnh'
+15. No collisions! But IDs are predictable (sequential).
 
 ```mermaid
 flowchart TD
@@ -180,20 +166,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Key Design Decisions**
->
-> **Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
-> <details><summary>Answer</summary>
->
-> Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-> </details>
->
-> **Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-> <details><summary>Answer</summary>
->
-> 1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
-> </details>
->
+🔬 **Section Challenge — Key Design Decisions**
+
+**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+<details><summary>Answer</summary>
+
+Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+</details>
+
+**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+<details><summary>Answer</summary>
+
+1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+</details>
+
 
 # PROBLEM 2: Design Twitter / News Feed
 
@@ -213,13 +199,10 @@ Scale:
 ```
 
 **Flow:**
-- - Average user views feed 5x/day
-- ↓
-- 750M feed reads/day
-- ↓
-- - 500M tweets/day
-- ↓
-- ~6000 tweets/sec
+1. - Average user views feed 5x/day
+2. 750M feed reads/day
+3. - 500M tweets/day
+4. ~6000 tweets/sec
 
 ```mermaid
 flowchart LR
@@ -327,13 +310,10 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 ```
 
 **Flow:**
-- Chat Server / (stateful!) --(WebSocket)--> Client
-- ↓
-- Message Store / (Cassandra) --(Message Queue)--> Chat Server / (stateful!)
-- ↓
-- Chat Server / (stateful!)
-- ↓
-- Presence / Service / (Redis)
+1. Chat Server / (stateful!) --(WebSocket)--> Client
+2. Message Store / (Cassandra) --(Message Queue)--> Chat Server / (stateful!)
+3. Chat Server / (stateful!)
+4. Presence / Service / (Redis)
 
 ```mermaid
 flowchart TD
@@ -392,37 +372,22 @@ flowchart TD
 ```
 
 **Flow:**
-- PURPOSE: Prevent abuse, protect resources, enforce SLAs
-- ↓
-- ALGORITHM 1: Token Bucket
-- ↓
-- Bucket holds N tokens. Each request takes 1 token.
-- ↓
-- Bucket: [●●●●●___] capacity=8, current=5
-- ↓
-- Request arrives
-- ↓
-- take token
-- ↓
-- [●●●●____]
-- ↓
-- Request arrives
-- ↓
-- take token
-- ↓
-- [●●●●____]
-- ↓
-- Refill (every 1/R sec)
-- ↓
-- [●●●●●___]
-- ↓
-- Refill (every 1/R sec)
-- ↓
-- [●●●●●___]
-- ↓
-- Bucket full
-- ↓
-- tokens overflow (don't exceed capacity)
+1. PURPOSE: Prevent abuse, protect resources, enforce SLAs
+2. ALGORITHM 1: Token Bucket
+3. Bucket holds N tokens. Each request takes 1 token.
+4. Bucket: [●●●●●___] capacity=8, current=5
+5. Request arrives
+6. take token
+7. [●●●●____]
+8. Request arrives
+9. take token
+10. [●●●●____]
+11. Refill (every 1/R sec)
+12. [●●●●●___]
+13. Refill (every 1/R sec)
+14. [●●●●●___]
+15. Bucket full
+16. tokens overflow (don't exceed capacity)
 
 ```mermaid
 flowchart TD
@@ -478,23 +443,15 @@ flowchart TD
 ```
 
 **Flow:**
-- Triggers / (events)
-- ↓
-- Notificatio / Service
-- ↓
-- Push / Worker
-- ↓
-- Message Queue / (Kafka/SQS)
-- ↓
-- Push / Worker
-- ↓
-- Message Queue / (Kafka/SQS)
-- ↓
-- Email / Worker
-- ↓
-- Message Queue / (Kafka/SQS)
-- ↓
-- SMS / Worker
+1. Triggers / (events)
+2. Notificatio / Service
+3. Push / Worker
+4. Message Queue / (Kafka/SQS)
+5. Push / Worker
+6. Message Queue / (Kafka/SQS)
+7. Email / Worker
+8. Message Queue / (Kafka/SQS)
+9. SMS / Worker
 
 ```mermaid
 flowchart TD
@@ -558,19 +515,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WHY: Reduce DB load, sub-millisecond reads
-- ↓
-- CORE DECISIONS:
-- ↓
-- 1. EVICTION POLICY:
-- ↓
-- LRU (Least Recently Used) — most common
-- ↓
-- LFU (Least Frequently Used) — better for skewed access
-- ↓
-- TTL (Time To Live) — expire after fixed time
-- ↓
-- 2. CACHE PATTERNS:
+1. WHY: Reduce DB load, sub-millisecond reads
+2. CORE DECISIONS:
+3. 1. EVICTION POLICY:
+4. LRU (Least Recently Used) — most common
+5. LFU (Least Frequently Used) — better for skewed access
+6. TTL (Time To Live) — expire after fixed time
+7. 2. CACHE PATTERNS:
 
 ```mermaid
 flowchart TD
@@ -643,27 +594,17 @@ flowchart TD
 ```
 
 **Flow:**
-- Client
-- ↓
-- API Gateway
-- ↓
-- Client
-- ↓
-- Product / Service
-- ↓
-- API Gateway
-- ↓
-- ▼ ▼ ▼ / duct Order Paym / vice Service Serv / duct Orde
-- ↓
-- Kafka/SQS
-- ↓
-- Product / Service
-- ↓
-- Product / DB
-- ↓
-- Payment / Service
-- ↓
-- Payment / DB
+1. Client
+2. API Gateway
+3. Client
+4. Product / Service
+5. API Gateway
+6. ▼ ▼ ▼ / duct Order Paym / vice Service Serv / duct Orde
+7. Kafka/SQS
+8. Product / Service
+9. Product / DB
+10. Payment / Service
+11. Payment / DB
 
 ```mermaid
 flowchart TD
@@ -725,17 +666,12 @@ flowchart TD
 ```
 
 **Flow:**
-- URL / Frontier / (priority / queue)
-- ↓
-- Fetcher / (HTTP GET)
-- ↓
-- URL / Frontier / (priority / queue)
-- ↓
-- URL Filter / (visited? / robots.txt / Bloom / filter)
-- ↓
-- Parser / (Extract / links, / content)
-- ↓
-- Content / Store / (S3/HDFS)
+1. URL / Frontier / (priority / queue)
+2. Fetcher / (HTTP GET)
+3. URL / Frontier / (priority / queue)
+4. URL Filter / (visited? / robots.txt / Bloom / filter)
+5. Parser / (Extract / links, / content)
+6. Content / Store / (S3/HDFS)
 
 ```mermaid
 flowchart TD

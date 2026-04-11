@@ -151,19 +151,13 @@ while (left < right)              // CORRECT: < (stop when they meet)
 ```
 
 **Flow:**
-- ARRAY INDEX OUT OF BOUNDS
-- ↓
-- MISTAKE 1: Accessing negative index
-- ↓
-- int[] arr = {1, 2, 3};
-- ↓
-- int x = arr[-1]; // CRASH! ArrayIndexOutOfBoundsExcepti
-- ↓
-- MISTAKE 2: Accessing arr[i-1] without check
-- ↓
-- ✗ WRONG:
-- ↓
-- ✓ CORRECT:
+1. ARRAY INDEX OUT OF BOUNDS
+2. MISTAKE 1: Accessing negative index
+3. int[] arr = {1, 2, 3};
+4. int x = arr[-1]; // CRASH! ArrayIndexOutOfBoundsExcepti
+5. MISTAKE 2: Accessing arr[i-1] without check
+6. ✗ WRONG:
+7. ✓ CORRECT:
 
 ```mermaid
 flowchart TD
@@ -246,19 +240,13 @@ flowchart TD
 ```
 
 **Flow:**
-- INTEGER OVERFLOW
-- ↓
-- MISTAKE 1: Factorial overflow
-- ↓
-- 13! = 6,227,020,800 > Integer.MAX_VALUE
-- ↓
-- ✗ WRONG:
-- ↓
-- int factorial = 1;
-- ↓
-- factorial *= i; // Overflows at n=13
-- ↓
-- ✓ CORRECT (use long):
+1. INTEGER OVERFLOW
+2. MISTAKE 1: Factorial overflow
+3. 13! = 6,227,020,800 > Integer.MAX_VALUE
+4. ✗ WRONG:
+5. int factorial = 1;
+6. factorial *= i; // Overflows at n=13
+7. ✓ CORRECT (use long):
 
 ```mermaid
 flowchart TD
@@ -336,13 +324,10 @@ But DON'T rely on this! Always use .equals() to be safe.
 ```
 
 **Flow:**
-- s1 / (ref A)
-- ↓
-- 'hello'
-- ↓
-- s2 / (ref B)
-- ↓
-- 'hello'
+1. s1 / (ref A)
+2. 'hello'
+3. s2 / (ref B)
+4. 'hello'
 
 ```mermaid
 flowchart TD
@@ -428,19 +413,13 @@ flowchart TD
 ```
 
 **Flow:**
-- SCANNER INPUT MISTAKES
-- ↓
-- MISTAKE 1: nextInt() leaves newline
-- ↓
-- Input: '5\nhello'
-- ↓
-- ✗ WRONG:
-- ↓
-- int n = scanner.nextInt(); // Reads '5', leaves '\n'
-- ↓
-- Buffer state:
-- ↓
-- Before: '5\nhello'
+1. SCANNER INPUT MISTAKES
+2. MISTAKE 1: nextInt() leaves newline
+3. Input: '5\nhello'
+4. ✗ WRONG:
+5. int n = scanner.nextInt(); // Reads '5', leaves '\n'
+6. Buffer state:
+7. Before: '5\nhello'
 
 ```mermaid
 flowchart TD
@@ -542,19 +521,13 @@ for (int i = 0; i < n; i++) {
 ```
 
 **Flow:**
-- LOOP MISTAKES
-- ↓
-- MISTAKE 1: Infinite loop
-- ↓
-- ✗ WRONG:
-- ↓
-- int i = 0;
-- ↓
-- System.out.println(i);
-- ↓
-- ✗ ALSO WRONG:
-- ↓
-- MISTAKE 2: Modifying loop variable inside loop
+1. LOOP MISTAKES
+2. MISTAKE 1: Infinite loop
+3. ✗ WRONG:
+4. int i = 0;
+5. System.out.println(i);
+6. ✗ ALSO WRONG:
+7. MISTAKE 2: Modifying loop variable inside loop
 
 ```mermaid
 flowchart TD
@@ -634,19 +607,13 @@ ALWAYS CHECK THESE BEFORE SUBMITTING:
 ```
 
 **Flow:**
-- arr = [] / str = '' / n = 0
-- ↓
-- arr = [5] / str = 'a' / n = 1
-- ↓
-- arr = [1, 2] (minimum for comparison) / str = 'ab'
-- ↓
-- arr = [5, 5, 5, 5, 5] / str = 'aaaa'
-- ↓
-- arr = [-5, -3, -1] / sum with negatives / max of all ne
-- ↓
-- Integer.MAX_VALUE, Integer.MIN_VALUE / k = 0, k = n (wi
-- ↓
-- arr = [1, 2, 3, 4, 5] (already sorted) / arr = [5, 4, 3
+1. arr = [] / str = '' / n = 0
+2. arr = [5] / str = 'a' / n = 1
+3. arr = [1, 2] (minimum for comparison) / str = 'ab'
+4. arr = [5, 5, 5, 5, 5] / str = 'aaaa'
+5. arr = [-5, -3, -1] / sum with negatives / max of all ne
+6. Integer.MAX_VALUE, Integer.MIN_VALUE / k = 0, k = n (wi
+7. arr = [1, 2, 3, 4, 5] (already sorted) / arr = [5, 4, 3
 
 ```mermaid
 flowchart TD
@@ -729,25 +696,16 @@ flowchart TD
 ```
 
 **Flow:**
-- LOGIC MISTAKES
-- ↓
-- MISTAKE 1: Wrong boolean logic
-- ↓
-- De Morgan's Laws:
-- ↓
-- ✗ WRONG:
-- ↓
-- ✓ CLEARER:
-- ↓
-- MISTAKE 2: && vs
-- ↓
-- confusion
-- ↓
-- MISTAKE 2: && vs
-- ↓
-- confusion
-- ↓
-- 'x is between 5 and 10' (inclusive):
+1. LOGIC MISTAKES
+2. MISTAKE 1: Wrong boolean logic
+3. De Morgan's Laws:
+4. ✗ WRONG:
+5. ✓ CLEARER:
+6. MISTAKE 2: && vs
+7. confusion
+8. MISTAKE 2: && vs
+9. confusion
+10. 'x is between 5 and 10' (inclusive):
 
 ```mermaid
 flowchart TD
@@ -841,19 +799,13 @@ flowchart TD
 ```
 
 **Flow:**
-- RETURN STATEMENT MISTAKES
-- ↓
-- MISTAKE 1: Missing return statement
-- ↓
-- ✗ WRONG (compile error):
-- ↓
-- public int findMax(int[] arr) {
-- ↓
-- int max = arr[0];
-- ↓
-- ✓ CORRECT:
-- ↓
-- return max; // Don't forget!
+1. RETURN STATEMENT MISTAKES
+2. MISTAKE 1: Missing return statement
+3. ✗ WRONG (compile error):
+4. public int findMax(int[] arr) {
+5. int max = arr[0];
+6. ✓ CORRECT:
+7. return max; // Don't forget!
 
 ```mermaid
 flowchart TD
@@ -947,19 +899,13 @@ REFERENCE TABLE:
 ```
 
 **Flow:**
-- VARIABLE INITIALIZATION MISTAKES
-- ↓
-- MISTAKE 1: Wrong initial value for min/max
-- ↓
-- ✗ WRONG:
-- ↓
-- int max = 0; // What if all numbers are negative?
-- ↓
-- ✓ CORRECT OPTIONS:
-- ↓
-- int max = Integer.MIN_VALUE; // Smallest possible value
-- ↓
-- int max = arr[0]; // First element (if array not empty)
+1. VARIABLE INITIALIZATION MISTAKES
+2. MISTAKE 1: Wrong initial value for min/max
+3. ✗ WRONG:
+4. int max = 0; // What if all numbers are negative?
+5. ✓ CORRECT OPTIONS:
+6. int max = Integer.MIN_VALUE; // Smallest possible value
+7. int max = arr[0]; // First element (if array not empty)
 
 ```mermaid
 flowchart TD
@@ -1012,19 +958,13 @@ flowchart TD
 ```
 
 **Flow:**
-- BEFORE YOU SUBMIT - CHECK THESE!
-- ↓
-- □ Did I handle single element input?
-- ↓
-- □ Did I handle all negative numbers?
-- ↓
-- □ Did I handle all same elements?
-- ↓
-- □ Is my loop bound correct (< vs <=)?
-- ↓
-- □ Did I use .equals() for string comparison (not ==)?
-- ↓
-- □ Did I handle Scanner newline after nextInt()?
+1. BEFORE YOU SUBMIT - CHECK THESE!
+2. □ Did I handle single element input?
+3. □ Did I handle all negative numbers?
+4. □ Did I handle all same elements?
+5. □ Is my loop bound correct (< vs <=)?
+6. □ Did I use .equals() for string comparison (not ==)?
+7. □ Did I handle Scanner newline after nextInt()?
 
 ```mermaid
 flowchart TD

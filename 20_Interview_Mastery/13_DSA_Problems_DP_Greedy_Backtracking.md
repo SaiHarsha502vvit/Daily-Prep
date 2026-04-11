@@ -1,12 +1,12 @@
-> **Navigation**: [⬅ Trees, Graphs, Trie, Union-Find](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md) | [📚 Index](00_INDEX.md) | [Next: Binary Search, Two Pointers, Sliding Window ➡](14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)
+**Navigation**: [⬅ Trees, Graphs, Trie, Union-Find](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md) | [📚 Index](00_INDEX.md) | [Next: Binary Search, Two Pointers, Sliding Window ➡](14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)
 
 # File 13 — DSA Problems: Dynamic Programming, Greedy & Backtracking
 
 ## Logic-First, Code-Second: The 5W+H Way
 
-> DP = "What are my choices at each step, and what state do I need to remember?"
-> Greedy = "Can I make the locally best choice and still get globally best?"
-> Backtracking = "Try everything, but prune impossible branches early."
+DP = "What are my choices at each step, and what state do I need to remember?"
+Greedy = "Can I make the locally best choice and still get globally best?"
+Backtracking = "Try everything, but prune impossible branches early."
 
 ---
 
@@ -282,20 +282,20 @@ Base: dp[0] = 1 (empty = one way), dp[1] = (s[0] ≠ '0' ? 1 : 0)
 
 
 
-> 🔬 **Section Challenge — DYNAMIC PROGRAMMING**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+🔬 **Section Challenge — DYNAMIC PROGRAMMING**
+
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
+
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
 
 ## GREEDY
 
@@ -402,14 +402,14 @@ Return totalSurplus ≥ 0 ? start : -1
 
 
 
-> 🔬 **Section Challenge — GREEDY**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+🔬 **Section Challenge — GREEDY**
+
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## BACKTRACKING
 
@@ -576,14 +576,14 @@ isValid(row, col, digit):
 
 
 
-> 🔬 **Section Challenge — MASTER PROBLEM MAP — DP, Greedy, Backtracking**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+🔬 **Section Challenge — MASTER PROBLEM MAP — DP, Greedy, Backtracking**
+
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## The DP Decision Flowchart — Interview Logic
 
@@ -848,4 +848,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 </details>
 
 
-> **Navigation**: [⬅ Trees, Graphs, Trie, Union-Find](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md) | [📚 Index](00_INDEX.md) | [Next: Binary Search, Two Pointers, Sliding Window ➡](14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)
+**Navigation**: [⬅ Trees, Graphs, Trie, Union-Find](12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md) | [📚 Index](00_INDEX.md) | [Next: Binary Search, Two Pointers, Sliding Window ➡](14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)

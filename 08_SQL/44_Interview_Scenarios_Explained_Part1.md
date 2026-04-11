@@ -1,7 +1,7 @@
 # Chapter 44 — Interview-Grade Scenario Explanations Part 1: Data & Performance
 
-> **What:** 30+ scenarios explained EXACTLY as a senior engineer would in an interview — with theory, variants, and professional language
-> **Format:** Each scenario = Interview Question → Professional Answer → Theory → Variants → Follow-up Questions You Should Expect
+**What:** 30+ scenarios explained EXACTLY as a senior engineer would in an interview — with theory, variants, and professional language
+**Format:** Each scenario = Interview Question → Professional Answer → Theory → Variants → Follow-up Questions You Should Expect
 
 ---
 
@@ -28,7 +28,7 @@
 ## S1: Primary Key ID Exhaustion
 
 ### 🎤 Interview Question
-> "Tell me about a scaling challenge you dealt with in production."
+"Tell me about a scaling challenge you dealt with in production."
 
 ### ✅ Professional Answer (SIREN Format)
 
@@ -176,7 +176,7 @@ A: "Great question — any table with a FK to our transactions table also
 ## S2: Full Table Scan on Large Table
 
 ### 🎤 Interview Question
-> "Walk me through how you'd diagnose and fix a slow database query."
+"Walk me through how you'd diagnose and fix a slow database query."
 
 ### ✅ Professional Answer
 
@@ -301,7 +301,7 @@ CREATE INDEX idx_covering ON orders (customer_id, status);
 ## S3: N+1 Query Problem
 
 ### 🎤 Interview Question
-> "What's the most common performance problem in ORM-based applications?"
+"What's the most common performance problem in ORM-based applications?"
 
 ### ✅ Professional Answer
 
@@ -435,7 +435,7 @@ void shouldNotHaveNPlusOne() {
 ## S4: Slow Pagination (OFFSET Hell)
 
 ### 🎤 Interview Question
-> "How would you implement pagination for a table with 100 million rows?"
+"How would you implement pagination for a table with 100 million rows?"
 
 ### ✅ Professional Answer
 
@@ -571,7 +571,7 @@ CURSOR-based: GET /api/orders?after=eyJpZCI6MTIzNH0&limit=20
 ## S5: Missing Index / Wrong Index Order
 
 ### 🎤 Interview Question
-> "How do you identify missing indexes in production?"
+"How do you identify missing indexes in production?"
 
 ### ✅ Professional Answer
 
@@ -697,7 +697,7 @@ FROM pg_stats WHERE tablename = 'orders' AND attname = 'status';
 ## S6: Connection Pool Exhaustion
 
 ### 🎤 Interview Question
-> "Tell me about a production outage you helped resolve."
+"Tell me about a production outage you helped resolve."
 
 ### ✅ Professional Answer
 
@@ -736,20 +736,20 @@ WHERE state = 'idle in transaction'
 ```yaml
 
 
-> 🔬 **Section Challenge — S6: Connection Pool Exhaustion**
->
-> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
-> <details><summary>Answer</summary>
->
-> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
-> </details>
->
-> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
-> <details><summary>Answer</summary>
->
-> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
-> </details>
->
+🔬 **Section Challenge — S6: Connection Pool Exhaustion**
+
+**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+<details><summary>Answer</summary>
+
+First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+</details>
+
+**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+<details><summary>Answer</summary>
+
+Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+</details>
+
 
 # Increase pool size for immediate relief:
 spring:
@@ -826,7 +826,7 @@ Pool sizing formula (HikariCP recommended):
 ## S7: Hot Partition / Uneven Data Distribution
 
 ### 🎤 Interview Question
-> "How do you handle data skew in a distributed database?"
+"How do you handle data skew in a distributed database?"
 
 ### ✅ Professional Answer
 
@@ -866,7 +866,7 @@ CREATE TABLE orders_p1 PARTITION OF orders FOR VALUES WITH (MODULUS 8, REMAINDER
 ## S8: Cache Stampede / Thundering Herd
 
 ### 🎤 Interview Question
-> "How do you handle cache failures at scale?"
+"How do you handle cache failures at scale?"
 
 ### ✅ Professional Answer
 
@@ -956,7 +956,7 @@ DSA connection:
 ## S9: Slow COUNT(*) on Billion Rows
 
 ### 🎤 Interview Question
-> "How would you implement a 'total results' count for a search feature?"
+"How would you implement a 'total results' count for a search feature?"
 
 ### ✅ Professional Answer
 
@@ -1015,7 +1015,7 @@ public void refreshCounts() {}
 ## S10: SELECT * in Production
 
 ### 🎤 Interview Question
-> "What common anti-patterns do you look for in code reviews?"
+"What common anti-patterns do you look for in code reviews?"
 
 ### ✅ Professional Answer
 

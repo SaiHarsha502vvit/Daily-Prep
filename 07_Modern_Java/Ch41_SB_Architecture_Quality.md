@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch40_SB_JPA_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch42_SB_HTTP_Deep_Dive.md)
+**Navigation**: [< Previous](Ch40_SB_JPA_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch42_SB_HTTP_Deep_Dive.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 9: Clean Architecture & Quality Code
 
-> **Building Production-Ready Applications**
-> _"Good architecture is about managing complexity"_
+**Building Production-Ready Applications**
+_"Good architecture is about managing complexity"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why Clean Architecture? / • Technical debt: Bad ar
-- ↓
-- HOW: How to Structure a Spring Boot Project? / • Layere
-- ↓
-- WHEN: When to Use Each Architecture Style? / • Simple l
-- ↓
-- WHICH: Which Quality Practices to Follow? / ESSENTIAL:
+1. WHY: Why Clean Architecture? / • Technical debt: Bad ar
+2. HOW: How to Structure a Spring Boot Project? / • Layere
+3. WHEN: When to Use Each Architecture Style? / • Simple l
+4. WHICH: Which Quality Practices to Follow? / ESSENTIAL:
 
 ```mermaid
 flowchart TD
@@ -133,15 +130,11 @@ flowchart TD
 ```
 
 **Flow:**
-- CLIENT / (Browser/App)
-- ↓
-- CONTROLLER LAYER / • @RestController, @Controller / • R
-- ↓
-- SERVICE LAYER / • @Service / • Business logic / • Trans
-- ↓
-- REPOSITORY LAYER / • @Repository / • Data access (JpaRe
-- ↓
-- DATABASE
+1. CLIENT / (Browser/App)
+2. CONTROLLER LAYER / • @RestController, @Controller / • R
+3. SERVICE LAYER / • @Service / • Business logic / • Trans
+4. REPOSITORY LAYER / • @Repository / • Data access (JpaRe
+5. DATABASE
 
 ```mermaid
 flowchart TD
@@ -239,19 +232,13 @@ flowchart TD
 ```
 
 **Flow:**
-- RECOMMENDED PACKAGE STRUCTURE
-- ↓
-- OPTION 1: LAYER-BASED (Traditional)
-- ↓
-- com.company.myapp/
-- ↓
-- MyApplication.java
-- ↓
-- controller/
-- ↓
-- UserController.java
-- ↓
-- OrderController.java
+1. RECOMMENDED PACKAGE STRUCTURE
+2. OPTION 1: LAYER-BASED (Traditional)
+3. com.company.myapp/
+4. MyApplication.java
+5. controller/
+6. UserController.java
+7. OrderController.java
 
 ```mermaid
 flowchart TD
@@ -452,14 +439,14 @@ public class OrderService {
 
 
 
-> 🔬 **Section Challenge — Chapter 3: Clean Code Principles for Spring**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 3: Clean Code Principles for Spring**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 4: Writing Quality Service Methods
 
@@ -640,14 +627,14 @@ public class OrderService {
 
 
 
-> 🔬 **Section Challenge — Chapter 4: Writing Quality Service Methods**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 4: Writing Quality Service Methods**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 5: Configuration Best Practices
 
@@ -993,14 +980,14 @@ public class GlobalExceptionHandler {
 
 
 
-> 🔬 **Section Challenge — Chapter 6: Error Handling Strategy**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 6: Error Handling Strategy**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 7: Testing Strategy
 
@@ -1210,14 +1197,14 @@ class UserApiIntegrationTest {
 
 
 
-> 🔬 **Section Challenge — Chapter 7: Testing Strategy**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 7: Testing Strategy**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 8: Final Checklist
 
@@ -1287,29 +1274,18 @@ class UserApiIntegrationTest {
 ```
 
 **Flow:**
-- SPRING BOOT MASTERY CHECKLIST
-- ↓
-- ARCHITECTURE:
-- ↓
-- □ Clear separation: Controller
-- ↓
-- Service
-- ↓
-- Repository
-- ↓
-- □ Clear separation: Controller
-- ↓
-- Service
-- ↓
-- Repository
-- ↓
-- □ DTOs for API contracts, Entities for persistence
-- ↓
-- □ Single Responsibility in each class
-- ↓
-- □ Dependency injection via constructor (final fields)
-- ↓
-- CONTROLLERS:
+1. SPRING BOOT MASTERY CHECKLIST
+2. ARCHITECTURE:
+3. □ Clear separation: Controller
+4. Service
+5. Repository
+6. □ Clear separation: Controller
+7. Service
+8. Repository
+9. □ DTOs for API contracts, Entities for persistence
+10. □ Single Responsibility in each class
+11. □ Dependency injection via constructor (final fields)
+12. CONTROLLERS:
 
 ```mermaid
 flowchart TD
@@ -1334,14 +1310,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 8: Final Checklist**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 8: Final Checklist**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🎓 SPRING BOOT MASTERY COMPLETE!
 
@@ -1374,19 +1350,13 @@ flowchart TD
 ```
 
 **Flow:**
-- You've completed the Spring Boot Mastery Guide covering
-- ↓
-- Part 1: Java Foundations (JVM, Memory, GC, Threading)
-- ↓
-- Part 2: Spring Core (IoC, DI, Beans, Lifecycle)
-- ↓
-- Part 3: AOP & Spring Boot Auto-Configuration
-- ↓
-- Part 4: Data Access, Web, Security, Testing
-- ↓
-- Part 5: Lombok & DTOs
-- ↓
-- Part 6: Service & Repository Best Practices
+1. You've completed the Spring Boot Mastery Guide covering
+2. Part 1: Java Foundations (JVM, Memory, GC, Threading)
+3. Part 2: Spring Core (IoC, DI, Beans, Lifecycle)
+4. Part 3: AOP & Spring Boot Auto-Configuration
+5. Part 4: Data Access, Web, Security, Testing
+6. Part 5: Lombok & DTOs
+7. Part 6: Service & Repository Best Practices
 
 ```mermaid
 flowchart TD

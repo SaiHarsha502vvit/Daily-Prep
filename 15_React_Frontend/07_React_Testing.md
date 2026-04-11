@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← Router](06_React_Router.md) | [Next: Performance →](08_React_Performance.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← Router](06_React_Router.md) | [Next: Performance →](08_React_Performance.md)
 
 ---
 
@@ -9,18 +9,18 @@
 ## Testing Pyramid for React
 
 
-> /\
-> /  \       E2E (Cypress/Playwright)
-> / E2E\      → Test full user flows (login → checkout)
-> /──────\     → Slow, expensive, few tests
-> /        \
-> / Integr.  \   Integration (React Testing Library)
-> /────────────\  → Test components with user interactions
-> /              \ → Most value per test
-> /     Unit       \  Unit (Vitest/Jest)
-> /──────────────────\ → Test pure functions, hooks, utils
-> /                    \ → Fast, many tests
-> /______________________\
+/\
+/  \       E2E (Cypress/Playwright)
+/ E2E\      → Test full user flows (login → checkout)
+/──────\     → Slow, expensive, few tests
+/        \
+/ Integr.  \   Integration (React Testing Library)
+/────────────\  → Test components with user interactions
+/              \ → Most value per test
+/     Unit       \  Unit (Vitest/Jest)
+/──────────────────\ → Test pure functions, hooks, utils
+/                    \ → Fast, many tests
+/______________________\
 
 
 ---
@@ -138,25 +138,25 @@ test('useAuth returns user from context', () => {
 
 
 
-> 🔬 **Section Challenge — Testing Custom Hooks**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — Testing Custom Hooks**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## MSW (Mock Service Worker) — API Mocking
 

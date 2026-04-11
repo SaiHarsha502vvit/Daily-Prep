@@ -1,31 +1,31 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Production Practices](11_Production_Code_Practices.md)
-> 🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Production Practices](11_Production_Code_Practices.md)
+🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md)
 
 ---
 
 # 📊 Monitoring & Observability — Prometheus, Grafana, ELK
 
-> The three pillars: Metrics, Logs, Traces — how to know what your system is doing in production
+The three pillars: Metrics, Logs, Traces — how to know what your system is doing in production
 
 ---
 
 ## The Three Pillars
 
 
-> PILLAR 1: METRICS (What is happening?)
-> → Numerical time-series data: CPU 85%, latency 120ms, errors 5/min
-> → Tools: Prometheus, Datadog, CloudWatch
-> → Dashboards: Grafana
->
-> PILLAR 2: LOGS (Why did it happen?)
-> → Detailed event records with context
-> → Tools: ELK Stack (Elasticsearch + Logstash + Kibana), Loki, Splunk
-> → Structured JSON logs with correlation IDs
->
-> PILLAR 3: TRACES (Where did it happen?)
-> → Follow a request across multiple services
-> → Tools: Jaeger, Zipkin, AWS X-Ray, OpenTelemetry
-> → Trace ID propagated through headers
+PILLAR 1: METRICS (What is happening?)
+→ Numerical time-series data: CPU 85%, latency 120ms, errors 5/min
+→ Tools: Prometheus, Datadog, CloudWatch
+→ Dashboards: Grafana
+
+PILLAR 2: LOGS (Why did it happen?)
+→ Detailed event records with context
+→ Tools: ELK Stack (Elasticsearch + Logstash + Kibana), Loki, Splunk
+→ Structured JSON logs with correlation IDs
+
+PILLAR 3: TRACES (Where did it happen?)
+→ Follow a request across multiple services
+→ Tools: Jaeger, Zipkin, AWS X-Ray, OpenTelemetry
+→ Trace ID propagated through headers
 
 
 ---
@@ -81,9 +81,7 @@ Spring Boot + Micrometer (auto-exposes Prometheus metrics):
 ```
 
 **Flow:**
-- Prometheus / (stores / time-serie
-- ↓
-- Alertmanager / (Slack/Page)
+1. Prometheus / (stores / time-serie Alertmanager / (Slack/Page)
 
 ```mermaid
 flowchart TD
@@ -96,8 +94,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Prometheus + Grafana Stack**
->>
+🔬 **Section Challenge — Prometheus + Grafana Stack**
+>
 
 ## ELK Stack (Centralized Logging)
 
@@ -119,15 +117,11 @@ Modern alternative: Grafana Loki (lighter, labels-based, pairs with Grafana)
 ```
 
 **Flow:**
-- App Logs / (JSON to / stdout)
-- ↓
-- Filebeat/ / Fluentd / (ship logs)
-- ↓
-- Logstash / (parse, / transform, / enrich)
-- ↓
-- Elastic / search / (index, / search)
-- ↓
-- Kibana / (search, / visualize)
+1. App Logs / (JSON to / stdout)
+2. Filebeat/ / Fluentd / (ship logs)
+3. Logstash / (parse, / transform, / enrich)
+4. Elastic / search / (index, / search)
+5. Kibana / (search, / visualize)
 
 ```mermaid
 flowchart TD
@@ -145,14 +139,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — ELK Stack (Centralized Logging)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — ELK Stack (Centralized Logging)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Distributed Tracing
 
@@ -178,15 +172,11 @@ OpenTelemetry (standard): auto-instruments Spring Boot, propagates trace IDs
 ```
 
 **Flow:**
-- API Gateway (Span 1)
-- ↓
-- Order Service (Span 2)
-- ↓
-- DB Query (Span 3)
-- ↓
-- Payment Service (Span 4)
-- ↓
-- Stripe API (Span 5)
+1. API Gateway (Span 1)
+2. Order Service (Span 2)
+3. DB Query (Span 3)
+4. Payment Service (Span 4)
+5. Stripe API (Span 5)
 
 ```mermaid
 flowchart TD
@@ -205,14 +195,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Distributed Tracing**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Distributed Tracing**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Alerting Best Practices
 
@@ -239,43 +229,17 @@ flowchart TD
 ```
 
 **Flow:**
-- GOOD ALERTS:
-- ↓
-- ✅ Error rate > 5% for 5 minutes
-- ↓
-- Page on-call
-- ↓
-- ✅ Error rate > 5% for 5 minutes
-- ↓
-- Page on-call
-- ↓
-- ✅ P99 latency > 2s for 10 minutes
-- ↓
-- Warn in Slack
-- ↓
-- ✅ P99 latency > 2s for 10 minutes
-- ↓
-- Warn in Slack
-- ↓
-- ✅ Disk usage > 85%
-- ↓
-- Ticket
-- ↓
-- ✅ Disk usage > 85%
-- ↓
-- Ticket
-- ↓
-- ✅ Zero orders in last 30 min (business hours)
-- ↓
-- Investi
-- ↓
-- ✅ Zero orders in last 30 min (business hours)
-- ↓
-- Investi
-- ↓
-- BAD ALERTS (alert fatigue):
-- ↓
-- ❌ CPU > 80% (spikes are normal, care about sustained
+1. GOOD ALERTS:
+2. ✅ Error rate > 5% for 5 minutes
+3. Page on-call
+4. ✅ P99 latency > 2s for 10 minutes
+5. Warn in Slack
+6. ✅ Disk usage > 85%
+7. Ticket
+8. ✅ Zero orders in last 30 min (business hours)
+9. Investi
+10. BAD ALERTS (alert fatigue):
+11. ❌ CPU > 80% (spikes are normal, care about sustained
 
 ```mermaid
 flowchart TD

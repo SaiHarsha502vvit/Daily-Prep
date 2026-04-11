@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](04_Career_Projects_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](06_Career_Projects_Part3.md)
+**Navigation**: [< Previous Chapter](04_Career_Projects_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](06_Career_Projects_Part3.md)
 
 ---
 
@@ -637,7 +637,7 @@ GITOPS WORKFLOW:
 
 ## 🔬 DEEP INTERNALS - How Everything ACTUALLY Works
 
-> **This section answers: "What happens at EVERY step when a user accesses your server?"**
+**This section answers: "What happens at EVERY step when a user accesses your server?"**
 
 ### Complete Request Journey: From Browser to Your Code
 
@@ -2214,18 +2214,18 @@ KUBERNETES ARCHITECTURE - DEEP DIVE:
 ```
 
 
-> 🔬 **Section Challenge — 🔬 Docker & Kubernetes Deep Internals**
->
-> **Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
-> <details><summary>Answer</summary>
->
-> In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
-> </details>
->
-> **Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
-> <details><summary>Answer</summary>
->
-> `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
-> </details>
->
+🔬 **Section Challenge — 🔬 Docker & Kubernetes Deep Internals**
+
+**Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
+<details><summary>Answer</summary>
+
+In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
+</details>
+
+**Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
+<details><summary>Answer</summary>
+
+`COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
+</details>
+
 

@@ -1,10 +1,10 @@
-> **Navigation**: [< Previous](Ch29_Annotations_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch25_Spring_Boot_50Day_Plan.md)
+**Navigation**: [< Previous](Ch29_Annotations_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch25_Spring_Boot_50Day_Plan.md)
 
 # 🔥 Spring Boot Part 23 — Missing Essential Topics
 
-> **WHY this file?** Parts 0-22 cover a LOT, but these topics were missing.
-> Every topic here is asked in interviews or used in production.
-> **Framework:** WHY → HOW → EXAMPLE → PITFALL → INTERVIEW Q
+**WHY this file?** Parts 0-22 cover a LOT, but these topics were missing.
+Every topic here is asked in interviews or used in production.
+**Framework:** WHY → HOW → EXAMPLE → PITFALL → INTERVIEW Q
 
 ---
 
@@ -50,17 +50,12 @@ Client: "Any new messages?" → Server: "Yes! Here" (finally useful)
 ```
 
 **Flow:**
-- Client: 'Any new messages?'
-- ↓
-- Server: 'No' (wasted request)
-- ↓
-- Client: 'Any new messages?'
-- ↓
-- Server: 'No' (wasted request)
-- ↓
-- Client: 'Any new messages?'
-- ↓
-- Server: 'Yes! Here' (finally useful)
+1. Client: 'Any new messages?'
+2. Server: 'No' (wasted request)
+3. Client: 'Any new messages?'
+4. Server: 'No' (wasted request)
+5. Client: 'Any new messages?'
+6. Server: 'Yes! Here' (finally useful)
 
 ```mermaid
 flowchart LR
@@ -80,17 +75,12 @@ Client: "I'm typing..."     → Server knows INSTANTLY
 ```
 
 **Flow:**
-- Client ←
-- ↓
-- Server (always connected)
-- ↓
-- Server: 'Hey, new message!'
-- ↓
-- Client gets it INSTANTLY
-- ↓
-- Client: 'I'm typing...'
-- ↓
-- Server knows INSTANTLY
+1. Client ←
+2. Server (always connected)
+3. Server: 'Hey, new message!'
+4. Client gets it INSTANTLY
+5. Client: 'I'm typing...'
+6. Server knows INSTANTLY
 
 ```mermaid
 flowchart LR
@@ -186,14 +176,14 @@ public class NotificationService {
 
 
 
-> 🔬 **Section Challenge — HOW — WebSocket in Spring Boot**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — HOW — WebSocket in Spring Boot**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## HOW — Server-Sent Events (SSE)
 
@@ -300,17 +290,12 @@ REST GET /api/orders/5/items → gets items
 ```
 
 **Flow:**
-- REST GET /api/users/1
-- ↓
-- gets user
-- ↓
-- REST GET /api/users/1/orders
-- ↓
-- gets orders
-- ↓
-- REST GET /api/orders/5/items
-- ↓
-- gets items
+1. REST GET /api/users/1
+2. gets user
+3. REST GET /api/users/1/orders
+4. gets orders
+5. REST GET /api/orders/5/items
+6. gets items
 
 ```mermaid
 flowchart LR
@@ -341,8 +326,8 @@ query {
 
 
 
-> 🔬 **Section Challenge — WHY GraphQL?**
->>>
+🔬 **Section Challenge — WHY GraphQL?**
+>>
 
 ## HOW — Spring for GraphQL
 
@@ -362,8 +347,8 @@ query {
 ```graphql
 
 
-> 🔬 **Section Challenge — HOW — Spring for GraphQL**
->>>
+🔬 **Section Challenge — HOW — Spring for GraphQL**
+>>
 
 # WHY Schema First: Contract between frontend and backend
 type Query {
@@ -647,21 +632,14 @@ public class UserGrpcClient {
 ```
 
 **Flow:**
-- 1. Unary: Client
-- ↓
-- 1 request
-- ↓
-- Server
-- ↓
-- 1 response
-- ↓
-- 2. Server Stream: Client
-- ↓
-- 1 request
-- ↓
-- Server
-- ↓
-- N responses (streaming)
+1. 1. Unary: Client
+2. 1 request
+3. Server
+4. 1 response
+5. 2. Server Stream: Client
+6. 1 request
+7. Server
+8. N responses (streaming)
 
 ```mermaid
 flowchart TD
@@ -691,14 +669,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — HOW — gRPC in Spring Boot**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — HOW — gRPC in Spring Boot**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 4. Spring Batch (Batch Processing)
 
@@ -714,14 +692,14 @@ You can't do this with REST APIs. You need **batch processing**.
 
 
 
-> 🔬 **Section Challenge — WHY Spring Batch?**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — WHY Spring Batch?**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## HOW — Core Concepts
 
@@ -738,23 +716,15 @@ Each Step has:
 ```
 
 **Flow:**
-- Step 1: Read CSV
-- ↓
-- Process
-- ↓
-- Write to DB
-- ↓
-- ItemReader
-- ↓
-- reads one item at a time
-- ↓
-- ItemProcessor
-- ↓
-- transforms/validates
-- ↓
-- ItemWriter
-- ↓
-- writes in chunks (e.g., 100 at a time)
+1. Step 1: Read CSV
+2. Process
+3. Write to DB
+4. ItemReader
+5. reads one item at a time
+6. ItemProcessor
+7. transforms/validates
+8. ItemWriter
+9. writes in chunks (e.g., 100 at a time)
 
 ```mermaid
 flowchart TD
@@ -916,13 +886,10 @@ WHY Chunks?
 ```
 
 **Flow:**
-- Chunk 1: Records 1-100
-- ↓
-- INSERT 100 rows (1 transaction)
-- ↓
-- Chunk 2: Records 101-200
-- ↓
-- INSERT 100 rows (1 transaction)
+1. Chunk 1: Records 1-100
+2. INSERT 100 rows (1 transaction)
+3. Chunk 2: Records 101-200
+4. INSERT 100 rows (1 transaction)
 
 ```mermaid
 flowchart LR
@@ -954,14 +921,14 @@ Page<User> users = userRepository.findAll(PageRequest.of(0, 20)); // Just 20 use
 
 
 
-> 🔬 **Section Challenge — WHY Pagination?**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — WHY Pagination?**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## HOW — Spring Data Pagination
 
@@ -1062,14 +1029,14 @@ Page<User> page = userRepository.findAll(PageRequest.of(0, 20)); // DB does LIMI
 
 
 
-> 🔬 **Section Challenge — HOW — Spring Data Pagination**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — HOW — Spring Data Pagination**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 6. HATEOAS (Hypermedia-Driven REST)
 
@@ -1143,14 +1110,14 @@ public class UserController {
 
 
 
-> 🔬 **Section Challenge — HOW — Spring HATEOAS**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — HOW — Spring HATEOAS**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 7. Internationalization (i18n)
 
@@ -1171,21 +1138,14 @@ src/main/resources/
 ```
 
 **Flow:**
-- src/main/resources/
-- ↓
-- messages.properties # Default (English)
-- ↓
-- src/main/resources/
-- ↓
-- messages_hi.properties # Hindi
-- ↓
-- src/main/resources/
-- ↓
-- messages_ja.properties # Japanese
-- ↓
-- src/main/resources/
-- ↓
-- messages_te.properties # Telugu
+1. src/main/resources/
+2. messages.properties # Default (English)
+3. src/main/resources/
+4. messages_hi.properties # Hindi
+5. src/main/resources/
+6. messages_ja.properties # Japanese
+7. src/main/resources/
+8. messages_te.properties # Telugu
 
 ```mermaid
 flowchart TD
@@ -1266,13 +1226,10 @@ Accept-Language: en     → responds in English
 ```
 
 **Flow:**
-- Accept-Language: hi
-- ↓
-- responds in Hindi
-- ↓
-- Accept-Language: en
-- ↓
-- responds in English
+1. Accept-Language: hi
+2. responds in Hindi
+3. Accept-Language: en
+4. responds in English
 
 ```mermaid
 flowchart LR
@@ -1313,13 +1270,10 @@ Tenant B → database_company_b
 ```
 
 **Flow:**
-- Tenant A
-- ↓
-- database_company_a
-- ↓
-- Tenant B
-- ↓
-- database_company_b
+1. Tenant A
+2. database_company_a
+3. Tenant B
+4. database_company_b
 
 ```mermaid
 flowchart LR
@@ -1342,13 +1296,10 @@ Tenant B → schema_b.users, schema_b.orders
 ```
 
 **Flow:**
-- Tenant A
-- ↓
-- schema_a.users, schema_a.orders
-- ↓
-- Tenant B
-- ↓
-- schema_b.users, schema_b.orders
+1. Tenant A
+2. schema_a.users, schema_a.orders
+3. Tenant B
+4. schema_b.users, schema_b.orders
 
 ```mermaid
 flowchart LR

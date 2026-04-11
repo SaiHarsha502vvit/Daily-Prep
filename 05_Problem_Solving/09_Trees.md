@@ -1,13 +1,13 @@
-> **Navigation**: [< Previous](08_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Graphs.md)
+**Navigation**: [< Previous](08_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Graphs.md)
 
-> **Problems 09/14** | [Prev](08_Stack_Queue.md) | [Index](../00_MASTER_INDEX.md) | [Next](10_Graphs.md)
+**Problems 09/14** | [Prev](08_Stack_Queue.md) | [Index](../00_MASTER_INDEX.md) | [Next](10_Graphs.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — Trees
 
-> **Tree Problem Type Identifier** — ask these before every problem:
->
+**Tree Problem Type Identifier** — ask these before every problem:
+
 
 | If it asks... | Pattern | Direction |
 |---|---|---|
@@ -18,17 +18,17 @@
 | `validate BST / search in BST` | Top-Down with range | Pass [min,max] DOWN |
 | `build tree from traversal` | Divide & Conquer | Split array by root |
 
->
-> **The "Info Goes UP or DOWN?" Mental Model:**
-> ```
-> Does problem need info from ANCESTORS?  → TOP-DOWN (pass as parameter)
-> Does problem need info from DESCENDANTS? → BOTTOM-UP (return from recursion)
-> Does it need BOTH?                       → Both directions + global tracker
-> ```
->
-> 📖 **Mental Model:** [03_Graph_Tree_Thinking.md](../14_Mental_Models/03_Graph_Tree_Thinking.md)
-> 📖 **Theory:** [01f_Trees_Heaps.md](../02_Data_Structures/01f_Trees_Heaps.md)
-> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**The "Info Goes UP or DOWN?" Mental Model:**
+```
+Does problem need info from ANCESTORS?  → TOP-DOWN (pass as parameter)
+Does problem need info from DESCENDANTS? → BOTTOM-UP (return from recursion)
+Does it need BOTH?                       → Both directions + global tracker
+```
+
+📖 **Mental Model:** [03_Graph_Tree_Thinking.md](../14_Mental_Models/03_Graph_Tree_Thinking.md)
+📖 **Theory:** [01f_Trees_Heaps.md](../02_Data_Structures/01f_Trees_Heaps.md)
+📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
@@ -73,27 +73,17 @@
 ```
 
 **Flow:**
-- 2 3
-- ↓
-- 4 5
-- ↓
-- Preorder Root
-- ↓
-- Left
-- ↓
-- Right 1,2,4,5,3,6 / Inorder Left
-- ↓
-- Roo
-- ↓
-- Preorder Root
-- ↓
-- Left
-- ↓
-- Right 1,2,4,5,3,6 / Inorder Left
-- ↓
-- Roo
-- ↓
-- DFS (Stack/Recursion) BFS (Queue) / - Go deep first - G
+1. 2 3
+2. 4 5
+3. Preorder Root
+4. Left
+5. Right 1,2,4,5,3,6 / Inorder Left
+6. Roo
+7. Preorder Root
+8. Left
+9. Right 1,2,4,5,3,6 / Inorder Left
+10. Roo
+11. DFS (Stack/Recursion) BFS (Queue) / - Go deep first - G
 
 ```mermaid
 flowchart TD
@@ -178,29 +168,18 @@ flowchart TD
 ```
 
 **Flow:**
-- TREE PROBLEMS — COMPLETE UNDERSTANDING & GROWTH MINDSET
-- ↓
-- WHY ARE TREES THE #1 INTERVIEW TOPIC?
-- ↓
-- They account for 20-25% of coding interview questions.
-- ↓
-- REAL-WORLD SYSTEMS BUILT ON TREES:
-- ↓
-- • File systems: Every folder/file is a tree node
-- ↓
-- • DOM (web pages): HTML
-- ↓
-- head/body
-- ↓
-- div/p... is a tre
-- ↓
-- • DOM (web pages): HTML
-- ↓
-- head/body
-- ↓
-- div/p... is a tre
-- ↓
-- • AI/ML: Decision trees, random forests, parse trees in
+1. TREE PROBLEMS — COMPLETE UNDERSTANDING & GROWTH MINDSET
+2. WHY ARE TREES THE #1 INTERVIEW TOPIC?
+3. They account for 20-25% of coding interview questions.
+4. REAL-WORLD SYSTEMS BUILT ON TREES:
+5. • File systems: Every folder/file is a tree node
+6. • DOM (web pages): HTML
+7. head/body
+8. div/p... is a tre
+9. • DOM (web pages): HTML
+10. head/body
+11. div/p... is a tre
+12. • AI/ML: Decision trees, random forests, parse trees in
 
 ```mermaid
 flowchart TD
@@ -403,8 +382,8 @@ int bothDirections(TreeNode node) {
 
 ## 8.1 Tree Traversal Problems
 
-> **Pattern:** Traverse all nodes in a specific order. These are template problems — memorize the iterative versions.
-> **Key insight:** Recursive is trivial. Interviewers want ITERATIVE solutions using an explicit stack (DFS) or queue (BFS).
+**Pattern:** Traverse all nodes in a specific order. These are template problems — memorize the iterative versions.
+**Key insight:** Recursive is trivial. Interviewers want ITERATIVE solutions using an explicit stack (DFS) or queue (BFS).
 
 ### Problem 104: Binary Tree Inorder Traversal
 
@@ -427,39 +406,23 @@ int bothDirections(TreeNode node) {
 ```
 
 **Flow:**
-- INORDER TRAVERSAL: Left
-- ↓
-- Root
-- ↓
-- Right
-- ↓
-- 2 Inorder: [1, 3, 2]
-- ↓
-- Recursive call flow:
-- ↓
-- inorder(1)
-- ↓
-- inorder(null)
-- ↓
-- visit 1
-- ↓
-- inorder(2)
-- ↓
-- inorder(1)
-- ↓
-- inorder(null)
-- ↓
-- visit 1
-- ↓
-- inorder(2)
-- ↓
-- inorder(3)
-- ↓
-- visit 3
-- ↓
-- visit 2
-- ↓
-- inorder(null)
+1. INORDER TRAVERSAL: Left
+2. Root
+3. Right
+4. 2 Inorder: [1, 3, 2]
+5. Recursive call flow:
+6. inorder(1)
+7. inorder(null)
+8. visit 1
+9. inorder(2)
+10. inorder(1)
+11. inorder(null)
+12. visit 1
+13. inorder(2)
+14. inorder(3)
+15. visit 3
+16. visit 2
+17. inorder(null)
 
 ```mermaid
 flowchart TD
@@ -540,23 +503,15 @@ public List<Integer> inorderTraversal(TreeNode root) {
 ```
 
 **Flow:**
-- PREORDER TRAVERSAL: Root
-- ↓
-- Left
-- ↓
-- Right
-- ↓
-- 2 3 Preorder: [1, 2, 4, 5, 3]
-- ↓
-- Process order: 1
-- ↓
-- 2
-- ↓
-- 4
-- ↓
-- 5
-- ↓
-- 3
+1. PREORDER TRAVERSAL: Root
+2. Left
+3. Right
+4. 2 3 Preorder: [1, 2, 4, 5, 3]
+5. Process order: 1
+6. 2
+7. 4
+8. 5
+9. 3
 
 ```mermaid
 flowchart TD
@@ -612,37 +567,22 @@ public List<Integer> preorderTraversal(TreeNode root) {
 ```
 
 **Flow:**
-- POSTORDER TRAVERSAL: Left
-- ↓
-- Right
-- ↓
-- Root
-- ↓
-- 2 3 Postorder: [4, 5, 2, 3, 1]
-- ↓
-- Trick: Reverse of (Root
-- ↓
-- Right
-- ↓
-- Left)
-- ↓
-- Trick: Reverse of (Root
-- ↓
-- Right
-- ↓
-- Left)
-- ↓
-- Modified preorder: 1
-- ↓
-- 3
-- ↓
-- 2
-- ↓
-- 5
-- ↓
-- 4 then reverse
-- ↓
-- 4,5,2,3,1
+1. POSTORDER TRAVERSAL: Left
+2. Right
+3. Root
+4. 2 3 Postorder: [4, 5, 2, 3, 1]
+5. Trick: Reverse of (Root
+6. Right
+7. Left)
+8. Trick: Reverse of (Root
+9. Right
+10. Left)
+11. Modified preorder: 1
+12. 3
+13. 2
+14. 5
+15. 4 then reverse
+16. 4,5,2,3,1
 
 ```mermaid
 flowchart TD
@@ -706,19 +646,13 @@ public List<Integer> postorderTraversal(TreeNode root) {
 ```
 
 **Flow:**
-- LEVEL ORDER TRAVERSAL (BFS)
-- ↓
-- 3 Level 0: [3]
-- ↓
-- / \ Level 1: [9, 20]
-- ↓
-- 9 20 Level 2: [15, 7]
-- ↓
-- 15 7 Output: [[3], [9,20], [15,7]]
-- ↓
-- BFS with Queue:
-- ↓
-- Step Queue Level Output
+1. LEVEL ORDER TRAVERSAL (BFS)
+2. 3 Level 0: [3]
+3. / \ Level 1: [9, 20]
+4. 9 20 Level 2: [15, 7]
+5. 15 7 Output: [[3], [9,20], [15,7]]
+6. BFS with Queue:
+7. Step Queue Level Output
 
 ```mermaid
 flowchart TD
@@ -789,29 +723,18 @@ public List<List<Integer>> levelOrder(TreeNode root) {
 ```
 
 **Flow:**
-- ZIGZAG LEVEL ORDER
-- ↓
-- 3 Level 0 (
-- ↓
-- ): [3]
-- ↓
-- 3 Level 0 (
-- ↓
-- ): [3]
-- ↓
-- / \ Level 1 (←): [20, 9]
-- ↓
-- 9 20 Level 2 (
-- ↓
-- ): [15, 7]
-- ↓
-- 9 20 Level 2 (
-- ↓
-- ): [15, 7]
-- ↓
-- 15 7 Output: [[3], [20,9], [15,7]]
-- ↓
-- Alternate direction each level
+1. ZIGZAG LEVEL ORDER
+2. 3 Level 0 (
+3. ): [3]
+4. 3 Level 0 (
+5. ): [3]
+6. / \ Level 1 (←): [20, 9]
+7. 9 20 Level 2 (
+8. ): [15, 7]
+9. 9 20 Level 2 (
+10. ): [15, 7]
+11. 15 7 Output: [[3], [20,9], [15,7]]
+12. Alternate direction each level
 
 ```mermaid
 flowchart TD
@@ -894,19 +817,13 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 ```
 
 **Flow:**
-- VERTICAL ORDER TRAVERSAL
-- ↓
-- Given a binary tree, return the vertical order traversa
-- ↓
-- of its nodes' values (column by column from left to rig
-- ↓
-- 3 (col 0)
-- ↓
-- 9 20 Column mapping:
-- ↓
-- / / \ col -2: [4]
-- ↓
-- 4 15 7 col -1: [9]
+1. VERTICAL ORDER TRAVERSAL
+2. Given a binary tree, return the vertical order traversa
+3. of its nodes' values (column by column from left to rig
+4. 3 (col 0)
+5. 9 20 Column mapping:
+6. / / \ col -2: [4]
+7. 4 15 7 col -1: [9]
 
 ```mermaid
 flowchart TD
@@ -966,9 +883,9 @@ public List<List<Integer>> verticalOrder(TreeNode root) {
 
 ## 8.2 Tree Property Problems
 
-> **Pattern:** Bottom-up recursion — ask children for their info, combine at parent.
-> **Template:** `int helper(node) { left = helper(left); right = helper(right); return combine(left, right); }`
-> **Key insight:** The answer at every node depends on the answer from BOTH children. Think: "What do I need from my children to answer for myself?"
+**Pattern:** Bottom-up recursion — ask children for their info, combine at parent.
+**Template:** `int helper(node) { left = helper(left); right = helper(right); return combine(left, right); }`
+**Key insight:** The answer at every node depends on the answer from BOTH children. Think: "What do I need from my children to answer for myself?"
 
 ### Problem 110: Maximum Depth of Binary Tree
 
@@ -989,17 +906,12 @@ public List<List<Integer>> verticalOrder(TreeNode root) {
 ```
 
 **Flow:**
-- MAXIMUM DEPTH (Height)
-- ↓
-- 3 depth = 1 + max(depth(left), depth(right))
-- ↓
-- 9 20 depth(3) = 1 + max(1, 2) = 3
-- ↓
-- / \ depth(9) = 1 + max(0, 0) = 1
-- ↓
-- 15 7 depth(20) = 1 + max(1, 1) = 2
-- ↓
-- Maximum Depth = 3
+1. MAXIMUM DEPTH (Height)
+2. 3 depth = 1 + max(depth(left), depth(right))
+3. 9 20 depth(3) = 1 + max(1, 2) = 3
+4. / \ depth(9) = 1 + max(0, 0) = 1
+5. 15 7 depth(20) = 1 + max(1, 1) = 2
+6. Maximum Depth = 3
 
 ```mermaid
 flowchart TD
@@ -1075,19 +987,13 @@ public int maxDepthBFS(TreeNode root) {
 ```
 
 **Flow:**
-- MINIMUM DEPTH - Shortest path from root to leaf
-- ↓
-- Min depth = 2 Min depth = 3 (not 1!)
-- ↓
-- (3
-- ↓
-- 9 is leaf) (3 is not a leaf)
-- ↓
-- (3
-- ↓
-- 9 is leaf) (3 is not a leaf)
-- ↓
-- ⚠️ TRAP: If one child is null, use the other child's de
+1. MINIMUM DEPTH - Shortest path from root to leaf
+2. Min depth = 2 Min depth = 3 (not 1!)
+3. (3
+4. 9 is leaf) (3 is not a leaf)
+5. (3
+6. 9 is leaf) (3 is not a leaf)
+7. ⚠️ TRAP: If one child is null, use the other child's de
 
 ```mermaid
 flowchart TD
@@ -1167,17 +1073,12 @@ public int minDepthBFS(TreeNode root) {
 ```
 
 **Flow:**
-- BALANCED BINARY TREE
-- ↓
-- A tree is balanced if for every node, the height differ
-- ↓
-- between left and right subtrees is at most 1.
-- ↓
-- Balanced: Unbalanced:
-- ↓
-- h(L) - h(R)
-- ↓
-- <= 1 4 ← depth diff > 1
+1. BALANCED BINARY TREE
+2. A tree is balanced if for every node, the height differ
+3. between left and right subtrees is at most 1.
+4. Balanced: Unbalanced:
+5. h(L) - h(R)
+6. <= 1 4 ← depth diff > 1
 
 ```mermaid
 flowchart TD
@@ -1235,11 +1136,9 @@ private int checkHeight(TreeNode node) {
 ```
 
 **Flow:**
-- SAME TREE - Check if two trees are identical
-- ↓
-- Same: true Same: false
-- ↓
-- (structure same, values diff)
+1. SAME TREE - Check if two trees are identical
+2. Same: true Same: false
+3. (structure same, values diff)
 
 ```mermaid
 flowchart TD
@@ -1290,9 +1189,8 @@ public boolean isSameTree(TreeNode p, TreeNode q) {
 ```
 
 **Flow:**
-- SYMMETRIC TREE - Mirror image of itself
-- ↓
-- Symmetric: Not Symmetric:
+1. SYMMETRIC TREE - Mirror image of itself
+2. Symmetric: Not Symmetric:
 
 ```mermaid
 flowchart TD
@@ -1366,11 +1264,9 @@ public boolean isSymmetricIterative(TreeNode root) {
 ```
 
 **Flow:**
-- INVERT BINARY TREE - Mirror/Flip the tree
-- ↓
-- Input: Output:
-- ↓
-- At each node: swap left and right children
+1. INVERT BINARY TREE - Mirror/Flip the tree
+2. Input: Output:
+3. At each node: swap left and right children
 
 ```mermaid
 flowchart TD
@@ -1404,10 +1300,10 @@ public TreeNode invertTree(TreeNode root) {
 
 ## 8.3 Path & Sum Problems
 
-> **Pattern:** Top-down state passing — carry a running sum/path from root downward.
-> **Template:** `void dfs(node, remainingSum) { if leaf and sum==0: found! dfs(left, sum-val); dfs(right, sum-val); }`
-> **Key insight:** Pass the TARGET minus current value down. At a leaf, check if target reached 0.
-> **Hardest problem here:** #119 Max Path Sum — uses BOTH top-down and bottom-up. Global variable tracks the best "arch" path.
+**Pattern:** Top-down state passing — carry a running sum/path from root downward.
+**Template:** `void dfs(node, remainingSum) { if leaf and sum==0: found! dfs(left, sum-val); dfs(right, sum-val); }`
+**Key insight:** Pass the TARGET minus current value down. At a leaf, check if target reached 0.
+**Hardest problem here:** #119 Max Path Sum — uses BOTH top-down and bottom-up. Global variable tracks the best "arch" path.
 
 ### Problem 116: Path Sum
 
@@ -1432,27 +1328,17 @@ public TreeNode invertTree(TreeNode root) {
 ```
 
 **Flow:**
-- PATH SUM - Root to leaf path with target sum
-- ↓
-- targetSum = 22
-- ↓
-- 4 8 Path: 5
-- ↓
-- 4
-- ↓
-- 11
-- ↓
-- 2 = 22 ✓
-- ↓
-- 4 8 Path: 5
-- ↓
-- 4
-- ↓
-- 11
-- ↓
-- 2 = 22 ✓
-- ↓
-- ⚠️ Must reach a LEAF node (no children)
+1. PATH SUM - Root to leaf path with target sum
+2. targetSum = 22
+3. 4 8 Path: 5
+4. 4
+5. 11
+6. 2 = 22 ✓
+7. 4 8 Path: 5
+8. 4
+9. 11
+10. 2 = 22 ✓
+11. ⚠️ Must reach a LEAF node (no children)
 
 ```mermaid
 flowchart TD
@@ -1508,11 +1394,9 @@ public boolean hasPathSum(TreeNode root, int targetSum) {
 ```
 
 **Flow:**
-- PATH SUM II - Find ALL paths with target sum
-- ↓
-- targetSum = 22
-- ↓
-- Output: [[5,4,11,2], [5,8,4,5]]
+1. PATH SUM II - Find ALL paths with target sum
+2. targetSum = 22
+3. Output: [[5,4,11,2], [5,8,4,5]]
 
 ```mermaid
 flowchart TD
@@ -1555,11 +1439,11 @@ private void backtrack(TreeNode node, int remaining,
 
 ### Problem 118: 🔒 Path Sum III (LeetCode 437)
 
-> 💡 **Approach:** Prefix sum on a tree! Same idea as "Subarray Sum Equals K" but on tree paths.
-> Keep a HashMap of `prefix_sum → count` as you traverse down.
-> At each node: `count += map.get(currentSum - target)`.
-> **Critical:** BACKTRACK the map when returning up (unlike array version).
-> **Time:** O(n) | **Space:** O(h)
+💡 **Approach:** Prefix sum on a tree! Same idea as "Subarray Sum Equals K" but on tree paths.
+Keep a HashMap of `prefix_sum → count` as you traverse down.
+At each node: `count += map.get(currentSum - target)`.
+**Critical:** BACKTRACK the map when returning up (unlike array version).
+**Time:** O(n) | **Space:** O(h)
 
 **LeetCode 437** 🔗 https://leetcode.com/problems/path-sum-iii/
 
@@ -1589,17 +1473,12 @@ private void backtrack(TreeNode node, int remaining,
 ```
 
 **Flow:**
-- PATH SUM III - Path doesn't need to start at root or en
-- ↓
-- at leaf, but must go downwards
-- ↓
-- targetSum = 8
-- ↓
-- Paths that sum to 8:
-- ↓
-- Output: 3
-- ↓
-- Use Prefix Sum technique with HashMap!
+1. PATH SUM III - Path doesn't need to start at root or en
+2. at leaf, but must go downwards
+3. targetSum = 8
+4. Paths that sum to 8:
+5. Output: 3
+6. Use Prefix Sum technique with HashMap!
 
 ```mermaid
 flowchart TD
@@ -1653,11 +1532,11 @@ private int dfs(TreeNode node, long currentSum, int target,
 
 ### Problem 119: Binary Tree Maximum Path Sum
 
-> 💡 **Approach:** This is the HARDEST tree problem. Uses bottom-up return + global tracking.
-> At each node: return the best single-arm path upward (node + max(left, right)).
-> But also check if using BOTH arms (left + node + right) beats the global max.
-> **Key trick:** `Math.max(gain, 0)` — ignore negative subtrees entirely.
-> **Time:** O(n) | **Space:** O(h)
+💡 **Approach:** This is the HARDEST tree problem. Uses bottom-up return + global tracking.
+At each node: return the best single-arm path upward (node + max(left, right)).
+But also check if using BOTH arms (left + node + right) beats the global max.
+**Key trick:** `Math.max(gain, 0)` — ignore negative subtrees entirely.
+**Time:** O(n) | **Space:** O(h)
 
 **LeetCode 124** 🔗 https://leetcode.com/problems/binary-tree-maximum-path-sum/
 
@@ -1684,29 +1563,18 @@ private int dfs(TreeNode node, long currentSum, int target,
 ```
 
 **Flow:**
-- MAXIMUM PATH SUM - Path can start and end at any node
-- ↓
-- Max path: 15
-- ↓
-- 20
-- ↓
-- 7 = 42
-- ↓
-- Max path: 15
-- ↓
-- 20
-- ↓
-- 7 = 42
-- ↓
-- At each node, we can:
-- ↓
-- 1. Include node + left path
-- ↓
-- 2. Include node + right path
-- ↓
-- 3. Include node + both paths (forms arch)
-- ↓
-- 4. Just the node itself
+1. MAXIMUM PATH SUM - Path can start and end at any node
+2. Max path: 15
+3. 20
+4. 7 = 42
+5. Max path: 15
+6. 20
+7. 7 = 42
+8. At each node, we can:
+9. 1. Include node + left path
+10. 2. Include node + right path
+11. 3. Include node + both paths (forms arch)
+12. 4. Just the node itself
 
 ```mermaid
 flowchart TD
@@ -1785,49 +1653,28 @@ private int maxGain(TreeNode node) {
 ```
 
 **Flow:**
-- DIAMETER - Longest path between any two nodes (in edges
-- ↓
-- Longest path: 4
-- ↓
-- 2
-- ↓
-- 1
-- ↓
-- 3 or 5
-- ↓
-- 2
-- ↓
-- 1
-- ↓
-- 3 = 3 edges
-- ↓
-- Longest path: 4
-- ↓
-- 2
-- ↓
-- 1
-- ↓
-- 3 or 5
-- ↓
-- 2
-- ↓
-- 1
-- ↓
-- 3 = 3 edges
-- ↓
-- Diameter = 3
-- ↓
-- Note: Path may NOT pass through root!
-- ↓
-- 2 Diameter = 4
-- ↓
-- 2
-- ↓
-- 5
-- ↓
-- 6
-- ↓
-- 7 = 4
+1. DIAMETER - Longest path between any two nodes (in edges
+2. Longest path: 4
+3. 2
+4. 1
+5. 3 or 5
+6. 2
+7. 1
+8. 3 = 3 edges
+9. Longest path: 4
+10. 2
+11. 1
+12. 3 or 5
+13. 2
+14. 1
+15. 3 = 3 edges
+16. Diameter = 3
+17. Note: Path may NOT pass through root!
+18. 2 Diameter = 4
+19. 2
+20. 5
+21. 6
+22. 7 = 4
 
 ```mermaid
 flowchart TD
@@ -1870,8 +1717,8 @@ private int depth(TreeNode node) {
 
 
 
-> 🔬 **Section Challenge — 8.3 Path & Sum Problems**
->>
+🔬 **Section Challenge — 8.3 Path & Sum Problems**
+>
 
 ## 8.4 Binary Search Tree (BST) Problems
 
@@ -1894,19 +1741,13 @@ private int depth(TreeNode node) {
 ```
 
 **Flow:**
-- BINARY SEARCH TREE PROPERTY
-- ↓
-- For every node:
-- ↓
-- - All values in LEFT subtree < node value
-- ↓
-- - All values in RIGHT subtree > node value
-- ↓
-- 3 10 Valid BST:
-- ↓
-- / \ \ - Left of 8: {1,3,6} all < 8
-- ↓
-- 1 6 14 - Right of 8: {10,14} all > 8
+1. BINARY SEARCH TREE PROPERTY
+2. For every node:
+3. - All values in LEFT subtree < node value
+4. - All values in RIGHT subtree > node value
+5. 3 10 Valid BST:
+6. / \ \ - Left of 8: {1,3,6} all < 8
+7. 1 6 14 - Right of 8: {10,14} all > 8
 
 ```mermaid
 flowchart TD
@@ -1950,17 +1791,12 @@ flowchart TD
 ```
 
 **Flow:**
-- VALIDATE BST
-- ↓
-- Valid BST: Invalid BST:
-- ↓
-- 1 3 1 4 ← 4 < 5 but 3 > right val!
-- ↓
-- true 3 6
-- ↓
-- ⚠️ Common mistake: Only checking immediate children
-- ↓
-- Must check against valid RANGE for each node
+1. VALIDATE BST
+2. Valid BST: Invalid BST:
+3. 1 3 1 4 ← 4 < 5 but 3 > right val!
+4. true 3 6
+5. ⚠️ Common mistake: Only checking immediate children
+6. Must check against valid RANGE for each node
 
 ```mermaid
 flowchart TD
@@ -2042,29 +1878,18 @@ public boolean isValidBSTInorder(TreeNode root) {
 ```
 
 **Flow:**
-- SEARCH IN BST
-- ↓
-- 4 Search for 2:
-- ↓
-- / \ 4 > 2
-- ↓
-- go left
-- ↓
-- / \ 4 > 2
-- ↓
-- go left
-- ↓
-- 2 7 2 == 2
-- ↓
-- found!
-- ↓
-- 2 7 2 == 2
-- ↓
-- found!
-- ↓
-- 1 3 Return subtree rooted at 2
-- ↓
-- Time: O(h) where h = height (O(log n) for balanced)
+1. SEARCH IN BST
+2. 4 Search for 2:
+3. / \ 4 > 2
+4. go left
+5. / \ 4 > 2
+6. go left
+7. 2 7 2 == 2
+8. found!
+9. 2 7 2 == 2
+10. found!
+11. 1 3 Return subtree rooted at 2
+12. Time: O(h) where h = height (O(log n) for balanced)
 
 ```mermaid
 flowchart TD
@@ -2127,27 +1952,17 @@ public TreeNode searchBSTIterative(TreeNode root, int val) {
 ```
 
 **Flow:**
-- LOWEST COMMON ANCESTOR (LCA) in BST
-- ↓
-- 0 4 7 9 LCA(2, 8) = 6
-- ↓
-- / \ LCA(2, 4) = 2
-- ↓
-- 3 5 LCA(3, 5) = 4
-- ↓
-- BST Property helps:
-- ↓
-- - If both < node
-- ↓
-- LCA is in left
-- ↓
-- - If both < node
-- ↓
-- LCA is in left
-- ↓
-- - If both > node
-- ↓
-- LCA is in right
+1. LOWEST COMMON ANCESTOR (LCA) in BST
+2. 0 4 7 9 LCA(2, 8) = 6
+3. / \ LCA(2, 4) = 2
+4. 3 5 LCA(3, 5) = 4
+5. BST Property helps:
+6. - If both < node
+7. LCA is in left
+8. - If both < node
+9. LCA is in left
+10. - If both > node
+11. LCA is in right
 
 ```mermaid
 flowchart TD
@@ -2189,12 +2004,12 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 ### Problem 124: Lowest Common Ancestor of a Binary Tree
 
-> 💡 **Approach:** Classic interview question. Recursive post-order traversal.
-> For each node: search left subtree and right subtree for p and q.
-> If BOTH return non-null → this node is the LCA (p and q are in different subtrees).
-> If only ONE returns non-null → that result IS the LCA (both p and q are in same subtree).
-> **Why it works:** The FIRST node where p and q "split" into different subtrees must be their LCA.
-> **Time:** O(n) | **Space:** O(h)
+💡 **Approach:** Classic interview question. Recursive post-order traversal.
+For each node: search left subtree and right subtree for p and q.
+If BOTH return non-null → this node is the LCA (p and q are in different subtrees).
+If only ONE returns non-null → that result IS the LCA (both p and q are in same subtree).
+**Why it works:** The FIRST node where p and q "split" into different subtrees must be their LCA.
+**Time:** O(n) | **Space:** O(h)
 
 **LeetCode 236** 🔗 https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/
 
@@ -2218,21 +2033,14 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 ```
 
 **Flow:**
-- LCA in General Binary Tree (not BST)
-- ↓
-- 6 2 0 8 LCA(5, 1) = 3
-- ↓
-- / \ LCA(5, 4) = 5
-- ↓
-- 7 4 LCA(6, 4) = 5
-- ↓
-- General approach (no BST property):
-- ↓
-- - Search both subtrees for p and q
-- ↓
-- - If found in different subtrees
-- ↓
-- current is LCA
+1. LCA in General Binary Tree (not BST)
+2. 6 2 0 8 LCA(5, 1) = 3
+3. / \ LCA(5, 4) = 5
+4. 7 4 LCA(6, 4) = 5
+5. General approach (no BST property):
+6. - Search both subtrees for p and q
+7. - If found in different subtrees
+8. current is LCA
 
 ```mermaid
 flowchart TD
@@ -2292,35 +2100,21 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 ```
 
 **Flow:**
-- Kth SMALLEST IN BST
-- ↓
-- / \ Inorder: [1, 2, 3, 4]
-- ↓
-- \ k=1
-- ↓
-- return 1
-- ↓
-- \ k=1
-- ↓
-- return 1
-- ↓
-- 2 k=2
-- ↓
-- return 2
-- ↓
-- 2 k=2
-- ↓
-- return 2
-- ↓
-- k=3
-- ↓
-- return 3
-- ↓
-- k=3
-- ↓
-- return 3
-- ↓
-- Inorder traversal of BST gives sorted order!
+1. Kth SMALLEST IN BST
+2. / \ Inorder: [1, 2, 3, 4]
+3. \ k=1
+4. return 1
+5. \ k=1
+6. return 1
+7. 2 k=2
+8. return 2
+9. 2 k=2
+10. return 2
+11. k=3
+12. return 3
+13. k=3
+14. return 3
+15. Inorder traversal of BST gives sorted order!
 
 ```mermaid
 flowchart TD
@@ -2392,21 +2186,14 @@ public int kthSmallest(TreeNode root, int k) {
 ```
 
 **Flow:**
-- INORDER SUCCESSOR IN BST
-- ↓
-- Given a BST and a node p, find the in-order successor o
-- ↓
-- that node (smallest node greater than p).
-- ↓
-- 2 4 Successor(3) = 4
-- ↓
-- / Successor(4) = 5
-- ↓
-- 1 Successor(6) = null
-- ↓
-- If p has right child
-- ↓
-- leftmost in right subtree
+1. INORDER SUCCESSOR IN BST
+2. Given a BST and a node p, find the in-order successor o
+3. that node (smallest node greater than p).
+4. 2 4 Successor(3) = 4
+5. / Successor(4) = 5
+6. 1 Successor(6) = null
+7. If p has right child
+8. leftmost in right subtree
 
 ```mermaid
 flowchart TD
@@ -2450,26 +2237,26 @@ public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
 
 
 
-> 🔬 **Section Challenge — 8.4 Binary Search Tree (BST) Problems**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — 8.4 Binary Search Tree (BST) Problems**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 ## 8.5 Tree Construction Problems
 
-> **Pattern:** Divide-and-conquer using traversal properties.
-> **Key insight:** Preorder's first element = root. Find that root in inorder → everything left = left subtree, everything right = right subtree. Recurse.
-> **Optimization:** Use a HashMap to store inorder indices for O(1) root lookup instead of O(n) scan.
+**Pattern:** Divide-and-conquer using traversal properties.
+**Key insight:** Preorder's first element = root. Find that root in inorder → everything left = left subtree, everything right = right subtree. Recurse.
+**Optimization:** Use a HashMap to store inorder indices for O(1) root lookup instead of O(n) scan.
 
 ### Problem 127: Construct Binary Tree from Preorder and Inorder
 
@@ -2495,15 +2282,11 @@ public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
 ```
 
 **Flow:**
-- BUILD TREE FROM PREORDER & INORDER
-- ↓
-- preorder = [3, 9, 20, 15, 7] (Root, Left, Right)
-- ↓
-- inorder = [9, 3, 15, 20, 7] (Left, Root, Right)
-- ↓
-- Step 1: First preorder element (3) is ROOT
-- ↓
-- Step 3: Recursively build subtrees
+1. BUILD TREE FROM PREORDER & INORDER
+2. preorder = [3, 9, 20, 15, 7] (Root, Left, Right)
+3. inorder = [9, 3, 15, 20, 7] (Left, Root, Right)
+4. Step 1: First preorder element (3) is ROOT
+5. Step 3: Recursively build subtrees
 
 ```mermaid
 flowchart TD
@@ -2581,17 +2364,12 @@ private TreeNode build(int[] preorder, int left, int right) {
 ```
 
 **Flow:**
-- BUILD TREE FROM INORDER & POSTORDER
-- ↓
-- inorder = [9, 3, 15, 20, 7] (Left, Root, Right)
-- ↓
-- postorder = [9, 15, 7, 20, 3] (Left, Right, Root)
-- ↓
-- LAST postorder element (3) is ROOT
-- ↓
-- Process postorder from END (right to left)
-- ↓
-- Build RIGHT subtree before LEFT (reverse of preorder)
+1. BUILD TREE FROM INORDER & POSTORDER
+2. inorder = [9, 3, 15, 20, 7] (Left, Root, Right)
+3. postorder = [9, 15, 7, 20, 3] (Left, Right, Root)
+4. LAST postorder element (3) is ROOT
+5. Process postorder from END (right to left)
+6. Build RIGHT subtree before LEFT (reverse of preorder)
 
 ```mermaid
 flowchart TD
@@ -2663,17 +2441,12 @@ private TreeNode build(int[] postorder, int left, int right) {
 ```
 
 **Flow:**
-- SERIALIZE AND DESERIALIZE BINARY TREE
-- ↓
-- / \ Serialize: '1,2,null,null,3,4,null,null,5'
-- ↓
-- 2 3 (Preorder with null markers)
-- ↓
-- 4 5 Deserialize: Rebuild from string
-- ↓
-- Using preorder traversal with null markers works becaus
-- ↓
-- null positions indicate exact tree structure
+1. SERIALIZE AND DESERIALIZE BINARY TREE
+2. / \ Serialize: '1,2,null,null,3,4,null,null,5'
+3. 2 3 (Preorder with null markers)
+4. 4 5 Deserialize: Rebuild from string
+5. Using preorder traversal with null markers works becaus
+6. null positions indicate exact tree structure
 
 ```mermaid
 flowchart TD
@@ -2757,15 +2530,11 @@ public class Codec {
 ```
 
 **Flow:**
-- COUNT LEAF NODES
-- ↓
-- A leaf node has no children (both left and right are nu
-- ↓
-- 2 3 Leaf nodes: 4, 5, 6
-- ↓
-- / \ \ Count = 3
-- ↓
-- Constraints:
+1. COUNT LEAF NODES
+2. A leaf node has no children (both left and right are nu
+3. 2 3 Leaf nodes: 4, 5, 6
+4. / \ \ Count = 3
+5. Constraints:
 
 ```mermaid
 flowchart TD
@@ -2812,11 +2581,9 @@ public int countLeaves(TreeNode root) {
 ```
 
 **Flow:**
-- SUM OF ALL NODES
-- ↓
-- 2 3 Sum = 1 + 2 + 3 + 4 + 5 + 6 = 21
-- ↓
-- Simple DFS traversal
+1. SUM OF ALL NODES
+2. 2 3 Sum = 1 + 2 + 3 + 4 + 5 + 6 = 21
+3. Simple DFS traversal
 
 ```mermaid
 flowchart TD
@@ -2860,19 +2627,13 @@ public int sumOfNodes(TreeNode root) {
 ```
 
 **Flow:**
-- LEVEL WITH MAXIMUM SUM
-- ↓
-- Find the level (1-indexed) with the maximum sum.
-- ↓
-- 1 Level 1: sum = 1
-- ↓
-- / \ Level 2: sum = 2 + 3 = 5
-- ↓
-- 2 3 Level 3: sum = 4 + 5 + 6 = 15 ← Maximum
-- ↓
-- 4 5 6 Output: 3
-- ↓
-- Constraints:
+1. LEVEL WITH MAXIMUM SUM
+2. Find the level (1-indexed) with the maximum sum.
+3. 1 Level 1: sum = 1
+4. / \ Level 2: sum = 2 + 3 = 5
+5. 2 3 Level 3: sum = 4 + 5 + 6 = 15 ← Maximum
+6. 4 5 6 Output: 3
+7. Constraints:
 
 ```mermaid
 flowchart TD
@@ -2949,13 +2710,10 @@ public int maxLevelSum(TreeNode root) {
 ```
 
 **Flow:**
-- NODES AT K DISTANCE FROM ROOT
-- ↓
-- 2 3 Nodes at distance 2: [4, 5, 6]
-- ↓
-- Distance from root = Level - 1
-- ↓
-- Nodes at distance k are at level k+1
+1. NODES AT K DISTANCE FROM ROOT
+2. 2 3 Nodes at distance 2: [4, 5, 6]
+3. Distance from root = Level - 1
+4. Nodes at distance k are at level k+1
 
 ```mermaid
 flowchart TD
@@ -3013,11 +2771,9 @@ private void findNodes(TreeNode node, int k, List<Integer> result) {
 ```
 
 **Flow:**
-- CHECK IF COMPLETE BINARY TREE
-- ↓
-- Complete: Not Complete:
-- ↓
-- 4 5 4 5 6 (gap at left of last level)
+1. CHECK IF COMPLETE BINARY TREE
+2. Complete: Not Complete:
+3. 4 5 4 5 6 (gap at left of last level)
 
 ```mermaid
 flowchart TD
@@ -3079,17 +2835,12 @@ public boolean isCompleteTree(TreeNode root) {
 ```
 
 **Flow:**
-- LEFT VIEW OF BINARY TREE
-- ↓
-- Print first node of each level (as seen from left side)
-- ↓
-- 2 3 ← (2 is leftmost at this level)
-- ↓
-- 5 4 ← (5 is leftmost at this level)
-- ↓
-- Left view: [1, 2, 5]
-- ↓
-- Right view would be: [1, 3, 4]
+1. LEFT VIEW OF BINARY TREE
+2. Print first node of each level (as seen from left side)
+3. 2 3 ← (2 is leftmost at this level)
+4. 5 4 ← (5 is leftmost at this level)
+5. Left view: [1, 2, 5]
+6. Right view would be: [1, 3, 4]
 
 ```mermaid
 flowchart TD

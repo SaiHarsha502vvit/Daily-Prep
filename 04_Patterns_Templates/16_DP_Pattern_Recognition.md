@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)
+**Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)
 
 # DP Pattern Recognition — Combined Pattern Guide
 
-> **WHY this matters?** DP problems look overwhelming because there are hundreds of them. But they ALL fall into ~8 pattern families. Recognize the family → apply the template → solve.
+**WHY this matters?** DP problems look overwhelming because there are hundreds of them. But they ALL fall into ~8 pattern families. Recognize the family → apply the template → solve.
 
 ### 🧠 Deep Intuition — What Makes a Problem DP?
 
@@ -54,29 +54,18 @@ Which family?
 ```
 
 **Flow:**
-- 'How many ways?'
-- ↓
-- COUNTING DP
-- ↓
-- 'Minimum/Maximum cost?'
-- ↓
-- OPTIMIZATION DP
-- ↓
-- 'Can we achieve X?'
-- ↓
-- FEASIBILITY DP
-- ↓
-- Involves two sequences
-- ↓
-- LCS / EDIT DISTANCE family
-- ↓
-- Involves one sequence
-- ↓
-- LIS / KADANE family
-- ↓
-- Items with weights/values
-- ↓
-- KNAPSACK family
+1. 'How many ways?'
+2. COUNTING DP
+3. 'Minimum/Maximum cost?'
+4. OPTIMIZATION DP
+5. 'Can we achieve X?'
+6. FEASIBILITY DP
+7. Involves two sequences
+8. LCS / EDIT DISTANCE family
+9. Involves one sequence
+10. LIS / KADANE family
+11. Items with weights/values
+12. KNAPSACK family
 
 ```mermaid
 flowchart TD
@@ -225,9 +214,8 @@ Time: O(n) | Space: O(1) using two variables
 ```
 
 **Flow:**
-- Answer: dp[4] = 12 ✅ (rob houses 0, 2, 4
-- ↓
-- 2+9+1=12)
+1. Answer: dp[4] = 12 ✅ (rob houses 0, 2, 4
+2. 2+9+1=12)
 
 ```mermaid
 flowchart LR
@@ -272,29 +260,18 @@ Time: O(m×n) | Space: O(m×n), optimizable to O(min(m,n))
 ```
 
 **Flow:**
-- a 0 1 1 1 ← 'a'=='a'
-- ↓
-- dp[0][0]+1=1
-- ↓
-- b 0 1 1 1 ← 'b'≠'a','c','e'
-- ↓
-- carry forward
-- ↓
-- c 0 1 2 2 ← 'c'=='c'
-- ↓
-- dp[1][1]+1=2
-- ↓
-- e 0 1 2 3 ← 'e'=='e'
-- ↓
-- dp[3][2]+1=3
-- ↓
-- If chars match
-- ↓
-- include it, move diagonal.
-- ↓
-- Else
-- ↓
-- move in direction of larger dp value.
+1. a 0 1 1 1 ← 'a'=='a'
+2. dp[0][0]+1=1
+3. b 0 1 1 1 ← 'b'≠'a','c','e'
+4. carry forward
+5. c 0 1 2 2 ← 'c'=='c'
+6. dp[1][1]+1=2
+7. e 0 1 2 3 ← 'e'=='e'
+8. dp[3][2]+1=3
+9. If chars match
+10. include it, move diagonal.
+11. Else
+12. move in direction of larger dp value.
 
 ```mermaid
 flowchart TD
@@ -322,14 +299,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Longest Common Subsequence (Two-Sequence DP)**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Longest Common Subsequence (Two-Sequence DP)**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## 🔬 FULL WALKTHROUGH 3: 0/1 Knapsack (The Classic)
 
@@ -405,14 +382,14 @@ COMMON MISTAKES:
 
 
 
-> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 
@@ -487,7 +464,7 @@ COMMON MISTAKES:
 
 **When the interviewer gives you a DP problem, say this:**
 
-> "I notice this problem has overlapping subproblems — the same subproblem is computed multiple times in a naive recursive approach. It also has optimal substructure — the optimal solution builds from optimal solutions to smaller subproblems. These two properties make it a DP problem."
+"I notice this problem has overlapping subproblems — the same subproblem is computed multiple times in a naive recursive approach. It also has optimal substructure — the optimal solution builds from optimal solutions to smaller subproblems. These two properties make it a DP problem."
 
 **The 4-step explanation framework:**
 1. "**Define the state**: `dp[i]` represents [what]. This is the hardest step — getting the state right makes the recurrence obvious."

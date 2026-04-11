@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
+**Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
 
 # Code Review — Best Practices & Checklist
 
@@ -23,43 +23,17 @@ Code reviews also:
 ```
 
 **Flow:**
-- CODE REVIEWS: The Most Underrated Engineering Practice
-- ↓
-- Bug found in Code Review
-- ↓
-- Costs: 15 minutes
-- ↓
-- Bug found in Code Review
-- ↓
-- Costs: 15 minutes
-- ↓
-- Bug found in QA
-- ↓
-- Costs: 2 hours
-- ↓
-- Bug found in QA
-- ↓
-- Costs: 2 hours
-- ↓
-- Bug found in Production
-- ↓
-- Costs: 2 days
-- ↓
-- Bug found in Production
-- ↓
-- Costs: 2 days
-- ↓
-- Bug found by customer
-- ↓
-- Costs: reputation
-- ↓
-- Bug found by customer
-- ↓
-- Costs: reputation
-- ↓
-- Code reviews also:
-- ↓
-- • Spread knowledge across team (bus factor ↑)
+1. CODE REVIEWS: The Most Underrated Engineering Practice
+2. Bug found in Code Review
+3. Costs: 15 minutes
+4. Bug found in QA
+5. Costs: 2 hours
+6. Bug found in Production
+7. Costs: 2 days
+8. Bug found by customer
+9. Costs: reputation
+10. Code reviews also:
+11. • Spread knowledge across team (bus factor ↑)
 
 ```mermaid
 flowchart TD
@@ -87,90 +61,90 @@ flowchart TD
 ### 1. Correctness
 
 
-> CORRECTNESS CHECKS
->
-> □ Does the code do what the ticket/story asks?
-> □ Are edge cases handled? (null, empty, max values)
-> □ Are error conditions handled gracefully?
-> □ Is the logic correct? (trace through mentally)
-> □ Are boundary conditions correct? (off-by-one, ≤ vs <)
-> □ Is concurrency handled correctly? (if applicable)
-> □ Are database transactions used correctly?
+CORRECTNESS CHECKS
+
+□ Does the code do what the ticket/story asks?
+□ Are edge cases handled? (null, empty, max values)
+□ Are error conditions handled gracefully?
+□ Is the logic correct? (trace through mentally)
+□ Are boundary conditions correct? (off-by-one, ≤ vs <)
+□ Is concurrency handled correctly? (if applicable)
+□ Are database transactions used correctly?
 
 
 ### 2. Design & Architecture
 
 
-> DESIGN CHECKS
->
-> □ Does this belong in this class/module? (SRP)
-> □ Is there unnecessary coupling?
-> □ Can this be simplified?
-> □ Are abstractions at the right level?
-> □ Is the code extensible without modification? (OCP)
-> □ Is there code duplication? (DRY, but don't over-DRY)
-> □ Are dependencies injected, not hardcoded?
-> □ Does the PR do ONE thing? (Single Purpose PRs)
+DESIGN CHECKS
+
+□ Does this belong in this class/module? (SRP)
+□ Is there unnecessary coupling?
+□ Can this be simplified?
+□ Are abstractions at the right level?
+□ Is the code extensible without modification? (OCP)
+□ Is there code duplication? (DRY, but don't over-DRY)
+□ Are dependencies injected, not hardcoded?
+□ Does the PR do ONE thing? (Single Purpose PRs)
 
 
 ### 3. Readability & Maintainability
 
 
-> READABILITY CHECKS
->
-> □ Are variable/method names descriptive?
-> ❌ int d;  ✅ int daysSinceModification;
-> □ Are comments explaining WHY, not WHAT?
-> ❌ // increment counter     ✅ // retry after rate limit
-> □ Are methods short and focused? (<20 lines ideal)
-> □ Is nesting manageable? (≤3 levels deep)
-> □ Can I understand the code without asking the author?
-> □ Are magic numbers replaced with named constants?
-> ❌ if (retries > 3)     ✅ if (retries > MAX_RETRIES)
+READABILITY CHECKS
+
+□ Are variable/method names descriptive?
+❌ int d;  ✅ int daysSinceModification;
+□ Are comments explaining WHY, not WHAT?
+❌ // increment counter     ✅ // retry after rate limit
+□ Are methods short and focused? (<20 lines ideal)
+□ Is nesting manageable? (≤3 levels deep)
+□ Can I understand the code without asking the author?
+□ Are magic numbers replaced with named constants?
+❌ if (retries > 3)     ✅ if (retries > MAX_RETRIES)
 
 
 ### 4. Testing
 
 
-> TESTING CHECKS
->
-> □ Are there tests? (No test = incomplete PR)
-> □ Do tests cover happy path AND edge cases?
-> □ Are tests readable? (test name describes the scenario)
-> □ Are tests independent? (don't depend on order)
-> □ Is mock usage appropriate? (not mocking everything)
-> □ Do tests actually assert meaningful things?
-> ❌ assertTrue(true);
-> ✅ assertEquals("John", user.getName());
-> □ Are negative tests included? (invalid input, errors)
+TESTING CHECKS
+
+□ Are there tests? (No test = incomplete PR)
+□ Do tests cover happy path AND edge cases?
+□ Are tests readable? (test name describes the scenario)
+□ Are tests independent? (don't depend on order)
+□ Is mock usage appropriate? (not mocking everything)
+□ Do tests actually assert meaningful things?
+❌ assertTrue(true);
+✅ assertEquals("John", user.getName());
+□ Are negative tests included? (invalid input, errors)
 
 
 ### 5. Security
 
 
-> SECURITY CHECKS
->
-> □ Is user input validated/sanitized?
-> □ Are SQL queries parameterized? (no string concatenation)
-> □ Are secrets/credentials NOT hardcoded?
-> □ Is authentication/authorization checked?
-> □ Is sensitive data logged? (PII, passwords, tokens)
-> □ Are dependencies up-to-date? (no known CVEs)
-> □ Is CORS configured correctly?
+SECURITY CHECKS
+
+□ Is user input validated/sanitized?
+□ Are SQL queries parameterized? (no string concatenation)
+□ Are secrets/credentials NOT hardcoded?
+□ Is authentication/authorization checked?
+□ Is sensitive data logged? (PII, passwords, tokens)
+□ Are dependencies up-to-date? (no known CVEs)
+□ Is CORS configured correctly?
 
 
 ### 6. Performance
 
 
-> PERFORMANCE CHECKS
->
-> □ Any N+1 query problems?
-> □ Are database queries indexed properly?
-> □ Any unnecessary loops or redundant processing?
-> □ Is pagination used for large result sets?
-> □ Are expensive operations cached if needed?
-> □ Is the time complexity acceptable for the data size?
-> □ Are there memory leaks? (unclosed resources, growing lists)
+PERFORMANCE CHECKS
+
+□ Any N+1 query problems?
+□ Are database queries indexed properly?
+□ Any unnecessary loops or redundant processing?
+□ Is pagination used for large result sets?
+□ Are expensive operations cached if needed?
+□ Is the time complexity acceptable for the data size?
+□ Are there memory leaks? (unclosed resources, growing lists)
 
 
 ---
@@ -180,24 +154,24 @@ flowchart TD
 ### The Tone Pyramid
 
 
-> FEEDBACK TONE GUIDE
->
-> Level 1 — MUST FIX (Bugs, security, correctness):
-> "This will cause a NullPointerException when user is null.
-> Need to add a null check here."
->
-> Level 2 — SUGGESTION (Design, readability):
-> "Consider extracting this into a separate method for clarity.
-> Something like calculateTotalDiscount()?"
->
-> Level 3 — NIT (Style, preference):
-> "Nit: I'd prefer using var here for readability, but up to you."
->
-> Level 4 — PRAISE (Good stuff!):
-> "Nice! This error handling is really clean."
->
-> LABEL YOUR COMMENTS with the level so the author knows
-> what's blocking and what's optional.
+FEEDBACK TONE GUIDE
+
+Level 1 — MUST FIX (Bugs, security, correctness):
+"This will cause a NullPointerException when user is null.
+Need to add a null check here."
+
+Level 2 — SUGGESTION (Design, readability):
+"Consider extracting this into a separate method for clarity.
+Something like calculateTotalDiscount()?"
+
+Level 3 — NIT (Style, preference):
+"Nit: I'd prefer using var here for readability, but up to you."
+
+Level 4 — PRAISE (Good stuff!):
+"Nice! This error handling is really clean."
+
+LABEL YOUR COMMENTS with the level so the author knows
+what's blocking and what's optional.
 
 
 ### Comment Templates
@@ -258,19 +232,7 @@ if (!isValid(input)) {
 ```
 
 **Flow:**
-- THE REVIEWER'S MINDSET
-- ↓
-- 1. Review the CODE, not the PERSON
-- ↓
-- ❌ 'You did this wrong'
-- ↓
-- ✅ 'This line might cause issues because...'
-- ↓
-- 2. Ask questions instead of making demands
-- ↓
-- ❌ 'Change this to use a HashMap'
-- ↓
-- ✅ 'Have you considered using a HashMap? It would give
+1. THE REVIEWER'S MINDSET Review the CODE, not the PERSON ❌ 'You did this wrong' ✅ 'This line might cause issues because...' Ask questions instead of making demands ❌ 'Change this to use a HashMap' ✅ 'Have you considered using a HashMap? It would give
 
 ```mermaid
 flowchart TD
@@ -323,19 +285,9 @@ flowchart TD
 ```
 
 **Flow:**
-- THE AUTHOR'S MINDSET
-- ↓
-- 1. Don't take it personally
-- ↓
-- They're reviewing code, not judging your worth.
-- ↓
-- 2. Assume positive intent
-- ↓
-- The reviewer is trying to make the code better.
-- ↓
-- 3. Explain your reasoning, don't just defend
-- ↓
-- 'I chose ArrayList because we iterate 95% of the time
+1. THE AUTHOR'S MINDSET Don't take it personally
+2. They're reviewing code, not judging your worth. Assume positive intent The reviewer is trying to make the code better. Explain your reasoning, don't just defend
+3. 'I chose ArrayList because we iterate 95% of the time
 
 ```mermaid
 flowchart TD
@@ -381,19 +333,12 @@ flowchart TD
 ```
 
 **Flow:**
-- PR SIZE MATTERS
-- ↓
-- Lines Changed Review Quality Time to Review
-- ↓
-- < 200 Excellent ★★★ 30 min
-- ↓
-- 200 - 400 Good ★★ 1 hour
-- ↓
-- 400 - 800 Mediocre ★ 2 hours
-- ↓
-- > 800 'LGTM' ☆ Rubber stamp
-- ↓
-- If your PR is > 400 lines, consider splitting it:
+1. PR SIZE MATTERS
+2. Lines Changed Review Quality Time to Review
+3. < 200 Excellent ★★★ 30 min 200 - 400 Good ★★ 1 hour
+4. 400 - 800 Mediocre ★ 2 hours
+5. > 800 'LGTM' ☆ Rubber stamp
+6. If your PR is > 400 lines, consider splitting it:
 
 ```mermaid
 flowchart TD
@@ -433,14 +378,14 @@ Technical approach. Key design decisions and trade-offs.
 
 
 
-> 🔬 **Section Challenge — Testing**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Testing**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Screenshots (if UI)
 Before and After screenshots.
@@ -471,19 +416,13 @@ Before and After screenshots.
 ```
 
 **Flow:**
-- CONVENTIONAL COMMITS
-- ↓
-- Format: type(scope): description
-- ↓
-- feat(auth): add password reset endpoint
-- ↓
-- fix(payment): handle null discount code
-- ↓
-- refactor(user): extract validation to separate class
-- ↓
-- test(order): add edge case tests for empty cart
-- ↓
-- docs(api): update Swagger annotations
+1. CONVENTIONAL COMMITS
+2. Format: type(scope): description
+3. feat(auth): add password reset endpoint
+4. fix(payment): handle null discount code
+5. refactor(user): extract validation to separate class
+6. test(order): add edge case tests for empty cart
+7. docs(api): update Swagger annotations
 
 ```mermaid
 flowchart TD
@@ -545,19 +484,13 @@ flowchart TD
 ```
 
 **Flow:**
-- TYPICAL PR WORKFLOW
-- ↓
-- 1. Developer creates feature branch from develop
-- ↓
-- git checkout -b feat/JIRA-123-password-reset
-- ↓
-- 2. Developer pushes and creates PR
-- ↓
-- Target: develop (or main for small teams)
-- ↓
-- Assigns reviewer(s)
-- ↓
-- 3. CI runs automatically
+1. TYPICAL PR WORKFLOW
+2. Developer creates feature branch from develop
+3. git checkout -b feat/JIRA-123-password-reset
+4. Developer pushes and creates PR
+5. Target: develop (or main for small teams)
+6. Assigns reviewer(s)
+7. CI runs automatically
 
 ```mermaid
 flowchart TD
@@ -604,19 +537,13 @@ RULE: Automate what can be automated.
 ```
 
 **Flow:**
-- TOOL WHAT IT CHECKS LANGUAGE
-- ↓
-- SonarQube Bugs, smells, vulnerabilities Multi
-- ↓
-- Checkstyle Java code style conventions Java
-- ↓
-- SpotBugs Potential bugs in bytecode Java
-- ↓
-- ESLint JavaScript/TS code quality JS/TS
-- ↓
-- Prettier Code formatting Multi
-- ↓
-- PMD Common programming flaws Java
+1. TOOL WHAT IT CHECKS LANGUAGE
+2. SonarQube Bugs, smells, vulnerabilities Multi
+3. Checkstyle Java code style conventions Java
+4. SpotBugs Potential bugs in bytecode Java
+5. ESLint JavaScript/TS code quality JS/TS
+6. Prettier Code formatting Multi
+7. PMD Common programming flaws Java
 
 ```mermaid
 flowchart TD
@@ -660,19 +587,13 @@ flowchart TD
 ```
 
 **Flow:**
-- SMELL WHAT IT LOOKS LIKE
-- ↓
-- God Class Class > 500 lines, does everything
-- ↓
-- Long Method Method > 30 lines
-- ↓
-- Feature Envy Method uses another class more
-- ↓
-- than its own
-- ↓
-- Primitive Obsession String email instead of Email type
-- ↓
-- Boolean Parameter process(data, true, false, true)
+1. SMELL WHAT IT LOOKS LIKE
+2. God Class Class > 500 lines, does everything
+3. Long Method Method > 30 lines
+4. Feature Envy Method uses another class more
+5. than its own
+6. Primitive Obsession String email instead of Email type
+7. Boolean Parameter process(data, true, false, true)
 
 ```mermaid
 flowchart TD
@@ -721,19 +642,11 @@ The author learns:
 ```
 
 **Flow:**
-- make the code better.
-- ↓
-- Bad Reviewer: 'Fix this.'
-- ↓
-- Good Reviewer: 'This could cause
-- ↓
-- issues because [reason]. Here's
-- ↓
-- a pattern that handles it:
-- ↓
-- [example]. This is important
-- ↓
-- because [context].'
+1. make the code better.
+2. Bad Reviewer: 'Fix this.'
+3. Good Reviewer: 'This could cause issues because [reason]. Here's
+4. a pattern that handles it:
+5. [example]. This is important because [context].'
 
 ```mermaid
 flowchart TD
@@ -761,14 +674,14 @@ flowchart TD
 
 ---
 
-> **Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
+**Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
 
-> 🔬 **Section Challenge — Mental Model: Code Review as Teaching**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Mental Model: Code Review as Teaching**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 

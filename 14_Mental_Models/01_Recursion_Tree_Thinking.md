@@ -1,26 +1,29 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DP_State_Thinking.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DP_State_Thinking.md)
 
 # 🌳 Recursion & Tree Thinking — Mental Model
 
-> **The #1 reason people struggle with recursion**: they try to trace every call in their head. Stop doing that. This guide teaches you the **Leap of Faith** method and how to draw recursion trees like a whiteboard pro.
+**The #1 reason people struggle with recursion**: they try to trace every call in their head. Stop doing that. This guide teaches you the **Leap of Faith** method and how to draw recursion trees like a whiteboard pro.
 
 ---
 
 ## Part 1: The Leap of Faith Method
 
 ### The Problem with "Tracing"
+
 ```
 fibonacci(5) calls fibonacci(4) which calls fibonacci(3) which calls...
 → Your brain runs out of stack space, just like the computer would.
 ```
 
 ### The Solution: Trust the Recursion
+
 **Leap of Faith** = Assume your function already works for smaller inputs. Only think about:
 1. **Base case**: What's the simplest input I can answer immediately?
 2. **Recursive step**: If my function magically works for smaller inputs, how do I use that to solve the current input?
 3. **Combine**: How do I combine the sub-answers?
 
 ### Example: Sum of a Linked List
+
 ```
 WRONG thinking: "sum(1→2→3→4) calls sum(2→3→4) which calls sum(3→4)..."
                  (tracing every call = brain overflow)
@@ -32,18 +35,18 @@ RIGHT thinking: "Assume sum() works for smaller lists.
 ```
 
 **Flow:**
-- 4) which calls sum(3
-- ↓
-- 4)...'
+1. Wrong tracing mindset: "sum(1→2→3→4) calls sum(2→3→4) calls sum(3→4)..."
+2. Tracing every nested call causes mental stack overflow.
 
 ```mermaid
 flowchart LR
-    N1["4) which calls sum(3"]
-    N2["4)...'"]
+    N1["Wrong tracing mindset: sum(1→2→3→4) → sum(2→3→4) → sum(3→4)..."]
+    N2["Tracing every nested call causes mental stack overflow."]
     N1 --> N2
 ```
 
 ### The 3-Question Framework
+
 For EVERY recursive problem, ask yourself:
 ```
 Q1: What is the SMALLEST INPUT I can answer directly?
@@ -58,19 +61,12 @@ Q3: How do I COMBINE the sub-result with current data?
 ```
 
 **Flow:**
-- Q1: What is the SMALLEST INPUT I can answer directly?
-- ↓
-- That's your base case.
-- ↓
-- Q2: If my function MAGICALLY WORKS for smaller inputs,
-- ↓
-- how do I use that?
-- ↓
-- That's your recursive call.
-- ↓
-- Q3: How do I COMBINE the sub-result with current data?
-- ↓
-- That's your return statement.
+1. Q1: What is the SMALLEST INPUT I can answer directly?
+2. That's your base case.
+3. Q2: If my function MAGICALLY WORKS for smaller inputs, how do I use that?
+4. That's your recursive call.
+5. Q3: How do I COMBINE the sub-result with current data?
+6. That's your return statement.
 
 ```mermaid
 flowchart TD
@@ -90,6 +86,7 @@ flowchart TD
 ```
 
 ### Applied Example: Reverse a String
+
 ```java
 // Q1: Smallest input? → empty string or single char → return it
 // Q2: If reverse() works for smaller string?
@@ -108,6 +105,7 @@ String reverse(String s) {
 ## Part 2: How to Draw Recursion Trees (Step by Step)
 
 ### Why Draw Them?
+
 - **See overlapping subproblems** → decide if DP is needed
 - **Count total work** → determine time complexity
 - **Debug wrong answers** → trace where logic breaks
@@ -116,11 +114,13 @@ String reverse(String s) {
 ### Step-by-Step: Drawing a Recursion Tree
 
 #### Step 1: Write the function signature as the root
+
 ```
                     fib(5)
 ```
 
 #### Step 2: Draw the recursive calls as children
+
 ```
                     fib(5)
                    /      \
@@ -128,6 +128,7 @@ String reverse(String s) {
 ```
 
 #### Step 3: Keep expanding until you hit base cases
+
 ```
                          fib(5)
                         /      \
@@ -141,6 +142,7 @@ String reverse(String s) {
 ```
 
 #### Step 4: Annotate the return values (bottom-up)
+
 ```
                          fib(5) = 5
                         /          \
@@ -154,6 +156,7 @@ String reverse(String s) {
 ```
 
 #### Step 5: Identify the pattern
+
 ```
 OBSERVATION: fib(3) is calculated 2 times! fib(2) is calculated 3 times!
 → OVERLAPPING SUBPROBLEMS → Use Memoization!
@@ -163,17 +166,12 @@ Unique subproblems = n → Time: O(n) WITH memo
 ```
 
 **Flow:**
-- OVERLAPPING SUBPROBLEMS
-- ↓
-- Use Memoization!
-- ↓
-- Node count ≈ 2^n
-- ↓
-- Time: O(2^n) without memo
-- ↓
-- Unique subproblems = n
-- ↓
-- Time: O(n) WITH memo
+1. OVERLAPPING SUBPROBLEMS
+2. Use Memoization!
+3. Node count ≈ 2^n
+4. Time: O(2^n) without memo
+5. Unique subproblems = n
+6. Time: O(n) WITH memo
 
 ```mermaid
 flowchart LR
@@ -191,6 +189,7 @@ flowchart LR
 ### Recursion Tree Templates for Common Patterns
 
 #### Pattern A: Linear Recursion (Path = straight line)
+
 ```
 factorial(4) → factorial(3) → factorial(2) → factorial(1)
     ↓ 24          ↓ 6           ↓ 2            ↓ 1
@@ -199,17 +198,12 @@ Total calls: n → O(n) time and O(n) space (call stack)
 ```
 
 **Flow:**
-- factorial(4)
-- ↓
-- factorial(3)
-- ↓
-- factorial(2)
-- ↓
-- factorial(1)
-- ↓
-- Total calls: n
-- ↓
-- O(n) time and O(n) space (call stack)
+1. factorial(4)
+2. factorial(3)
+3. factorial(2)
+4. factorial(1)
+5. Total calls: n
+6. O(n) time and O(n) space (call stack)
 
 ```mermaid
 flowchart LR
@@ -226,6 +220,7 @@ flowchart LR
 ```
 
 #### Pattern B: Binary Recursion (Tree splits in two)
+
 ```
            f(n)
           /    \
@@ -235,13 +230,10 @@ Height: n, Branching: 2 → O(2^n) total calls
 ```
 
 **Flow:**
-- f(n-1) f(n-2)
-- ↓
-- Fibonacci, Tower of Hanoi
-- ↓
-- Height: n, Branching: 2
-- ↓
-- O(2^n) total calls
+1. f(n-1) f(n-2)
+2. Fibonacci, Tower of Hanoi
+3. Height: n, Branching: 2
+4. O(2^n) total calls
 
 ```mermaid
 flowchart LR
@@ -254,6 +246,7 @@ flowchart LR
 ```
 
 #### Pattern C: Branching Recursion (Multiple choices)
+
 ```
            f(n, choices=[a,b,c])
           /       |       \
@@ -263,13 +256,10 @@ Height: n, Branching: k → O(k^n) total calls
 ```
 
 **Flow:**
-- f(n-1,a) f(n-1,b) f(n-1,c)
-- ↓
-- Permutations, Combinations
-- ↓
-- Height: n, Branching: k
-- ↓
-- O(k^n) total calls
+1. f(n-1,a) f(n-1,b) f(n-1,c)
+2. Permutations, Combinations
+3. Height: n, Branching: k
+4. O(k^n) total calls
 
 ```mermaid
 flowchart LR
@@ -282,6 +272,7 @@ flowchart LR
 ```
 
 #### Pattern D: Divide & Conquer (Split in half)
+
 ```
         mergeSort(0,7)
         /            \
@@ -293,9 +284,8 @@ Height: log(n), Work per level: O(n) → Total: O(n log n)
 ```
 
 **Flow:**
-- Height: log(n), Work per level: O(n)
-- ↓
-- Total: O(n log n)
+1. Height: log(n), Work per level: O(n)
+2. Total: O(n log n)
 
 ```mermaid
 flowchart LR
@@ -306,20 +296,18 @@ flowchart LR
 
 ---
 
-
-
-> 🔬 **Section Challenge — Part 2: How to Draw Recursion Trees (Step by Step)**
->>
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — Part 2: How to Draw Recursion Trees (Step by Step)**
+>
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## Part 3: The Recursion → Memoization → Tabulation Pipeline
 
@@ -354,9 +342,8 @@ Draw the tree:
 ```
 
 **Flow:**
-- ways(5)
-- ↓
-- ways(4) ways(3) ← overlapping!
+1. ways(5)
+2. ways(4) ways(3) ← overlapping!
 
 ```mermaid
 flowchart TD
@@ -366,6 +353,7 @@ flowchart TD
 ```
 
 #### Step 2: Add Memoization (Top-Down DP)
+
 ```java
 int[] memo = new int[n + 1];
 Arrays.fill(memo, -1);
@@ -382,6 +370,7 @@ int ways(int n) {
 **Mental model**: "Put a sticky note on each computed answer. Before computing, check if sticky note exists."
 
 #### Step 3: Convert to Tabulation (Bottom-Up DP)
+
 ```java
 int ways(int n) {
     int[] dp = new int[n + 1];
@@ -397,6 +386,7 @@ int ways(int n) {
 **Mental model**: "Instead of going top-down and caching, fill the table bottom-up like filling a spreadsheet."
 
 #### Step 4: Space Optimization
+
 ```java
 int ways(int n) {
     int prev2 = 1, prev1 = 1;
@@ -414,20 +404,18 @@ int ways(int n) {
 
 ---
 
-
-
-> 🔬 **Section Challenge — Part 3: The Recursion → Memoization → Tabulation Pipeline**
->>
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — Part 3: The Recursion → Memoization → Tabulation Pipeline**
+>
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## Part 4: Recursion + Backtracking — How to Think
 
@@ -462,6 +450,7 @@ void subsets(int[] nums, int start, List<Integer> current, List<List<Integer>> r
 ```
 
 ### The Backtracking Decision Tree
+
 ```
                         []
                     /   |   \
@@ -475,11 +464,9 @@ When a branch ends, we BACKTRACK (remove last choice) and try the next branch.
 ```
 
 **Flow:**
-- [1] [2] [3] ← choose 1, 2, or 3
-- ↓
-- [1,2] [1,3] [2,3] ← choose next
-- ↓
-- [1,2,3] ← choose next
+1. [1] [2] [3] ← choose 1, 2, or 3
+2. [1,2] [1,3] [2,3] ← choose next
+3. [1,2,3] ← choose next
 
 ```mermaid
 flowchart TD
@@ -491,6 +478,7 @@ flowchart TD
 ```
 
 ### When to PRUNE (Skip Branches Early)
+
 ```
 PRUNE when you KNOW a branch won't lead to a valid answer:
 
@@ -505,25 +493,20 @@ PRUNE when you KNOW a branch won't lead to a valid answer:
 ```
 
 **Flow:**
-- 1. Sum exceeds target?
-- ↓
-- Don't explore further
-- ↓
-- 2. Duplicate element at same level?
-- ↓
-- Skip it
-- ↓
-- 3. Constraint violated?
-- ↓
-- Abort path
+1. Sum exceeds target.
+2. Do not explore that branch further.
+3. Duplicate element at the same level.
+4. Skip that duplicate branch.
+5. Constraint violated.
+6. Abort the current path.
 
 ```mermaid
 flowchart LR
-    N1["1. Sum exceeds target?"]
-    N2["Don't explore further"]
-    N3["2. Duplicate element at same level?"]
+    N1["Sum exceeds target"]
+    N2["Do not explore further"]
+    N3["Duplicate element at same level"]
     N4["Skip it"]
-    N5["3. Constraint violated?"]
+    N5["Constraint violated"]
     N6["Abort path"]
     N1 --> N2
     N3 --> N4
@@ -531,6 +514,7 @@ flowchart LR
 ```
 
 ### Visual: Pruning saves MASSIVE work
+
 ```
 Without pruning:        With pruning:
     O                       O
@@ -542,33 +526,33 @@ O O O ...               O ✂
 ```
 
 **Flow:**
-- Without pruning: With pruning:
-- ↓
-- 10x fewer calls!
+1. Without pruning, many unnecessary branches are explored.
+2. With pruning, invalid branches are cut early.
+3. Result: around 10x fewer recursive calls.
 
 ```mermaid
 flowchart TD
-    N1["Without pruning: With pruning:"]
-    N2["→ 10x fewer calls!"]
+    N1["Without pruning: many branches explored"]
+    N2["With pruning: invalid branches cut early"]
+    N3["~10x fewer calls"]
     N1 --> N2
+    N2 --> N3
 ```
 
 ---
 
-
-
-> 🔬 **Section Challenge — Part 4: Recursion + Backtracking — How to Think**
->>
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — Part 4: Recursion + Backtracking — How to Think**
+>
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## Part 5: Recursion Mental Checklist
 
@@ -587,58 +571,36 @@ Before writing ANY recursive function, answer these:
 ```
 
 **Flow:**
-- □ What is my recursive relation? (how smaller
-- ↓
-- current)
-- ↓
-- □ Am I making the problem smaller? (n
-- ↓
-- n-1 or n
-- ↓
-- n/2?)
-- ↓
-- □ Are there overlapping subproblems? (Draw tree
-- ↓
-- check for repeats)
-- ↓
-- □ If overlapping
-- ↓
-- Add memo array/map
+1. What is the recursive relation (how smaller subproblems build the current answer)?
+2. Is the problem size shrinking each call (`n -> n-1` or `n -> n/2`)?
+3. Are there overlapping subproblems (draw the tree and check repeats)?
+4. If overlap exists, add memoization (array or map).
 
 ```mermaid
 flowchart TD
-    N1["□ What is my recursive relation? (how smaller"]
-    N2["current)"]
-    N3["□ Am I making the problem smaller? (n"]
-    N4["n-1 or n"]
-    N5["n/2?)"]
-    N6["□ Are there overlapping subproblems? (Draw tree"]
-    N7["check for repeats)"]
-    N8["□ If overlapping"]
-    N9["Add memo array/map"]
+    N1["Recursive relation: smaller -> current"]
+    N2["Problem size shrinks each call"]
+    N3["Check overlap by drawing recursion tree"]
+    N4["If overlap exists, add memoization"]
     N1 --> N2
+    N2 --> N3
     N3 --> N4
-    N4 --> N5
-    N6 --> N7
-    N8 --> N9
 ```
 
 ---
 
-
-
-> 🔬 **Section Challenge — Part 5: Recursion Mental Checklist**
->>
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — Part 5: Recursion Mental Checklist**
+>
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## Part 6: Common Recursion Patterns Cheat Sheet
 
@@ -657,18 +619,17 @@ Why and what are the 3 fixes?
 
 
 
-> 🔬 **Section Challenge — Part 6: Common Recursion Patterns Cheat Sheet**
->>
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — Part 6: Common Recursion Patterns Cheat Sheet**
+>
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
 
 ## Part 7: Complexity from Recursion Trees
 
@@ -686,101 +647,13 @@ Binary Search        | log n | O(1)      | O(log n)
 ```
 
 **Flow:**
-- Pattern
-- ↓
-- Nodes
-- ↓
-- Work/Node
-- ↓
-- Total
-- ↓
-- Linear (factorial)
-- ↓
-- n
-- ↓
-- O(1)
-- ↓
-- O(n)
-- ↓
-- Linear (factorial)
-- ↓
-- n
-- ↓
-- O(1)
-- ↓
-- O(n)
-- ↓
-- Binary (fibonacci)
-- ↓
-- 2^n
-- ↓
-- O(1)
-- ↓
-- O(2^n)
-- ↓
-- Binary (fibonacci)
-- ↓
-- 2^n
-- ↓
-- O(1)
-- ↓
-- O(2^n)
-- ↓
-- MergeSort
-- ↓
-- 2n-1
-- ↓
-- O(n/level)
-- ↓
-- O(n log n)
-- ↓
-- MergeSort
-- ↓
-- 2n-1
-- ↓
-- O(n/level)
-- ↓
-- O(n log n)
-- ↓
-- Subsets
-- ↓
-- 2^n
-- ↓
-- O(n) copy
-- ↓
-- O(n · 2^n)
-- ↓
-- Subsets
-- ↓
-- 2^n
-- ↓
-- O(n) copy
-- ↓
-- O(n · 2^n)
-- ↓
-- Permutations
-- ↓
-- n!
-- ↓
-- O(n) copy
-- ↓
-- O(n · n!)
-- ↓
-- Permutations
-- ↓
-- n!
-- ↓
-- O(n) copy
-- ↓
-- O(n · n!)
-- ↓
-- Binary Search
-- ↓
-- log n
-- ↓
-- O(1)
-- ↓
-- O(log n)
+1. Pattern | Nodes | Work/Node | Total.
+2. Linear (factorial): `n | O(1) | O(n)`.
+3. Binary (fibonacci): `2^n | O(1) | O(2^n)`.
+4. MergeSort: `2n-1 | O(n/level) | O(n log n)`.
+5. Subsets: `2^n | O(n) copy | O(n · 2^n)`.
+6. Permutations: `n! | O(n) copy | O(n · n!)`.
+7. Binary Search: `log n | O(1) | O(log n)`.
 
 ```mermaid
 flowchart TD
@@ -800,6 +673,7 @@ flowchart TD
 ```
 
 ### Quick Rule: Height × Branching
+
 ```
 Tree height = h (how many levels)
 Branching factor = b (how many children per node)
@@ -811,23 +685,15 @@ Subsets:   h=n, b=2 → 2^n leaves → O(2^n)
 ```
 
 **Flow:**
-- MergeSort: h=log n, b=2
-- ↓
-- 2^(log n) = n nodes per level, log n levels
-- ↓
-- O(n log n)
-- ↓
-- Fibonacci: h=n, b=2
-- ↓
-- 2^n nodes
-- ↓
-- O(2^n)
-- ↓
-- Subsets: h=n, b=2
-- ↓
-- 2^n leaves
-- ↓
-- O(2^n)
+1. MergeSort: h=log n, b=2
+2. 2^(log n) = n nodes per level, log n levels
+3. O(n log n)
+4. Fibonacci: h=n, b=2
+5. 2^n nodes
+6. O(2^n)
+7. Subsets: h=n, b=2
+8. 2^n leaves
+9. O(2^n)
 
 ```mermaid
 flowchart TD
@@ -857,26 +723,22 @@ flowchart TD
 ---
 [← Index](00_INDEX.md) | [02 DP State Thinking →](02_DP_State_Thinking.md)
 
+---
 
 ---
 
-
----
-
-
-
-> 🔬 **Section Challenge — Part 7: Complexity from Recursion Trees**
->>
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — Part 7: Complexity from Recursion Trees**
+>
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — Trees & Heaps
 
@@ -1016,6 +878,7 @@ int dfs(TreeNode node){
 </details>
 
 ### Heap / Priority Queue Problems
+
 **Q12.** ⭐ Kth Largest Element in Array.
 <details><summary>Solution</summary>
 
@@ -1042,6 +905,7 @@ double findMedian(){ return lo.size()>hi.size()?lo.peek():(lo.peek()+hi.peek())/
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | BST search avg/worst | O(log N) avg, O(N) worst (degenerate) |
@@ -1052,8 +916,6 @@ double findMedian(){ return lo.size()>hi.size()?lo.peek():(lo.peek()+hi.peek())/
 | 6 | Tree DFS pre/in/post order uses | Stack (or recursion) |
 | 7 | Tree BFS uses | Queue |
 | 8 | Red-Black Tree guarantee | O(log N) worst case for search/insert/delete |
-
-
 
 ---
 
@@ -1106,6 +968,5 @@ A path cannot branch twice — if you go left and right from a node, the path "b
 
 Maintain two properties: (1) bottom half of numbers in a max-heap (quick access to max of lower half), (2) top half in a min-heap (quick access to min of upper half). Median = either the top of one heap (odd total) or average of both tops (even total). Invariant: max-heap size ≥ min-heap size, and max-heap.top ≤ min-heap.top. Adding a number: if > min-heap.top → it's in the top half → add to min-heap; else bottom half → add to max-heap. Then rebalance if sizes differ by 2. Both heaps stay O(log N) operations per insert. This pattern generalizes: ANY running statistic that needs the "boundary" between two halves uses this two-heap technique.
 </details>
-
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DP_State_Thinking.md)

@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](04_CSS_Modern_Architecture.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](04_CSS_Modern_Architecture.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 5 — CSS Deep Reasoning: The Questions That Freeze People
 
-> **"Anyone can center a div with Flexbox. The senior engineer explains WHY `z-index` doesn't work, WHAT creates a new stacking context, and HOW the cascade ACTUALLY resolves conflicts."**
+**"Anyone can center a div with Flexbox. The senior engineer explains WHY `z-index` doesn't work, WHAT creates a new stacking context, and HOW the cascade ACTUALLY resolves conflicts."**
 
 ---
 
@@ -24,7 +24,7 @@
 ## 1. Why z-index "Doesn't Work": Stacking Contexts
 
 ### The Freeze Question
-> "I set z-index: 9999 but my element is still behind another. Why?"
+"I set z-index: 9999 but my element is still behind another. Why?"
 
 ### Deep Reasoning
 
@@ -48,9 +48,7 @@ z-index only competes WITHIN the same stacking context
 ```
 
 **Flow:**
-- Floor 9999 / (your element
-- ↓
-- Floor 1
+1. Floor 9999 / (your element Floor 1
 
 ```mermaid
 flowchart TD
@@ -91,7 +89,7 @@ flowchart TD
 ## 2. The Cascade: How CSS ACTUALLY Decides Which Rule Wins
 
 ### The Freeze Question
-> "Two rules target the same element. Which one wins and why?"
+"Two rules target the same element. Which one wins and why?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -116,19 +114,13 @@ flowchart TD
 ```
 
 **Flow:**
-- THE CASCADE — Priority Order (highest to lowest):
-- ↓
-- 1. ORIGIN & IMPORTANCE
-- ↓
-- !important in user-agent stylesheet (highest)
-- ↓
-- !important in user stylesheet
-- ↓
-- !important in author stylesheet
-- ↓
-- Normal author stylesheet
-- ↓
-- Normal user stylesheet
+1. THE CASCADE — Priority Order (highest to lowest):
+2. ORIGIN & IMPORTANCE
+3. !important in user-agent stylesheet (highest)
+4. !important in user stylesheet
+5. !important in author stylesheet
+6. Normal author stylesheet
+7. Normal user stylesheet
 
 ```mermaid
 flowchart TD
@@ -157,7 +149,7 @@ flowchart TD
 ## 3. Specificity: It's NOT Just "ID > Class > Element"
 
 ### The Freeze Question
-> "What's the specificity of `.nav ul li a:hover`?"
+"What's the specificity of `.nav ul li a:hover`?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -189,19 +181,13 @@ flowchart TD
 ```
 
 **Flow:**
-- SPECIFICITY = A scoring system with 3 columns:
-- ↓
-- (IDs) (Classes) (Elements)
-- ↓
-- .nav ul li a:hover
-- ↓
-- Score: (0, 2, 3)
-- ↓
-- #main a
-- ↓
-- Score: (1, 0, 1)
-- ↓
-- (1,0,1) BEATS (0,2,3) because A column wins first.
+1. SPECIFICITY = A scoring system with 3 columns:
+2. (IDs) (Classes) (Elements)
+3. .nav ul li a:hover
+4. Score: (0, 2, 3)
+5. #main a
+6. Score: (1, 0, 1)
+7. (1,0,1) BEATS (0,2,3) because A column wins first.
 
 ```mermaid
 flowchart TD
@@ -227,7 +213,7 @@ flowchart TD
 ## 4. Box Model: `content-box` vs `border-box` — Why Everyone Switches
 
 ### The Freeze Question
-> "If I set `width: 200px; padding: 20px; border: 5px solid`, how wide is the element?"
+"If I set `width: 200px; padding: 20px; border: 5px solid`, how wide is the element?"
 
 ```
 content-box (default, but counterintuitive):
@@ -250,19 +236,10 @@ Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px
 ```
 
 **Flow:**
-- content-box (default, but counterintuitive):
-- ↓
-- margin
-- ↓
-- border
-- ↓
-- padding
-- ↓
-- content (200px)
-- ↓
-- Total width = 200 + 20+20 + 5+5 = 250px
-- ↓
-- You said 200px... but the box is 250px. Confusing!
+1. content-box (default, but counterintuitive):
+2. margin border padding content (200px)
+3. Total width = 200 + 20+20 + 5+5 = 250px
+4. You said 200px... but the box is 250px. Confusing!
 
 ```mermaid
 flowchart TD
@@ -295,7 +272,7 @@ flowchart TD
 ## 5. Block Formatting Context (BFC): The Invisible Layout Force
 
 ### The Freeze Question
-> "What is a BFC and why should I care?"
+"What is a BFC and why should I care?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -323,19 +300,13 @@ flowchart TD
 ```
 
 **Flow:**
-- BFC = An Invisible Boundary — The Aquarium Analogy
-- ↓
-- A BFC is like an aquarium. Everything inside floats/flo
-- ↓
-- according to its own rules. The water (layout) inside
-- ↓
-- can't leak out, and water outside can't leak in.
-- ↓
-- With BFC: Parent contains floated children properly
-- ↓
-- WHAT CREATES a BFC:
-- ↓
-- • overflow: hidden/auto/scroll (not visible)
+1. BFC = An Invisible Boundary — The Aquarium Analogy
+2. A BFC is like an aquarium. Everything inside floats/flo
+3. according to its own rules. The water (layout) inside
+4. can't leak out, and water outside can't leak in.
+5. With BFC: Parent contains floated children properly
+6. WHAT CREATES a BFC:
+7. • overflow: hidden/auto/scroll (not visible)
 
 ```mermaid
 flowchart TD
@@ -368,19 +339,19 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 5. Block Formatting Context (BFC): The Invisible Layout Force**
->
-> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-> <details><summary>Answer</summary>
->
-> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-> </details>
->
+🔬 **Section Challenge — 5. Block Formatting Context (BFC): The Invisible Layout Force**
+
+**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+<details><summary>Answer</summary>
+
+Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+</details>
+
 
 ## 6. Margin Collapse: The Behavior That Confuses Everyone
 
 ### The Freeze Question
-> "I gave two elements `margin: 20px` each. Why isn't there 40px between them?"
+"I gave two elements `margin: 20px` each. Why isn't there 40px between them?"
 
 ```
 MARGIN COLLAPSE — The Personal Space Analogy
@@ -412,9 +383,8 @@ WHEN IT DOESN'T:
 ```
 
 **Flow:**
-- Box A
-- ↓
-- Box B
+1. Box A
+2. Box B
 
 ```mermaid
 flowchart TD
@@ -431,7 +401,7 @@ flowchart TD
 ## 7. Flexbox vs Grid: Not "Which Is Better" — When Each Shines
 
 ### The Freeze Question
-> "Should I use Flexbox or Grid?"
+"Should I use Flexbox or Grid?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -457,19 +427,13 @@ flowchart TD
 ```
 
 **Flow:**
-- ONE-DIMENSIONAL vs TWO-DIMENSIONAL
-- ↓
-- Flexbox = A clothesline (1D)
-- ↓
-- Items hang in a LINE — they can wrap, but each line is
-- ↓
-- independent. Items can grow/shrink flexibly.
-- ↓
-- Use for: Navbars, button groups, card rows, centering
-- ↓
-- Grid = A chess board (2D)
-- ↓
-- You define ROWS and COLUMNS simultaneously.
+1. ONE-DIMENSIONAL vs TWO-DIMENSIONAL
+2. Flexbox = A clothesline (1D)
+3. Items hang in a LINE — they can wrap, but each line is
+4. independent. Items can grow/shrink flexibly.
+5. Use for: Navbars, button groups, card rows, centering
+6. Grid = A chess board (2D)
+7. You define ROWS and COLUMNS simultaneously.
 
 ```mermaid
 flowchart TD
@@ -498,7 +462,7 @@ flowchart TD
 ## 8. `position: sticky` Gotchas: Why It Randomly Stops Working
 
 ### The Freeze Question
-> "My `position: sticky` isn't sticking. What's wrong?"
+"My `position: sticky` isn't sticking. What's wrong?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -531,19 +495,12 @@ flowchart TD
 ```
 
 **Flow:**
-- STICKY = relative UNTIL scroll threshold, THEN fixed
-- ↓
-- The 5 reasons sticky 'fails':
-- ↓
-- 1. PARENT HAS overflow: hidden/auto/scroll
-- ↓
-- sticky only sticks within its scroll container.
-- ↓
-- If parent has overflow ≠ visible, parent IS the
-- ↓
-- scroll container — and if parent doesn't scroll, sticky
-- ↓
-- has nowhere to stick.
+1. STICKY = relative UNTIL scroll threshold, THEN fixed
+2. The 5 reasons sticky 'fails':
+3. PARENT HAS overflow: hidden/auto/scroll
+4. sticky only sticks within its scroll container.
+5. If parent has overflow ≠ visible, parent IS the
+6. scroll container — and if parent doesn't scroll, sticky has nowhere to stick.
 
 ```mermaid
 flowchart TD
@@ -572,7 +529,7 @@ flowchart TD
 ## 9. CSS Units: When to Use px, em, rem, %, vh/vw
 
 ### The Freeze Question
-> "Which CSS unit should I use?"
+"Which CSS unit should I use?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -610,19 +567,12 @@ flowchart TD
 ```
 
 **Flow:**
-- UNIT RELATIVE TO BEST FOR
-- ↓
-- px Nothing (absolute) Borders, shadows,
-- ↓
-- fine-tuned spacing
-- ↓
-- rem Root font-size (html) Font sizes, spacing,
-- ↓
-- Usually 16px padding, margins.
-- ↓
-- Scales with user prefs.
-- ↓
-- em Parent's font-size Spacing relative to
+1. UNIT RELATIVE TO BEST FOR
+2. px Nothing (absolute) Borders, shadows, fine-tuned spacing
+3. rem Root font-size (html) Font sizes, spacing,
+4. Usually 16px padding, margins.
+5. Scales with user prefs.
+6. em Parent's font-size Spacing relative to
 
 ```mermaid
 flowchart TD
@@ -648,7 +598,7 @@ flowchart TD
 ## 10. Reflow vs Repaint: Why Some CSS Changes Are Expensive
 
 ### The Freeze Question
-> "Why is animating `left` slower than `transform`?"
+"Why is animating `left` slower than `transform`?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -682,39 +632,17 @@ flowchart TD
 ```
 
 **Flow:**
-- HOW THE BROWSER RENDERS (Pipeline):
-- ↓
-- Style
-- ↓
-- Layout
-- ↓
-- Paint
-- ↓
-- Composite
-- ↓
-- Style
-- ↓
-- Layout
-- ↓
-- Paint
-- ↓
-- Composite
-- ↓
-- REFLOW (Layout):
-- ↓
-- Browser must recalculate position of EVERY element
-- ↓
-- Then repaint
-- ↓
-- Then composite
-- ↓
-- Then repaint
-- ↓
-- Then composite
-- ↓
-- EXPENSIVE (triggers full pipeline)
-- ↓
-- REPAINT:
+1. HOW THE BROWSER RENDERS (Pipeline):
+2. Style
+3. Layout
+4. Paint
+5. Composite
+6. REFLOW (Layout):
+7. Browser must recalculate position of EVERY element
+8. Then repaint
+9. Then composite
+10. EXPENSIVE (triggers full pipeline)
+11. REPAINT:
 
 ```mermaid
 flowchart TD

@@ -1,6 +1,6 @@
 # 54. Java Memory Model & Garbage Collection — Deep Dive
 
-> **Navigation**: [< Serialization & I/O](Ch09_Serialization_IO.md) | [Back to Index](../00_MASTER_INDEX.md) | [Strings & Immutability >](Ch02_Strings_Immutability.md)
+**Navigation**: [< Serialization & I/O](Ch09_Serialization_IO.md) | [Back to Index](../00_MASTER_INDEX.md) | [Strings & Immutability >](Ch02_Strings_Immutability.md)
 
 ---
 
@@ -56,19 +56,19 @@ WHY?
 
 ---
 
-> 🔬 **Section Challenge — JMM Visibility Problem**
->
-> **Challenge 1 (Predict):** Thread A: `data = 42; flag = true;`. Thread B: `while(!flag){}; print(data);` — flag and data are plain fields. Is this guaranteed to print 42?
-> <details><summary>Answer</summary>
->
-> **NO.** Without `volatile` or synchronization, there is no happens-before. Two issues: (1) CPU caching — Thread B may see stale `flag=false` forever (JIT can hoist the read out of the loop). (2) Instruction reordering — the CPU or compiler may execute `flag=true` BEFORE `data=42`. Even if B sees `flag=true`, it might see `data=0`. Fix: make `flag` volatile (creates happens-before for all writes before the volatile write).
-> </details>
->
-> **Challenge 2 (Reasoning):** Why can an infinite spin-loop `while(!flag){}` run forever even when another thread sets `flag=true`?
-> <details><summary>Answer</summary>
->
-> The JIT compiler sees `flag` is never written in the loop body (from this thread's view). It optimizes: read `flag` once into a CPU register, spin on the register — never re-reads from memory. This is valid under JMM when `flag` is not `volatile`. Fix: `volatile boolean flag` forces every read to go to main memory (or at minimum, to flush the cache so the register optimization is disallowed).
-> </details>
+🔬 **Section Challenge — JMM Visibility Problem**
+
+**Challenge 1 (Predict):** Thread A: `data = 42; flag = true;`. Thread B: `while(!flag){}; print(data);` — flag and data are plain fields. Is this guaranteed to print 42?
+<details><summary>Answer</summary>
+
+**NO.** Without `volatile` or synchronization, there is no happens-before. Two issues: (1) CPU caching — Thread B may see stale `flag=false` forever (JIT can hoist the read out of the loop). (2) Instruction reordering — the CPU or compiler may execute `flag=true` BEFORE `data=42`. Even if B sees `flag=true`, it might see `data=0`. Fix: make `flag` volatile (creates happens-before for all writes before the volatile write).
+</details>
+
+**Challenge 2 (Reasoning):** Why can an infinite spin-loop `while(!flag){}` run forever even when another thread sets `flag=true`?
+<details><summary>Answer</summary>
+
+The JIT compiler sees `flag` is never written in the loop body (from this thread's view). It optimizes: read `flag` once into a CPU register, spin on the register — never re-reads from memory. This is valid under JMM when `flag` is not `volatile`. Fix: `volatile boolean flag` forces every read to go to main memory (or at minimum, to flush the cache so the register optimization is disallowed).
+</details>
 
 ## 2. Happens-Before — The Core Concept
 
@@ -158,23 +158,23 @@ counter.incrementAndGet();  // ✅ Atomic — uses CAS (compare-and-swap)
 
 ---
 
-> 🔬 **Section Challenge — volatile**
->
-> **Challenge 1 (Bug Hunt):** `volatile int counter = 0; counter++;` — is this thread-safe?
-> <details><summary>Answer</summary>
->
-> **No.** `volatile` guarantees visibility (each read sees the latest write). But `counter++` is three steps: read → increment → write. Two threads can both read `counter=5` at the same time, both increment to 6, both write 6 — one increment lost even with `volatile`. Fix: `AtomicInteger` (CAS-based atomic increment) or `synchronized`.
-> </details>
->
-> **Challenge 2 (Reasoning):** What's the minimum fix for double-checked locking to be safe?
-> ```java
-> static Singleton instance;
-> if (instance == null) { synchronized(Singleton.class) { if(instance==null) instance = new Singleton(); } }
-> ```
-> <details><summary>Answer</summary>
->
-> Add `volatile` to `instance`: `static volatile Singleton instance;`. Without it: `new Singleton()` is 3 steps (allocate, initialize, assign). CPU can reorder to assign BEFORE initialize. Another thread sees non-null but partially-constructed object. `volatile` write adds a StoreStore barrier: initialization MUST complete before the reference is visible to other threads.
-> </details>
+🔬 **Section Challenge — volatile**
+
+**Challenge 1 (Bug Hunt):** `volatile int counter = 0; counter++;` — is this thread-safe?
+<details><summary>Answer</summary>
+
+**No.** `volatile` guarantees visibility (each read sees the latest write). But `counter++` is three steps: read → increment → write. Two threads can both read `counter=5` at the same time, both increment to 6, both write 6 — one increment lost even with `volatile`. Fix: `AtomicInteger` (CAS-based atomic increment) or `synchronized`.
+</details>
+
+**Challenge 2 (Reasoning):** What's the minimum fix for double-checked locking to be safe?
+```java
+static Singleton instance;
+if (instance == null) { synchronized(Singleton.class) { if(instance==null) instance = new Singleton(); } }
+```
+<details><summary>Answer</summary>
+
+Add `volatile` to `instance`: `static volatile Singleton instance;`. Without it: `new Singleton()` is 3 steps (allocate, initialize, assign). CPU can reorder to assign BEFORE initialize. Another thread sees non-null but partially-constructed object. `volatile` write adds a StoreStore barrier: initialization MUST complete before the reference is visible to other threads.
+</details>
 
 ## 4. synchronized — Full Memory Fence
 
@@ -312,19 +312,19 @@ class SharedData {
 
 ---
 
-> 🔬 **Section Challenge — JVM Memory Layout**
->
-> **Challenge 1 (Reasoning):** Your app runs fine locally but gets `OutOfMemoryError: Metaspace` in production. What's happening?
-> <details><summary>Answer</summary>
->
-> Metaspace stores class metadata (loaded class definitions, method bytecode). Common causes of Metaspace exhaustion: (1) **Dynamic class generation**: frameworks like Groovy, CGLIB, ASM, Hibernate proxies generate classes at runtime. If the classloader + generated classes are not garbage-collected, Metaspace grows unboundedly. (2) **ClassLoader leak**: often in hot-deploy scenarios (Tomcat redeployment). Fix: set `-XX:MaxMetaspaceSize=256m` to cap it, enable GC logging to see class unloading, use heap dump analysis to trace classloaders not being GC'd.
-> </details>
->
-> **Challenge 2 (Reasoning):** When does a `StackOverflowError` happen and how would you detect it vs an infinite loop?
-> <details><summary>Answer</summary>
->
-> Each method call pushes a frame onto the thread's stack (~256KB-1MB per thread). Unbounded recursion fills the stack → `StackOverflowError`. Detection: stack trace will show the same method repeated hundreds of times, indicating infinite recursion. Infinite loop: thread stays in RUNNABLE state in the thread dump, always at the same code location. Stack overflow is typically immediate once it starts, loop takes longer. Fix recursion: add a base case, or convert to iterative with an explicit stack.
-> </details>
+🔬 **Section Challenge — JVM Memory Layout**
+
+**Challenge 1 (Reasoning):** Your app runs fine locally but gets `OutOfMemoryError: Metaspace` in production. What's happening?
+<details><summary>Answer</summary>
+
+Metaspace stores class metadata (loaded class definitions, method bytecode). Common causes of Metaspace exhaustion: (1) **Dynamic class generation**: frameworks like Groovy, CGLIB, ASM, Hibernate proxies generate classes at runtime. If the classloader + generated classes are not garbage-collected, Metaspace grows unboundedly. (2) **ClassLoader leak**: often in hot-deploy scenarios (Tomcat redeployment). Fix: set `-XX:MaxMetaspaceSize=256m` to cap it, enable GC logging to see class unloading, use heap dump analysis to trace classloaders not being GC'd.
+</details>
+
+**Challenge 2 (Reasoning):** When does a `StackOverflowError` happen and how would you detect it vs an infinite loop?
+<details><summary>Answer</summary>
+
+Each method call pushes a frame onto the thread's stack (~256KB-1MB per thread). Unbounded recursion fills the stack → `StackOverflowError`. Detection: stack trace will show the same method repeated hundreds of times, indicating infinite recursion. Infinite loop: thread stays in RUNNABLE state in the thread dump, always at the same code location. Stack overflow is typically immediate once it starts, loop takes longer. Fix recursion: add a base case, or convert to iterative with an explicit stack.
+</details>
 
 ## 8. Generational Hypothesis — WHY Young/Old Works
 
@@ -468,19 +468,19 @@ Strong > Soft > Weak > Phantom
 
 ---
 
-> 🔬 **Section Challenge — Weak/Soft/Phantom References**
->
-> **Challenge 1 (Design):** You want to build an image cache that automatically evicts entries under memory pressure without crashing with OOM. Which reference type?
-> <details><summary>Answer</summary>
->
-> `SoftReference<BufferedImage>`. Soft references are cleared by the GC when memory is low (before throwing OOM). Weak references are cleared at the NEXT GC cycle (too aggressive for caching — items get evicted even when memory is ample). Pattern: `Map<String, SoftReference<BufferedImage>> cache`. On `get()`: check if `ref.get() != null`, else reload and store new SoftReference.
-> </details>
->
-> **Challenge 2 (Reasoning):** Why does `WeakHashMap` NOT prevent key objects from being GC'd?
-> <details><summary>Answer</summary>
->
-> `WeakHashMap` stores keys as `WeakReference`s. If the key has no other strong references outside the map, the GC can collect it. When the key is collected, the WeakMap entry is automatically removed via a `ReferenceQueue`. This makes it perfect for caches where the key IS the data (DOM nodes, class instances): if the node is removed from the DOM, the cache entry disappears automatically. Contrast with regular `HashMap`: holding a key in the map IS a strong reference — the key is never GC'd as long as the map exists.
-> </details>
+🔬 **Section Challenge — Weak/Soft/Phantom References**
+
+**Challenge 1 (Design):** You want to build an image cache that automatically evicts entries under memory pressure without crashing with OOM. Which reference type?
+<details><summary>Answer</summary>
+
+`SoftReference<BufferedImage>`. Soft references are cleared by the GC when memory is low (before throwing OOM). Weak references are cleared at the NEXT GC cycle (too aggressive for caching — items get evicted even when memory is ample). Pattern: `Map<String, SoftReference<BufferedImage>> cache`. On `get()`: check if `ref.get() != null`, else reload and store new SoftReference.
+</details>
+
+**Challenge 2 (Reasoning):** Why does `WeakHashMap` NOT prevent key objects from being GC'd?
+<details><summary>Answer</summary>
+
+`WeakHashMap` stores keys as `WeakReference`s. If the key has no other strong references outside the map, the GC can collect it. When the key is collected, the WeakMap entry is automatically removed via a `ReferenceQueue`. This makes it perfect for caches where the key IS the data (DOM nodes, class instances): if the node is removed from the DOM, the cache entry disappears automatically. Contrast with regular `HashMap`: holding a key in the map IS a strong reference — the key is never GC'd as long as the map exists.
+</details>
 
 ## 12. Memory Leaks in Java — Common Causes
 
@@ -567,22 +567,22 @@ TUNING RULES:
 ## 14. Interview Questions & Answers
 
 **Q: What is the Java Memory Model?**
-> JMM defines rules for when one thread's writes become visible to another thread. Without JMM guarantees, CPU caching and instruction reordering can cause threads to see stale data. The core concept is "happens-before" — a relationship guaranteeing visibility.
+JMM defines rules for when one thread's writes become visible to another thread. Without JMM guarantees, CPU caching and instruction reordering can cause threads to see stale data. The core concept is "happens-before" — a relationship guaranteeing visibility.
 
 **Q: What are the happens-before rules?**
-> Key rules: (1) Program order within a thread, (2) unlock happens-before subsequent lock on same monitor, (3) volatile write happens-before subsequent volatile read, (4) Thread.start() happens-before actions in started thread, (5) thread actions happen-before join() returns, and (6) transitivity.
+Key rules: (1) Program order within a thread, (2) unlock happens-before subsequent lock on same monitor, (3) volatile write happens-before subsequent volatile read, (4) Thread.start() happens-before actions in started thread, (5) thread actions happen-before join() returns, and (6) transitivity.
 
 **Q: What does volatile guarantee?**
-> Visibility (writes immediately visible to all threads) and ordering (no reordering across volatile access). It does NOT guarantee atomicity — `volatile int x; x++` is still a race condition because it's read-then-write.
+Visibility (writes immediately visible to all threads) and ordering (no reordering across volatile access). It does NOT guarantee atomicity — `volatile int x; x++` is still a race condition because it's read-then-write.
 
 **Q: Explain the generational hypothesis and GC generations.**
-> Most objects die young (~90%). So the heap is split: Young Generation (Eden + Survivors — collected frequently, fast) and Old Generation (long-lived objects — collected rarely). Minor GC collects Young, Major/Full GC collects Old. This is much faster than scanning the entire heap every time.
+Most objects die young (~90%). So the heap is split: Young Generation (Eden + Survivors — collected frequently, fast) and Old Generation (long-lived objects — collected rarely). Minor GC collects Young, Major/Full GC collects Old. This is much faster than scanning the entire heap every time.
 
 **Q: Difference between Soft, Weak, and Phantom references?**
-> Soft: collected when memory is low (use for caches). Weak: collected at next GC regardless of memory (WeakHashMap). Phantom: always returns null, used only for cleanup notification after object is finalized. Strong > Soft > Weak > Phantom in strength.
+Soft: collected when memory is low (use for caches). Weak: collected at next GC regardless of memory (WeakHashMap). Phantom: always returns null, used only for cleanup notification after object is finalized. Strong > Soft > Weak > Phantom in strength.
 
 **Q: How do you diagnose a memory leak in Java?**
-> (1) Monitor heap usage over time — if it grows steadily without dropping after GC, there's a leak. (2) Take heap dump (`-XX:+HeapDumpOnOutOfMemoryError`). (3) Analyze with tools like Eclipse MAT or VisualVM. (4) Look for: static collections, unclosed resources, ThreadLocal not cleared, listeners not removed.
+(1) Monitor heap usage over time — if it grows steadily without dropping after GC, there's a leak. (2) Take heap dump (`-XX:+HeapDumpOnOutOfMemoryError`). (3) Analyze with tools like Eclipse MAT or VisualVM. (4) Look for: static collections, unclosed resources, ThreadLocal not cleared, listeners not removed.
 
 ---
 
@@ -590,7 +590,7 @@ TUNING RULES:
 
 ## 15. Safe Publication — How to Share Objects Across Threads
 
-> **The Problem**: Creating an object and making it visible to other threads are TWO separate things. You must use the right mechanism or other threads may see partially-constructed objects.
+**The Problem**: Creating an object and making it visible to other threads are TWO separate things. You must use the right mechanism or other threads may see partially-constructed objects.
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -676,7 +676,7 @@ Holder h = ref.get();      // Thread B — guaranteed to see fully constructed H
 
 ## 16. Happens-Before Chain — Visual Trace
 
-> Let's trace a complete scenario end-to-end to cement happens-before reasoning.
+Let's trace a complete scenario end-to-end to cement happens-before reasoning.
 
 ```
 SCENARIO: Thread pool task sees correct data
@@ -852,12 +852,12 @@ class Lazy {
 
 ---
 
-> **Key Takeaway**: JMM's happens-before is the foundation of correct concurrent
-> code. Use `volatile` for visibility, `synchronized` for atomicity+visibility.
-> Safe publication requires an explicit happens-before — final fields, volatile, or sync.
-> GC is generational because most objects die young. G1 collects "garbage-first"
-> regions for predictable pauses. ZGC uses read barriers to eliminate STW entirely.
-> Always set HeapDumpOnOOM and monitor GC pauses in production.
+**Key Takeaway**: JMM's happens-before is the foundation of correct concurrent
+code. Use `volatile` for visibility, `synchronized` for atomicity+visibility.
+Safe publication requires an explicit happens-before — final fields, volatile, or sync.
+GC is generational because most objects die young. G1 collects "garbage-first"
+regions for predictable pauses. ZGC uses read barriers to eliminate STW entirely.
+Always set HeapDumpOnOOM and monitor GC pauses in production.
 
 
 ---
@@ -999,5 +999,5 @@ Compilation triggered by **invocation counters** (method call count) + **backedg
 </details>
 
 
-> **Navigation**: [< Serialization & I/O](Ch09_Serialization_IO.md) | [Back to Index](../00_MASTER_INDEX.md) | [Strings & Immutability >](Ch02_Strings_Immutability.md)
+**Navigation**: [< Serialization & I/O](Ch09_Serialization_IO.md) | [Back to Index](../00_MASTER_INDEX.md) | [Strings & Immutability >](Ch02_Strings_Immutability.md)
 

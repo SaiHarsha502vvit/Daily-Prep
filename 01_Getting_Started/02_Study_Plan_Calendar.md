@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
 
 # 📅 2.5-Month Study Plan — February 19 to May 5, 2026
 
@@ -27,7 +27,7 @@ Every day follows this structure:
 | 🧩 PATTERN | A coding pattern/technique to recognize and practice | 30 min |
 | ❓ Q1 & Q2 | Two basic-to-medium questions (increasing difficulty) | 40 min |
 
-> **Mentor Tip:** Don't just solve — UNDERSTAND. Trace every solution on paper before coding. If you can't explain it to a rubber duck, you don't know it yet.
+**Mentor Tip:** Don't just solve — UNDERSTAND. Trace every solution on paper before coding. If you can't explain it to a rubber duck, you don't know it yet.
 
 ---
 
@@ -57,7 +57,7 @@ Every day follows this structure:
 
 # PHASE 1: FOUNDATIONS (Week 1-3)
 
-> *"You don't build a house starting from the roof. Arrays, Strings, and Loops are your concrete foundation."*
+*"You don't build a house starting from the roof. Arrays, Strings, and Loops are your concrete foundation."*
 
 ---
 
@@ -77,7 +77,7 @@ Every day follows this structure:
 📘 Read: [02_Data_Structures/01a_Memory_Foundations.md](../02_Data_Structures/01a_Memory_Foundations.md) — Arrays section  
 📘 Read: [03_Algorithms/01_Algorithm_Thinking.md](../03_Algorithms/01_Algorithm_Thinking.md) — How to approach problems
 
-> **Mentor Note:** Today is Day 1. Don't rush. Understand WHY arrays are indexed from 0. Understand WHY linear search is O(n). These "obvious" things become your vocabulary.
+**Mentor Note:** Today is Day 1. Don't rush. Understand WHY arrays are indexed from 0. Understand WHY linear search is O(n). These "obvious" things become your vocabulary.
 
 ---
 
@@ -94,7 +94,7 @@ Every day follows this structure:
 
 📘 Read: [03_Algorithms/09_Pattern_Programs_Complete.md](../03_Algorithms/09_Pattern_Programs_Complete.md) — Part 1 (Star Patterns)
 
-> **Mentor Note:** Pattern programs teach you loop control. Don't skip them. Every `for` loop mistake in interviews traces back to weak loop fundamentals.
+**Mentor Note:** Pattern programs teach you loop control. Don't skip them. Every `for` loop mistake in interviews traces back to weak loop fundamentals.
 
 ---
 
@@ -111,7 +111,7 @@ Every day follows this structure:
 
 📘 Read: [03_Algorithms/02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md) — Selection Sort section
 
-> **Mentor Note:** Weekend = extra time. After solving, try writing Selection Sort from memory 3 times. Muscle memory > reading.
+**Mentor Note:** Weekend = extra time. After solving, try writing Selection Sort from memory 3 times. Muscle memory > reading.
 
 ---
 
@@ -173,7 +173,7 @@ Every day follows this structure:
 | ❓ Q1 | Rotate array by K positions (LC 189) |
 | ❓ Q2 | First non-repeating character in string (LC 387) |
 
-> **Mentor Note:** Review days are NOT optional. Your brain consolidates knowledge during review. If you skip this, Week 2 will feel harder than it should.
+**Mentor Note:** Review days are NOT optional. Your brain consolidates knowledge during review. If you skip this, Week 2 will feel harder than it should.
 
 ---
 
@@ -195,7 +195,7 @@ Every day follows this structure:
 📘 Read: [03_Algorithms/02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md) — Merge Sort  
 📘 Read: [04_Patterns_Templates/07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) — Introduction
 
-> **Mentor Note:** Merge Sort is your first "real" algorithm. Trace the recursion tree on paper. Draw the merge step. This is where you level up.
+**Mentor Note:** Merge Sort is your first "real" algorithm. Trace the recursion tree on paper. Draw the merge step. This is where you level up.
 
 ---
 
@@ -240,7 +240,7 @@ Every day follows this structure:
 
 📘 Read: [03_Algorithms/01_Algorithm_Thinking.md](../03_Algorithms/01_Algorithm_Thinking.md) — Complexity analysis section
 
-> **Mentor Note:** Today is critical. If you don't understand Big O, you can't explain WHY one solution is better. Interviewers care about this more than the code itself.
+**Mentor Note:** Today is critical. If you don't understand Big O, you can't explain WHY one solution is better. Interviewers care about this more than the code itself.
 
 ---
 
@@ -282,14 +282,14 @@ Every day follows this structure:
 | ❓ Q1 | LC 75 — Sort Colors (Dutch National Flag) |
 | ❓ Q2 | LC 240 — Search a 2D Matrix II |
 
-> **Mentor Note:** After 2 weeks, you should be able to: (1) Implement any basic sort from memory, (2) Write binary search without bugs, (3) Reverse array/string without thinking. If not, spend extra time here before moving on.
+**Mentor Note:** After 2 weeks, you should be able to: (1) Implement any basic sort from memory, (2) Write binary search without bugs, (3) Reverse array/string without thinking. If not, spend extra time here before moving on.
 
 ---
 
 
 
-> 🔬 **Section Challenge — 📆 WEEK 2: Feb 26 - Mar 4 — Strings Deep + Sorting Mastery + Two Pointers**
->>
+🔬 **Section Challenge — 📆 WEEK 2: Feb 26 - Mar 4 — Strings Deep + Sorting Mastery + Two Pointers**
+>
 
 ## 📆 WEEK 3: Mar 5-11 — Linked List + Recursion Introduction
 
@@ -307,7 +307,7 @@ Every day follows this structure:
 📘 Read: [02_Data_Structures/02a_DS_Variants_Core.md](../02_Data_Structures/02a_DS_Variants_Core.md) — Linked List section  
 📘 Read: [03_Algorithms/03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md) — Part 1
 
-> **Mentor Note:** Linked Lists are where most students first feel "lost." Draw boxes with arrows on paper. EVERY. SINGLE. TIME. Visualization is not optional here.
+**Mentor Note:** Linked Lists are where most students first feel "lost." Draw boxes with arrows on paper. EVERY. SINGLE. TIME. Visualization is not optional here.
 
 ---
 
@@ -337,7 +337,7 @@ Every day follows this structure:
 
 📘 Read: [03_Algorithms/03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md) — Reversal techniques
 
-> **Mentor Note:** LC 206 is asked in 80% of interviews. You must be able to write it in under 3 minutes, both iteratively and recursively. Practice until it's automatic.
+**Mentor Note:** LC 206 is asked in 80% of interviews. You must be able to write it in under 3 minutes, both iteratively and recursively. Practice until it's automatic.
 
 ---
 
@@ -394,28 +394,28 @@ Every day follows this structure:
 | ❓ Q1 | LC 83 — Remove Duplicates from Sorted List |
 | ❓ Q2 | LC 203 — Remove Linked List Elements |
 
-> **Mentor Note:** End of Phase 1. You should now be comfortable with: Arrays, Strings, Matrices, 3 sorting algorithms, Binary Search, Linked Lists, Basic Recursion, GCD/Primes. If any of these feel shaky, STOP and spend 1 extra day before moving to Phase 2.
+**Mentor Note:** End of Phase 1. You should now be comfortable with: Arrays, Strings, Matrices, 3 sorting algorithms, Binary Search, Linked Lists, Basic Recursion, GCD/Primes. If any of these feel shaky, STOP and spend 1 extra day before moving to Phase 2.
 
 ---
 
 
 
-> 🔬 **Section Challenge — 📆 WEEK 3: Mar 5-11 — Linked List + Recursion Introduction**
->>
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — 📆 WEEK 3: Mar 5-11 — Linked List + Recursion Introduction**
+>
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 # PHASE 2: CORE PATTERNS (Week 4-6)
 
-> *"Now you know the ingredients. Phase 2 teaches you the recipes — Stack, Queue, HashMap, Trees, and the patterns that connect everything."*
+*"Now you know the ingredients. Phase 2 teaches you the recipes — Stack, Queue, HashMap, Trees, and the patterns that connect everything."*
 
 ---
 
@@ -478,7 +478,7 @@ Why and what are the 3 fixes?
 | ❓ Q1 | LC 53 — Maximum Subarray | *Medium — Kadane* |
 | ❓ Q2 | LC 121 — Best Time to Buy and Sell Stock | *Easy — track min so far* |
 
-> **Mentor Note:** Kadane's algorithm is beautiful. It teaches you that sometimes keeping a "running best" is all you need. This idea will come back in DP.
+**Mentor Note:** Kadane's algorithm is beautiful. It teaches you that sometimes keeping a "running best" is all you need. This idea will come back in DP.
 
 ---
 
@@ -520,7 +520,7 @@ Why and what are the 3 fixes?
 | ❓ Q1 | LC 225 — Implement Stack using Queues |
 | ❓ Q2 | LC 560 — Subarray Sum Equals K |
 
-> **Mentor Note:** LC 560 combines prefix sum + HashMap. If you can solve it, you've truly understood both concepts. If not, review Day 24 and Day 26.
+**Mentor Note:** LC 560 combines prefix sum + HashMap. If you can solve it, you've truly understood both concepts. If not, review Day 24 and Day 26.
 
 ---
 
@@ -542,7 +542,7 @@ Why and what are the 3 fixes?
 
 📘 Read: [04_Patterns_Templates/01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md) — Fixed window section
 
-> **Mentor Note:** Sliding Window is a TOP interview pattern. Learn the template today, and you'll use it for 20+ problems.
+**Mentor Note:** Sliding Window is a TOP interview pattern. Learn the template today, and you'll use it for 20+ problems.
 
 ---
 
@@ -572,7 +572,7 @@ Why and what are the 3 fixes?
 | ❓ Q1 | LC 76 — Minimum Window Substring | *Hard — but important pattern* |
 | ❓ Q2 | LC 438 — Find All Anagrams in a String | *Medium — fixed window + freq* |
 
-> **Mentor Note:** LC 76 is hard, but don't skip it. Even understanding the approach (without solving perfectly) teaches the pattern. Come back to it in Week 10 and it'll click.
+**Mentor Note:** LC 76 is hard, but don't skip it. Even understanding the approach (without solving perfectly) teaches the pattern. Come back to it in Week 10 and it'll click.
 
 ---
 
@@ -627,26 +627,26 @@ Why and what are the 3 fixes?
 | ❓ Q1 | LC 209 — Minimum Size Subarray Sum |
 | ❓ Q2 | LC 424 — Longest Repeating Character Replacement |
 
-> **Mentor Note:** Halfway point! By now you should be comfortable with: All basic DS, 5 sorting algorithms, Binary Search, LinkedList, Stack, Queue, HashMap, Sliding Window, Two Pointers. Take a moment to appreciate how far you've come.
+**Mentor Note:** Halfway point! By now you should be comfortable with: All basic DS, 5 sorting algorithms, Binary Search, LinkedList, Stack, Queue, HashMap, Sliding Window, Two Pointers. Take a moment to appreciate how far you've come.
 
 ---
 
 
 
-> 🔬 **Section Challenge — 📆 WEEK 5: Mar 19-25 — Hashing Deep + Sliding Window**
->
-> **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
-> <details><summary>Answer</summary>
->
-> Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-> <details><summary>Answer</summary>
->
-> Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-> </details>
->
+🔬 **Section Challenge — 📆 WEEK 5: Mar 19-25 — Hashing Deep + Sliding Window**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
 
 ## 📆 WEEK 6: Mar 26 - Apr 1 — Trees (Binary Tree + BST)
 
@@ -663,7 +663,7 @@ Why and what are the 3 fixes?
 
 📘 Read: [03_Algorithms/05_Trees.md](../03_Algorithms/05_Trees.md) — Part 1 (Trees)
 
-> **Mentor Note:** Trees are recursion in action. If recursion felt hard in Week 3, it'll click now. Every tree problem = "process root, recurse left, recurse right."
+**Mentor Note:** Trees are recursion in action. If recursion felt hard in Week 3, it'll click now. Every tree problem = "process root, recurse left, recurse right."
 
 ---
 
@@ -742,7 +742,7 @@ Why and what are the 3 fixes?
 | ❓ Q1 | LC 226 — Invert Binary Tree |
 | ❓ Q2 | LC 101 — Symmetric Tree |
 
-> **Mentor Note:** If trees feel hard, that's normal. Re-do Day 36-39 problems. Trees become intuitive after ~20 problems. You're building that 20-problem foundation right now.
+**Mentor Note:** If trees feel hard, that's normal. Re-do Day 36-39 problems. Trees become intuitive after ~20 problems. You're building that 20-problem foundation right now.
 
 ---
 
@@ -751,7 +751,7 @@ Why and what are the 3 fixes?
 
 # PHASE 3: ADVANCED TOPICS (Week 7-10)
 
-> *"You've mastered the tools. Now you learn to combine them, optimize them, and solve problems you've never seen before."*
+*"You've mastered the tools. Now you learn to combine them, optimize them, and solve problems you've never seen before."*
 
 ---
 
@@ -799,7 +799,7 @@ Why and what are the 3 fixes?
 
 📘 Read: [03_Algorithms/05_Trees.md](../03_Algorithms/05_Trees.md) — Graphs section
 
-> **Mentor Note:** Graphs are just "trees with cycles." BFS on graphs = BFS on trees + visited set. You already know the foundation from Week 6.
+**Mentor Note:** Graphs are just "trees with cycles." BFS on graphs = BFS on trees + visited set. You already know the foundation from Week 6.
 
 ---
 
@@ -856,8 +856,8 @@ Why and what are the 3 fixes?
 
 
 
-> 🔬 **Section Challenge — 📆 WEEK 7: Apr 2-8 — Heaps + Graphs Introduction**
->>>
+🔬 **Section Challenge — 📆 WEEK 7: Apr 2-8 — Heaps + Graphs Introduction**
+>>
 
 ## 📆 WEEK 8: Apr 9-15 — Dynamic Programming Foundations
 
@@ -874,7 +874,7 @@ Why and what are the 3 fixes?
 
 📘 Read: [03_Algorithms/04b_DP_Fundamentals.md](../03_Algorithms/04b_DP_Fundamentals.md) — Basics section
 
-> **Mentor Note:** DP is the most feared topic. But it's just: "Can I break this into smaller problems? Can I store results to avoid re-solving?" That's it. Start simple, build confidence.
+**Mentor Note:** DP is the most feared topic. But it's just: "Can I break this into smaller problems? Can I store results to avoid re-solving?" That's it. Start simple, build confidence.
 
 ---
 
@@ -955,26 +955,26 @@ Why and what are the 3 fixes?
 | ❓ Q1 | LC 62 — Unique Paths |
 | ❓ Q2 | LC 64 — Minimum Path Sum |
 
-> **Mentor Note:** DP mastery comes from pattern recognition. After this week, you should recognize: "This is a knapsack problem" or "This is an LCS problem." If you can't, review the patterns.
+**Mentor Note:** DP mastery comes from pattern recognition. After this week, you should recognize: "This is a knapsack problem" or "This is an LCS problem." If you can't, review the patterns.
 
 ---
 
 
 
-> 🔬 **Section Challenge — 📆 WEEK 8: Apr 9-15 — Dynamic Programming Foundations**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+🔬 **Section Challenge — 📆 WEEK 8: Apr 9-15 — Dynamic Programming Foundations**
+
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
+
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
 
 ## 📆 WEEK 9: Apr 16-22 — Greedy + Backtracking
 
@@ -1021,7 +1021,7 @@ Why and what are the 3 fixes?
 📘 Read: [03_Algorithms/11_Backtracking_Complete.md](../03_Algorithms/11_Backtracking_Complete.md)  
 📘 Read: [03_Algorithms/03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md) — Backtracking section
 
-> **Mentor Note:** Backtracking = recursion + undo. Draw the recursion tree for every problem. If you can draw the tree, you can write the code.
+**Mentor Note:** Backtracking = recursion + undo. Draw the recursion tree for every problem. If you can draw the tree, you can write the code.
 
 ---
 
@@ -1080,14 +1080,14 @@ Why and what are the 3 fixes?
 
 
 
-> 🔬 **Section Challenge — 📆 WEEK 9: Apr 16-22 — Greedy + Backtracking**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+🔬 **Section Challenge — 📆 WEEK 9: Apr 16-22 — Greedy + Backtracking**
+
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## 📆 WEEK 10: Apr 23-29 — Advanced Patterns + Remaining Topics
 
@@ -1175,7 +1175,7 @@ Why and what are the 3 fixes?
 
 📘 Read: [03_Algorithms/15_Monotonic_Stack_Queue_Complete.md](../03_Algorithms/15_Monotonic_Stack_Queue_Complete.md)
 
-> **Mentor Note:** LC 84 and LC 42 are classics that appear in interviews at top companies. Even understanding the approach is a win. Don't stress if the implementation takes time.
+**Mentor Note:** LC 84 and LC 42 are classics that appear in interviews at top companies. Even understanding the approach is a win. Don't stress if the implementation takes time.
 
 ---
 
@@ -1189,7 +1189,7 @@ Why and what are the 3 fixes?
 | ❓ Q1 | LC 11 — Container With Most Water |
 | ❓ Q2 | LC 15 — 3Sum |
 
-> **Mentor Note:** End of Phase 3. You now have exposure to EVERY major topic. The goal was never perfection — it's recognition. When you see a problem, you should now think "Oh, this looks like a sliding window problem" or "This needs DP." That recognition is your superpower.
+**Mentor Note:** End of Phase 3. You now have exposure to EVERY major topic. The goal was never perfection — it's recognition. When you see a problem, you should now think "Oh, this looks like a sliding window problem" or "This needs DP." That recognition is your superpower.
 
 ---
 
@@ -1198,7 +1198,7 @@ Why and what are the 3 fixes?
 
 # PHASE 4: INTEGRATION + POLISH (Week 11)
 
-> *"The final stretch. Tie everything together. Test yourself. Build confidence."*
+*"The final stretch. Tie everything together. Test yourself. Build confidence."*
 
 ---
 
@@ -1329,7 +1329,7 @@ Evening:
 
 📘 Read: [09_Career_Reference/12_Brain_Psychology.md](../09_Career_Reference/12_Brain_Psychology.md)
 
-> **Final Mentor Note:** You've covered Arrays, Strings, Matrices, LinkedLists, Stacks, Queues, HashMaps, Trees, Graphs, Heaps, DP, Greedy, Backtracking, Tries, Union-Find, Bit Manipulation, Monotonic Stacks, SQL, System Design, and OOP. You solved 150+ problems. You learned 20+ patterns. You are ready. Trust the process.
+**Final Mentor Note:** You've covered Arrays, Strings, Matrices, LinkedLists, Stacks, Queues, HashMaps, Trees, Graphs, Heaps, DP, Greedy, Backtracking, Tries, Union-Find, Bit Manipulation, Monotonic Stacks, SQL, System Design, and OOP. You solved 150+ problems. You learned 20+ patterns. You are ready. Trust the process.
 
 ---
 

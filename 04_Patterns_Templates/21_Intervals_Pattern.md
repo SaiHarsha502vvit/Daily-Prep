@@ -1,6 +1,6 @@
-> **Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)
+**Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)
 
-> **Pattern 21** | [Prev](20_BitManipulation_Plus_Tricks.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Cyclic_Sort_Pattern.md)
+**Pattern 21** | [Prev](20_BitManipulation_Plus_Tricks.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Cyclic_Sort_Pattern.md)
 
 ---
 
@@ -46,19 +46,13 @@
 ```
 
 **Flow:**
-- INTERVALS FUNDAMENTALS
-- ↓
-- AN INTERVAL = [start, end] representing a continuous ra
-- ↓
-- WHY A DEDICATED PATTERN?
-- ↓
-- Intervals appear in scheduling, calendars, bandwidth,
-- ↓
-- resource allocation, genomics ... ~15 LC problems form
-- ↓
-- tight family where ONE core technique solves them all.
-- ↓
-- THE 6 INTERVAL RELATIONSHIPS between [a,b] and [c,d]:
+1. INTERVALS FUNDAMENTALS
+2. AN INTERVAL = [start, end] representing a continuous ra
+3. WHY A DEDICATED PATTERN?
+4. Intervals appear in scheduling, calendars, bandwidth,
+5. resource allocation, genomics ... ~15 LC problems form
+6. tight family where ONE core technique solves them all.
+7. THE 6 INTERVAL RELATIONSHIPS between [a,b] and [c,d]:
 
 ```mermaid
 flowchart TD
@@ -123,14 +117,14 @@ Works for: Meeting Rooms II, Min Platforms
 - "Count/max simultaneous" → Sweep Line or Min-Heap
 
 
-> 🔬 **Section Challenge — The Two Core Techniques**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — The Two Core Techniques**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## The Overlap Check — Memorize This
 
@@ -182,23 +176,15 @@ SOLUTION:
 ```
 
 **Flow:**
-- [1,3] + [2,6]: 2 ≤ 3
-- ↓
-- overlap
-- ↓
-- merge
-- ↓
-- [1, max(3,6)] = [1,6]
-- ↓
-- [1,6] + [8,10]: 8 > 6
-- ↓
-- no overlap
-- ↓
-- add [8,10]
-- ↓
-- [8,10] + [15,18]: 15 > 10
-- ↓
-- no overlap
+1. [1,3] + [2,6]: 2 ≤ 3
+2. overlap
+3. merge
+4. [1, max(3,6)] = [1,6]
+5. [1,6] + [8,10]: 8 > 6
+6. no overlap
+7. add [8,10]
+8. [8,10] + [15,18]: 15 > 10
+9. no overlap
 
 ```mermaid
 flowchart TD
@@ -362,23 +348,15 @@ SOLUTION (Min-Heap):
 ```
 
 **Flow:**
-- For each meeting: if start >= heap.peek(), a room
-- ↓
-- pop.
-- ↓
-- [5,10]: 5 < 30
-- ↓
-- can't reuse
-- ↓
-- heap = [10, 30], rooms = 2
-- ↓
-- [15,20]: 15 >= 10
-- ↓
-- reuse room
-- ↓
-- pop 10, push 20
-- ↓
-- heap = [20, 30], rooms = 2
+1. For each meeting: if start >= heap.peek(), a room
+2. pop.
+3. [5,10]: 5 < 30
+4. can't reuse
+5. heap = [10, 30], rooms = 2
+6. [15,20]: 15 >= 10
+7. reuse room
+8. pop 10, push 20
+9. heap = [20, 30], rooms = 2
 
 ```mermaid
 flowchart TD
@@ -474,17 +452,12 @@ SOLUTION:
 ```
 
 **Flow:**
-- Keep [1,2]. [2,3]: 2 >= 2
-- ↓
-- keep. [1,3]: 1 < 3
-- ↓
-- OVERLAP
-- ↓
-- remove!
-- ↓
-- [3,4]: 3 >= 3
-- ↓
-- keep. Removed 1.
+1. Keep [1,2]. [2,3]: 2 >= 2
+2. keep. [1,3]: 1 < 3
+3. OVERLAP
+4. remove!
+5. [3,4]: 3 >= 3
+6. keep. Removed 1.
 
 ```mermaid
 flowchart LR
@@ -642,19 +615,13 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 ```
 
 **Flow:**
-- INTERVAL PROBLEMS CHEATSHEET
-- ↓
-- PROBLEM TYPE SORT BY TECHNIQUE LC#
-- ↓
-- Merge overlapping START Linear scan 56
-- ↓
-- Insert + merge (sorted) 3-phase scan 57
-- ↓
-- Can attend all? START Adjacent check 252
-- ↓
-- Min rooms needed START Min-Heap / Sweep 253
-- ↓
-- Min removals END Greedy keep early 435
+1. INTERVAL PROBLEMS CHEATSHEET
+2. PROBLEM TYPE SORT BY TECHNIQUE LC#
+3. Merge overlapping START Linear scan 56
+4. Insert + merge (sorted) 3-phase scan 57
+5. Can attend all? START Adjacent check 252
+6. Min rooms needed START Min-Heap / Sweep 253
+7. Min removals END Greedy keep early 435
 
 ```mermaid
 flowchart TD
@@ -841,4 +808,4 @@ DIP: high-level modules should not depend on low-level modules — both should d
 </details>
 
 
-> **Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)
+**Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)

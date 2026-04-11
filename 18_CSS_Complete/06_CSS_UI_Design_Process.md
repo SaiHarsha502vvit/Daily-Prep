@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](05_CSS_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_CSS_UI_Design_Process.md)
+**Navigation**: [< Previous](05_CSS_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_CSS_UI_Design_Process.md)
 
 # 🎨 Chapter 6 — CSS UI Design Process: From Blank Screen to Production UI
 
-> **"Most developers jump straight into code when they see a design. Senior developers PLAN first — they see the layout grid, identify repeating patterns, name the components, and THEN write CSS. This chapter teaches you the thinking process behind building any UI."**
+**"Most developers jump straight into code when they see a design. Senior developers PLAN first — they see the layout grid, identify repeating patterns, name the components, and THEN write CSS. This chapter teaches you the thinking process behind building any UI."**
 
 ---
 
@@ -524,8 +524,8 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 
 
 
-> 🔬 **Section Challenge — 7. Typography System**
->>>
+🔬 **Section Challenge — 7. Typography System**
+>>
 
 ## 8. Color System & Theming
 
@@ -841,7 +841,7 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 
 ---
 
-> **Next Chapter**: [CSS Component Design Systems →](06_CSS_UI_Design_Process.md)
+**Next Chapter**: [CSS Component Design Systems →](06_CSS_UI_Design_Process.md)
 
 ---
 

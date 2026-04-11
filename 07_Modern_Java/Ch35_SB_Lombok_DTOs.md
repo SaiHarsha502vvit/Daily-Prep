@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch34_SB_Security_Part4.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch36_SB_Service_Repository.md)
+**Navigation**: [< Previous](Ch34_SB_Security_Part4.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch36_SB_Service_Repository.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 5: Lombok & DTO Patterns
 
-> **Eliminating Boilerplate, Clean Data Transfer**
-> _"Write less code, express more intent"_
+**Eliminating Boilerplate, Clean Data Transfer**
+_"Write less code, express more intent"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why Lombok & DTOs? / • Java verbosity: 80 lines of
-- ↓
-- HOW: How Does Lombok Work? / • Annotation processing: G
-- ↓
-- WHEN: When to Use DTOs? / • ALWAYS for APIs: Never expo
-- ↓
-- WHICH: Which Lombok Annotations to Use? / ENTITIES: @Ge
+1. WHY: Why Lombok & DTOs? / • Java verbosity: 80 lines of
+2. HOW: How Does Lombok Work? / • Annotation processing: G
+3. WHEN: When to Use DTOs? / • ALWAYS for APIs: Never expo
+4. WHICH: Which Lombok Annotations to Use? / ENTITIES: @Ge
 
 ```mermaid
 flowchart TD
@@ -236,9 +233,8 @@ public class User {
 ```
 
 **Flow:**
-- User.java / @Data / class User { / String name; / }
-- ↓
-- User.class / getName() / setName() / equals() / hashCod
+1. User.java / @Data / class User { / String name; / }
+2. User.class / getName() / setName() / equals() / hashCod
 
 ```mermaid
 flowchart TD
@@ -814,19 +810,13 @@ public class Counter {
 ```
 
 **Flow:**
-- LOMBOK BEST PRACTICES
-- ↓
-- • Use @RequiredArgsConstructor for Spring DI
-- ↓
-- • Use @Builder for complex object creation
-- ↓
-- • Use @Value for immutable DTOs
-- ↓
-- • Use @Slf4j for logging
-- ↓
-- • Exclude sensitive fields from @ToString
-- ↓
-- • Use onlyExplicitlyIncluded for @EqualsAndHashCode in
+1. LOMBOK BEST PRACTICES
+2. • Use @RequiredArgsConstructor for Spring DI
+3. • Use @Builder for complex object creation
+4. • Use @Value for immutable DTOs
+5. • Use @Slf4j for logging
+6. • Exclude sensitive fields from @ToString
+7. • Use onlyExplicitlyIncluded for @EqualsAndHashCode in
 
 ```mermaid
 flowchart TD
@@ -928,19 +918,13 @@ lombok.experimental.flagUsage = warning
 ```
 
 **Flow:**
-- THE DTO PROBLEM
-- ↓
-- WITHOUT DTOs (Exposing Entity Directly):
-- ↓
-- @Entity
-- ↓
-- public class User {
-- ↓
-- private Long id;
-- ↓
-- private String email;
-- ↓
-- private String passwordHash; // 🔴 EXPOSED TO CLIENT!
+1. THE DTO PROBLEM
+2. WITHOUT DTOs (Exposing Entity Directly):
+3. @Entity
+4. public class User {
+5. private Long id;
+6. private String email;
+7. private String passwordHash; // 🔴 EXPOSED TO CLIENT!
 
 ```mermaid
 flowchart TD
@@ -1290,14 +1274,14 @@ public class UserService {
 
 
 
-> 🔬 **Section Challenge — Chapter 7: DTO Mapping Strategies**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 7: DTO Mapping Strategies**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 8: DTO Architecture Patterns
 
@@ -1335,19 +1319,13 @@ public class UserService {
 ```
 
 **Flow:**
-- DTO ARCHITECTURE
-- ↓
-- PACKAGE STRUCTURE:
-- ↓
-- com.example.myapp/
-- ↓
-- controller/
-- ↓
-- UserController.java
-- ↓
-- service/
-- ↓
-- UserService.java
+1. DTO ARCHITECTURE
+2. PACKAGE STRUCTURE:
+3. com.example.myapp/
+4. controller/
+5. UserController.java
+6. service/
+7. UserService.java
 
 ```mermaid
 flowchart TD
@@ -1618,19 +1596,13 @@ DTOs:
 ```
 
 **Flow:**
-- LOMBOK:
-- ↓
-- □ Know all core annotations (@Data, @Value, @Builder, e
-- ↓
-- □ Understand @RequiredArgsConstructor for Spring DI
-- ↓
-- □ Can configure Lombok for JPA entities properly
-- ↓
-- □ Know when to use @Value vs @Data
-- ↓
-- □ Can use @Builder with defaults and toBuilder
-- ↓
-- DTOs:
+1. LOMBOK:
+2. □ Know all core annotations (@Data, @Value, @Builder, e
+3. □ Understand @RequiredArgsConstructor for Spring DI
+4. □ Can configure Lombok for JPA entities properly
+5. □ Know when to use @Value vs @Data
+6. □ Can use @Builder with defaults and toBuilder
+7. DTOs:
 
 ```mermaid
 flowchart TD

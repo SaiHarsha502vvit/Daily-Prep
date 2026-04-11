@@ -68,15 +68,11 @@ Users don't care about root cause — they want the service BACK.
 ```
 
 **Flow:**
-- 1. DETECT (0-5 min) / Alert fires. PagerDuty/Slack noti
-- ↓
-- 2. MITIGATE (5-15 min) / STOP THE BLEEDING before findi
-- ↓
-- 3. DIAGNOSE (15 min - hours) / NOW find the root cause.
-- ↓
-- 4. FIX (hours - days) / Implement proper fix. Write tes
-- ↓
-- 5. POSTMORTEM (next day) / Blameless analysis. What hap
+1. DETECT (0-5 min) / Alert fires. PagerDuty/Slack noti
+2. MITIGATE (5-15 min) / STOP THE BLEEDING before findi
+3. DIAGNOSE (15 min - hours) / NOW find the root cause.
+4. FIX (hours - days) / Implement proper fix. Write tes
+5. POSTMORTEM (next day) / Blameless analysis. What hap
 
 ```mermaid
 flowchart TD
@@ -177,21 +173,10 @@ Fix → Inventory Service returns null for new products
 ```
 
 **Flow:**
-- METRICS — The 'Vital Signs' /
-- ↓
-- Answer: 'IS something w
-- ↓
-- LOGS — The 'Medical Records' /
-- ↓
-- Answer: 'WHAT went wro
-- ↓
-- LOGS — The 'Medical Records' /
-- ↓
-- Answer: 'WHAT went wro
-- ↓
-- TRACES — The 'CT Scan' /
-- ↓
-- Answer: 'WHERE is it slow/br
+1. METRICS — The 'Vital Signs' /
+2. Answer: 'IS something w LOGS — The 'Medical Records' / Answer: 'WHAT went wro
+3. LOGS — The 'Medical Records' /
+4. Answer: 'WHAT went wro TRACES — The 'CT Scan' / Answer: 'WHERE is it slow/br
 
 ```mermaid
 flowchart TD
@@ -366,19 +351,9 @@ The goal: LEARN from incidents, don't just survive them.
 ```
 
 **Flow:**
-- AFTER EVERY INCIDENT — Write a Postmortem
-- ↓
-- ❌ 'John deployed without testing'
-- ↓
-- ✅ 'Our deploy process doesn't require testing sign-off'
-- ↓
-- POSTMORTEM TEMPLATE:
-- ↓
-- Title: [Service] outage on [date]
-- ↓
-- Summary: What happened in 2-3 sentences.
-- ↓
-- Impact:
+1. AFTER EVERY INCIDENT — Write a Postmortem
+2. ❌ 'John deployed without testing'
+3. ✅ 'Our deploy process doesn't require testing sign-off' POSTMORTEM TEMPLATE: Title: [Service] outage on [date] Summary: What happened in 2-3 sentences. Impact:
 
 ```mermaid
 flowchart TD
@@ -435,19 +410,13 @@ STRUCTURED LOGGING — search-friendly:
 ```
 
 **Flow:**
-- LOGGING BEST PRACTICES FOR PRODUCTION DEBUGGING
-- ↓
-- WHAT TO LOG:
-- ↓
-- ✅ Request start + end (with duration)
-- ↓
-- ✅ External calls (before + after + status)
-- ↓
-- ✅ Errors with FULL context (input, state, stack trace)
-- ↓
-- ✅ Business events ('Order #456 placed, total: $99.50')
-- ↓
-- WHAT NOT TO LOG:
+1. LOGGING BEST PRACTICES FOR PRODUCTION DEBUGGING
+2. WHAT TO LOG:
+3. ✅ Request start + end (with duration)
+4. ✅ External calls (before + after + status)
+5. ✅ Errors with FULL context (input, state, stack trace)
+6. ✅ Business events ('Order #456 placed, total: $99.50')
+7. WHAT NOT TO LOG:
 
 ```mermaid
 flowchart TD
@@ -503,17 +472,12 @@ REMEMBER:
 ```
 
 **Flow:**
-- ALERT FIRES
-- ↓
-- What do I do?
-- ↓
-- YES
-- ↓
-- Can we rollback?
-- ↓
-- YES
-- ↓
-- Treat as 'affecting users'
+1. ALERT FIRES
+2. What do I do?
+3. YES
+4. Can we rollback?
+5. YES
+6. Treat as 'affecting users'
 
 ```mermaid
 flowchart LR
@@ -557,11 +521,7 @@ Q: "How would you design a system to be observable?"
 ```
 
 **Flow:**
-- (metrics
-- ↓
-- logs
-- ↓
-- traces), the root cause, and how you
+1. (metrics logs traces), the root cause, and how you
 
 ```mermaid
 flowchart LR

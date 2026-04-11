@@ -196,19 +196,13 @@ Sun: Week Review
 ```
 
 **Flow:**
-- Mon: 1D DP (Climbing Stairs, House Robber, Coin Change)
-- ↓
-- Tue: 2D DP (Unique Paths, Longest Common Subsequence)
-- ↓
-- Wed: Knapsack DP (0/1, Unbounded, Coin Change II)
-- ↓
-- Thu: Greedy Algorithms (Jump Game, Intervals)
-- ↓
-- Fri: DP + Greedy Combo + SQL Advanced JOINs
-- ↓
-- Sat: Spring Boot Security (Authentication, JWT)
-- ↓
-- Sun: Week Review
+1. Mon: 1D DP (Climbing Stairs, House Robber, Coin Change)
+2. Tue: 2D DP (Unique Paths, Longest Common Subsequence)
+3. Wed: Knapsack DP (0/1, Unbounded, Coin Change II)
+4. Thu: Greedy Algorithms (Jump Game, Intervals)
+5. Fri: DP + Greedy Combo + SQL Advanced JOINs
+6. Sat: Spring Boot Security (Authentication, JWT)
+7. Sun: Week Review
 
 ```mermaid
 flowchart TD

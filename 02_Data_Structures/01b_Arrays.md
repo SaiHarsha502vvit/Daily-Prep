@@ -1,10 +1,10 @@
-> **Navigation**: [< Previous Chapter](01a_Memory_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01c_LinkedList.md)
+**Navigation**: [< Previous Chapter](01a_Memory_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01c_LinkedList.md)
 
 ---
 
 # 📚 Part 0: Complete Understanding + Growth Mindset
 
-> **🎯 Goal:** Understand what data structures are, why they exist, and develop the right mindset for mastering them.
+**🎯 Goal:** Understand what data structures are, why they exist, and develop the right mindset for mastering them.
 
 ---
 
@@ -12,7 +12,7 @@
 
 A **data structure** is a way of ORGANIZING and STORING data so that we can perform OPERATIONS efficiently.
 
-> 💡 **Key Insight:** It's not just about *storing* data — it's about making certain *operations* fast!
+💡 **Key Insight:** It's not just about *storing* data — it's about making certain *operations* fast!
 
 **Analogy — Same Books, Different Organizations:**
 - Library with books thrown randomly → Hard to find books
@@ -49,8 +49,8 @@ Consider 1 million user accounts — the DS you choose determines performance:
 | Delete user | 1 million ops | 1 million ops | **1 op** |
 | List all users | 1 million ops | 1 million ops | 1 million ops |
 
-> ⚠️ **Trade-Off:** Every DS is GOOD at some operations and BAD at others.
-> There is NO perfect data structure — only the **perfect choice for your problem!**
+⚠️ **Trade-Off:** Every DS is GOOD at some operations and BAD at others.
+There is NO perfect data structure — only the **perfect choice for your problem!**
 
 ---
 
@@ -73,8 +73,8 @@ Consider 1 million user accounts — the DS you choose determines performance:
 
 ## ⭐ Growth Mindset: Choosing & Creating Data Structures
 
-> ❌ **Don't:** "I need to memorize all data structures"
-> ✅ **Do:** "I need to understand WHAT operations each DS optimizes for"
+❌ **Don't:** "I need to memorize all data structures"
+✅ **Do:** "I need to understand WHAT operations each DS optimizes for"
 
 ### The Selection Framework
 
@@ -98,11 +98,11 @@ Consider 1 million user accounts — the DS you choose determines performance:
 | Complex relationships | **Graph** |
 | Priority-based access | **Heap / PriorityQueue** |
 
-> 💡 **When no existing DS fits → Create your own by COMBINING!**
-> - **LRU Cache** = HashMap + DoublyLinkedList
-> - **MinStack** = Stack + Stack (for mins)
-> - **Trie** = Tree with characters as edges
-> - **Graph with fast lookup** = Adjacency List using HashMap
+💡 **When no existing DS fits → Create your own by COMBINING!**
+- **LRU Cache** = HashMap + DoublyLinkedList
+- **MinStack** = Stack + Stack (for mins)
+- **Trie** = Tree with characters as edges
+- **Graph with fast lookup** = Adjacency List using HashMap
 
 ---
 
@@ -134,9 +134,9 @@ Consider 1 million user accounts — the DS you choose determines performance:
 - ✅ **Optimization** — Know when to switch DS for better performance
 - ✅ **Creation** — Design custom DS when needed
 
-> 🔄 **The Transformation:**
-> FROM: "I'll try arrays for everything"
-> TO: "I'll choose the **RIGHT DS** for each operation"
+🔄 **The Transformation:**
+FROM: "I'll try arrays for everything"
+TO: "I'll choose the **RIGHT DS** for each operation"
 
 
 ---
@@ -231,19 +231,13 @@ WHY CONTIGUOUS MATTERS:
 ```
 
 **Flow:**
-- PHYSICAL REALITY:
-- ↓
-- Memory is a long tape of numbered boxes
-- ↓
-- Address: 1000 1004 1008 1012 1016 1020
-- ↓
-- arr[0] arr[1] arr[2] arr[3] arr[4] arr[5]
-- ↓
-- CONTIGUOUS = Next to each other in memory
-- ↓
-- WHY CONTIGUOUS MATTERS:
-- ↓
-- - arr[3] = baseAddress + (3 × elementSize)
+1. PHYSICAL REALITY:
+2. Memory is a long tape of numbered boxes
+3. Address: 1000 1004 1008 1012 1016 1020
+4. arr[0] arr[1] arr[2] arr[3] arr[4] arr[5]
+5. CONTIGUOUS = Next to each other in memory
+6. WHY CONTIGUOUS MATTERS:
+7. - arr[3] = baseAddress + (3 × elementSize)
 
 ```mermaid
 flowchart TD
@@ -342,7 +336,7 @@ ANALOGY: Reading a book vs reading a dictionary.
 - Product ID = Array Index
 - `products[5000]` = **instant access!**
 
-> ✅ **Result:** Lookup went from O(n) → **O(1)**, inventory checks became **1000x faster**, and this approach made modern retail possible!
+✅ **Result:** Lookup went from O(n) → **O(1)**, inventory checks became **1000x faster**, and this approach made modern retail possible!
 
 ## 💻 Implementation WITHOUT Collections
 
@@ -436,7 +430,7 @@ public class MyArray {
 
 ## 🏋️ Part 3: Foundation Practice — Build Array Muscle Memory
 
-> 💡 **Learning path:** Walk through these before touching patterns. They train loop instincts and set up every concept that follows.
+💡 **Learning path:** Walk through these before touching patterns. They train loop instincts and set up every concept that follows.
 
 ### 📦 Group A — Traversal Basics
 
@@ -459,7 +453,7 @@ for (int i = 0; i < n; i++) arr[i] = sc.nextInt();
 ```java
 for (int x : arr) if (x % 2 == 0) System.out.print(x + " ");
 ```
-> ❓ Why can't we do better than O(n)? Because we must inspect every element at least once.
+❓ Why can't we do better than O(n)? Because we must inspect every element at least once.
 
 **Q4 — Sum of Odd Numbers**
 ```java
@@ -486,7 +480,7 @@ int sum = 0, count = 0;
 for (int x : arr) if (isPrime(x)) { sum += x; count++; }
 double primeAvg = count > 0 ? (double)sum/count : 0;
 ```
-> 💡 `i * i <= n` is the √n optimization — O(√n) instead of O(n) per check.
+💡 `i * i <= n` is the √n optimization — O(√n) instead of O(n) per check.
 
 **Q7 — Print in Reverse Order** *(just print, don't rearrange)*
 ```java
@@ -522,8 +516,8 @@ for (int i = 0; i < arr.length; i += 2)
 int k = 3, sum = 0;
 for (int i = 0; i <= k; i++) sum += arr[i];
 ```
-> 💡 If you need this for many K values, computing each time = O(n) per query.
-> **Prefix Sum** (Part 13) makes it O(1) per query after O(n) build.
+💡 If you need this for many K values, computing each time = O(n) per query.
+**Prefix Sum** (Part 13) makes it O(1) per query after O(n) build.
 
 ---
 
@@ -576,8 +570,8 @@ for (int i = 0; i < n; i++)
         if (arr[i] + arr[j] == k)
             System.out.println("{" + arr[i] + "," + arr[j] + "}");
 ```
-> 🧱 **You hit the wall** — for n=10⁶ this is 10¹² operations.
-> **HashMap reduces this to O(n)** — you'll apply that after learning HashMap (Part 10).
+🧱 **You hit the wall** — for n=10⁶ this is 10¹² operations.
+**HashMap reduces this to O(n)** — you'll apply that after learning HashMap (Part 10).
 
 **Q17 — Sum of Same Position Values in Two Arrays**
 ```java
@@ -605,7 +599,7 @@ for (int i = 0; i < b.length; i++) merged[a.length + i] = b[i];
 | CF 4A — Watermelon | Codeforces | Div2-A | Simple math |
 | CF 158A — Next Round | Codeforces | Div2-A | Linear scan |
 
-> 🌟 **Goal:** Solve all 5 before moving to Sub Arrays. These cement loop instincts.
+🌟 **Goal:** Solve all 5 before moving to Sub Arrays. These cement loop instincts.
 
 ---
 
@@ -613,7 +607,7 @@ for (int i = 0; i < b.length; i++) merged[a.length + i] = b[i];
 
 ### Problem: Two Sum
 
-> 🏦 **Real-World Origin:** Financial Trading System (1990s)
+🏦 **Real-World Origin:** Financial Trading System (1990s)
 
 **Problem at Goldman Sachs:**
 - Traders needed to find **pairs of stocks** where Stock A + Stock B = Target budget
@@ -633,13 +627,13 @@ Time: **O(n²)** — too slow for real-time trading!
 3. "**HashMap!** Store value → index"
 4. "For each stock, check if the complement exists"
 
-> ✅ **After:** O(n) time complexity → real-time trading possible. This **HashMap complement** pattern is now used in ALL trading systems.
+✅ **After:** O(n) time complexity → real-time trading possible. This **HashMap complement** pattern is now used in ALL trading systems.
 
 ---
 
 ## 🔲 Part 4: Sub Arrays — From Brute Force to Mastery
 
-> 🎯 **This is where the most important array algorithms live. You'll hit walls that force you to learn Sliding Window, Two Pointers, and Prefix Sum.**
+🎯 **This is where the most important array algorithms live. You'll hit walls that force you to learn Sliding Window, Two Pointers, and Prefix Sum.**
 
 ### 📖 Theory — What is a Sub Array?
 
@@ -661,8 +655,8 @@ SUBARRAY vs SUBSEQUENCE:
   {1,3} from {1,2,3} → ✅ Valid subsequence (order kept, gaps allowed)
 ```
 
-> ❓ **Quick Check:** How many sub-arrays in `{1,2,3,4,5}`?
-> → 5×6/2 = **15**
+❓ **Quick Check:** How many sub-arrays in `{1,2,3,4,5}`?
+→ 5×6/2 = **15**
 
 ---
 
@@ -715,8 +709,8 @@ for (int i = 0; i < n; i++) {
 
 ### 🚀 GO LEARN — Techniques You Need
 
-> **STOP HERE — Learn these patterns, then return to "✅ Apply" below:**
->
+**STOP HERE — Learn these patterns, then return to "✅ Apply" below:**
+
 
 | Technique | When You Need It | Study File |
 |-----------|-----------------|------------|
@@ -724,8 +718,8 @@ for (int i = 0; i < n; i++) {
 | **Two Pointers** | Sorted array, pairs/triplets | 📖 [07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
 | **Prefix Sum** | Sum queries, count subarrays with sum K | 📖 [04_Pattern_Recognition.md](../04_Patterns_Templates/04_Pattern_Recognition.md) |
 
->
-> ⬅️ **RETURN CHECKPOINT** — Come back here and apply each below.
+
+⬅️ **RETURN CHECKPOINT** — Come back here and apply each below.
 
 ---
 
@@ -764,7 +758,7 @@ i  arr[i]  current                   maxSum
 Answer: 6  (subarray [4,-1,2,1])
 ```
 
-> 📖 **LeetCode 53** — Maximum Subarray
+📖 **LeetCode 53** — Maximum Subarray
 
 ---
 
@@ -803,9 +797,9 @@ public int subarraySum(int[] arr, int k) {
 }
 // Time: O(n) | Space: O(n)
 ```
-> 🔗 **New to HashMap?** → 📖 [Go learn HashTable first](01e_HashTable.md) then return here.
+🔗 **New to HashMap?** → 📖 [Go learn HashTable first](01e_HashTable.md) then return here.
 
-> 📖 **LeetCode 560** — Subarray Sum Equals K
+📖 **LeetCode 560** — Subarray Sum Equals K
 
 ---
 
@@ -826,7 +820,7 @@ public int minSubarrayLen(int k, int[] arr) {
 // Time: O(n) — each element enters/exits window once
 ```
 
-> 📖 **LeetCode 209** — Minimum Size Subarray Sum
+📖 **LeetCode 209** — Minimum Size Subarray Sum
 
 ---
 
@@ -849,7 +843,7 @@ public int maxProduct(int[] arr) {
 }
 ```
 
-> 📖 **LeetCode 152** — Maximum Product Subarray
+📖 **LeetCode 152** — Maximum Product Subarray
 
 ---
 
@@ -901,8 +895,8 @@ COMPARISON:
   Subsequence: {1,3,5}  from {1,2,3,4,5}  ← pick any, keep order
 ```
 
-> ❓ **Quick Check:** How many subsequences in `{1,2,3,4}`?
-> → 2⁴ - 1 = **15**
+❓ **Quick Check:** How many subsequences in `{1,2,3,4}`?
+→ 2⁴ - 1 = **15**
 
 ---
 
@@ -929,12 +923,12 @@ Binary decision tree → 2ⁿ leaves
 
 ### 🚀 GO LEARN — Recursion (You Need This First)
 
-> **STOP** — Subsequence generation is built on recursion.
->
-> 📖 [03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md)
-> 📖 [03c_Recursion_Advanced.md — Subsets section](../03_Algorithms/03c_Recursion_Advanced.md)
->
-> ⬅️ **RETURN CHECKPOINT** — Come back and apply below.
+**STOP** — Subsequence generation is built on recursion.
+
+📖 [03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md)
+📖 [03c_Recursion_Advanced.md — Subsets section](../03_Algorithms/03c_Recursion_Advanced.md)
+
+⬅️ **RETURN CHECKPOINT** — Come back and apply below.
 
 ---
 
@@ -1009,7 +1003,7 @@ public int lisOptimal(int[] arr) {
 // Uses Binary Search: 📖 06_Binary_Search_Patterns.md
 ```
 
-> ❓ **Think:** Why does replacing with a smaller value work? Smaller tail = more room for future elements to extend the sequence.
+❓ **Think:** Why does replacing with a smaller value work? Smaller tail = more room for future elements to extend the sequence.
 
 ---
 
@@ -1090,9 +1084,9 @@ public int binarySearch(int[] arr, int target) {
 // For n=1,000,000: Linear = 1M checks. Binary = 20 checks!
 ```
 
-> 📖 **GO DEEPER** — Binary Search has many variants (lower bound, answer space):
-> 📖 [06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md)
-> ⬅️ Return here after studying for: search in rotated array, first/last occurrence.
+📖 **GO DEEPER** — Binary Search has many variants (lower bound, answer space):
+📖 [06_Binary_Search_Patterns.md](../04_Patterns_Templates/06_Binary_Search_Patterns.md)
+⬅️ Return here after studying for: search in rotated array, first/last occurrence.
 
 | | Linear Search | Binary Search |
 |---|---|---|
@@ -1115,8 +1109,8 @@ public int binarySearch(int[] arr, int target) {
 
 ## 📈 Part 7: Sorting Algorithms — All 5
 
-> 🔗 **Deep dive (Quick+Merge internals, TimSort, Dutch Flag):**
-> 📖 [02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md)
+🔗 **Deep dive (Quick+Merge internals, TimSort, Dutch Flag):**
+📖 [02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md)
 
 ### 1. Bubble Sort — O(n²) avg, O(n) best with flag
 
@@ -1222,14 +1216,14 @@ private int partition(int[] arr, int low, int high) {
 
 
 
-> 🔬 **Section Challenge — 📈 Part 7: Sorting Algorithms — All 5**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+🔬 **Section Challenge — 📈 Part 7: Sorting Algorithms — All 5**
+
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
+
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## 📊 Part 8: Frequency & Duplicates
 
@@ -1254,12 +1248,12 @@ Finding most repeated, least repeated, duplicates: all O(n²) with nested loops.
 
 ### 🚀 GO LEARN — HashMap
 
-> **STOP** — The O(n) solution for ALL frequency problems uses HashMap.
->
-> 📖 [01e_HashTable.md](01e_HashTable.md)
-> Focus on: `put`, `get`, `getOrDefault`, `containsKey`, `merge`, `entrySet`
->
-> ⬅️ **RETURN CHECKPOINT** — Apply HashMap below.
+**STOP** — The O(n) solution for ALL frequency problems uses HashMap.
+
+📖 [01e_HashTable.md](01e_HashTable.md)
+Focus on: `put`, `get`, `getOrDefault`, `containsKey`, `merge`, `entrySet`
+
+⬅️ **RETURN CHECKPOINT** — Apply HashMap below.
 
 ---
 
@@ -1404,9 +1398,9 @@ private void reverse(int[] arr, int l, int r) {
 
 ## 🌀 Part 10: Recursion in Arrays
 
-> 📖 **GO LEARN Recursion fundamentals first if new:**
-> 📖 [03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md)
-> ⬅️ Return here to apply it to arrays.
+📖 **GO LEARN Recursion fundamentals first if new:**
+📖 [03b_Recursion_Fundamentals.md](../03_Algorithms/03b_Recursion_Fundamentals.md)
+⬅️ Return here to apply it to arrays.
 
 ### Recursive Sum
 ```java
@@ -1438,34 +1432,34 @@ public void reverse(int[] arr, int left, int right) {
 }
 ```
 
-> 🧠 **Key insight:** Recursion on arrays is often the brute force for subsequences and subsets. DP is the optimization: recursion + memoization.
+🧠 **Key insight:** Recursion on arrays is often the brute force for subsequences and subsets. DP is the optimization: recursion + memoization.
 
 ---
 
 
 
-> 🔬 **Section Challenge — 🌀 Part 10: Recursion in Arrays**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — 🌀 Part 10: Recursion in Arrays**
+
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
+
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
 
 ## ⚡ Part 11: Pattern Connections Hub
 
-> **Master map:** Array problem type → Pattern → DS needed → Where to learn
+**Master map:** Array problem type → Pattern → DS needed → Where to learn
 
 | Problem Type | Pattern | DS Used | Study File | Example |
 |---|---|---|---|---|
@@ -1517,9 +1511,9 @@ Why and what are the 3 fixes?
 
 ## ✅ You Know Arrays — Now Practice! (JIT Study Path)
 
-> **Follow this exact order. Don't skip steps.**
->
-> **Step 1 — Basic Problems (Warm Up):**
+**Follow this exact order. Don't skip steps.**
+
+**Step 1 — Basic Problems (Warm Up):**
 
 | Problem | LC # | Pattern | What to Learn |
 |---|---|---|---|
@@ -1529,16 +1523,16 @@ Why and what are the 3 fixes?
 | Missing Number | LC 268 | Math / XOR | n*(n+1)/2 or XOR trick |
 | Maximum Subarray | LC 53 | Kadane's algo | dp[i] = max(num, dp[i-1]+num) |
 
->
-> **Step 2 — Hit a wall? Learn these patterns:**
-> - Contiguous subarray → **[Sliding Window Template](../04_Patterns_Templates/01_Sliding_Window.md)**
-> - In-place operations → **[Two Pointers Template](../04_Patterns_Templates/07_Two_Pointers_Complete.md)**
-> - "Sum equals K"  → **[Prefix Sum Guide](../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)**
->
-> **Step 3 — Apply patterns on harder problems:**
-> 👉 **[Go to Arrays Problem Solving File →](../05_Problem_Solving/04_Arrays.md)**
->
-> **Step 4 — Competitive Practice:**
+
+**Step 2 — Hit a wall? Learn these patterns:**
+- Contiguous subarray → **[Sliding Window Template](../04_Patterns_Templates/01_Sliding_Window.md)**
+- In-place operations → **[Two Pointers Template](../04_Patterns_Templates/07_Two_Pointers_Complete.md)**
+- "Sum equals K"  → **[Prefix Sum Guide](../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md)**
+
+**Step 3 — Apply patterns on harder problems:**
+👉 **[Go to Arrays Problem Solving File →](../05_Problem_Solving/04_Arrays.md)**
+
+**Step 4 — Competitive Practice:**
 
 | CF Problem | Topic | Difficulty |
 |---|---|---|
@@ -1546,12 +1540,12 @@ Why and what are the 3 fixes?
 | [CF 158B — Taxi](https://codeforces.com/problemset/problem/158/B) | Array grouping | ⭐ Easy |
 | [CF 1515C — Phoenix and Towers](https://codeforces.com/problemset/problem/1515/C) | Array construction | ⭐⭐ Medium |
 
->
-> 🌍 **Real-World Connections:**
-> - **Netflix** stores your watch history as an array, uses sliding window to compute "trending in last 7 days"
-> - **Stock price APIs** return arrays; max profit = max(price[i] - min(price[0..i-1]))
-> - **Sensor data** (IoT, medical devices) uses circular arrays / ring buffers
-> - **Git diff** (add/remove lines) uses LCS algorithm on arrays of lines
+
+🌍 **Real-World Connections:**
+- **Netflix** stores your watch history as an array, uses sliding window to compute "trending in last 7 days"
+- **Stock price APIs** return arrays; max profit = max(price[i] - min(price[0..i-1]))
+- **Sensor data** (IoT, medical devices) uses circular arrays / ring buffers
+- **Git diff** (add/remove lines) uses LCS algorithm on arrays of lines
 
 ---
 
@@ -1560,7 +1554,7 @@ Why and what are the 3 fixes?
 
 ## 🏋️ Practice & Interview Questions — Arrays
 
-> Attempt each before looking at the answer. Time yourself.
+Attempt each before looking at the answer. Time yourself.
 
 ### Predict / Trace
 **Q1.** What is the output? `int[] a = {1,2,3}; int[] b = a; b[0] = 99; System.out.println(a[0]);`
@@ -1744,7 +1738,7 @@ CPU loads data in cache lines (~64 bytes). Arrays store elements contiguously �
 
 ## 🧠 Deep Conceptual Questions — Arrays & Memory
 
-> These questions test your REASONING, not just recall. Think before expanding.
+These questions test your REASONING, not just recall. Think before expanding.
 
 **C1. Why is array access O(1)?**
 <details><summary>Deep Answer</summary>

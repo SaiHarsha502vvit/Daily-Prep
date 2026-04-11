@@ -1,5 +1,5 @@
-> **Navigation**: [< Previous](Ch15_Concurrency_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
-> 🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md) — debugging concurrency in prod
+**Navigation**: [< Previous](Ch15_Concurrency_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md) — debugging concurrency in prod
 
 ---
 
@@ -30,9 +30,8 @@
 ```
 
 **Flow:**
-- [T1] [T2] [T3] [T4] / ↓ ↓ ↓ ↓ / Idle Working Idle Worki
-- ↓
-- Task5, Task6..
+1. [T1] [T2] [T3] [T4] / ↓ ↓ ↓ ↓ / Idle Working Idle Worki
+2. Task5, Task6..
 
 ```mermaid
 flowchart TD
@@ -92,11 +91,9 @@ ThreadPoolExecutor production = new ThreadPoolExecutor(
 ```
 
 **Flow:**
-- AbortPolicy (default) — throws RejectedExecutionExcepti
-- ↓
-- DiscardPolicy — silently drops the task (dangerous!)
-- ↓
-- PRODUCTION RULE: Almost always use CallerRunsPolicy
+1. AbortPolicy (default) — throws RejectedExecutionExcepti
+2. DiscardPolicy — silently drops the task (dangerous!)
+3. PRODUCTION RULE: Almost always use CallerRunsPolicy
 
 ```mermaid
 flowchart TD
@@ -138,25 +135,25 @@ executor.awaitTermination(10, TimeUnit.SECONDS);
 
 ---
 
-> 🔬 **Section Challenge — Executor Framework & Thread Pools**
->
-> **Challenge 1 (Design):** Your service processes 1000 HTTP requests/sec, each taking ~200ms I/O. How many threads do you size your pool to? Show the formula.
-> <details><summary>Answer</summary>
->
-> Formula: `Threads = CPU cores × (1 + Wait time/Compute time)`. I/O-bound: wait=200ms, compute≈5ms → ratio=40. On a 4-core machine: `4 × (1 + 40) = 164 threads`. Start with this and load-test. Also needs a bounded queue to handle traffic spikes without OOM.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `Executors.newCachedThreadPool()` is used to submit 50,000 tasks that each make a database call. What disaster happens?
-> <details><summary>Answer</summary>
->
-> `newCachedThreadPool()` creates a new thread for every task if no idle thread is available (unbounded). 50,000 tasks → potentially 50,000 threads → ~50GB stack memory → `OutOfMemoryError`. Fix: `new ThreadPoolExecutor(50, 200, 60s, LinkedBlockingQueue(10000), CallerRunsPolicy)` — bounded threads + bounded queue + backpressure.
-> </details>
->
-> **Challenge 3 (Reasoning):** `submit(Runnable)` vs `execute(Runnable)` — when does the choice matter for exception handling?
-> <details><summary>Answer</summary>
->
-> `execute()`: uncaught exception → `UncaughtExceptionHandler` → then thread dies. `submit()`: exception is captured in the returned `Future` — silently swallowed unless `future.get()` is called. In practice: if you discard the Future from `submit()`, exceptions disappear. Always either: use `execute()` + set UncaughtExceptionHandler, OR use `submit()` + call `future.get()` (possibly in `.whenComplete()`).
-> </details>
+🔬 **Section Challenge — Executor Framework & Thread Pools**
+
+**Challenge 1 (Design):** Your service processes 1000 HTTP requests/sec, each taking ~200ms I/O. How many threads do you size your pool to? Show the formula.
+<details><summary>Answer</summary>
+
+Formula: `Threads = CPU cores × (1 + Wait time/Compute time)`. I/O-bound: wait=200ms, compute≈5ms → ratio=40. On a 4-core machine: `4 × (1 + 40) = 164 threads`. Start with this and load-test. Also needs a bounded queue to handle traffic spikes without OOM.
+</details>
+
+**Challenge 2 (Bug Hunt):** `Executors.newCachedThreadPool()` is used to submit 50,000 tasks that each make a database call. What disaster happens?
+<details><summary>Answer</summary>
+
+`newCachedThreadPool()` creates a new thread for every task if no idle thread is available (unbounded). 50,000 tasks → potentially 50,000 threads → ~50GB stack memory → `OutOfMemoryError`. Fix: `new ThreadPoolExecutor(50, 200, 60s, LinkedBlockingQueue(10000), CallerRunsPolicy)` — bounded threads + bounded queue + backpressure.
+</details>
+
+**Challenge 3 (Reasoning):** `submit(Runnable)` vs `execute(Runnable)` — when does the choice matter for exception handling?
+<details><summary>Answer</summary>
+
+`execute()`: uncaught exception → `UncaughtExceptionHandler` → then thread dies. `submit()`: exception is captured in the returned `Future` — silently swallowed unless `future.get()` is called. In practice: if you discard the Future from `submit()`, exceptions disappear. Always either: use `execute()` + set UncaughtExceptionHandler, OR use `submit()` + call `future.get()` (possibly in `.whenComplete()`).
+</details>
 
 # PART 9: COMPLETABLEFUTURE — Async Programming
 
@@ -176,19 +173,13 @@ executor.awaitTermination(10, TimeUnit.SECONDS);
 ```
 
 **Flow:**
-- Future PROBLEMS:
-- ↓
-- • get() blocks the calling thread
-- ↓
-- • Can't chain multiple async operations
-- ↓
-- • No way to combine futures
-- ↓
-- • No callback support
-- ↓
-- CompletableFuture SOLVES ALL OF THESE.
-- ↓
-- It's Java's Promise (like JavaScript Promise).
+1. Future PROBLEMS:
+2. • get() blocks the calling thread
+3. • Can't chain multiple async operations
+4. • No way to combine futures
+5. • No callback support
+6. CompletableFuture SOLVES ALL OF THESE.
+7. It's Java's Promise (like JavaScript Promise).
 
 ```mermaid
 flowchart TD
@@ -278,29 +269,29 @@ CompletableFuture<Object> fastest = CompletableFuture.anyOf(
 );
 ```
 
-> 🔬 **Section Challenge — CompletableFuture Combining**
->
-> **Challenge 1 (Reasoning):** `thenApply(fn)` vs `thenApplyAsync(fn)` — you chain 3 `thenApply()` calls. Which thread executes each one?
-> <details><summary>Answer</summary>
->
-> `thenApply()` runs the function on WHICHEVER thread completed the previous stage (could be the common pool, a custom executor, or the calling thread if the future was already complete). All 3 `thenApply()` calls may run on the SAME thread sequentially. `thenApplyAsync()` always submits to the ForkJoinPool (or specified executor) — guaranteeing async execution even if the previous stage is already complete. Use `async` variants when the transformation is I/O-bound or CPU-heavy.
-> </details>
->
-> **Challenge 2 (Design):** Load a user profile + order history + recommendations concurrently (3 independent calls), then combine them into a response. Write it with `CompletableFuture`.
-> <details><summary>Answer</summary>
->
-> ```java
-> CompletableFuture<User> userF = CompletableFuture.supplyAsync(() -> fetchUser(id));
-> CompletableFuture<Orders> ordersF = CompletableFuture.supplyAsync(() -> fetchOrders(id));
-> CompletableFuture<Recs> recsF = CompletableFuture.supplyAsync(() -> fetchRecs(id));
->
-> CompletableFuture.allOf(userF, ordersF, recsF).thenRun(() -> {
->     Dashboard d = new Dashboard(userF.join(), ordersF.join(), recsF.join());
->     sendResponse(d);
-> });
-> ```
-> `allOf()` waits for all 3. `join()` is safe here because we know all futures are complete.
-> </details>
+🔬 **Section Challenge — CompletableFuture Combining**
+
+**Challenge 1 (Reasoning):** `thenApply(fn)` vs `thenApplyAsync(fn)` — you chain 3 `thenApply()` calls. Which thread executes each one?
+<details><summary>Answer</summary>
+
+`thenApply()` runs the function on WHICHEVER thread completed the previous stage (could be the common pool, a custom executor, or the calling thread if the future was already complete). All 3 `thenApply()` calls may run on the SAME thread sequentially. `thenApplyAsync()` always submits to the ForkJoinPool (or specified executor) — guaranteeing async execution even if the previous stage is already complete. Use `async` variants when the transformation is I/O-bound or CPU-heavy.
+</details>
+
+**Challenge 2 (Design):** Load a user profile + order history + recommendations concurrently (3 independent calls), then combine them into a response. Write it with `CompletableFuture`.
+<details><summary>Answer</summary>
+
+```java
+CompletableFuture<User> userF = CompletableFuture.supplyAsync(() -> fetchUser(id));
+CompletableFuture<Orders> ordersF = CompletableFuture.supplyAsync(() -> fetchOrders(id));
+CompletableFuture<Recs> recsF = CompletableFuture.supplyAsync(() -> fetchRecs(id));
+
+CompletableFuture.allOf(userF, ordersF, recsF).thenRun(() -> {
+    Dashboard d = new Dashboard(userF.join(), ordersF.join(), recsF.join());
+    sendResponse(d);
+});
+```
+`allOf()` waits for all 3. `join()` is safe here because we know all futures are complete.
+</details>
 
 ## Error Handling
 
@@ -360,19 +351,13 @@ CompletableFuture<String> logged = CompletableFuture
 ```
 
 **Flow:**
-- COMPLETABLEFUTURE CHEAT SHEET
-- ↓
-- Operation Description
-- ↓
-- supplyAsync() Start async with return value
-- ↓
-- runAsync() Start async, no return value
-- ↓
-- thenApply() Transform result (sync)
-- ↓
-- thenApplyAsync() Transform result (async, different thr
-- ↓
-- thenCompose() Chain another CF (flatMap)
+1. COMPLETABLEFUTURE CHEAT SHEET
+2. Operation Description
+3. supplyAsync() Start async with return value
+4. runAsync() Start async, no return value
+5. thenApply() Transform result (sync)
+6. thenApplyAsync() Transform result (async, different thr
+7. thenCompose() Chain another CF (flatMap)
 
 ```mermaid
 flowchart TD
@@ -467,19 +452,13 @@ if (!sl.validate(stamp)) {    // Check if a write happened
 ```
 
 **Flow:**
-- synchronized vs ReentrantLock
-- ↓
-- Feature synchronized ReentrantLock
-- ↓
-- Auto-release ✅ Yes ❌ Manual (finally)
-- ↓
-- tryLock ❌ No ✅ Yes
-- ↓
-- Fairness ❌ No ✅ new RL(true)
-- ↓
-- Multiple conditions ❌ 1 wait set ✅ newCondition()
-- ↓
-- Interruptible ❌ No ✅ lockInterruptibly
+1. synchronized vs ReentrantLock
+2. Feature synchronized ReentrantLock
+3. Auto-release ✅ Yes ❌ Manual (finally)
+4. tryLock ❌ No ✅ Yes
+5. Fairness ❌ No ✅ new RL(true)
+6. Multiple conditions ❌ 1 wait set ✅ newCondition()
+7. Interruptible ❌ No ✅ lockInterruptibly
 
 ```mermaid
 flowchart TD
@@ -502,40 +481,40 @@ flowchart TD
 
 ---
 
-> 🔬 **Section Challenge — ReentrantLock**
->
-> **Challenge 1 (Bug Hunt):** What's wrong with this `ReentrantLock` usage?
-> ```java
-> lock.lock();
-> processData();
-> lock.unlock();
-> ```
-> <details><summary>Answer</summary>
->
-> If `processData()` throws an exception, `lock.unlock()` is never called — the lock is held forever, causing all other threads trying to acquire it to block indefinitely. **Always** use try-finally:
-> ```java
-> lock.lock();
-> try { processData(); }
-> finally { lock.unlock(); } // guaranteed regardless of exception
-> ```
-> </details>
->
-> **Challenge 2 (Design):** A cache that allows unlimited concurrent reads but exclusive writes. Which lock type and which methods?
-> <details><summary>Answer</summary>
->
-> `ReentrantReadWriteLock`. `readLock().lock()` for reads (multiple simultaneous readers allowed). `writeLock().lock()` for writes (exclusive — waits for all readers to finish and blocks new readers). Pattern:
-> ```java
-> ReadWriteLock rwLock = new ReentrantReadWriteLock();
-> // reads: rwLock.readLock().lock() / unlock()
-> // writes: rwLock.writeLock().lock() / unlock()
-> ```
-> </details>
->
-> **Challenge 3 (Reasoning):** `tryLock()` returns false. Should you retry immediately, back off, or give up? Design the policy.
-> <details><summary>Answer</summary>
->
-> Depends on context: (1) **Deadlock prevention**: retry with exponential backoff + jitter (prevents thundering herd). (2) **Best-effort (skip if busy)**: return immediately if `tryLock()` fails — don't block. (3) **Bounded wait**: `tryLock(100, MILLISECONDS)` — throw `TooManyRequestsException` if still fails. Immediate retry without backoff = spin — wastes CPU and increases contention. Always add jitter in distributed retry.
-> </details>
+🔬 **Section Challenge — ReentrantLock**
+
+**Challenge 1 (Bug Hunt):** What's wrong with this `ReentrantLock` usage?
+```java
+lock.lock();
+processData();
+lock.unlock();
+```
+<details><summary>Answer</summary>
+
+If `processData()` throws an exception, `lock.unlock()` is never called — the lock is held forever, causing all other threads trying to acquire it to block indefinitely. **Always** use try-finally:
+```java
+lock.lock();
+try { processData(); }
+finally { lock.unlock(); } // guaranteed regardless of exception
+```
+</details>
+
+**Challenge 2 (Design):** A cache that allows unlimited concurrent reads but exclusive writes. Which lock type and which methods?
+<details><summary>Answer</summary>
+
+`ReentrantReadWriteLock`. `readLock().lock()` for reads (multiple simultaneous readers allowed). `writeLock().lock()` for writes (exclusive — waits for all readers to finish and blocks new readers). Pattern:
+```java
+ReadWriteLock rwLock = new ReentrantReadWriteLock();
+// reads: rwLock.readLock().lock() / unlock()
+// writes: rwLock.writeLock().lock() / unlock()
+```
+</details>
+
+**Challenge 3 (Reasoning):** `tryLock()` returns false. Should you retry immediately, back off, or give up? Design the policy.
+<details><summary>Answer</summary>
+
+Depends on context: (1) **Deadlock prevention**: retry with exponential backoff + jitter (prevents thundering herd). (2) **Best-effort (skip if busy)**: return immediately if `tryLock()` fails — don't block. (3) **Bounded wait**: `tryLock(100, MILLISECONDS)` — throw `TooManyRequestsException` if still fails. Immediate retry without backoff = spin — wastes CPU and increases contention. Always add jitter in distributed retry.
+</details>
 
 # PART 11: VIRTUAL THREADS (Java 21 — Project Loom)
 
@@ -568,29 +547,18 @@ flowchart TD
 ```
 
 **Flow:**
-- T1
-- ↓
-- OS T1
-- ↓
-- T1
-- ↓
-- OS T2
-- ↓
-- T2
-- ↓
-- OS T1
-- ↓
-- T2
-- ↓
-- OS T2
-- ↓
-- v1
-- ↓
-- OS T2
-- ↓
-- v1
-- ↓
-- Carrier T1
+1. T1
+2. OS T1
+3. T1
+4. OS T2
+5. T2
+6. OS T1
+7. T2
+8. OS T2
+9. v1
+10. OS T2
+11. v1
+12. Carrier T1
 
 ```mermaid
 flowchart TD
@@ -684,19 +652,13 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 ```
 
 **Flow:**
-- VIRTUAL THREADS — WHEN TO USE
-- ↓
-- ✅ USE for: ❌ DON'T USE for:
-- ↓
-- • I/O-bound tasks (HTTP, DB, files) • CPU-bound computa
-- ↓
-- simpler I/O-bound concurrent code
-- ↓
-- GOTCHAS:
-- ↓
-- • Not faster for CPU work — only for I/O waiting
-- ↓
-- STRUCTURED CONCURRENCY (Preview, Java 21+):
+1. VIRTUAL THREADS — WHEN TO USE
+2. ✅ USE for: ❌ DON'T USE for:
+3. • I/O-bound tasks (HTTP, DB, files) • CPU-bound computa
+4. simpler I/O-bound concurrent code
+5. GOTCHAS:
+6. • Not faster for CPU work — only for I/O waiting
+7. STRUCTURED CONCURRENCY (Preview, Java 21+):
 
 ```mermaid
 flowchart TD
@@ -719,40 +681,40 @@ flowchart TD
 
 ---
 
-> 🔬 **Section Challenge — Virtual Threads**
->
-> **Challenge 1 (Reasoning):** You migrate a Spring Boot app to virtual threads. Performance gets WORSE for batch data processing. Why?
-> <details><summary>Answer</summary>
->
-> Virtual threads only help I/O-bound tasks (where a thread is mostly blocked waiting). CPU-bound batch processing (sorting, transforming millions of records) keeps threads continuously RUNNING — no I/O blocking — so virtual threads provide zero benefit (carrier thread is always occupied). You still need the same number of physical CPU cores. Use `ForkJoinPool` with work-stealing for CPU-bound parallel work instead.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** This code causes virtual thread pinning. Identify and fix:
-> ```java
-> synchronized(dbPool) {
->     Connection conn = dbPool.borrow();
->     conn.query("SELECT ..."); // I/O call while holding synchronized lock
-> }
-> ```
-> <details><summary>Answer</summary>
->
-> `synchronized` block + I/O = **carrier thread is pinned** — the virtual thread cannot be unmounted from the carrier during the I/O wait. This defeats the purpose of virtual threads. Fix:
-> ```java
-> ReentrantLock lock = new ReentrantLock(); // ← not synchronized
-> lock.lock();
-> try {
->     Connection conn = dbPool.borrow();
->     conn.query("SELECT ..."); // VT can now unmount during I/O!
-> } finally { lock.unlock(); }
-> ```
-> Always replace `synchronized` with `ReentrantLock` before switching to virtual threads.
-> </details>
->
-> **Challenge 3 (Design):** Should you use a thread pool with virtual threads? `Executors.newVirtualThreadPerTaskExecutor()` vs `Executors.newFixedThreadPool(200)`?
-> <details><summary>Answer</summary>
->
-> For I/O-bound: `newVirtualThreadPerTaskExecutor()` — create a new virtual thread per task, no pooling needed (virtual threads are cheap: ~few hundred bytes vs ~1MB for platform threads). The JVM manages carrier thread reuse internally. Thread POOLING of virtual threads is an anti-pattern — it defeats their purpose. Remove any thread-pool size caps from your I/O tasks. For CPU-bound: still use `newFixedThreadPool(N_CPU_CORES)` — more threads won't help.
-> </details>
+🔬 **Section Challenge — Virtual Threads**
+
+**Challenge 1 (Reasoning):** You migrate a Spring Boot app to virtual threads. Performance gets WORSE for batch data processing. Why?
+<details><summary>Answer</summary>
+
+Virtual threads only help I/O-bound tasks (where a thread is mostly blocked waiting). CPU-bound batch processing (sorting, transforming millions of records) keeps threads continuously RUNNING — no I/O blocking — so virtual threads provide zero benefit (carrier thread is always occupied). You still need the same number of physical CPU cores. Use `ForkJoinPool` with work-stealing for CPU-bound parallel work instead.
+</details>
+
+**Challenge 2 (Bug Hunt):** This code causes virtual thread pinning. Identify and fix:
+```java
+synchronized(dbPool) {
+    Connection conn = dbPool.borrow();
+    conn.query("SELECT ..."); // I/O call while holding synchronized lock
+}
+```
+<details><summary>Answer</summary>
+
+`synchronized` block + I/O = **carrier thread is pinned** — the virtual thread cannot be unmounted from the carrier during the I/O wait. This defeats the purpose of virtual threads. Fix:
+```java
+ReentrantLock lock = new ReentrantLock(); // ← not synchronized
+lock.lock();
+try {
+    Connection conn = dbPool.borrow();
+    conn.query("SELECT ..."); // VT can now unmount during I/O!
+} finally { lock.unlock(); }
+```
+Always replace `synchronized` with `ReentrantLock` before switching to virtual threads.
+</details>
+
+**Challenge 3 (Design):** Should you use a thread pool with virtual threads? `Executors.newVirtualThreadPerTaskExecutor()` vs `Executors.newFixedThreadPool(200)`?
+<details><summary>Answer</summary>
+
+For I/O-bound: `newVirtualThreadPerTaskExecutor()` — create a new virtual thread per task, no pooling needed (virtual threads are cheap: ~few hundred bytes vs ~1MB for platform threads). The JVM manages carrier thread reuse internally. Thread POOLING of virtual threads is an anti-pattern — it defeats their purpose. Remove any thread-pool size caps from your I/O tasks. For CPU-bound: still use `newFixedThreadPool(N_CPU_CORES)` — more threads won't help.
+</details>
 
 # 🎨 Part 12: Concurrency Patterns in Production
 
@@ -834,19 +796,13 @@ for (int i = 0; i < tasks.size(); i++) {
 ```
 
 **Flow:**
-- PRODUCTION CONCURRENCY CHECKLIST
-- ↓
-- □ Set bounded queues (prevent OOM)
-- ↓
-- □ Name your threads (ThreadFactory with meaningful name
-- ↓
-- □ Always handle InterruptedException properly
-- ↓
-- □ Use try-finally for lock.unlock()
-- ↓
-- □ Prefer concurrent collections over synchronized wrapp
-- ↓
-- □ Use CompletableFuture over raw Future
+1. PRODUCTION CONCURRENCY CHECKLIST
+2. □ Set bounded queues (prevent OOM)
+3. □ Name your threads (ThreadFactory with meaningful name
+4. □ Always handle InterruptedException properly
+5. □ Use try-finally for lock.unlock()
+6. □ Prefer concurrent collections over synchronized wrapp
+7. □ Use CompletableFuture over raw Future
 
 ```mermaid
 flowchart TD
@@ -873,7 +829,7 @@ flowchart TD
 
 # 🔴 PART 13: THREAD POOL SIZING — The Science Behind the Number
 
-> One of the most common interview questions AND real production mistakes: "How many threads should my pool have?"
+One of the most common interview questions AND real production mistakes: "How many threads should my pool have?"
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -950,7 +906,7 @@ ExecutorService ioPool = new ThreadPoolExecutor(
 
 # 🔴 PART 14: thenApply vs thenApplyAsync — The Thread Model
 
-> This is a subtle but critical distinction that causes hard-to-reproduce bugs in production.
+This is a subtle but critical distinction that causes hard-to-reproduce bugs in production.
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -1097,7 +1053,7 @@ ForkJoinPool ioForkJoinPool = new ForkJoinPool(100);  // 100 worker threads
 
 # 🔴 PART 16: Virtual Thread Pinning — The Critical Gotcha
 
-> Virtual threads are NOT magic. One specific pattern completely breaks them: `synchronized` blocks.
+Virtual threads are NOT magic. One specific pattern completely breaks them: `synchronized` blocks.
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
@@ -1187,7 +1143,7 @@ try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
 
 ---
 
-> **Previous**: [Part 1 — Thread Fundamentals, synchronized, Atomic, Collections ←](Ch15_Concurrency_Core.md)
+**Previous**: [Part 1 — Thread Fundamentals, synchronized, Atomic, Collections ←](Ch15_Concurrency_Core.md)
 
 
 ---

@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch35_SB_Lombok_DTOs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch37_SB_Controllers_REST.md)
+**Navigation**: [< Previous](Ch35_SB_Lombok_DTOs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch37_SB_Controllers_REST.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 6: Service Layer & Repository Patterns
 
-> **The Architecture of Clean Business Logic**
-> _"Services orchestrate, Repositories persist"_
+**The Architecture of Clean Business Logic**
+_"Services orchestrate, Repositories persist"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why Service Layer Pattern? / • Fat controller anti
-- ↓
-- HOW: How to Structure Service Layer? / • Interface + Im
-- ↓
-- WHEN: When to Use Service vs Repository? / SERVICE: Bus
-- ↓
-- WHICH: Which Patterns to Use? / ESSENTIAL: @Service, @R
+1. WHY: Why Service Layer Pattern? / • Fat controller anti
+2. HOW: How to Structure Service Layer? / • Interface + Im
+3. WHEN: When to Use Service vs Repository? / SERVICE: Bus
+4. WHICH: Which Patterns to Use? / ESSENTIAL: @Service, @R
 
 ```mermaid
 flowchart TD
@@ -145,19 +142,13 @@ flowchart TD
 ```
 
 **Flow:**
-- THE SERVICE LAYER PURPOSE
-- ↓
-- WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern):
-- ↓
-- @RestController
-- ↓
-- public class OrderController {
-- ↓
-- @PostMapping('/orders')
-- ↓
-- public Order createOrder(@RequestBody OrderRequest req)
-- ↓
-- double total = 0;
+1. THE SERVICE LAYER PURPOSE
+2. WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern):
+3. @RestController
+4. public class OrderController {
+5. @PostMapping('/orders')
+6. public Order createOrder(@RequestBody OrderRequest req)
+7. double total = 0;
 
 ```mermaid
 flowchart TD
@@ -680,14 +671,14 @@ public interface OrderSpecification {
 
 
 
-> 🔬 **Section Challenge — Chapter 4: Service Interface Pattern**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 4: Service Interface Pattern**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 📌 The Repository Layer
 
@@ -742,17 +733,12 @@ public interface OrderSpecification {
 ```
 
 **Flow:**
-- SPRING DATA JPA REPOSITORY HIERARCHY / Repository<T,
-- ↓
-- CrudRepository<T, ID> ← Basic CRUD operations / •
-- ↓
-- ListCrudRepository<T, ID> ← Returns List instead
-- ↓
-- PagingAndSortingRepository<T, ID> ← + Pagination
-- ↓
-- JpaRepository<T, ID> ← + JPA specific features /
-- ↓
-- JpaSpecificationExecutor<T> ← + Dynamic queries /
+1. SPRING DATA JPA REPOSITORY HIERARCHY / Repository<T,
+2. CrudRepository<T, ID> ← Basic CRUD operations / •
+3. ListCrudRepository<T, ID> ← Returns List instead
+4. PagingAndSortingRepository<T, ID> ← + Pagination
+5. JpaRepository<T, ID> ← + JPA specific features /
+6. JpaSpecificationExecutor<T> ← + Dynamic queries /
 
 ```mermaid
 flowchart TD
@@ -818,14 +804,14 @@ public class UserService {
 
 
 
-> 🔬 **Section Challenge — Chapter 5: Spring Data JPA Repository Fundamentals**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 5: Spring Data JPA Repository Fundamentals**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 6: Query Methods (Derived Queries)
 
@@ -1035,45 +1021,26 @@ public interface UserRepository extends JpaRepository<User, Long> {
 ```
 
 **Flow:**
-- QUERY METHOD KEYWORDS
-- ↓
-- SUBJECT KEYWORDS (Start of method name):
-- ↓
-- find...By
-- ↓
-- Query returning result(s)
-- ↓
-- find...By
-- ↓
-- Query returning result(s)
-- ↓
-- read...By
-- ↓
-- Same as find
-- ↓
-- read...By
-- ↓
-- Same as find
-- ↓
-- query...By
-- ↓
-- Same as find
-- ↓
-- query...By
-- ↓
-- Same as find
-- ↓
-- get...By
-- ↓
-- Same as find
-- ↓
-- get...By
-- ↓
-- Same as find
-- ↓
-- search...By
-- ↓
-- Same as find
+1. QUERY METHOD KEYWORDS
+2. SUBJECT KEYWORDS (Start of method name):
+3. find...By
+4. Query returning result(s)
+5. find...By
+6. Query returning result(s)
+7. read...By
+8. Same as find
+9. read...By
+10. Same as find
+11. query...By
+12. Same as find
+13. query...By
+14. Same as find
+15. get...By
+16. Same as find
+17. get...By
+18. Same as find
+19. search...By
+20. Same as find
 
 ```mermaid
 flowchart TD
@@ -1256,25 +1223,25 @@ public interface UserProjection {
 
 
 
-> 🔬 **Section Challenge — Chapter 7: Custom Queries (@Query)**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — Chapter 7: Custom Queries (@Query)**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## Chapter 8: Specifications (Dynamic Queries)
 
@@ -1395,20 +1362,20 @@ public class UserSearchCriteria {
 
 
 
-> 🔬 **Section Challenge — Chapter 8: Specifications (Dynamic Queries)**
->
-> **Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
-> <details><summary>Answer</summary>
->
-> Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
-> </details>
->
-> **Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
-> <details><summary>Answer</summary>
->
-> State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
-> </details>
->
+🔬 **Section Challenge — Chapter 8: Specifications (Dynamic Queries)**
+
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
+
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
 
 ## Chapter 9: Repository Best Practices
 
@@ -1472,19 +1439,13 @@ public class UserSearchCriteria {
 ```
 
 **Flow:**
-- REPOSITORY BEST PRACTICES
-- ↓
-- 1. USE OPTIONAL FOR SINGLE RESULTS
-- ↓
-- ✅ Optional<User> findByEmail(String email);
-- ↓
-- 2. PREFER DERIVED QUERIES FOR SIMPLE CASES
-- ↓
-- ✅ List<User> findByActiveTrue(); // Clear, type-s
-- ↓
-- 3. USE @Query FOR COMPLEX QUERIES
-- ↓
-- ✅ @Query('SELECT u FROM User u WHERE u.active = true '
+1. REPOSITORY BEST PRACTICES
+2. 1. USE OPTIONAL FOR SINGLE RESULTS
+3. ✅ Optional<User> findByEmail(String email);
+4. 2. PREFER DERIVED QUERIES FOR SIMPLE CASES
+5. ✅ List<User> findByActiveTrue(); // Clear, type-s
+6. 3. USE @Query FOR COMPLEX QUERIES
+7. ✅ @Query('SELECT u FROM User u WHERE u.active = true '
 
 ```mermaid
 flowchart TD
@@ -1599,19 +1560,13 @@ REPOSITORY LAYER:
 ```
 
 **Flow:**
-- SERVICE LAYER:
-- ↓
-- □ @Service + @RequiredArgsConstructor + @Slf4j
-- ↓
-- □ All dependencies are final (immutable)
-- ↓
-- □ Return DTOs, not entities
-- ↓
-- □ Log important operations
-- ↓
-- □ Throw meaningful exceptions (not generic Exception)
-- ↓
-- □ Private helper methods for complex logic
+1. SERVICE LAYER:
+2. □ @Service + @RequiredArgsConstructor + @Slf4j
+3. □ All dependencies are final (immutable)
+4. □ Return DTOs, not entities
+5. □ Log important operations
+6. □ Throw meaningful exceptions (not generic Exception)
+7. □ Private helper methods for complex logic
 
 ```mermaid
 flowchart TD

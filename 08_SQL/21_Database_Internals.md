@@ -1,11 +1,11 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [SQL Guide](01_Foundations_Database_Basics.md)
-> 🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [SQL Guide](01_Foundations_Database_Basics.md)
+🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md)
 
 ---
 
 # ⚙️ Database Internals — How Databases Actually Work
 
-> Know what happens beneath your SQL queries — B-Trees, WAL, MVCC, Buffer Pool, Query Plans
+Know what happens beneath your SQL queries — B-Trees, WAL, MVCC, Buffer Pool, Query Plans
 
 ---
 
@@ -52,29 +52,18 @@
 ```
 
 **Flow:**
-- Root: 55 > 30, 55 < 70
-- ↓
-- go middle child
-- ↓
-- Internal: 55 > 50, 55 < 60
-- ↓
-- go third child
-- ↓
-- Leaf: Found 55!
-- ↓
-- return row data
-- ↓
-- 2. If page has space
-- ↓
-- insert in sorted order
-- ↓
-- 3. If page is full
-- ↓
-- SPLIT into two half-full pages
-- ↓
-- If parent is full
-- ↓
-- split again (cascades up)
+1. Root: 55 > 30, 55 < 70
+2. go middle child
+3. Internal: 55 > 50, 55 < 60
+4. go third child
+5. Leaf: Found 55!
+6. return row data
+7. 2. If page has space
+8. insert in sorted order
+9. 3. If page is full
+10. SPLIT into two half-full pages
+11. If parent is full
+12. split again (cascades up)
 
 ```mermaid
 flowchart TD
@@ -100,21 +89,21 @@ flowchart TD
 
 ### Clustered vs Non-Clustered Index
 
-> CLUSTERED INDEX (Primary Key):
-> → Table data is PHYSICALLY sorted by this key on disk
-> → Only ONE per table (you can only sort data one way)
-> → Leaf pages contain the ACTUAL ROW data
->
-> NON-CLUSTERED INDEX (Secondary):
-> → Separate B-Tree with its own leaf pages
-> → Leaf pages contain: index key + pointer to actual row
-> → Lookup: find key in index B-Tree → follow pointer to row
-> → Extra hop = slightly slower than clustered
->
-> COVERING INDEX:
-> → Index contains ALL columns needed by query
-> → No need to visit actual table row! (index-only scan)
-> → CREATE INDEX idx ON orders(customer_id) INCLUDE (total, status)
+CLUSTERED INDEX (Primary Key):
+→ Table data is PHYSICALLY sorted by this key on disk
+→ Only ONE per table (you can only sort data one way)
+→ Leaf pages contain the ACTUAL ROW data
+
+NON-CLUSTERED INDEX (Secondary):
+→ Separate B-Tree with its own leaf pages
+→ Leaf pages contain: index key + pointer to actual row
+→ Lookup: find key in index B-Tree → follow pointer to row
+→ Extra hop = slightly slower than clustered
+
+COVERING INDEX:
+→ Index contains ALL columns needed by query
+→ No need to visit actual table row! (index-only scan)
+→ CREATE INDEX idx ON orders(customer_id) INCLUDE (total, status)
 
 
 ---
@@ -149,21 +138,14 @@ flowchart TD
 ```
 
 **Flow:**
-- THE PROBLEM: Crash during write
-- ↓
-- data corruption
-- ↓
-- THE SOLUTION: Write-Ahead Logging
-- ↓
-- UPDATE accounts SET balance = 500 WHERE id = 1;
-- ↓
-- Step 2: Modify page in memory (buffer pool)
-- ↓
-- Step 3: Acknowledge to client: 'COMMIT OK'
-- ↓
-- Step 4: Eventually flush dirty pages to disk (checkpoin
-- ↓
-- If crash after step 1, before step 4:
+1. THE PROBLEM: Crash during write
+2. data corruption
+3. THE SOLUTION: Write-Ahead Logging
+4. UPDATE accounts SET balance = 500 WHERE id = 1;
+5. Step 2: Modify page in memory (buffer pool)
+6. Step 3: Acknowledge to client: 'COMMIT OK'
+7. Step 4: Eventually flush dirty pages to disk (checkpoin
+8. If crash after step 1, before step 4:
 
 ```mermaid
 flowchart TD
@@ -227,9 +209,8 @@ flowchart TD
 ```
 
 **Flow:**
-- Page 1 Page 5 Page 12 Page 3 ... / (clean) (dirty) (cle
-- ↓
-- Data files / (tables, / indexes)
+1. Page 1 Page 5 Page 12 Page 3 ... / (clean) (dirty) (cle
+2. Data files / (tables, / indexes)
 
 ```mermaid
 flowchart TD
@@ -242,20 +223,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Part 5: Buffer Pool & Memory Management**
->
-> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
-> <details><summary>Answer</summary>
->
-> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
-> </details>
->
-> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
-> <details><summary>Answer</summary>
->
-> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
-> </details>
->
+🔬 **Section Challenge — Part 5: Buffer Pool & Memory Management**
+
+**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+<details><summary>Answer</summary>
+
+First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+</details>
+
+**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+<details><summary>Answer</summary>
+
+Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+</details>
+
 
 ## Part 6: Query Execution — How SELECT Actually Works
 
@@ -361,20 +342,20 @@ If corruption happens during the data file write, it recovers the clean copy fro
 
 
 
-> 🔬 **Section Challenge — Part 6.3: Buffer Pool Advanced Architecture**
->
-> **Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
-> <details><summary>Answer</summary>
->
-> First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
-> </details>
->
-> **Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
-> <details><summary>Answer</summary>
->
-> Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
-> </details>
->
+🔬 **Section Challenge — Part 6.3: Buffer Pool Advanced Architecture**
+
+**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+<details><summary>Answer</summary>
+
+First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+</details>
+
+**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+<details><summary>Answer</summary>
+
+Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+</details>
+
 
 ## Part 7: Interview Quick-Fire
 
@@ -404,25 +385,16 @@ A: Run EXPLAIN ANALYZE. Common causes:
 ```
 
 **Flow:**
-- 1. Missing index
-- ↓
-- sequential scan on large table
-- ↓
-- 2. Bad join order
-- ↓
-- optimizer chose wrong plan
-- ↓
-- 3. Outdated statistics
-- ↓
-- ANALYZE/UPDATE STATISTICS
-- ↓
-- 4. Too many rows returned
-- ↓
-- check WHERE predicates
-- ↓
-- 5. Lock contention
-- ↓
-- check for long-running transactions
+1. 1. Missing index
+2. sequential scan on large table
+3. 2. Bad join order
+4. optimizer chose wrong plan
+5. 3. Outdated statistics
+6. ANALYZE/UPDATE STATISTICS
+7. 4. Too many rows returned
+8. check WHERE predicates
+9. 5. Lock contention
+10. check for long-running transactions
 
 ```mermaid
 flowchart TD

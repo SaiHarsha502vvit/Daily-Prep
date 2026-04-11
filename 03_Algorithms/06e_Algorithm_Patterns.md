@@ -1,5 +1,5 @@
-> **Navigation**: [< Previous Chapter](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md)
-> 🧠 **Mental Model**: See [Optimization Pipeline](../14_Mental_Models/14_Optimization_Pipeline.md) — systematic brute force to optimal approach
+**Navigation**: [< Previous Chapter](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md)
+🧠 **Mental Model**: See [Optimization Pipeline](../14_Mental_Models/14_Optimization_Pipeline.md) — systematic brute force to optimal approach
 
 ---
 
@@ -7,11 +7,7 @@
 
 ## 📚 NP — Completeness — the Complete Understanding
 
-
-
-
 ## P Vs Np - The Millennium Prize Problem
-
 
 **Complexity Classes**:
 P (Polynomial Time):
@@ -31,20 +27,27 @@ NP-Hard:
 - May not even be in NP (solution might not be verifiable in poly time)
 - Example: Halting Problem (undecidable!)
 VISUAL RELATIONSHIP (if P ≠ NP):
+```text
 NP-Hard
-┌─────────────────────────────────┐
-| |                                 | |
-| |     NP-Complete                 | |
-┌─────────────┼─────────────────────────────────┤
-| |             |                                 | |
-| |      NP     |    • SAT                        | |
-| |             |    • 3-SAT                      | |
-| |  ┌──────┐   |    • Vertex Cover               | |
-| |  |  P   |   |    • Hamiltonian Path           | |
-| |  |      |   |    • Traveling Salesman         | |
-| |  └──────┘   |    • Graph Coloring             | |
-| |             |    • Subset Sum                 | |
-└─────────────┴─────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│                                                                                 │
+│  ┌────────────────────────────── NP ─────────────────────────────────────────┐  │
+│  │                                                                           │  │
+│  │  ┌────────────── P ──────────────┐   ┌──────── NP-Complete ────────────┐ │  │
+│  │  │                               │   │ • SAT                            │ │  │
+│  │  │                               │   │ • 3-SAT                          │ │  │
+│  │  └───────────────────────────────┘   │ • Vertex Cover                   │ │  │
+│  │                                      │ • Hamiltonian Path               │ │  │
+│  │                                      │ • Traveling Salesman             │ │  │
+│  │                                      │ • Graph Coloring                 │ │  │
+│  │                                      │ • Subset Sum                     │ │  │
+│  │                                      └───────────────────────────────────┘ │  │
+│  └───────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                 │
+│  NP-Hard may also contain problems outside NP (e.g., Halting Problem).         │
+│                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
+```
 PROVING NP-COMPLETENESS:
 To show problem X is NP-Complete:
 1. Show X is in NP (solution verifiable in poly time)
@@ -85,62 +88,51 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 ```
 
 ```
-│ │
-│ │
-│ EXAMPLE 2: SET COVER (log n - Approximation) │
-│ ──────────────────────────────────────────── │
-│ Problem: Given universe U and sets S₁...Sₘ, find minimum number of sets │
-│ that cover all elements │
-│ │
-│ Greedy Algorithm: │
-│ 1. While uncovered elements exist: │
-│ a. Pick set Sᵢ that covers most uncovered elements │
-│ b. Add Sᵢ to solution │
-│ c. Mark covered elements │
-│ │
-│ Approximation ratio: O(log n) where n = |U| │
-│ (This is optimal unless P = NP!) │
-│ │
-│ │
-│ EXAMPLE 3: TSP with Triangle Inequality (1.5-Approximation) │
-│ ───────────────────────────────────────────────────────────── │
-│ Christofides Algorithm: │
-│ 1. Find MST of graph │
-│ 2. Find minimum weight perfect matching on odd-degree vertices │
-│ 3. Combine MST + Matching (Eulerian graph) │
-│ 4. Find Euler tour │
-│ 5. Shortcut to Hamiltonian cycle │
-│ │
-│ Approximation ratio: 3/2 = 1.5 │
-│ (Best known for metric TSP!) │
-│ │
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ EXAMPLE 2: SET COVER (log n - Approximation)                                   │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Problem: Given universe U and sets S₁...Sₘ, find minimum number of sets that  │
+│ cover all elements.                                                             │
+│                                                                                 │
+│ Greedy Algorithm:                                                               │
+│ 1. While uncovered elements exist:                                              │
+│    a. Pick set Sᵢ that covers most uncovered elements                          │
+│    b. Add Sᵢ to solution                                                        │
+│    c. Mark covered elements                                                     │
+│                                                                                 │
+│ Approximation ratio: O(log n), where n = |U|                                   │
+│ (This is optimal unless P = NP.)                                                │
+│                                                                                 │
+│ EXAMPLE 3: TSP with Triangle Inequality (1.5-Approximation)                     │
+│ Christofides Algorithm:                                                         │
+│ 1. Find MST of graph                                                            │
+│ 2. Find minimum weight perfect matching on odd-degree vertices                  │
+│ 3. Combine MST + matching (Eulerian graph)                                      │
+│ 4. Find Euler tour                                                              │
+│ 5. Shortcut to Hamiltonian cycle                                                │
+│                                                                                 │
+│ Approximation ratio: 3/2 = 1.5                                                  │
+│ (Best known for metric TSP.)                                                    │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
-- EXAMPLE 2: SET COVER (log n - Approximation)
-- ↓
-- that cover all elements
-- ↓
-- Greedy Algorithm:
-- ↓
-- 1. While uncovered elements exist:
-- ↓
-- a. Pick set Sᵢ that covers most uncovered elements
-- ↓
-- b. Add Sᵢ to solution
-- ↓
-- c. Mark covered elements
+1. EXAMPLE 2: SET COVER (log n - Approximation)
+2. Universe U + sets S₁...Sₘ; cover all elements
+3. Greedy step: choose set covering most uncovered elements
+4. Add chosen set to solution
+5. Mark those elements as covered
+6. Approximation ratio: O(log n)
 
 ```mermaid
 flowchart TD
     N1["EXAMPLE 2: SET COVER (log n - Approximation)"]
-    N2["that cover all elements"]
-    N3["Greedy Algorithm:"]
-    N4["1. While uncovered elements exist:"]
-    N5["a. Pick set Sᵢ that covers most uncovered elements"]
-    N6["b. Add Sᵢ to solution"]
-    N7["c. Mark covered elements"]
+    N2["Universe U + sets S₁...Sₘ; cover all elements"]
+    N3["Greedy step: choose set covering most uncovered elements"]
+    N4["Add chosen set to solution"]
+    N5["Mark those elements as covered"]
+    N6["Repeat until all elements are covered"]
+    N7["Approximation ratio: O(log n)"]
     N8["Approximation ratio: O(log n) where n = |U|"]
     N1 --> N2
     N2 --> N3
@@ -151,10 +143,7 @@ flowchart TD
     N7 --> N8
 ```
 
-
-
 ## 📌 Randomized Algorithms
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -172,20 +161,16 @@ flowchart TD
 │                                                                                 │
 │ RANDOMIZED QUICKSORT:                                                           │
 │ ─────────────────────                                                           │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
-- RANDOMIZED ALGORITHMS - DEEP DIVE
-- ↓
-- TWO TYPES:
-- ↓
-- 1. Las Vegas: Always correct, expected polynomial time
-- ↓
-- Example: Randomized QuickSort
-- ↓
-- Example: Primality testing, Min-Cut
-- ↓
-- RANDOMIZED QUICKSORT:
+1. RANDOMIZED ALGORITHMS - DEEP DIVE
+2. TWO TYPES:
+3. Las Vegas: Always correct, expected polynomial time
+4. Example: Randomized QuickSort
+5. Example: Primality testing, Min-Cut
+6. RANDOMIZED QUICKSORT:
 
 ```mermaid
 flowchart TD
@@ -201,7 +186,6 @@ flowchart TD
     N4 --> N5
     N5 --> N6
 ```
-
 
 ```java
 void randomizedQuickSort(int[] arr, int low, int high) {
@@ -221,42 +205,28 @@ void randomizedQuickSort(int[] arr, int low, int high) {
 ```
 
 ```
-│ │
-│ │
-│ KARGER'S MIN-CUT ALGORITHM: │
-│ ──────────────────────────── │
-│ Find minimum cut in undirected graph │
-│ │
-│ Algorithm: │
-│ 1. While more than 2 vertices: │
-│ a. Pick random edge (u, v) │
-│ b. Contract u and v into single vertex │
-│ c. Remove self-loops │
-│ 2. Return number of edges between final 2 vertices │
-│ │
-│ Probability of finding min-cut: ≥ 1/n² │
-│ Run n² log n times → P(failure) < 1/n │
-│ Total time: O(n⁴ log n) basic, O(n² log³ n) improved │
-│ │
-│ │
-│ MILLER-RABIN PRIMALITY TEST: │
-│ ───────────────────────────── │
+┌─────────────────────────────────────────────────────────────────────────────────┐
+│ KARGER'S MIN-CUT ALGORITHM                                                     │
+├─────────────────────────────────────────────────────────────────────────────────┤
+│ Find minimum cut in undirected graph.                                          │
+│                                                                                 │
+│ Algorithm:                                                                      │
+│ 1. While more than 2 vertices:                                                 │
+│    a. Pick random edge (u, v)                                                  │
+│    b. Contract u and v into single vertex                                      │
+│    c. Remove self-loops                                                        │
+│ 2. Return number of edges between final 2 vertices                             │
+│                                                                                 │
+│ Probability of finding min-cut: ≥ 1/n²                                         │
+│ Run n² log n times → P(failure) < 1/n                                          │
+│ Total time: O(n⁴ log n) basic, O(n² log³ n) improved                           │
+│                                                                                 │
+│ MILLER-RABIN PRIMALITY TEST:                                                    │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
-- KARGER'S MIN-CUT ALGORITHM:
-- ↓
-- Find minimum cut in undirected graph
-- ↓
-- Algorithm:
-- ↓
-- 1. While more than 2 vertices:
-- ↓
-- a. Pick random edge (u, v)
-- ↓
-- b. Contract u and v into single vertex
-- ↓
-- c. Remove self-loops
+1. KARGER'S MIN-CUT ALGORITHM: Find minimum cut in undirected graph Algorithm: While more than 2 vertices: a. Pick random edge (u, v) b. Contract u and v into single vertex c. Remove self-loops
 
 ```mermaid
 flowchart TD
@@ -276,7 +246,6 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
-
 
 ```java
 // Monte Carlo: May report composite as prime, never reports prime as composite
@@ -318,15 +287,7 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 // For k = 40: error probability < 10^-24
 ```
 
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
-
-
-
 ## 📝 Advanced String Algorithms
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -351,22 +312,17 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 │                                                                                 │
 │ n = text length, m = pattern length, σ = alphabet size                          │
 │                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
-- STRING MATCHING ALGORITHMS - COMPLETE COMPARISON
-- ↓
-- ALGORITHM COMPARISON:
-- ↓
-- Algorithm Preprocessing Search Time Space
-- ↓
-- Naive O(1) O(nm) O(1)
-- ↓
-- KMP O(m) O(n) O(m)
-- ↓
-- Boyer-Moore O(m + σ) O(nm) worst O(m + σ)
-- ↓
-- O(n/m) best
+1. STRING MATCHING ALGORITHMS - COMPLETE COMPARISON
+2. ALGORITHM COMPARISON:
+3. Algorithm Preprocessing Search Time Space
+4. Naive O(1) O(nm) O(1)
+5. KMP O(m) O(n) O(m)
+6. Boyer-Moore O(m + σ) O(nm) worst O(m + σ)
+7. O(n/m) best
 
 ```mermaid
 flowchart TD
@@ -386,7 +342,6 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
-
 
 ```java
 // Z-ALGORITHM: Find all occurrences of pattern in text
@@ -492,18 +447,7 @@ class AhoCorasick {
 }
 ```
 
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
-
-
-
-
-
-
 ## 🌐 Network Flow Algorithms
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -524,22 +468,17 @@ class AhoCorasick {
 │ │ Dinic (unit cap) │ O(E × √V) │ For unit capacity graphs │                     │
 │ └─────────────────────┴────────────────────────┴────────────────────────────┘   │
 │                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Flow:**
-- MAXIMUM FLOW - COMPLETE GUIDE
-- ↓
-- with edge capacities
-- ↓
-- ALGORITHM COMPARISON:
-- ↓
-- Algorithm Time Complexity Notes
-- ↓
-- Ford-Fulkerson O(E × maxFlow) Uses DFS, may not termina
-- ↓
-- Edmonds-Karp O(V × E²) Uses BFS for augmenting
-- ↓
-- Dinic O(V² × E) Level graph + blocking flow
+1. MAXIMUM FLOW - COMPLETE GUIDE
+2. with edge capacities
+3. ALGORITHM COMPARISON:
+4. Algorithm Time Complexity Notes
+5. Ford-Fulkerson O(E × maxFlow) Uses DFS, may not termina
+6. Edmonds-Karp O(V × E²) Uses BFS for augmenting
+7. Dinic O(V² × E) Level graph + blocking flow
 
 ```mermaid
 flowchart TD
@@ -559,7 +498,6 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
-
 
 ```java
 // DINIC'S ALGORITHM - O(V²E)
@@ -636,34 +574,24 @@ class Dinic {
 // 4. Circulation with Demands: Add super-source and super-sink
 ```
 
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
+🔬 **Section Challenge — 🌐 Network Flow Algorithms**
 
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
 
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
 
-
-
-> 🔬 **Section Challenge — 🌐 Network Flow Algorithms**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
 
 ## 📌 Computational Geometry Basics
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │ COMPUTATIONAL GEOMETRY - ESSENTIAL ALGORITHMS                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                 │
+└─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 // CONVEX HULL - Graham Scan O(n log n)
@@ -743,15 +671,7 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 // Divide and conquer: split, solve recursively, merge considering strip
 ```
 
-```
-│ │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
-
-
-
 ## 📋 Algorithm Design Paradigms — Summary
-
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -805,19 +725,13 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 ```
 
 **Flow:**
-- WHEN TO USE WHICH PARADIGM
-- ↓
-- DIVIDE AND CONQUER:
-- ↓
-- • Problem can be split into independent subproblems
-- ↓
-- • Subproblems are similar to original
-- ↓
-- DYNAMIC PROGRAMMING:
-- ↓
-- GREEDY:
-- ↓
-- • Local optimal choice leads to global optimal
+1. WHEN TO USE WHICH PARADIGM
+2. DIVIDE AND CONQUER:
+3. • Problem can be split into independent subproblems
+4. • Subproblems are similar to original
+5. DYNAMIC PROGRAMMING:
+6. GREEDY:
+7. • Local optimal choice leads to global optimal
 
 ```mermaid
 flowchart TD
@@ -838,26 +752,20 @@ flowchart TD
     N7 --> N8
 ```
 
-
-```
-
 ---
 
 _Master these algorithms to understand the foundations of computer science!_ 🎯
-```
 
 ---
 
-> **Prev**: [Part A: Core Algorithm Techniques](06a_Greedy_BitManip.md)
+**Prev**: [Part A: Core Algorithm Techniques](06a_Greedy_BitManip.md)
 
 ---
-
-
 
 # 💪 Curated Practice Problems — Advanced Algorithms
 
-> **HOW TO USE**: These are harder problems covering greedy, bit manipulation, string algorithms, and competitive patterns.
-> Attempt only after mastering the fundamentals in earlier chapters.
+**HOW TO USE**: These are harder problems covering greedy, bit manipulation, string algorithms, and competitive patterns.
+Attempt only after mastering the fundamentals in earlier chapters.
 
 ---
 
@@ -878,16 +786,14 @@ _Master these algorithms to understand the foundations of computer science!_ �
 
 ---
 
+🔬 **Section Challenge — Section 1: Greedy Algorithms**
 
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Section 1: Greedy Algorithms**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## Section 2: Bit Manipulation
 
@@ -923,9 +829,6 @@ _Master these algorithms to understand the foundations of computer science!_ �
 
 ---
 
-
-
-
 ## HIDDEN GEMS — Advanced
 
 | # | Problem | Platform | Why It's Valuable |
@@ -939,12 +842,12 @@ _Master these algorithms to understand the foundations of computer science!_ �
 
 ---
 
-
 ---
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -971,6 +874,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -1005,6 +909,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -1067,6 +972,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -1101,6 +1007,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -1113,8 +1020,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -1180,5 +1085,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [< Previous](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07a_Advanced_DS_Core.md)
+**Navigation**: [< Previous](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07a_Advanced_DS_Core.md)

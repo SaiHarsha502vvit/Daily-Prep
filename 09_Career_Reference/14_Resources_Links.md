@@ -39,29 +39,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Algorithmic Thinking, Peak Finding
-- ↓
-- Topics Covered:
-- ↓
-- Sorting (Merge, Heap, Counting, Radix)
-- ↓
-- Topics Covered:
-- ↓
-- Trees (BST, AVL, Hashing)
-- ↓
-- Topics Covered:
-- ↓
-- Graphs (BFS, DFS, Shortest Paths)
-- ↓
-- Topics Covered:
-- ↓
-- Dynamic Programming
-- ↓
-- Topics Covered:
-- ↓
-- Computational Complexity
+1. Topics Covered:
+2. Algorithmic Thinking, Peak Finding
+3. Topics Covered:
+4. Sorting (Merge, Heap, Counting, Radix)
+5. Topics Covered:
+6. Trees (BST, AVL, Hashing)
+7. Topics Covered:
+8. Graphs (BFS, DFS, Shortest Paths)
+9. Topics Covered:
+10. Dynamic Programming
+11. Topics Covered:
+12. Computational Complexity
 
 ```mermaid
 flowchart TD
@@ -111,29 +100,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Divide and Conquer (Advanced)
-- ↓
-- Topics Covered:
-- ↓
-- Dynamic Programming (Advanced)
-- ↓
-- Topics Covered:
-- ↓
-- Greedy Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Amortized Analysis
-- ↓
-- Topics Covered:
-- ↓
-- Randomized Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Network Flow
+1. Topics Covered:
+2. Divide and Conquer (Advanced)
+3. Topics Covered:
+4. Dynamic Programming (Advanced)
+5. Topics Covered:
+6. Greedy Algorithms
+7. Topics Covered:
+8. Amortized Analysis
+9. Topics Covered:
+10. Randomized Algorithms
+11. Topics Covered:
+12. Network Flow
 
 ```mermaid
 flowchart TD
@@ -186,29 +164,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Persistent Data Structures
-- ↓
-- Topics Covered:
-- ↓
-- Succinct Data Structures
-- ↓
-- Topics Covered:
-- ↓
-- Hashing (Cuckoo, Perfect)
-- ↓
-- Topics Covered:
-- ↓
-- Integer Data Structures
-- ↓
-- Topics Covered:
-- ↓
-- Geometric Data Structures
-- ↓
-- Topics Covered:
-- ↓
-- Cache-Oblivious Algorithms
+1. Topics Covered:
+2. Persistent Data Structures
+3. Topics Covered:
+4. Succinct Data Structures
+5. Topics Covered:
+6. Hashing (Cuckoo, Perfect)
+7. Topics Covered:
+8. Integer Data Structures
+9. Topics Covered:
+10. Geometric Data Structures
+11. Topics Covered:
+12. Cache-Oblivious Algorithms
 
 ```mermaid
 flowchart TD
@@ -266,29 +233,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Asymptotic Analysis, Recurrences
-- ↓
-- Topics Covered:
-- ↓
-- Divide and Conquer
-- ↓
-- Topics Covered:
-- ↓
-- Sorting and Selection
-- ↓
-- Topics Covered:
-- ↓
-- Graph Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Greedy Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Dynamic Programming
+1. Topics Covered:
+2. Asymptotic Analysis, Recurrences
+3. Topics Covered:
+4. Divide and Conquer
+5. Topics Covered:
+6. Sorting and Selection
+7. Topics Covered:
+8. Graph Algorithms
+9. Topics Covered:
+10. Greedy Algorithms
+11. Topics Covered:
+12. Dynamic Programming
 
 ```mermaid
 flowchart TD
@@ -339,29 +295,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Balanced Trees (Splay, Red-Black)
-- ↓
-- Topics Covered:
-- ↓
-- B-Trees and External Memory
-- ↓
-- Topics Covered:
-- ↓
-- Range Queries (Segment Trees, BIT)
-- ↓
-- Topics Covered:
-- ↓
-- Persistent Data Structures
-- ↓
-- Topics Covered:
-- ↓
-- String Data Structures (Suffix Arrays, Tries)
-- ↓
-- Topics Covered:
-- ↓
-- Hashing Techniques
+1. Topics Covered:
+2. Balanced Trees (Splay, Red-Black)
+3. Topics Covered:
+4. B-Trees and External Memory
+5. Topics Covered:
+6. Range Queries (Segment Trees, BIT)
+7. Topics Covered:
+8. Persistent Data Structures
+9. Topics Covered:
+10. String Data Structures (Suffix Arrays, Tries)
+11. Topics Covered:
+12. Hashing Techniques
 
 ```mermaid
 flowchart TD
@@ -420,29 +365,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Java and OOP
-- ↓
-- Topics Covered:
-- ↓
-- Lists, Trees, Hashing
-- ↓
-- Topics Covered:
-- ↓
-- Asymptotics
-- ↓
-- Topics Covered:
-- ↓
-- Disjoint Sets
-- ↓
-- Topics Covered:
-- ↓
-- BSTs, Balanced BSTs
-- ↓
-- Topics Covered:
-- ↓
-- Heaps, Priority Queues
+1. Topics Covered:
+2. Java and OOP
+3. Topics Covered:
+4. Lists, Trees, Hashing
+5. Topics Covered:
+6. Asymptotics
+7. Topics Covered:
+8. Disjoint Sets
+9. Topics Covered:
+10. BSTs, Balanced BSTs
+11. Topics Covered:
+12. Heaps, Priority Queues
 
 ```mermaid
 flowchart TD
@@ -498,29 +432,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Divide and Conquer, FFT
-- ↓
-- Topics Covered:
-- ↓
-- Graph Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Greedy Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Dynamic Programming
-- ↓
-- Topics Covered:
-- ↓
-- Linear Programming
-- ↓
-- Topics Covered:
-- ↓
-- Reductions and NP-Completeness
+1. Topics Covered:
+2. Divide and Conquer, FFT
+3. Topics Covered:
+4. Graph Algorithms
+5. Topics Covered:
+6. Greedy Algorithms
+7. Topics Covered:
+8. Dynamic Programming
+9. Topics Covered:
+10. Linear Programming
+11. Topics Covered:
+12. Reductions and NP-Completeness
 
 ```mermaid
 flowchart TD
@@ -572,25 +495,16 @@ WHY KTH:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Basic Programming Concepts
-- ↓
-- Topics Covered:
-- ↓
-- Object-Oriented Programming
-- ↓
-- Topics Covered:
-- ↓
-- Data Types and Structures
-- ↓
-- Topics Covered:
-- ↓
-- Basic Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Problem Solving Techniques
+1. Topics Covered:
+2. Basic Programming Concepts
+3. Topics Covered:
+4. Object-Oriented Programming
+5. Topics Covered:
+6. Data Types and Structures
+7. Topics Covered:
+8. Basic Algorithms
+9. Topics Covered:
+10. Problem Solving Techniques
 
 ```mermaid
 flowchart TD
@@ -637,29 +551,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Analysis of Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Fundamental Data Structures
-- ↓
-- Topics Covered:
-- ↓
-- Sorting and Searching
-- ↓
-- Topics Covered:
-- ↓
-- Graph Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- String Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Algorithm Design Techniques
+1. Topics Covered:
+2. Analysis of Algorithms
+3. Topics Covered:
+4. Fundamental Data Structures
+5. Topics Covered:
+6. Sorting and Searching
+7. Topics Covered:
+8. Graph Algorithms
+9. Topics Covered:
+10. String Algorithms
+11. Topics Covered:
+12. Algorithm Design Techniques
 
 ```mermaid
 flowchart TD
@@ -745,29 +648,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Algorithm Analysis
-- ↓
-- Topics Covered:
-- ↓
-- Divide and Conquer
-- ↓
-- Topics Covered:
-- ↓
-- Dynamic Programming
-- ↓
-- Topics Covered:
-- ↓
-- Greedy Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Graph Algorithms
-- ↓
-- Topics Covered:
-- ↓
-- Network Flow
+1. Topics Covered:
+2. Algorithm Analysis
+3. Topics Covered:
+4. Divide and Conquer
+5. Topics Covered:
+6. Dynamic Programming
+7. Topics Covered:
+8. Greedy Algorithms
+9. Topics Covered:
+10. Graph Algorithms
+11. Topics Covered:
+12. Network Flow
 
 ```mermaid
 flowchart TD
@@ -930,29 +822,18 @@ TOTAL: 140 problems, solid foundation
 ```
 
 **Flow:**
-- WEEK 1-2: Foundations
-- ↓
-- Berkeley CS61B (videos 1-15)
-- ↓
-- WEEK 1-2: Foundations
-- ↓
-- LeetCode Easy (Arrays, Strings)
-- ↓
-- WEEK 1-2: Foundations
-- ↓
-- Practice: 20 problems
-- ↓
-- WEEK 3-4: Core Data Structures
-- ↓
-- Berkeley CS61B (videos 16-30)
-- ↓
-- WEEK 3-4: Core Data Structures
-- ↓
-- LeetCode (Linked Lists, Trees, Graphs)
-- ↓
-- WEEK 3-4: Core Data Structures
-- ↓
-- Practice: 30 problems
+1. WEEK 1-2: Foundations
+2. Berkeley CS61B (videos 1-15)
+3. WEEK 1-2: Foundations
+4. LeetCode Easy (Arrays, Strings)
+5. WEEK 1-2: Foundations
+6. Practice: 20 problems
+7. WEEK 3-4: Core Data Structures
+8. Berkeley CS61B (videos 16-30)
+9. WEEK 3-4: Core Data Structures
+10. LeetCode (Linked Lists, Trees, Graphs)
+11. WEEK 3-4: Core Data Structures
+12. Practice: 30 problems
 
 ```mermaid
 flowchart TD
@@ -1011,29 +892,18 @@ MONTH 3: Specialization
 ```
 
 **Flow:**
-- MONTH 1: Theoretical Foundation
-- ↓
-- MIT 6.006 (Full course)
-- ↓
-- MONTH 1: Theoretical Foundation
-- ↓
-- Dasgupta textbook (Chapters 1-6)
-- ↓
-- MONTH 1: Theoretical Foundation
-- ↓
-- Implement every data structure yourself
-- ↓
-- MONTH 1: Theoretical Foundation
-- ↓
-- Focus: Understanding WHY, not just HOW
-- ↓
-- MONTH 2: Advanced Techniques
-- ↓
-- MIT 6.046 (Selected lectures)
-- ↓
-- MONTH 2: Advanced Techniques
-- ↓
-- Kleinberg-Tardos textbook (Selected chapters)
+1. MONTH 1: Theoretical Foundation
+2. MIT 6.006 (Full course)
+3. MONTH 1: Theoretical Foundation
+4. Dasgupta textbook (Chapters 1-6)
+5. MONTH 1: Theoretical Foundation
+6. Implement every data structure yourself
+7. MONTH 1: Theoretical Foundation
+8. Focus: Understanding WHY, not just HOW
+9. MONTH 2: Advanced Techniques
+10. MIT 6.046 (Selected lectures)
+11. MONTH 2: Advanced Techniques
+12. Kleinberg-Tardos textbook (Selected chapters)
 
 ```mermaid
 flowchart TD
@@ -1091,29 +961,18 @@ PHASE 3 (Month 5-6): Advanced
 ```
 
 **Flow:**
-- PHASE 1 (Month 1-2): Fundamentals
-- ↓
-- CSES Problem Set (Introductory Problems)
-- ↓
-- PHASE 1 (Month 1-2): Fundamentals
-- ↓
-- Codeforces Div3/Div4 contests
-- ↓
-- PHASE 1 (Month 1-2): Fundamentals
-- ↓
-- Target: 100 problems
-- ↓
-- PHASE 2 (Month 3-4): Techniques
-- ↓
-- CSES Problem Set (All sections)
-- ↓
-- PHASE 2 (Month 3-4): Techniques
-- ↓
-- Codeforces Div2 contests
-- ↓
-- PHASE 2 (Month 3-4): Techniques
-- ↓
-- AtCoder Beginner Contests
+1. PHASE 1 (Month 1-2): Fundamentals
+2. CSES Problem Set (Introductory Problems)
+3. PHASE 1 (Month 1-2): Fundamentals
+4. Codeforces Div3/Div4 contests
+5. PHASE 1 (Month 1-2): Fundamentals
+6. Target: 100 problems
+7. PHASE 2 (Month 3-4): Techniques
+8. CSES Problem Set (All sections)
+9. PHASE 2 (Month 3-4): Techniques
+10. Codeforces Div2 contests
+11. PHASE 2 (Month 3-4): Techniques
+12. AtCoder Beginner Contests
 
 ```mermaid
 flowchart TD
@@ -1192,29 +1051,18 @@ PRACTICE:
 ```
 
 **Flow:**
-- MIT OPENCOURSEWARE:
-- ↓
-- 6.006: https://ocw.mit.edu/courses/6-006-introduction-t
-- ↓
-- MIT OPENCOURSEWARE:
-- ↓
-- 6.046: https://ocw.mit.edu/courses/6-046j-design-and-an
-- ↓
-- MIT OPENCOURSEWARE:
-- ↓
-- 6.851: https://ocw.mit.edu/courses/6-851-advanced-data-
-- ↓
-- STANFORD:
-- ↓
-- CS161 (Coursera): https://www.coursera.org/specializati
-- ↓
-- STANFORD:
-- ↓
-- CS166: http://web.stanford.edu/class/cs166/
-- ↓
-- STANFORD:
-- ↓
-- Tim Roughgarden: http://timroughgarden.org/
+1. MIT OPENCOURSEWARE:
+2. 6.006: https://ocw.mit.edu/courses/6-006-introduction-t
+3. MIT OPENCOURSEWARE:
+4. 6.046: https://ocw.mit.edu/courses/6-046j-design-and-an
+5. MIT OPENCOURSEWARE:
+6. 6.851: https://ocw.mit.edu/courses/6-851-advanced-data-
+7. STANFORD:
+8. CS161 (Coursera): https://www.coursera.org/specializati
+9. STANFORD:
+10. CS166: http://web.stanford.edu/class/cs166/
+11. STANFORD:
+12. Tim Roughgarden: http://timroughgarden.org/
 
 ```mermaid
 flowchart TD
@@ -1342,29 +1190,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Fault Tolerance
-- ↓
-- Topics Covered:
-- ↓
-- Replication
-- ↓
-- Topics Covered:
-- ↓
-- Consistency
-- ↓
-- Topics Covered:
-- ↓
-- Transactions
-- ↓
-- Topics Covered:
-- ↓
-- Raft Consensus Algorithm
-- ↓
-- Topics Covered:
-- ↓
-- Spanner & Distributed Transactions
+1. Topics Covered:
+2. Fault Tolerance
+3. Topics Covered:
+4. Replication
+5. Topics Covered:
+6. Consistency
+7. Topics Covered:
+8. Transactions
+9. Topics Covered:
+10. Raft Consensus Algorithm
+11. Topics Covered:
+12. Spanner & Distributed Transactions
 
 ```mermaid
 flowchart TD
@@ -1418,29 +1255,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Processes and Threads
-- ↓
-- Topics Covered:
-- ↓
-- Concurrency and Synchronization
-- ↓
-- Topics Covered:
-- ↓
-- Memory Management
-- ↓
-- Topics Covered:
-- ↓
-- File Systems
-- ↓
-- Topics Covered:
-- ↓
-- I/O Systems
-- ↓
-- Topics Covered:
-- ↓
-- Networking
+1. Topics Covered:
+2. Processes and Threads
+3. Topics Covered:
+4. Concurrency and Synchronization
+5. Topics Covered:
+6. Memory Management
+7. Topics Covered:
+8. File Systems
+9. Topics Covered:
+10. I/O Systems
+11. Topics Covered:
+12. Networking
 
 ```mermaid
 flowchart TD
@@ -1495,29 +1321,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- SQL and Relational Algebra
-- ↓
-- Topics Covered:
-- ↓
-- Storage and Indexing (B+ Trees)
-- ↓
-- Topics Covered:
-- ↓
-- Query Processing and Optimization
-- ↓
-- Topics Covered:
-- ↓
-- Transactions and Concurrency
-- ↓
-- Topics Covered:
-- ↓
-- Recovery and Logging
-- ↓
-- Topics Covered:
-- ↓
-- Distributed Databases
+1. Topics Covered:
+2. SQL and Relational Algebra
+3. Topics Covered:
+4. Storage and Indexing (B+ Trees)
+5. Topics Covered:
+6. Query Processing and Optimization
+7. Topics Covered:
+8. Transactions and Concurrency
+9. Topics Covered:
+10. Recovery and Logging
+11. Topics Covered:
+12. Distributed Databases
 
 ```mermaid
 flowchart TD
@@ -1569,29 +1384,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Storage Engines
-- ↓
-- Topics Covered:
-- ↓
-- Buffer Pool Management
-- ↓
-- Topics Covered:
-- ↓
-- Hash Tables and Trees
-- ↓
-- Topics Covered:
-- ↓
-- Query Execution
-- ↓
-- Topics Covered:
-- ↓
-- Query Optimization
-- ↓
-- Topics Covered:
-- ↓
-- Concurrency Control
+1. Topics Covered:
+2. Storage Engines
+3. Topics Covered:
+4. Buffer Pool Management
+5. Topics Covered:
+6. Hash Tables and Trees
+7. Topics Covered:
+8. Query Execution
+9. Topics Covered:
+10. Query Optimization
+11. Topics Covered:
+12. Concurrency Control
 
 ```mermaid
 flowchart TD
@@ -1642,29 +1446,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Modern OLAP Databases
-- ↓
-- Topics Covered:
-- ↓
-- Query Compilation
-- ↓
-- Topics Covered:
-- ↓
-- Vectorized Execution
-- ↓
-- Topics Covered:
-- ↓
-- Compression
-- ↓
-- Topics Covered:
-- ↓
-- In-Memory Databases
-- ↓
-- Topics Covered:
-- ↓
-- Self-Driving Databases
+1. Topics Covered:
+2. Modern OLAP Databases
+3. Topics Covered:
+4. Query Compilation
+5. Topics Covered:
+6. Vectorized Execution
+7. Topics Covered:
+8. Compression
+9. Topics Covered:
+10. In-Memory Databases
+11. Topics Covered:
+12. Self-Driving Databases
 
 ```mermaid
 flowchart TD
@@ -1719,29 +1512,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Internet Architecture
-- ↓
-- Topics Covered:
-- ↓
-- Transport Layer (TCP/UDP)
-- ↓
-- Topics Covered:
-- ↓
-- Network Layer (IP, Routing)
-- ↓
-- Topics Covered:
-- ↓
-- Link Layer
-- ↓
-- Topics Covered:
-- ↓
-- Wireless Networks
-- ↓
-- Topics Covered:
-- ↓
-- Network Security
+1. Topics Covered:
+2. Internet Architecture
+3. Topics Covered:
+4. Transport Layer (TCP/UDP)
+5. Topics Covered:
+6. Network Layer (IP, Routing)
+7. Topics Covered:
+8. Link Layer
+9. Topics Covered:
+10. Wireless Networks
+11. Topics Covered:
+12. Network Security
 
 ```mermaid
 flowchart TD
@@ -1791,29 +1573,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Operating Systems
-- ↓
-- Topics Covered:
-- ↓
-- Networking
-- ↓
-- Topics Covered:
-- ↓
-- Distributed Systems
-- ↓
-- Topics Covered:
-- ↓
-- Security
-- ↓
-- Topics Covered:
-- ↓
-- Fault Tolerance
-- ↓
-- Topics Covered:
-- ↓
-- System Design Principles
+1. Topics Covered:
+2. Operating Systems
+3. Topics Covered:
+4. Networking
+5. Topics Covered:
+6. Distributed Systems
+7. Topics Covered:
+8. Security
+9. Topics Covered:
+10. Fault Tolerance
+11. Topics Covered:
+12. System Design Principles
 
 ```mermaid
 flowchart TD
@@ -1889,29 +1660,18 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics Covered:
-- ↓
-- Computer Architecture Review
-- ↓
-- Topics Covered:
-- ↓
-- Caching and Memory
-- ↓
-- Topics Covered:
-- ↓
-- Bit Hacks
-- ↓
-- Topics Covered:
-- ↓
-- Assembly and Compilers
-- ↓
-- Topics Covered:
-- ↓
-- Parallel Programming
-- ↓
-- Topics Covered:
-- ↓
-- Race Conditions and Locks
+1. Topics Covered:
+2. Computer Architecture Review
+3. Topics Covered:
+4. Caching and Memory
+5. Topics Covered:
+6. Bit Hacks
+7. Topics Covered:
+8. Assembly and Compilers
+9. Topics Covered:
+10. Parallel Programming
+11. Topics Covered:
+12. Race Conditions and Locks
 
 ```mermaid
 flowchart TD
@@ -1958,25 +1718,16 @@ WHY THIS COURSE:
 ```
 
 **Flow:**
-- Topics:
-- ↓
-- Gossip Protocols
-- ↓
-- Topics:
-- ↓
-- P2P Systems
-- ↓
-- Topics:
-- ↓
-- Consensus
-- ↓
-- Topics:
-- ↓
-- Stream Processing
-- ↓
-- Topics:
-- ↓
-- Cloud Computing
+1. Topics:
+2. Gossip Protocols
+3. Topics:
+4. P2P Systems
+5. Topics:
+6. Consensus
+7. Topics:
+8. Stream Processing
+9. Topics:
+10. Cloud Computing
 
 ```mermaid
 flowchart TD
@@ -2039,29 +1790,18 @@ WHY READ THESE:
 ```
 
 **Flow:**
-- FAANG/Big Tech:
-- ↓
-- Google: https://developers.googleblog.com/
-- ↓
-- FAANG/Big Tech:
-- ↓
-- Meta: https://engineering.fb.com/
-- ↓
-- FAANG/Big Tech:
-- ↓
-- Netflix: https://netflixtechblog.com/
-- ↓
-- FAANG/Big Tech:
-- ↓
-- Amazon/AWS: https://aws.amazon.com/blogs/architecture/
-- ↓
-- FAANG/Big Tech:
-- ↓
-- Microsoft: https://devblogs.microsoft.com/
-- ↓
-- FAANG/Big Tech:
-- ↓
-- LinkedIn: https://engineering.linkedin.com/blog
+1. FAANG/Big Tech:
+2. Google: https://developers.googleblog.com/
+3. FAANG/Big Tech:
+4. Meta: https://engineering.fb.com/
+5. FAANG/Big Tech:
+6. Netflix: https://netflixtechblog.com/
+7. FAANG/Big Tech:
+8. Amazon/AWS: https://aws.amazon.com/blogs/architecture/
+9. FAANG/Big Tech:
+10. Microsoft: https://devblogs.microsoft.com/
+11. FAANG/Big Tech:
+12. LinkedIn: https://engineering.linkedin.com/blog
 
 ```mermaid
 flowchart TD
@@ -2143,29 +1883,18 @@ Online Resources:
 ```
 
 **Flow:**
-- Books:
-- ↓
-- 'Designing Data-Intensive Applications' by Martin Klepp
-- ↓
-- 🔗 THE BIBLE of distributed systems
-- ↓
-- 'System Design Interview' by Alex Xu
-- ↓
-- 🔗 Great for interview prep
-- ↓
-- 'Web Scalability for Startup Engineers' by Artur Ejsmon
-- ↓
-- Online Resources:
-- ↓
-- High Scalability: http://highscalability.com/
-- ↓
-- Online Resources:
-- ↓
-- System Design Primer: https://github.com/donnemartin/sy
-- ↓
-- Online Resources:
-- ↓
-- ByteByteGo: https://bytebytego.com/
+1. Books:
+2. 'Designing Data-Intensive Applications' by Martin Klepp
+3. 🔗 THE BIBLE of distributed systems
+4. 'System Design Interview' by Alex Xu
+5. 🔗 Great for interview prep
+6. 'Web Scalability for Startup Engineers' by Artur Ejsmon
+7. Online Resources:
+8. High Scalability: http://highscalability.com/
+9. Online Resources:
+10. System Design Primer: https://github.com/donnemartin/sy
+11. Online Resources:
+12. ByteByteGo: https://bytebytego.com/
 
 ```mermaid
 flowchart TD
@@ -2240,29 +1969,18 @@ HOW TO READ PAPERS:
 ```
 
 **Flow:**
-- DISTRIBUTED SYSTEMS:
-- ↓
-- 'MapReduce' (Google, 2004)
-- ↓
-- 🔗 https://research.google/pubs/pub62/
-- ↓
-- 'Dynamo' (Amazon, 2007)
-- ↓
-- 🔗 https://www.allthingsdistributed.com/files/amazo
-- ↓
-- 'Raft Consensus' (Stanford, 2014)
-- ↓
-- 🔗 https://raft.github.io/raft.pdf
-- ↓
-- 'Spanner' (Google, 2012)
-- ↓
-- 🔗 https://research.google/pubs/pub39966/
-- ↓
-- 'Kafka' (LinkedIn, 2011)
-- ↓
-- DATABASES:
-- ↓
-- 'B-Tree' (Bayer, 1970)
+1. DISTRIBUTED SYSTEMS:
+2. 'MapReduce' (Google, 2004)
+3. 🔗 https://research.google/pubs/pub62/
+4. 'Dynamo' (Amazon, 2007)
+5. 🔗 https://www.allthingsdistributed.com/files/amazo
+6. 'Raft Consensus' (Stanford, 2014)
+7. 🔗 https://raft.github.io/raft.pdf
+8. 'Spanner' (Google, 2012)
+9. 🔗 https://research.google/pubs/pub39966/
+10. 'Kafka' (LinkedIn, 2011)
+11. DATABASES:
+12. 'B-Tree' (Bayer, 1970)
 
 ```mermaid
 flowchart TD
@@ -2324,21 +2042,14 @@ WHY ETH:
 ```
 
 **Flow:**
-- Notable Courses:
-- ↓
-- Data Management Systems
-- ↓
-- Notable Courses:
-- ↓
-- Advanced Systems Lab
-- ↓
-- Notable Courses:
-- ↓
-- Distributed Systems
-- ↓
-- Notable Courses:
-- ↓
-- Big Data
+1. Notable Courses:
+2. Data Management Systems
+3. Notable Courses:
+4. Advanced Systems Lab
+5. Notable Courses:
+6. Distributed Systems
+7. Notable Courses:
+8. Big Data
 
 ```mermaid
 flowchart TD
@@ -2374,17 +2085,12 @@ WHY EPFL:
 ```
 
 **Flow:**
-- Notable:
-- ↓
-- Distributed Algorithms
-- ↓
-- Notable:
-- ↓
-- Concurrent Computing
-- ↓
-- Notable:
-- ↓
-- Database Systems
+1. Notable:
+2. Distributed Algorithms
+3. Notable:
+4. Concurrent Computing
+5. Notable:
+6. Database Systems
 
 ```mermaid
 flowchart TD
@@ -2419,21 +2125,14 @@ WHY TUM:
 ```
 
 **Flow:**
-- Focus Areas:
-- ↓
-- Database Systems
-- ↓
-- Focus Areas:
-- ↓
-- Distributed Systems
-- ↓
-- Focus Areas:
-- ↓
-- Algorithms Engineering
-- ↓
-- Focus Areas:
-- ↓
-- Machine Learning
+1. Focus Areas:
+2. Database Systems
+3. Focus Areas:
+4. Distributed Systems
+5. Focus Areas:
+6. Algorithms Engineering
+7. Focus Areas:
+8. Machine Learning
 
 ```mermaid
 flowchart TD
@@ -2570,29 +2269,18 @@ STAGE 4: MASTERY (Ongoing)
 ```
 
 **Flow:**
-- STAGE 1: FOUNDATIONS (Month 1-2)
-- ↓
-- Berkeley CS61B (Data Structures)
-- ↓
-- STAGE 1: FOUNDATIONS (Month 1-2)
-- ↓
-- MIT 6.006 (Algorithms)
-- ↓
-- STAGE 1: FOUNDATIONS (Month 1-2)
-- ↓
-- 100 LeetCode problems
-- ↓
-- STAGE 2: DEPTH (Month 3-4)
-- ↓
-- Stanford CS161 (Algorithm Design)
-- ↓
-- STAGE 2: DEPTH (Month 3-4)
-- ↓
-- Berkeley CS186 or CMU 15-445 (Databases)
-- ↓
-- STAGE 2: DEPTH (Month 3-4)
-- ↓
-- 150 LeetCode problems + System Design Primer
+1. STAGE 1: FOUNDATIONS (Month 1-2)
+2. Berkeley CS61B (Data Structures)
+3. STAGE 1: FOUNDATIONS (Month 1-2)
+4. MIT 6.006 (Algorithms)
+5. STAGE 1: FOUNDATIONS (Month 1-2)
+6. 100 LeetCode problems
+7. STAGE 2: DEPTH (Month 3-4)
+8. Stanford CS161 (Algorithm Design)
+9. STAGE 2: DEPTH (Month 3-4)
+10. Berkeley CS186 or CMU 15-445 (Databases)
+11. STAGE 2: DEPTH (Month 3-4)
+12. 150 LeetCode problems + System Design Primer
 
 ```mermaid
 flowchart TD

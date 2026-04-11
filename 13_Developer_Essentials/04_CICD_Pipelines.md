@@ -1,6 +1,6 @@
 # 🔄 CI/CD Pipelines — Complete Guide
 
-> **Navigation**: [< Docker](03_Docker_Containers.md) | [Index](00_INDEX.md) | [Next: Clean Code >](05_Clean_Code.md)
+**Navigation**: [< Docker](03_Docker_Containers.md) | [Index](00_INDEX.md) | [Next: Clean Code >](05_Clean_Code.md)
 
 ---
 
@@ -28,17 +28,11 @@ How? → CI/CD
 ```
 
 **Flow:**
-- 6. If it breaks
-- ↓
-- rollback by replacing old ZIP
-- ↓
-- - Friday 5 PM deployments
-- ↓
-- weekend debugging
-- ↓
-- How?
-- ↓
-- CI/CD
+1. If it breaks
+2. rollback by replacing old ZIP
+3. - Friday 5 PM deployments weekend debugging
+4. How?
+5. CI/CD
 
 ```mermaid
 flowchart LR
@@ -74,23 +68,13 @@ CD = Continuous Deployment
 ```
 
 **Flow:**
-- 'Every code push
-- ↓
-- automatically build + test'
-- ↓
-- 'Every successful build
-- ↓
-- automatically deploys to production'
-- ↓
-- Code Push
-- ↓
-- Build
-- ↓
-- Test
-- ↓
-- Package
-- ↓
-- Deploy
+1. 'Every code push automatically build + test'
+2. 'Every successful build automatically deploys to production'
+3. Code Push
+4. Build
+5. Test
+6. Package
+7. Deploy
 
 ```mermaid
 flowchart TD
@@ -120,14 +104,14 @@ flowchart TD
 ```yaml
 
 
-> 🔬 **Section Challenge — Basic Pipeline: Build + Test**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Basic Pipeline: Build + Test**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # .github/workflows/ci.yml
 name: CI Pipeline
@@ -186,20 +170,20 @@ jobs:
 ```yaml
 
 
-> 🔬 **Section Challenge — Full Pipeline: Build → Test → Docker → Deploy**
->
-> **Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
-> <details><summary>Answer</summary>
->
-> In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
-> </details>
->
-> **Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
-> <details><summary>Answer</summary>
->
-> `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
-> </details>
->
+🔬 **Section Challenge — Full Pipeline: Build → Test → Docker → Deploy**
+
+**Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
+<details><summary>Answer</summary>
+
+In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
+</details>
+
+**Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
+<details><summary>Answer</summary>
+
+`COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
+</details>
+
 
 # .github/workflows/deploy.yml
 name: Build, Test & Deploy
@@ -285,11 +269,9 @@ Code Push to main
 ```
 
 **Flow:**
-- Build & Test
-- ↓
-- Docker Build / & Push
-- ↓
-- Deploy to / Production
+1. Build & Test
+2. Docker Build / & Push
+3. Deploy to / Production
 
 ```mermaid
 flowchart TD
@@ -309,14 +291,14 @@ flowchart TD
 ```yaml
 
 
-> 🔬 **Section Challenge — Pipeline Triggers**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Pipeline Triggers**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # When to run the pipeline:
 on:
@@ -377,11 +359,8 @@ Result: NOBODY can push broken code to main
 ```
 
 **Flow:**
-- Settings
-- ↓
-- Branches
-- ↓
-- main:
+1. Settings
+2. Branches main:
 
 ```mermaid
 flowchart LR
@@ -406,29 +385,18 @@ Azure DevOps    → Best for Microsoft ecosystem
 ```
 
 **Flow:**
-- GitHub Actions
-- ↓
-- Best for GitHub repos (free tier: 2000 min/month)
-- ↓
-- GitLab CI/CD
-- ↓
-- Best for GitLab repos (built-in)
-- ↓
-- Jenkins
-- ↓
-- Enterprise standard (self-hosted, complex)
-- ↓
-- CircleCI
-- ↓
-- Cloud-based, fast
-- ↓
-- AWS CodePipeline
-- ↓
-- Best for AWS deployments
-- ↓
-- Azure DevOps
-- ↓
-- Best for Microsoft ecosystem
+1. GitHub Actions
+2. Best for GitHub repos (free tier: 2000 min/month)
+3. GitLab CI/CD
+4. Best for GitLab repos (built-in)
+5. Jenkins
+6. Enterprise standard (self-hosted, complex)
+7. CircleCI
+8. Cloud-based, fast
+9. AWS CodePipeline
+10. Best for AWS deployments
+11. Azure DevOps
+12. Best for Microsoft ecosystem
 
 ```mermaid
 flowchart TD
@@ -465,13 +433,8 @@ flowchart TD
 ```
 
 **Flow:**
-- 3. Push code
-- ↓
-- verify build runs
-- ↓
-- 4. Intentionally break a test
-- ↓
-- verify build fails
+1. Push code verify build runs
+2. Intentionally break a test verify build fails
 
 ```mermaid
 flowchart LR
@@ -493,7 +456,7 @@ flowchart LR
 
 ---
 
-> **Next Chapter**: [Clean Code Principles →](05_Clean_Code.md)
+**Next Chapter**: [Clean Code Principles →](05_Clean_Code.md)
 
 
 ---
@@ -503,20 +466,20 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — Exercise 2: Docker + Deploy**
->
-> **Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
-> <details><summary>Answer</summary>
->
-> In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
-> </details>
->
-> **Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
-> <details><summary>Answer</summary>
->
-> `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
-> </details>
->
+🔬 **Section Challenge — Exercise 2: Docker + Deploy**
+
+**Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
+<details><summary>Answer</summary>
+
+In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
+</details>
+
+**Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
+<details><summary>Answer</summary>
+
+`COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — DevOps & Networking
 

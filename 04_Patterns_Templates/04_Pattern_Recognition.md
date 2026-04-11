@@ -1,11 +1,11 @@
-> **Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)
+**Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)
 
 ---
 
 ## 🗺️ MASTER PATTERN GUIDE — How to Identify Any Pattern From a Problem
 
-> **Read this FIRST. Use this every time you see a new problem.**
-> The fastest skill you can build is: see a problem → immediately know which pattern to use.
+**Read this FIRST. Use this every time you see a new problem.**
+The fastest skill you can build is: see a problem → immediately know which pattern to use.
 
 ### 🔑 Step 1: Read the Problem. Look for These Keywords
 
@@ -168,19 +168,13 @@ Maximum Subarray Sum = 6 (subarray [4, -1, 2, 1])
 ```
 
 **Flow:**
-- Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-- ↓
-- Step-by-step:
-- ↓
-- i arr[i] currentMax = max(arr[i], curr+arr[i]) maxSum
-- ↓
-- 0 -2 max(-2, 0+(-2)) = -2 -2
-- ↓
-- 1 1 max(1, -2+1) = max(1, -1) = 1 1
-- ↓
-- 2 -3 max(-3, 1+(-3)) = max(-3, -2) = -2 1
-- ↓
-- 3 4 max(4, -2+4) = max(4, 2) = 4 4
+1. Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
+2. Step-by-step:
+3. i arr[i] currentMax = max(arr[i], curr+arr[i]) maxSum
+4. 0 -2 max(-2, 0+(-2)) = -2 -2
+5. 1 1 max(1, -2+1) = max(1, -1) = 1 1
+6. 2 -3 max(-3, 1+(-3)) = max(-3, -2) = -2 1
+7. 3 4 max(4, -2+4) = max(4, 2) = 4 4
 
 ```mermaid
 flowchart TD
@@ -361,13 +355,10 @@ Now find(3) = 0 directly!
 ```
 
 **Flow:**
-- Initial: Each element is its own parent
-- ↓
-- After union(0, 1):
-- ↓
-- After union(2, 3):
-- ↓
-- After union(0, 2): / With Path Compression on find(3):
+1. Initial: Each element is its own parent
+2. After union(0, 1):
+3. After union(2, 3):
+4. After union(0, 2): / With Path Compression on find(3):
 
 ```mermaid
 flowchart TD
@@ -539,9 +530,8 @@ Use Case: Task scheduling, course prerequisites, build systems
 ```
 
 **Flow:**
-- such that for every edge u
-- ↓
-- v, u comes before v
+1. such that for every edge u
+2. v, u comes before v
 
 ```mermaid
 flowchart LR
@@ -567,11 +557,9 @@ Not valid: 3, 2, ... (2 must come before 3)
 ```
 
 **Flow:**
-- Graph:
-- ↓
-- Valid Topological Orders:
-- ↓
-- Not valid: 3, 2, ... (2 must come before 3)
+1. Graph:
+2. Valid Topological Orders:
+3. Not valid: 3, 2, ... (2 must come before 3)
 
 ```mermaid
 flowchart TD
@@ -816,20 +804,20 @@ private boolean canShip(int[] weights, int days, int capacity) {
 
 
 
-> 🔬 **Section Challenge — Variant 4: Binary Search on Answer**
->
-> **Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
-> <details><summary>Answer</summary>
->
-> lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
-> </details>
->
-> **Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
-> <details><summary>Answer</summary>
->
-> Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
-> </details>
->
+🔬 **Section Challenge — Variant 4: Binary Search on Answer**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
 
 # 🧩 Pattern 8: Interval Problems
 
@@ -1124,37 +1112,22 @@ public List<List<Integer>> subsets(int[] nums) {
 ```
 
 **Flow:**
-- DECISION TREE
-- ↓
-- Is array SORTED?
-- ↓
-- YES
-- ↓
-- Binary Search / Two Pointers
-- ↓
-- YES
-- ↓
-- Binary Search / Two Pointers
-- ↓
-- NO
-- ↓
-- Continue...
-- ↓
-- NO
-- ↓
-- Continue...
-- ↓
-- Need CONTIGUOUS subarray?
-- ↓
-- YES
-- ↓
-- Sliding Window / Prefix Sum
-- ↓
-- YES
-- ↓
-- Sliding Window / Prefix Sum
-- ↓
-- Need to find PAIRS/COMPLEMENTS?
+1. DECISION TREE
+2. Is array SORTED?
+3. YES
+4. Binary Search / Two Pointers
+5. YES
+6. Binary Search / Two Pointers
+7. NO
+8. Continue...
+9. NO
+10. Continue...
+11. Need CONTIGUOUS subarray?
+12. YES
+13. Sliding Window / Prefix Sum
+14. YES
+15. Sliding Window / Prefix Sum
+16. Need to find PAIRS/COMPLEMENTS?
 
 ```mermaid
 flowchart TD
@@ -1179,8 +1152,8 @@ flowchart TD
 
 # 💪 Curated Practice Problems — Pattern Recognition Drill
 
-> **HOW TO USE**: For each problem below, FIRST identify the pattern BEFORE coding.
-> Write down: "This is a [pattern] problem because [reason]."
+**HOW TO USE**: For each problem below, FIRST identify the pattern BEFORE coding.
+Write down: "This is a [pattern] problem because [reason]."
 
 ---
 

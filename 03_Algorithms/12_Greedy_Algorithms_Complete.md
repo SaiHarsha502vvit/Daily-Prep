@@ -1,9 +1,11 @@
-> **Navigation**: [< Previous](11_Backtracking_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_String_Algorithms_Complete.md)
+**Navigation**: [< Previous](11_Backtracking_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_String_Algorithms_Complete.md)
 
 # 🎯 Greedy Algorithms Complete Guide
-> Make the Locally Optimal Choice at Each Step
+
+Make the Locally Optimal Choice at Each Step
 
 ## Table of Contents
+
 0. [PART 0: Complete Understanding](#part-0)
 1. [What is Greedy?](#what-is-greedy)
 2. [When Does Greedy Work?](#when-greedy-works)
@@ -21,26 +23,21 @@
 
 ## PART 0: COMPLETE UNDERSTANDING — The WHY Before the WHAT <a name="part-0"></a>
 
-
-
-
 ## What Problem Does Greedy Solve
-
 
 **Core Problem**: Optimization — find the BEST answer among many possibilities.
 Three approaches to optimization:
-| APPROACH       | HOW IT WORKS          | TIME        | GUARANTEED? |
-┼───────────────────────┼─────────────┼
-| Backtracking   | Try ALL combinations  | O(2ⁿ)      | Yes (brute) |
-| Dynamic Prog   | Build optimal from    | O(n²) or   | Yes (always) |
-| | subproblem answers     | O(n×W)     | |
-| GREEDY         | Always pick local     | O(n log n) | ONLY SOMETIMES |
-| | best, never look back | or O(n)    | |
+
+| Approach | How it works | Time | Guaranteed? |
+|---|---|---|---|
+| Backtracking | Try all combinations | O(2^n) | Yes (brute force) |
+| Dynamic Programming | Build optimal from subproblem answers | O(n^2) or O(n×W) | Yes (always) |
+| Greedy | Always pick local best, never look back | O(n log n) or O(n) | Only sometimes |
 
 **The Catch**: Greedy doesn't ALWAYS work. It only works when making the
 "selfish" best choice at each step happens to lead to the overall best.
 
-> 💡 **ANALOGY — The ATM Machine:**
+💡 **ANALOGY — The ATM Machine:**
 Making change for $0.63 with coins [25¢, 10¢, 5¢, 1¢]:
 Greedy: Take biggest coin possible: 25+25+10+1+1+1 = 6 coins ✅
 This is OPTIMAL for US coins!
@@ -48,30 +45,31 @@ BUT with coins [1¢, 3¢, 4¢], make change for 6¢:
 Greedy: 4+1+1 = 3 coins ❌
 Optimal: 3+3 = 2 coins ✅
 Greedy FAILS for some coin systems → need DP for general coins.
-WHEN IT WORKS                   │ WHEN IT FAILS
-┼
-Fractional Knapsack ✅           │ 0/1 Knapsack ❌
-Activity Selection ✅            │ Weighted Job Scheduling ❌
-Huffman Coding ✅                │ General Coin Change ❌
-Kruskal's/Prim's MST ✅         │ Longest Path in Graph ❌
-Dijkstra (non-negative) ✅       │ Dijkstra (negative weights) ❌
-Interval Scheduling ✅           │ Interval Scheduling + Weights ❌
+
+| Greedy Works | Greedy Fails (Need DP) |
+|---|---|
+| Fractional Knapsack | 0/1 Knapsack |
+| Activity Selection | Weighted Job Scheduling |
+| Huffman Coding | General Coin Change |
+| Kruskal's/Prim's MST | Longest Path in Graph |
+| Dijkstra (non-negative) | Dijkstra (negative weights) |
+| Interval Scheduling | Interval Scheduling + Weights |
+
 ### Where It's Used in Real World
-*   **Data Compression**: File archiving tools (ZIP, GZIP, JPEG, MP3) use Huffman Coding to build prefix-free variable-length codes based on symbol frequency.
-*   **Networking**: Routing protocols (OSPF uses Dijkstra's) and building network topologies (spanning trees to prevent bridging loops using Kruskal's/Prim's).
-*   **Operating Systems**: CPU scheduling algorithms (like Shortest Job First) and memory allocation strategies (First Fit, Best Fit).
-*   **Financial Systems**: ATMs making exact change using the minimum number of bills (works for standard coin/bill denominations).
 
+* **Data Compression**: File archiving tools (ZIP, GZIP, JPEG, MP3) use Huffman Coding to build prefix-free variable-length codes based on symbol frequency.
+* **Networking**: Routing protocols (OSPF uses Dijkstra's) and building network topologies (spanning trees to prevent bridging loops using Kruskal's/Prim's).
+* **Operating Systems**: CPU scheduling algorithms (like Shortest Job First) and memory allocation strategies (First Fit, Best Fit).
+* **Financial Systems**: ATMs making exact change using the minimum number of bills (works for standard coin/bill denominations).
 
+🔬 **Section Challenge — What Problem Does Greedy Solve**
 
-> 🔬 **Section Challenge — What Problem Does Greedy Solve**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## Real-World Origin Story
 
@@ -98,8 +96,6 @@ non-negative weights. → GPS, Google Maps, network routing worldwide.
 
 **Takeaway**: The greatest greedy algorithms weren't discovered by
 trying all approaches — they came from INSIGHT about the problem structure.
-
-
 
 ## The Two Required Properties
 
@@ -138,15 +134,14 @@ K(ends 16). Result: 4 activities. This IS optimal!
 WHY? After picking A, we only need to solve the SAME problem
 for activities starting after time 4 → smaller subproblem.
 
+🔬 **Section Challenge — The Two Required Properties**
 
-> 🔬 **Section Challenge — The Two Required Properties**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## How To Prove Greedy Works: Three Methods
 
@@ -180,15 +175,14 @@ Examples: MST (graphic matroid), scheduling on uniform machines.
 For interviews: Pattern recognition. "This looks like Activity
 Selection / Huffman / Interval Partitioning → greedy works."
 
+🔬 **Section Challenge — How To Prove Greedy Works: Three Methods**
 
-> 🔬 **Section Challenge — How To Prove Greedy Works: Three Methods**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## "Greedy Fails" — Full Worked Example
 
@@ -219,32 +213,30 @@ The problem lacks greedy choice property → must use DP.
 Sort by value/weight ratio. Take as much of best ratio as possible.
 Why? You can always "pour in" more of the best-ratio item.
 
+🔬 **Section Challenge — "Greedy Fails" — Full Worked Example**
 
-> 🔬 **Section Challenge — "Greedy Fails" — Full Worked Example**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## When To Use Greedy Vs Dp Vs Backtracking
 
-┬──────────────┬──────────────┬
-| Signal               | Greedy       | DP           | Backtracking |
-┼──────────────┼──────────────┼
-| "Minimum/maximum"    | Maybe        | Likely       | Unlikely |
-| "Count ways"         | Rarely       | Almost always| Sometimes |
-| "List all solutions" | Never        | Never        | Always |
-| n ≤ 10⁶             | ✅ Must use  | Maybe O(n)   | Way too slow |
-| n ≤ 10⁴             | ✅           | ✅           | Too slow |
-| n ≤ 20              | ✅           | ✅           | ✅ |
-| Can sort input?      | Almost always| Sometimes    | Sometimes |
-| Greedy choice prop?  | REQUIRED     | Not needed   | N/A |
-| Overlapping subprob? | No           | Yes (KEY!)   | No |
-| Decision at each step| ONE best     | Try all      | Try all+prune |
-┴──────────────┴──────────────┴
+| Signal | Greedy | DP | Backtracking |
+|---|---|---|---|
+| "Minimum/maximum" | Maybe | Likely | Unlikely |
+| "Count ways" | Rarely | Almost always | Sometimes |
+| "List all solutions" | Never | Never | Always |
+| n ≤ 10^6 | Must use | Maybe O(n) | Way too slow |
+| n ≤ 10^4 | Good fit | Good fit | Usually too slow |
+| n ≤ 20 | Good fit | Good fit | Good fit |
+| Can sort input? | Almost always | Sometimes | Sometimes |
+| Greedy choice property? | Required | Not needed | N/A |
+| Overlapping subproblems? | No | Yes (key) | No |
+| Decision at each step | One best | Try all | Try all + prune |
+
 DECISION TREE (use in interviews):
 Can you sort + pick locally best?
 YES → Can you prove exchange argument?
@@ -256,15 +248,14 @@ NO  → Backtracking / DFS
 💡 Interview tip: "I believe greedy works here because of the exchange
 argument: [explain swap]. If I'm wrong, I'd fall back to DP."
 
+🔬 **Section Challenge — When To Use Greedy Vs Dp Vs Backtracking**
 
-> 🔬 **Section Challenge — When To Use Greedy Vs Dp Vs Backtracking**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## The 10 Greedy Pattern Families
 
@@ -300,48 +291,45 @@ Signal: "minimum spanning", "shortest path", "network"
 Problems: Task Scheduler, Queue Reconstruction by Height
 Signal: Complex problems where you must PROVE greedy works
 
+🔬 **Section Challenge — The 10 Greedy Pattern Families**
 
-> 🔬 **Section Challenge — The 10 Greedy Pattern Families**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## Benchmark: Why Greedy Is Fast
 
 Activity Selection — n activities:
-┬───────────────┬──────────────┬
-| n         | Greedy O(nlogn)| DP O(n²)    | Backtracking O(2ⁿ) |
-┼───────────────┼──────────────┼
-| 100       | 0.001 ms      | 0.01 ms     | 10²⁴ years (IMPOSSIBLE) |
-| 1,000     | 0.01 ms       | 1 ms        | ∞ |
-| 10,000    | 0.14 ms       | 100 ms      | ∞ |
-| 100,000   | 1.7 ms        | 10 sec      | ∞ |
-| 1,000,000 | 20 ms         | 17 min      | ∞ |
-| 10,000,000| 0.23 sec      | ~28 hours   | ∞ |
-┴───────────────┴──────────────┴
+
+| n | Greedy O(n log n) | DP O(n^2) | Backtracking O(2^n) |
+|---|---|---|---|
+| 100 | 0.001 ms | 0.01 ms | 10^24 years (impossible) |
+| 1,000 | 0.01 ms | 1 ms | Not practical |
+| 10,000 | 0.14 ms | 100 ms | Not practical |
+| 100,000 | 1.7 ms | 10 sec | Not practical |
+| 1,000,000 | 20 ms | 17 min | Not practical |
+| 10,000,000 | 0.23 sec | ~28 hours | Not practical |
 
 **Cpu Insight**: Greedy is often cache-friendly!
-- Greedy: Sort array once → sequential scan → CPU cache loves this
-- DP: Random table access → cache misses → slower than theory predicts
-- After sorting, greedy scans left-to-right → prefetcher predicts next
+* Greedy: Sort array once → sequential scan → CPU cache loves this
+* DP: Random table access → cache misses → slower than theory predicts
+* After sorting, greedy scans left-to-right → prefetcher predicts next
 
 **Memory**:
-- Greedy: Usually O(1) or O(n) extra space
-- DP: Often O(n²) or O(n×W) table → can blow memory for large inputs
+* Greedy: Usually O(1) or O(n) extra space
+* DP: Often O(n²) or O(n×W) table → can blow memory for large inputs
 
+🔬 **Section Challenge — Benchmark: Why Greedy Is Fast**
 
-> 🔬 **Section Challenge — Benchmark: Why Greedy Is Fast**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## Greedy Template Code — The Skeleton
 
@@ -497,21 +485,19 @@ public int greedySolve(int[][] items) {
 ```
 
 📖 **Related mental models:**
-- [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — Classification decision tree
-- [14_Mental_Models/14_Optimization_Pipeline.md](../14_Mental_Models/14_Optimization_Pipeline.md) — Greedy vs DP decision framework
+* [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — Classification decision tree
+* [14_Mental_Models/14_Optimization_Pipeline.md](../14_Mental_Models/14_Optimization_Pipeline.md) — Greedy vs DP decision framework
 
 ---
 
+🔬 **Section Challenge — Greedy Template Code — The Skeleton**
 
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Greedy Template Code — The Skeleton**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## What is Greedy? <a name="what-is-greedy"></a>
 
@@ -534,27 +520,27 @@ public int greedySolve(int[][] items) {
 ```
 
 **Flow:**
-- GREEDY PHILOSOPHY
-- ↓
-- 'At each step, make the choice that looks best RIGHT NO
-- ↓
-- LOCAL OPTIMUM
-- ↓
-- Hopefully
-- ↓
-- GLOBAL OPTIMUM
-- ↓
-- LOCAL OPTIMUM
-- ↓
-- Hopefully
-- ↓
-- GLOBAL OPTIMUM
-- ↓
-- Key properties:
-- ↓
-- 1. Greedy Choice Property: Local choice leads to global
-- ↓
-- 2. Optimal Substructure: Optimal contains optimal sub
+* GREEDY PHILOSOPHY
+* ↓
+* 'At each step, make the choice that looks best RIGHT NO
+* ↓
+* LOCAL OPTIMUM
+* ↓
+* Hopefully
+* ↓
+* GLOBAL OPTIMUM
+* ↓
+* LOCAL OPTIMUM
+* ↓
+* Hopefully
+* ↓
+* GLOBAL OPTIMUM
+* ↓
+* Key properties:
+* ↓
+* 1. Greedy Choice Property: Local choice leads to global
+* ↓
+* 1. Optimal Substructure: Optimal contains optimal sub
 
 ```mermaid
 flowchart TD
@@ -591,29 +577,29 @@ This works because US coins have special property!
 ```
 
 **Flow:**
-- Step 1: Take largest ≤ 63
-- ↓
-- 25 (remaining: 38)
-- ↓
-- Step 2: Take largest ≤ 38
-- ↓
-- 25 (remaining: 13)
-- ↓
-- Step 3: Take largest ≤ 13
-- ↓
-- 10 (remaining: 3)
-- ↓
-- Step 4: Take largest ≤ 3
-- ↓
-- 1 (remaining: 2)
-- ↓
-- Step 5: Take largest ≤ 2
-- ↓
-- 1 (remaining: 1)
-- ↓
-- Step 6: Take largest ≤ 1
-- ↓
-- 1 (remaining: 0)
+* Step 1: Take largest ≤ 63
+* ↓
+* 25 (remaining: 38)
+* ↓
+* Step 2: Take largest ≤ 38
+* ↓
+* 25 (remaining: 13)
+* ↓
+* Step 3: Take largest ≤ 13
+* ↓
+* 10 (remaining: 3)
+* ↓
+* Step 4: Take largest ≤ 3
+* ↓
+* 1 (remaining: 2)
+* ↓
+* Step 5: Take largest ≤ 2
+* ↓
+* 1 (remaining: 1)
+* ↓
+* Step 6: Take largest ≤ 1
+* ↓
+* 1 (remaining: 0)
 
 ```mermaid
 flowchart TD
@@ -652,16 +638,14 @@ For arbitrary coins, use DP instead.
 
 ---
 
+🔬 **Section Challenge — What is Greedy? <a name="what-is-greedy"></a>**
 
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — What is Greedy? <a name="what-is-greedy"></a>**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## When Does Greedy Work? <a name="when-greedy-works"></a>
 
@@ -685,19 +669,19 @@ For arbitrary coins, use DP instead.
 ```
 
 **Flow:**
-- GREEDY WORKS WHEN BOTH ARE TRUE:
-- ↓
-- 1. GREEDY CHOICE PROPERTY
-- ↓
-- The locally optimal choice is part of globally optima
-- ↓
-- 'Taking the best now won't hurt us later'
-- ↓
-- 2. OPTIMAL SUBSTRUCTURE
-- ↓
-- After making greedy choice, remaining is smaller
-- ↓
-- version of same problem
+* GREEDY WORKS WHEN BOTH ARE TRUE:
+* ↓
+* 1. GREEDY CHOICE PROPERTY
+* ↓
+* The locally optimal choice is part of globally optima
+* ↓
+* 'Taking the best now won't hurt us later'
+* ↓
+* 1. OPTIMAL SUBSTRUCTURE
+* ↓
+* After making greedy choice, remaining is smaller
+* ↓
+* version of same problem
 
 ```mermaid
 flowchart TD
@@ -744,19 +728,19 @@ flowchart TD
 ```
 
 **Flow:**
-- GREEDY PATTERN INDICATORS
-- ↓
-- Keywords in Problem:
-- ↓
-- ✓ 'Minimum/Maximum number of...'
-- ↓
-- ✓ 'Largest/Smallest...'
-- ↓
-- ✓ 'Optimal arrangement/schedule'
-- ↓
-- ✓ 'Non-overlapping intervals'
-- ↓
-- ✓ 'Select items with constraint'
+* GREEDY PATTERN INDICATORS
+* ↓
+* Keywords in Problem:
+* ↓
+* ✓ 'Minimum/Maximum number of...'
+* ↓
+* ✓ 'Largest/Smallest...'
+* ↓
+* ✓ 'Optimal arrangement/schedule'
+* ↓
+* ✓ 'Non-overlapping intervals'
+* ↓
+* ✓ 'Select items with constraint'
 
 ```mermaid
 flowchart TD
@@ -791,16 +775,14 @@ To prove greedy works:
 
 ---
 
+🔬 **Section Challenge — When Does Greedy Work? <a name="when-greedy-works"></a>**
 
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — When Does Greedy Work? <a name="when-greedy-works"></a>**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## Classic Greedy Patterns <a name="classic-patterns"></a>
 
@@ -841,17 +823,17 @@ Different interval problems need different sorting:
 ```
 
 **Flow:**
-- Different interval problems need different sorting:
-- ↓
-- PROBLEM SORT BY
-- ↓
-- Max non-overlapping intervals End time (earliest first)
-- ↓
-- Min intervals to cover range Start time (earliest first
-- ↓
-- Merge overlapping intervals Start time (earliest first)
-- ↓
-- Meeting rooms needed Start time (process events)
+* Different interval problems need different sorting:
+* ↓
+* PROBLEM SORT BY
+* ↓
+* Max non-overlapping intervals End time (earliest first)
+* ↓
+* Min intervals to cover range Start time (earliest first
+* ↓
+* Merge overlapping intervals Start time (earliest first)
+* ↓
+* Meeting rooms needed Start time (process events)
 
 ```mermaid
 flowchart TD
@@ -894,16 +876,14 @@ public int matchPairs(int[] costs, int[] values) {
 
 ---
 
+🔬 **Section Challenge — Classic Greedy Patterns <a name="classic-patterns"></a>**
 
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Classic Greedy Patterns <a name="classic-patterns"></a>**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## Scheduling Problems <a name="scheduling"></a>
 
@@ -959,19 +939,19 @@ Result: 3 activities (A, D, E)
 ```
 
 **Flow:**
-- Activities:
-- ↓
-- Sorted by end time: A, B, C, D, E
-- ↓
-- Greedy picks:
-- ↓
-- A [1,4] ✓ (first ending)
-- ↓
-- B [3,5] ✗ (overlaps with A)
-- ↓
-- C [0,6] ✗ (overlaps with A)
-- ↓
-- D [5,7] ✓ (starts after A ends)
+* Activities:
+* ↓
+* Sorted by end time: A, B, C, D, E
+* ↓
+* Greedy picks:
+* ↓
+* A [1,4] ✓ (first ending)
+* ↓
+* B [3,5] ✗ (overlaps with A)
+* ↓
+* C [0,6] ✗ (overlaps with A)
+* ↓
+* D [5,7] ✓ (starts after A ends)
 
 ```mermaid
 flowchart TD
@@ -1084,9 +1064,6 @@ public int minMeetingRooms2(int[][] intervals) {
 ```
 
 ---
-
-
-
 
 ## Interval Problems <a name="intervals"></a>
 
@@ -1212,9 +1189,6 @@ public int minIntervals(int[][] intervals, int n) {
 ```
 
 ---
-
-
-
 
 ## Array Greedy Problems <a name="array-greedy"></a>
 
@@ -1409,16 +1383,14 @@ public int candy(int[] ratings) {
 
 ---
 
+🔬 **Section Challenge — Array Greedy Problems <a name="array-greedy"></a>**
 
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Array Greedy Problems <a name="array-greedy"></a>**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## String Greedy Problems <a name="string-greedy"></a>
 
@@ -1580,16 +1552,14 @@ A B _ A B _ A B
 
 ---
 
+🔬 **Section Challenge — String Greedy Problems <a name="string-greedy"></a>**
 
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — String Greedy Problems <a name="string-greedy"></a>**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## Graph Greedy Algorithms <a name="graph-greedy"></a>
 
@@ -1723,22 +1693,20 @@ public int[] dijkstra(int n, int[][] edges, int src) {
 
 ---
 
+🔬 **Section Challenge — Graph Greedy Algorithms <a name="graph-greedy"></a>**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Graph Greedy Algorithms <a name="graph-greedy"></a>**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## Interview Problems <a name="interview-problems"></a>
 
@@ -1887,19 +1855,19 @@ public boolean lemonadeChange(int[] bills) {
 ```
 
 **Flow:**
-- GREEDY vs DYNAMIC PROGRAMMING
-- ↓
-- GREEDY DYNAMIC PROGRAMMING
-- ↓
-- Makes ONE choice at each Considers ALL choices at each
-- ↓
-- step, never reconsiders step, picks best via recursion
-- ↓
-- Doesn't always work Always gives optimal (if
-- ↓
-- correct recurrence)
-- ↓
-- Examples: Examples:
+* GREEDY vs DYNAMIC PROGRAMMING
+* ↓
+* GREEDY DYNAMIC PROGRAMMING
+* ↓
+* Makes ONE choice at each Considers ALL choices at each
+* ↓
+* step, never reconsiders step, picks best via recursion
+* ↓
+* Doesn't always work Always gives optimal (if
+* ↓
+* correct recurrence)
+* ↓
+* Examples: Examples:
 
 ```mermaid
 flowchart TD
@@ -1955,20 +1923,19 @@ public int dpCoinChange(int[] coins, int amount) {
 
 ---
 
+🔬 **Section Challenge — Greedy vs DP <a name="greedy-vs-dp"></a>**
 
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — Greedy vs DP <a name="greedy-vs-dp"></a>**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## Practice Problems <a name="practice-problems"></a>
 
 ### Easy 🟢
+
 | Problem | Type | Key Insight |
 |---------|------|-------------|
 | Assign Cookies | Matching | Sort both, greedy match |
@@ -1978,6 +1945,7 @@ public int dpCoinChange(int[] coins, int amount) {
 | Maximum Units on Truck | Sorting | Sort by units/box |
 
 ### Medium 🟡
+
 | Problem | Type | Key Insight |
 |---------|------|-------------|
 | Jump Game I/II | Array | Track farthest |
@@ -1991,6 +1959,7 @@ public int dpCoinChange(int[] coins, int amount) {
 | Container With Most Water | Two pointer | Move shorter |
 
 ### Hard 🔴
+
 | Problem | Type | Key Insight |
 |---------|------|-------------|
 | Candy | Two pass | L→R then R→L |
@@ -2037,19 +2006,19 @@ public int dpCoinChange(int[] coins, int amount) {
 ```
 
 **Flow:**
-- COMMON GREEDY STRATEGIES
-- ↓
-- 1. SORT BY END TIME
-- ↓
-- Max non-overlapping intervals
-- ↓
-- Activity selection
-- ↓
-- 2. SORT BY START TIME
-- ↓
-- Merge intervals
-- ↓
-- Cover range with min intervals
+* COMMON GREEDY STRATEGIES
+* ↓
+* 1. SORT BY END TIME
+* ↓
+* Max non-overlapping intervals
+* ↓
+* Activity selection
+* ↓
+* 1. SORT BY START TIME
+* ↓
+* Merge intervals
+* ↓
+* Cover range with min intervals
 
 ```mermaid
 flowchart TD
@@ -2090,19 +2059,19 @@ flowchart TD
 ```
 
 **Flow:**
-- ❌ Assuming greedy works without proof
-- ↓
-- Test with counterexamples first
-- ↓
-- ❌ Wrong sorting criteria
-- ↓
-- End time for selection, start time for merging
-- ↓
-- ❌ Not handling edge cases
-- ↓
-- Empty input, single element, all same elements
-- ↓
-- ❌ Integer overflow in comparisons
+* ❌ Assuming greedy works without proof
+* ↓
+* Test with counterexamples first
+* ↓
+* ❌ Wrong sorting criteria
+* ↓
+* End time for selection, start time for merging
+* ↓
+* ❌ Not handling edge cases
+* ↓
+* Empty input, single element, all same elements
+* ↓
+* ❌ Integer overflow in comparisons
 
 ```mermaid
 flowchart TD
@@ -2140,13 +2109,13 @@ flowchart TD
 ```
 
 **Flow:**
-- GREEDY ESSENTIALS
-- ↓
-- 1. INTERVAL SELECTION: Sort by end time, pick earliest
-- ↓
-- 2. INTERVAL MERGING: Sort by start time, extend end
-- ↓
-- 3. TWO POINTER: Sort both, match greedily
+* GREEDY ESSENTIALS
+* ↓
+* 1. INTERVAL SELECTION: Sort by end time, pick earliest
+* ↓
+* 1. INTERVAL MERGING: Sort by start time, extend end
+* ↓
+* 1. TWO POINTER: Sort both, match greedily
 
 ```mermaid
 flowchart TD
@@ -2161,15 +2130,14 @@ flowchart TD
 
 **Pro Tip:** If greedy doesn't work for a problem, try DP. If you can prove the greedy choice property (exchange argument), greedy is usually faster!
 
-
 ---
-
 
 ---
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -2196,6 +2164,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -2230,6 +2199,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -2292,6 +2262,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -2326,6 +2297,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -2338,8 +2310,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -2405,5 +2375,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [< Previous](11_Backtracking_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_String_Algorithms_Complete.md)
+**Navigation**: [< Previous](11_Backtracking_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_String_Algorithms_Complete.md)

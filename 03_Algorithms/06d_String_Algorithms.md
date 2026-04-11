@@ -590,11 +590,6 @@ public class SuffixArray {
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — PART 13: String Algorithms Deep Dive**
 
 ## PART 15: Competitive Programming Tricks
@@ -810,11 +805,6 @@ public class BitTricks {
 
 ---
 
-
-
-
-
-
 > 🔬 **Section Challenge — PART 15: Competitive Programming Tricks**
 
 ## PART 16: Algorithm Complexity Analysis Deep Dive
@@ -854,19 +844,13 @@ EXAMPLES:
 ```
 
 **Flow:**
-- MASTER THEOREM:
-- ↓
-- For T(n) = aT(n/b) + f(n) where a ≥ 1, b > 1
-- ↓
-- AND af(n/b) ≤ cf(n) for some c < 1
-- ↓
-- EXAMPLES:
-- ↓
-- Recurrence Solution
-- ↓
-- T(n) = 2T(n/2) + n O(n log n)
-- ↓
-- T(n) = T(n/2) + 1 O(log n)
+1. MASTER THEOREM:
+2. For T(n) = aT(n/b) + f(n) where a ≥ 1, b > 1
+3. AND af(n/b) ≤ cf(n) for some c < 1
+4. EXAMPLES:
+5. Recurrence Solution
+6. T(n) = 2T(n/2) + n O(n log n)
+7. T(n) = T(n/2) + 1 O(log n)
 
 ```mermaid
 flowchart TD
@@ -1221,19 +1205,14 @@ public class FenwickTree {
 
 ---
 
-
 ---
-
-
-
-
-
 
 > 🔬 **Section Challenge — PART 18: Essential Templates for Competitive Programming**
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -1260,6 +1239,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -1294,6 +1274,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -1356,6 +1337,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -1390,6 +1372,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -1402,8 +1385,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -1468,6 +1449,5 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
-
 
 > **Navigation**: [< Previous](06c_Advanced_Algo_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06e_Algorithm_Patterns.md)

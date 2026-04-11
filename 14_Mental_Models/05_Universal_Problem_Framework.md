@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)
+**Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)
 
 # 🧭 Universal Problem-Solving Framework — 6-Step Method for ANY Problem
 
-> **The key insight**: Every problem — DSA, SQL, system design — follows the same thinking process. Master this 6-step framework and you'll never freeze in front of a problem again.
+**The key insight**: Every problem — DSA, SQL, system design — follows the same thinking process. Master this 6-step framework and you'll never freeze in front of a problem again.
 
 ---
 
@@ -20,45 +20,8 @@
 ```
 
 **Flow:**
-- 1. READ
-- ↓
-- Understand what's asked (not what you assume)
-- ↓
-- 2. CLASSIFY
-- ↓
-- What type of problem is this?
-- ↓
-- 2. CLASSIFY
-- ↓
-- What type of problem is this?
-- ↓
-- 3. PLAN
-- ↓
-- Choose strategy, design approach
-- ↓
-- 3. PLAN
-- ↓
-- Choose strategy, design approach
-- ↓
-- 4. CODE
-- ↓
-- Translate plan to code
-- ↓
-- 4. CODE
-- ↓
-- Translate plan to code
-- ↓
-- 5. TEST
-- ↓
-- Verify with examples and edge cases
-- ↓
-- 5. TEST
-- ↓
-- Verify with examples and edge cases
-- ↓
-- 6. OPTIMIZE
-- ↓
-- Can we do better?
+1. READ
+2. Understand what's asked (not what you assume) CLASSIFY What type of problem is this? CLASSIFY What type of problem is this? PLAN Choose strategy, design approach PLAN Choose strategy, design approach CODE Translate plan to code CODE Translate plan to code TEST Verify with examples and edge cases TEST Verify with examples and edge cases OPTIMIZE Can we do better?
 
 ```mermaid
 flowchart TD
@@ -102,29 +65,17 @@ n > 10⁸       → O(log n) or O(1) — Math, Binary search on answer
 ```
 
 **Flow:**
-- n ≤ 10
-- ↓
-- O(n!) or O(2ⁿ) — Brute force, backtracking OK
-- ↓
-- n ≤ 20
-- ↓
-- O(2ⁿ) — Bitmask DP, meet-in-the-middle
-- ↓
-- n ≤ 100
-- ↓
-- O(n³) — Floyd-Warshall, 3D DP
-- ↓
-- n ≤ 1,000
-- ↓
-- O(n²) — Simple DP, Nested loops
-- ↓
-- n ≤ 10,000
-- ↓
-- O(n²) — Might barely pass
-- ↓
-- n ≤ 100,000
-- ↓
-- O(n log n) — Sorting, Binary search, Segment tree
+1. n ≤ 10
+2. O(n!) or O(2ⁿ) — Brute force, backtracking OK
+3. n ≤ 20
+4. O(2ⁿ) — Bitmask DP, meet-in-the-middle
+5. n ≤ 100
+6. O(n³) — Floyd-Warshall, 3D DP
+7. n ≤ 1,000
+8. O(n²) — Simple DP, Nested loops
+9. n ≤ 10,000
+10. O(n²) — Might barely pass n ≤ 100,000
+11. O(n log n) — Sorting, Binary search, Segment tree
 
 ```mermaid
 flowchart TD
@@ -198,29 +149,18 @@ STRING MANIPULATION?
 ```
 
 **Flow:**
-- Can previous choices be reused?
-- ↓
-- Dynamic Programming
-- ↓
-- Does greedy choice lead to global optimum?
-- ↓
-- Greedy
-- ↓
-- Sorted data?
-- ↓
-- Binary Search
-- ↓
-- Graph/tree?
-- ↓
-- BFS/DFS
-- ↓
-- Dependencies?
-- ↓
-- Topological Sort
-- ↓
-- Graph connected components?
-- ↓
-- Union-Find or DFS
+1. Can previous choices be reused?
+2. Dynamic Programming
+3. Does greedy choice lead to global optimum?
+4. Greedy
+5. Sorted data?
+6. Binary Search
+7. Graph/tree?
+8. BFS/DFS
+9. Dependencies?
+10. Topological Sort
+11. Graph connected components?
+12. Union-Find or DFS
 
 ```mermaid
 flowchart TD
@@ -260,8 +200,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Step 2: CLASSIFY — What Type of Problem Is This?**
->>
+🔬 **Section Challenge — Step 2: CLASSIFY — What Type of Problem Is This?**
+>
 
 ## Step 3: PLAN — Design Your Approach
 
@@ -282,21 +222,10 @@ If your plan doesn't work on examples → GO BACK to Step 2 and reclassify
 ```
 
 **Flow:**
-- Input: ___
-- ↓
-- Step 1: ___
-- ↓
-- Step 2: ___
-- ↓
-- Output: ___
-- ↓
-- Input: ___
-- ↓
-- Step 1: ___
-- ↓
-- Step 2: ___
-- ↓
-- Output: ___
+1. Input: ___
+2. Step 1: ___
+3. Step 2: ___
+4. Output: ___
 
 ```mermaid
 flowchart TD
@@ -328,19 +257,8 @@ Example: Two Sum
 ```
 
 **Flow:**
-- 3. Can I cache/skip the repeated work?
-- ↓
-- That's your optimization!
-- ↓
-- Brute Force
-- ↓
-- Identify bottleneck
-- ↓
-- Optimize that specific part
-- ↓
-- - Optimize: HashMap makes search O(1)
-- ↓
-- Total O(n)
+1. Can I cache/skip the repeated work?
+2. That's your optimization! Brute Force Identify bottleneck Optimize that specific part - Optimize: HashMap makes search O(1) Total O(n)
 
 ```mermaid
 flowchart LR
@@ -390,25 +308,16 @@ public ReturnType solve(InputType input) {
 ```
 
 **Flow:**
-- ❌ Starting to code before having a plan
-- ↓
-- Write plan first
-- ↓
-- ❌ Trying to optimize while writing
-- ↓
-- Get correct solution first
-- ↓
-- ❌ Not handling edge cases
-- ↓
-- Always check empty/null/single
-- ↓
-- ❌ Copy-pasting without understanding
-- ↓
-- Build from template
-- ↓
-- ❌ Variables named i,j,k,x,y
-- ↓
-- Use descriptive names: left, right, count
+1. ❌ Starting to code before having a plan
+2. Write plan first
+3. ❌ Trying to optimize while writing
+4. Get correct solution first
+5. ❌ Not handling edge cases
+6. Always check empty/null/single
+7. ❌ Copy-pasting without understanding
+8. Build from template
+9. ❌ Variables named i,j,k,x,y
+10. Use descriptive names: left, right, count
 
 ```mermaid
 flowchart TD
@@ -456,29 +365,13 @@ Step | Variable States                | Action
 ```
 
 **Flow:**
-- Input: [2, 7, 11, 15], target = 9
-- ↓
-- Step
-- ↓
-- Variable States
-- ↓
-- Action
-- ↓
-- Step
-- ↓
-- Variable States
-- ↓
-- Action
-- ↓
-- Return [0, 1]
-- ↓
-- Found pair
-- ↓
-- Return [0, 1]
-- ↓
-- Found pair
-- ↓
-- ✅ Matches expected output [0, 1]
+1. Input: [2, 7, 11, 15], target = 9
+2. Step
+3. Variable States
+4. Action
+5. Return [0, 1]
+6. Found pair
+7. ✅ Matches expected output [0, 1]
 
 ```mermaid
 flowchart TD
@@ -514,27 +407,17 @@ Strategy 3: PRECOMPUTE
 ```
 
 **Flow:**
-- - O(n²)
-- ↓
-- O(n log n): Sort + binary search / two pointers
-- ↓
-- - O(n²)
-- ↓
-- O(n): HashMap for O(1) lookup
-- ↓
-- - O(2ⁿ)
-- ↓
-- O(n·2^(n/2)): Meet in the middle
-- ↓
-- - HashMap
-- ↓
-- Two pointers (if sorted)
-- ↓
-- - 2D DP table
-- ↓
-- Two rows
-- ↓
-- Two variables
+1. - O(n²)
+2. O(n log n): Sort + binary search / two pointers
+3. - O(n²)
+4. O(n): HashMap for O(1) lookup
+5. - O(2ⁿ)
+6. O(n·2^(n/2)): Meet in the middle
+7. - HashMap
+8. Two pointers (if sorted)
+9. - 2D DP table
+10. Two rows
+11. Two variables
 
 ```mermaid
 flowchart TD
@@ -570,29 +453,12 @@ flowchart TD
 ```
 
 **Flow:**
-- □ Am I doing any repeated computation?
-- ↓
-- Cache it (DP, memoization)
-- ↓
-- □ Am I searching linearly?
-- ↓
-- Can I sort + binary search?
-- ↓
-- □ Am I using nested loops?
-- ↓
-- Can HashMap eliminate inner loop?
-- ↓
-- □ Am I storing more than needed?
-- ↓
-- Can I use rolling variables?
-- ↓
-- □ Am I visiting nodes multiple times?
-- ↓
-- Track visited
-- ↓
-- □ Am I sorting when I don't need full sort?
-- ↓
-- Partial sort (QuickSelect for k-th)
+1. □ Am I doing any repeated computation? Cache it (DP, memoization)
+2. □ Am I searching linearly? Can I sort + binary search?
+3. □ Am I using nested loops? Can HashMap eliminate inner loop?
+4. □ Am I storing more than needed? Can I use rolling variables?
+5. □ Am I visiting nodes multiple times? Track visited
+6. □ Am I sorting when I don't need full sort? Partial sort (QuickSelect for k-th)
 
 ```mermaid
 flowchart TD
@@ -630,23 +496,8 @@ Step 6: OPTIMIZE → Indexes? Avoid subqueries? Use CTEs?
 ```
 
 **Flow:**
-- Step 1: READ
-- ↓
-- What tables? What columns? What's the expected out
-- ↓
-- Step 2: CLASSIFY
-- ↓
-- Is this a JOIN/GROUP BY/SUBQUERY/WINDOW problem?
-- ↓
-- Step 3: PLAN
-- ↓
-- Build query mentally: FROM
-- ↓
-- JOIN
-- ↓
-- WHERE
-- ↓
-- GROUP
+1. Step 1: READ
+2. What tables? What columns? What's the expected out Step 2: CLASSIFY Is this a JOIN/GROUP BY/SUBQUERY/WINDOW problem? Step 3: PLAN Build query mentally: FROM JOIN WHERE GROUP
 
 ```mermaid
 flowchart TD
@@ -693,29 +544,18 @@ Step 6: OPTIMIZE → Scaling bottlenecks, caching, CDN, sharding
 ```
 
 **Flow:**
-- Step 1: READ
-- ↓
-- What are the requirements? Functional + Non-functi
-- ↓
-- Step 2: CLASSIFY
-- ↓
-- Read-heavy? Write-heavy? Real-time? Batch?
-- ↓
-- Step 3: PLAN
-- ↓
-- High-level architecture, data model, API design
-- ↓
-- Step 4: CODE
-- ↓
-- Draw the architecture diagram
-- ↓
-- Step 5: TEST
-- ↓
-- Walk through user scenarios
-- ↓
-- Step 6: OPTIMIZE
-- ↓
-- Scaling bottlenecks, caching, CDN, sharding
+1. Step 1: READ
+2. What are the requirements? Functional + Non-functi
+3. Step 2: CLASSIFY
+4. Read-heavy? Write-heavy? Real-time? Batch?
+5. Step 3: PLAN
+6. High-level architecture, data model, API design
+7. Step 4: CODE
+8. Draw the architecture diagram
+9. Step 5: TEST
+10. Walk through user scenarios
+11. Step 6: OPTIMIZE
+12. Scaling bottlenecks, caching, CDN, sharding
 
 ```mermaid
 flowchart TD
@@ -752,6 +592,6 @@ flowchart TD
 
 ---
 
-> **Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)
+**Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)
 
 

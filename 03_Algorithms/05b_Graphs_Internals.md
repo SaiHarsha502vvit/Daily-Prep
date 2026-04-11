@@ -1,32 +1,31 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05c_Graphs_Fundamentals.md)
-> 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — traversal intuition and pattern recognition
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05c_Graphs_Fundamentals.md)
+🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — traversal intuition and pattern recognition
 
 ---
 
 # GRAPHS - Complete Guide
+
 ## From Fundamentals to Advanced Graph Algorithms
 
-> **Split from Trees_Graphs.md for better navigation**
-> See also: [Trees](05_Trees.md) | [Index](../00_MASTER_INDEX.md)
+**Split from Trees_Graphs.md for better navigation**
+See also: [Trees](05_Trees.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
+🔬 **Section Challenge — From Fundamentals to Advanced Graph Algorithms**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — From Fundamentals to Advanced Graph Algorithms**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## 🧠 Graph Representation — Memory Deep Dive
 
@@ -111,21 +110,7 @@
 ```
 
 **Flow:**
-- int[][] object (outer array): / Header (16 bytes) row[0
-- ↓
-- Header (16 bytes) [0,0]=0 [0,1]=1 [0,2]=0 [0,3]=1
-- ↓
-- ArrayList (outer): / Header Object[] elementData
-- ↓
-- [lis
-- ↓
-- ArrayList (outer): / Header Object[] elementData
-- ↓
-- [lis
-- ↓
-- Header Object[]
-- ↓
-- [Integer(1), Integer(3), null, ...]
+1. int[][] object (outer array): / Header (16 bytes) row[0 Header (16 bytes) [0,0]=0 [0,1]=1 [0,2]=0 [0,3]=1 ArrayList (outer): / Header Object[] elementData [lis ArrayList (outer): / Header Object[] elementData [lis Header Object[] [Integer(1), Integer(3), null, ...]
 
 ```mermaid
 flowchart TD
@@ -138,22 +123,20 @@ flowchart TD
     N3 --> N4
 ```
 
+🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
 
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
->
-> **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-> <details><summary>Answer</summary>
->
-> BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-> </details>
->
-> **Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-> <details><summary>Answer</summary>
->
-> 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-> </details>
->
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## 📌 Edge List Representation
 
@@ -205,19 +188,12 @@ flowchart TD
 ```
 
 **Flow:**
-- EDGE LIST - THE SIMPLEST GRAPH REPRESENTATION
-- ↓
-- int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}};
-- ↓
-- GRAPH: 5 3 7
-- ↓
-- MEMORY: O(E) — just the edges, nothing more
-- ↓
-- WHEN TO USE EDGE LIST:
-- ↓
-- ✅ Kruskal's MST (sort edges by weight, process in order
-- ↓
-- ✅ When you just need to store/sort edges
+1. EDGE LIST - THE SIMPLEST GRAPH REPRESENTATION
+2. int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}};
+3. GRAPH: 5 3 7
+4. MEMORY: O(E) — just the edges, nothing more
+5. WHEN TO USE EDGE LIST:
+6. ✅ Kruskal's MST (sort edges by weight, process in order ✅ When you just need to store/sort edges
 
 ```mermaid
 flowchart TD
@@ -344,19 +320,12 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 ```
 
 **Flow:**
-- BFS VS DFS - MEMORY AND CPU BEHAVIOR
-- ↓
-- GRAPH: 0 1 2
-- ↓
-- BFS USING QUEUE:
-- ↓
-- Queue<Integer> queue = new LinkedList<>();
-- ↓
-- queue.offer(0);
-- ↓
-- visited[0] = true;
-- ↓
-- QUEUE EVOLUTION:
+1. BFS VS DFS - MEMORY AND CPU BEHAVIOR
+2. GRAPH: 0 1 2
+3. BFS USING QUEUE:
+4. Queue<Integer> queue = new LinkedList<>();
+5. queue.offer(0); visited[0] = true;
+6. QUEUE EVOLUTION:
 
 ```mermaid
 flowchart TD
@@ -376,9 +345,6 @@ flowchart TD
     N6 --> N7
     N7 --> N8
 ```
-
-
-
 
 ## 🔬 Shortest Path Algorithms — Internal Comparison
 
@@ -460,19 +426,8 @@ flowchart TD
 ```
 
 **Flow:**
-- DIJKSTRA VS BELLMAN-FORD VS FLOYD-WARSHALL
-- ↓
-- DIJKSTRA'S ALGORITHM (Single source, non-negative weigh
-- ↓
-- Time: O((V + E) log V) with binary heap
-- ↓
-- Space: O(V) for distance array + O(V) for priority queu
-- ↓
-- INTERNAL WORKING:
-- ↓
-- • pq.offer(): O(log V) - bubble up in heap
-- ↓
-- • pq.poll(): O(log V) - bubble down in heap
+1. DIJKSTRA VS BELLMAN-FORD VS FLOYD-WARSHALL
+2. DIJKSTRA'S ALGORITHM (Single source, non-negative weigh Time: O((V + E) log V) with binary heap Space: O(V) for distance array + O(V) for priority queu INTERNAL WORKING: • pq.offer(): O(log V) - bubble up in heap • pq.poll(): O(log V) - bubble down in heap
 
 ```mermaid
 flowchart TD
@@ -497,15 +452,12 @@ flowchart TD
 
 ---
 
-
 ---
-
-
-
 
 ## 🏋️ Practice & Interview Questions — Algorithms
 
 ### Sorting
+
 **Q1.** Which sorting algorithm does Java use for `Arrays.sort(int[])`? Why not MergeSort?
 <details><summary>Answer</summary>
 
@@ -532,6 +484,7 @@ while(mid<=hi){
 </details>
 
 ### Binary Search
+
 **Q4.** ⭐ Search in Rotated Sorted Array.
 <details><summary>Solution</summary>
 
@@ -566,6 +519,7 @@ Binary search the eating speed k in range [1, max(piles)]. For each k, calculate
 </details>
 
 ### Dynamic Programming
+
 **Q7.** ⭐ Climbing Stairs — n steps, 1 or 2 at a time. How many ways?
 <details><summary>Solution</summary>
 
@@ -628,6 +582,7 @@ for(int i=1;i<=m;i++) for(int j=1;j<=n;j++){
 </details>
 
 ### Graph Algorithms
+
 **Q12.** ⭐ Number of Islands (BFS/DFS grid traversal).
 <details><summary>Solution</summary>
 
@@ -662,6 +617,7 @@ while(!pq.isEmpty()){
 </details>
 
 ### MCQ Rapid Fire
+
 | # | Question | Answer |
 |---|---|---|
 | 1 | QuickSort avg/worst | O(N log N) avg, O(N²) worst |
@@ -674,8 +630,6 @@ while(!pq.isEmpty()){
 | 8 | Bellman-Ford handles | Negative weights, detects negative cycles |
 | 9 | Floyd-Warshall use case | All-pairs shortest path, O(V³) |
 | 10 | Topological sort requires | Directed Acyclic Graph (DAG) |
-
-
 
 ---
 
@@ -741,5 +695,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 **Amortized**: analyzes the average cost per operation over a SEQUENCE of operations — in the worst case. No probability involved. Guarantees: N operations ALWAYS take O(N·T) total, even if some individual operations are O(N·T). Example: ArrayList append is O(N) when resizing, but amortized O(1) because resizing is rare. **Average-case**: analyzes expected cost of a SINGLE operation assuming random input. QuickSort is O(N log N) average-case (random pivot). Amortized is a stronger guarantee — it holds even for adversarial input sequences.
 </details>
 
-
-> **Navigation**: [< Previous](05_Trees.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05c_Graphs_Fundamentals.md)
+**Navigation**: [< Previous](05_Trees.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05c_Graphs_Fundamentals.md)

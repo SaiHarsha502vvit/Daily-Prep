@@ -4,21 +4,52 @@
 
 ---
 
-> **"Anyone can memorize O(n log n). The expert can DERIVE it from first principles."**
+**"Anyone can memorize O(n log n). The expert can DERIVE it from first principles."**
 
 This is the deep-theory guide to complexity analysis — how to reason about time and space like an MIT algorithms professor, explain it in interviews like a senior engineer, and use it to make architectural decisions in real systems.
 
 ---
 
 ## Table of Contents
-1. [First Principles — What Big-O Actually Means](#1-first-principles)
-2. [The Counting Method — Deriving Complexity By Hand](#2-the-counting-method)
-3. [Recurrence Relations — When Recursion Gets Mathematical](#3-recurrence-relations)
-4. [Amortized Analysis — When Average Matters More](#4-amortized-analysis)
-5. [Space Complexity — The Forgotten Dimension](#5-space-complexity)
-6. [Complexity of Common Operations — The Lookup Table](#6-complexity-of-common-operations)
-7. [Real-World Complexity — From Theory to Production](#7-real-world-complexity)
-8. [Interview Complexity Conversations — Scripts and Examples](#8-interview-complexity-conversations)
+
+- [⏱️ Complexity Analysis Masterclass — Think in Big-O Like a Mathematician](#️-complexity-analysis-masterclass--think-in-big-o-like-a-mathematician)
+  - [Table of Contents](#table-of-contents)
+  - [1. First Principles](#1-first-principles)
+    - [Mathematical Definition](#mathematical-definition)
+    - [The Growth Rate Hierarchy](#the-growth-rate-hierarchy)
+    - [Theta, Omega, and Big-O — The Full Picture](#theta-omega-and-big-o--the-full-picture)
+  - [2. The Counting Method — Deriving Complexity By Hand](#2-the-counting-method--deriving-complexity-by-hand)
+    - [Method 1: Count the Dominant Operation](#method-1-count-the-dominant-operation)
+    - [Method 2: Sum Trick for Complex Loops](#method-2-sum-trick-for-complex-loops)
+    - [Method 3: Counting with Recursion Trees](#method-3-counting-with-recursion-trees)
+  - [3. Recurrence Relations — When Recursion Gets Mathematical](#3-recurrence-relations--when-recursion-gets-mathematical)
+    - [The Master Theorem (Interview-Ready Version)](#the-master-theorem-interview-ready-version)
+    - [Common Recurrences Solved](#common-recurrences-solved)
+    - [How to Talk About This in an Interview](#how-to-talk-about-this-in-an-interview)
+  - [4. Amortized Analysis — When Average Matters More](#4-amortized-analysis--when-average-matters-more)
+    - [Why Amortized Analysis Matters](#why-amortized-analysis-matters)
+    - [The Three Methods](#the-three-methods)
+    - [Common Amortized Operations](#common-amortized-operations)
+    - [Interview Application](#interview-application)
+  - [5. Space Complexity — The Forgotten Dimension](#5-space-complexity--the-forgotten-dimension)
+    - [What Counts as Space](#what-counts-as-space)
+    - [Common Space Patterns](#common-space-patterns)
+    - [Space Optimization Techniques](#space-optimization-techniques)
+  - [6. Complexity of Common Operations — The Lookup Table](#6-complexity-of-common-operations--the-lookup-table)
+    - [Java Collections — Time Complexity](#java-collections--time-complexity)
+  - [CRITICAL INTERVIEW KNOWLEDGE:](#critical-interview-knowledge)
+    - [Sorting Algorithms Comparison](#sorting-algorithms-comparison)
+  - [INTERVIEW QUESTIONS:](#interview-questions)
+  - [7. Real-World Complexity — From Theory to Production](#7-real-world-complexity--from-theory-to-production)
+    - [When O(n) Beats O(log n) in Practice](#when-on-beats-olog-n-in-practice)
+    - [Database Complexity — B-Tree Analysis](#database-complexity--b-tree-analysis)
+    - [Network Complexity for Distributed Systems](#network-complexity-for-distributed-systems)
+  - [8. Interview Complexity Conversations — Scripts and Examples](#8-interview-complexity-conversations--scripts-and-examples)
+    - [Conversation 1: Simple Algorithm](#conversation-1-simple-algorithm)
+    - [Conversation 2: Trade-Off Discussion](#conversation-2-trade-off-discussion)
+    - [Conversation 3: Amortized Justification](#conversation-3-amortized-justification)
+    - [Conversation 4: Optimization Path](#conversation-4-optimization-path)
+  - [Summary Complexity Cheat Sheet](#summary-complexity-cheat-sheet)
 
 ---
 
@@ -97,9 +128,6 @@ IN INTERVIEWS:
 ```
 
 ---
-
-
-
 
 ## 2. The Counting Method — Deriving Complexity By Hand
 
@@ -215,9 +243,6 @@ EXAMPLE: Binary search recursion tree
 
 ---
 
-
-
-
 ## 3. Recurrence Relations — When Recursion Gets Mathematical
 
 ### The Master Theorem (Interview-Ready Version)
@@ -304,38 +329,37 @@ YOU (Level 3 — MIT level):
 
 ---
 
+🔬 **Section Challenge — 3. Recurrence Relations — When Recursion Gets Mathematical**
 
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
-> 🔬 **Section Challenge — 3. Recurrence Relations — When Recursion Gets Mathematical**
->
-> **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
-> <details><summary>Answer</summary>
->
-> An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
+
 ```
+
 Why and what are the 3 fixes?
-> <details><summary>Answer</summary>
->
-> Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
-> </details>
->
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
 
 ## 4. Amortized Analysis — When Average Matters More
 
 ### Why Amortized Analysis Matters
 
-```
 PROBLEM: ArrayList.add() is O(n) worst case (when resizing).
          Does this mean n additions take O(n²)?
 
 ANSWER: NO! Most additions are O(1). Resizing happens rarely.
         Over n operations, total cost is O(n) → amortized O(1) per operation.
-```
 
 ### The Three Methods
 
@@ -404,8 +428,6 @@ YOU:
    This is an amortized argument: the inner loop's total cost is bounded
    by the total distance the left pointer travels, which is ≤ n."
 ```
-
----
 
 ## 5. Space Complexity — The Forgotten Dimension
 
@@ -535,14 +557,16 @@ TECHNIQUE 5: MODIFY INPUT (if allowed)
 † = O(1) for peek, O(log n) for poll. Remove arbitrary = O(n)
 ‡ = only for top/front element
 
-CRITICAL INTERVIEW KNOWLEDGE:
-  • HashMap O(1) is AVERAGE. Worst case is O(n) with bad hash collisions.
-    Java 8+ mitigates with red-black tree buckets: O(log n) worst case.
-  • PriorityQueue gives O(1) for peek but O(n) for contains/remove(Object).
-    Use TreeMap if you need O(log n) contains.
-  • Arrays.sort() uses dual-pivot quicksort: O(n log n) avg, O(n²) worst
-  • Collections.sort() uses TimSort: O(n log n) worst case, O(n) for nearly sorted
 ```
+
+## CRITICAL INTERVIEW KNOWLEDGE
+
+- HashMap O(1) is average. Worst case is O(n) with bad hash collisions.
+- Java 8+ mitigates this with red-black tree buckets: O(log n) worst case.
+- PriorityQueue gives O(1) for peek but O(n) for contains/remove(Object).
+- Use TreeMap if you need O(log n) contains.
+- Arrays.sort() uses dual-pivot quicksort: O(n log n) average, O(n²) worst.
+- Collections.sort() uses TimSort: O(n log n) worst case, O(n) for nearly sorted.
 
 ### Sorting Algorithms Comparison
 
@@ -560,8 +584,10 @@ CRITICAL INTERVIEW KNOWLEDGE:
 │ Radix Sort          │ O(n × d)  │ O(n × d)  │O(n × d)│ O(n+k) │ Yes    │
 │ Tim Sort            │ O(n)      │ O(n log n)│O(nlogn)│ O(n)   │ Yes    │
 └─────────────────────┴───────────┴───────────┴────────┴────────┴────────┘
+```
 
-INTERVIEW QUESTIONS:
+## INTERVIEW QUESTIONS
+
   "Why does Java use Quicksort for primitives and TimSort for objects?"
   → Primitives: no stability needed, Quicksort has better cache behavior
   → Objects: stability matters (equal objects keep original order)
@@ -570,7 +596,6 @@ INTERVIEW QUESTIONS:
   "When would you use Counting Sort over Comparison Sort?"
   → When the range of values (k) is O(n) or smaller
   → e.g., sorting ages (0-150), grades (0-100), ASCII characters (0-127)
-```
 
 ---
 
@@ -785,13 +810,10 @@ THE CONSTRAINT → COMPLEXITY SHORTCUT:
 
 [⬅ Pattern Recognition Engine](03_DSA_Pattern_Recognition_Engine.md) | [📚 Index](00_INDEX.md) | [Next: SQL Interview Thinking ➡](05_SQL_Interview_Thinking.md)
 
+🔬 **Section Challenge — Summary Complexity Cheat Sheet**
 
-> 🔬 **Section Challenge — Summary Complexity Cheat Sheet**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
 
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>

@@ -1,31 +1,31 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Monitoring](12_Monitoring_Observability.md)
-> 🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Monitoring](12_Monitoring_Observability.md)
+🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md)
 
 ---
 
 # 🏭 Production-Grade Code Practices — 12-Factor, Logging, Error Handling
 
-> What separates hobby code from production-ready software
+What separates hobby code from production-ready software
 
 ---
 
 ## Part 1: The 12-Factor App
 
 
-> 12 principles for building cloud-native, production-ready applications
->
-> 1. Codebase     │ One codebase in version control, many deploys
-> 2. Dependencies │ Explicitly declare and isolate (pom.xml, package.json)
-> 3. Config       │ Store in environment variables, NOT in code
-> 4. Backing Svcs │ Treat DB, cache, queue as attached resources (swap easily)
-> 5. Build/Release│ Strict separation: build → release → run
-> 6. Processes     │ Stateless. Store shared state in DB/cache, not memory
-> 7. Port Binding │ App is self-contained, exports HTTP via port binding
-> 8. Concurrency  │ Scale out via process model (more instances, not threads)
-> 9. Disposability│ Fast startup, graceful shutdown (handle SIGTERM)
-> 10. Dev/Prod Par.│ Keep dev, staging, prod as similar as possible
-> 11. Logs         │ Treat logs as event streams (stdout, not files)
-> 12. Admin Procs. │ Run admin tasks as one-off processes (migrations, scripts)
+12 principles for building cloud-native, production-ready applications
+
+1. Codebase     │ One codebase in version control, many deploys
+2. Dependencies │ Explicitly declare and isolate (pom.xml, package.json)
+3. Config       │ Store in environment variables, NOT in code
+4. Backing Svcs │ Treat DB, cache, queue as attached resources (swap easily)
+5. Build/Release│ Strict separation: build → release → run
+6. Processes     │ Stateless. Store shared state in DB/cache, not memory
+7. Port Binding │ App is self-contained, exports HTTP via port binding
+8. Concurrency  │ Scale out via process model (more instances, not threads)
+9. Disposability│ Fast startup, graceful shutdown (handle SIGTERM)
+10. Dev/Prod Par.│ Keep dev, staging, prod as similar as possible
+11. Logs         │ Treat logs as event streams (stdout, not files)
+12. Admin Procs. │ Run admin tasks as one-off processes (migrations, scripts)
 
 
 ---
@@ -107,19 +107,13 @@ public class RequestFilter implements Filter {
 ```
 
 **Flow:**
-- Level When to Use
-- ↓
-- ERROR Something failed that needs human attention NOW
-- ↓
-- e.g., payment gateway down, data corruption
-- ↓
-- WARN Something unexpected but handled. Monitor trends.
-- ↓
-- e.g., retry succeeded, cache miss, deprecated API call
-- ↓
-- INFO Business-significant events. 'What happened?'
-- ↓
-- e.g., order placed, user registered, deployment started
+1. Level When to Use
+2. ERROR Something failed that needs human attention NOW
+3. e.g., payment gateway down, data corruption
+4. WARN Something unexpected but handled. Monitor trends.
+5. e.g., retry succeeded, cache miss, deprecated API call
+6. INFO Business-significant events. 'What happened?'
+7. e.g., order placed, user registered, deployment started
 
 ```mermaid
 flowchart TD
@@ -144,14 +138,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Part 3: Structured Logging**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Part 3: Structured Logging**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Part 4: Error Handling
 
@@ -203,14 +197,14 @@ public class GlobalExceptionHandler {
 
 
 
-> 🔬 **Section Challenge — Part 4: Error Handling**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Part 4: Error Handling**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Part 5: Health Checks & Graceful Shutdown
 
@@ -315,19 +309,9 @@ public PaymentResult processPayment(PaymentRequest req) {
 ```
 
 **Flow:**
-- REST API Checklist:
-- ↓
-- ✅ Consistent error response format
-- ↓
-- ✅ Pagination (page/size or cursor-based for large datas
-- ↓
-- ✅ Rate limiting (return 429 + Retry-After header)
-- ↓
-- ✅ CORS configuration for frontend
-- ↓
-- ✅ Request/response logging with sensitive data masking
-- ↓
-- Pagination Example:
+1. REST API Checklist:
+2. ✅ Consistent error response format
+3. ✅ Pagination (page/size or cursor-based for large datas ✅ Rate limiting (return 429 + Retry-After header) ✅ CORS configuration for frontend ✅ Request/response logging with sensitive data masking Pagination Example:
 
 ```mermaid
 flowchart TD

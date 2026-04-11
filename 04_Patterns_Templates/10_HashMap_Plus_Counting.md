@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](09_Array_Plus_SlidingWindow.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Stack_Plus_MonotonicPattern.md)
+**Navigation**: [< Previous](09_Array_Plus_SlidingWindow.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Stack_Plus_MonotonicPattern.md)
 
 # HashMap + Frequency Counting — Combined Pattern Guide
 
-> **WHY this combination?** HashMap gives O(1) lookup/insert. Combined with counting, grouping, or existence checks, it transforms O(n²) comparisons into O(n) lookups. The most versatile DS+Algo combination.
+**WHY this combination?** HashMap gives O(1) lookup/insert. Combined with counting, grouping, or existence checks, it transforms O(n²) comparisons into O(n) lookups. The most versatile DS+Algo combination.
 
 ### 🧠 Deep Intuition — Why HashMap Transforms Quadratic to Linear
 
@@ -21,7 +21,7 @@ This works because you're building the lookup table as you go. When you reach in
 
 The sliding window fails with negatives because shrinking doesn't reliably decrease the sum. Prefix sums bypass this entirely. If `prefix[j] - prefix[i] = k`, then the subarray `[i+1..j]` sums to `k`. By storing all previous prefix sums in a HashMap, you can check "has any previous prefix sum equal to `current_prefix - k`?" in O(1). This is mathematically equivalent to checking all possible subarrays but in linear time.
 
-> 💡 **Critical initialization:** Always start with `map.put(0, 1)` — this accounts for subarrays starting from index 0 (where the entire prefix *is* the subarray).
+💡 **Critical initialization:** Always start with `map.put(0, 1)` — this accounts for subarrays starting from index 0 (where the entire prefix *is* the subarray).
 
 ---
 
@@ -39,9 +39,8 @@ THEN → HashMap + Counting
 ```
 
 **Flow:**
-- THEN
-- ↓
-- HashMap + Counting
+1. THEN
+2. HashMap + Counting
 
 ```mermaid
 flowchart LR
@@ -135,29 +134,18 @@ Answer: 2
 ```
 
 **Flow:**
-- i=0: prefix=1, need 1-4=-3, not in map
-- ↓
-- count=0, map={0:1, 1:1}
-- ↓
-- i=1: prefix=3, need 3-4=-1, not in map
-- ↓
-- count=0, map={0:1, 1:1, 3:1}
-- ↓
-- i=2: prefix=6, need 6-4=2, not in map
-- ↓
-- count=0, map={0:1, 1:1, 3:1, 6:1}
-- ↓
-- i=3: prefix=5, need 5-4=1, IN MAP(1)!
-- ↓
-- count=1, map={.., 5:1}
-- ↓
-- subarray from index 1
-- ↓
-- 3: [2,3,-1] sum=4 ✅
-- ↓
-- i=4: prefix=7, need 7-4=3, IN MAP(1)!
-- ↓
-- count=2, map={.., 7:1}
+1. i=0: prefix=1, need 1-4=-3, not in map
+2. count=0, map={0:1, 1:1}
+3. i=1: prefix=3, need 3-4=-1, not in map
+4. count=0, map={0:1, 1:1, 3:1}
+5. i=2: prefix=6, need 6-4=2, not in map
+6. count=0, map={0:1, 1:1, 3:1, 6:1}
+7. i=3: prefix=5, need 5-4=1, IN MAP(1)!
+8. count=1, map={.., 5:1}
+9. subarray from index 1
+10. 3: [2,3,-1] sum=4 ✅
+11. i=4: prefix=7, need 7-4=3, IN MAP(1)!
+12. count=2, map={.., 7:1}
 
 ```mermaid
 flowchart TD
@@ -188,14 +176,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 🔬 VISUAL: Prefix Sum + HashMap**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 🔬 VISUAL: Prefix Sum + HashMap**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 🔥 KEY TRICKS
 
@@ -235,9 +223,8 @@ Time: O(n) | Space: O(n)
 ```
 
 **Flow:**
-- HashMap stores seen numbers, so lookup is O(1) per
-- ↓
-- O(n) total.
+1. HashMap stores seen numbers, so lookup is O(1) per
+2. O(n) total.
 
 ```mermaid
 flowchart LR
@@ -250,14 +237,14 @@ flowchart LR
 
 
 
-> 🔬 **Section Challenge — � FULL WALKTHROUGH: Two Sum (Complement Lookup)**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
-> <details><summary>Answer</summary>
->
-> The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-> </details>
->
+🔬 **Section Challenge — � FULL WALKTHROUGH: Two Sum (Complement Lookup)**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
 
 ## 🔬 FULL WALKTHROUGH 2: Subarray Sum Equals K (Prefix Sum + HashMap)
 
@@ -297,19 +284,13 @@ CRITICAL: Always initialize map with {0: 1}!
 ```
 
 **Flow:**
-- Problem: Count subarrays whose sum equals k=7.
-- ↓
-- nums = [3, 4, 7, 2, -3, 1, 4, 2]
-- ↓
-- Step-by-step:
-- ↓
-- sum = 0, count = 0
-- ↓
-- map={0:1, 3:1, 7:1}
-- ↓
-- map={0:1, 3:1, 7:1, 14:1}
-- ↓
-- map={..., 14:2} (14 now appears twice!)
+1. Problem: Count subarrays whose sum equals k=7.
+2. nums = [3, 4, 7, 2, -3, 1, 4, 2]
+3. Step-by-step:
+4. sum = 0, count = 0
+5. map={0:1, 3:1, 7:1}
+6. map={0:1, 3:1, 7:1, 14:1}
+7. map={..., 14:2} (14 now appears twice!)
 
 ```mermaid
 flowchart TD
@@ -334,14 +315,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Subarray Sum Equals K (Prefix Sum + HashMap)**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 🔬 FULL WALKTHROUGH 2: Subarray Sum Equals K (Prefix Sum + HashMap)**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 🛡️ EDGE CASES
 
@@ -361,19 +342,13 @@ flowchart TD
 ```
 
 **Flow:**
-- Edge Case Handling
-- ↓
-- Single element = target Subarray of length 1 is valid
-- ↓
-- Negative numbers Prefix Sum + HashMap (NOT sliding wind
-- ↓
-- All zeros, target=0 Every subarray of any length sums t
-- ↓
-- Empty array Return 0 / empty
-- ↓
-- Large values (overflow) Use long for prefix sums if nee
-- ↓
-- is faster for lowercase-only problems
+1. Edge Case Handling
+2. Single element = target Subarray of length 1 is valid
+3. Negative numbers Prefix Sum + HashMap (NOT sliding wind
+4. All zeros, target=0 Every subarray of any length sums t
+5. Empty array Return 0 / empty
+6. Large values (overflow) Use long for prefix sums if nee
+7. is faster for lowercase-only problems
 
 ```mermaid
 flowchart TD
@@ -408,14 +383,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
->
-> **Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
-> <details><summary>Answer</summary>
->
-> `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
-> </details>
->
+🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
 
@@ -463,11 +438,11 @@ flowchart TD
 
 **When the interviewer gives you a HashMap/counting problem, say this:**
 
-> "The brute force uses nested loops to check every pair — O(n²). By storing elements in a HashMap as I scan, I can check 'have I seen the complement?' in O(1). The trade-off is O(n) extra space, but we reduce time from O(n²) to O(n)."
+"The brute force uses nested loops to check every pair — O(n²). By storing elements in a HashMap as I scan, I can check 'have I seen the complement?' in O(1). The trade-off is O(n) extra space, but we reduce time from O(n²) to O(n)."
 
 **For prefix sum problems:**
 
-> "I maintain a running prefix sum. If `prefix[j] - prefix[i] = target`, then the subarray [i+1..j] sums to target. By storing all prefix sums in a HashMap, I check 'has any previous prefix equaled `current - target`?' in O(1)."
+"I maintain a running prefix sum. If `prefix[j] - prefix[i] = target`, then the subarray [i+1..j] sums to target. By storing all prefix sums in a HashMap, I check 'has any previous prefix equaled `current - target`?' in O(1)."
 
 **Common mistakes to proactively mention:**
 - ❌ "Always initialize `map.put(0, 1)` for prefix sum problems — it counts subarrays starting from index 0."

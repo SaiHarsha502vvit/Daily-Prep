@@ -45,19 +45,12 @@ KEY DIMENSIONS:
 ```
 
 **Flow:**
-- Visual: [1, 2, 3] In Memory (Row-Major — Java default):
-- ↓
-- [7, 8, 9] ↑row 0 ↑row 1 ↑row 2
-- ↓
-- Accessing: matrix[row][col]
-- ↓
-- matrix[0][0] = 1 (top-left)
-- ↓
-- matrix[1][2] = 6 (row 1, col 2)
-- ↓
-- matrix[2][1] = 8 (row 2, col 1)
-- ↓
-- KEY DIMENSIONS:
+1. Visual: [1, 2, 3] In Memory (Row-Major — Java default):
+2. [7, 8, 9] ↑row 0 ↑row 1 ↑row 2
+3. Accessing: matrix[row][col] matrix[0][0] = 1 (top-left)
+4. matrix[1][2] = 6 (row 1, col 2)
+5. matrix[2][1] = 8 (row 2, col 1)
+6. KEY DIMENSIONS:
 
 ```mermaid
 flowchart TD
@@ -118,21 +111,12 @@ Direction: RIGHT → DOWN → LEFT → UP → repeat (shrinking boundaries)
 ```
 
 **Flow:**
-- 12
-- ↓
-- 11
-- ↓
-- 10
-- ↓
-- Direction: RIGHT
-- ↓
-- DOWN
-- ↓
-- LEFT
-- ↓
-- UP
-- ↓
-- repeat (shrinking boundaries)
+1. 12 11 10
+2. Direction: RIGHT
+3. DOWN
+4. LEFT
+5. UP
+6. repeat (shrinking boundaries)
 
 ```mermaid
 flowchart TD
@@ -217,25 +201,16 @@ MERGE phase (combine sorted halves):
 ```
 
 **Flow:**
-- [38] [27]
-- ↓
-- [27, 38] [43] [3]
-- ↓
-- [3, 43]
-- ↓
-- [27, 38] + [3, 43]
-- ↓
-- [3, 27, 38, 43]
-- ↓
-- [9] [82]
-- ↓
-- [9, 82] [10]
-- ↓
-- [10]
-- ↓
-- [9, 82] + [10]
-- ↓
-- [9, 10, 82]
+1. [38] [27]
+2. [27, 38] [43] [3]
+3. [3, 43]
+4. [27, 38] + [3, 43]
+5. [3, 27, 38, 43]
+6. [9] [82]
+7. [9, 82] [10]
+8. [10]
+9. [9, 82] + [10]
+10. [9, 10, 82]
 
 ```mermaid
 flowchart TD
@@ -309,21 +284,12 @@ Level 2:  [n/4][n/4][n/4][n/4]            → n work
 ```
 
 **Flow:**
-- Level 0: [-------n-------]
-- ↓
-- n work
-- ↓
-- Level 1: [---n/2---][---n/2---]
-- ↓
-- n work
-- ↓
-- Level 2: [n/4][n/4][n/4][n/4]
-- ↓
-- n work
-- ↓
-- ... log₂(n) levels total
-- ↓
-- n × log₂(n) total
+1. Level 0: [-------n-------] n work
+2. Level 1: [---n/2---][---n/2---]
+3. n work
+4. Level 2: [n/4][n/4][n/4][n/4]
+5. n work
+6. ... log₂(n) levels total n × log₂(n) total
 
 ```mermaid
 flowchart LR
@@ -356,13 +322,7 @@ target = 13 → false
 ```
 
 **Flow:**
-- target = 3
-- ↓
-- true
-- ↓
-- target = 13
-- ↓
-- false
+1. target = 3 true target = 13 false
 
 ```mermaid
 flowchart LR
@@ -388,11 +348,8 @@ Example: index 5 in 4-column matrix → row=5/4=1, col=5%4=1 → matrix[1][1]=11
 ```
 
 **Flow:**
-- Example: index 5 in 4-column matrix
-- ↓
-- row=5/4=1, col=5%4=1
-- ↓
-- matrix[1][1]=11
+1. Example: index 5 in 4-column matrix
+2. row=5/4=1, col=5%4=1 matrix[1][1]=11
 
 ```mermaid
 flowchart LR
@@ -627,11 +584,7 @@ Step 2 — Reverse each row:
 ```
 
 **Flow:**
-- Step 1 — Transpose (swap matrix[i][j] with matrix[j][i]
-- ↓
-- Step 2 — Reverse each row:
-- ↓
-- [9,6,3]] ← Done!
+1. Step 1 — Transpose (swap matrix[i][j] with matrix[j][i] Step 2 — Reverse each row: [9,6,3]] ← Done!
 
 ```mermaid
 flowchart TD
@@ -696,21 +649,7 @@ Let's verify: row 0 min=1 → col 0 max=3 → not 1. row 0 min=1→ fail.
 ```
 
 **Flow:**
-- Let's verify: row 0 min=1
-- ↓
-- col 0 max=3
-- ↓
-- not 1. row 0 min=1
-- ↓
-- fail.
-- ↓
-- row 0: min=1 at col=0. Col 0 max=3. 1≠3
-- ↓
-- no.
-- ↓
-- row 1: min=3 at col=0. Col 0 max=3. 3==3
-- ↓
-- YES! Saddle=3.
+1. Let's verify: row 0 min=1 col 0 max=3 not 1. row 0 min=1 fail. row 0: min=1 at col=0. Col 0 max=3. 1≠3 no. row 1: min=3 at col=0. Col 0 max=3. 3==3 YES! Saddle=3.
 
 ```mermaid
 flowchart TD

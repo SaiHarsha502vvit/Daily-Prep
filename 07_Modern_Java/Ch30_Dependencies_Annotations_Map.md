@@ -1,28 +1,28 @@
-> **Navigation**: [< Previous](Ch54_Message_Queues_Kafka.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch22_Java_Deep_Reasoning.md)
+**Navigation**: [< Previous](Ch54_Message_Queues_Kafka.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch22_Java_Deep_Reasoning.md)
 
-> **Modern Java Chapter 30** | [← Message Queues](Ch54_Message_Queues_Kafka.md) | [Index](../00_MASTER_INDEX.md)
+**Modern Java Chapter 30** | [← Message Queues](Ch54_Message_Queues_Kafka.md) | [Index](../00_MASTER_INDEX.md)
 
 # Spring Boot Dependencies → Annotations Map
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: A complete map showing which Maven/Gradle dependency
-> enables which annotations and features in Spring Boot.
->
-> WHY:  Developers (especially beginners) face confusion:
-> "I added @Data but it doesn't work!"
-> → Because @Data is Lombok, not Spring.
-> "Where does @Entity come from?"
-> → JPA dependency, not Spring Web.
->
-> THE CORE CONFUSION: Spring Boot has 50+ starter dependencies.
-> Each unlocks different annotations. Without a map, you guess.
->
-> WHO:  Every Spring Boot developer who's ever been confused
-> about where an annotation comes from.
->
-> HOW:  Dependency → what it gives you → common annotations.
+WHAT: A complete map showing which Maven/Gradle dependency
+enables which annotations and features in Spring Boot.
+
+WHY:  Developers (especially beginners) face confusion:
+"I added @Data but it doesn't work!"
+→ Because @Data is Lombok, not Spring.
+"Where does @Entity come from?"
+→ JPA dependency, not Spring Web.
+
+THE CORE CONFUSION: Spring Boot has 50+ starter dependencies.
+Each unlocks different annotations. Without a map, you guess.
+
+WHO:  Every Spring Boot developer who's ever been confused
+about where an annotation comes from.
+
+HOW:  Dependency → what it gives you → common annotations.
 
 
 ---
@@ -112,19 +112,13 @@ springdoc-openapi             │ @Tag, @Operation
 ```
 
 **Flow:**
-- DEPENDENCY WHAT IT UNLOCKS
-- ↓
-- spring-boot-starter @SpringBootApplication
-- ↓
-- (core, always included) @Component, @Service, @Reposito
-- ↓
-- @Bean, @Configuration
-- ↓
-- @Autowired, @Value
-- ↓
-- @Qualifier, @Primary
-- ↓
-- @Profile, @Conditional*
+1. DEPENDENCY WHAT IT UNLOCKS
+2. spring-boot-starter @SpringBootApplication
+3. (core, always included) @Component, @Service, @Reposito
+4. @Bean, @Configuration
+5. @Autowired, @Value
+6. @Qualifier, @Primary
+7. @Profile, @Conditional*
 
 ```mermaid
 flowchart TD
@@ -150,194 +144,194 @@ flowchart TD
 ## 2. The Lombok Confusion — Fully Explained
 
 
-> LOMBOK IS NOT SPRING. It's a separate library that generates
-> Java boilerplate code at COMPILE TIME.
->
-> WHY THE CONFUSION:
-> - Everyone uses it with Spring, so people think it IS Spring.
-> - It's added as a dependency in pom.xml alongside Spring deps.
-> - IDE needs a plugin to understand it (IntelliJ: Settings →
-> Plugins → search "Lombok" → install).
->
-> WHAT @Data ACTUALLY GENERATES:
->
-> YOU WRITE:                        LOMBOK GENERATES AT COMPILE:
->
-> @Data                             public class User {
-> public class User {                   private String name;
-> private String name;              private String email;
-> private String email;
-> }                                     public String getName()
-> { return name; }
-> public void setName(...)
-> { this.name = name; }
-> public String getEmail()
-> { return email; }
-> public void setEmail(...)
-> { this.email = email; }
-> public String toString()
-> { return "User(name=" ... }
-> public boolean equals(...)
-> { ... }
-> public int hashCode()
-> { ... }
-> public User(String name,
-> String email) { ... }
-> }
->
-> IF @Data DOESN'T WORK:
-> 1. Check: Is lombok in pom.xml as dependency?
-> 2. Check: Is annotation processing enabled in IDE?
-> (IntelliJ: Settings → Build → Compiler → ✓ Enable
-> annotation processing)
-> 3. Check: Is Lombok plugin installed in IDE?
-> 4. Try: mvn clean compile (force recompile)
+LOMBOK IS NOT SPRING. It's a separate library that generates
+Java boilerplate code at COMPILE TIME.
+
+WHY THE CONFUSION:
+- Everyone uses it with Spring, so people think it IS Spring.
+- It's added as a dependency in pom.xml alongside Spring deps.
+- IDE needs a plugin to understand it (IntelliJ: Settings →
+Plugins → search "Lombok" → install).
+
+WHAT @Data ACTUALLY GENERATES:
+
+YOU WRITE:                        LOMBOK GENERATES AT COMPILE:
+
+@Data                             public class User {
+public class User {                   private String name;
+private String name;              private String email;
+private String email;
+}                                     public String getName()
+{ return name; }
+public void setName(...)
+{ this.name = name; }
+public String getEmail()
+{ return email; }
+public void setEmail(...)
+{ this.email = email; }
+public String toString()
+{ return "User(name=" ... }
+public boolean equals(...)
+{ ... }
+public int hashCode()
+{ ... }
+public User(String name,
+String email) { ... }
+}
+
+IF @Data DOESN'T WORK:
+1. Check: Is lombok in pom.xml as dependency?
+2. Check: Is annotation processing enabled in IDE?
+(IntelliJ: Settings → Build → Compiler → ✓ Enable
+annotation processing)
+3. Check: Is Lombok plugin installed in IDE?
+4. Try: mvn clean compile (force recompile)
 
 
 ---
 
 
 
-> 🔬 **Section Challenge — 2. The Lombok Confusion — Fully Explained**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 2. The Lombok Confusion — Fully Explained**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 3. Quick Reference: "I Need To Do X — Which Dependency?"
 
 
-> I WANT TO...                   │ ADD THIS DEPENDENCY
-> ───────────────────────────────┼────────────────────────────────
-> Create REST APIs               │ spring-boot-starter-web
-> Connect to SQL database        │ spring-boot-starter-data-jpa
-> │ + mysql-connector-java (driver)
-> Validate input (@NotNull etc)  │ spring-boot-starter-validation
-> Add login/security             │ spring-boot-starter-security
-> Write tests                    │ spring-boot-starter-test
-> Monitor app health             │ spring-boot-starter-actuator
-> Reduce boilerplate code        │ lombok (+ IDE plugin!)
-> Generate API docs (Swagger)    │ springdoc-openapi-starter-*
-> Send/receive messages          │ spring-boot-starter-amqp (RMQ)
-> │ spring-kafka (Kafka)
-> Use Redis cache                │ spring-boot-starter-data-redis
-> Schedule tasks (@Scheduled)    │ spring-boot-starter (built-in)
-> │ + @EnableScheduling
-> Send emails                    │ spring-boot-starter-mail
-> Upload files to S3             │ aws-sdk-java (not Spring)
-> Use WebSockets                 │ spring-boot-starter-websocket
-> Use MongoDB                    │ spring-boot-starter-data-mongodb
+I WANT TO...                   │ ADD THIS DEPENDENCY
+───────────────────────────────┼────────────────────────────────
+Create REST APIs               │ spring-boot-starter-web
+Connect to SQL database        │ spring-boot-starter-data-jpa
+│ + mysql-connector-java (driver)
+Validate input (@NotNull etc)  │ spring-boot-starter-validation
+Add login/security             │ spring-boot-starter-security
+Write tests                    │ spring-boot-starter-test
+Monitor app health             │ spring-boot-starter-actuator
+Reduce boilerplate code        │ lombok (+ IDE plugin!)
+Generate API docs (Swagger)    │ springdoc-openapi-starter-*
+Send/receive messages          │ spring-boot-starter-amqp (RMQ)
+│ spring-kafka (Kafka)
+Use Redis cache                │ spring-boot-starter-data-redis
+Schedule tasks (@Scheduled)    │ spring-boot-starter (built-in)
+│ + @EnableScheduling
+Send emails                    │ spring-boot-starter-mail
+Upload files to S3             │ aws-sdk-java (not Spring)
+Use WebSockets                 │ spring-boot-starter-websocket
+Use MongoDB                    │ spring-boot-starter-data-mongodb
 
 
 ---
 
 
 
-> 🔬 **Section Challenge — 3. Quick Reference: "I Need To Do X — Which Dependency?"**
->
-> **Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
-> <details><summary>Answer</summary>
->
-> Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
-> </details>
->
+🔬 **Section Challenge — 3. Quick Reference: "I Need To Do X — Which Dependency?"**
+
+**Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+<details><summary>Answer</summary>
+
+Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
+</details>
+
 
 ## 4. Annotation Categories — Visual Guide
 
 
-> CATEGORY 1: BEAN CREATION (Spring Core)
-> "Tell Spring to manage this object"
->
-> @Component       → Generic Spring bean
-> @Service         → Business logic layer (same as @Component)
-> @Repository      → Data access layer (adds exception translation)
-> @Controller      → Web layer (returns views — HTML)
-> @RestController  → Web layer (returns JSON — @Controller +
-> @ResponseBody combined)
-> @Configuration   → Declares @Bean methods
-> @Bean            → Method return value becomes a Spring bean
->
-> ───────────────────────────────────────────────────────────────
->
-> CATEGORY 2: DEPENDENCY INJECTION (Spring Core)
-> "Give me an instance of that class"
->
-> @Autowired       → Inject a bean (prefer constructor injection)
-> @Qualifier       → Choose WHICH bean when multiple exist
-> @Primary         → This bean is the DEFAULT choice
-> @Value           → Inject a property value
-> @Value("${server.port}") int port;
->
-> ───────────────────────────────────────────────────────────────
->
-> CATEGORY 3: WEB / HTTP (spring-boot-starter-web)
-> "Map HTTP requests to Java methods"
->
-> @GetMapping("/users")              → HTTP GET
-> @PostMapping("/users")             → HTTP POST
-> @PutMapping("/users/{id}")         → HTTP PUT
-> @DeleteMapping("/users/{id}")      → HTTP DELETE
-> @PathVariable                      → Extract from URL path
-> @RequestParam                      → Extract from query string
-> @RequestBody                       → Parse JSON body to object
-> @ResponseStatus(HttpStatus.CREATED) → Set response status code
->
-> ───────────────────────────────────────────────────────────────
->
-> CATEGORY 4: DATABASE / JPA (spring-boot-starter-data-jpa)
-> "Map Java classes to database tables"
->
-> @Entity          → "This class = a database table"
-> @Table           → Customize table name: @Table(name="users")
-> @Id              → Primary key field
-> @GeneratedValue  → Auto-increment strategy
-> @Column          → Column config: nullable, length, unique
-> @Transient       → NOT saved to database (Java-only field)
->
-> Relationships:
-> @OneToMany(mappedBy="user")  → One user has many orders
-> @ManyToOne                    → Many orders belong to one user
-> @ManyToMany                   → Users ↔ Roles
-> @JoinColumn(name="user_id")  → Foreign key column name
->
-> ───────────────────────────────────────────────────────────────
->
-> CATEGORY 5: VALIDATION (spring-boot-starter-validation)
-> "Reject bad input before processing"
->
-> @Valid            → Trigger validation on this object
-> @NotNull          → Cannot be null
-> @NotBlank         → Cannot be null, empty, or whitespace
-> @Size(min, max)   → String/collection length bounds
-> @Min, @Max        → Numeric bounds
-> @Email            → Must be valid email format
-> @Pattern(regex)   → Must match regex
-> @Past, @Future    → Date must be before/after now
->
-> USAGE:
-> @PostMapping("/users")
-> public User create(@Valid @RequestBody CreateUserDTO dto) {
-> //                  ^^^^^^ THIS triggers validation
-> }
->
-> ───────────────────────────────────────────────────────────────
->
-> CATEGORY 6: LOMBOK (separate library, NOT Spring)
-> "Generate boilerplate Java code at compile time"
->
-> @Data             → Getter + Setter + toString + equals +
-> hashCode + RequiredArgsConstructor
-> @Getter/@Setter   → Just getters/setters
-> @Builder          → Builder pattern: User.builder().name()...
-> @NoArgsConstructor → Empty constructor (JPA needs this!)
-> @AllArgsConstructor → Constructor with ALL fields
-> @RequiredArgsConstructor → Constructor for final fields only
-> @Slf4j            → Creates: private static final Logger log
-> @ToString(exclude="password") → Custom toString
-> @EqualsAndHashCode(of="id")   → Only use id for comparison
+CATEGORY 1: BEAN CREATION (Spring Core)
+"Tell Spring to manage this object"
+
+@Component       → Generic Spring bean
+@Service         → Business logic layer (same as @Component)
+@Repository      → Data access layer (adds exception translation)
+@Controller      → Web layer (returns views — HTML)
+@RestController  → Web layer (returns JSON — @Controller +
+@ResponseBody combined)
+@Configuration   → Declares @Bean methods
+@Bean            → Method return value becomes a Spring bean
+
+───────────────────────────────────────────────────────────────
+
+CATEGORY 2: DEPENDENCY INJECTION (Spring Core)
+"Give me an instance of that class"
+
+@Autowired       → Inject a bean (prefer constructor injection)
+@Qualifier       → Choose WHICH bean when multiple exist
+@Primary         → This bean is the DEFAULT choice
+@Value           → Inject a property value
+@Value("${server.port}") int port;
+
+───────────────────────────────────────────────────────────────
+
+CATEGORY 3: WEB / HTTP (spring-boot-starter-web)
+"Map HTTP requests to Java methods"
+
+@GetMapping("/users")              → HTTP GET
+@PostMapping("/users")             → HTTP POST
+@PutMapping("/users/{id}")         → HTTP PUT
+@DeleteMapping("/users/{id}")      → HTTP DELETE
+@PathVariable                      → Extract from URL path
+@RequestParam                      → Extract from query string
+@RequestBody                       → Parse JSON body to object
+@ResponseStatus(HttpStatus.CREATED) → Set response status code
+
+───────────────────────────────────────────────────────────────
+
+CATEGORY 4: DATABASE / JPA (spring-boot-starter-data-jpa)
+"Map Java classes to database tables"
+
+@Entity          → "This class = a database table"
+@Table           → Customize table name: @Table(name="users")
+@Id              → Primary key field
+@GeneratedValue  → Auto-increment strategy
+@Column          → Column config: nullable, length, unique
+@Transient       → NOT saved to database (Java-only field)
+
+Relationships:
+@OneToMany(mappedBy="user")  → One user has many orders
+@ManyToOne                    → Many orders belong to one user
+@ManyToMany                   → Users ↔ Roles
+@JoinColumn(name="user_id")  → Foreign key column name
+
+───────────────────────────────────────────────────────────────
+
+CATEGORY 5: VALIDATION (spring-boot-starter-validation)
+"Reject bad input before processing"
+
+@Valid            → Trigger validation on this object
+@NotNull          → Cannot be null
+@NotBlank         → Cannot be null, empty, or whitespace
+@Size(min, max)   → String/collection length bounds
+@Min, @Max        → Numeric bounds
+@Email            → Must be valid email format
+@Pattern(regex)   → Must match regex
+@Past, @Future    → Date must be before/after now
+
+USAGE:
+@PostMapping("/users")
+public User create(@Valid @RequestBody CreateUserDTO dto) {
+//                  ^^^^^^ THIS triggers validation
+}
+
+───────────────────────────────────────────────────────────────
+
+CATEGORY 6: LOMBOK (separate library, NOT Spring)
+"Generate boilerplate Java code at compile time"
+
+@Data             → Getter + Setter + toString + equals +
+hashCode + RequiredArgsConstructor
+@Getter/@Setter   → Just getters/setters
+@Builder          → Builder pattern: User.builder().name()...
+@NoArgsConstructor → Empty constructor (JPA needs this!)
+@AllArgsConstructor → Constructor with ALL fields
+@RequiredArgsConstructor → Constructor for final fields only
+@Slf4j            → Creates: private static final Logger log
+@ToString(exclude="password") → Custom toString
+@EqualsAndHashCode(of="id")   → Only use id for comparison
 
 
 ---
@@ -345,40 +339,40 @@ flowchart TD
 ## 5. Common Mistakes & Fixes
 
 
-> MISTAKE → WHY IT HAPPENS → FIX
->
-> "@Entity not recognized"
-> → Missing spring-boot-starter-data-jpa dependency.
-> → Fix: Add to pom.xml + reimport Maven.
->
-> "@Valid doesn't validate anything"
-> → Missing spring-boot-starter-validation dep (since SB 2.3+).
-> → Before 2.3, validation was included in web starter.
-> → Fix: Add spring-boot-starter-validation explicitly.
->
-> "@Data generates nothing / red squiggles"
-> → Lombok not properly configured.
-> → Fix: 1) Add lombok to pom.xml
-> 2) Install Lombok plugin in IntelliJ
-> 3) Enable annotation processing in IDE settings
->
-> "@Autowired field is null"
-> → Object was created with 'new' instead of Spring injection.
-> → Fix: Let Spring create it (@Component + @Autowired), or
-> use constructor injection (recommended).
->
-> "@Transactional doesn't rollback"
-> → Called from within same class (proxy bypass).
-> → Fix: Call from another bean, or use self-injection.
-> → Or: exception is checked (only unchecked rolls back by default)
->
-> "@Scheduled doesn't run"
-> → Missing @EnableScheduling on @Configuration class.
-> → Fix: Add @EnableScheduling to main class or config class.
->
-> "Can't find @PreAuthorize"
-> → Missing spring-boot-starter-security dependency.
-> → Also needs @EnableMethodSecurity on config class.
+MISTAKE → WHY IT HAPPENS → FIX
+
+"@Entity not recognized"
+→ Missing spring-boot-starter-data-jpa dependency.
+→ Fix: Add to pom.xml + reimport Maven.
+
+"@Valid doesn't validate anything"
+→ Missing spring-boot-starter-validation dep (since SB 2.3+).
+→ Before 2.3, validation was included in web starter.
+→ Fix: Add spring-boot-starter-validation explicitly.
+
+"@Data generates nothing / red squiggles"
+→ Lombok not properly configured.
+→ Fix: 1) Add lombok to pom.xml
+2) Install Lombok plugin in IntelliJ
+3) Enable annotation processing in IDE settings
+
+"@Autowired field is null"
+→ Object was created with 'new' instead of Spring injection.
+→ Fix: Let Spring create it (@Component + @Autowired), or
+use constructor injection (recommended).
+
+"@Transactional doesn't rollback"
+→ Called from within same class (proxy bypass).
+→ Fix: Call from another bean, or use self-injection.
+→ Or: exception is checked (only unchecked rolls back by default)
+
+"@Scheduled doesn't run"
+→ Missing @EnableScheduling on @Configuration class.
+→ Fix: Add @EnableScheduling to main class or config class.
+
+"Can't find @PreAuthorize"
+→ Missing spring-boot-starter-security dependency.
+→ Also needs @EnableMethodSecurity on config class.
 
 
 ---
@@ -559,19 +553,13 @@ Q: Why is my @Autowired field null?
 ```
 
 **Flow:**
-- Q: Where does @Data come from?
-- ↓
-- IDE plugin, and annotation processing enabled. It gener
-- ↓
-- Q: Why doesn't @Valid work in my Spring Boot 3 project?
-- ↓
-- Since SB 2.3+, validation is NOT included in web star
-- ↓
-- Add spring-boot-starter-validation separately.
-- ↓
-- @Service = business logic, @Repository = data access (a
-- ↓
-- Q: Why is my @Autowired field null?
+1. Q: Where does @Data come from?
+2. IDE plugin, and annotation processing enabled. It gener
+3. Q: Why doesn't @Valid work in my Spring Boot 3 project?
+4. Since SB 2.3+, validation is NOT included in web star
+5. Add spring-boot-starter-validation separately.
+6. @Service = business logic, @Repository = data access (a
+7. Q: Why is my @Autowired field null?
 
 ```mermaid
 flowchart TD
@@ -594,7 +582,7 @@ flowchart TD
 
 ---
 
-> [← Message Queues](Ch54_Message_Queues_Kafka.md) | [Index](../00_MASTER_INDEX.md)
+[← Message Queues](Ch54_Message_Queues_Kafka.md) | [Index](../00_MASTER_INDEX.md)
 
 
 ---

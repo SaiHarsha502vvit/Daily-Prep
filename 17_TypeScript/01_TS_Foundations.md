@@ -1,32 +1,32 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_TS_Advanced_Types.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_TS_Advanced_Types.md)
 
-> **TypeScript Chapter 1/3** | [Index](../00_MASTER_INDEX.md) | [Next → Advanced Types](02_TS_Advanced_Types.md)
+**TypeScript Chapter 1/3** | [Index](../00_MASTER_INDEX.md) | [Next → Advanced Types](02_TS_Advanced_Types.md)
 
 # TypeScript Foundations — Why Types Matter
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: TypeScript is JavaScript + STATIC TYPE CHECKING.
-> It compiles to plain JS. Every valid JS is valid TS.
->
-> WHY:  JS bugs often come from type mismatches:
-> - Passing string where number expected
-> - Accessing property on undefined object
-> - Calling function with wrong arguments
-> TS catches these at COMPILE TIME — before users see them.
->
-> WHO:  Every professional JS developer. React, Angular, Vue,
-> Node — all major ecosystems have TS support. Most job
-> listings now require TypeScript.
->
-> WHEN: Immediately after learning JS fundamentals.
->
-> WHERE: Everywhere JS runs. TS compiles away — the browser/Node
-> never sees TypeScript, only the resulting JavaScript.
->
-> HOW:  Install → write .ts files → compiler (tsc) or bundler
-> (Vite) transpiles to .js → runs as usual.
+WHAT: TypeScript is JavaScript + STATIC TYPE CHECKING.
+It compiles to plain JS. Every valid JS is valid TS.
+
+WHY:  JS bugs often come from type mismatches:
+- Passing string where number expected
+- Accessing property on undefined object
+- Calling function with wrong arguments
+TS catches these at COMPILE TIME — before users see them.
+
+WHO:  Every professional JS developer. React, Angular, Vue,
+Node — all major ecosystems have TS support. Most job
+listings now require TypeScript.
+
+WHEN: Immediately after learning JS fundamentals.
+
+WHERE: Everywhere JS runs. TS compiles away — the browser/Node
+never sees TypeScript, only the resulting JavaScript.
+
+HOW:  Install → write .ts files → compiler (tsc) or bundler
+(Vite) transpiles to .js → runs as usual.
 
 
 ---
@@ -93,19 +93,13 @@ npx tsc --watch              # Watch mode (auto-recompile)
 ```
 
 **Flow:**
-- WHY strict: true IS NON-NEGOTIABLE:
-- ↓
-- strict: true enables 7 flags at once:
-- ↓
-- • noImplicitAny — no guessing types
-- ↓
-- • strictNullChecks — null is NOT assignable to string
-- ↓
-- • strictFunctionTypes — function parameter variance che
-- ↓
-- • strictBindCallApply — type-safe bind/call/apply
-- ↓
-- • noImplicitThis — error if `this` type is unknown
+1. WHY strict: true IS NON-NEGOTIABLE:
+2. strict: true enables 7 flags at once:
+3. • noImplicitAny — no guessing types
+4. • strictNullChecks — null is NOT assignable to string
+5. • strictFunctionTypes — function parameter variance che
+6. • strictBindCallApply — type-safe bind/call/apply
+7. • noImplicitThis — error if `this` type is unknown
 
 ```mermaid
 flowchart TD
@@ -219,29 +213,18 @@ never = "This can never happen" (exhaustive checks)
 ```
 
 **Flow:**
-- unknown ← TOP type (anything assignable TO it)
-- ↓
-- string
-- ↓
-- unknown ← TOP type (anything assignable TO it)
-- ↓
-- number
-- ↓
-- unknown ← TOP type (anything assignable TO it)
-- ↓
-- boolean
-- ↓
-- unknown ← TOP type (anything assignable TO it)
-- ↓
-- object
-- ↓
-- unknown ← TOP type (anything assignable TO it)
-- ↓
-- Array
-- ↓
-- unknown ← TOP type (anything assignable TO it)
-- ↓
-- Function
+1. unknown ← TOP type (anything assignable TO it)
+2. string
+3. unknown ← TOP type (anything assignable TO it)
+4. number
+5. unknown ← TOP type (anything assignable TO it)
+6. boolean
+7. unknown ← TOP type (anything assignable TO it)
+8. object
+9. unknown ← TOP type (anything assignable TO it)
+10. Array
+11. unknown ← TOP type (anything assignable TO it)
+12. Function
 
 ```mermaid
 flowchart TD
@@ -274,8 +257,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 2. Basic Types**
->>
+🔬 **Section Challenge — 2. Basic Types**
+>
 
 ## 3. Interfaces & Type Aliases
 
@@ -363,8 +346,8 @@ interface Array<T> {
 
 
 
-> 🔬 **Section Challenge — 3. Interfaces & Type Aliases**
->>
+🔬 **Section Challenge — 3. Interfaces & Type Aliases**
+>
 
 ## 4. Functions in TypeScript
 
@@ -421,8 +404,8 @@ getLength([1, 2, 3]);   // ✅ array has .length
 
 
 
-> 🔬 **Section Challenge — 4. Functions in TypeScript**
->>
+🔬 **Section Challenge — 4. Functions in TypeScript**
+>
 
 ## 5. Union & Intersection Types
 
@@ -477,8 +460,8 @@ const p: Person = { name: "Harsha", age: 24 };
 
 
 
-> 🔬 **Section Challenge — 5. Union & Intersection Types**
->>
+🔬 **Section Challenge — 5. Union & Intersection Types**
+>
 
 ## 6. Type Narrowing — Making TS Smarter
 
@@ -547,8 +530,8 @@ input.toUpperCase(); // TS narrows after assertion
 
 
 
-> 🔬 **Section Challenge — 6. Type Narrowing — Making TS Smarter**
->>
+🔬 **Section Challenge — 6. Type Narrowing — Making TS Smarter**
+>
 
 ## 7. Literal Types & const Assertions
 
@@ -584,8 +567,8 @@ type Color = typeof colors[number]; // "red" | "green" | "blue"
 
 
 
-> 🔬 **Section Challenge — 7. Literal Types & const Assertions**
->>
+🔬 **Section Challenge — 7. Literal Types & const Assertions**
+>
 
 ## 8. Type Assertions & Non-Null Assertion
 
@@ -622,8 +605,8 @@ const palette = {
 
 
 
-> 🔬 **Section Challenge — 8. Type Assertions & Non-Null Assertion**
->>
+🔬 **Section Challenge — 8. Type Assertions & Non-Null Assertion**
+>
 
 ## 9. TypeScript vs JavaScript — When Each is Better
 
@@ -648,9 +631,8 @@ The final document (JS) is the same, but with fewer mistakes.
 ```
 
 **Flow:**
-- Team project (2+ devs) / Large codebase (>1000 LOC)
-- ↓
-- Quick prototype / script / Simple automation tasks / Le
+1. Team project (2+ devs) / Large codebase (>1000 LOC)
+2. Quick prototype / script / Simple automation tasks / Le
 
 ```mermaid
 flowchart TD
@@ -663,8 +645,8 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 9. TypeScript vs JavaScript — When Each is Better**
->>
+🔬 **Section Challenge — 9. TypeScript vs JavaScript — When Each is Better**
+>
 
 ## Interview Quick-Fire
 
@@ -699,9 +681,8 @@ Q: What is `as const`?
 ```
 
 **Flow:**
-- { x: 'hello' } as const
-- ↓
-- { readonly x: 'hello' } instead of { x: string }.
+1. { x: 'hello' } as const
+2. { readonly x: 'hello' } instead of { x: string }.
 
 ```mermaid
 flowchart LR
@@ -712,7 +693,7 @@ flowchart LR
 
 ---
 
-> [Index](../00_MASTER_INDEX.md) | [Next → Advanced Types](02_TS_Advanced_Types.md)
+[Index](../00_MASTER_INDEX.md) | [Next → Advanced Types](02_TS_Advanced_Types.md)
 
 
 ---

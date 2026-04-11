@@ -1,24 +1,24 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch64_SB_Cloud_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch64_SB_Cloud_Advanced.md)
 
 ---
 
 # Spring Boot Part 21: Cloud Deployment
 ## AWS, Azure, and GCP Integration Complete Guide
 
-> **"The cloud is not just about cost savings—it's about speed, scale, and innovation"** - Deploy anywhere, scale everywhere
+**"The cloud is not just about cost savings—it's about speed, scale, and innovation"** - Deploy anywhere, scale everywhere
 
 ---
 
 
 
-> 🔬 **Section Challenge — AWS, Azure, and GCP Integration Complete Guide**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — AWS, Azure, and GCP Integration Complete Guide**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 # 🎯 WHY-HOW-WHEN-WHICH FRAMEWORK
 
@@ -63,13 +63,10 @@
 ```
 
 **Flow:**
-- WHY: Why Cloud Deployment? / • Scalability: Auto-scale
-- ↓
-- HOW: How to Deploy to Cloud? / • Containerize: Docker m
-- ↓
-- WHEN: When to Use Each Cloud Service? / • Docker: Every
-- ↓
-- WHICH: Which Cloud Provider? / AWS: Market leader, most
+1. WHY: Why Cloud Deployment? / • Scalability: Auto-scale
+2. HOW: How to Deploy to Cloud? / • Containerize: Docker m
+3. WHEN: When to Use Each Cloud Service? / • Docker: Every
+4. WHICH: Which Cloud Provider? / AWS: Market leader, most
 
 ```mermaid
 flowchart TD
@@ -127,19 +124,13 @@ flowchart TD
 ```
 
 **Flow:**
-- 12-FACTOR APP PRINCIPLES
-- ↓
-- 1. Codebase One codebase, many deploys
-- ↓
-- 2. Dependencies Explicitly declare and isolate
-- ↓
-- 3. Config Store in environment
-- ↓
-- 4. Backing Svcs Treat as attached resources
-- ↓
-- 5. Build/Release Strictly separate stages
-- ↓
-- 6. Processes Execute as stateless processes
+1. 12-FACTOR APP PRINCIPLES
+2. 1. Codebase One codebase, many deploys
+3. 2. Dependencies Explicitly declare and isolate
+4. 3. Config Store in environment
+5. 4. Backing Svcs Treat as attached resources
+6. 5. Build/Release Strictly separate stages
+7. 6. Processes Execute as stateless processes
 
 ```mermaid
 flowchart TD
@@ -175,14 +166,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Cloud Native Principles**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Cloud Native Principles**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Containerization with Docker
 
@@ -191,20 +182,20 @@ flowchart TD
 ```dockerfile
 
 
-> 🔬 **Section Challenge — Containerization with Docker**
->
-> **Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
-> <details><summary>Answer</summary>
->
-> In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
-> </details>
->
-> **Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
-> <details><summary>Answer</summary>
->
-> `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
-> </details>
->
+🔬 **Section Challenge — Containerization with Docker**
+
+**Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
+<details><summary>Answer</summary>
+
+In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
+</details>
+
+**Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
+<details><summary>Answer</summary>
+
+`COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
+</details>
+
 
 # Multi-stage build for optimal image size
 # Stage 1: Build
@@ -414,9 +405,8 @@ volumes:
 ```
 
 **Flow:**
-- CONTROL PLANE / API Server Controller Scheduler etcd
-- ↓
-- WORKER NODES / Node 1 Node 2 / Pod Pod Pod Pod / kubele
+1. CONTROL PLANE / API Server Controller Scheduler etcd
+2. WORKER NODES / Node 1 Node 2 / Pod Pod Pod Pod / kubele
 
 ```mermaid
 flowchart TD
@@ -430,20 +420,20 @@ flowchart TD
 ```yaml
 
 
-> 🔬 **Section Challenge — Kubernetes Deployment**
->
-> **Challenge 1 (Reasoning):** Your K8s pod is stuck in `CrashLoopBackOff`. How do you diagnose it step by step?
-> <details><summary>Answer</summary>
->
-> 1) `kubectl describe pod <name>` — check Events section for reasons. 2) `kubectl logs <pod> --previous` — see logs from the CRASHED container (not the current restart). 3) Check: OOMKilled (out of memory → increase memory limit), exit code 1 (app error → check logs), exit code 137 (SIGKILL from OOM or liveness probe). 4) If liveness probe failing: disable temporarily to investigate live state. 5) Check startup probe vs liveness probe config — maybe app needs more init time.
-> </details>
->
-> **Challenge 2 (Design):** Explain the difference between a liveness probe and a readiness probe. What happens when each fails?
-> <details><summary>Answer</summary>
->
-> **Liveness**: is the pod healthy? Failure → K8s KILLS and restarts the pod. Use for: hung processes that are running but unresponsive. **Readiness**: is the pod ready to serve traffic? Failure → pod is REMOVED from Service endpoints (no traffic sent), but NOT restarted. Use for: app still initializing, temporarily overloaded, downstream dependency unavailable. Common mistake: using liveness for readiness scenarios → pod gets killed/restarted when it should just be temporarily excluded from load balancing.
-> </details>
->
+🔬 **Section Challenge — Kubernetes Deployment**
+
+**Challenge 1 (Reasoning):** Your K8s pod is stuck in `CrashLoopBackOff`. How do you diagnose it step by step?
+<details><summary>Answer</summary>
+
+1) `kubectl describe pod <name>` — check Events section for reasons. 2) `kubectl logs <pod> --previous` — see logs from the CRASHED container (not the current restart). 3) Check: OOMKilled (out of memory → increase memory limit), exit code 1 (app error → check logs), exit code 137 (SIGKILL from OOM or liveness probe). 4) If liveness probe failing: disable temporarily to investigate live state. 5) Check startup probe vs liveness probe config — maybe app needs more init time.
+</details>
+
+**Challenge 2 (Design):** Explain the difference between a liveness probe and a readiness probe. What happens when each fails?
+<details><summary>Answer</summary>
+
+**Liveness**: is the pod healthy? Failure → K8s KILLS and restarts the pod. Use for: hung processes that are running but unresponsive. **Readiness**: is the pod ready to serve traffic? Failure → pod is REMOVED from Service endpoints (no traffic sent), but NOT restarted. Use for: app still initializing, temporarily overloaded, downstream dependency unavailable. Common mistake: using liveness for readiness scenarios → pod gets killed/restarted when it should just be temporarily excluded from load balancing.
+</details>
+
 
 # deployment.yaml
 apiVersion: apps/v1
@@ -751,15 +741,11 @@ spec:
 ```
 
 **Flow:**
-- Route 53 (DNS)
-- ↓
-- CloudFront (CDN) + WAF + Shield
-- ↓
-- Application Load Balancer (ALB)
-- ↓
-- EKS / ECS Cluster / AZ-1 (us-east) AZ-2 (us-east) / Pod
-- ↓
-- Data Layer / RDS ElastiCache S3 DynamoDB / (Multi-AZ (R
+1. Route 53 (DNS)
+2. CloudFront (CDN) + WAF + Shield
+3. Application Load Balancer (ALB)
+4. EKS / ECS Cluster / AZ-1 (us-east) AZ-2 (us-east) / Pod
+5. Data Layer / RDS ElastiCache S3 DynamoDB / (Multi-AZ (R
 
 ```mermaid
 flowchart TD
@@ -1177,13 +1163,10 @@ cloudWatch:
 ```
 
 **Flow:**
-- Azure Front Door + WAF
-- ↓
-- Application Gateway
-- ↓
-- AKS Cluster / Node Pool 1 Node Pool 2 / (System Nodes)
-- ↓
-- Managed Services / Azure SQL Redis Blob Key Vault / Dat
+1. Azure Front Door + WAF
+2. Application Gateway
+3. AKS Cluster / Node Pool 1 Node Pool 2 / (System Nodes)
+4. Managed Services / Azure SQL Redis Blob Key Vault / Dat
 
 ```mermaid
 flowchart TD

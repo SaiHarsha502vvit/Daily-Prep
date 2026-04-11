@@ -1,4 +1,4 @@
-> **SQL Chapter 02/20** | [← Previous](01_Foundations_Database_Basics.md) | [Index](../00_MASTER_INDEX.md) | [Next →](03_DDL_Creating_Structure.md)
+**SQL Chapter 02/20** | [← Previous](01_Foundations_Database_Basics.md) | [Index](../00_MASTER_INDEX.md) | [Next →](03_DDL_Creating_Structure.md)
 
 ---
 
@@ -14,7 +14,7 @@ Choosing the right data type is one of the most important decisions in database 
 
 3. **Data Integrity** — The type itself acts as a first line of validation. If a column is `INT`, the database will reject `"hello"` before your application logic ever sees it. If a column is `DATE`, it will reject `"2024-02-30"` (February 30th doesn't exist). This is **defense in depth** — the database protects you even when your application code has bugs.
 
-> 💡 **The Core Principle:** Always choose the **smallest type that can safely hold your data**. This isn't premature optimization — it's fundamental to how databases work. Disk I/O, memory consumption, and index sizes all scale with column widths.
+💡 **The Core Principle:** Always choose the **smallest type that can safely hold your data**. This isn't premature optimization — it's fundamental to how databases work. Disk I/O, memory consumption, and index sizes all scale with column widths.
 
 #### The DECIMAL vs FLOAT Problem — Why This Matters for Money
 
@@ -153,7 +153,7 @@ Constraints enforce **three types of data integrity**:
 | **Referential Integrity** | Relationships between tables remain valid | `FOREIGN KEY` |
 | **Domain Integrity** | Column values stay within valid ranges | `CHECK`, `NOT NULL`, `UNIQUE`, `DEFAULT` |
 
-> 💡 **Design Philosophy:** Never rely only on your application to validate data. Constraints are **declarative** — you state the rule once, and the database enforces it forever, regardless of which application, script, or manual SQL query touches the data.
+💡 **Design Philosophy:** Never rely only on your application to validate data. Constraints are **declarative** — you state the rule once, and the database enforces it forever, regardless of which application, script, or manual SQL query touches the data.
 
 #### 1. PRIMARY KEY
 
@@ -258,8 +258,8 @@ CREATE TABLE logs (
 
 ---
 
-> **Navigation**: [< Previous](01_Foundations_Database_Basics.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_DDL_Creating_Structure.md)
+**Navigation**: [< Previous](01_Foundations_Database_Basics.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_DDL_Creating_Structure.md)
 
-> 🔬 **Section Challenge — Chapter 2: Data Types & Constraints**
->>
+🔬 **Section Challenge — Chapter 2: Data Types & Constraints**
+>
 

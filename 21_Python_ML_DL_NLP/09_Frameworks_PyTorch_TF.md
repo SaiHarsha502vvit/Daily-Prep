@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](08_NLP_Complete.md) | [Back to Index](00_INDEX.md)
+**Navigation**: [< Previous](08_NLP_Complete.md) | [Back to Index](00_INDEX.md)
 
 # 🔧 Frameworks: PyTorch & TensorFlow — Complete Guide
 
-> _"PyTorch for research, TensorFlow for production — but both can do everything."_
+_"PyTorch for research, TensorFlow for production — but both can do everything."_
 
 ---
 
@@ -229,14 +229,14 @@ loaded = keras.models.load_model('model.keras')
 ```python
 
 
-> 🔬 **Section Challenge — 2.2 Functional API (complex architectures)**
->>
-> **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-> <details><summary>Answer</summary>
+🔬 **Section Challenge — 2.2 Functional API (complex architectures)**
 >
-> Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
-> </details>
->
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
 
 # For models with multiple inputs/outputs, skip connections, etc.
 
@@ -299,25 +299,25 @@ TensorFlow/Keras:
 ```python
 
 
-> 🔬 **Section Challenge — 4.1 Custom Autograd Functions**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — 4.1 Custom Autograd Functions**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 # Sometimes standard automatic differentiation isn't enough.
 # You can define custom forward/backward passes.
@@ -353,14 +353,14 @@ print(x.grad)  # tensor([0., 1., 0.])
 ```python
 
 
-> 🔬 **Section Challenge — 4.2 DataLoaders & Datasets Deep Dive**
->
-> **Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-> <details><summary>Answer</summary>
->
-> Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
-> </details>
->
+🔬 **Section Challenge — 4.2 DataLoaders & Datasets Deep Dive**
+
+**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+<details><summary>Answer</summary>
+
+Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+</details>
+
 
 # Handling massive datasets (images, text) that don't fit in RAM
 from torch.utils.data import Dataset, DataLoader
@@ -475,8 +475,8 @@ dataset = (dataset
 ```python
 
 
-> 🔬 **Section Challenge — 5.2 tf.function (Graph Execution)**
->>>
+🔬 **Section Challenge — 5.2 tf.function (Graph Execution)**
+>>
 
 # TF2 executes eagerly (like PyTorch) by default for debugging.
 # But for production speed, you compile Python to a static C++ Graph.
@@ -535,8 +535,8 @@ print("Positive" if predicted_class == 1 else "Negative")
 ```python
 
 
-> 🔬 **Section Challenge — 6.2 ONNX (Open Neural Network Exchange)**
->>
+🔬 **Section Challenge — 6.2 ONNX (Open Neural Network Exchange)**
+>
 
 # How do you train in PyTorch but deploy without a heavy Python runtime? ONNX.
 # ONNX is a universal format for ML models (supported by MS, Meta, AWS, etc.)
@@ -705,4 +705,4 @@ def retry(n): return lambda fn: lambda *args: ... # 3 levels!
 </details>
 
 
-> **Navigation**: [< Previous](08_NLP_Complete.md) | [Back to Index](00_INDEX.md)
+**Navigation**: [< Previous](08_NLP_Complete.md) | [Back to Index](00_INDEX.md)

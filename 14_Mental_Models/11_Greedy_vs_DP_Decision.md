@@ -1,6 +1,6 @@
-> **Navigation**: [< Previous](10_Interview_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Space_Time_Tradeoffs.md)
+**Navigation**: [< Previous](10_Interview_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Space_Time_Tradeoffs.md)
 
-> **Mental Model 11** | [Index](../00_MASTER_INDEX.md)
+**Mental Model 11** | [Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -19,7 +19,7 @@ Build optimal from sub-solutions.
 Works when you need to explore all possibilities.
 Time: Usually O(n²) or O(n × W) — slower but always correct.
 
-> 💡 **ANALOGY:**
+💡 **ANALOGY:**
 Greedy = Taking the highway with the fewest current cars (local best)
 DP     = Checking ALL possible routes on Google Maps (global best)
 GREEDY IS FASTER BUT RISKIER.
@@ -61,14 +61,14 @@ total value ≥ any alternative selection of the same total weight.
 choosing the locally best [X] can never make the global answer worse."
 
 
-> 🔬 **Section Challenge — Proof Techniques For Greedy**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+🔬 **Section Challenge — Proof Techniques For Greedy**
+
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## When Greedy Fails — Classic Traps
 
@@ -90,14 +90,14 @@ explore whether 100 leads somewhere. Need DP (or patience sort).
 - ✅ KRUSKAL/PRIM: Greedy pick lightest edge WORKS.
 
 
-> 🔬 **Section Challenge — When Greedy Fails — Classic Traps**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+🔬 **Section Challenge — When Greedy Fails — Classic Traps**
+
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## The Quick Decision Table
 
@@ -136,20 +136,20 @@ becomes clear during implementation.
 
 
 
-> 🔬 **Section Challenge — The Hybrid Pattern: Greedy + Dp**
->
-> **Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
-> <details><summary>Answer</summary>
->
-> Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
-> </details>
->
+🔬 **Section Challenge — The Hybrid Pattern: Greedy + Dp**
+
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## 🎯 INTERVIEW SCRIPT
 
 When you see an optimization problem, say this to the interviewer:
 
-> "This has optimal substructure. Let me check if the greedy choice property holds — can I commit to a local choice without regret? [If yes:] Greedy will be O(n log n). [If no:] I'll use DP to explore all subproblems."
+"This has optimal substructure. Let me check if the greedy choice property holds — can I commit to a local choice without regret? [If yes:] Greedy will be O(n log n). [If no:] I'll use DP to explore all subproblems."
 
 This shows you know the theory, even if you pick the wrong approach initially.
 
@@ -397,4 +397,4 @@ When the answer space is **monotone**: "if X is achievable, then all values less
 </details>
 
 
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md)

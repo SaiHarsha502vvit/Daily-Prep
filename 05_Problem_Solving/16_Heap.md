@@ -1,11 +1,11 @@
-> **Navigation**: [< Previous](15_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_HashMap_Hashing.md)
+**Navigation**: [< Previous](15_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_HashMap_Hashing.md)
 
 ---
 
 ## 🗺️ Pattern Recognition Header — Heap / Priority Queue
 
-> **When do I need a Heap?** Ask: *"Do I need repeated access to the min or max of a dynamic set?"*
->
+**When do I need a Heap?** Ask: *"Do I need repeated access to the min or max of a dynamic set?"*
+
 
 | Problem Signature | Heap Pattern | Implementation |
 |---|---|---|
@@ -17,29 +17,29 @@
 | `task scheduler / reorganize string` | **Max-Heap (greedy)** | Always pick most frequent; cool-down cycle |
 | `sliding window min/max` | **Monotonic Deque** O(n) | Better than heap for fixed window |
 
->
-> **Heap vs Alternatives:**
-> ```
-> "Need TOP-K repeatedly?"     → Min-Heap of size K  → O(n log k)
-> "Need TOP-K once?"           → Sort  → O(n log n)   OR  Quickselect → O(n)
-> "Need sliding window max?"   → Monotonic Deque      → O(n)  ← FASTER!
-> "Need median continuously?"  → Two Heaps            → O(log n) per insert
-> ```
->
-> 📖 **Mental Model:** [09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md)
-> 📖 **Theory:** [01f_Trees_Heaps.md](../02_Data_Structures/01f_Trees_Heaps.md)
-> 📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+**Heap vs Alternatives:**
+```
+"Need TOP-K repeatedly?"     → Min-Heap of size K  → O(n log k)
+"Need TOP-K once?"           → Sort  → O(n log n)   OR  Quickselect → O(n)
+"Need sliding window max?"   → Monotonic Deque      → O(n)  ← FASTER!
+"Need median continuously?"  → Two Heaps            → O(log n) per insert
+```
+
+📖 **Mental Model:** [09_Complexity_Intuition.md](../14_Mental_Models/09_Complexity_Intuition.md)
+📖 **Theory:** [01f_Trees_Heaps.md](../02_Data_Structures/01f_Trees_Heaps.md)
+📖 **Full Pattern Guide:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
 
 # 16. Heap / Priority Queue — Complete Problem Guide
 
 
-> HEAP / PRIORITY QUEUE MASTERY GUIDE
-> From Theory to Hard Problems — MIT/KTH Academic Style
-> Part 0: Theory & Internals          │  Part 1: Easy (5 problems)
-> Part 2: Medium (10 problems)        │  Part 3: Hard (5 problems)
-> Part 4: Cheat Sheet & Decision Tree │
+HEAP / PRIORITY QUEUE MASTERY GUIDE
+From Theory to Hard Problems — MIT/KTH Academic Style
+Part 0: Theory & Internals          │  Part 1: Easy (5 problems)
+Part 2: Medium (10 problems)        │  Part 3: Hard (5 problems)
+Part 4: Cheat Sheet & Decision Tree │
 
 
 ---
@@ -47,14 +47,14 @@
 ## PART 0: THEORY — Heap Internals (MIT/KTH Style)
 
 
-> WHY HEAPS EXIST
-> Fundamental question: How do we efficiently track the min or max of a
-> dynamic collection where elements are inserted and removed?
->
-> Sorted array?  Insert is O(n).
-> Unsorted array? Extract-min is O(n).
-> BST?           O(log n) but can degrade to O(n).
-> Heap?          O(log n) insert, O(log n) extract, O(1) peek. WINNER.
+WHY HEAPS EXIST
+Fundamental question: How do we efficiently track the min or max of a
+dynamic collection where elements are inserted and removed?
+
+Sorted array?  Insert is O(n).
+Unsorted array? Extract-min is O(n).
+BST?           O(log n) but can degrade to O(n).
+Heap?          O(log n) insert, O(log n) extract, O(1) peek. WINNER.
 
 
 ### Why a Complete Binary Tree Stored in an Array?
@@ -81,13 +81,10 @@ This is pure arithmetic — no pointers, no `node.left`/`node.right`. Cache-frie
 ```
 
 **Flow:**
-- / \ / \ Parent of index 4 = (4-1)/2 = 1
-- ↓
-- value 15 ✓
-- ↓
-- 40 50 100 40 Children of index 1 = 2*1+1=3, 2*1+2=
-- ↓
-- 40, 50 ✓
+1. / \ / \ Parent of index 4 = (4-1)/2 = 1
+2. value 15 ✓
+3. 40 50 100 40 Children of index 1 = 2*1+1=3, 2*1+2=
+4. 40, 50 ✓
 
 ```mermaid
 flowchart LR
@@ -116,11 +113,9 @@ Array: [10,15,30,40,50,5]   [10,15,5,40,50,30]          [5,15,10,40,50,30]
 ```
 
 **Flow:**
-- 15 30
-- ↓
-- 15 5
-- ↓
-- 15 10
+1. 15 30
+2. 15 5
+3. 15 10
 
 ```mermaid
 flowchart LR
@@ -146,9 +141,8 @@ Array: [30,15,10,40,50]            [10,15,30,40,50]    ✓ Heap restored!
 ```
 
 **Flow:**
-- 15 10
-- ↓
-- 15 30
+1. 15 10
+2. 15 30
 
 ```mermaid
 flowchart LR
@@ -195,7 +189,7 @@ minHeap.contains(obj);   // O(n)
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                     ⚠️  COMMON HEAP MISTAKES  ⚠️                             ║
+║                     ⚠️  COMMON HEAP MISTAKES  ⚠️                            ║
 ╠══════════════════════════════════════════════════════════════════════════════╣
 ║ 1. Java PQ is MIN-HEAP by default                                            ║
 ║    → If you need max, use Comparator.reverseOrder() or (a,b) -> b - a        ║
@@ -224,19 +218,13 @@ minHeap.contains(obj);   // O(n)
 ```
 
 **Flow:**
-- ⚠️ COMMON HEAP MISTAKES ⚠️
-- ↓
-- 1. Java PQ is MIN-HEAP by default
-- ↓
-- 2. Forgetting custom comparator for max-heap objects
-- ↓
-- 3. PQ.remove(obj) is O(n), not O(log n)!
-- ↓
-- It does a linear scan to find the element first
-- ↓
-- 4. Iterator order is NOT sorted!
-- ↓
-- for (int x : pq) does NOT give elements in heap order
+1. ⚠️ COMMON HEAP MISTAKES ⚠️
+2. 1. Java PQ is MIN-HEAP by default
+3. 2. Forgetting custom comparator for max-heap objects
+4. 3. PQ.remove(obj) is O(n), not O(log n)!
+5. It does a linear scan to find the element first
+6. 4. Iterator order is NOT sorted!
+7. for (int x : pq) does NOT give elements in heap order
 
 ```mermaid
 flowchart TD
@@ -259,25 +247,25 @@ flowchart TD
 
 ---
 
-> 🔬 **Section Challenge — Heap Theory & Internals**
->
-> **Challenge 1 (Reasoning):** A min-heap stores `[2, 5, 3, 8, 7, 6]` in array form. Trace the heapify process on index 1 (value 5) manually.
-> <details><summary>Answer</summary>
->
-> Index 1 (value 5): left child = index 3 (value 8), right child = index 4 (value 7). Min of children = index 4 (value 7). 5 < 7, so no swap needed. Heap property satisfied at index 1. If value was 9 instead: 9 > 7 → swap(index1=9, index4=7) → recurse at index 4.
-> </details>
->
-> **Challenge 2 (Reasoning):** `new PriorityQueue<>()` in Java is a min-heap. You need a max-heap. Write the exact declaration AND explain why `Collections.reverseOrder()` works.
-> <details><summary>Answer</summary>
->
-> `PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());` or `new PriorityQueue<>((a,b) -> b - a)`. Why reverseOrder works: the heap's internal comparisons use the comparator. Reversing the order makes what was "smaller" (min-heap sink) behave as "larger" — the root becomes the maximum element. The underlying array storage and sift operations are unchanged; only the comparison direction flips.
-> </details>
->
-> **Challenge 3 (Design):** Why is building a heap from N elements O(N) but inserting N elements one by one O(N log N)? Where's the mathematical difference?
-> <details><summary>Answer</summary>
->
-> **Bottom-up heapify**: work per node = height of that node. Nodes at height 0 (leaves, N/2 nodes): 0 work. Nodes at height 1 (N/4 nodes): 1 comparison. Height h: N/2^(h+1) nodes × h work. Total = Σ h×N/2^(h+1) = N (geometric series converges to 2). **N insertions**: each insertion sifts UP from a leaf to root = O(log N) worst case. N × log N total. The bottom-up builds from the middle of the array downward — most nodes are near the bottom where sift-down work is minimal.
-> </details>
+🔬 **Section Challenge — Heap Theory & Internals**
+
+**Challenge 1 (Reasoning):** A min-heap stores `[2, 5, 3, 8, 7, 6]` in array form. Trace the heapify process on index 1 (value 5) manually.
+<details><summary>Answer</summary>
+
+Index 1 (value 5): left child = index 3 (value 8), right child = index 4 (value 7). Min of children = index 4 (value 7). 5 < 7, so no swap needed. Heap property satisfied at index 1. If value was 9 instead: 9 > 7 → swap(index1=9, index4=7) → recurse at index 4.
+</details>
+
+**Challenge 2 (Reasoning):** `new PriorityQueue<>()` in Java is a min-heap. You need a max-heap. Write the exact declaration AND explain why `Collections.reverseOrder()` works.
+<details><summary>Answer</summary>
+
+`PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());` or `new PriorityQueue<>((a,b) -> b - a)`. Why reverseOrder works: the heap's internal comparisons use the comparator. Reversing the order makes what was "smaller" (min-heap sink) behave as "larger" — the root becomes the maximum element. The underlying array storage and sift operations are unchanged; only the comparison direction flips.
+</details>
+
+**Challenge 3 (Design):** Why is building a heap from N elements O(N) but inserting N elements one by one O(N log N)? Where's the mathematical difference?
+<details><summary>Answer</summary>
+
+**Bottom-up heapify**: work per node = height of that node. Nodes at height 0 (leaves, N/2 nodes): 0 work. Nodes at height 1 (N/4 nodes): 1 comparison. Height h: N/2^(h+1) nodes × h work. Total = Σ h×N/2^(h+1) = N (geometric series converges to 2). **N insertions**: each insertion sifts UP from a leaf to root = O(log N) worst case. N × log N total. The bottom-up builds from the middle of the array downward — most nodes are near the bottom where sift-down work is minimal.
+</details>
 
 ## 🧩 Part 1: Easy Problems
 
@@ -289,9 +277,8 @@ flowchart TD
 ```
 
 **Flow:**
-- EASY — 5 PROBLEMS
-- ↓
-- Build intuition: direct heap usage, simple simulations
+1. EASY — 5 PROBLEMS
+2. Build intuition: direct heap usage, simple simulations
 
 ```mermaid
 flowchart TD
@@ -513,19 +500,19 @@ class Solution {
 
 ---
 
-> 🔬 **Section Challenge — After Easy Problems**
->
-> **Challenge 1 (Reasoning):** Kth Largest: why use a SIZE-K min-heap instead of a max-heap or full sort?
-> <details><summary>Answer</summary>
->
-> Goal: find the Kth largest. Maintain a min-heap of size K. When heap size exceeds K, poll the minimum (too small to be top-K). At the end, the heap root IS the Kth largest. Time: O(N log K) — better than O(N log N) sort when K << N. Max-heap approach: push all, pop K times = O(N + K log N). Min-heap of K is faster for large N, small K. Key insight: by keeping only the K largest seen so far, the minimum of those K is the answer.
-> </details>
->
-> **Challenge 2 (Reasoning):** `lastStoneWeight` uses a max-heap. Why would a min-heap give wrong answers?
-> <details><summary>Answer</summary>
->
-> The problem requires always smashing the TWO HEAVIEST stones. Max-heap gives O(1) access to the maximum. Min-heap gives the minimum — the opposite of what's needed. The greedy correctness relies on always taking the current global maximum pair; taking minimums would leave heavy stones at the end and give incorrect results.
-> </details>
+🔬 **Section Challenge — After Easy Problems**
+
+**Challenge 1 (Reasoning):** Kth Largest: why use a SIZE-K min-heap instead of a max-heap or full sort?
+<details><summary>Answer</summary>
+
+Goal: find the Kth largest. Maintain a min-heap of size K. When heap size exceeds K, poll the minimum (too small to be top-K). At the end, the heap root IS the Kth largest. Time: O(N log K) — better than O(N log N) sort when K << N. Max-heap approach: push all, pop K times = O(N + K log N). Min-heap of K is faster for large N, small K. Key insight: by keeping only the K largest seen so far, the minimum of those K is the answer.
+</details>
+
+**Challenge 2 (Reasoning):** `lastStoneWeight` uses a max-heap. Why would a min-heap give wrong answers?
+<details><summary>Answer</summary>
+
+The problem requires always smashing the TWO HEAVIEST stones. Max-heap gives O(1) access to the maximum. Min-heap gives the minimum — the opposite of what's needed. The greedy correctness relies on always taking the current global maximum pair; taking minimums would leave heavy stones at the end and give incorrect results.
+</details>
 
 ## 🧩 Part 2: Medium Problems
 
@@ -537,9 +524,8 @@ class Solution {
 ```
 
 **Flow:**
-- MEDIUM — 10 PROBLEMS
-- ↓
-- Core patterns: Top-K, Two Heaps, Merge K, Greedy + Heap
+1. MEDIUM — 10 PROBLEMS
+2. Core patterns: Top-K, Two Heaps, Merge K, Greedy + Heap
 
 ```mermaid
 flowchart TD
@@ -1074,25 +1060,25 @@ class Solution {
 
 ---
 
-> 🔬 **Section Challenge — After Medium Problems**
->
-> **Challenge 1 (Reasoning):** Median from Data Stream: why do we need TWO heaps? Why can't one heap solve it?
-> <details><summary>Answer</summary>
->
-> One heap gives O(1) access to its root (max or min). But median requires BOTH the max of the lower half AND the min of the upper half. One heap can't give both simultaneously in O(1). Two heaps: `lo` = max-heap of lower half (root = largest of small numbers), `hi` = min-heap of upper half (root = smallest of large numbers). Median = `lo.peek()` or average of `lo.peek() + hi.peek()`. Maintaining balance invariant (sizes differ by at most 1) ensures this works.
-> </details>
->
-> **Challenge 2 (Design):** Task Scheduler (LeetCode 621) — why is it solved with a max-heap and not sorting?
-> <details><summary>Answer</summary>
->
-> You need to always schedule the most frequent remaining task (greedy). Max-heap gives O(log N) access to the highest-frequency task without re-sorting after each removal. After scheduling, frequency decreases by 1, re-insert if > 0. Sorting once at start doesn't work: frequencies change dynamically as tasks are scheduled. The heap maintains the most-frequent invariant dynamically. Key pattern: **greedy + dynamic ordering = heap**.
-> </details>
->
-> **Challenge 3 (Reasoning):** Merge K sorted lists: why PriorityQueue of size K instead of merging two at a time?
-> <details><summary>Answer</summary>
->
-> Merge two at a time: each merge costs O(total_elements). K iterations = O(K × N) total. PriorityQueue: maintain the current head of each list in a min-heap of size K. Extract min = O(log K), insert next element = O(log K). Total: O(N log K) where N = total elements. When K is large (say 1000 lists), O(N log K) vs O(NK) is a massive difference. Key insight: we never need to compare all K lists — just the current minimums.
-> </details>
+🔬 **Section Challenge — After Medium Problems**
+
+**Challenge 1 (Reasoning):** Median from Data Stream: why do we need TWO heaps? Why can't one heap solve it?
+<details><summary>Answer</summary>
+
+One heap gives O(1) access to its root (max or min). But median requires BOTH the max of the lower half AND the min of the upper half. One heap can't give both simultaneously in O(1). Two heaps: `lo` = max-heap of lower half (root = largest of small numbers), `hi` = min-heap of upper half (root = smallest of large numbers). Median = `lo.peek()` or average of `lo.peek() + hi.peek()`. Maintaining balance invariant (sizes differ by at most 1) ensures this works.
+</details>
+
+**Challenge 2 (Design):** Task Scheduler (LeetCode 621) — why is it solved with a max-heap and not sorting?
+<details><summary>Answer</summary>
+
+You need to always schedule the most frequent remaining task (greedy). Max-heap gives O(log N) access to the highest-frequency task without re-sorting after each removal. After scheduling, frequency decreases by 1, re-insert if > 0. Sorting once at start doesn't work: frequencies change dynamically as tasks are scheduled. The heap maintains the most-frequent invariant dynamically. Key pattern: **greedy + dynamic ordering = heap**.
+</details>
+
+**Challenge 3 (Reasoning):** Merge K sorted lists: why PriorityQueue of size K instead of merging two at a time?
+<details><summary>Answer</summary>
+
+Merge two at a time: each merge costs O(total_elements). K iterations = O(K × N) total. PriorityQueue: maintain the current head of each list in a min-heap of size K. Extract min = O(log K), insert next element = O(log K). Total: O(N log K) where N = total elements. When K is large (say 1000 lists), O(N log K) vs O(NK) is a massive difference. Key insight: we never need to compare all K lists — just the current minimums.
+</details>
 
 ## 🧩 Part 3: Hard Problems
 
@@ -1104,9 +1090,8 @@ class Solution {
 ```
 
 **Flow:**
-- HARD — 5 PROBLEMS
-- ↓
-- Advanced patterns: monotonic deque, two-heap greedy, 3D
+1. HARD — 5 PROBLEMS
+2. Advanced patterns: monotonic deque, two-heap greedy, 3D
 
 ```mermaid
 flowchart TD
@@ -1464,19 +1449,13 @@ Sort via heap (heapsort)       │ O(n log n)     │ O(1) in-place
 ```
 
 **Flow:**
-- HEAP COMPLEXITY CHEAT SHEET
-- ↓
-- Operation Binary Heap Java PriorityQueue Notes
-- ↓
-- insert / offer O(log n) O(log n) Sift-up
-- ↓
-- extractMin / poll O(log n) O(log n) Sift-down
-- ↓
-- peek O(1) O(1) Root access
-- ↓
-- remove(object) O(n) O(n) Linear search!
-- ↓
-- contains O(n) O(n) Linear search!
+1. HEAP COMPLEXITY CHEAT SHEET
+2. Operation Binary Heap Java PriorityQueue Notes
+3. insert / offer O(log n) O(log n) Sift-up
+4. extractMin / poll O(log n) O(log n) Sift-down
+5. peek O(1) O(1) Root access
+6. remove(object) O(n) O(n) Linear search!
+7. contains O(n) O(n) Linear search!
 
 ```mermaid
 flowchart TD
@@ -1533,9 +1512,8 @@ Need to repeatedly find min/max of a dynamic collection?
 ```
 
 **Flow:**
-- YES
-- ↓
-- Use a Heap (PriorityQueue)
+1. YES
+2. Use a Heap (PriorityQueue)
 
 ```mermaid
 flowchart LR
@@ -1591,37 +1569,22 @@ flowchart LR
 ```
 
 **Flow:**
-- INTERVIEW TIPS
-- ↓
-- 1. Always clarify: 'Do I need min or max?' before codin
-- ↓
-- 2. Java PQ is MIN heap — say this out loud in interview
-- ↓
-- 4. For 'median'
-- ↓
-- think TWO heaps immediately
-- ↓
-- 4. For 'median'
-- ↓
-- think TWO heaps immediately
-- ↓
-- 5. For 'merge K sorted'
-- ↓
-- think min-heap of K heads
-- ↓
-- 5. For 'merge K sorted'
-- ↓
-- think min-heap of K heads
-- ↓
-- 6. For 'greedy + dynamic choices'
-- ↓
-- think heap
-- ↓
-- 6. For 'greedy + dynamic choices'
-- ↓
-- think heap
-- ↓
-- 7. Don't use heap when sorting once suffices
+1. INTERVIEW TIPS
+2. 1. Always clarify: 'Do I need min or max?' before codin
+3. 2. Java PQ is MIN heap — say this out loud in interview
+4. 4. For 'median'
+5. think TWO heaps immediately
+6. 4. For 'median'
+7. think TWO heaps immediately
+8. 5. For 'merge K sorted'
+9. think min-heap of K heads
+10. 5. For 'merge K sorted'
+11. think min-heap of K heads
+12. 6. For 'greedy + dynamic choices'
+13. think heap
+14. 6. For 'greedy + dynamic choices'
+15. think heap
+16. 7. Don't use heap when sorting once suffices
 
 ```mermaid
 flowchart TD
@@ -1913,4 +1876,4 @@ Maintain two properties: (1) bottom half of numbers in a max-heap (quick access 
 </details>
 
 
-> **Navigation**: [< Previous](15_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_HashMap_Hashing.md)
+**Navigation**: [< Previous](15_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_HashMap_Hashing.md)

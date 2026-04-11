@@ -1,9 +1,9 @@
-> **Navigation**: [< Previous](Ch21_AlgoEng_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch32_SB_Data_Part2.md)
+**Navigation**: [< Previous](Ch21_AlgoEng_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch32_SB_Data_Part2.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 1: Java Foundations
 
-> **The WHY-HOW-WHAT Framework for Spring Mastery**
-> _"You cannot master Spring without mastering these Java internals first"_
+**The WHY-HOW-WHAT Framework for Spring Mastery**
+_"You cannot master Spring without mastering these Java internals first"_
 
 ---
 
@@ -50,13 +50,10 @@
 ```
 
 **Flow:**
-- WHY: Why Java Foundations Before Spring? / • JVM memory
-- ↓
-- HOW: How JVM Manages Your Spring Application? / • Heap:
-- ↓
-- WHEN: When to Deep Dive into JVM Internals? / • Memory
-- ↓
-- WHICH: Which JVM Topics to Focus On? / ESSENTIAL: Memor
+1. WHY: Why Java Foundations Before Spring? / • JVM memory
+2. HOW: How JVM Manages Your Spring Application? / • Heap:
+3. WHEN: When to Deep Dive into JVM Internals? / • Memory
+4. WHICH: Which JVM Topics to Focus On? / ESSENTIAL: Memor
 
 ```mermaid
 flowchart TD
@@ -103,19 +100,13 @@ flowchart TD
 ```
 
 **Flow:**
-- THE SPRING LEARNING HIERARCHY
-- ↓
-- TIER 9: Testing (Professional's Mark)
-- ↓
-- TIER 8: Microservices & Cloud Native
-- ↓
-- TIER 7: Spring Security
-- ↓
-- TIER 6: Web & REST API
-- ↓
-- TIER 5: Data Access (JPA & Hibernate)
-- ↓
-- TIER 4: Spring Boot (Auto-Pilot)
+1. THE SPRING LEARNING HIERARCHY
+2. TIER 9: Testing (Professional's Mark)
+3. TIER 8: Microservices & Cloud Native
+4. TIER 7: Spring Security
+5. TIER 6: Web & REST API
+6. TIER 5: Data Access (JPA & Hibernate)
+7. TIER 4: Spring Boot (Auto-Pilot)
 
 ```mermaid
 flowchart TD
@@ -148,14 +139,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 1: Memory Model & JVM Internals**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 1: Memory Model & JVM Internals**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Why Jvm Memory Model Matters
 
@@ -233,15 +224,11 @@ classes from reflection never got garbage collected.
 ```
 
 **Flow:**
-- HEAP (Shared - GC Managed) / Young Generation Old Gener
-- ↓
-- METASPACE (Native Memory - No GC by default!) / • Class
-- ↓
-- Frame 3 / Frame 2 / Frame 1
-- ↓
-- Frame 2 / Frame 1
-- ↓
-- Frame 1
+1. HEAP (Shared - GC Managed) / Young Generation Old Gener
+2. METASPACE (Native Memory - No GC by default!) / • Class
+3. Frame 3 / Frame 2 / Frame 1
+4. Frame 2 / Frame 1
+5. Frame 1
 
 ```mermaid
 flowchart TD
@@ -387,19 +374,13 @@ public class StringPoolDemo {
 ```
 
 **Flow:**
-- WHY REFERENCE TYPES MATTER
-- ↓
-- SCENARIO: Building a cache in Spring
-- ↓
-- WITHOUT KNOWLEDGE:
-- ↓
-- Map<String, User> cache = new HashMap<>();
-- ↓
-- WITH KNOWLEDGE:
-- ↓
-- SPRING USES THESE:
-- ↓
-- • WeakHashMap for internal caches
+1. WHY REFERENCE TYPES MATTER
+2. SCENARIO: Building a cache in Spring
+3. WITHOUT KNOWLEDGE:
+4. Map<String, User> cache = new HashMap<>();
+5. WITH KNOWLEDGE:
+6. SPRING USES THESE:
+7. • WeakHashMap for internal caches
 
 ```mermaid
 flowchart TD
@@ -555,13 +536,10 @@ public class ReferenceTypesDemo {
 ```
 
 **Flow:**
-- Type When Collected? Use Case
-- ↓
-- Strong Never (while exists) Normal variables
-- ↓
-- Soft Memory pressure only Memory-sensitive caches
-- ↓
-- Weak Next GC cycle Canonical mappings, WeakHashMap
+1. Type When Collected? Use Case
+2. Strong Never (while exists) Normal variables
+3. Soft Memory pressure only Memory-sensitive caches
+4. Weak Next GC cycle Canonical mappings, WeakHashMap
 
 ```mermaid
 flowchart TD
@@ -578,20 +556,20 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 2: Reference Types (Garbage Collection Keys)**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — Chapter 2: Reference Types (Garbage Collection Keys)**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## Chapter 3: Garbage Collection Algorithms
 
@@ -628,9 +606,8 @@ flowchart TD
 ```
 
 **Flow:**
-- Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 45ms
-- ↓
-- Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 55ms
+1. Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 45ms
+2. Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 55ms
 
 ```mermaid
 flowchart TD
@@ -691,11 +668,9 @@ flowchart TD
 ```
 
 **Flow:**
-- Application Threads: ████████░░░░░░░░░░░░██████████████
-- ↓
-- Application Threads: ██████████░░░░░░░░░░░█████████████
-- ↓
-- Application Threads: ██████████████████████████████████
+1. Application Threads: ████████░░░░░░░░░░░░██████████████
+2. Application Threads: ██████████░░░░░░░░░░░█████████████
+3. Application Threads: ██████████████████████████████████
 
 ```mermaid
 flowchart TD
@@ -775,19 +750,13 @@ java -Xms8g -Xmx8g \
 ```
 
 **Flow:**
-- CLASS LOADING ERRORS - THE CRITICAL DIFFERENCE
-- ↓
-- ClassNotFoundException
-- ↓
-- WHEN: Class.forName('com.example.MyClass') fails
-- ↓
-- WHY: .class file not in classpath
-- ↓
-- FIX: Add missing JAR/dependency
-- ↓
-- NoClassDefFoundError
-- ↓
-- WHEN: Class was found at compile time but not at runtim
+1. CLASS LOADING ERRORS - THE CRITICAL DIFFERENCE
+2. ClassNotFoundException
+3. WHEN: Class.forName('com.example.MyClass') fails
+4. WHY: .class file not in classpath
+5. FIX: Add missing JAR/dependency
+6. NoClassDefFoundError
+7. WHEN: Class was found at compile time but not at runtim
 
 ```mermaid
 flowchart TD
@@ -852,13 +821,10 @@ flowchart TD
 ```
 
 **Flow:**
-- Bootstrap ClassLoader / (Native code - JVM) / Loads: ja
-- ↓
-- Platform ClassLoader / (Java 9+, was Extension) / Loads
-- ↓
-- Application ClassLoader / (System ClassLoader) / Loads:
-- ↓
-- Custom ClassLoaders / (Spring Boot uses this!) / Loads:
+1. Bootstrap ClassLoader / (Native code - JVM) / Loads: ja
+2. Platform ClassLoader / (Java 9+, was Extension) / Loads
+3. Application ClassLoader / (System ClassLoader) / Loads:
+4. Custom ClassLoaders / (Spring Boot uses this!) / Loads:
 
 ```mermaid
 flowchart TD
@@ -900,14 +866,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — Chapter 4: Class Loading Mechanism**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 4: Class Loading Mechanism**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 5: Advanced Threading (Concurrency)
 
@@ -942,19 +908,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WHY THREADING MATTERS IN SPRING
-- ↓
-- HTTP Request Flow in Spring Boot:
-- ↓
-- Request 1 Thread-1 Controller Service Repository
-- ↓
-- Request 2 Thread-2 Controller Service Repository
-- ↓
-- Request 3 Thread-3 Controller Service Repository
-- ↓
-- ⚠️ 3 threads accessing the SAME Singleton bean!
-- ↓
-- DANGEROUS CODE:
+1. WHY THREADING MATTERS IN SPRING
+2. HTTP Request Flow in Spring Boot:
+3. Request 1 Thread-1 Controller Service Repository
+4. Request 2 Thread-2 Controller Service Repository
+5. Request 3 Thread-3 Controller Service Repository
+6. ⚠️ 3 threads accessing the SAME Singleton bean!
+7. DANGEROUS CODE:
 
 ```mermaid
 flowchart TD
@@ -1230,14 +1190,14 @@ public class CompletableFutureDemo {
 
 
 
-> 🔬 **Section Challenge — Chapter 5: Advanced Threading (Concurrency)**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — Chapter 5: Advanced Threading (Concurrency)**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Chapter 6: Functional Java (Lambda & Streams)
 
@@ -1270,19 +1230,13 @@ public class CompletableFutureDemo {
 ```
 
 **Flow:**
-- FUNCTIONAL JAVA IN SPRING
-- ↓
-- Spring WebFlux (Reactive):
-- ↓
-- Flux.fromIterable(users)
-- ↓
-- .filter(u -> u.isActive())
-- ↓
-- .map(u -> u.getEmail())
-- ↓
-- .subscribe(email -> sendNewsletter(email));
-- ↓
-- Spring Data JPA:
+1. FUNCTIONAL JAVA IN SPRING
+2. Spring WebFlux (Reactive):
+3. Flux.fromIterable(users)
+4. .filter(u -> u.isActive())
+5. .map(u -> u.getEmail())
+6. .subscribe(email -> sendNewsletter(email));
+7. Spring Data JPA:
 
 ```mermaid
 flowchart TD
@@ -1466,14 +1420,14 @@ public class StreamsDemo {
 
 
 
-> 🔬 **Section Challenge — Chapter 6: Functional Java (Lambda & Streams)**
->
-> **Challenge 1 (Reasoning):** A lambda captures a local variable. Why must the variable be effectively final?
-> <details><summary>Answer</summary>
->
-> Lambdas are closures — they capture the variable's VALUE at creation time (not a reference to the stack slot, which would be dangerous as the stack frame may be gone). If the variable could change after capture, the lambda would see a stale value. Java enforces 'effectively final' (never reassigned) to make the semantics predictable. Workaround: use an array `int[] counter = {0};` (the array reference is final, its contents can change — though this is not thread-safe).
-> </details>
->
+🔬 **Section Challenge — Chapter 6: Functional Java (Lambda & Streams)**
+
+**Challenge 1 (Reasoning):** A lambda captures a local variable. Why must the variable be effectively final?
+<details><summary>Answer</summary>
+
+Lambdas are closures — they capture the variable's VALUE at creation time (not a reference to the stack slot, which would be dangerous as the stack frame may be gone). If the variable could change after capture, the lambda would see a stale value. Java enforces 'effectively final' (never reassigned) to make the semantics predictable. Workaround: use an array `int[] counter = {0};` (the array reference is final, its contents can change — though this is not thread-safe).
+</details>
+
 
 # 📋 TIER 1 CHECKLIST
 
@@ -1505,19 +1459,13 @@ FUNCTIONAL JAVA:
 ```
 
 **Flow:**
-- MEMORY & JVM:
-- ↓
-- □ Can explain Stack vs Heap with diagram
-- ↓
-- □ Understand String Pool and immutability
-- ↓
-- □ Know all 4 reference types and their GC behavior
-- ↓
-- □ Can choose appropriate GC for workload
-- ↓
-- □ Understand Metaspace and class metadata
-- ↓
-- CLASS LOADING:
+1. MEMORY & JVM:
+2. □ Can explain Stack vs Heap with diagram
+3. □ Understand String Pool and immutability
+4. □ Know all 4 reference types and their GC behavior
+5. □ Can choose appropriate GC for workload
+6. □ Understand Metaspace and class metadata
+7. CLASS LOADING:
 
 ```mermaid
 flowchart TD

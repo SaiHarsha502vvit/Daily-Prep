@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
+**Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
 
 # 🔬 Debugging & Dry Run — How to Find Bugs Systematically
 
-> **The key insight**: Debugging is NOT random. It's a systematic process: reproduce → isolate → identify → fix → verify. The best debuggers aren't smarter — they have a PROCESS.
+**The key insight**: Debugging is NOT random. It's a systematic process: reproduce → isolate → identify → fix → verify. The best debuggers aren't smarter — they have a PROCESS.
 
 ---
 
@@ -44,43 +44,9 @@ Iteration | left | right | mid | arr[mid] | Action
 ```
 
 **Flow:**
-- 1
-- ↓
-- 0
-- ↓
-- 8
-- ↓
-- 4
-- ↓
-- 16
-- ↓
-- 16 < 23
-- ↓
-- left = 5
-- ↓
-- 2
-- ↓
-- 5
-- ↓
-- 8
-- ↓
-- 6
-- ↓
-- 38
-- ↓
-- 38 > 23
-- ↓
-- right = 5
-- ↓
-- 3
-- ↓
-- 5
-- ↓
-- 23
-- ↓
-- 23 == 23
-- ↓
-- return 5 ✅
+1. 1 0 8 4 16 16 < 23 left = 5 2
+2. 5 8 6 38 38 > 23 right = 5 3 5
+3. 23 23 == 23 return 5 ✅
 
 ```mermaid
 flowchart LR
@@ -113,9 +79,8 @@ return 2 + 1 = 3 ✅
 ```
 
 **Flow:**
-- fibonacci(1)
-- ↓
-- return 1
+1. fibonacci(1)
+2. return 1
 
 ```mermaid
 flowchart LR
@@ -142,17 +107,9 @@ The smaller the failing input, the easier to trace.
 ```
 
 **Flow:**
-- □ What input causes the bug?
-- ↓
-- □ What output do I get vs what I expect?
-- ↓
-- □ Can I create the SMALLEST input that still bugs?
-- ↓
-- Example: 'My sorting fails for [3, 1, 2, 1]'
-- ↓
-- Try: [2, 1] — does it fail? If yes, even simpler!
-- ↓
-- The smaller the failing input, the easier to trace.
+1. □ What input causes the bug?
+2. □ What output do I get vs what I expect?
+3. □ Can I create the SMALLEST input that still bugs? Example: 'My sorting fails for [3, 1, 2, 1]' Try: [2, 1] — does it fail? If yes, even simpler! The smaller the failing input, the easier to trace.
 
 ```mermaid
 flowchart TD
@@ -188,13 +145,10 @@ Strategy C: "Simplest failing case"
 ```
 
 **Flow:**
-- YES
-- ↓
-- Bug is in second half
-- ↓
-- NO
-- ↓
-- Bug is in first half
+1. YES
+2. Bug is in second half
+3. NO
+4. Bug is in first half
 
 ```mermaid
 flowchart LR
@@ -230,13 +184,10 @@ Rules for fixing:
 ```
 
 **Flow:**
-- Rules for fixing:
-- ↓
-- □ Fix ONLY the identified root cause
-- ↓
-- □ Don't change other things 'while you're at it'
-- ↓
-- □ Understand WHY the fix works (not just that it works)
+1. Rules for fixing:
+2. □ Fix ONLY the identified root cause
+3. □ Don't change other things 'while you're at it'
+4. □ Understand WHY the fix works (not just that it works)
 
 ```mermaid
 flowchart TD
@@ -258,13 +209,10 @@ flowchart TD
 ```
 
 **Flow:**
-- □ Original failing input now passes
-- ↓
-- □ All previously passing inputs still pass
-- ↓
-- □ Edge cases still work
-- ↓
-- □ No new bugs introduced
+1. □ Original failing input now passes
+2. □ All previously passing inputs still pass
+3. □ Edge cases still work
+4. □ No new bugs introduced
 
 ```mermaid
 flowchart TD
@@ -320,13 +268,8 @@ Fix: Use long for large sums/products
 ```
 
 **Flow:**
-- - Integer overflow (int
-- ↓
-- long)
-- ↓
-- - Algorithm complexity too high (TLE
-- ↓
-- wrong approach, not bug)
+1. - Integer overflow (int long)
+2. - Algorithm complexity too high (TLE wrong approach, not bug)
 
 ```mermaid
 flowchart LR
@@ -443,19 +386,13 @@ Bug 4: Wrong answer extraction
 ```
 
 **Flow:**
-- Bug 1: Wrong base case
-- ↓
-- Print dp[0], dp[1] — do they match expected base valu
-- ↓
-- Bug 2: Wrong recurrence
-- ↓
-- Bug 3: Wrong fill order
-- ↓
-- Bottom-up: fill smaller indices first
-- ↓
-- Bug 4: Wrong answer extraction
-- ↓
-- Is the answer dp[n]? dp[n-1]? max of all dp[i]?
+1. Bug 1: Wrong base case
+2. Print dp[0], dp[1] — do they match expected base valu
+3. Bug 2: Wrong recurrence
+4. Bug 3: Wrong fill order
+5. Bottom-up: fill smaller indices first
+6. Bug 4: Wrong answer extraction
+7. Is the answer dp[n]? dp[n-1]? max of all dp[i]?
 
 ```mermaid
 flowchart TD
@@ -515,23 +452,11 @@ Bug 4: Directed vs undirected confusion
 ```
 
 **Flow:**
-- Bug 1: Not marking visited
-- ↓
-- infinite loop
-- ↓
-- Bug 2: Marking visited too late (BFS)
-- ↓
-- duplicates in queue
-- ↓
-- Bug 3: Wrong adjacency list
-- ↓
-- missing or extra edges
-- ↓
-- Undirected: add edge BOTH ways (a
-- ↓
-- b AND b
-- ↓
-- a)
+1. Bug 1: Not marking visited infinite loop
+2. Bug 2: Marking visited too late (BFS)
+3. duplicates in queue
+4. Bug 3: Wrong adjacency list missing or extra edges
+5. Undirected: add edge BOTH ways (a b AND b a)
 
 ```mermaid
 flowchart TD
@@ -581,8 +506,8 @@ void levelOrder(TreeNode root) {
 
 
 
-> 🔬 **Section Challenge — Part 6: Debugging Graph/Tree Problems**
->>>
+🔬 **Section Challenge — Part 6: Debugging Graph/Tree Problems**
+>>
 
 ## Part 7: Debugging Checklist (Quick Reference)
 
@@ -600,19 +525,10 @@ When your code fails:
 ```
 
 **Flow:**
-- When your code fails:
-- ↓
-- □ Create the smallest failing test case
-- ↓
-- □ Dry run with that test case on paper
-- ↓
-- □ Check the Big 10 bugs (off-by-one, null, overflow, et
-- ↓
-- □ Add strategic prints at decision points
-- ↓
-- □ Compare your trace with expected behavior
-- ↓
-- □ Fix ONE thing at a time
+1. When your code fails:
+2. □ Create the smallest failing test case
+3. □ Dry run with that test case on paper
+4. □ Check the Big 10 bugs (off-by-one, null, overflow, et □ Add strategic prints at decision points □ Compare your trace with expected behavior □ Fix ONE thing at a time
 
 ```mermaid
 flowchart TD
@@ -646,6 +562,6 @@ flowchart TD
 
 ---
 
-> **Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
+**Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
 
 

@@ -143,9 +143,8 @@ WHAT'S COMING:
 ```
 
 **Flow:**
-- Difficulty ramp: MEDIUM
-- ↓
-- MEDIUM-HARD
+1. Difficulty ramp: MEDIUM
+2. MEDIUM-HARD
 
 ```mermaid
 flowchart LR

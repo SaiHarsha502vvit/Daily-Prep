@@ -1,8 +1,8 @@
-> **Navigation**: [← HTTP](08_HTTP_Complete.md) | [Index](00_INDEX.md) | [Next → Firewalls](10_Firewalls_Access_Control.md)
+**Navigation**: [← HTTP](08_HTTP_Complete.md) | [Index](00_INDEX.md) | [Next → Firewalls](10_Firewalls_Access_Control.md)
 
 # 🔒 Chapter 9: TLS & Encryption — Securing Every Byte
 
-> _"Without TLS, everything you send on the internet — passwords, credit cards, private messages — travels as PLAINTEXT. Anyone on the same WiFi, any router between you and the server, your ISP — they can read it ALL. TLS is the lock on the door of every HTTP connection."_
+_"Without TLS, everything you send on the internet — passwords, credit cards, private messages — travels as PLAINTEXT. Anyone on the same WiFi, any router between you and the server, your ISP — they can read it ALL. TLS is the lock on the door of every HTTP connection."_
 
 ---
 
@@ -113,8 +113,8 @@ THE HYBRID APPROACH (how TLS actually works):
 
 
 
-> 🔬 **Section Challenge — Asymmetric Encryption — Two Keys**
->>
+🔬 **Section Challenge — Asymmetric Encryption — Two Keys**
+>
 
 ## Diffie-Hellman Key Exchange — The Magic
 
@@ -591,4 +591,4 @@ DNS uses hierarchical caching. Each DNS record has a TTL (time-to-live). When yo
 </details>
 
 
-> **Navigation**: [← HTTP](08_HTTP_Complete.md) | [Index](00_INDEX.md) | [Next → Firewalls](10_Firewalls_Access_Control.md)
+**Navigation**: [← HTTP](08_HTTP_Complete.md) | [Index](00_INDEX.md) | [Next → Firewalls](10_Firewalls_Access_Control.md)

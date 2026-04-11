@@ -1,25 +1,25 @@
-> **Navigation**: [< Previous](17_Servers_Ports_Networking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Concurrency_Models_Coroutines.md)
+**Navigation**: [< Previous](17_Servers_Ports_Networking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Concurrency_Models_Coroutines.md)
 
-> **Developer Essentials Chapter 18** | [← Servers & Networking](17_Servers_Ports_Networking.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Spring Boot Deps Map](../07_Modern_Java/Ch30_Dependencies_Annotations_Map.md)
+**Developer Essentials Chapter 18** | [← Servers & Networking](17_Servers_Ports_Networking.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Spring Boot Deps Map](../07_Modern_Java/Ch30_Dependencies_Annotations_Map.md)
 
 # Backend + Cloud Integration — From Local to Production
 
 ## 5W1H — Why This Chapter?
 
 
-> WHAT: How backend applications are deployed, scaled, and
-> operated in cloud environments (AWS, Azure, GCP).
->
-> WHY:  Writing code is 30% of the job. The other 70% is:
-> deploying, monitoring, scaling, securing, and
-> troubleshooting it in production.
->
-> ANALOGY: Building a car (coding) vs driving it on highways
-> (cloud deployment). You need both skills.
->
-> WHO:  Backend and full-stack developers in 2024+.
->
-> HOW:  Local → Container → Cloud Service → Production
+WHAT: How backend applications are deployed, scaled, and
+operated in cloud environments (AWS, Azure, GCP).
+
+WHY:  Writing code is 30% of the job. The other 70% is:
+deploying, monitoring, scaling, securing, and
+troubleshooting it in production.
+
+ANALOGY: Building a car (coding) vs driving it on highways
+(cloud deployment). You need both skills.
+
+WHO:  Backend and full-stack developers in 2024+.
+
+HOW:  Local → Container → Cloud Service → Production
 
 
 ---
@@ -56,13 +56,10 @@ ERA 4: SERVERLESS / PLATFORM (2020+)
 ```
 
 **Flow:**
-- 'Works on my machine'
-- ↓
-- 'Works everywhere.'
-- ↓
-- More Control
-- ↓
-- Less Maintenance
+1. 'Works on my machine'
+2. 'Works everywhere.'
+3. More Control
+4. Less Maintenance
 
 ```mermaid
 flowchart LR
@@ -104,19 +101,13 @@ IaaS vs PaaS vs SaaS — The Pizza Analogy:
 ```
 
 **Flow:**
-- IaaS vs PaaS vs SaaS — The Pizza Analogy:
-- ↓
-- ON-PREMISE IaaS PaaS SaaS
-- ↓
-- You manage You manage You manage You manage
-- ↓
-- EVERYTHING Apps Apps Nothing
-- ↓
-- Hardware Data Data (just use)
-- ↓
-- OS Runtime
-- ↓
-- Middleware Middleware
+1. IaaS vs PaaS vs SaaS — The Pizza Analogy:
+2. ON-PREMISE IaaS PaaS SaaS
+3. You manage You manage You manage You manage
+4. EVERYTHING Apps Apps Nothing
+5. Hardware Data Data (just use)
+6. OS Runtime
+7. Middleware Middleware
 
 ```mermaid
 flowchart TD
@@ -193,17 +184,12 @@ MONITORING:
 ```
 
 **Flow:**
-- EC2 Virtual server. Full control. / Like renting an emp
-- ↓
-- RDS Managed SQL (MySQL, PostgreSQL). / Backups, replica
-- ↓
-- S3 Object storage. Files, images, backups. / Like Googl
-- ↓
-- VPC Virtual private network. Your servers / live in an
-- ↓
-- SQS Message queue. Decouple services. / SNS Pub/sub not
-- ↓
-- CloudWatch Metrics, logs, alarms. 'Is it healthy?'
+1. EC2 Virtual server. Full control. / Like renting an emp
+2. RDS Managed SQL (MySQL, PostgreSQL). / Backups, replica
+3. S3 Object storage. Files, images, backups. / Like Googl
+4. VPC Virtual private network. Your servers / live in an
+5. SQS Message queue. Decouple services. / SNS Pub/sub not
+6. CloudWatch Metrics, logs, alarms. 'Is it healthy?'
 
 ```mermaid
 flowchart TD
@@ -265,25 +251,16 @@ Also connected:
 ```
 
 **Flow:**
-- Route 53
-- ↓
-- CloudFront
-- ↓
-- ALB
-- ↓
-- SB1
-- ↓
-- ALB
-- ↓
-- SB2
-- ↓
-- ALB
-- ↓
-- SB3
-- ↓
-- SB1
-- ↓
-- Database / (Primary)
+1. Route 53
+2. CloudFront
+3. ALB
+4. SB1
+5. ALB
+6. SB2
+7. ALB
+8. SB3
+9. SB1
+10. Database / (Primary)
 
 ```mermaid
 flowchart TD
@@ -310,14 +287,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 4. Typical Spring Boot Cloud Architecture**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 4. Typical Spring Boot Cloud Architecture**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 5. Environment Configuration
 
@@ -363,29 +340,18 @@ NEVER in code or properties files!
 ```
 
 **Flow:**
-- LOCAL (developer laptop):
-- ↓
-- Database: localhost:3306 / H2 in-memory
-- ↓
-- LOCAL (developer laptop):
-- ↓
-- Redis: localhost:6379
-- ↓
-- LOCAL (developer laptop):
-- ↓
-- API URL: http://localhost:8080
-- ↓
-- LOCAL (developer laptop):
-- ↓
-- Logs: DEBUG level
-- ↓
-- DEV (shared development server):
-- ↓
-- Database: dev-db.internal:3306
-- ↓
-- DEV (shared development server):
-- ↓
-- Redis: dev-redis.internal:6379
+1. LOCAL (developer laptop):
+2. Database: localhost:3306 / H2 in-memory
+3. LOCAL (developer laptop):
+4. Redis: localhost:6379
+5. LOCAL (developer laptop):
+6. API URL: http://localhost:8080
+7. LOCAL (developer laptop):
+8. Logs: DEBUG level
+9. DEV (shared development server):
+10. Database: dev-db.internal:3306
+11. DEV (shared development server):
+12. Redis: dev-redis.internal:6379
 
 ```mermaid
 flowchart TD
@@ -488,21 +454,14 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
 **Flow:**
-- FULL PIPELINE: Code
-- ↓
-- Production
-- ↓
-- Developer pushes code to GitHub
-- ↓
-- GitHub Actions / Jenkins
-- ↓
-- STAGE 1: BUILD
-- ↓
-- mvn clean package (compile + test)
-- ↓
-- Run unit tests
-- ↓
-- Run integration tests
+1. FULL PIPELINE: Code
+2. Production
+3. Developer pushes code to GitHub
+4. GitHub Actions / Jenkins
+5. STAGE 1: BUILD
+6. mvn clean package (compile + test)
+7. Run unit tests
+8. Run integration tests
 
 ```mermaid
 flowchart TD
@@ -527,14 +486,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 6. CI/CD Pipeline for Spring Boot**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 6. CI/CD Pipeline for Spring Boot**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 7. Monitoring in Production
 
@@ -568,23 +527,14 @@ Spring Boot Actuator endpoints for monitoring:
 ```
 
 **Flow:**
-- User
-- ↓
-- API Gateway
-- ↓
-- Service A
-- ↓
-- Service B
-- ↓
-- DB
-- ↓
-- /actuator/health
-- ↓
-- is the app healthy?
-- ↓
-- /actuator/metrics
-- ↓
-- JVM memory, thread count, HTTP stats
+1. User
+2. API Gateway
+3. Service A
+4. Service B
+5. DB
+6. /actuator/health is the app healthy?
+7. /actuator/metrics
+8. JVM memory, thread count, HTTP stats
 
 ```mermaid
 flowchart TD
@@ -615,14 +565,14 @@ flowchart TD
 
 
 
-> 🔬 **Section Challenge — 7. Monitoring in Production**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 7. Monitoring in Production**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## Interview Quick-Fire
 
@@ -655,11 +605,9 @@ Q: How do you handle database migrations in production?
 ```
 
 **Flow:**
-- Containerize with Docker
-- ↓
-- Push to ECR
-- ↓
-- Deploy on ECS Fargate
+1. Containerize with Docker
+2. Push to ECR
+3. Deploy on ECS Fargate
 
 ```mermaid
 flowchart LR
@@ -672,7 +620,7 @@ flowchart LR
 
 ---
 
-> [← Servers & Networking](17_Servers_Ports_Networking.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Spring Boot Deps Map](../07_Modern_Java/Ch30_Dependencies_Annotations_Map.md)
+[← Servers & Networking](17_Servers_Ports_Networking.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Spring Boot Deps Map](../07_Modern_Java/Ch30_Dependencies_Annotations_Map.md)
 
 
 ---

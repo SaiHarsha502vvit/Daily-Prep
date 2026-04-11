@@ -49,9 +49,8 @@ Trie = Tree where each edge is a CHARACTER
 ```
 
 **Flow:**
-- HashMap approach: Check ALL 1M words
-- ↓
-- O(N * L)
+1. HashMap approach: Check ALL 1M words
+2. O(N * L)
 
 ```mermaid
 flowchart LR
@@ -231,15 +230,9 @@ Only 3 levels checked instead of 1M rows
 ```
 
 **Flow:**
-- Finding 'Smith': root
-- ↓
-- R (go right)
-- ↓
-- S is in R-U
-- ↓
-- leaf
-- ↓
-- found!
+1. Finding 'Smith': root
+2. R (go right)
+3. S is in R-U leaf found!
 
 ```mermaid
 flowchart LR

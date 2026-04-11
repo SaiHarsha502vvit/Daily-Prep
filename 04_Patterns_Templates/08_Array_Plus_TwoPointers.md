@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](07_Two_Pointers_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Array_Plus_SlidingWindow.md)
+**Navigation**: [< Previous](07_Two_Pointers_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Array_Plus_SlidingWindow.md)
 
 # Array + Two Pointers — Combined Pattern Guide
 
-> **WHY this combination?** Arrays provide O(1) random access. Two pointers exploit **sorted order** or **structural constraints** to avoid nested loops, reducing O(n²) → O(n).
+**WHY this combination?** Arrays provide O(1) random access. Two pointers exploit **sorted order** or **structural constraints** to avoid nested loops, reducing O(n²) → O(n).
 
 ### 🧠 Deep Intuition — Why Two Pointers Works
 
@@ -62,13 +62,13 @@ Problem involves array?
 
 
 
-> 🔬 **Section Challenge — 🧠 WHEN TO RECOGNIZE THIS PATTERN**
->
-> **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe — and why does it FAIL on unsorted arrays?
-> <details><summary>Answer</summary>
->
-> The invariant: the sorted order creates a **monotonic relationship** — moving `left` right *always* increases the sum; moving `right` left *always* decreases it. This means every pointer move eliminates an entire row/column of the N×N pair matrix without skipping valid pairs. On an **unsorted array**, this invariant breaks completely: moving left right may increase OR decrease the sum depending on the values, so you could skip valid pairs. That's why unsorted + target sum = HashMap (O(N), no sorting needed, preserves original indices).
-> </details>
+🔬 **Section Challenge — 🧠 WHEN TO RECOGNIZE THIS PATTERN**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe — and why does it FAIL on unsorted arrays?
+<details><summary>Answer</summary>
+
+The invariant: the sorted order creates a **monotonic relationship** — moving `left` right *always* increases the sum; moving `right` left *always* decreases it. This means every pointer move eliminates an entire row/column of the N×N pair matrix without skipping valid pairs. On an **unsorted array**, this invariant breaks completely: moving left right may increase OR decrease the sum depending on the values, so you could skip valid pairs. That's why unsorted + target sum = HashMap (O(N), no sorting needed, preserves original indices).
+</details>
 
 ## 📐 CORE TEMPLATES
 
@@ -148,13 +148,13 @@ of the n×n search matrix → O(n) instead of O(n²)
 
 
 
-> 🔬 **Section Challenge — 🔬 VISUAL: How Two Pointers Shrinks Search Space**
->
-> **Challenge 1 (Reasoning):** Two pointers check at most O(N) pairs from an N×N pair matrix. Prove no valid pair is ever skipped.
-> <details><summary>Answer</summary>
->
-> When `arr[L] + arr[R] < target`: we move L right. This is safe because arr[R] is the *largest possible right element*. If `arr[L] + arr[R]` is still too small, then `arr[L] + anything_smaller` is also too small. So no valid pair with arr[L] exists → skip entire row. Symmetric argument for moving R left when sum is too large. Every skipped pair is provably not a solution.
-> </details>
+🔬 **Section Challenge — 🔬 VISUAL: How Two Pointers Shrinks Search Space**
+
+**Challenge 1 (Reasoning):** Two pointers check at most O(N) pairs from an N×N pair matrix. Prove no valid pair is ever skipped.
+<details><summary>Answer</summary>
+
+When `arr[L] + arr[R] < target`: we move L right. This is safe because arr[R] is the *largest possible right element*. If `arr[L] + arr[R]` is still too small, then `arr[L] + anything_smaller` is also too small. So no valid pair with arr[L] exists → skip entire row. Symmetric argument for moving R left when sum is too large. Every skipped pair is provably not a solution.
+</details>
 
 ## 🔬 FULL WALKTHROUGH: 3Sum — Fix One + Two Pointers
 
@@ -196,13 +196,13 @@ Time: O(n²) | Space: O(1) (excluding output)
 
 
 
-> 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH: 3Sum**
->
-> **Challenge (Design):** 4Sum is O(N³). K-Sum generalizes to O(N^(K-1)). When K is large, what's a better strategy than nested pointers?
-> <details><summary>Answer</summary>
->
-> Once K > 4, meet-in-the-middle beats nested pointers: split K numbers into two groups of K/2 and use a HashMap to find complementary pairs. This reduces O(N^(K-1)) to O(N^(K/2) × log N). For K=6: naive = O(N⁵), meet-in-middle = O(N³ log N). Classic example of trading problem structure for algorithmic efficiency.
-> </details>
+🔬 **Section Challenge — 🔬 FULL WALKTHROUGH: 3Sum**
+
+**Challenge (Design):** 4Sum is O(N³). K-Sum generalizes to O(N^(K-1)). When K is large, what's a better strategy than nested pointers?
+<details><summary>Answer</summary>
+
+Once K > 4, meet-in-the-middle beats nested pointers: split K numbers into two groups of K/2 and use a HashMap to find complementary pairs. This reduces O(N^(K-1)) to O(N^(K/2) × log N). For K=6: naive = O(N⁵), meet-in-middle = O(N³ log N). Classic example of trading problem structure for algorithmic efficiency.
+</details>
 
 ## 🔬 FULL WALKTHROUGH: Trapping Rain Water — Two Boundary Pointers
 
@@ -238,13 +238,13 @@ Time: O(n) | Space: O(1) — better than prefix array O(n) space
 
 
 
-> 🔬 **Section Challenge — 🔬 FULL WALKTHROUGH: Trapping Rain Water**
->
-> **Challenge (Reasoning):** The prefix array solution is simpler. Why is the two-pointer solution strictly better in production?
-> <details><summary>Answer</summary>
->
-> Both are O(N) time, but two-pointer is O(1) space vs prefix array's O(N). In memory-constrained environments (embedded systems, stream processing), allocating two extra arrays of N size can matter significantly. Also, the two-pointer version streams: it can process incoming height data without fully buffering it. The prefix approach requires the full array first. The key insight: "the side with smaller max determines the trapped water" lets us process whichever side is shorter, maintaining correctness without lookahead.
-> </details>
+🔬 **Section Challenge — 🔬 FULL WALKTHROUGH: Trapping Rain Water**
+
+**Challenge (Reasoning):** The prefix array solution is simpler. Why is the two-pointer solution strictly better in production?
+<details><summary>Answer</summary>
+
+Both are O(N) time, but two-pointer is O(1) space vs prefix array's O(N). In memory-constrained environments (embedded systems, stream processing), allocating two extra arrays of N size can matter significantly. Also, the two-pointer version streams: it can process incoming height data without fully buffering it. The prefix approach requires the full array first. The key insight: "the side with smaller max determines the trapped water" lets us process whichever side is shorter, maintaining correctness without lookahead.
+</details>
 
 ## 🛡️ EDGE CASES TO WATCH
 
@@ -329,7 +329,7 @@ Time: O(n) | Space: O(1) — better than prefix array O(n) space
 
 **When the interviewer gives you a Two Pointer problem, say this:**
 
-> "The brute force checks all O(n²) pairs. But because the array is sorted, we can use two pointers from opposite ends. If the sum is too small, moving the left pointer right increases it; if too large, moving the right pointer left decreases it. Each pointer moves at most n steps, so total work is O(n)."
+"The brute force checks all O(n²) pairs. But because the array is sorted, we can use two pointers from opposite ends. If the sum is too small, moving the left pointer right increases it; if too large, moving the right pointer left decreases it. Each pointer moves at most n steps, so total work is O(n)."
 
 **Key mathematical justification to mention:**
 - "No valid pair is skipped because the sorted order creates a monotonic relationship — increasing left *always* increases the sum, decreasing right *always* decreases it."
@@ -355,7 +355,7 @@ Time: O(n) | Space: O(1) — better than prefix array O(n) space
 
 ## 🏋️ Practice & Interview Questions — Two Pointers
 
-> Attempt each before looking at the answer. Time yourself.
+Attempt each before looking at the answer. Time yourself.
 
 ### Predict / Trace
 **Q1.** `nums = [1, 2, 4, 6, 8, 10]`, target = 14. Trace the two-pointer steps.

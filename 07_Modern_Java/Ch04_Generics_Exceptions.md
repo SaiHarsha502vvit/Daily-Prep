@@ -1,6 +1,6 @@
 # 51. Java Generics & Exception Handling — Advanced Deep Dive
 
-> **Navigation**: [< DateTime & Regex](Ch05_DateTime_Regex.md) | [Back to Index](../00_MASTER_INDEX.md) | [ClassLoader, JDBC & Logging >](Ch12_ClassLoader_JDBC_Logging.md)
+**Navigation**: [< DateTime & Regex](Ch05_DateTime_Regex.md) | [Back to Index](../00_MASTER_INDEX.md) | [ClassLoader, JDBC & Logging >](Ch12_ClassLoader_JDBC_Logging.md)
 
 ---
 
@@ -82,20 +82,20 @@ public <T> T create(Class<T> type) throws Exception {
 
 
 
-> 🔬 **Section Challenge — 1. Type Erasure — The #1 Thing to Understand**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — 1. Type Erasure — The #1 Thing to Understand**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## 2. Bounded Type Parameters — Restricting T
 
@@ -123,14 +123,14 @@ public static <T extends Comparable<T> & Serializable> T findMax(List<T> list) {
 
 
 
-> 🔬 **Section Challenge — 2. Bounded Type Parameters — Restricting T**
->
-> **Challenge 1 (Reasoning):** `<T extends Comparable<T>>` vs `<T extends Comparable>` — what's the difference and why does the first form matter?
-> <details><summary>Answer</summary>
->
-> The raw form `<T extends Comparable>` loses type safety — compares apples to oranges at runtime. `<T extends Comparable<T>>` specifies that T can compare WITH ITSELF: `Integer.compareTo(Integer)`, not `Integer.compareTo(Object)`. This is why `Collections.sort()` uses `<T extends Comparable<? super T>>` — T can be compared using its own or a supertype's compareTo.
-> </details>
->
+🔬 **Section Challenge — 2. Bounded Type Parameters — Restricting T**
+
+**Challenge 1 (Reasoning):** `<T extends Comparable<T>>` vs `<T extends Comparable>` — what's the difference and why does the first form matter?
+<details><summary>Answer</summary>
+
+The raw form `<T extends Comparable>` loses type safety — compares apples to oranges at runtime. `<T extends Comparable<T>>` specifies that T can compare WITH ITSELF: `Integer.compareTo(Integer)`, not `Integer.compareTo(Object)`. This is why `Collections.sort()` uses `<T extends Comparable<? super T>>` — T can be compared using its own or a supertype's compareTo.
+</details>
+
 
 ## 3. Wildcards — The `?` Symbol
 
@@ -169,25 +169,25 @@ void addNumbers(List<? super Integer> list) {
 
 
 
-> 🔬 **Section Challenge — 3. Wildcards — The `?` Symbol**
->
-> **Challenge 1 (Reasoning):** `void process(List<? extends Number> list)` — can you call `list.add(3.14)`? Why or why not?
-> <details><summary>Answer</summary>
->
-> No. The compiler doesn't know the actual type — it could be `List<Integer>`, `List<Float>`, or `List<Double>`. Adding a `Double` to a `List<Integer>` would violate type safety. `? extends T` is read-only: you can `get()` as `Number`, but `add()` is forbidden (except null).
-> </details>
->
-> **Challenge 2 (Design):** Write a method that copies elements from any `List<? extends T>` into any `List<? super T>`. Why is this the correct signature?
-> <details><summary>Answer</summary>
->
-> ```java
-> <T> void copy(List<? extends T> src, List<? super T> dst) {
->     for (T item : src) dst.add(item);
-> }
-> ```
-> PECS: `src` is a Producer (we read from it) → `extends`. `dst` is a Consumer (we write to it) → `super`. This is exactly how `Collections.copy()` is implemented in the JDK.
-> </details>
->
+🔬 **Section Challenge — 3. Wildcards — The `?` Symbol**
+
+**Challenge 1 (Reasoning):** `void process(List<? extends Number> list)` — can you call `list.add(3.14)`? Why or why not?
+<details><summary>Answer</summary>
+
+No. The compiler doesn't know the actual type — it could be `List<Integer>`, `List<Float>`, or `List<Double>`. Adding a `Double` to a `List<Integer>` would violate type safety. `? extends T` is read-only: you can `get()` as `Number`, but `add()` is forbidden (except null).
+</details>
+
+**Challenge 2 (Design):** Write a method that copies elements from any `List<? extends T>` into any `List<? super T>`. Why is this the correct signature?
+<details><summary>Answer</summary>
+
+```java
+<T> void copy(List<? extends T> src, List<? super T> dst) {
+    for (T item : src) dst.add(item);
+}
+```
+PECS: `src` is a Producer (we read from it) → `extends`. `dst` is a Consumer (we write to it) → `super`. This is exactly how `Collections.copy()` is implemented in the JDK.
+</details>
+
 
 ## 4. Invariance, Covariance & Contravariance — The Big Picture
 
@@ -368,14 +368,14 @@ dogs.sort(byName);  // ✅ sort() accepts Comparator<? super Dog>
 
 
 
-> 🔬 **Section Challenge — 4. Invariance, Covariance & Contravariance — The Big Picture**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 4. Invariance, Covariance & Contravariance — The Big Picture**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 5. PECS — Producer Extends, Consumer Super
 
@@ -450,14 +450,14 @@ Collections.copy(numbers, integers);  // ✅ Copy Integer list into Number list
 
 
 
-> 🔬 **Section Challenge — 5. PECS — Producer Extends, Consumer Super**
->
-> **Challenge 1 (Reasoning):** Stack's `pushAll(Iterable<? extends E> src)` vs `popAll(Collection<? super E> dst)` — trace why each wildcard direction is needed.
-> <details><summary>Answer</summary>
->
-> `pushAll`: we READ from `src` to push into the stack → it Produces E → `extends E`. `popAll`: we WRITE popped values INTO `dst` → `dst` Consumes E → `super E`. Applying PECS mechanically: Producer=Extends, Consumer=Super. If you used `<E>` for both, you'd lose flexibility — `pushAll(List<Integer>)` would fail for a `Stack<Number>`.
-> </details>
->
+🔬 **Section Challenge — 5. PECS — Producer Extends, Consumer Super**
+
+**Challenge 1 (Reasoning):** Stack's `pushAll(Iterable<? extends E> src)` vs `popAll(Collection<? super E> dst)` — trace why each wildcard direction is needed.
+<details><summary>Answer</summary>
+
+`pushAll`: we READ from `src` to push into the stack → it Produces E → `extends E`. `popAll`: we WRITE popped values INTO `dst` → `dst` Consumes E → `super E`. Applying PECS mechanically: Producer=Extends, Consumer=Super. If you used `<E>` for both, you'd lose flexibility — `pushAll(List<Integer>)` would fail for a `Stack<Number>`.
+</details>
+
 
 ## 6. Generic Methods — Type Inference
 
@@ -489,20 +489,20 @@ max(10, 20);              // 20 — Integer implements Comparable
 
 
 
-> 🔬 **Section Challenge — 6. Generic Methods — Type Inference**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — 6. Generic Methods — Type Inference**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## 7. Generic Class Patterns — Real-World
 
@@ -613,20 +613,20 @@ list.stream()
 
 
 
-> 🔬 **Section Challenge — 8. Type Inference Evolution**
->
-> **Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-> <details><summary>Answer</summary>
->
-> No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-> <details><summary>Answer</summary>
->
-> NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-> </details>
->
+🔬 **Section Challenge — 8. Type Inference Evolution**
+
+**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+<details><summary>Answer</summary>
+
+No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+</details>
+
+**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+<details><summary>Answer</summary>
+
+NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+</details>
+
 
 ## PART 2: EXCEPTION HANDLING — Beyond try-catch
 
@@ -634,14 +634,14 @@ list.stream()
 
 
 
-> 🔬 **Section Challenge — PART 2: EXCEPTION HANDLING — Beyond try-catch**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — PART 2: EXCEPTION HANDLING — Beyond try-catch**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 9. Exception Hierarchy — The Family Tree
 
@@ -676,20 +676,20 @@ list.stream()
 
 
 
-> 🔬 **Section Challenge — 9. Exception Hierarchy — The Family Tree**
->
-> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-> <details><summary>Answer</summary>
->
-> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-> <details><summary>Answer</summary>
->
-> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
-> </details>
->
+🔬 **Section Challenge — 9. Exception Hierarchy — The Family Tree**
+
+**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+<details><summary>Answer</summary>
+
+`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+</details>
+
+**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+<details><summary>Answer</summary>
+
+1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+</details>
+
 
 ## 10. Custom Exception Design — The Right Way
 
@@ -744,25 +744,25 @@ public User findById(Long id) {
 
 
 
-> 🔬 **Section Challenge — 10. Custom Exception Design — The Right Way**
->
-> **Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-> <details><summary>Answer</summary>
->
-> ```java
-> public class PaymentException extends RuntimeException { // unchecked!
->     private final String errorCode;
->     private final String transactionId;
->     public PaymentException(String code, String txId, String msg, Throwable cause) {
->         super(msg, cause); this.errorCode=code; this.transactionId=txId;
->     }
-> }
-> public class InsufficientFundsException extends PaymentException { ... }
-> public class PaymentGatewayException extends PaymentException { ... }
-> ```
-> Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-> </details>
->
+🔬 **Section Challenge — 10. Custom Exception Design — The Right Way**
+
+**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+<details><summary>Answer</summary>
+
+```java
+public class PaymentException extends RuntimeException { // unchecked!
+    private final String errorCode;
+    private final String transactionId;
+    public PaymentException(String code, String txId, String msg, Throwable cause) {
+        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+    }
+}
+public class InsufficientFundsException extends PaymentException { ... }
+public class PaymentGatewayException extends PaymentException { ... }
+```
+Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+</details>
+
 
 ## 11. Exception Translation — Layer Boundaries
 
@@ -823,20 +823,20 @@ record ErrorResponse(String code, String message) {}
 
 
 
-> 🔬 **Section Challenge — 11. Exception Translation — Layer Boundaries**
->
-> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-> <details><summary>Answer</summary>
->
-> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-> <details><summary>Answer</summary>
->
-> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
-> </details>
->
+🔬 **Section Challenge — 11. Exception Translation — Layer Boundaries**
+
+**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+<details><summary>Answer</summary>
+
+`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+</details>
+
+**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+<details><summary>Answer</summary>
+
+1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+</details>
+
 
 ## 12. try-with-resources — Deep Understanding
 
@@ -912,24 +912,24 @@ try {
 
 
 
-> 🔬 **Section Challenge — 12. try-with-resources — Deep Understanding**
->
-> **Challenge 1 (Reasoning):** Both the `try` block and `close()` throw exceptions. Which one propagates? Where does the other go?
-> <details><summary>Answer</summary>
->
-> The `try` block's exception propagates (it's the 'primary' exception). The `close()` exception is SUPPRESSED — attached via `addSuppressed()`. Retrieve it with `e.getSuppressed()`. This is the opposite of old `try/finally` where the `finally` exception would REPLACE the original (swallowing it silently). Always use try-with-resources for `Closeable` resources — never try/finally.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** ```java
+🔬 **Section Challenge — 12. try-with-resources — Deep Understanding**
+
+**Challenge 1 (Reasoning):** Both the `try` block and `close()` throw exceptions. Which one propagates? Where does the other go?
+<details><summary>Answer</summary>
+
+The `try` block's exception propagates (it's the 'primary' exception). The `close()` exception is SUPPRESSED — attached via `addSuppressed()`. Retrieve it with `e.getSuppressed()`. This is the opposite of old `try/finally` where the `finally` exception would REPLACE the original (swallowing it silently). Always use try-with-resources for `Closeable` resources — never try/finally.
+</details>
+
+**Challenge 2 (Bug Hunt):** ```java
 InputStream in = new FileInputStream(f);
 try { process(in); } catch(IOException e) { } finally { in.close(); }
 ```
 What's wrong?
-> <details><summary>Answer</summary>
->
-> Two bugs: 1) `in` is declared OUTSIDE try — if `new FileInputStream(f)` throws, `in` is null but we attempt `in.close()` in finally → NPE. 2) `in.close()` can also throw `IOException` — not handled in finally → swallowed silently. Fix: use try-with-resources: `try(InputStream in = new FileInputStream(f)) { process(in); }`
-> </details>
->
+<details><summary>Answer</summary>
+
+Two bugs: 1) `in` is declared OUTSIDE try — if `new FileInputStream(f)` throws, `in` is null but we attempt `in.close()` in finally → NPE. 2) `in.close()` can also throw `IOException` — not handled in finally → swallowed silently. Fix: use try-with-resources: `try(InputStream in = new FileInputStream(f)) { process(in); }`
+</details>
+
 
 ## 13. Exception Handling Patterns
 
@@ -1000,14 +1000,14 @@ User user = retry(() -> userService.fetchFromExternalApi(id), 3, Duration.ofSeco
 
 
 
-> 🔬 **Section Challenge — 13. Exception Handling Patterns**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 13. Exception Handling Patterns**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 14. Checked vs Unchecked — When to Use Which
 
@@ -1093,43 +1093,43 @@ Rules:
 
 
 
-> 🔬 **Section Challenge — 16. The Complete Exception Strategy**
->
-> **Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-> <details><summary>Answer</summary>
->
-> `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-> <details><summary>Answer</summary>
->
-> 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
-> </details>
->
+🔬 **Section Challenge — 16. The Complete Exception Strategy**
+
+**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+<details><summary>Answer</summary>
+
+`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+</details>
+
+**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+<details><summary>Answer</summary>
+
+1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+</details>
+
 
 ## 17. Interview Questions & Answers
 
 **Q: What is type erasure? Why does Java have it?**
-> Generics are a compile-time feature. At runtime, `List<String>` becomes just `List`. Java does this for backward compatibility with pre-Java-5 code. Consequence: can't use `instanceof` with generics or create generic arrays.
+Generics are a compile-time feature. At runtime, `List<String>` becomes just `List`. Java does this for backward compatibility with pre-Java-5 code. Consequence: can't use `instanceof` with generics or create generic arrays.
 
 **Q: What are invariance, covariance, and contravariance?**
-> Invariance (default): `List<Dog>` is NOT `List<Animal>` — no subtyping transfers. Covariance (`? extends T`): subtyping preserved — `List<Dog>` fits `List<? extends Animal>`, read-only. Contravariance (`? super T`): subtyping reversed — `List<Animal>` fits `List<? super Dog>`, write-only.
+Invariance (default): `List<Dog>` is NOT `List<Animal>` — no subtyping transfers. Covariance (`? extends T`): subtyping preserved — `List<Dog>` fits `List<? extends Animal>`, read-only. Contravariance (`? super T`): subtyping reversed — `List<Animal>` fits `List<? super Dog>`, write-only.
 
 **Q: Why are Java arrays covariant but generics invariant?**
-> Arrays were designed in Java 1.0 before generics existed. `Dog[] → Animal[]` compiles but throws `ArrayStoreException` at runtime if you add a Cat. Generics (Java 5) learned from this — they're invariant by default to catch type errors at compile time. Wildcards (`? extends`, `? super`) opt-in to covariance/contravariance safely.
+Arrays were designed in Java 1.0 before generics existed. `Dog[] → Animal[]` compiles but throws `ArrayStoreException` at runtime if you add a Cat. Generics (Java 5) learned from this — they're invariant by default to catch type errors at compile time. Wildcards (`? extends`, `? super`) opt-in to covariance/contravariance safely.
 
 **Q: Explain PECS with an example.**
-> Producer Extends, Consumer Super. If you READ from a collection, use `? extends T` (it produces values). If you WRITE to a collection, use `? super T` (it consumes values). Example: `Collections.copy(List<? super T> dest, List<? extends T> src)`.
+Producer Extends, Consumer Super. If you READ from a collection, use `? extends T` (it produces values). If you WRITE to a collection, use `? super T` (it consumes values). Example: `Collections.copy(List<? super T> dest, List<? extends T> src)`.
 
 **Q: Difference between `<T extends Number>` and `<? extends Number>`?**
-> `T extends Number` declares a type parameter you can reference later (e.g., return T). `? extends Number` is a wildcard for an unknown type — you can't reference it. Use T when you need the type, ? when you don't.
+`T extends Number` declares a type parameter you can reference later (e.g., return T). `? extends Number` is a wildcard for an unknown type — you can't reference it. Use T when you need the type, ? when you don't.
 
 **Q: When should you use checked vs unchecked exceptions?**
-> Checked: when the caller can meaningfully recover (e.g., file not found → try another path). Unchecked: programming errors or unrecoverable situations. Modern practice favors unchecked.
+Checked: when the caller can meaningfully recover (e.g., file not found → try another path). Unchecked: programming errors or unrecoverable situations. Modern practice favors unchecked.
 
 **Q: What happens to suppressed exceptions in try-with-resources?**
-> If both the try body and `close()` throw, the body's exception is primary and close()'s exception is added as suppressed. Access via `exception.getSuppressed()`.
+If both the try body and `close()` throw, the body's exception is primary and close()'s exception is added as suppressed. Access via `exception.getSuppressed()`.
 
 ---
 
@@ -1137,7 +1137,7 @@ Rules:
 
 ## 18. Exceptions in Multithreaded Code — The Hidden Traps
 
-> This bridges `Ch04` (Exceptions) + `Ch15` (Threads). Extremely common source of production bugs.
+This bridges `Ch04` (Exceptions) + `Ch15` (Threads). Extremely common source of production bugs.
 
 ```java
 // ═══════════════════════════════════════
@@ -1208,14 +1208,14 @@ public void doWork() throws InterruptedException {
 
 
 
-> 🔬 **Section Challenge — 18. Exceptions in Multithreaded Code — The Hidden Traps**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 18. Exceptions in Multithreaded Code — The Hidden Traps**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 19. Exceptions in CompletableFuture — Async Exception Handling
 
@@ -1277,14 +1277,14 @@ public AsyncUncaughtExceptionHandler asyncUncaughtExceptionHandler() {
 
 
 
-> 🔬 **Section Challenge — 19. Exceptions in CompletableFuture — Async Exception Handling**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 19. Exceptions in CompletableFuture — Async Exception Handling**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 20. Spring Boot Global Exception Handling — Complete Strategy
 
@@ -1421,24 +1421,24 @@ public class GlobalExceptionHandler {
 
 ---
 
-> **Key Takeaway**: Generics provide compile-time type safety, but understand
-> type erasure's limits. PECS guides wildcard choice. For exceptions, design a
-> hierarchy that maps to HTTP status codes, translate at layer boundaries,
-> always chain the original cause, **and handle UncaughtExceptionHandler in every thread/pool**.
+**Key Takeaway**: Generics provide compile-time type safety, but understand
+type erasure's limits. PECS guides wildcard choice. For exceptions, design a
+hierarchy that maps to HTTP status codes, translate at layer boundaries,
+always chain the original cause, **and handle UncaughtExceptionHandler in every thread/pool**.
 
 
 ---
 
 
 
-> 🔬 **Section Challenge — 20. Spring Boot Global Exception Handling — Complete Strategy**
->
-> **Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-> <details><summary>Answer</summary>
->
-> It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-> </details>
->
+🔬 **Section Challenge — 20. Spring Boot Global Exception Handling — Complete Strategy**
+
+**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+<details><summary>Answer</summary>
+
+It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+</details>
+
 
 ## 🏋️ Practice & Interview Questions — Exceptions & Error Handling
 
@@ -1577,5 +1577,5 @@ Without try-with-resources: if body throws e1 and finally-close() throws e2, e2 
 </details>
 
 
-> **Navigation**: [< DateTime & Regex](Ch05_DateTime_Regex.md) | [Back to Index](../00_MASTER_INDEX.md) | [ClassLoader, JDBC & Logging >](Ch12_ClassLoader_JDBC_Logging.md)
+**Navigation**: [< DateTime & Regex](Ch05_DateTime_Regex.md) | [Back to Index](../00_MASTER_INDEX.md) | [ClassLoader, JDBC & Logging >](Ch12_ClassLoader_JDBC_Logging.md)
 

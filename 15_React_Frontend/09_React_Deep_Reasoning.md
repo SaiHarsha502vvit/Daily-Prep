@@ -1,29 +1,29 @@
-> **Navigation**: [< Previous](08_React_Performance.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](08_React_Performance.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 9 — React Deep Reasoning: The Questions That Freeze People
 
-> **"Anyone can say 'useState manages state.' The senior engineer explains WHY React re-renders, HOW batching works, and WHAT happens when you call setState 3 times in a row."**
+**"Anyone can say 'useState manages state.' The senior engineer explains WHY React re-renders, HOW batching works, and WHAT happens when you call setState 3 times in a row."**
 
 ---
 
 ## Why This Chapter Exists
 
 
-> THE FREEZE PATTERN IN REACT INTERVIEWS
->
-> Junior:   "useState manages component state"
-> Interviewer: "Can a component have more than one state?"
-> Junior:   "...yes?"
-> Interviewer: "What happens when you call setState 3 times?"
-> Junior:   *freezes*
->
-> Senior:   "Yes, a component can have unlimited states — each
-> useState call manages an independent piece. When you
-> call setState 3 times IN an event handler, React
-> BATCHES them — one re-render, not three. But OUTSIDE
-> an event handler (before React 18), each setState
-> caused a separate re-render. React 18's automatic
-> batching fixed this for ALL cases."
+THE FREEZE PATTERN IN REACT INTERVIEWS
+
+Junior:   "useState manages component state"
+Interviewer: "Can a component have more than one state?"
+Junior:   "...yes?"
+Interviewer: "What happens when you call setState 3 times?"
+Junior:   *freezes*
+
+Senior:   "Yes, a component can have unlimited states — each
+useState call manages an independent piece. When you
+call setState 3 times IN an event handler, React
+BATCHES them — one re-render, not three. But OUTSIDE
+an event handler (before React 18), each setState
+caused a separate re-render. React 18's automatic
+batching fixed this for ALL cases."
 
 
 ---
@@ -106,43 +106,21 @@ function Counter() {
 ```
 
 **Flow:**
-- THE SNAPSHOT PRINCIPLE
-- ↓
-- When handleClick runs, `count` is a SNAPSHOT — frozen a
-- ↓
-- It's like taking a photo: the photo doesn't change when
-- ↓
-- subject moves. `count` in this render is ALWAYS 0.
-- ↓
-- setCount(count + 2)
-- ↓
-- setCount(0 + 2)
-- ↓
-- queue: set to 2
-- ↓
-- setCount(count + 2)
-- ↓
-- setCount(0 + 2)
-- ↓
-- queue: set to 2
-- ↓
-- setCount(count + 3)
-- ↓
-- setCount(0 + 3)
-- ↓
-- queue: set to 3
-- ↓
-- setCount(count + 3)
-- ↓
-- setCount(0 + 3)
-- ↓
-- queue: set to 3
-- ↓
-- setCount(count + 4)
-- ↓
-- setCount(0 + 4)
-- ↓
-- queue: set to 4
+1. THE SNAPSHOT PRINCIPLE
+2. When handleClick runs, `count` is a SNAPSHOT — frozen a
+3. It's like taking a photo: the photo doesn't change when
+4. subject moves. `count` in this render is ALWAYS 0.
+5. setCount(count + 2)
+6. setCount(0 + 2)
+7. queue: set to 2 setCount(count + 2)
+8. setCount(0 + 2)
+9. queue: set to 2 setCount(count + 3)
+10. setCount(0 + 3)
+11. queue: set to 3 setCount(count + 3)
+12. setCount(0 + 3)
+13. queue: set to 3 setCount(count + 4)
+14. setCount(0 + 4)
+15. queue: set to 4
 
 ```mermaid
 flowchart TD
@@ -194,19 +172,12 @@ function handleClick() {
 ```
 
 **Flow:**
-- THE RELAY RACE ANALOGY
-- ↓
-- setCount(count + 2) = 'Start at the photo (0), add 2'
-- ↓
-- setCount(count + 3) = 'Start at the photo (0), add 3'
-- ↓
-- Both look at the same photo. Last one wins.
-- ↓
-- setCount(prev => prev + 2) = 'Take baton, add 2, pas
-- ↓
-- setCount(prev => prev + 3) = 'Take baton, add 3, pas
-- ↓
-- Each runner receives what the previous runner passed.
+1. THE RELAY RACE ANALOGY
+2. setCount(count + 2) = 'Start at the photo (0), add 2'
+3. setCount(count + 3) = 'Start at the photo (0), add 3'
+4. Both look at the same photo. Last one wins.
+5. setCount(prev => prev + 2) = 'Take baton, add 2, pas setCount(prev => prev + 3) = 'Take baton, add 3, pas
+6. Each runner receives what the previous runner passed.
 
 ```mermaid
 flowchart TD
@@ -258,25 +229,25 @@ flushSync(() => setFlag(true)); // renders immediately
 
 
 
-> 🔬 **Section Challenge — 1. useState: Batching, Stale State, and the Updater Pattern**
->
-> **Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
-> <details><summary>Answer</summary>
->
-> Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
-> <details><summary>Answer</summary>
->
-> `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
-> </details>
->
+🔬 **Section Challenge — 1. useState: Batching, Stale State, and the Updater Pattern**
+
+**Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
+<details><summary>Answer</summary>
+
+Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
+</details>
+
+**Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+<details><summary>Answer</summary>
+
+`useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
+</details>
+
 
 ## 2. Why Re-renders Happen (The REAL Trigger)
 
 ### The Freeze Question
-> "Why does my child component re-render even though its props didn't change?"
+"Why does my child component re-render even though its props didn't change?"
 
 ### Deep Reasoning
 
@@ -302,37 +273,15 @@ flushSync(() => setFlag(true)); // renders immediately
 ```
 
 **Flow:**
-- THE 3 RE-RENDER TRIGGERS
-- ↓
-- 1. State change
-- ↓
-- useState setter called
-- ↓
-- 1. State change
-- ↓
-- useState setter called
-- ↓
-- 2. Parent re-renders
-- ↓
-- ALL children re-render by defaul
-- ↓
-- 2. Parent re-renders
-- ↓
-- ALL children re-render by defaul
-- ↓
-- 3. Context change
-- ↓
-- All consumers re-render
-- ↓
-- 3. Context change
-- ↓
-- All consumers re-render
-- ↓
-- CRITICAL: 'Props changed' is NOT a trigger!
-- ↓
-- The parent re-rendering IS the trigger, and it re-creat
-- ↓
-- THE WATERFALL ANALOGY:
+1. THE 3 RE-RENDER TRIGGERS
+2. State change useState setter called
+3. Parent re-renders
+4. ALL children re-render by defaul
+5. Context change
+6. All consumers re-render
+7. CRITICAL: 'Props changed' is NOT a trigger!
+8. The parent re-rendering IS the trigger, and it re-creat
+9. THE WATERFALL ANALOGY:
 
 ```mermaid
 flowchart TD
@@ -403,7 +352,7 @@ function Parent({ children }) {
 ## 3. Virtual DOM: It's Not About Speed
 
 ### The Freeze Question
-> "Why is Virtual DOM fast?"
+"Why is Virtual DOM fast?"
 
 ### Deep Reasoning
 
@@ -431,27 +380,14 @@ function Parent({ children }) {
 ```
 
 **Flow:**
-- THE REAL REASON FOR VIRTUAL DOM
-- ↓
-- Raw DOM manipulation IS faster than VDOM + diff + patch
-- ↓
-- VDOM exists because:
-- ↓
-- React figures out HOW to get there (diffing)
-- ↓
-- 2. BATCHING: Multiple state changes
-- ↓
-- one DOM update
-- ↓
-- 2. BATCHING: Multiple state changes
-- ↓
-- one DOM update
-- ↓
-- 3. PORTABILITY: VDOM can target DOM, Native, Canvas, et
-- ↓
-- 4. PREDICTABILITY: Same state
-- ↓
-- same UI, always
+1. THE REAL REASON FOR VIRTUAL DOM
+2. Raw DOM manipulation IS faster than VDOM + diff + patch
+3. VDOM exists because:
+4. React figures out HOW to get there (diffing)
+5. BATCHING: Multiple state changes
+6. one DOM update
+7. PORTABILITY: VDOM can target DOM, Native, Canvas, et
+8. PREDICTABILITY: Same state same UI, always
 
 ```mermaid
 flowchart TD
@@ -486,15 +422,8 @@ React's diff algorithm is O(n) — it sacrifices perfect diff for speed.
 ```
 
 **Flow:**
-- Old VDOM: New VDOM: DOM Operations:
-- ↓
-- <li>A</li> <li>A</li> (no chang
-- ↓
-- <li>B</li> <li>B</li> (no chang
-- ↓
-- <li>C</li> <li>D</li> update te
-- ↓
-- Only ONE DOM operation instead of re-rendering entire l
+1. Old VDOM: New VDOM: DOM Operations:
+2. <li>A</li> <li>A</li> (no chang <li>B</li> <li>B</li> (no chang <li>C</li> <li>D</li> update te Only ONE DOM operation instead of re-rendering entire l
 
 ```mermaid
 flowchart TD
@@ -514,7 +443,7 @@ flowchart TD
 ## 4. useEffect: The Lifecycle Mental Model is WRONG
 
 ### The Freeze Question
-> "Is useEffect the same as componentDidMount?"
+"Is useEffect the same as componentDidMount?"
 
 ### Deep Reasoning
 
@@ -540,19 +469,13 @@ flowchart TD
 ```
 
 **Flow:**
-- WRONG MENTAL MODEL (lifecycle-based):
-- ↓
-- useEffect(fn, []) = componentDidMount
-- ↓
-- useEffect(fn, [dep]) = componentDidUpdate
-- ↓
-- useEffect(fn) = componentDidMount + componentDidUpdate
-- ↓
-- RIGHT MENTAL MODEL (synchronization-based):
-- ↓
-- useEffect = SYNCHRONIZE with external system
-- ↓
-- 'After each render where these dependencies changed,
+1. WRONG MENTAL MODEL (lifecycle-based):
+2. useEffect(fn, []) = componentDidMount
+3. useEffect(fn, [dep]) = componentDidUpdate
+4. useEffect(fn) = componentDidMount + componentDidUpdate
+5. RIGHT MENTAL MODEL (synchronization-based):
+6. useEffect = SYNCHRONIZE with external system
+7. 'After each render where these dependencies changed,
 
 ```mermaid
 flowchart TD
@@ -628,25 +551,25 @@ const filteredList = useMemo(
 
 
 
-> 🔬 **Section Challenge — 4. useEffect: The Lifecycle Mental Model is WRONG**
->
-> **Challenge 1 (Reasoning):** A useEffect with dependency `[user]` runs after every render where `user` changes. But `user` is an object. What subtle bug can occur?
-> <details><summary>Answer</summary>
->
-> React uses `Object.is()` to compare dependency values (===). A new object reference is ALWAYS different from the previous one even if the content is identical: `{name:'John'} !== {name:'John'}`. If the parent creates a new `user` object each render, the effect runs on every parent render even though the data didn't change. Fix: depend on `user.id` (primitive) instead, or `useMemo` to stabilize the reference.
-> </details>
->
-> **Challenge 2 (Design):** When does `useEffect` cleanup run? Give a concrete scenario where missing cleanup causes a bug.
-> <details><summary>Answer</summary>
->
-> Cleanup runs: (1) before the effect runs again (when deps change), (2) when the component unmounts. Bug scenario: effect fetches data and updates state. User navigates away (unmounts) before fetch completes. Fetch completes → tries to `setState` on unmounted component → React warning (memory leak). Fix: `let cancelled = false; return () => { cancelled = true; }` — check `if (!cancelled) setState(data)`.
-> </details>
->
+🔬 **Section Challenge — 4. useEffect: The Lifecycle Mental Model is WRONG**
+
+**Challenge 1 (Reasoning):** A useEffect with dependency `[user]` runs after every render where `user` changes. But `user` is an object. What subtle bug can occur?
+<details><summary>Answer</summary>
+
+React uses `Object.is()` to compare dependency values (===). A new object reference is ALWAYS different from the previous one even if the content is identical: `{name:'John'} !== {name:'John'}`. If the parent creates a new `user` object each render, the effect runs on every parent render even though the data didn't change. Fix: depend on `user.id` (primitive) instead, or `useMemo` to stabilize the reference.
+</details>
+
+**Challenge 2 (Design):** When does `useEffect` cleanup run? Give a concrete scenario where missing cleanup causes a bug.
+<details><summary>Answer</summary>
+
+Cleanup runs: (1) before the effect runs again (when deps change), (2) when the component unmounts. Bug scenario: effect fetches data and updates state. User navigates away (unmounts) before fetch completes. Fetch completes → tries to `setState` on unmounted component → React warning (memory leak). Fix: `let cancelled = false; return () => { cancelled = true; }` — check `if (!cancelled) setState(data)`.
+</details>
+
 
 ## 5. Keys: Why Index as Key Breaks Things
 
 ### The Freeze Question
-> "Why can't I use array index as a key?"
+"Why can't I use array index as a key?"
 
 ### Deep Reasoning
 
@@ -672,45 +595,7 @@ const filteredList = useMemo(
 ```
 
 **Flow:**
-- KEYS = IDENTITY CARDS for React's Diffing Algorithm
-- ↓
-- Before delete 'Bob': After delete 'Bob':
-- ↓
-- index 0
-- ↓
-- Alice index 0
-- ↓
-- Alice (same position ✓)
-- ↓
-- index 0
-- ↓
-- Alice index 0
-- ↓
-- Alice (same position ✓)
-- ↓
-- index 1
-- ↓
-- Bob index 1
-- ↓
-- Charlie (React thinks this
-- ↓
-- index 1
-- ↓
-- Bob index 1
-- ↓
-- Charlie (React thinks this
-- ↓
-- index 2
-- ↓
-- Charlie is Bob updated!)
-- ↓
-- index 2
-- ↓
-- Charlie is Bob updated!)
-- ↓
-- React: 'Item at index 1 changed from Bob to Charlie'
-- ↓
-- Reality: We DELETED Bob and Charlie should keep its sta
+1. KEYS = IDENTITY CARDS for React's Diffing Algorithm Before delete 'Bob': After delete 'Bob': index 0 Alice index 0 Alice (same position ✓) index 0 Alice index 0 Alice (same position ✓) index 1 Bob index 1 Charlie (React thinks this index 1 Bob index 1 Charlie (React thinks this index 2 Charlie is Bob updated!) index 2 Charlie is Bob updated!) React: 'Item at index 1 changed from Bob to Charlie' Reality: We DELETED Bob and Charlie should keep its sta
 
 ```mermaid
 flowchart TD
@@ -752,7 +637,7 @@ flowchart TD
 ## 6. useRef vs useState: When to Use Which
 
 ### The Freeze Question
-> "What's the difference? Both persist values across renders."
+"What's the difference? Both persist values across renders."
 
 ### Deep Reasoning
 
@@ -778,19 +663,13 @@ flowchart TD
 ```
 
 **Flow:**
-- useState vs useRef — The Billboard vs Notebook Analogy
-- ↓
-- useState:
-- ↓
-- Like a BILLBOARD on the highway
-- ↓
-- Everyone (the component) sees the current value
-- ↓
-- The re-render shows the new value to users
-- ↓
-- useRef:
-- ↓
-- Like a private NOTEBOOK in your pocket
+1. useState vs useRef — The Billboard vs Notebook Analogy
+2. useState:
+3. Like a BILLBOARD on the highway
+4. Everyone (the component) sees the current value
+5. The re-render shows the new value to users
+6. useRef:
+7. Like a private NOTEBOOK in your pocket
 
 ```mermaid
 flowchart TD
@@ -849,25 +728,25 @@ function Component() {
 
 
 
-> 🔬 **Section Challenge — 6. useRef vs useState: When to Use Which**
->
-> **Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
-> <details><summary>Answer</summary>
->
-> Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
-> </details>
->
-> **Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
-> <details><summary>Answer</summary>
->
-> `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
-> </details>
->
+🔬 **Section Challenge — 6. useRef vs useState: When to Use Which**
+
+**Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
+<details><summary>Answer</summary>
+
+Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
+</details>
+
+**Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+<details><summary>Answer</summary>
+
+`useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
+</details>
+
 
 ## 7. useMemo/useCallback: When They Hurt Performance
 
 ### The Freeze Question
-> "Should I wrap everything in useMemo for performance?"
+"Should I wrap everything in useMemo for performance?"
 
 ### Deep Reasoning
 
@@ -891,19 +770,13 @@ function Component() {
 ```
 
 **Flow:**
-- THE CACHING TAX
-- ↓
-- useMemo/useCallback are NOT free:
-- ↓
-- 1. Memory to store cached value
-- ↓
-- 2. CPU to compare dependencies on every render
-- ↓
-- 3. Code complexity (harder to read)
-- ↓
-- may cost MORE than just recomputing!
-- ↓
-- Analogy: Buying a safe to protect $5
+1. THE CACHING TAX
+2. useMemo/useCallback are NOT free:
+3. Memory to store cached value
+4. CPU to compare dependencies on every render
+5. Code complexity (harder to read)
+6. may cost MORE than just recomputing!
+7. Analogy: Buying a safe to protect $5
 
 ```mermaid
 flowchart TD
@@ -960,23 +833,14 @@ Need to memoize?
 ```
 
 **Flow:**
-- Is the computation > 1ms?
-- ↓
-- YES
-- ↓
-- useMemo
-- ↓
-- Is the child wrapped in React.memo?
-- ↓
-- YES
-- ↓
-- useCallback for functions passed as props
-- ↓
-- Is it in a dependency array of useEffect?
-- ↓
-- MAYBE
-- ↓
-- useCallback to stabilize reference
+1. Is the computation > 1ms?
+2. YES useMemo
+3. Is the child wrapped in React.memo?
+4. YES
+5. useCallback for functions passed as props
+6. Is it in a dependency array of useEffect?
+7. MAYBE
+8. useCallback to stabilize reference
 
 ```mermaid
 flowchart TD
@@ -1001,7 +865,7 @@ flowchart TD
 ## 8. Context: Why It's NOT a State Manager
 
 ### The Freeze Question
-> "Why do people say Context isn't good for state management?"
+"Why do people say Context isn't good for state management?"
 
 ### Deep Reasoning
 
@@ -1026,21 +890,14 @@ flowchart TD
 ```
 
 **Flow:**
-- THE RADIO STATION ANALOGY
-- ↓
-- Context = Radio station broadcasting one signal
-- ↓
-- Consumer = Radio tuned to that station
-- ↓
-- ALL radios tuned to it activate — even if they only car
-- ↓
-- about a DIFFERENT part of the signal.
-- ↓
-- Context({ user, theme, cart, notifications })
-- ↓
-- Change `notifications`
-- ↓
-- ALL consumers re-render
+1. THE RADIO STATION ANALOGY
+2. Context = Radio station broadcasting one signal
+3. Consumer = Radio tuned to that station
+4. ALL radios tuned to it activate — even if they only car
+5. about a DIFFERENT part of the signal.
+6. Context({ user, theme, cart, notifications })
+7. Change `notifications`
+8. ALL consumers re-render
 
 ```mermaid
 flowchart TD
@@ -1087,19 +944,19 @@ const CartContext = createContext([]);
 
 
 
-> 🔬 **Section Challenge — 8. Context: Why It's NOT a State Manager**
->
-> **Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-> <details><summary>Answer</summary>
->
-> Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
-> </details>
->
+🔬 **Section Challenge — 8. Context: Why It's NOT a State Manager**
+
+**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+<details><summary>Answer</summary>
+
+Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+</details>
+
 
 ## 9. Controlled vs Uncontrolled: The Real Difference
 
 ### The Freeze Question
-> "What is a controlled component and WHY would I use one?"
+"What is a controlled component and WHY would I use one?"
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -1118,19 +975,13 @@ const CartContext = createContext([]);
 ```
 
 **Flow:**
-- THE PUPPET vs PET ANALOGY
-- ↓
-- Controlled = Puppet
-- ↓
-- React holds the strings. Input shows WHAT REACT TELLS
-- ↓
-- value={state} + onChange={setState}
-- ↓
-- Single source of truth: React state
-- ↓
-- Uncontrolled = Pet
-- ↓
-- defaultValue + ref.current.value
+1. THE PUPPET vs PET ANALOGY
+2. Controlled = Puppet
+3. React holds the strings. Input shows WHAT REACT TELLS
+4. value={state} + onChange={setState}
+5. Single source of truth: React state
+6. Uncontrolled = Pet
+7. defaultValue + ref.current.value
 
 ```mermaid
 flowchart TD
@@ -1181,7 +1032,7 @@ function Uncontrolled() {
 ## 10. React Fiber: How React Actually Renders
 
 ### The Freeze Question
-> "How does React rendering work internally?"
+"How does React rendering work internally?"
 
 ### Deep Reasoning
 
@@ -1214,19 +1065,13 @@ function Uncontrolled() {
 ```
 
 **Flow:**
-- REACT FIBER — The Restaurant Kitchen Analogy
-- ↓
-- Old React (Stack Reconciler):
-- ↓
-- Chef prepares ENTIRE meal before serving (blocking)
-- ↓
-- Customer (user) sits frozen waiting
-- ↓
-- New React (Fiber Reconciler):
-- ↓
-- Chef prepares dishes in small chunks (time-slicing)
-- ↓
-- After each dish: 'Any urgent VIP orders?' (user input
+1. REACT FIBER — The Restaurant Kitchen Analogy
+2. Old React (Stack Reconciler):
+3. Chef prepares ENTIRE meal before serving (blocking)
+4. Customer (user) sits frozen waiting
+5. New React (Fiber Reconciler):
+6. Chef prepares dishes in small chunks (time-slicing)
+7. After each dish: 'Any urgent VIP orders?' (user input
 
 ```mermaid
 flowchart TD
@@ -1252,7 +1097,7 @@ flowchart TD
 ## 11. Suspense & Concurrent Mode: The Future Model
 
 ### The Freeze Question
-> "What is Suspense and why does it matter?"
+"What is Suspense and why does it matter?"
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -1274,19 +1119,12 @@ flowchart TD
 ```
 
 **Flow:**
-- SUSPENSE — The Loading Dock Analogy
-- ↓
-- Without Suspense: You manage loading states manually
-- ↓
-- if (isLoading) return <Spinner />
-- ↓
-- if (error) return <Error />
-- ↓
-- return <Data />
-- ↓
-- Every component has its own loading/error/data logic
-- ↓
-- With Suspense: React manages loading states
+1. SUSPENSE — The Loading Dock Analogy
+2. Without Suspense: You manage loading states manually
+3. if (isLoading) return <Spinner />
+4. if (error) return <Error /> return <Data />
+5. Every component has its own loading/error/data logic
+6. With Suspense: React manages loading states
 
 ```mermaid
 flowchart TD
@@ -1346,7 +1184,7 @@ function SearchPage() {
 ## 12. Server Components: Why They Exist
 
 ### The Freeze Question
-> "Why did React create Server Components?"
+"Why did React create Server Components?"
 
 ```
 ┌──────────────────────────────────────────────────────────────────┐
@@ -1371,19 +1209,13 @@ function SearchPage() {
 ```
 
 **Flow:**
-- THE SHIPPING ANALOGY
-- ↓
-- Client Components = Ship raw materials to customer
-- ↓
-- Send JS bundle to browser
-- ↓
-- Browser downloads, parses, executes, renders
-- ↓
-- Customer builds furniture themselves (hydration)
-- ↓
-- Server Components = Ship finished furniture
-- ↓
-- Server renders HTML, sends result
+1. THE SHIPPING ANALOGY
+2. Client Components = Ship raw materials to customer
+3. Send JS bundle to browser
+4. Browser downloads, parses, executes, renders
+5. Customer builds furniture themselves (hydration)
+6. Server Components = Ship finished furniture
+7. Server renders HTML, sends result
 
 ```mermaid
 flowchart TD

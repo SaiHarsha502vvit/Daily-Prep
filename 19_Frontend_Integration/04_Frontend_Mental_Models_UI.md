@@ -84,11 +84,9 @@ STEP 3 — IDENTIFY DATA FLOW:
 ```
 
 **Flow:**
-- IMAGE / GALLERY / ○ ○ ● ○
-- ↓
-- Product Title / ★★★★☆ (42 reviews) / $129.99 ~$159.99~
-- ↓
-- Tab content here...
+1. IMAGE / GALLERY / ○ ○ ● ○
+2. Product Title / ★★★★☆ (42 reviews) / $129.99 ~$159.99~
+3. Tab content here...
 
 ```mermaid
 flowchart TD
@@ -131,25 +129,11 @@ THEN: Write JSX structure → Style with CSS → Add interactions
 ```
 
 **Flow:**
-- selectedColor
-- ↓
-- changes on click
-- ↓
-- useState
-- ↓
-- cartItems
-- ↓
-- changes across pages
-- ↓
-- Zustand/context
-- ↓
-- Click 'Add to Cart'
-- ↓
-- update cart state
-- ↓
-- Click thumbnail
-- ↓
-- change main image
+1. selectedColor changes on click
+2. useState cartItems changes across pages
+3. Zustand/context
+4. Click 'Add to Cart' update cart state
+5. Click thumbnail change main image
 
 ```mermaid
 flowchart TD
@@ -208,9 +192,8 @@ IF PROP DRILLING > 3 LEVELS DEEP → Consider:
 ```
 
 **Flow:**
-- IF PROP DRILLING > 3 LEVELS DEEP
-- ↓
-- Consider:
+1. IF PROP DRILLING > 3 LEVELS DEEP
+2. Consider:
 
 ```mermaid
 flowchart LR
@@ -252,21 +235,14 @@ GOLDEN RULES:
 ```
 
 **Flow:**
-- YES
-- ↓
-- CSS Grid (header, sidebar, main, footer)
-- ↓
-- YES
-- ↓
-- Flexbox
-- ↓
-- YES
-- ↓
-- CSS Grid with auto-fit
-- ↓
-- YES
-- ↓
-- Normal flow (no special CSS)
+1. YES
+2. CSS Grid (header, sidebar, main, footer)
+3. YES
+4. Flexbox
+5. YES
+6. CSS Grid with auto-fit
+7. YES
+8. Normal flow (no special CSS)
 
 ```mermaid
 flowchart LR
@@ -442,33 +418,13 @@ function ProductList() {
 ```
 
 **Flow:**
-- FORM WIZARD ARCHITECTURE:
-- ↓
-- Step 1 Step 2 Step 3 Step 4
-- ↓
-- [Personal]
-- ↓
-- [Address]
-- ↓
-- [Payment]
-- ↓
-- [Review]
-- ↓
-- [Personal]
-- ↓
-- [Address]
-- ↓
-- [Payment]
-- ↓
-- [Review]
-- ↓
-- State Shape:
-- ↓
-- currentStep: 2,
-- ↓
-- formData: {
-- ↓
-- personal: { name, email, phone }, // validated
+1. FORM WIZARD ARCHITECTURE:
+2. Step 1 Step 2 Step 3 Step 4
+3. [Personal]
+4. [Address]
+5. [Payment]
+6. [Review]
+7. State Shape: currentStep: 2, formData: { personal: { name, email, phone }, // validated
 
 ```mermaid
 flowchart TD
@@ -585,19 +541,10 @@ function FormWizard() {
 ```
 
 **Flow:**
-- BEFORE you write code for any new feature:
-- ↓
-- □ 1. UNDERSTAND the requirement
-- ↓
-- What exactly should happen? List every behavior.
-- ↓
-- □ 2. DECOMPOSE into components
-- ↓
-- Draw the component tree on paper/whiteboard.
-- ↓
-- □ 3. DEFINE types/interfaces
-- ↓
-- What data flows through? What can change?
+1. BEFORE you write code for any new feature:
+2. □ 1. UNDERSTAND the requirement What exactly should happen? List every behavior.
+3. □ 2. DECOMPOSE into components Draw the component tree on paper/whiteboard.
+4. □ 3. DEFINE types/interfaces What data flows through? What can change?
 
 ```mermaid
 flowchart TD
@@ -652,19 +599,9 @@ flowchart TD
 ```
 
 **Flow:**
-- THINK IN FLUID RANGES, NOT FIXED BREAKPOINTS:
-- ↓
-- OLD WAY (Bad):
-- ↓
-- 'At 768px, switch to 2 columns. At 1024px, switch to 3.
-- ↓
-- Brittle. What about 767px? 769px?
-- ↓
-- NEW WAY (Good):
-- ↓
-- 'Each card should be 280-400px wide. As many as fit.'
-- ↓
-- Works at EVERY screen size. No breakpoints needed.
+1. THINK IN FLUID RANGES, NOT FIXED BREAKPOINTS:
+2. OLD WAY (Bad):
+3. 'At 768px, switch to 2 columns. At 1024px, switch to 3. Brittle. What about 767px? 769px? NEW WAY (Good): 'Each card should be 280-400px wide. As many as fit.' Works at EVERY screen size. No breakpoints needed.
 
 ```mermaid
 flowchart TD
@@ -720,25 +657,14 @@ Q: What makes a good component API (props)?
 ```
 
 **Flow:**
-- 5. Build bottom-up: atoms
-- ↓
-- molecules
-- ↓
-- organisms
-- ↓
-- page.
-- ↓
-- If yes to any
-- ↓
-- extract into its own component.
-- ↓
-- Categorize: Server state
-- ↓
-- TanStack Query.
-- ↓
-- UI state (open/closed, selected)
-- ↓
-- useState.
+1. Build bottom-up: atoms molecules
+2. organisms page.
+3. If yes to any
+4. extract into its own component.
+5. Categorize: Server state
+6. TanStack Query.
+7. UI state (open/closed, selected)
+8. useState.
 
 ```mermaid
 flowchart TD

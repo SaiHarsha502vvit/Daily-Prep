@@ -1,8 +1,8 @@
-> **Navigation**: [< Previous](10_Custom_Hooks_Library.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](../19_Frontend_Integration/05_DevTools_Debugging_Mastery.md)
+**Navigation**: [< Previous](10_Custom_Hooks_Library.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](../19_Frontend_Integration/05_DevTools_Debugging_Mastery.md)
 
 # 🏗️ Chapter 11 — Complex UI Pages & Patterns: Building Real Applications
 
-> **"Every SaaS product, every dashboard, every modern web app is built from the same 10-15 complex UI patterns. Master these patterns and you can build ANY interface."**
+**"Every SaaS product, every dashboard, every modern web app is built from the same 10-15 complex UI patterns. Master these patterns and you can build ANY interface."**
 
 ---
 
@@ -268,14 +268,14 @@ const columns = [
 
 
 
-> 🔬 **Section Challenge — 2. Data Table — Sorting, Filtering, Pagination**
->
-> **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-> <details><summary>Answer</summary>
->
-> Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
-> </details>
->
+🔬 **Section Challenge — 2. Data Table — Sorting, Filtering, Pagination**
+
+**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+<details><summary>Answer</summary>
+
+Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+</details>
+
 
 ## 3. Modal System — Stacking, Focus Trap, Animations
 
@@ -695,8 +695,8 @@ function highlightMatch(text, query) {
 
 
 
-> 🔬 **Section Challenge — 6. Search with Autocomplete & Suggestions**
->>>
+🔬 **Section Challenge — 6. Search with Autocomplete & Suggestions**
+>>
 
 ## 7. Tabs & Accordion — Content Organization
 
@@ -1045,7 +1045,7 @@ function SidebarLayout({ children }) {
 
 ---
 
-> **Next Chapter**: [DevTools Debugging Mastery →](../19_Frontend_Integration/05_DevTools_Debugging_Mastery.md)
+**Next Chapter**: [DevTools Debugging Mastery →](../19_Frontend_Integration/05_DevTools_Debugging_Mastery.md)
 
 ---
 

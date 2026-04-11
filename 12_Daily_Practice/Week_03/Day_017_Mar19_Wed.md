@@ -149,15 +149,11 @@ Step 3: Sift up — 2 < 1? No, stop. Done!
 ```
 
 **Flow:**
-- Insert 2 into min-heap [1, 3, 5, 7]:
-- ↓
-- Step 1: Add at end
-- ↓
-- [7] [2] ← new
-- ↓
-- Step 2: Sift up — 2 < 3? Yes, swap
-- ↓
-- Step 3: Sift up — 2 < 1? No, stop. Done!
+1. Insert 2 into min-heap [1, 3, 5, 7]:
+2. Step 1: Add at end
+3. [7] [2] ← new
+4. Step 2: Sift up — 2 < 3? Yes, swap
+5. Step 3: Sift up — 2 < 1? No, stop. Done!
 
 ```mermaid
 flowchart TD
@@ -225,33 +221,15 @@ EXTRACT PHASE:
 ```
 
 **Flow:**
-- [4, 10, 3, 5, 1]
-- ↓
-- sift 10: no change (children 5,1 are smaller)
-- ↓
-- [4, 10, 3, 5, 1]
-- ↓
-- sift 4: swap with 10
-- ↓
-- [10, 5, 3, 4, 1]
-- ↓
-- Max-heap built!
-- ↓
-- Step 1: Swap 10↔1
-- ↓
-- [1, 5, 3, 4,
-- ↓
-- 10]
-- ↓
-- [1, 5, 3, 4,
-- ↓
-- 10]
-- ↓
-- sift down 1
-- ↓
-- [5, 4, 3, 1,
-- ↓
-- 10]
+1. [4, 10, 3, 5, 1]
+2. sift 10: no change (children 5,1 are smaller)
+3. [4, 10, 3, 5, 1] sift 4: swap with 10
+4. [10, 5, 3, 4, 1]
+5. Max-heap built!
+6. Step 1: Swap 10↔1
+7. [1, 5, 3, 4, 10]
+8. [1, 5, 3, 4, 10] sift down 1
+9. [5, 4, 3, 1, 10]
 
 ```mermaid
 flowchart TD
@@ -368,35 +346,13 @@ order_date | amount | prev | change | next
 ```
 
 **Flow:**
-- LAG(column, N) = value from N rows BEFORE current
-- ↓
-- LEAD(column, N) = value from N rows AFTER current
-- ↓
-- order_date
-- ↓
-- amount
-- ↓
-- prev
-- ↓
-- change
-- ↓
-- next
-- ↓
-- order_date
-- ↓
-- amount
-- ↓
-- prev
-- ↓
-- change
-- ↓
-- next
-- ↓
-- 2025-01-01 100 NULL NULL 250
-- ↓
-- 2025-01-04 300 75 +225 NULL
-- ↓
-- ↑ LAG ↑ LEAD
+1. LAG(column, N) = value from N rows BEFORE current
+2. LEAD(column, N) = value from N rows AFTER current
+3. order_date amount prev change
+4. next order_date amount prev change
+5. next 2025-01-01 100 NULL NULL 250
+6. 2025-01-04 300 75 +225 NULL
+7. ↑ LAG ↑ LEAD
 
 ```mermaid
 flowchart TD
@@ -477,17 +433,10 @@ Answer: peek() = 5  ← 2nd largest!
 ```
 
 **Flow:**
-- Process: 3
-- ↓
-- heap=[3] (size < k, just add)
-- ↓
-- 5 > peek(2)? poll 2, add 5
-- ↓
-- heap=[3,5]
-- ↓
-- 6 > peek(3)? poll 3, add 6
-- ↓
-- heap=[5,6]
+1. Process: 3
+2. heap=[3] (size < k, just add)
+3. 5 > peek(2)? poll 2, add 5 heap=[3,5]
+4. 6 > peek(3)? poll 3, add 6 heap=[5,6]
 
 ```mermaid
 flowchart LR
@@ -568,13 +517,10 @@ Step 3: Extract from heap → [1, 2]
 ```
 
 **Flow:**
-- Step 1: Count frequencies
-- ↓
-- {1:3, 2:2, 3:1}
-- ↓
-- Step 3: Extract from heap
-- ↓
-- [1, 2]
+1. Step 1: Count frequencies
+2. {1:3, 2:2, 3:1}
+3. Step 3: Extract from heap
+4. [1, 2]
 
 ```mermaid
 flowchart LR
@@ -625,9 +571,8 @@ HEAP IN THE REAL WORLD:
 ```
 
 **Flow:**
-- 4. Merge K Sorted Lists: Min-heap of K heads
-- ↓
-- always extract smallest
+1. Merge K Sorted Lists: Min-heap of K heads
+2. always extract smallest
 
 ```mermaid
 flowchart LR
