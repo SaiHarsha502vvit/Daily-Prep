@@ -231,3 +231,9 @@ _"Data is the new oil, and now you have the tools to refine it!"_
 
 > 🔬 **Section Challenge — 📚 RESOURCES FOR FURTHER LEARNING**
 
+**Challenge 1 (Reasoning):** The Optimization Tips say "prefer keyset over OFFSET." On page 500 of results, `SELECT * FROM orders ORDER BY id LIMIT 20 OFFSET 9980` takes 3 seconds, but keyset pagination `SELECT * FROM orders WHERE id > 12345 ORDER BY id LIMIT 20` takes 5ms. Why is OFFSET pagination O(N) while keyset is O(1)?
+<details><summary>Answer</summary>
+
+`OFFSET 9980` tells the database: "Find the first 10,000 rows in sorted order, **throw away 9,980 of them**, and return the last 20." The engine must scan and sort 10,000 rows every time — even though you only want 20. On page 1000 (`OFFSET 19980`), it scans 20,000 rows. Each subsequent page gets linearly slower. **Keyset pagination** uses `WHERE id > 12345` — the database seeks directly to id=12345 using the B+ Tree index (O(log N) seek, then read 20 contiguous rows). It doesn't matter if you're on page 1 or page 10,000 — the cost is identical. **Trade-off:** Keyset requires: (1) a stable, unique sort key (usually the primary key or a timestamp + id combo), (2) you can't "jump to page 500" — you can only go forward/backward from the current position, (3) the client must remember the last seen key. OFFSET allows random page access but degrades at scale. **Production rule:** Use OFFSET for admin dashboards with few pages. Use keyset for infinite scroll, API pagination, and any dataset > 10K rows.
+</details>
+

@@ -118,6 +118,12 @@ THE FUNDAMENTAL EQUATION:
 
 > 🔬 **Section Challenge — 1.2 Supervised Learning — Learning from Labeled Data**
 
+**Challenge 1 (Reasoning):** You train a classifier on 10,000 labeled examples and get 99% test accuracy. In production, accuracy drops to 60%. The data looks identical. What went wrong?
+<details><summary>Answer</summary>
+
+**Data leakage** — the most common production ML failure. Scenarios: (1) **Temporal leakage:** Training data included future information. Example: predicting stock price using features that include next-day volume. Fix: always split by TIME, not randomly. (2) **Target leakage:** A feature is derived from the target. Example: "doctor_prescribed_insulin" as a feature when predicting diabetes — it's a consequence, not a cause. (3) **Train-test contamination:** Scaling/normalization was fit on the ENTIRE dataset (including test), so the model "saw" test statistics during training. Fix: `fit_transform(train)`, then `transform(test)` only. (4) **Distribution shift:** Training data was collected under different conditions than production. Example: model trained on professional photos, deployed on user selfies. **Debug:** Always check if any feature has suspiciously high correlation with the target (≥0.95).
+</details>
+
 ## 1.3 Unsupervised Learning — Finding Hidden Structure
 
 ```
@@ -148,6 +154,12 @@ ANOMALY DETECTION:
 
 > 🔬 **Section Challenge — 1.3 Unsupervised Learning — Finding Hidden Structure**
 
+**Challenge 1 (Reasoning):** K-Means finds 3 clean clusters on your data. You deploy it. New data arrives with a crescent-shaped cluster and scattered outliers. K-Means assigns every point to a cluster, including outliers. What's fundamentally wrong?
+<details><summary>Answer</summary>
+
+K-Means assumes clusters are **spherical (isotropic), equally-sized, and exhaustive** (every point belongs somewhere). It minimizes within-cluster SSE, which draws Voronoi boundaries (straight lines equidistant from centroids). **Crescent-shaped clusters** violate the spherical assumption — K-Means will split the crescent into two halves. **Outliers** get force-assigned to the nearest centroid, pulling it toward them and distorting all cluster boundaries. **Fixes:** (1) DBSCAN: finds arbitrary-shaped clusters AND identifies outliers as noise (-1 label). (2) GMM: fits elliptical Gaussians, gives soft probabilities (low-probability points = potential outliers). (3) Hierarchical + dendrogram: lets you visually choose the natural cut point. **Key insight:** K-Means is a convex optimization (guaranteed convergence) but assumes a non-convex world. The algorithm always converges, but to the wrong answer when assumptions are violated.
+</details>
+
 ## 1.4 Reinforcement Learning — Learning by Trial and Error
 
 ```
@@ -173,6 +185,12 @@ EXAMPLES:
 
 
 > 🔬 **Section Challenge — 1.4 Reinforcement Learning — Learning by Trial and Error**
+
+**Challenge 1 (Reasoning):** An RL agent learns to play a boat-racing game. It discovers that driving in circles and collecting small power-ups gives more cumulative reward than actually finishing the race. What went wrong, and how does this relate to ChatGPT?
+<details><summary>Answer</summary>
+
+**Reward hacking** (Goodhart's Law: "when a measure becomes a target, it ceases to be a good measure"). The agent optimizes the reward function LITERALLY, not the designer's INTENT. The reward function rewards points per time step; collecting power-ups in circles maximizes this, even though finishing the race was the goal. **Fix:** Reward shaping — add sparse reward for race completion, penalize time, or use **inverse RL** (learn reward function from expert demonstrations). **ChatGPT connection:** RLHF (Reinforcement Learning from Human Feedback) is the same challenge at scale. GPT-4 is trained with human preference rankings as reward. Risks: (1) **Sycophancy** — the model learns that agreeing with the user gets higher ratings, even when the user is wrong. (2) **Verbosity bias** — longer answers get higher ratings, so the model becomes unnecessarily verbose. OpenAI addresses this with careful reward model calibration and Constitutional AI techniques.
+</details>
 
 # PART 2: The ML Pipeline — From Raw Data to Deployed Model
 
@@ -231,6 +249,12 @@ from sklearn.model_selection import train_test_split
 
 
 > 🔬 **Section Challenge — 2.1 Data Preprocessing**
+
+**Challenge 1 (Reasoning):** A junior engineer writes `scaler.fit_transform(X)` on the entire dataset BEFORE train-test split, then splits. Test accuracy is 95%. After deploying, accuracy drops to 72%. What happened?
+<details><summary>Answer</summary>
+
+**Train-test contamination via scaling.** `fit_transform(X)` computes mean and std from ALL data (including test samples). When the model trains, it indirectly "sees" test data statistics baked into every feature value. The model learns patterns that exploit this leaked information. **Correct pipeline:** `scaler.fit(X_train)` → `scaler.transform(X_train)` → `scaler.transform(X_test)`. The test set must be treated as truly unseen — the scaler must use ONLY training statistics. In production, new data will have slightly different distributions; if the model was trained on leaked global statistics, it breaks. **Sklearn Pipeline enforces this automatically:** `Pipeline([('scaler', StandardScaler()), ('model', LogisticRegression())])` + `cross_val_score()` applies fit only on training folds. This is why Pipelines exist — they make leakage structurally impossible.
+</details>
 
 # Load data
 df = pd.read_csv('housing.csv')
@@ -304,6 +328,12 @@ WHY IT MATTERS:
 
 
 > 🔬 **Section Challenge — 2.2 Feature Engineering**
+
+**Challenge 1 (Reasoning):** You're predicting loan defaults. You engineer a feature `months_since_last_missed_payment`. Your model gets 98% AUC. Your manager is suspicious. Why?
+<details><summary>Answer</summary>
+
+**Target leakage.** `months_since_last_missed_payment` is derived FROM the target variable. A person who has never defaulted has this feature as NaN or very large; a person who defaulted recently has it as 0 or small. The feature is essentially ENCODING the target. The model learns: "if this feature is small → default" — which is circular reasoning. In production, you wouldn't HAVE this feature for future predictions (you're trying to predict IF they'll default, but this feature requires knowing they already did). **Rules for detecting target leakage:** (1) Would this feature be available BEFORE the prediction is needed? (2) Is this feature a CONSEQUENCE of the target rather than a CAUSE? (3) Does any single feature give suspiciously high predictive power (AUC > 0.95)? If yes to any → investigate. **Good features:** income, credit score, employment length — these are CAUSES that exist before the outcome.
+</details>
 
 # PART 3: The Bias-Variance Tradeoff
 

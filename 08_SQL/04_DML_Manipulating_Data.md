@@ -329,3 +329,9 @@ WHERE emp_id = 5;
 
 > 🔬 **Section Challenge — Chapter 4: DML - Manipulating Data**
 
+**Challenge 1 (Reasoning):** `DELETE FROM logs` and `TRUNCATE TABLE logs` both remove all rows. But `DELETE` on a 10M-row table takes 45 minutes while `TRUNCATE` takes 1 second. Why is the time difference so extreme? Can you ROLLBACK a TRUNCATE?
+<details><summary>Answer</summary>
+
+`DELETE` is a **row-by-row DML operation**: for each of the 10M rows, the engine (1) acquires a row-level lock, (2) writes the old row data to the **undo log** (for potential ROLLBACK), (3) writes the deletion to the **redo log** (for crash recovery), (4) fires any `ON DELETE` triggers, (5) updates all indexes that reference the row. 10M × 5 operations = extremely slow. `TRUNCATE` is a **DDL operation** — it doesn't delete rows individually. Instead, it **deallocates the data pages** (drops and recreates the table's data storage). It's like deleting a file vs. erasing every byte in the file. Key differences: (1) `TRUNCATE` resets `AUTO_INCREMENT` to 1; `DELETE` does not. (2) `TRUNCATE` does NOT fire `ON DELETE` triggers. (3) In MySQL, `TRUNCATE` is **not transactional** — you CANNOT ROLLBACK it. In PostgreSQL, `TRUNCATE` IS transactional (you can ROLLBACK). (4) `TRUNCATE` requires `DROP` privilege; `DELETE` requires `DELETE` privilege. **Production rule:** Use `DELETE` with `WHERE` for selective removal. Use `TRUNCATE` only for completely clearing staging/temp tables where you need speed and don't need rollback.
+</details>
+

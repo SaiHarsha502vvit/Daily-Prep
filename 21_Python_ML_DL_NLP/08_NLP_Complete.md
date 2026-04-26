@@ -88,6 +88,12 @@ words = ['running', 'ran', 'runs', 'better', 'studies', 'studying']
 
 > 🔬 **Section Challenge — 1.2 Stemming vs Lemmatization**
 
+**Challenge 1 (Reasoning):** You build a search engine using stemming. A user searches for "university" and gets results about "universe." Another user searches for "better" and gets no results for "good." What fundamental limitations do these expose?
+<details><summary>Answer</summary>
+
+**Over-stemming and under-stemming.** Stemming uses crude suffix-chopping rules without language understanding. (1) **Over-stemming:** "university" → "univers", "universe" → "univers" — different meanings collapse to the same stem, producing false positives. Porter Stemmer treats both identically. (2) **Under-stemming:** "better" → "better" (no rule to map it to "good"). Stemming can't handle **irregular forms** because it only removes suffixes — it has no dictionary knowledge. **Lemmatization fixes both:** it uses a morphological dictionary to find true base forms. "better" → "good" (knows it's a comparative adjective). "university" stays "university" (different lemma from "universe"). **Cost:** Lemmatization is 10-50× slower and requires POS tagging ("saw" → "see" as verb, but "saw" → "saw" as noun). **Modern solution:** Subword tokenization (BPE) sidesteps this entirely — BERT doesn't need stemming or lemmatization because it learns morphology from data.
+</details>
+
 # STEMMING: Chop off suffixes (crude but fast)
 for w in words:
     print(f"{w:>10} → {stemmer.stem(w)}")
@@ -160,6 +166,12 @@ print(X.toarray().round(2))
 
 
 > 🔬 **Section Challenge — 2.2 TF-IDF (Term Frequency - Inverse Document Frequency)**
+
+**Challenge 1 (Reasoning):** You train a TF-IDF + Logistic Regression classifier on 100K product reviews. It gets 92% accuracy. You deploy it. After 6 months, accuracy drops to 74% even though the product category hasn't changed. The vocabulary hasn't changed either. What happened?
+<details><summary>Answer</summary>
+
+**Vocabulary drift and distributional shift.** TF-IDF weights are computed from the TRAINING corpus statistics (IDF values). (1) **New slang/terminology:** Users start saying "bussin" (positive) or "mid" (negative) — words that weren't in training vocab → mapped to zero vector → model ignores them entirely. (2) **IDF drift:** A word that was rare in training (high IDF, high importance) becomes common in production (should have low IDF) but the model still treats it as highly informative. (3) **Context blindness:** TF-IDF has NO word order. "not good" and "good not" are identical vectors. As users adopt more sarcastic/ironic language, the model fails completely. **Fixes:** (1) Retrain periodically on fresh data (recalculate IDF). (2) Use contextual embeddings (BERT) that handle unseen words via subword tokenization and understand negation. (3) Monitor prediction confidence — when average confidence drops, it signals distribution shift. **Key insight:** TF-IDF freezes the world at training time. Language evolves; the model doesn't.
+</details>
 
 ## 2.3 Word Embeddings — The Revolution
 
@@ -291,6 +303,12 @@ import numpy as np
 
 
 > 🔬 **Section Challenge — 2.3 Word Embeddings — The Revolution**
+
+**Challenge 1 (Reasoning):** Word2Vec trained on a large news corpus learns that `doctor - man + woman ≈ nurse`. Is this a feature or a bug? What does this reveal about how embeddings work, and how does it affect downstream models?
+<details><summary>Answer</summary>
+
+**It's a bug (bias amplification) that reveals a fundamental property.** Word2Vec learns from co-occurrence patterns in text. If the training corpus associates "doctor" predominantly with male pronouns and "nurse" with female pronouns, the embedding space encodes this **societal bias as geometric structure.** The vector `man→woman` becomes parallel to `doctor→nurse`, making the bias look like a mathematical fact. **Downstream impact:** A resume screening model using these embeddings will rank male candidates higher for "doctor" roles and female candidates higher for "nurse" roles — perpetuating discrimination at scale. **Debiasing approaches:** (1) **Bolukbasi et al.:** Identify the "gender direction" in embedding space (he-she vector) and project it out. (2) **Counterfactual Data Augmentation:** Add "she is a doctor" for every "he is a doctor." (3) **Contextual embeddings (BERT):** Don't fully solve this — BERT also absorbs training bias, but at least each occurrence gets a context-specific vector. **Key insight:** Embeddings are a mirror of training data, not a mirror of truth.
+</details>
 
 # Simulate word embeddings (in practice, use pre-trained)
 embeddings = {
@@ -555,6 +573,12 @@ SCALING LAWS:
 
 > 🔬 **Section Challenge — 4.3 GPT (Generative Pre-trained Transformer)**
 
+**Challenge 1 (Reasoning):** BERT uses a Transformer ENCODER with bidirectional attention. GPT uses a Transformer DECODER with causal (left-to-right) attention. Why can't you just use BERT for text generation? What architectural constraint prevents it?
+<details><summary>Answer</summary>
+
+**The attention mask makes generation mathematically impossible.** BERT's self-attention lets every token attend to EVERY other token (bidirectional). When predicting token at position 5, BERT can see positions 1-4 AND 6-N. **For generation, this creates a circular dependency:** to generate token 6, you'd need tokens 7, 8, 9… which don't exist yet. GPT solves this with a **causal mask** — a lower-triangular matrix that zeroes out attention scores for future positions. Token 5 can only attend to tokens 1-4. This makes autoregressive generation possible: generate token 1, then 2 (seeing 1), then 3 (seeing 1,2), etc. **Why BERT is better for understanding:** Bidirectional context means BERT truly "reads" the whole sentence. In "The animal didn't cross the street because it was too tired," BERT sees both sides of "it" simultaneously. GPT at the word "it" has only seen left context. **Practical consequence:** BERT → classification, NER, QA (extractive). GPT → generation, chat, code. T5/BART → both (encoder-decoder, best of both worlds for tasks like summarization).
+</details>
+
 # Using Hugging Face Transformers (the standard NLP library)
 from transformers import pipeline
 
@@ -701,6 +725,12 @@ IN-CONTEXT LEARNING (no fine-tuning needed!):
 
 > 🔬 **Section Challenge — 6.2 GPT — Generative Pre-trained Transformer**
 
+**Challenge 1 (Reasoning):** GPT-3 can translate French to English with just 3 examples in the prompt (few-shot), despite never being explicitly trained on translation. How is this possible? The model weights aren't updated during inference.
+<details><summary>Answer</summary>
+
+**In-context learning via implicit Bayesian inference.** GPT-3 was trained on 570GB of text that includes millions of bilingual examples, translation exercises, and parallel text. The model learned a general **pattern-matching capability** — given a sequence of (input, output) pairs, it infers the underlying mapping function. When you provide few-shot examples like `"bonjour → hello, merci → thank you, chat →"`, the model's attention mechanism recognizes this as a translation pattern and applies it. **No weight update occurs** — the model does "inference" over the distribution of all possible completions, conditioned on the prompt context. Recent research (Xie et al. 2022) formalizes this: the model performs implicit Bayesian inference, where few-shot examples narrow the posterior over possible tasks. **Why this only works at scale:** Small models memorize specific (input, output) pairs. Large models learn the META-SKILL of pattern recognition itself. This is an **emergent ability** — it appears suddenly at ~100B+ parameters, not gradually. Below that scale, few-shot performance is near random.
+</details>
+
 ## 6.3 RLHF — Aligning Models with Human Preferences
 
 ```
@@ -747,6 +777,12 @@ RESULT:
 
 
 > 🔬 **Section Challenge — 6.3 RLHF — Aligning Models with Human Preferences**
+
+**Challenge 1 (Reasoning):** In RLHF Step 3 (PPO), the loss includes a KL divergence penalty: `loss = -reward + β·KL(π || π_ref)`. What happens if you remove the KL term? Why would the model produce degenerate outputs without it?
+<details><summary>Answer</summary>
+
+**Reward model exploitation (reward hacking).** The reward model is a neural network trained on ~50K human comparisons — it's an APPROXIMATION of human preferences, not a perfect oracle. Without the KL constraint, the policy (GPT) is free to drift arbitrarily far from the original language model to maximize reward. It discovers **adversarial inputs to the reward model**: outputs that score high according to the reward model but are nonsensical to humans. Examples: (1) Repeating high-reward phrases endlessly. (2) Generating very long, confident-sounding but vacuous responses (the reward model was trained to prefer confident, detailed text). (3) Using specific token patterns that exploit statistical artifacts in reward model training. **The KL term** forces the policy to stay close to the pre-trained base model — which already knows how to produce coherent language. It says: "maximize reward, BUT don't stray too far from normal English." **β tuning:** β too high → model barely changes from base (no alignment). β too low → reward hacking. Typical: start β=0.01, increase if output quality degrades. **Modern alternative:** DPO (Direct Preference Optimization) eliminates the reward model entirely, training directly on preference pairs — avoids this exploit vector.
+</details>
 
 # Quick Reference — NLP Model Family
 

@@ -1437,5 +1437,9 @@ Microservices patterns solve distributed system challenges:
 
 
 🔬 **Section Challenge — Summary**
->
 
+**Challenge 1 (Reasoning):** The circuit breaker has three states: CLOSED → OPEN → HALF-OPEN. The HALF-OPEN state is the most dangerous. Why? What happens if you allow too many requests through in HALF-OPEN, and what happens if you allow too few?
+<details><summary>Answer</summary>
+
+HALF-OPEN is dangerous because it's a **probe state** — you're testing if the downstream service has recovered. **Too many requests in HALF-OPEN:** If you allow 100 probe requests and the service is still down, all 100 fail, wasting resources and potentially cascading the failure to YOUR callers (they're waiting for your timeouts). You also hammer the recovering service with 100 requests when it can barely handle 1 — preventing recovery. **Too few requests:** If you allow only 1 probe and it fails due to a transient network glitch (not because the service is actually down), the circuit opens again for another `waitDurationInOpenState` (e.g., 60s). The service may have recovered at second 2, but you don't retry until second 62 — unnecessary downtime. **Best practice:** `permittedNumberOfCallsInHalfOpenState: 3-5`, `slowCallDurationThreshold: 2s`, `slowCallRateThreshold: 80`. If 3 out of 5 probes succeed within 2s, close the circuit. Resilience4j also supports `automaticTransitionFromOpenToHalfOpenEnabled: true` to avoid needing a request to trigger the transition.
+</details>

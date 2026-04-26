@@ -260,10 +260,10 @@ TIME_WAIT:
 
 🔬 **Section Challenge — TCP State Machine — The 11 States**
 
-**Challenge 1 (Reasoning):** A TCP connection is in TIME_WAIT state. What is it waiting for and why 2×MSL (Maximum Segment Lifetime)?
+**Challenge 1 (Reasoning):** Your production server shows thousands of CLOSE_WAIT sockets (not TIME_WAIT). What’s different about CLOSE_WAIT, and whose bug is it — the client's or the server's?
 <details><summary>Answer</summary>
 
-TIME_WAIT: the side that sent the last ACK waits before fully closing. Why 2×MSL (~60-120 seconds): (1) Ensure the final ACK reached the other side (if it was lost, the other side will retransmit FIN — we need to still be listening to send a new ACK). (2) Allow all old segments in the network to expire (segment with old sequence number arriving for a new connection could corrupt data). Fast servers on many short connections: TIME_WAIT exhaustion → `SO_REUSEADDR`, `tcp_time_wait_reuse`, or HTTP keep-alive.
+**CLOSE_WAIT = YOUR application’s bug.** It means the remote side sent FIN (they’re done), your TCP stack ACK’d it, but YOUR application hasn’t called `close()` yet. The socket is stuck waiting for your code to finish. Unlike TIME_WAIT (kernel-managed, self-resolving), CLOSE_WAIT persists until the application closes the socket or the process dies. **Common causes:** (1) Not closing sockets in error paths (missing `finally` block). (2) Leaked connections in a pool. (3) Blocking read that never returns (peer crashed after FIN). **Fix:** Add socket timeouts, ensure `close()` in finally blocks, monitor CLOSE_WAIT count in production dashboards. Thousands of CLOSE_WAIT = resource leak heading toward file descriptor exhaustion.
 </details>
 
 
@@ -283,35 +283,13 @@ netstat -an | grep TCP           # All platforms
 # Count connections by state (useful for diagnosing issues)
 ss -tan | awk '{print $1}' | sort | uniq -c | sort -rn
 #  245 ESTAB
-#   89 TIME-WAIT
-#   12 LISTEN
-#    3 FIN-WAIT-2
-#    1 SYN-SENT
+#   89 🔬 **Section Challenge — TCP Flow Control — Sliding Window**
 
-# If you see thousands of TIME-WAIT → connection pool problem!
-# If you see thousands of CLOSE-WAIT → your app isn't closing connections!
-```
+**Challenge 1 (Reasoning):** You have a 10 Gbps link with 50ms RTT. The default TCP window is 64 KB. Your file transfer only achieves 10 Mbps — 0.1% of link capacity. Why, and what fixes it?
+<details><summary>Answer</summary>
 
-## TCP Flow Control — Sliding Window
-
-```
-THE PROBLEM:
-  Sender can produce data faster than receiver can consume it.
-  If sender keeps blasting → receiver's buffer overflows → data lost.
-
-SOLUTION: SLIDING WINDOW PROTOCOL.
-  Receiver advertises: "My window size is 65535 bytes."
-  Meaning: "I can accept 65535 more bytes before you need to pause."
-  
-  As receiver processes data → window grows (more space available).
-  As sender sends data → window shrinks (less space available).
-  If window = 0 → sender STOPS (receiver is overwhelmed).
-
-VISUALIZATION:
-                                    Window (receiver can accept)
-  ┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┐
-  │ACK│ACK│ACK│SNT│SNT│SNT│RDY│RDY│RDY│RDY│NOT│NOT│
-  │'d │'d │'d │   │   │   │   │   │   │   │YET│YET│
+**Bandwidth-Delay Product (BDP) mismatch.** The sender can only have `window_size` bytes in flight. With 64 KB window: max throughput = 64 KB / 50ms = 1.28 MB/s ≈ 10 Mbps. The BDP of this link = 10 Gbps × 50ms = 62.5 MB. To fill the pipe, the window must be ≥62.5 MB. **Fix:** TCP Window Scaling option (RFC 7323). The 16-bit window field (max 64 KB) gets a shift count up to 14 → max window = 64 KB × 2^14 = 1 GB. Enabled by default in modern kernels. Also increase `net.core.rmem_max` and `net.core.wmem_max` to allow larger buffers. **Key insight:** TCP flow control (receiver window) limits throughput on high-BDP links. The sliding window must be at least BDP-sized to achieve full utilization.
+</details>�   │YET│YET│
   └───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┘
   ← confirmed →← in flight →← can send  →← blocked→←─ not available ─→
   
@@ -338,16 +316,10 @@ WINDOW SCALING:
 
 🔬 **Section Challenge — TCP Flow Control — Sliding Window**
 
-**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+**Challenge 1 (Reasoning):** You have a 10 Gbps link with 50ms RTT. The default TCP window is 64 KB. Your file transfer only achieves 10 Mbps. Why, and what fixes it?
 <details><summary>Answer</summary>
 
-Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
-</details>
-
-**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
-<details><summary>Answer</summary>
-
-Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+**Bandwidth-Delay Product (BDP) mismatch.** The sender can only have `window_size` bytes in flight. With 64 KB window: max throughput = 64 KB / 50ms = 1.28 MB/s. The BDP = 10 Gbps x 50ms = 62.5 MB. To fill the pipe, the window must be at least 62.5 MB. **Fix:** TCP Window Scaling option (RFC 7323). The 16-bit window field (max 64 KB) gets a shift count up to 14, giving max window = 1 GB. Also increase `net.core.rmem_max` and `net.core.wmem_max`. **Key insight:** TCP flow control (receiver window) limits throughput on high-BDP links. The sliding window must be BDP-sized for full utilization.
 </details>
 
 
@@ -430,10 +402,10 @@ MODERN ALGORITHMS:
 
 🔬 **Section Challenge — TCP Congestion Control — Don't Crash the Internet**
 
-**Challenge 1 (Reasoning):** A TCP connection is in TIME_WAIT state. What is it waiting for and why 2×MSL (Maximum Segment Lifetime)?
+**Challenge 1 (Reasoning):** TCP CUBIC (default in Linux) detects congestion by packet loss. TCP BBR (Google) estimates bandwidth and RTT instead. Why does BBR perform dramatically better on lossy networks like WiFi and mobile?
 <details><summary>Answer</summary>
 
-TIME_WAIT: the side that sent the last ACK waits before fully closing. Why 2×MSL (~60-120 seconds): (1) Ensure the final ACK reached the other side (if it was lost, the other side will retransmit FIN — we need to still be listening to send a new ACK). (2) Allow all old segments in the network to expire (segment with old sequence number arriving for a new connection could corrupt data). Fast servers on many short connections: TIME_WAIT exhaustion → `SO_REUSEADDR`, `tcp_time_wait_reuse`, or HTTP keep-alive.
+**CUBIC treats ALL packet loss as congestion.** On WiFi, packets are frequently lost due to interference, signal fading, and collisions — NOT router queue overflow. CUBIC halves its window on each loss → on a 1% loss WiFi link, cwnd stays permanently small → terrible throughput. **BBR's approach:** It continuously estimates (1) bottleneck bandwidth (max delivery rate) and (2) minimum RTT (propagation delay). It sets cwnd = bandwidth × min_RTT. Random wireless losses don't change bandwidth or RTT estimates → BBR maintains high throughput. **Tradeoff:** BBR can be unfair to CUBIC flows sharing the same link (BBR is more aggressive). BBRv2 addresses this with improved fairness. **Production impact:** Google reported 4% throughput improvement globally and 14% in developing regions (higher loss rates) after deploying BBR on YouTube.
 </details>
 
 

@@ -81,7 +81,13 @@ REFERENCE COUNTING & GARBAGE COLLECTION:
 
 
 🔬 **Section Challenge — 1.2 Data Types Deep Dive**
->
+
+**Challenge 1 (Reasoning):** `a = 256; b = 256; print(a is b)` → True. `a = 257; b = 257; print(a is b)` → False. But in a .py script file, `a = 257; b = 257; print(a is b)` → True! Why does the behavior differ between the REPL and a script?
+<details><summary>Answer</summary>
+
+CPython caches integers -5 to 256 in a pre-allocated array ("small integer cache"). Any variable assigned a value in this range points to the SAME object → `is` returns True. For 257+ in the REPL, each line is compiled separately, so `a = 257` and `b = 257` create two distinct int objects. In a .py script, the entire file is compiled as ONE code block — the compiler sees both `257` literals, deduplicates them into a single constant in the code object's `co_consts` tuple, and both variables point to it. **Key insight:** `is` checks **identity** (same object in memory), `==` checks **equality** (same value). NEVER use `is` for value comparison except with `None`, `True`, `False` (which are singletons). This is Python interview question #1.
+</details>
+
 
 # ═══════════════════════════════════════════
 # NUMBERS
@@ -264,11 +270,11 @@ print(sum(gen))    # Works! Processes one at a time.
 
 
 🔬 **Section Challenge — 3.1 Functions are Objects**
->
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
+**Challenge 1 (Reasoning):** In Python, `def greet(): ...` creates a function OBJECT. What is the type of `greet`? Can you add attributes to it like `greet.call_count = 0`? If so, where are these stored, and why can't you do this in Java?
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+`type(greet)` is `<class 'function'>`. Yes, you can add arbitrary attributes: `greet.call_count = 0` works because Python functions are objects with a `__dict__` attribute (just like any other object). These attributes are stored in the function's `__dict__`. Java methods are NOT objects — they're entries in the class's method table. You can't add attributes to a method at runtime because Java's type system is static and closed. Python's "everything is an object" philosophy means functions have: `__name__`, `__doc__`, `__defaults__`, `__code__`, `__closure__`, `__annotations__`, AND `__dict__` for custom attributes. This is what makes decorators, Flask's route registration, and pytest's marker system possible — they all attach metadata to function objects.
 </details>
 
 
@@ -351,10 +357,10 @@ train_model(10)  # "train_model took 0.5234s"
 
 🔬 **Section Challenge — 3.3 Closures & Lambda**
 
-**Challenge 1 (Reasoning):** A lambda captures a local variable. Why must the variable be effectively final?
+**Challenge 1 (Reasoning):** `funcs = [lambda: i for i in range(5)]` — calling `funcs[0]()`, `funcs[1]()`, `funcs[2]()` all return `4`. Why? How do you fix it?
 <details><summary>Answer</summary>
 
-Lambdas are closures — they capture the variable's VALUE at creation time (not a reference to the stack slot, which would be dangerous as the stack frame may be gone). If the variable could change after capture, the lambda would see a stale value. Java enforces 'effectively final' (never reassigned) to make the semantics predictable. Workaround: use an array `int[] counter = {0};` (the array reference is final, its contents can change — though this is not thread-safe).
+Python closures capture **variables by reference, not by value**. All 5 lambdas share the SAME variable `i`. By the time you call any of them, the loop has finished and `i = 4`. This is Python's **late-binding closure** behavior — the value of `i` is looked up at CALL time, not at DEFINITION time. **Fix 1 (default argument trick):** `funcs = [lambda i=i: i for i in range(5)]` — default arguments are evaluated at function DEFINITION time, so each lambda captures the current value. **Fix 2 (functools.partial):** `funcs = [functools.partial(lambda x: x, i) for i in range(5)]`. This is fundamentally different from Java, where lambdas DO capture values (effectively final). Python's late-binding is a design choice that enables more dynamic patterns but creates this specific gotcha. This is the #1 Python closure interview trap.
 </details>
 
 

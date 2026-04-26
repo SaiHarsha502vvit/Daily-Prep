@@ -364,3 +364,9 @@ DROP INDEX IF EXISTS idx_emp_lastname;      -- PostgreSQL
 
 > 🔬 **Section Challenge — Chapter 3: DDL - Creating Database Structure**
 
+**Challenge 1 (Reasoning):** You run `ALTER TABLE users ADD COLUMN middle_name VARCHAR(50)` on a production MySQL 5.7 table with 50 million rows. The entire application becomes unresponsive for 12 minutes. What happened internally, and how do tools like `pt-online-schema-change` (Percona) or `gh-ost` (GitHub) solve this?
+<details><summary>Answer</summary>
+
+In MySQL 5.7 (InnoDB), many `ALTER TABLE` operations perform a **table rebuild**: (1) Create a new empty table with the modified schema, (2) Copy ALL 50M rows from old to new table, (3) Swap the tables atomically, (4) Drop the old table. During step 2, the table holds a **metadata lock** that blocks ALL concurrent DML (INSERT/UPDATE/DELETE). 50M rows at ~100K rows/sec = ~8-12 minutes of total lockout. MySQL 8.0+ added `ALGORITHM=INSTANT` for some operations (adding columns at the end), which modifies only metadata — no data copy, near-zero downtime. For operations that still require a copy, `pt-online-schema-change` works by: (1) Creating a new table with the desired schema, (2) Creating triggers on the old table to capture ongoing DML, (3) Copying rows in small batches (e.g., 1000 at a time) with sleep intervals between batches, (4) Replaying triggered changes, (5) Atomically renaming tables. This allows normal operations to continue during the migration. `gh-ost` is trigger-less — it reads changes from the MySQL binlog instead, avoiding trigger overhead.
+</details>
+

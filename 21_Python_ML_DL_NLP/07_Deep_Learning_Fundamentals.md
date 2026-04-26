@@ -121,11 +121,11 @@ def softmax(z):
 
 
 🔬 **Section Challenge — 1.2 Activation Functions**
->
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
+**Challenge 1 (Reasoning):** A network with 100 ReLU hidden neurons trains normally. After 1000 epochs, you check and find 40 neurons output EXACTLY 0 for every input in the dataset. What happened, and why doesn't this happen with Leaky ReLU?
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+**Dying ReLU problem.** ReLU(z) = max(0, z). If a neuron's weights shift such that `z = w·x + b < 0` for ALL training inputs, its output is permanently 0 and its gradient is also 0. Zero gradient → no weight update → the neuron is "dead" forever. This typically happens when: (1) Learning rate is too high → weights get a large negative update. (2) Poor initialization pushes biases very negative. **Leaky ReLU fix:** `f(z) = max(0.01z, z)`. For z < 0, the output is 0.01z (not 0), so the gradient is 0.01 (not 0). The neuron can still learn and "come back to life." **Other fixes:** (1) PReLU: learns the leak coefficient as a parameter. (2) ELU: `exp(z)-1` for z<0 (smooth, zero-centered). (3) GELU (used in Transformers): smooth approximation that weights inputs by their probability under a Gaussian. **Why 40% died:** It's a cascade — once some neurons die, the remaining ones must compensate, leading to larger gradients that kill more neurons.
 </details>
 
 
@@ -196,11 +196,11 @@ MULTI-CLASS CLASSIFICATION:
 
 
 🔬 **Section Challenge — 2.2 Loss Functions**
->
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
+**Challenge 1 (Reasoning):** For binary classification, why is Cross-Entropy loss used instead of MSE? Both penalize wrong predictions. What makes MSE specifically BAD with sigmoid outputs?
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+**Gradient saturation.** MSE loss with sigmoid: `L = (y - σ(z))²`. The gradient is `∂L/∂z = 2(y-σ(z)) · σ'(z)`. Sigmoid's derivative `σ'(z)` has maximum value 0.25 (at z=0) and approaches 0 for large |z|. When the model is CONFIDENTLY WRONG (z is very negative but y=1), σ(z) ≈ 0 and σ'(z) ≈ 0 → gradient ≈ 0 → the model can't learn to correct its worst mistakes! **Cross-entropy fix:** `L = -y·log(σ(z))`. The gradient simplifies to `∂L/∂z = σ(z) - y`. When confidently wrong: σ(z) ≈ 0, y=1 → gradient = -1 (large!). The loss function SCREAMS when the model is confidently wrong, producing a large gradient for fast correction. Also, cross-entropy creates a CONVEX loss surface with sigmoid (guaranteed global minimum), while MSE creates a non-convex surface with multiple local minima. **Key insight:** The choice of loss function determines the gradient landscape, not just the error measurement.
 </details>
 
 
@@ -248,7 +248,12 @@ THE VANISHING GRADIENT PROBLEM:
 
 
 🔬 **Section Challenge — 2.3 Backpropagation — How Networks Learn**
->
+
+**Challenge 1 (Reasoning):** In a 50-layer network with sigmoid activations, the gradient at layer 1 is 0.25⁵⁰ ≈ 10⁻³⁰. With ReLU, the gradient is either 1⁵⁰ = 1 or 0⁵⁰ = 0. ResNet adds skip connections. How do skip connections solve BOTH vanishing AND exploding gradients simultaneously?
+<details><summary>Answer</summary>
+
+**ResNet's residual block:** `output = F(x) + x`. During backprop, the gradient flows through TWO paths: (1) Through F(x) — the learned transformation (may vanish). (2) Through x — the identity shortcut (gradient = 1, always). The total gradient is: `∂L/∂x = ∂L/∂output · (∂F/∂x + 1)`. The `+1` ensures the gradient is at LEAST 1·∂L/∂output, even if ∂F/∂x vanishes. **Why it doesn't explode:** The `+1` is additive, not multiplicative. Without skip connections: gradient = product of all layer gradients (exponential growth/decay). With skip connections: gradient = SUM of paths through different numbers of layers. Sums don't explode the way products do. **Why F(x) learns RESIDUALS:** If the optimal transformation is close to identity, learning F(x) = 0 (do nothing) is easy. Without skip connections, learning the identity function requires W = I perfectly — hard to optimize. ResNet makes "do nothing" the easy default. This is why 152 layers work but 50 layers without skip connections don't.
+</details>
 
 # Neural Network from SCRATCH (no PyTorch/TF)
 import numpy as np
@@ -589,10 +594,10 @@ ADAMW (Adam with Decoupled Weight Decay):
 
 🔬 **Section Challenge — 6.1 Gradient Descent Variants**
 
-**Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
+**Challenge 1 (Reasoning):** Modern Transformer training uses "warmup + cosine decay" for learning rate scheduling. Why do we INCREASE the learning rate at the start (warmup) when the model has random weights and high loss? Shouldn't we start slow?
 <details><summary>Answer</summary>
 
-Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
+**Counterintuitive but mathematically justified.** At step 0, weights are random → Adam's `v_t` (second moment / gradient variance estimate) is initialized to 0. With no history, Adam has NO information about the scale of gradients for each parameter. If you use a large LR immediately, Adam divides by `√(v̂_t) ≈ 0` → enormous effective step → NaN. **Warmup gives Adam time to calibrate.** During warmup (small LR, 5-10% of training): gradients are large but steps are small; `v_t` accumulates enough history to produce reliable variance estimates. After warmup, Adam has accurate per-parameter scaling → safe to use full LR. **Cosine decay rationale:** Early training needs large LR (coarse search for good region). Late training needs small LR (fine-tune within the good region). Cosine is smooth (no discontinuities like step decay), which prevents loss spikes. **Practical:** Without warmup, Transformer training often diverges in the first 100 steps. With warmup, the same hyperparameters converge stably.
 </details>
 
 

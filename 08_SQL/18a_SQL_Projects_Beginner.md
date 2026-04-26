@@ -484,10 +484,10 @@ You're a data analyst at an e-commerce company. The CEO wants a dashboard showin
 
 🔬 **Section Challenge — 🏢 Business Context**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Reasoning):** The conversion funnel query uses `MAX(CASE WHEN page_type = 'cart' THEN 1 ELSE 0 END)` per session. Why not `COUNT(CASE WHEN page_type = 'cart' ...)` instead? When would the results differ?
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+`MAX(CASE...)` produces 0 or 1 — "did this session visit cart at all?" (boolean per session). `COUNT(CASE...)` counts *how many cart page views* per session. If a user visits the cart 5 times in one session, MAX gives 1, COUNT gives 5. For funnel analysis, you want MAX because you're asking "what fraction of sessions reached this stage" — counting page views would inflate the numbers. This is the difference between **session-level** (MAX) and **event-level** (COUNT) aggregation — a critical distinction in analytics queries.
 </details>
 
 
@@ -869,10 +869,10 @@ You're analyzing HR data to help with:
 
 🔬 **Section Challenge — 🏢 Business Context**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Reasoning):** The salary benchmarking query uses `NTILE(4) OVER (PARTITION BY department ORDER BY salary)` to assign quartiles. Why can NTILE give misleading results when departments have very few employees (e.g., 3 people in 4 quartiles)?
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+`NTILE(4)` divides rows into *exactly* 4 buckets as evenly as possible. With 3 employees, you get buckets of size 1, 1, 1, 0 — one quartile is empty, and the "top 25%" is just 1 person. This makes percentile comparisons meaningless for small groups. **Fix**: use `PERCENT_RANK()` or `CUME_DIST()` instead, which compute actual percentile positions regardless of group size. Alternatively, only compute quartiles for departments with ≥ 20 employees (statistical minimum for meaningful distribution analysis). This is why real HR analytics platforms use `PERCENT_RANK` for salary benchmarking, not `NTILE`.
 </details>
 
 
@@ -1052,10 +1052,10 @@ You're analyzing financial transactions for:
 
 🔬 **Section Challenge — 🏢 Business Context**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Reasoning):** For fraud detection, you flag transactions where a customer's spending is > 3 standard deviations above their average. Why is this approach dangerous with `AVG()` and `STDDEV()` window functions on raw transaction data?
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+The fraudulent transactions themselves are *included* in the AVG and STDDEV calculation, inflating both values. A single $10,000 fraud on an account with typical $50 transactions raises the average and standard deviation, making the fraud appear *less* anomalous than it actually is. **Fix**: use a *rolling* window that excludes the current row: `AVG(amount) OVER (PARTITION BY customer_id ORDER BY txn_date ROWS BETWEEN 90 PRECEDING AND 1 PRECEDING)` — this computes the baseline from historical data only. Alternatively, use `MEDIAN` (via `PERCENTILE_CONT(0.5)`) which is robust to outliers, unlike `AVG`.
 </details>
 
 

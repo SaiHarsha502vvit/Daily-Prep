@@ -1273,3 +1273,9 @@ _Stage 2 Complete! Ready for Stage 3: Full-Stack Development Complete Guide_
 
 > 🔬 **Section Challenge — 🔬 Cloud Deep Internals - How Cloud Services ACTUALLY Work**
 
+**Challenge 1 (Reasoning):** The Cloud Internals section shows VPCs with public and private subnets. In a multi-account AWS setup with 15 microservices each in their own VPC, you need them all to communicate. VPC Peering requires N×(N-1)/2 = 105 peering connections. What is the architectural alternative, and why does AWS charge differently for it?
+<details><summary>Answer</summary>
+
+The alternative is **AWS Transit Gateway** — a regional network hub that acts as a central router. Instead of 105 peer-to-peer connections, each VPC creates ONE attachment to the Transit Gateway (15 attachments total). Transit Gateway routes traffic between all attached VPCs using route tables. **Why AWS charges differently:** VPC Peering has **no hourly charge** — you only pay for data transfer ($0.01/GB cross-AZ). AWS can offer this for free because peering is a simple L3 routing rule injected into the VPC's route table — no additional infrastructure. Transit Gateway charges **$0.05/hour per attachment** (~$36/month per VPC) PLUS $0.02/GB data processed, because it runs dedicated network appliances (ENIs in each AZ) that inspect and route every packet. **When to use which:** Peering for 2-5 VPCs with simple hub-and-spoke. Transit Gateway for 5+ VPCs, transitive routing needs, centralized network policies, or on-premises connectivity via VPN/Direct Connect. **Key insight:** This is a classic "mesh vs hub" networking problem — the same reason the internet uses BGP routers instead of direct peering between every ISP.
+</details>
+

@@ -255,10 +255,10 @@ EXAMPLE:
 
 🔬 **Section Challenge — 2.2 Partial Derivatives & Gradients**
 
-**Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
+**Challenge 1 (Reasoning):** The gradient ∇L points in the direction of steepest ASCENT. Why does moving in the direction of −∇L guarantee we decrease the loss (at least locally), and when does this guarantee BREAK?
 <details><summary>Answer</summary>
 
-Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
+By definition, the gradient is the direction of maximum rate of increase. Moving by a small step ε in the direction −∇L gives: L(w − ε∇L) ≈ L(w) − ε‖∇L‖² (first-order Taylor expansion). Since ‖∇L‖² is always ≥ 0, the loss decreases. The guarantee BREAKS when: (1) The step ε is too large — the first-order approximation is invalid and we overshoot (this is the learning rate problem). (2) The loss surface has high curvature — the gradient direction is misleading because the surface curves sharply. This is why second-order methods (Newton's method, which uses the Hessian matrix) converge faster but are computationally expensive (Hessian is O(n²) to store for n parameters). (3) At saddle points, the gradient is zero but we're not at a minimum — momentum helps escape by accumulating velocity from previous steps.
 </details>
 
 
@@ -551,10 +551,10 @@ ADAM (Adaptive Moment Estimation) ← MOST POPULAR:
 
 🔬 **Section Challenge — 4.2 Optimizers — Advanced Gradient Descent**
 
-**Challenge 1 (Reasoning):** Learning rate too high vs too low — what exactly goes wrong in each case?
+**Challenge 1 (Reasoning):** Adam has "bias correction" terms: `m̂ = m/(1−β₁ᵗ)` and `v̂ = v/(1−β₂ᵗ)`. What happens if you skip bias correction? Why is it only needed in early training steps?
 <details><summary>Answer</summary>
 
-Too HIGH: overshoot the minimum, oscillate or diverge. Loss increases instead of decreasing. Extreme: NaN loss (floating point overflow). Too LOW: convergence is extremely slow. May get stuck in local minima (can't jump over small bumps). Training takes 10-100x longer. Solution: learning rate scheduling — start higher, decay over time (cosine annealing, step decay). Adam optimizer: adaptive per-parameter learning rates — less sensitive to initial LR choice.
+Both `m` and `v` are initialized to zero. In early steps: `m₁ = 0.9×0 + 0.1×g₁ = 0.1g₁` — the momentum estimate is only 10% of the true gradient. Without correction, the effective learning rate is 10x too small in step 1, gradually approaching normal as `m` accumulates history. The correction `m̂ = m₁/(1−0.9¹) = 0.1g₁/0.1 = g₁` recovers the true scale. By step 100, `1−β₁¹⁰⁰ = 1−0.9¹⁰⁰ ≈ 1.0`, so the correction becomes negligible. Same logic for `v` with β₂=0.999 (needs ~1000 steps to warm up). **Practical impact:** Without correction, the first ~50 training steps use an effectively tiny learning rate, wasting compute on nearly-zero updates. With correction, training starts at full speed from step 1.
 </details>
 
 
@@ -640,10 +640,10 @@ DROPOUT (Neural Networks):
 
 🔬 **Section Challenge — 4.3 Regularization — Preventing Overfitting**
 
-**Challenge 1 (Reasoning):** Training accuracy 99%, validation accuracy 70%. What exactly is overfitting and what are 5 ways to fix it?
+**Challenge 1 (Reasoning):** L1 (Lasso) drives weights to EXACTLY zero, but L2 (Ridge) only shrinks them TOWARD zero. Both penalize large weights. Why does L1 produce exact zeros while L2 doesn't?
 <details><summary>Answer</summary>
 
-Overfitting: model memorized training data including noise — it doesn't generalize. Fixes: (1) More training data (more examples → harder to memorize). (2) Dropout — randomly zero neurons during training (prevents co-adaptation). (3) L1/L2 regularization — penalize large weights in loss function. (4) Reduce model complexity (fewer layers/parameters). (5) Early stopping — stop training when validation loss stops improving. (6) Data augmentation — create variant training examples.
+**Geometric explanation:** L1's constraint region is a diamond (|w₁| + |w₂| ≤ c). L2's is a circle (w₁² + w₂² ≤ c). The loss contours (ellipses centered at the optimal unconstrained point) will first touch the constraint boundary at a corner of the diamond (L1) — corners lie on the axes, meaning at least one weight = 0. The circle (L2) has no corners, so the tangent point is almost never on an axis. **Gradient explanation:** L1's gradient is `λ·sign(w)` — a constant push toward zero regardless of magnitude. Even a tiny weight gets the same push. L2's gradient is `2λ·w` — the push shrinks proportionally to the weight's magnitude. As w approaches 0, the L2 penalty push also approaches 0, so the weight never actually reaches zero. **When to use:** L1 when you believe many features are irrelevant (feature selection). L2 when all features matter but you want to prevent any single feature from dominating. ElasticNet combines both.
 </details>
 
 

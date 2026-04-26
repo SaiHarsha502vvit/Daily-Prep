@@ -230,11 +230,11 @@ loaded = keras.models.load_model('model.keras')
 
 
 🔬 **Section Challenge — 2.2 Functional API (complex architectures)**
->
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+
+**Challenge 1 (Design):** You want to add a ResNet-style skip connection in Keras. Why can't you use `keras.Sequential()` for this? What structural limitation does it have?
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+**Sequential is a linear chain — it has no branch points.** `Sequential([A, B, C])` computes `C(B(A(x)))` — each layer's output feeds into exactly one next layer. A skip connection requires `output = C(B(A(x))) + A(x)` — the output of layer A must be routed to TWO destinations (B and the Add layer). This is a **directed acyclic graph (DAG)**, not a chain. The **Functional API** models computation as a DAG: `x = Input(...)`, `a = LayerA(x)`, `b = LayerB(a)`, `c = LayerC(b)`, `out = Add()([c, a])`. Each tensor is an explicit node; layers are edges. **When to use each:** Sequential → simple stacks (90% of prototyping). Functional → multi-input/multi-output models, shared layers, skip connections. Subclassing (`class MyModel(keras.Model)`) → dynamic architectures where the forward pass has Python control flow (if/else based on input).
 </details>
 
 
@@ -301,21 +301,10 @@ TensorFlow/Keras:
 
 🔬 **Section Challenge — 4.1 Custom Autograd Functions**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
+**Challenge 1 (Reasoning):** You implement a custom autograd function with `forward` and `backward`. During backward, you compute `grad_input = grad_output / x`. Training works fine until epoch 50 when loss suddenly becomes NaN. What happened?
 <details><summary>Answer</summary>
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+**Division by zero in the gradient computation.** If any element of `x` reaches exactly 0 during training (which happens naturally as weights update), `grad_output / x` → infinity → NaN propagates through the entire network. This is a **numerical stability** issue, not a mathematical error. **Fix:** Add epsilon: `grad_input = grad_output / (x + 1e-8)`. **Why PyTorch's built-in functions don't have this problem:** Functions like `torch.log` and `torch.sqrt` have carefully crafted backward implementations with numerical guards. When you write custom autograd, YOU are responsible for stability. **Debugging NaN:** (1) `torch.autograd.set_detect_anomaly(True)` — PyTorch will tell you WHICH operation produced the first NaN. (2) Check for division by zero, log of zero, sqrt of negative in your backward pass. (3) Use gradient clipping: `torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)` as a safety net.
 </details>
 
 
@@ -355,10 +344,10 @@ print(x.grad)  # tensor([0., 1., 0.])
 
 🔬 **Section Challenge — 4.2 DataLoaders & Datasets Deep Dive**
 
-**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+**Challenge 1 (Reasoning):** You set `num_workers=8` in your DataLoader. Training is 4× faster on Linux but hangs/crashes on Windows. On Linux, increasing to `num_workers=16` makes training SLOWER. Explain both phenomena.
 <details><summary>Answer</summary>
 
-Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+**Windows crash:** PyTorch DataLoader uses `multiprocessing` to spawn worker processes. On Linux, `fork()` is used — child processes share the parent's memory space (copy-on-write, very fast). On Windows, there is no `fork()` — Python uses `spawn`, which creates a NEW interpreter and re-imports all modules. If your Dataset class uses non-picklable objects (database connections, file handles), pickling fails → crash. **Fix:** Wrap training code in `if __name__ == '__main__':` on Windows (required for spawn). (2) **16 workers slower:** Diminishing returns from CPU-GPU bottleneck. With 8 workers, the CPU can prepare batches faster than the GPU processes them (GPU is the bottleneck — good). With 16 workers, excessive context switching + memory overhead for 16 processes + shared memory bus contention makes the CPU spend more time managing workers than loading data. Also, `pin_memory=True` allocates page-locked RAM per worker — 16 workers × 32 batch × tensor size can exhaust RAM. **Rule of thumb:** `num_workers = min(num_cpu_cores, 4 × num_gpus)`.
 </details>
 
 
@@ -476,7 +465,12 @@ dataset = (dataset
 
 
 🔬 **Section Challenge — 5.2 tf.function (Graph Execution)**
->>
+
+**Challenge 1 (Reasoning):** You decorate a function with `@tf.function`. Inside, you have `if x.shape[0] > 32: ...`. The first call works with batch_size=64. The second call with batch_size=16 ALSO enters the `if` branch, even though 16 < 32. Why?
+<details><summary>Answer</summary>
+
+**Tracing vs execution semantics.** `@tf.function` traces the Python function ONCE and compiles it into a static TensorFlow graph. During tracing, Python `if` statements are evaluated using the TRACE-TIME values. When you first call with batch_size=64, `x.shape[0] > 32` is True during tracing → the `if` branch is baked into the graph permanently. Subsequent calls reuse the same compiled graph — the `if` is never re-evaluated. **Fix:** Use `tf.cond(tf.shape(x)[0] > 32, true_fn, false_fn)` — this creates a GRAPH-LEVEL conditional that evaluates at runtime. **General rule:** Inside `@tf.function`: Python control flow (if/for/while) → executed at TRACE TIME only. TF control flow (`tf.cond`, `tf.while_loop`) → executed at RUN TIME. **When retracing occurs:** TF automatically retraces when input SIGNATURE changes (different dtype or rank), but NOT for different values of the same shape. Use `input_signature` parameter to control retracing behavior explicitly.
+</details>
 
 # TF2 executes eagerly (like PyTorch) by default for debugging.
 # But for production speed, you compile Python to a static C++ Graph.
@@ -536,7 +530,12 @@ print("Positive" if predicted_class == 1 else "Negative")
 
 
 🔬 **Section Challenge — 6.2 ONNX (Open Neural Network Exchange)**
->
+
+**Challenge 1 (Reasoning):** `torch.onnx.export()` requires you to pass a `dummy_input` tensor. Why can't ONNX just export the model architecture directly from `model.parameters()` and the class definition? What breaks if your model has `if x.mean() > 0.5:` inside `forward()`?
+<details><summary>Answer</summary>
+
+**PyTorch uses tracing-based export.** It doesn't parse your Python code — it RUNS the forward pass with the dummy input and records every tensor operation into a static graph. `model.parameters()` only stores weights, not the computational graph (PyTorch builds graphs dynamically). **The `if` branch problem:** During tracing, only ONE branch executes (whichever the dummy input triggers). The other branch is permanently missing from the ONNX graph. For input where `x.mean() <= 0.5`, the exported model computes the wrong result silently. **Fix:** Use `torch.jit.script()` instead of `torch.jit.trace()` — scripting analyzes Python AST and preserves all control flow. Or refactor: replace Python `if` with `torch.where(condition, true_val, false_val)` which is a single traced operation. **Key insight:** ONNX is a STATIC graph format. PyTorch's power (dynamic graphs) is exactly what makes export tricky.
+</details>
 
 # How do you train in PyTorch but deploy without a heavy Python runtime? ONNX.
 # ONNX is a universal format for ML models (supported by MS, Meta, AWS, etc.)

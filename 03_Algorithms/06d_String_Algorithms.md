@@ -592,6 +592,12 @@ public class SuffixArray {
 
 > 🔬 **Section Challenge — PART 13: String Algorithms Deep Dive**
 
+**Challenge 1 (Reasoning):** In Manacher's algorithm, when `i < R`, we set `P[i] = Math.min(R - i, P[mirror])`. Why do we take the *minimum* of these two values instead of just `P[mirror]`?
+<details><summary>Answer</summary>
+
+The mirror palindrome `P[mirror]` might extend *beyond* the left boundary of the current known palindrome centered at `C`. If `mirror - P[mirror] < L` (where L = 2*C - R), the mirror's palindrome reaches past what our current center `C` can guarantee. Beyond the boundary `R`, we have no information — the characters are unverified. So `R - i` caps how much we can "trust" from the mirror. After this initialization, we still try to expand outward, character by character. This is why Manacher's is O(N): the cap ensures each character is compared at most once across all expansions.
+</details>
+
 ## PART 15: Competitive Programming Tricks
 
 ### Fast I/O
@@ -806,6 +812,12 @@ public class BitTricks {
 ---
 
 > 🔬 **Section Challenge — PART 15: Competitive Programming Tricks**
+
+**Challenge 1 (Reasoning):** `modInverse(a, mod)` uses `power(a, mod - 2, mod)` (Fermat's little theorem). This only works when `mod` is prime. What happens if you call `modInverse(6, 12)` and why? What's the alternative for non-prime moduli?
+<details><summary>Answer</summary>
+
+Fermat's little theorem states `a^(p-1) ≡ 1 (mod p)` only when p is prime and `gcd(a, p) = 1`. For `modInverse(6, 12)`: `gcd(6, 12) = 6 ≠ 1`, so 6 has **no** multiplicative inverse mod 12. The function silently returns a wrong value. For non-prime moduli, use the **Extended Euclidean Algorithm**: compute `gcd(a, mod)` and if it equals 1, extract the inverse from the Bézout coefficients. If `gcd(a, mod) ≠ 1`, no inverse exists. In competitive programming, the modulus is almost always `10^9 + 7` (prime), so Fermat's is standard — but knowing *why* it fails for composites separates understanding from memorization.
+</details>
 
 ## PART 16: Algorithm Complexity Analysis Deep Dive
 
@@ -1209,3 +1221,8 @@ public class FenwickTree {
 
 > 🔬 **Section Challenge — PART 18: Essential Templates for Competitive Programming**
 
+**Challenge 1 (Reasoning):** The `FastIO` template uses `BufferedReader + StringTokenizer` instead of `Scanner`. In a problem reading 10^6 integers, `Scanner` TLEs but `BufferedReader` doesn't. Where exactly does `Scanner` waste time?
+<details><summary>Answer</summary>
+
+`Scanner.nextInt()` internally: (1) compiles a regex pattern for integer matching, (2) reads character-by-character through its internal buffer (1024 bytes default), (3) applies locale-aware parsing, (4) does regex matching on the token. `BufferedReader.readLine()` reads in 8192-byte chunks (8× larger buffer), `StringTokenizer` splits by whitespace with zero regex, and `Integer.parseInt()` is a tight loop of digit multiplication. For 10^6 integers, Scanner does ~10^6 regex compilations + tiny buffer I/O calls. BufferedReader does ~500 read syscalls + zero regex. The difference is ~10×. **Key insight**: Scanner is *convenience*, not *performance*. In contests, always use the BufferedReader template.
+</details>

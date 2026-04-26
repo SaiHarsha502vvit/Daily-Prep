@@ -21,7 +21,12 @@
 
 
 🔬 **Section Challenge — Part 1: Why TypeScript with React?**
->
+
+**Challenge 1 (Reasoning):** TypeScript uses **structural typing** ("duck typing"), not nominal typing like Java. If two interfaces have the same shape but different names, TypeScript considers them compatible. Why is this a feature for React, and when does it cause problems?
+<details><summary>Answer</summary>
+
+Structural typing is a feature for React because components don't care about type NAMES — they care about SHAPE. If `UserCard` expects `{ name: string, age: number }`, you can pass ANY object with those fields, even if it came from a completely different interface. This enables seamless composition: a `UserFromAPI` type and a `UserFromForm` type both work as props without explicit casting or adapter patterns. **Problem:** It can cause false compatibility. If `CartItem` has `{ id: string, name: string, quantity: number }` and `Product` has `{ id: string, name: string, quantity: number }`, TypeScript treats them as identical — you could accidentally pass a `Product` where a `CartItem` is expected. Fix: use **branded types** (`type CartItemId = string & { __brand: 'CartItem' }`) to make structurally identical types nominally distinct.
+</details>
 
 ## Part 2: Typing Components & Props
 
@@ -204,7 +209,12 @@ function CustomButton({ variant, isLoading, children, ...rest }: CustomButtonPro
 
 
 🔬 **Section Challenge — Part 5: Utility Types for React**
->
+
+**Challenge 1 (Reasoning):** The `CustomButton` extends `React.ButtonHTMLAttributes<HTMLButtonElement>` and spreads `...rest`. If a parent passes `className="external"` and `CustomButton` also sets `className={\`btn-${variant}\`}` internally, which one wins? How do design systems solve this?
+<details><summary>Answer</summary>
+
+In the current code, `{...rest}` is spread AFTER the internal className in the JSX props. But JSX doesn't "merge" className — the LAST one wins. So `...rest` overwrites the internal className. The parent's `className="external"` replaces `btn-primary` entirely. **Fix:** Design systems use explicit merging: `className={clsx(\`btn-${variant}\`, rest.className)}` using a utility like `clsx` or `tailwind-merge`. This concatenates both classes. Libraries like Radix and Shadcn/ui use a `cn()` utility for this. **Deeper issue:** This is why the spread pattern (`...rest`) is dangerous — it passes ALL HTML attributes, including `style`, `className`, and event handlers that might conflict with internal behavior. Some design systems use `Omit<React.ButtonHTMLAttributes, 'className'>` to prevent external className, forcing users to use the component's own `variant`/`size` props instead.
+</details>
 
 ## Quick Reference: Common Types
 
@@ -256,7 +266,12 @@ flowchart TD
 
 
 🔬 **Section Challenge — Quick Reference: Common Types**
->
+
+**Challenge 1 (Reasoning):** The Quick Reference lists `React.ReactNode` for children and `React.ReactElement` for single element child. What is the EXACT difference, and why does typing children as `ReactElement` instead of `ReactNode` break common patterns?
+<details><summary>Answer</summary>
+
+`ReactNode = ReactElement | string | number | boolean | null | undefined | Iterable<ReactNode>`. It accepts ANYTHING renderable. `ReactElement` is ONLY a JSX element (`<div>`, `<Component />`). If you type children as `ReactElement`, these break: `<Card>Hello</Card>` (string child), `<Card>{count}</Card>` (number), `<Card>{isAdmin && <Admin />}</Card>` (boolean | ReactElement), `<Card>{items.map(...)}</Card>` (array). All of these are valid React children but NOT `ReactElement`. **Rule:** Use `ReactNode` for children (99% of cases). Use `ReactElement` only when you need to clone/inspect the child (e.g., `React.cloneElement(children)` — which requires a single element, not a string). `JSX.Element` is the return type of JSX expressions — it's `ReactElement<any, any>` with less type information. Prefer `ReactElement` or `ReactNode` over `JSX.Element`.
+</details>
 
 ## Advanced TypeScript Patterns for React
 
@@ -531,5 +546,10 @@ function Box<E extends React.ElementType = 'div'>({
 
 
 🔬 **Section Challenge — Advanced TypeScript Patterns for React**
->
+
+**Challenge 1 (Reasoning):** The polymorphic `Box` component uses `React.ComponentPropsWithoutRef<E>` to infer valid props based on the `as` prop. Why does this use `WithoutRef` instead of `WithRef`, and what would break if you used `React.ComponentProps<E>` (which includes ref)?
+<details><summary>Answer</summary>
+
+`React.ComponentProps<E>` includes the `ref` prop in its type. But refs work differently for different element types: `ref` for `<div>` is `React.Ref<HTMLDivElement>`, for `<input>` it's `React.Ref<HTMLInputElement>`, and for a custom component it's whatever `forwardRef` exposes. If you include `ref` in the spread `...rest`, TypeScript can't reconcile the ref type across all possible `E` values — you get a type error because the ref from the parent doesn't match the ref the inner component expects. `ComponentPropsWithoutRef<E>` strips the ref from the type, avoiding this conflict. If you DO need to forward refs in a polymorphic component, you must use a **separate generic ref type** with `forwardRef` and explicitly type it: `React.forwardRef(<E extends React.ElementType>(props: PolymorphicProps<E>, ref: React.Ref<React.ElementRef<E>>) => ...)`. This is why React 19 deprecated `forwardRef` entirely — refs are now regular props, eliminating this complexity. **Key insight:** The polymorphic `as` pattern is one of the hardest TypeScript patterns because it requires **higher-kinded type inference** — the type of valid props depends on the VALUE of another prop (`as`), which TypeScript handles via conditional types.
+</details>
 

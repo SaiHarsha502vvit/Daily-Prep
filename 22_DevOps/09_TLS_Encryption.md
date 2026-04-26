@@ -114,7 +114,12 @@ THE HYBRID APPROACH (how TLS actually works):
 
 
 🔬 **Section Challenge — Asymmetric Encryption — Two Keys**
->
+
+**Challenge 1 (Reasoning):** If asymmetric encryption (RSA/ECC) can encrypt data, why doesn't TLS just use it for ALL data instead of the hybrid approach (asymmetric for key exchange → symmetric for data)?
+<details><summary>Answer</summary>
+
+**Performance: ~1000× slower.** RSA-2048 encryption processes ~1 MB/s vs AES-256-GCM at ~5 GB/s (with AES-NI hardware). For a 100 MB file download: RSA-only = 100 seconds; AES = 0.02 seconds. **Also:** RSA can only encrypt data smaller than the key size (256 bytes for RSA-2048). Larger data requires chunking + padding overhead. **The hybrid solves both:** Use slow asymmetric crypto ONCE (key exchange: ~1ms) to agree on a symmetric key. Then use fast symmetric crypto for all subsequent data. **TLS 1.3 goes further:** It doesn't even use RSA for key exchange anymore — it uses ECDHE (Elliptic Curve Diffie-Hellman Ephemeral), which provides forward secrecy. RSA key exchange was removed because a compromised private key would decrypt ALL past recorded traffic.
+</details>
 
 ## Diffie-Hellman Key Exchange — The Magic
 

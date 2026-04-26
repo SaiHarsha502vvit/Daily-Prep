@@ -1306,5 +1306,9 @@ Testing is a critical skill for professional developers:
 **Navigation**: [< Previous](Ch59_SB_Testing_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch61_SB_Microservices_Core.md)
 
 🔬 **Section Challenge — Summary**
->
 
+**Challenge 1 (Reasoning):** The Quick Reference shows both `@MockBean` and `@SpyBean`. In practice, using `@MockBean` in integration tests causes a subtle but devastating performance problem. What is it, and when should you use `@SpyBean` instead?
+<details><summary>Answer</summary>
+
+Every `@MockBean` creates a **new Spring ApplicationContext** because it replaces a real bean with a mock, making the context unique. Spring caches contexts between tests — but if Test A uses `@MockBean UserRepository` and Test B uses `@MockBean ProductRepository`, Spring can't reuse the same context. With 50 test classes each mocking different beans, you get 50 separate context loads (~5-15 seconds each) instead of 1 shared context. This is the #1 cause of slow Spring Boot test suites. **`@SpyBean`** wraps the REAL bean (delegates to real methods by default, lets you stub specific calls). It's better when you only need to verify interactions or stub one method while keeping real behavior. Fix for `@MockBean` performance: (1) Use `@MockBean` on the SAME set of beans across all test classes → context is shared. (2) Use `@Import(TestConfig.class)` with pre-defined mocks. (3) Prefer `@WebMvcTest` (slice test) over `@SpringBootTest` — smaller context, faster loads.
+</details>

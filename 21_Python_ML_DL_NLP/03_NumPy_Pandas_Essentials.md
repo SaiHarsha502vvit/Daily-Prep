@@ -88,7 +88,13 @@ print(f"NumPy vector: {time.time()-start:.4f}s")
 
 > 🔬 **Section Challenge — 1.3 Broadcasting — NumPy's Magic**
 
-# Broadcasting: NumPy automatically expands smaller arrays
+**Challenge 1 (Reasoning):** `np.array([1,2,3]) + np.array([[1],[2]])` produces a `(2,3)` matrix. But `np.array([1,2,3]) + np.array([1,2])` raises a ValueError. Both involve arrays of different sizes. Why does one broadcast and the other fail?
+<details><summary>Answer</summary>
+
+Broadcasting aligns shapes from the RIGHT. Case 1: `(3,)` → `(1,3)` vs `(2,1)`. Rightmost dims: 3 vs 1 — one is 1, so it broadcasts. Next dims: 1 vs 2 — one is 1, so it broadcasts. Result: `(2,3)`. Case 2: `(3,)` vs `(2,)`. Rightmost dims: 3 vs 2 — NEITHER is 1, and they're not equal. **Broadcasting fails.** The rule is strict: dimensions must either be equal OR one of them must be 1. There's no "stretch 2 to match 3" — that would be ambiguous (how do you expand [1,2] to length 3?). This catches real bugs: accidentally adding a (batch_size,) loss vector to a (num_classes,) weight vector produces a silent wrong answer if batch_size happens to equal num_classes, but a loud error otherwise. Always verify shapes before operations.
+</details>
+
+
 # to match larger arrays for element-wise operations
 
 # Add scalar to array
@@ -121,6 +127,12 @@ print(M + v)                # [[11, 12, 13],
 
 
 > 🔬 **Section Challenge — 1.4 Linear Algebra in NumPy**
+
+**Challenge 1 (Reasoning):** `A @ B` and `np.dot(A, B)` give the same result for 2D arrays. But for arrays with `ndim > 2`, they behave DIFFERENTLY. What's the difference, and why does this matter for batched neural network operations?
+<details><summary>Answer</summary>
+
+For 2D arrays, both perform standard matrix multiplication. For higher dimensions: `np.dot(A, B)` computes the dot product of A's last axis with B's second-to-last axis — it broadcasts in a complex, unintuitive way that often produces unexpected shapes. `A @ B` (`np.matmul`) treats the last two dimensions as the matrix dimensions and broadcasts over all leading (batch) dimensions — exactly what you want for batched operations. Example: A is `(batch, 3, 4)`, B is `(batch, 4, 2)`. `A @ B` gives `(batch, 3, 2)` — one matrix multiply per batch. `np.dot` would give `(batch, 3, batch, 2)` — wrong shape. **Rule:** Always use `@` for matrix operations. Use `np.dot` only for 1D dot products.
+</details>
 
 # Matrix operations for ML
 A = np.random.rand(3, 4)
@@ -199,6 +211,12 @@ df.query('age > 28 and dept == "Eng"')  # SQL-like query
 
 > 🔬 **Section Challenge — 2.2 Data Wrangling Operations**
 
+**Challenge 1 (Reasoning):** A junior data scientist writes `df['price_norm'] = df['price'].apply(lambda x: (x - df['price'].mean()) / df['price'].std())`. This is 100x slower than the vectorized version. Why, and what's the fix?
+<details><summary>Answer</summary>
+
+`.apply()` iterates row-by-row through Python — each call invokes the lambda as a Python function, with Python-level type checking, function call overhead, and GIL contention. Worse, `df['price'].mean()` and `df['price'].std()` are recomputed on EVERY row (1M calls to `.mean()` on a 1M-row DataFrame). The vectorized version: `df['price_norm'] = (df['price'] - df['price'].mean()) / df['price'].std()` computes mean and std ONCE, then performs element-wise operations in compiled C/NumPy — no Python loop at all. **Rule:** `.apply()` is almost always wrong. If you're using `.apply()`, there's probably a vectorized Pandas/NumPy operation that does the same thing 50-100x faster. Use `.apply()` only when the operation genuinely can't be vectorized (e.g., calling an external API per row).
+</details>
+
 # ─── Missing Values ───
 df['bonus'] = [5000, None, 7000, None]
 df.isnull().sum()                    # count nulls per column
@@ -255,6 +273,12 @@ df.to_parquet('output.parquet')
 
 > 🔬 **Section Challenge — 3.1 Views vs Copies (Preventing Memory Leaks)**
 
+**Challenge 1 (Reasoning):** In Pandas, `df2 = df[df['age'] > 30]; df2['salary'] = 0` triggers a `SettingWithCopyWarning`. Why doesn't this happen with NumPy slices, and what is Pandas 2.0's "Copy-on-Write" mode?
+<details><summary>Answer</summary>
+
+NumPy slices always return views (deterministic — the user knows they're modifying the original). Pandas boolean indexing (`df[df['age'] > 30]`) sometimes returns a copy, sometimes a view — it depends on internal memory layout (whether the result is a contiguous block). Pandas can't guarantee which, so it warns you. If it's a copy, `df2['salary'] = 0` modifies the copy but NOT the original `df` — a silent bug. **Pandas 2.0+ Copy-on-Write (CoW):** `pd.set_option('mode.copy_on_write', True)`. Every indexing operation returns a "lazy copy" that shares memory with the original. The moment you WRITE to either one, Pandas creates a real copy of just the modified column. This eliminates the ambiguity entirely — no more warnings, no more silent bugs, and memory is shared until mutation.
+</details>
+
 # A common source of bugs and memory issues!
 
 # ─── SlICES CREATE VIEWS ───
@@ -285,6 +309,12 @@ print(a)                   # Unchanged!
 
 
 > 🔬 **Section Challenge — 3.2 Strides — The Secret Behind Reshape**
+
+**Challenge 1 (Reasoning):** `x.reshape(3,4)` is O(1), but `x.reshape(3,4).T.reshape(12)` forces a copy (not O(1)). Why can't NumPy just change strides for the final reshape?
+<details><summary>Answer</summary>
+
+`x.reshape(3,4)` works by reinterpreting the same contiguous memory with new strides `(16, 4)`. `.T` swaps strides to `(4, 16)` — still the same memory, still O(1). But now the data is NOT contiguous in memory (stepping through row-by-row in the transposed view jumps around in memory). `.reshape(12)` on a non-contiguous array is impossible with strides alone — you'd need a single stride value that steps through all 12 elements in order, but they're scattered. NumPy must copy the data into a new contiguous buffer. **Detection:** `x.flags['C_CONTIGUOUS']` tells you if a reshape will be free (True) or require a copy (False). **Why this matters for ML:** GPU operations (CUDA) require contiguous memory. Calling `.contiguous()` in PyTorch (equivalent to NumPy's copy) before GPU ops is a common performance bottleneck that's invisible unless you check.
+</details>
 
 # How does NumPy reshape a 1M element array in O(1) time? STRIDES.
 # A NumPy array is just a contiguous block of memory + metadata.

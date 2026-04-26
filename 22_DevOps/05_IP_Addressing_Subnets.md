@@ -239,7 +239,12 @@ PROBLEMS WITH NAT:
 
 
 🔬 **Section Challenge — NAT (Network Address Translation) — The Deep Dive**
->
+
+**Challenge 1 (Reasoning):** Your server behind a NAT router handles 70,000 concurrent WebSocket connections to a single external API. Connections start failing with "cannot assign requested address." The server has plenty of CPU and memory. What's the bottleneck?
+<details><summary>Answer</summary>
+
+**Ephemeral port exhaustion on the NAT table.** PAT (Port Address Translation) maps each internal connection to a unique `(public_IP, port)` tuple. Ports are 16-bit → max 65,535 per destination IP. With 70K connections to the SAME external IP, you exceed the port space. **Fixes:** (1) Add more public IPs to the NAT (each gives another 65K ports). (2) Use connection pooling — multiplex many requests over fewer TCP connections. (3) Increase the ephemeral port range: `sysctl net.ipv4.ip_local_port_range="1024 65535"`. (4) Reduce TIME_WAIT duration — stale entries consume ports for 60-120s after close. **Key insight:** NAT creates an invisible bottleneck that doesn't appear in CPU/memory monitoring. The `ss -s` command shows connection counts by state — thousands of TIME_WAIT is the telltale sign.
+</details>
 
 # PART 4: ARP (Address Resolution Protocol) — IP → MAC
 

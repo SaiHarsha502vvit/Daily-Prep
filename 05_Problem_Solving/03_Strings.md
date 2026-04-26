@@ -417,6 +417,12 @@ private String getPattern(String s) {
 
 > 🔬 **Section Challenge — 🎨 2.1 Isomorphic & Pattern Matching**
 
+**Challenge 1 (Reasoning):** The `groupIsomorphic` solution uses `getPattern()` to map "egg" → "011". But this creates a subtle bug for inputs like `["ab", "cd", "ba"]`. Why are "ab" and "ba" NOT isomorphic to each other, yet both map to pattern "01"?
+<details><summary>Answer</summary>
+
+They ARE both isomorphic to the same abstract pattern "01" (two distinct characters in order), so they SHOULD be grouped together — and they are! The pattern "01" means "first char is class 0, second char is class 1." Both "ab" (a→0, b→1) and "ba" (b→0, a→1) produce "01." The confusion arises because people think isomorphism requires the *same mapping* — but it only requires *a valid bijection exists*. For "ab"→"ba": map a→b, b→a. Valid! The `getPattern` approach works precisely because it abstracts away the actual characters and captures only the *structure* of the string.
+</details>
+
 ## 🧩 2.2 Anagram Problems
 
 ### Problem: Valid Anagram
@@ -974,3 +980,8 @@ public boolean canPermutePalindromeSet(String s) {
 
 > 🔬 **Section Challenge — 🧩 2.3 Palindrome Problems**
 
+**Challenge 1 (Reasoning):** For "Longest Palindromic Substring" (LC 5), expand-around-center is O(N²) and DP is also O(N²). Why do most competitive programmers prefer expand-around-center despite identical Big-O?
+<details><summary>Answer</summary>
+
+Both are O(N²) in time, but expand-around-center uses **O(1) space** while DP uses **O(N²) space** for the dp[i][j] table. In practice, the constant factor matters enormously: expand-around-center accesses contiguous memory (expanding outward from a center), giving excellent cache locality. DP fills a 2D table with non-sequential access patterns (diagonal fills), causing cache misses. For N=1000, DP allocates a 1M boolean table; expand uses two integer pointers. Both are O(N²) comparisons, but expand is ~2-3× faster in practice. **Manacher's algorithm** beats both at O(N) time, O(N) space — but is rarely expected in interviews due to its complexity.
+</details>

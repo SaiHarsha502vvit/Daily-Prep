@@ -175,10 +175,10 @@ A `Trace ID` represents the entire lifecycle of a single user request as it trav
 
 🔬 **Section Challenge — 2. Spring Cloud Sleuth (Spring Boot 2.x)**
 
-**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
+**Challenge 1 (Reasoning):** Spring Cloud Sleuth is deprecated in Spring Boot 3.x and replaced by Micrometer Tracing. Why was this migration necessary, and what fundamental design problem did Sleuth have that Micrometer solves?
 <details><summary>Answer</summary>
 
-A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
+Sleuth was tightly coupled to the Brave tracing library. If you wanted to use OpenTelemetry (OTel) instead of Brave, you couldn't — Sleuth's API was Brave-specific. Micrometer Tracing introduces an **abstraction layer** (the `Tracer` interface) that decouples your application code from the tracing backend. You choose the bridge at dependency time: `micrometer-tracing-bridge-brave` for Brave/Zipkin, or `micrometer-tracing-bridge-otel` for OpenTelemetry/Jaeger. Your application code uses `io.micrometer.tracing.Tracer` and never imports Brave or OTel directly. This is the **Dependency Inversion Principle** applied to observability — your business logic depends on an abstraction, not a concrete tracing library. The migration also unified metrics (Micrometer) and tracing (Micrometer Tracing) under one API surface.
 </details>
 
 
@@ -256,10 +256,10 @@ Sleuth automatically traces:
 
 🔬 **Section Challenge — 3. Micrometer Tracing (Spring Boot 3.x)**
 
-**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
+**Challenge 1 (Reasoning):** The Micrometer config shows `propagation.type: b3`. What is the difference between B3 and W3C Trace Context propagation, and when would you choose one over the other?
 <details><summary>Answer</summary>
 
-A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
+**B3** (created by Zipkin) uses custom headers: `X-B3-TraceId`, `X-B3-SpanId`, `X-B3-ParentSpanId`, `X-B3-Sampled` (or a single `b3` header in compact format). **W3C Trace Context** is the official W3C standard using `traceparent` and `tracestate` headers. Key differences: (1) W3C is vendor-neutral and becoming the industry standard — all major cloud providers (AWS X-Ray, Azure Monitor, GCP Cloud Trace) support it. (2) B3 has broader legacy support in older systems (Zipkin, older Spring Cloud Sleuth). (3) W3C supports `tracestate` for vendor-specific data without breaking interop. **Choose W3C** for greenfield projects or multi-vendor environments. **Choose B3** when integrating with legacy Zipkin/Sleuth-based systems. In Spring Boot 3.x, you can configure both: `propagation.type: w3c,b3` to emit both header formats for gradual migration.
 </details>
 
 
@@ -592,10 +592,10 @@ public class BaggageFilter extends OncePerRequestFilter {
 
 🔬 **Section Challenge — 6. Zipkin Integration**
 
-**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
+**Challenge 1 (Reasoning):** The config shows `sampler.probability: 1.0` (100% sampling). Why would you NEVER use 1.0 in production, and what is a reasonable default? What happens to unsampled traces?
 <details><summary>Answer</summary>
 
-A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
+At 100% sampling, every single request generates trace data sent to Zipkin. For a service handling 10K req/sec, that's 10K spans/sec × N services in the chain — potentially 50K+ spans/sec hitting Zipkin's storage. This causes: (1) **network overhead** — trace payloads add ~1-5KB per span to every HTTP call, (2) **storage explosion** — Elasticsearch/Cassandra backend grows by GBs/day, (3) **latency impact** — serializing and sending spans adds ~1-5ms per request. A reasonable production default is **0.01-0.1** (1-10%). Unsampled traces are **not collected** — they still get Trace IDs (for log correlation via MDC), but spans are not exported to Zipkin. For critical paths (payments, errors), use **adaptive sampling**: always sample errors (`spring.sleuth.sampler.rate=100` for error spans) and use reservoir sampling for normal traffic.
 </details>
 
 
@@ -1799,5 +1799,9 @@ tracestate: key1=value1,key2=value2
 **Navigation**: [< Previous](Ch47_SB_Security_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch59_SB_Testing_Fundamentals.md)
 
 🔬 **Section Challenge — Summary**
->
 
+**Challenge 1 (Reasoning):** In a microservice architecture, Service A calls Service B via HTTP, then Service B publishes to Kafka, and Service C consumes. The user reports the Zipkin UI shows Service A → Service B, but the trace *breaks* at the Kafka boundary — Service C appears as a separate trace. What went wrong?
+<details><summary>Answer</summary>
+
+Kafka doesn't automatically propagate trace context the way HTTP does. HTTP propagation works because Sleuth/Micrometer instruments `RestTemplate`/`WebClient` to inject trace headers. For Kafka, you need **explicit instrumentation**: (1) The Kafka producer must inject trace headers into the Kafka message headers (Sleuth does this automatically if `spring-cloud-sleuth-zipkin` + `spring-kafka` are on the classpath). (2) The consumer must extract those headers and create a child span. The break happens when: (a) the consumer doesn't have the tracing dependency, (b) a non-Spring producer writes to Kafka without trace headers, or (c) you're using `KafkaTemplate` in a way that bypasses Sleuth's instrumentation (e.g., direct `Producer` API). Fix: ensure both producer and consumer have `spring-cloud-starter-sleuth` (or Micrometer Tracing + Brave Kafka instrumentation) on the classpath.
+</details>

@@ -261,5 +261,10 @@ CREATE TABLE logs (
 **Navigation**: [< Previous](01_Foundations_Database_Basics.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_DDL_Creating_Structure.md)
 
 🔬 **Section Challenge — Chapter 2: Data Types & Constraints**
->
+
+**Challenge 1 (Reasoning):** A junior developer creates a `prices` table using `FLOAT` instead of `DECIMAL(10,2)`. After inserting 10 million transactions, the accounting team reports that the sum of all transaction amounts is off by ₹347.52 compared to the source system. Why did this happen, and why can't you just "round at the end" to fix it?
+<details><summary>Answer</summary>
+
+IEEE 754 floating-point cannot represent most decimal fractions exactly. `0.10` in binary is `0.0001100110011...` (repeating), so the database stores an approximation like `0.10000000149011612`. Each individual rounding error is tiny (~10⁻⁷), but over 10M records, errors **accumulate non-deterministically** — sometimes they cancel out, sometimes they compound. You can't "round at the end" because: (1) `SUM()` of 10M floats compounds errors throughout the summation (the order of addition matters due to floating-point associativity violations), (2) intermediate calculations (tax = price × 0.18) introduce new rounding errors that multiply, (3) the accumulated error varies depending on the *specific values* and *order of insertion* — it's unpredictable. `DECIMAL(10,2)` stores each digit as a BCD (Binary-Coded Decimal) value — `0.10` is stored as exactly the digits `1` and `0`. No approximation, no accumulation, deterministic arithmetic. **Rule: ANY column involved in money, accounting, or financial calculations MUST be DECIMAL.**
+</details>
 

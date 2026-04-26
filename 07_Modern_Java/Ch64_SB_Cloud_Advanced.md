@@ -877,10 +877,10 @@ spec:
 
 🔬 **Section Challenge — Monitoring and Logging**
 
-**Challenge 1 (Reasoning):** Why should you never use `UUID.randomUUID()` as a primary key in a highly distributed clustered database (like Cassandra or CockroachDB)?
+**Challenge 1 (Reasoning):** The Prometheus config uses a `ServiceMonitor` with a pull-based model (Prometheus scrapes `/actuator/prometheus`). Why does Prometheus use pull instead of push, and when does push-based monitoring (like Datadog Agent or Graphite) make more sense?
 <details><summary>Answer</summary>
 
-Index Fragmentation. Standard V4 UUIDs are completely random. When you insert them as primary keys, they force the database's B-Tree indexes to split constantly because the inserts are not sequential. This crushes write performance and bloats disk storage. Instead, distributed systems use Time-Sorted unique identifiers (like Snowflake IDs, ULIDs, or UUIDv7), which are lexicographically sortable by time, ensuring sequential disk writes and massive performance gains.
+**Pull advantages:** (1) Prometheus controls scrape frequency — no thundering herd from 1000 services pushing simultaneously. (2) If a service goes down, Prometheus detects it immediately (scrape fails → `up=0` alert). Push-based systems don't know if a service stopped pushing because it's down or because it has nothing to report. (3) Service code is simpler — just expose an endpoint, no push client needed. (4) Prometheus can discover targets dynamically via Kubernetes service discovery. **Push makes more sense when:** (1) Services are behind NAT/firewalls that Prometheus can't reach (serverless functions, Lambda). (2) Short-lived jobs that start, run, and die before Prometheus scrapes (use Prometheus Pushgateway for this). (3) Edge/IoT devices that can't expose HTTP endpoints. In practice, modern stacks use pull (Prometheus) for long-running services and push (OpenTelemetry Collector) for ephemeral workloads.
 </details>
 
 
@@ -1293,5 +1293,9 @@ Cloud deployment requires understanding:
 
 
 🔬 **Section Challenge — Summary**
->
 
+**Challenge 1 (Reasoning):** In Spring Cloud Config Server, when you change a property in Git, running services don't pick up the change automatically. You need to call `/actuator/refresh` or use Spring Cloud Bus. Why isn't automatic refresh the default, and what dangerous thing can happen if you refresh config at the wrong time?
+<details><summary>Answer</summary>
+
+Automatic refresh is dangerous because: (1) **Mid-request config change** — if a database URL changes while a transaction is in progress, the connection pool may be invalidated, causing the transaction to fail. (2) **Partial refresh across instances** — in a 10-instance cluster, if instances refresh at different times, some use the old config and some use the new config simultaneously, causing inconsistent behavior (split-brain). (3) **@RefreshScope beans are destroyed and recreated** — any in-flight request using that bean gets a `BeanCreationException`. Spring Cloud Bus solves the consistency problem by broadcasting a refresh event to ALL instances simultaneously via RabbitMQ/Kafka, but timing is still not atomic. Best practice: use **blue-green deployment** for critical config changes (deploy new instances with new config, drain old ones), and use `/refresh` only for non-critical properties like feature flags or log levels.
+</details>
