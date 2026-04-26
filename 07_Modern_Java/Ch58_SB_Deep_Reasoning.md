@@ -291,10 +291,10 @@ public class MyApp { ... }
 
 🔬 **Section Challenge — 2. What @SpringBootApplication Actually Does**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** If you call an `@Async` method from another method within the *same* class, it runs synchronously on the same thread. Why?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
 </details>
 
 
@@ -400,10 +400,10 @@ public class MyConfig {
 
 🔬 **Section Challenge — 3. Auto-Configuration: How Spring "Magically" Knows What You Need**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** If you call an `@Async` method from another method within the *same* class, it runs synchronously on the same thread. Why?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
 </details>
 
 
@@ -687,10 +687,10 @@ public class OrderService {
 
 🔬 **Section Challenge — 6. IoC & DI: Not Just "Injection" — The Inversion Explained**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** If you call an `@Async` method from another method within the *same* class, it runs synchronously on the same thread. Why?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
 </details>
 
 
@@ -783,10 +783,10 @@ UserService service = new UserService(mockRepo, mockEmail, mockCache);
 
 🔬 **Section Challenge — 7. @Autowired vs Constructor Injection: Why Seniors Choose Constructor**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** If you call an `@Async` method from another method within the *same* class, it runs synchronously on the same thread. Why?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
 </details>
 
 
@@ -1091,10 +1091,10 @@ public class StorageConfig {
 
 🔬 **Section Challenge — 11. Profiles & Conditional Beans: How Spring Switches Environments**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** If you call an `@Async` method from another method within the *same* class, it runs synchronously on the same thread. Why?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the bean in a CGLIB or JDK Proxy. When an external class calls the method, it hits the proxy, which intercepts the call and submits it to a thread pool. However, if an internal method calls the `@Async` method directly via `this.method()`, the call never leaves the instance, completely bypassing the proxy wrapper, and executes synchronously.
 </details>
 
 

@@ -13,10 +13,10 @@
 
 🔬 **Section Challenge — Unit, Integration, Mockito, and Test-Driven Development**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
 
 
@@ -159,10 +159,10 @@ flowchart TD
 
 🔬 **Section Challenge — Testing Philosophy**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
 
 
@@ -228,10 +228,10 @@ flowchart TD
 
 🔬 **Section Challenge — Testing Pyramid**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
 
 
@@ -561,10 +561,10 @@ class UserServiceNestedTest {
 
 🔬 **Section Challenge — Unit Testing with JUnit 5**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
 
 
@@ -939,10 +939,10 @@ class SpecificConfigTest {
 
 🔬 **Section Challenge — Spring Boot Test Annotations**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
 
 
@@ -1145,10 +1145,10 @@ class OrderServiceTest {
 
 🔬 **Section Challenge — Service Layer Testing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
 
 
@@ -1301,10 +1301,10 @@ class UserRepositoryH2Test {
 
 🔬 **Section Challenge — Repository Layer Testing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
 
 
@@ -1445,10 +1445,10 @@ class UserControllerTest {
 
 🔬 **Section Challenge — Controller Layer Testing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+`@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
 
 

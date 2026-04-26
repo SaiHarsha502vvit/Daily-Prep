@@ -158,10 +158,10 @@
 
 🔬 **Section Challenge — 2. The Filter Chain — The Core Architecture**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does `SecurityContextHolder.getContext().getAuthentication()` sometimes return `null` when called inside a new thread spawned by a `@Async` method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+ThreadLocal isolation. The `SecurityContext` is stored in a `ThreadLocal` variable, which means it is exclusively bound to the exact HTTP request thread. When you spawn a new thread (via `@Async` or manual `new Thread()`), the context is NOT automatically copied over. To fix this, you must configure Spring Security to use `MODE_INHERITABLETHREADLOCAL` or use `DelegatingSecurityContextExecutor` to explicitly pass the context to the new thread before execution.
 </details>
 
 
@@ -705,10 +705,10 @@ Every context consumer re-renders when ANY context value changes. If you have `{
 
 🔬 **Section Challenge — 9. CORS and CSRF — Why They Exist and How Spring Handles Them**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does `SecurityContextHolder.getContext().getAuthentication()` sometimes return `null` when called inside a new thread spawned by a `@Async` method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+ThreadLocal isolation. The `SecurityContext` is stored in a `ThreadLocal` variable, which means it is exclusively bound to the exact HTTP request thread. When you spawn a new thread (via `@Async` or manual `new Thread()`), the context is NOT automatically copied over. To fix this, you must configure Spring Security to use `MODE_INHERITABLETHREADLOCAL` or use `DelegatingSecurityContextExecutor` to explicitly pass the context to the new thread before execution.
 </details>
 
 

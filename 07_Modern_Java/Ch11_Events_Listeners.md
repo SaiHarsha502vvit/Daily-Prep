@@ -70,10 +70,10 @@ IN CODE:
 
 🔬 **Section Challenge — 1. The Mental Model — Events in Real Life**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is it dangerous to perform a heavy database update synchronously inside a Spring `@EventListener` method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Thread Blocking. By default, Spring `@EventListener` methods execute synchronously on the EXACT same thread that published the event. If the listener takes 5 seconds to run, the method that called `applicationEventPublisher.publishEvent()` is completely blocked for 5 seconds. To process events in the background without blocking the main workflow, you must explicitly annotate the listener with `@Async` to force it onto a separate thread pool.
 </details>
 
 
@@ -261,10 +261,10 @@ The Flow:
 
 🔬 **Section Challenge — 3. Building an Event System From Scratch**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is it dangerous to perform a heavy database update synchronously inside a Spring `@EventListener` method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Thread Blocking. By default, Spring `@EventListener` methods execute synchronously on the EXACT same thread that published the event. If the listener takes 5 seconds to run, the method that called `applicationEventPublisher.publishEvent()` is completely blocked for 5 seconds. To process events in the background without blocking the main workflow, you must explicitly annotate the listener with `@Async` to force it onto a separate thread pool.
 </details>
 
 
@@ -444,10 +444,10 @@ Spring Event Flow:
 
 🔬 **Section Challenge — 5. Spring ApplicationEvent — The Professional Way**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is it dangerous to perform a heavy database update synchronously inside a Spring `@EventListener` method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Thread Blocking. By default, Spring `@EventListener` methods execute synchronously on the EXACT same thread that published the event. If the listener takes 5 seconds to run, the method that called `applicationEventPublisher.publishEvent()` is completely blocked for 5 seconds. To process events in the background without blocking the main workflow, you must explicitly annotate the listener with `@Async` to force it onto a separate thread pool.
 </details>
 
 
@@ -499,10 +499,10 @@ Spring Boot Startup Event Order:
 
 🔬 **Section Challenge — 6. Spring Built-in Events — What You Can Listen To**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is it dangerous to perform a heavy database update synchronously inside a Spring `@EventListener` method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Thread Blocking. By default, Spring `@EventListener` methods execute synchronously on the EXACT same thread that published the event. If the listener takes 5 seconds to run, the method that called `applicationEventPublisher.publishEvent()` is completely blocked for 5 seconds. To process events in the background without blocking the main workflow, you must explicitly annotate the listener with `@Async` to force it onto a separate thread pool.
 </details>
 
 

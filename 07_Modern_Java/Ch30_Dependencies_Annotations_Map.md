@@ -194,10 +194,10 @@ annotation processing)
 
 🔬 **Section Challenge — 2. The Lombok Confusion — Fully Explained**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does adding the `spring-boot-starter-web` dependency automatically start an embedded Tomcat server on port 8080 without you writing a single line of server code?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Spring Boot Auto-Configuration. The starter POM pulls in the Tomcat binaries and the `spring-boot-autoconfigure` library. On startup, Spring's `@EnableAutoConfiguration` scans the classpath. It sees that `Tomcat.class` and Spring MVC classes are present, and assumes you want a web server. It then automatically registers a `TomcatServletWebServerFactory` bean and boots the server. This is the core magic of Spring Boot: opinionated, context-aware defaults based on classpath presence.
 </details>
 
 

@@ -1033,10 +1033,10 @@ public class UserHandler {
 
 🔬 **Section Challenge — Chapter 5: Functional Endpoints (RouterFunction)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the core difference between `flatMap()` and `concatMap()` in Project Reactor when processing a `Flux`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Concurrency vs Ordering. `flatMap()` eagerly subscribes to the inner publishers as they arrive, merging their results concurrently. This maximizes speed but destroys the original ordering of the elements. `concatMap()` explicitly waits for the current inner publisher to complete before subscribing to the next one. This guarantees strict sequential ordering but completely sacrifices concurrency.
 </details>
 
 

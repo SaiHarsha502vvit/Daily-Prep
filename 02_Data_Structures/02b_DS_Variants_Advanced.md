@@ -230,10 +230,10 @@ public class MaxStackSimple {
 
 🔬 **Section Challenge — 2.2 Max Stack**
 
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+**Challenge 1 (Reasoning):** Min Stack uses a simple auxiliary stack to track minimums. Why can't Max Stack use the same approach to support `popMax()` in O(1)? What fundamental property does `popMax()` violate?
 <details><summary>Answer</summary>
 
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+`popMax()` removes an element from the MIDDLE of the stack — not the top. This violates LIFO ordering. With Min Stack, `getMin()` only reads the auxiliary stack top (O(1)), and `pop()` always removes from the top of both stacks (maintaining consistency). But `popMax()` must find and remove the maximum wherever it sits. The simple two-stack approach requires: (1) pop everything above the max into a temp stack, (2) pop the max, (3) push everything back — O(n) per `popMax()`. The O(log n) solution uses a TreeMap (sorted by value) + Doubly Linked List (maintaining stack order) + lazy deletion with unique IDs to avoid the rebuild cost.
 </details>
 
 # 📬 Part 3: Queue Variants
@@ -746,10 +746,16 @@ flowchart TD
 
 🔬 **Section Challenge — 3.3 Monotonic Queue**
 
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+**Challenge 1 (Reasoning):** In the Sliding Window Maximum implementation, the monotonic queue stores INDICES, not values. Why is this necessary? What breaks if you store values instead?
 <details><summary>Answer</summary>
 
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+You must know whether an element is INSIDE the current window. The window is defined by index range `[i-k+1, i]`. When `deque.peekFirst()` returns an index, you can check `index < i - k + 1` to determine if it's expired. If you stored values, you'd have no way to know WHICH occurrence of that value you're looking at, or whether it's inside the window. Example: `[3, 1, 3, ...], k=2`. Both `3`s have the same value but only one is in the current window. Storing indices lets you distinguish them. The deque front eviction check (`deque.peekFirst() < i - k + 1`) is the mechanism that makes the sliding window "slide" — without indices, it's impossible.
+</details>
+
+**Challenge 2 (Reasoning):** Monotonic Queue achieves O(n) total for n elements, but individual operations seem to do variable work (some pushes pop multiple elements). Prove the O(n) amortized bound.
+<details><summary>Answer</summary>
+
+Use the potential method / accounting argument: each element is pushed into the deque exactly ONCE and popped from the deque at most ONCE (either via back-eviction when a larger element arrives, or via front-eviction when it leaves the window). So across all n elements: at most n pushes + at most n pops = 2n total operations. Even though one `offerLast()` might trigger 5 `pollLast()` calls, those 5 elements will never be popped again. Total work across the entire array is Θ(n), giving O(1) amortized per element.
 </details>
 
 # 🌳 Part 4: Tree Variants

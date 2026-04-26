@@ -57,10 +57,10 @@ public class Product {
 
 🔬 **Section Challenge — Theory-First Master Lens (Part 2: Infrastructure to Runtime Behavior)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
 </details>
 
 
@@ -163,10 +163,10 @@ spring:
 
 🔬 **Section Challenge — E.5 Configuring ObjectMapper in Spring Boot**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
 </details>
 
 
@@ -243,10 +243,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — F.1 How Connection Pooling Works**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
 </details>
 
 
@@ -309,10 +309,10 @@ spring:
 
 🔬 **Section Challenge — F.3 Connection Pool Sizing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
 </details>
 
 
@@ -562,10 +562,10 @@ user1 = (User) user2;  // ClassCastException!
 
 🔬 **Section Challenge — G.3 Common Classloading Problems**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
 </details>
 
 
@@ -600,10 +600,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — G.4 Spring DevTools Hot Reload**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
 </details>
 
 
@@ -1076,10 +1076,10 @@ public class SingletonBeanFactory {
 
 🔬 **Section Challenge — J.1 Singleton Pattern**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
 </details>
 
 
@@ -1280,10 +1280,10 @@ public interface Filter {
 
 🔬 **Section Challenge — J.8 Chain of Responsibility**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
 </details>
 
 
@@ -1430,10 +1430,10 @@ public class EmailService {
 
 🔬 **Section Challenge — K.3 @Async in Spring**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
 </details>
 
 
@@ -1824,10 +1824,10 @@ public class UserRepositoryImpl implements UserRepository {
 
 🔬 **Section Challenge — M.2 How Spring Data Generates Repository Implementations**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
 </details>
 
 

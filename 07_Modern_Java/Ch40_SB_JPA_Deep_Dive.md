@@ -441,10 +441,10 @@ public class Address {
 
 🔬 **Section Challenge — Chapter 2: Entity Mapping Deep Dive**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** You execute a query that returns 100 `Author` entities. Each `Author` has a `@OneToMany` list of `Book` entities. You loop through the authors and call `author.getBooks().size()`. Why does this crash your database performance?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+The N+1 Query Problem. The initial query fetches 100 Authors (1 query). When you call `getBooks()` on the first author, Hibernate executes a new SQL query to fetch their books. It repeats this for all 100 authors. You just executed 1 + 100 = 101 separate SQL queries instead of a single join. To fix this, you must use a `JOIN FETCH` in your JPQL query or a `@EntityGraph` to load the authors and their books in a single database round-trip.
 </details>
 
 

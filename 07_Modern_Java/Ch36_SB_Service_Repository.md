@@ -673,10 +673,10 @@ public interface OrderSpecification {
 
 🔬 **Section Challenge — Chapter 4: Service Interface Pattern**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why should you NEVER put `@Transactional` on a private method inside a `@Service` class?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Spring AOP Proxy limitations. `@Transactional` works by wrapping the class in a proxy. When an external class calls a public method, it goes through the proxy, which starts the transaction. If a public method inside the class calls a private method in the *same* class, it bypasses the proxy entirely (it's just a direct `this.privateMethod()` call). The `@Transactional` annotation on the private method is completely ignored, and no transaction is created.
 </details>
 
 
@@ -806,10 +806,10 @@ public class UserService {
 
 🔬 **Section Challenge — Chapter 5: Spring Data JPA Repository Fundamentals**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why should you NEVER put `@Transactional` on a private method inside a `@Service` class?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Spring AOP Proxy limitations. `@Transactional` works by wrapping the class in a proxy. When an external class calls a public method, it goes through the proxy, which starts the transaction. If a public method inside the class calls a private method in the *same* class, it bypasses the proxy entirely (it's just a direct `this.privateMethod()` call). The `@Transactional` annotation on the private method is completely ignored, and no transaction is created.
 </details>
 
 

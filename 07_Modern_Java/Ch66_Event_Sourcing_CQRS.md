@@ -73,10 +73,10 @@
 
 🔬 **Section Challenge — 1. Traditional CRUD vs Event Sourcing — The Fundamental Shift**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Event Sourcing, how do you handle querying the "current state" of an entity if it has 10,000 past events? Do you replay them all every time?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+No, that would destroy read performance. You use CQRS to build a separate Read Model. As events are appended to the Event Store (Write Model), an event handler asynchronously projects that data into a standard relational/NoSQL table (Read Model) representing the current state. For the Write Model itself, if rebuilding the aggregate is too slow, you create "Snapshots" every N events. To rebuild state, you load the latest Snapshot and only replay the events that occurred after it.
 </details>
 
 
@@ -160,10 +160,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 2. Event Store — The Single Source of Truth**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Event Sourcing, how do you handle querying the "current state" of an entity if it has 10,000 past events? Do you replay them all every time?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+No, that would destroy read performance. You use CQRS to build a separate Read Model. As events are appended to the Event Store (Write Model), an event handler asynchronously projects that data into a standard relational/NoSQL table (Read Model) representing the current state. For the Write Model itself, if rebuilding the aggregate is too slow, you create "Snapshots" every N events. To rebuild state, you load the latest Snapshot and only replay the events that occurred after it.
 </details>
 
 
@@ -263,10 +263,10 @@ public class Order {
 
 🔬 **Section Challenge — 3. Rebuilding State from Events**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Event Sourcing, how do you handle querying the "current state" of an entity if it has 10,000 past events? Do you replay them all every time?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+No, that would destroy read performance. You use CQRS to build a separate Read Model. As events are appended to the Event Store (Write Model), an event handler asynchronously projects that data into a standard relational/NoSQL table (Read Model) representing the current state. For the Write Model itself, if rebuilding the aggregate is too slow, you create "Snapshots" every N events. To rebuild state, you load the latest Snapshot and only replay the events that occurred after it.
 </details>
 
 
@@ -326,10 +326,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 4. Snapshots — Because Replaying 1 Million Events is Slow**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Event Sourcing, how do you handle querying the "current state" of an entity if it has 10,000 past events? Do you replay them all every time?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+No, that would destroy read performance. You use CQRS to build a separate Read Model. As events are appended to the Event Store (Write Model), an event handler asynchronously projects that data into a standard relational/NoSQL table (Read Model) representing the current state. For the Write Model itself, if rebuilding the aggregate is too slow, you create "Snapshots" every N events. To rebuild state, you load the latest Snapshot and only replay the events that occurred after it.
 </details>
 
 
@@ -398,10 +398,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 5. Event Versioning — What Happens When Events Change**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Event Sourcing, how do you handle querying the "current state" of an entity if it has 10,000 past events? Do you replay them all every time?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+No, that would destroy read performance. You use CQRS to build a separate Read Model. As events are appended to the Event Store (Write Model), an event handler asynchronously projects that data into a standard relational/NoSQL table (Read Model) representing the current state. For the Write Model itself, if rebuilding the aggregate is too slow, you create "Snapshots" every N events. To rebuild state, you load the latest Snapshot and only replay the events that occurred after it.
 </details>
 
 
@@ -565,10 +565,10 @@ public class OrderDetailsProjection {
 
 🔬 **Section Challenge — 7. Projections — Building Read Models from Events**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Event Sourcing, how do you handle querying the "current state" of an entity if it has 10,000 past events? Do you replay them all every time?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+No, that would destroy read performance. You use CQRS to build a separate Read Model. As events are appended to the Event Store (Write Model), an event handler asynchronously projects that data into a standard relational/NoSQL table (Read Model) representing the current state. For the Write Model itself, if rebuilding the aggregate is too slow, you create "Snapshots" every N events. To rebuild state, you load the latest Snapshot and only replay the events that occurred after it.
 </details>
 
 
@@ -783,10 +783,10 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 
 🔬 **Section Challenge — 10. When to Use (and NOT Use) Event Sourcing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Event Sourcing, how do you handle querying the "current state" of an entity if it has 10,000 past events? Do you replay them all every time?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+No, that would destroy read performance. You use CQRS to build a separate Read Model. As events are appended to the Event Store (Write Model), an event handler asynchronously projects that data into a standard relational/NoSQL table (Read Model) representing the current state. For the Write Model itself, if rebuilding the aggregate is too slow, you create "Snapshots" every N events. To rebuild state, you load the latest Snapshot and only replay the events that occurred after it.
 </details>
 
 

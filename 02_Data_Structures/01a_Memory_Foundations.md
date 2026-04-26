@@ -109,16 +109,16 @@ flowchart TD
 
 🔬 **Section Challenge — THE MEMORY HIERARCHY - Why Some Operations Are Faster**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+**Challenge 1 (Reasoning):** L1 cache is only 32KB but RAM is 16GB. When you iterate an `int[1000]` array sequentially, why does it feel almost as fast as if the entire array were in registers?
 <details><summary>Answer</summary>
 
-`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+Spatial locality + hardware prefetching. When the CPU accesses `arr[0]`, it loads a 64-byte cache line containing `arr[0]` through `arr[15]` (16 ints) into L1. The next 15 accesses are cache hits (~1ns each instead of ~100ns). Modern CPUs also detect sequential access patterns and *prefetch* the next cache line before you even ask for it. So for a sequential scan, only every 16th access is a cache miss — the rest are effectively free. This is why arrays with O(n) linear scan often outperform hash-based O(1) lookups for small n.
 </details>
 
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+**Challenge 2 (Reasoning):** You have two programs: Program A iterates a `LinkedList<Integer>` of 1M nodes. Program B iterates an `int[]` of 1M elements. Both do the same O(n) work per element. Program B finishes 50-100x faster. Why?
 <details><summary>Answer</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+Cache miss rate. `int[]` is contiguous in memory — one cache line loads 16 consecutive ints. LinkedList nodes are scattered across the heap (each node is a separate heap allocation at a random address). Every `node = node.next` pointer dereference is a cache miss (~100-200 CPU cycles penalty). Additionally, each LinkedList node carries ~48 bytes of overhead (object header, prev/next pointers, boxed Integer object) vs 4 bytes per element in `int[]`. The combination of cache misses + memory bloat makes LinkedList catastrophically slower for sequential iteration.
 </details>
 
 
@@ -330,10 +330,10 @@ flowchart TD
 
 🔬 **Section Challenge — JAVA MEMORY MODEL - Stack vs Heap**
 
-**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+**Challenge 1 (Reasoning):** `int[] arr = new int[5];` — the variable `arr` lives on the stack but the actual array lives on the heap. If you pass `arr` to a method `modify(int[] a)`, and inside that method you do `a[0] = 99;`, does the caller see the change? What if you do `a = new int[10];` instead?
 <details><summary>Answer</summary>
 
-In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+`a[0] = 99` — YES, caller sees it. The reference `a` is a copy of `arr`, but both point to the SAME heap object. Modifying the object through either reference affects the shared data. `a = new int[10]` — NO, caller does NOT see it. This reassigns the local copy `a` to point to a new heap object. The caller's `arr` still points to the original array. Java is always pass-by-value — but for objects, the "value" being passed is the reference (memory address), not the object itself.
 </details>
 
 

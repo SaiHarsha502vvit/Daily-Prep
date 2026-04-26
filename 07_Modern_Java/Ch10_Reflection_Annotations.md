@@ -128,10 +128,10 @@ clazz.getAnnotations();          // ALL annotations on this class
 
 🔬 **Section Challenge — 2. The `Class<?>` Object — Everything Starts Here**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Java Reflection to access a class's methods dynamically drastically slower than calling the method directly in code?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+JIT Compilation and Security Checks. When you write `obj.doSomething()`, the JVM's JIT compiler optimizes the call, aggressively inlining it down to bare machine code. When you use `Method.invoke()`, the JVM must dynamically resolve the method signature, box/unbox arguments, perform security access checks, and prevent JIT inlining. Reflection effectively forces the JVM to interpret the call blindly, making it orders of magnitude slower.
 </details>
 
 
@@ -191,10 +191,10 @@ System.out.println(user.getName());  // "Changed!"
 
 🔬 **Section Challenge — 3. Inspecting Fields**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Java Reflection to access a class's methods dynamically drastically slower than calling the method directly in code?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+JIT Compilation and Security Checks. When you write `obj.doSomething()`, the JVM's JIT compiler optimizes the call, aggressively inlining it down to bare machine code. When you use `Method.invoke()`, the JVM must dynamically resolve the method signature, box/unbox arguments, perform security access checks, and prevent JIT inlining. Reflection effectively forces the JVM to interpret the call blindly, making it orders of magnitude slower.
 </details>
 
 
@@ -241,10 +241,10 @@ Each overload is a DIFFERENT Method object
 
 🔬 **Section Challenge — 4. Invoking Methods via Reflection**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Java Reflection to access a class's methods dynamically drastically slower than calling the method directly in code?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+JIT Compilation and Security Checks. When you write `obj.doSomething()`, the JVM's JIT compiler optimizes the call, aggressively inlining it down to bare machine code. When you use `Method.invoke()`, the JVM must dynamically resolve the method signature, box/unbox arguments, perform security access checks, and prevent JIT inlining. Reflection effectively forces the JVM to interpret the call blindly, making it orders of magnitude slower.
 </details>
 
 
@@ -275,10 +275,10 @@ Defense: Throw exception from constructor if instance exists, OR use enum single
 
 🔬 **Section Challenge — 5. Creating Objects via Reflection**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Java Reflection to access a class's methods dynamically drastically slower than calling the method directly in code?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+JIT Compilation and Security Checks. When you write `obj.doSomething()`, the JVM's JIT compiler optimizes the call, aggressively inlining it down to bare machine code. When you use `Method.invoke()`, the JVM must dynamically resolve the method signature, box/unbox arguments, perform security access checks, and prevent JIT inlining. Reflection effectively forces the JVM to interpret the call blindly, making it orders of magnitude slower.
 </details>
 
 
@@ -371,10 +371,10 @@ public class MiniSpringContainer {
 
 🔬 **Section Challenge — 6. How Spring Uses Reflection — The Full Picture**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Java Reflection to access a class's methods dynamically drastically slower than calling the method directly in code?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+JIT Compilation and Security Checks. When you write `obj.doSomething()`, the JVM's JIT compiler optimizes the call, aggressively inlining it down to bare machine code. When you use `Method.invoke()`, the JVM must dynamically resolve the method signature, box/unbox arguments, perform security access checks, and prevent JIT inlining. Reflection effectively forces the JVM to interpret the call blindly, making it orders of magnitude slower.
 </details>
 
 
@@ -422,10 +422,10 @@ PROCESSOR  = Person who reads sticky notes and acts
 
 🔬 **Section Challenge — 7. Annotations — Understanding From Ground Up**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Java Reflection to access a class's methods dynamically drastically slower than calling the method directly in code?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+JIT Compilation and Security Checks. When you write `obj.doSomething()`, the JVM's JIT compiler optimizes the call, aggressively inlining it down to bare machine code. When you use `Method.invoke()`, the JVM must dynamically resolve the method signature, box/unbox arguments, perform security access checks, and prevent JIT inlining. Reflection effectively forces the JVM to interpret the call blindly, making it orders of magnitude slower.
 </details>
 
 
@@ -615,10 +615,10 @@ public class AnnotationProcessor {
 
 🔬 **Section Challenge — 9. Practical Example: Building @LogExecutionTime**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Java Reflection to access a class's methods dynamically drastically slower than calling the method directly in code?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+JIT Compilation and Security Checks. When you write `obj.doSomething()`, the JVM's JIT compiler optimizes the call, aggressively inlining it down to bare machine code. When you use `Method.invoke()`, the JVM must dynamically resolve the method signature, box/unbox arguments, perform security access checks, and prevent JIT inlining. Reflection effectively forces the JVM to interpret the call blindly, making it orders of magnitude slower.
 </details>
 
 
@@ -701,10 +701,10 @@ List<String> errors = Validator.validate(request);
 
 🔬 **Section Challenge — 10. Practical Example: Building @Validate**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Java Reflection to access a class's methods dynamically drastically slower than calling the method directly in code?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+JIT Compilation and Security Checks. When you write `obj.doSomething()`, the JVM's JIT compiler optimizes the call, aggressively inlining it down to bare machine code. When you use `Method.invoke()`, the JVM must dynamically resolve the method signature, box/unbox arguments, perform security access checks, and prevent JIT inlining. Reflection effectively forces the JVM to interpret the call blindly, making it orders of magnitude slower.
 </details>
 
 
@@ -781,10 +781,10 @@ String json = MiniJsonSerializer.toJson(user);
 
 🔬 **Section Challenge — 11. Practical Example: Building Mini @JsonProperty**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Java Reflection to access a class's methods dynamically drastically slower than calling the method directly in code?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+JIT Compilation and Security Checks. When you write `obj.doSomething()`, the JVM's JIT compiler optimizes the call, aggressively inlining it down to bare machine code. When you use `Method.invoke()`, the JVM must dynamically resolve the method signature, box/unbox arguments, perform security access checks, and prevent JIT inlining. Reflection effectively forces the JVM to interpret the call blindly, making it orders of magnitude slower.
 </details>
 
 

@@ -132,10 +132,10 @@ Instant back = ldt.atZone(ZoneId.systemDefault()).toInstant();
 
 🔬 **Section Challenge — 3. LocalTime, LocalDateTime, Instant**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why did Java 8 completely replace the old `java.util.Date` class with `java.time.LocalDateTime` and `ZonedDateTime`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
 </details>
 
 
@@ -216,10 +216,10 @@ long hoursBetween = ChronoUnit.HOURS.between(startDateTime, endDateTime);
 
 🔬 **Section Challenge — 5. Duration and Period — Measuring Time Gaps**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why did Java 8 completely replace the old `java.util.Date` class with `java.time.LocalDateTime` and `ZonedDateTime`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
 </details>
 
 
@@ -276,10 +276,10 @@ Common Format Patterns:
 
 🔬 **Section Challenge — 6. DateTimeFormatter — Parsing and Formatting**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why did Java 8 completely replace the old `java.util.Date` class with `java.time.LocalDateTime` and `ZonedDateTime`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
 </details>
 
 
@@ -401,10 +401,10 @@ ANCHORS & GROUPS:
 
 🔬 **Section Challenge — 8. Regex Fundamentals — The Building Blocks**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why did Java 8 completely replace the old `java.util.Date` class with `java.time.LocalDateTime` and `ZonedDateTime`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
 </details>
 
 
@@ -453,10 +453,10 @@ Pattern.compile("\\d+").matcher("hello123world").find() → true (found 123)
 
 🔬 **Section Challenge — 9. Pattern and Matcher — Java's Regex Engine**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why did Java 8 completely replace the old `java.util.Date` class with `java.time.LocalDateTime` and `ZonedDateTime`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
 </details>
 
 
@@ -503,10 +503,10 @@ if (m.find()) {
 
 🔬 **Section Challenge — 10. Capturing Groups — Extracting Data**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why did Java 8 completely replace the old `java.util.Date` class with `java.time.LocalDateTime` and `ZonedDateTime`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
 </details>
 
 
@@ -602,10 +602,10 @@ String text = "<p>Hello <b>World</b></p>".replaceAll("<[^>]+>", "");
 
 🔬 **Section Challenge — 12. String Methods with Regex**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why did Java 8 completely replace the old `java.util.Date` class with `java.time.LocalDateTime` and `ZonedDateTime`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Thread Safety. `java.util.Date` is completely mutable. If you passed a `Date` object to another thread, that thread could alter the time using `.setTime()`, instantly corrupting the data across the entire application (Race Condition). The new `java.time` classes (like `String`) are strictly immutable. Any modification (like `.plusDays(1)`) returns a brand new object, guaranteeing perfect thread safety in concurrent environments.
 </details>
 
 

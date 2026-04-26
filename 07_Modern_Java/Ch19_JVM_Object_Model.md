@@ -259,10 +259,10 @@ synchronized(obj) {
 
 🔬 **Section Challenge — 2. The Mark Word: 64 Bits That Control Everything**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Object Header and Padding (Alignment). Every Java object has a 12-byte Object Header (Mark Word + Klass Pointer). If you add a 1-byte `boolean` field, the total size is 13 bytes. However, modern CPUs fetch memory in 8-byte chunks. To ensure fast CPU access, the JVM pads all objects to a multiple of 8 bytes (8-byte alignment). Therefore, the 13 bytes are padded with 3 bytes of empty space, resulting in a 16-byte object footprint for a single boolean.
 </details>
 
 
@@ -517,10 +517,10 @@ flowchart TD
 
 🔬 **Section Challenge — 4. Field Layout, Padding, and Alignment**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Object Header and Padding (Alignment). Every Java object has a 12-byte Object Header (Mark Word + Klass Pointer). If you add a 1-byte `boolean` field, the total size is 13 bytes. However, modern CPUs fetch memory in 8-byte chunks. To ensure fast CPU access, the JVM pads all objects to a multiple of 8 bytes (8-byte alignment). Therefore, the 13 bytes are padded with 3 bytes of empty space, resulting in a 16-byte object footprint for a single boolean.
 </details>
 
 
@@ -658,10 +658,10 @@ flowchart TD
 
 🔬 **Section Challenge — 5. Lock Escalation: Biased → Thin → Fat**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Object Header and Padding (Alignment). Every Java object has a 12-byte Object Header (Mark Word + Klass Pointer). If you add a 1-byte `boolean` field, the total size is 13 bytes. However, modern CPUs fetch memory in 8-byte chunks. To ensure fast CPU access, the JVM pads all objects to a multiple of 8 bytes (8-byte alignment). Therefore, the 13 bytes are padded with 3 bytes of empty space, resulting in a 16-byte object footprint for a single boolean.
 </details>
 
 
@@ -959,10 +959,10 @@ System.out.println(((Child) obj).x);  // 20 (Child's x — need cast!)
 
 🔬 **Section Challenge — 7. Method Hiding vs Overriding: The Static Method Freeze Moment**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Object Header and Padding (Alignment). Every Java object has a 12-byte Object Header (Mark Word + Klass Pointer). If you add a 1-byte `boolean` field, the total size is 13 bytes. However, modern CPUs fetch memory in 8-byte chunks. To ensure fast CPU access, the JVM pads all objects to a multiple of 8 bytes (8-byte alignment). Therefore, the 13 bytes are padded with 3 bytes of empty space, resulting in a 16-byte object footprint for a single boolean.
 </details>
 
 
@@ -1144,10 +1144,10 @@ sealed interface Shape permits Circle, Rectangle, Triangle {
 
 🔬 **Section Challenge — 8. Best Java Design Strategies: Building Robust Structures**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Object Header and Padding (Alignment). Every Java object has a 12-byte Object Header (Mark Word + Klass Pointer). If you add a 1-byte `boolean` field, the total size is 13 bytes. However, modern CPUs fetch memory in 8-byte chunks. To ensure fast CPU access, the JVM pads all objects to a multiple of 8 bytes (8-byte alignment). Therefore, the 13 bytes are padded with 3 bytes of empty space, resulting in a 16-byte object footprint for a single boolean.
 </details>
 
 

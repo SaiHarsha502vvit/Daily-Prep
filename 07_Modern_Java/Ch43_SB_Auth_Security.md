@@ -78,10 +78,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 1: Understanding the Difference**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In OAuth2 (e.g., logging in with Google), why does the client application receive an Authorization Code first, instead of directly receiving the Access Token?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Security against token interception (Authorization Code Flow). If the Authorization Server sent the Access Token directly via the browser redirect URL (Implicit Flow), it would be exposed in browser history, proxy logs, and vulnerable to interception. By returning a short-lived Authorization Code, the client application's secure backend server can exchange it for the real Access Token directly via a secure, back-channel HTTPS POST request, ensuring the Access Token never touches the vulnerable browser URL.
 </details>
 
 
@@ -253,10 +253,10 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 
 🔬 **Section Challenge — Chapter 3: JWT (JSON Web Token) Explained**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In OAuth2 (e.g., logging in with Google), why does the client application receive an Authorization Code first, instead of directly receiving the Access Token?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Security against token interception (Authorization Code Flow). If the Authorization Server sent the Access Token directly via the browser redirect URL (Implicit Flow), it would be exposed in browser history, proxy logs, and vulnerable to interception. By returning a short-lived Authorization Code, the client application's secure backend server can exchange it for the real Access Token directly via a secure, back-channel HTTPS POST request, ensuring the Access Token never touches the vulnerable browser URL.
 </details>
 
 
@@ -1274,10 +1274,10 @@ Always chain the original cause. Include domain-relevant context (errorCode, tra
 
 🔬 **Section Challenge — Chapter 8: Testing in Postman**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In OAuth2 (e.g., logging in with Google), why does the client application receive an Authorization Code first, instead of directly receiving the Access Token?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Security against token interception (Authorization Code Flow). If the Authorization Server sent the Access Token directly via the browser redirect URL (Implicit Flow), it would be exposed in browser history, proxy logs, and vulnerable to interception. By returning a short-lived Authorization Code, the client application's secure backend server can exchange it for the real Access Token directly via a secure, back-channel HTTPS POST request, ensuring the Access Token never touches the vulnerable browser URL.
 </details>
 
 
@@ -1478,10 +1478,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 🔬 **Section Challenge — Chapter 9: OAuth2 / Social Login**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In OAuth2 (e.g., logging in with Google), why does the client application receive an Authorization Code first, instead of directly receiving the Access Token?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Security against token interception (Authorization Code Flow). If the Authorization Server sent the Access Token directly via the browser redirect URL (Implicit Flow), it would be exposed in browser history, proxy logs, and vulnerable to interception. By returning a short-lived Authorization Code, the client application's secure backend server can exchange it for the real Access Token directly via a secure, back-channel HTTPS POST request, ensuring the Access Token never touches the vulnerable browser URL.
 </details>
 
 

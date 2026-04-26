@@ -141,10 +141,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 1: Memory Model & JVM Internals**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Component` and `@Bean` when registering beans in the Spring IoC Container?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Control over instantiation. `@Component` is a class-level annotation. Spring automatically scans your classpath, finds the class, and calls its constructor to create the bean for you. You use it for classes *you* wrote. `@Bean` is a method-level annotation used inside `@Configuration` classes. You manually write the Java code to instantiate and configure the object, and Spring registers whatever the method returns. You use `@Bean` when you need to register a class from a third-party library (like `ObjectMapper` or `DataSource`) where you cannot add a `@Component` annotation to the source code.
 </details>
 
 
@@ -868,10 +868,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 4: Class Loading Mechanism**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Component` and `@Bean` when registering beans in the Spring IoC Container?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Control over instantiation. `@Component` is a class-level annotation. Spring automatically scans your classpath, finds the class, and calls its constructor to create the bean for you. You use it for classes *you* wrote. `@Bean` is a method-level annotation used inside `@Configuration` classes. You manually write the Java code to instantiate and configure the object, and Spring registers whatever the method returns. You use `@Bean` when you need to register a class from a third-party library (like `ObjectMapper` or `DataSource`) where you cannot add a `@Component` annotation to the source code.
 </details>
 
 
@@ -1192,10 +1192,10 @@ public class CompletableFutureDemo {
 
 🔬 **Section Challenge — Chapter 5: Advanced Threading (Concurrency)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental difference between `@Component` and `@Bean` when registering beans in the Spring IoC Container?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Control over instantiation. `@Component` is a class-level annotation. Spring automatically scans your classpath, finds the class, and calls its constructor to create the bean for you. You use it for classes *you* wrote. `@Bean` is a method-level annotation used inside `@Configuration` classes. You manually write the Java code to instantiate and configure the object, and Spring registers whatever the method returns. You use `@Bean` when you need to register a class from a third-party library (like `ObjectMapper` or `DataSource`) where you cannot add a `@Component` annotation to the source code.
 </details>
 
 

@@ -1276,10 +1276,10 @@ public class UserService {
 
 🔬 **Section Challenge — Chapter 7: DTO Mapping Strategies**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Lombok's `@Data` annotation on a JPA `@Entity` class extremely dangerous and likely to cause infinite loops?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+`@Data` automatically generates `equals()`, `hashCode()`, and `toString()` using ALL fields in the class. If you have a bidirectional relationship (e.g., `Author` has `List<Book>`, and `Book` has `Author`), calling `toString()` on an `Author` will print its `Books`. Printing the `Book` will print its `Author`, which prints its `Books`, leading to an infinite recursive loop and a `StackOverflowError`. You should strictly use `@Getter` and `@Setter` on entities instead.
 </details>
 
 

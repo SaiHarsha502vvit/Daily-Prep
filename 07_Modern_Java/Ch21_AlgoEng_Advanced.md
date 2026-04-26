@@ -56,10 +56,10 @@ flowchart TD
 
 🔬 **Section Challenge — Reality → Systems Translation Engine**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -150,10 +150,10 @@ flowchart TD
 
 🔬 **Section Challenge — The Engineer's Translation Engine**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -215,10 +215,10 @@ flowchart TD
 
 🔬 **Section Challenge — Seeing DS as Reality Models, Not Just Containers**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -417,10 +417,10 @@ flowchart TD
 
 🔬 **Section Challenge — How Real Systems Combine Data Structures**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -528,10 +528,10 @@ class RateLimiter {
 
 🔬 **Section Challenge — Building a Rate Limiter (Complete Example)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -607,10 +607,10 @@ flowchart TD
 
 🔬 **Section Challenge — Before Writing Any Code**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -695,10 +695,10 @@ flowchart TD
 
 🔬 **Section Challenge — Translating Vague Requests into System Design**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -782,10 +782,10 @@ flowchart TD
 
 🔬 **Section Challenge — Learning from Real System Failures**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -1130,10 +1130,10 @@ public class URLShortener {
 
 🔬 **Section Challenge — Example 1: Building a URL Shortener (Like bit.ly)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -1287,10 +1287,10 @@ public class Leaderboard {
 
 🔬 **Section Challenge — Example 2: Building a Real-Time Leaderboard**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -1466,10 +1466,10 @@ class AutocompleteSystem {
 
 🔬 **Section Challenge — Example 3: Building an Autocomplete System**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 
@@ -1645,10 +1645,10 @@ flowchart TD
 
 🔬 **Section Challenge — The Systematic Debugging Framework**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In algorithm engineering, why is a HashMap's `O(1)` lookup sometimes significantly slower in reality than a binary search `O(log N)` on a primitive array for small datasets?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+CPU Cache Locality and Hash Computation. A primitive array occupies a single, contiguous block of memory. When the CPU loads the first element, it loads the adjacent elements into the ultra-fast L1 cache, making binary search blazing fast. A HashMap requires computing a hash function, handling collisions, and following Node pointers scattered randomly across the heap (pointer chasing). For small `N`, the memory fetching overhead of the HashMap dwarfs the mathematical `O(1)` advantage.
 </details>
 
 

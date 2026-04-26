@@ -102,16 +102,10 @@ ArrayList uses 4.8x MORE memory than primitive array!
 
 🔬 **Section Challenge — Arraylist - Complete Internal View**
 
-**Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
+**Challenge 1 (Reasoning):** An `ArrayList<Integer>` with 3 elements uses 136 bytes, but an `int[3]` uses only 28 bytes (4.8x difference). Where exactly does the overhead come from? Break it down.
 <details><summary>Answer</summary>
 
-`remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
-</details>
-
-**Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
-<details><summary>Answer</summary>
-
-None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
+Three layers of overhead: (1) ArrayList object itself: 32 bytes (Mark Word 8 + Class Pointer 4 + padding 4 + elementData ref 4 + size 4 + modCount 4 + padding 4). (2) Backing Object[10] array: 56 bytes (12 header + 4 length + 10×4 reference slots — default capacity is 10, not 3!). (3) Each Integer object: 16 bytes (8 Mark Word + 4 Class Pointer + 4 value). Three Integers = 48 bytes. Total: 32 + 56 + 48 = 136 bytes. The `int[3]` avoids ALL of this: 12 header + 4 length + 12 data = 28 bytes. Key insight: autoboxing (`int` → `Integer`) creates a new heap object per element, which is why `int[]` is drastically more memory efficient.
 </details>
 
 
@@ -173,16 +167,10 @@ Integer  Integer  Integer  Integer   ← SCATTERED IN HEAP!        │
 
 🔬 **Section Challenge — Arraylist.Get() - What Actually Happens**
 
-**Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
+**Challenge 1 (Reasoning):** `ArrayList.get(0)` loads a cache line containing references `ref[0]` through `ref[15]`. But each `Integer` object those references point to is scattered across the heap. Why does this make iterating an `ArrayList<Integer>` fundamentally slower than iterating an `int[]`?
 <details><summary>Answer</summary>
 
-`remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
-</details>
-
-**Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
-<details><summary>Answer</summary>
-
-None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
+Two levels of indirection with opposite cache behavior. Level 1 (reference array): sequential, cache-friendly — one cache line loads 16 adjacent references for free. Level 2 (Integer objects): random heap locations — EACH `Integer` dereference is a potential cache miss (~200 CPU cycles). With `int[]`, there's only ONE level — the values ARE the data, contiguously packed. For 1M elements: `int[]` iteration ≈ 0.3ms, `ArrayList<Integer>` ≈ 0.8ms (2.5x slower) due to pointer chasing. This is why JIT-compiled code using primitive arrays can approach bare-metal C speed.
 </details>
 
 
@@ -227,16 +215,10 @@ Average per add = 3n / n = 3 = O(1) AMORTIZED!
 
 🔬 **Section Challenge — Arraylist Resize - What Actually Happens**
 
-**Challenge 1 (Reasoning):** `ArrayList.remove(Object o)` vs `ArrayList.remove(int index)` — you call `list.remove(1)`. Which overload is called and why?
+**Challenge 1 (Reasoning):** ArrayList grows by 1.5x on each resize. After `n` total `add()` calls, prove that the amortized cost per add is O(1) even though individual resizes are O(n).
 <details><summary>Answer</summary>
 
-`remove(int index)` — `1` is an `int` literal, not an `Integer`. Java resolves to the exact-match primitive overload first. To call `remove(Object)`, use `list.remove(Integer.valueOf(1))` or `list.remove((Integer)1)`. This is a classic Java gotcha that changes behavior silently.
-</details>
-
-**Challenge 2 (Design):** You need to frequently add/remove from both ends of a list AND access by index. Which collection?
-<details><summary>Answer</summary>
-
-None of the standard ones do all three efficiently. Tradeoffs: `ArrayList`: O(1) index access, O(N) front insert/delete. `LinkedList`/`ArrayDeque`: O(1) front/back, O(N) index access. Real solution: if index access can be avoided, use `ArrayDeque`. If all 3 are needed constantly, consider a skip list or re-examine your design.
+Use the geometric series argument. After `n` adds starting from capacity 10, total copies across all resizes = `10 + 15 + 22 + 33 + ...` (each term is 1.5x the previous). This is a geometric series with ratio 2/3, summing to approximately `3n`. So total work = `n` (insertions) + `3n` (copies) = `4n` → amortized cost = `4n / n = O(1)`. The 1.5x growth factor is a deliberate trade-off: 2x wastes ~50% memory, 1.25x causes more frequent resizes. Java chose 1.5x (`oldCapacity + (oldCapacity >> 1)`) as the sweet spot. Key insight: `System.arraycopy()` uses SIMD (AVX-256) to copy 32 bytes per cycle, making the actual wall-clock cost of resizes much lower than the theoretical O(n) suggests.
 </details>
 
 
@@ -360,16 +342,16 @@ Why threshold = 8?
 
 🔬 **Section Challenge — Hashmap.Put() - What Actually Happens**
 
-**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+**Challenge 1 (Reasoning):** Java's HashMap computes the bucket index as `hash & (n-1)` instead of `hash % n`. Why is this faster AND why does it require the capacity to be a power of 2?
 <details><summary>Answer</summary>
 
-Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+Bitwise AND is 1 CPU cycle; integer modulo (division) is 20-80 cycles. For this optimization to work, `n` MUST be a power of 2. When `n = 2^k`, then `n-1` = all 1s in binary (e.g., 16-1 = 15 = `0000_1111`). `hash & 0000_1111` extracts the last 4 bits — equivalent to `hash % 16` but 20-80x faster. If `n` were NOT a power of 2, e.g., `n=10`, then `n-1=9=1001` in binary, and `hash & 9` would NOT produce a uniform distribution across indices 0-9. This is also why HashMap additionally XORs `h ^ (h >>> 16)` — it folds the high 16 bits into the low 16 bits, ensuring that keys differing only in high bits still spread across buckets.
 </details>
 
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
+**Challenge 2 (Security):** An attacker sends HTTP requests with carefully crafted parameter names that ALL hash to the same bucket. Explain the attack and Java 8's defense.
 <details><summary>Answer</summary>
 
-Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+Hash-DoS attack (CVE-2011-4858): strings like `"Aa"` and `"BB"` have identical hashCodes (2112). An attacker constructs thousands of such colliding keys as HTTP parameters. All entries pile into ONE bucket → every `HashMap.get()` becomes O(n) → server CPU spikes → denial of service. Java 8's defense: when a bucket chain reaches length 8 (and table size ≥ 64), it converts the chain to a Red-Black Tree. Worst-case lookup drops from O(n) to O(log n). It converts back to a list when the bucket shrinks below 6 entries (hysteresis prevents oscillation between list and tree).
 </details>
 
 
@@ -756,16 +738,16 @@ Compare to Array: 3 accesses in same cache line = ~12 cycles
 
 🔬 **Section Challenge — Binary Search Tree - Complete Internal View**
 
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+**Challenge 1 (Reasoning):** The internals section shows that a BST lookup of 3 nodes incurs ~600 CPU cycles (3 cache misses × 200 cycles each), while an array-based binary search over the same data would take ~12 cycles. Given this 50x penalty, why does TreeMap still exist? When is the cache penalty worth paying?
 <details><summary>Answer</summary>
 
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+TreeMap pays the cache penalty to gain capabilities that arrays CAN'T provide efficiently: (1) **O(log n) insert/delete** — sorted arrays require O(n) shifts to insert. For dynamic data that changes frequently, TreeMap wins. (2) **Range queries** — `subMap(10, 50)` returns all entries with keys 10-50 in O(log n + k) where k = results. Arrays require binary search + linear scan. (3) **Floor/ceiling operations** — `floorKey(42)` finds the largest key ≤ 42 in O(log n). (4) **NavigableMap API** — first/last key, iterators in sorted order. Rule: if your data is static and you just need search, use `Arrays.binarySearch()`. If data is dynamic (inserts/deletes) and you need ordered access, accept the cache penalty and use TreeMap.
 </details>
 
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+**Challenge 2 (Reasoning):** A TreeMap.Entry node is 40 bytes (vs 32 for a HashMap.Node). Where do the extra 8 bytes come from, and why are they necessary?
 <details><summary>Answer</summary>
 
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+TreeMap.Entry has 5 reference fields (key, value, left, right, parent) + 1 boolean (color) + header. HashMap.Node has 4 fields (hash int, key, value, next). The extra fields: `parent` pointer (4 bytes) enables O(1) upward traversal needed for Red-Black Tree rebalancing after insert/delete, and `color` boolean (1 byte + 7 padding) tracks Red-Black tree invariants. Without the parent pointer, rebalancing would require maintaining a stack of ancestors during traversal — trading 4 bytes per node for algorithmic simplicity and constant-factor speed.
 </details>
 
 
@@ -843,7 +825,12 @@ HEAP IS 50x FASTER due to cache locality!
 
 
 🔬 **Section Challenge — 🕸️ 7. Graph Representation Deep Internals**
->>
+
+**Challenge 1 (Reasoning):** For a social network with 1 billion users where each user has ~200 friends on average, would you use an adjacency matrix or adjacency list? Justify with concrete memory numbers.
+<details><summary>Answer</summary>
+
+Adjacency list, overwhelmingly. Matrix: 10^9 × 10^9 × 1 bit = 10^18 bits ≈ 125 petabytes — physically impossible. Adjacency list: each user stores ~200 neighbor IDs (4 bytes each) = 800 bytes/user × 10^9 users = 800 GB — fits in a distributed system. The graph is extremely sparse (200 / 10^9 ≈ 0.00000002% density), so the matrix would be 99.99999998% zeros. Rule: matrix only makes sense for dense graphs (density > 50%) or when you need O(1) edge existence checks on small graphs (V < 10,000).
+</details>
 
 ## Graph - Complete Internal View
 
@@ -925,7 +912,12 @@ queue.offer(neighbor);
 
 
 🔬 **Section Challenge — Graph - Complete Internal View**
->>
+
+**Challenge 1 (Reasoning):** The BFS code above marks `visited[neighbor] = true` BEFORE enqueueing. What happens if you mark visited AFTER polling instead? Why is this a critical bug?
+<details><summary>Answer</summary>
+
+If you mark visited after polling: multiple nodes can enqueue the SAME neighbor before any of them polls it. Example: nodes A and B both connect to C. A enqueues C. Before C is polled, B also checks `!visited[C]` — still false — and enqueues C AGAIN. For dense graphs, this causes exponential queue growth and O(V²) or worse time complexity instead of O(V+E). In grid BFS (e.g., shortest path in a matrix), this bug turns O(M×N) into O(4^(M×N)) — the queue explodes. Always mark visited at the point of ENQUEUEING, not polling.
+</details>
 
 # 🔬 PART 10B: JAVA COLLECTIONS FRAMEWORK - INTERNAL ARCHITECTURE
 

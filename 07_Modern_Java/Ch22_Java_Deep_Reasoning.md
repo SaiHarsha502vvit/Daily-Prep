@@ -357,10 +357,10 @@ System.out.println(c.equals(d)); // true  — always use this
 
 🔬 **Section Challenge — 4. Integer Cache: Why 127 == 127 But 128 != 128**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is `new String("hello") == "hello"` evaluated as `false` in Java?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
 </details>
 
 
@@ -635,10 +635,10 @@ flowchart TD
 
 🔬 **Section Challenge — 7. `final` Keyword: Three Different Meanings**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is `new String("hello") == "hello"` evaluated as `false` in Java?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
 </details>
 
 
@@ -753,10 +753,10 @@ System.out.println(a == b); // false! (see Section 4 — cache only -128 to 127)
 
 🔬 **Section Challenge — 9. Autoboxing Traps: Where Performance Silently Degrades**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is `new String("hello") == "hello"` evaluated as `false` in Java?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
 </details>
 
 
@@ -850,10 +850,10 @@ list.removeAll(toRemove);
 
 🔬 **Section Challenge — 10. ConcurrentModificationException: Why Iterating + Modifying Fails**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is `new String("hello") == "hello"` evaluated as `false` in Java?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
 </details>
 
 
@@ -996,10 +996,10 @@ flowchart TD
 
 🔬 **Section Challenge — 12. Abstract Class vs Interface: The Post-Java-8 Reality**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is `new String("hello") == "hello"` evaluated as `false` in Java?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Memory Allocation. `"hello"` is a string literal that resides in the String Pool inside the JVM Heap. When you use `new String("hello")`, you explicitly force the JVM to bypass the String Pool and allocate a brand new String object in the general Heap space. The `==` operator compares memory references, not object values. Since they are two different objects in memory, the result is false. You must always use `.equals()` for value comparison.
 </details>
 
 

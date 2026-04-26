@@ -240,10 +240,10 @@ flowchart TD
 
 🔬 **Section Challenge — 2. Semaphore: The Parking Lot Pattern**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
 </details>
 
 
@@ -688,10 +688,10 @@ phaser.arriveAndAwaitAdvance();  // Waiter proceeds when all arrive
 
 🔬 **Section Challenge — 5. Phaser: The Flexible Multi-Phase Coordinator**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
 </details>
 
 
@@ -1111,10 +1111,10 @@ public void move(double deltaX, double deltaY) {
 
 🔬 **Section Challenge — 8. Lock Deep Reasoning: ReentrantLock, ReadWriteLock, StampedLock**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
 </details>
 
 
@@ -1332,10 +1332,10 @@ class SimpleReentrantLock extends AbstractQueuedSynchronizer {
 
 🔬 **Section Challenge — 11. AQS — The Engine Under Everything**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using `volatile` on a counter (`volatile int count = 0;`) insufficient to guarantee thread safety when calling `count++` from multiple threads?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Atomicity vs Visibility. `volatile` only guarantees Visibility (if Thread A writes to it, Thread B immediately sees the new value instead of a cached CPU register value). However, `count++` is NOT a single atomic operation; it is three distinct steps: Read, Add, Write. Two threads can read the same value, increment it, and write it back, overwriting each other (Race Condition). You must use `AtomicInteger.incrementAndGet()` to guarantee both visibility AND atomic execution.
 </details>
 
 
@@ -1550,203 +1550,4 @@ new Thread(() -> {
 // → NEVER use CachedThreadPool for untrusted/unbounded workloads
 // → Use FixedThreadPool or ThreadPoolExecutor with bounded queue instead
 ```
-
----
-
-
----
-
-## 🏋️ Practice & Interview Questions — Concurrency (Extra)
-
-### Predict / Trace
-**Q1.** Is this code thread-safe?
-```java
-if (!map.containsKey(key)) { map.put(key, compute(key)); }
-```
-<details><summary>Answer</summary>
-
-**No.** Two threads can both pass `containsKey` check simultaneously → both compute and put → race condition, duplicate computation, possible data loss. **Fix**: `map.computeIfAbsent(key, k -> compute(k))` on ConcurrentHashMap — atomic!
-</details>
-
-**Q2.** What's wrong with checking `if(future.isDone())` before `future.get()`?
-<details><summary>Answer</summary>
-
-Nothing wrong functionally, but it's redundant. `future.get()` blocks until done anyway. Only use `isDone()` when you want **non-blocking check** (poll pattern). `isDone()` followed immediately by `get()` has a TOCTOU race — another thread could cancel it between your check and get (though `get()` would throw `CancellationException`).
-</details>
-
-### Coding Problems
-**Q3.** ⭐⭐ Implement a thread-safe bounded blocking queue from scratch with `wait/notify`.
-<details><summary>Solution</summary>
-
-```java
-class BoundedQueue<T> {
-    private final Queue<T> queue = new LinkedList<>();
-    private final int capacity;
-    BoundedQueue(int cap){ this.capacity=cap; }
-
-    synchronized void put(T item) throws InterruptedException {
-        while(queue.size()==capacity) wait(); // Full — wait
-        queue.offer(item);
-        notifyAll(); // Signal waiting consumers
-    }
-
-    synchronized T take() throws InterruptedException {
-        while(queue.isEmpty()) wait(); // Empty — wait
-        T item=queue.poll();
-        notifyAll(); // Signal waiting producers
-        return item;
-    }
-}
-```
-</details>
-
-**Q4.** ⭐⭐ Implement a simple `Future<T>` from scratch.
-<details><summary>Solution</summary>
-
-```java
-class SimpleFuture<T> {
-    private T value; private Throwable error;
-    private boolean done=false;
-
-    synchronized void complete(T val){ value=val; done=true; notifyAll(); }
-    synchronized void completeExceptionally(Throwable t){ error=t; done=true; notifyAll(); }
-
-    synchronized T get() throws Exception {
-        while(!done) wait();
-        if(error!=null) throw new ExecutionException(error);
-        return value;
-    }
-}
-```
-</details>
-
-**Q5.** ⭐⭐⭐ Design a rate limiter (Token Bucket algorithm).
-<details><summary>Solution</summary>
-
-```java
-class TokenBucket {
-    private final long capacity, refillRate;
-    private double tokens;
-    private long lastRefill = System.nanoTime();
-
-    TokenBucket(long capacity, long tokensPerSecond){
-        this.capacity=capacity; this.refillRate=tokensPerSecond; this.tokens=capacity;
-    }
-
-    synchronized boolean tryAcquire(){
-        refill();
-        if(tokens>=1){ tokens--; return true; }
-        return false;
-    }
-
-    private void refill(){
-        long now = System.nanoTime();
-        double added = (now-lastRefill)/1e9 * refillRate;
-        tokens = Math.min(capacity, tokens+added);
-        lastRefill = now;
-    }
-}
-```
-</details>
-
-### Interview Questions
-**Q6.** What is a memory barrier / fence and when does Java insert one?
-<details><summary>Answer</summary>
-
-A memory barrier is a CPU instruction that prevents reordering across it. Java inserts them:
-- **volatile write**: StoreStore + StoreLoad barrier → all prior writes visible before the volatile write
-- **volatile read**: LoadLoad + LoadStore barrier → all subsequent reads see up-to-date values
-- **synchronized exit**: StoreLoad barrier (like volatile write)
-- **synchronized entry**: LoadLoad barrier (like volatile read)
-</details>
-
-**Q7.** What is false sharing and how do you prevent it?
-<details><summary>Answer</summary>
-
-Two threads modify different variables that happen to be on the **same CPU cache line** (64 bytes). When one thread modifies its variable, it invalidates the entire cache line — the other thread's variable (though unchanged) must be re-fetched. **Fix**: `@Contended` annotation (Java 8+) adds padding to isolate variables to separate cache lines.
-
-```java
-@sun.misc.Contended
-class PaddedCounter { volatile long value; }
-```
-</details>
-
-### MCQ Rapid Fire
-| # | Question | Answer |
-|---|---|---|
-| 1 | ExecutorService.shutdown() — does it wait for tasks? | ❌ Initiates shutdown, doesn't wait. Use awaitTermination() |
-| 2 | ExecutorService.shutdownNow() — does it stop running tasks? | Tries to interrupt them, returns list of queued tasks |
-| 3 | Future.cancel(true) — does it stop the task? | Only if task checks isInterrupted() |
-| 4 | CompletableFuture.get() vs join() | get() throws checked exceptions; join() throws unchecked |
-| 5 | Which is faster: AtomicLong or LongAdder? | LongAdder under contention (stripes), AtomicLong for single reads |
-| 6 | Volatile does not guarantee: | Atomicity of compound operations (check-then-act) |
-| 7 | Thread.yield() does what? | Hints scheduler to give up CPU, no guarantee |
-| 8 | Daemon threads — example in JDK | GC threads, JIT compiler threads, finalizer thread |
-
-
-
----
-
-## 🧠 Deep Conceptual Questions — Concurrency & Thread Safety
-
-**C1. What does "happens-before" actually mean in plain terms?**
-<details><summary>Deep Answer</summary>
-
-"A happens-before B" means: all effects of A (writes to memory) are guaranteed to be visible to B. It's NOT about time ordering — A might literally execute after B in wall-clock time on a different CPU. It's about **visibility guarantees** the JMM provides through specific synchronization actions (volatile, synchronized, join, etc.). Without happens-before: the compiler and CPU are FREE to reorder operations aggressively for performance, and your threads may see stale or absent writes. The JMM doesn't promise any ordering except what's guaranteed via the HB relation.
-</details>
-
-**C2. Why does `volatile` NOT solve the `count++` problem?**
-<details><summary>Deep Answer</summary>
-
-`count++` is three operations: (1) read `count` from main memory, (2) increment in CPU register, (3) write back. `volatile` guarantees each read/write is visible (no caching). But it doesn't prevent two threads from both reading count=5 (each sees 5 via volatile), both incrementing to 6, both writing 6. Count goes 5→6 instead of 5→7. `volatile` adds visibility but no atomicity for compound operations. Solutions: `AtomicInteger.incrementAndGet()` (CAS loop — atomic at hardware level), or `synchronized` (mutual exclusion).
-</details>
-
-**C3. What is CAS (Compare-And-Swap) and why is it "lock-free"?**
-<details><summary>Deep Answer</summary>
-
-CAS: a single CPU instruction `compareAndSwap(addr, expected, newValue)`: if the value at `addr` == `expected`, atomically set it to `newValue` and return true. Otherwise return false. Lock-free: no thread is BLOCKED — if CAS fails, retry in a loop. At least ONE thread always makes progress (the one that succeeds). Contrast with locks: a failed lock acquisition blocks the thread (OS sleep: ~100μs overhead). AtomicInteger.incrementAndGet() = CAS loop: read value, compute +1, CAS. Retry if someone else changed it between read and write. Under low contention: almost always succeeds first try. Under high contention: LongAdder is better (decentralizes to per-thread cells).
-</details>
-
-**C4. Why is `synchronized` using a "monitor" — what is a monitor?**
-<details><summary>Deep Answer</summary>
-
-A monitor is a concurrency construct that combines: (1) a **mutex** (only one thread can enter at a time), (2) a **wait set** (threads can wait for a condition and be notified). In Java: every object has an intrinsic lock (monitor). `synchronized(obj)` acquires the monitor. `obj.wait()` releases the monitor and adds current thread to the wait set. `obj.notify()` picks one thread from the wait set and marks it to re-acquire the monitor. The monitor concept comes from Hoare (1974). Java's implementation: object header contains a mark word that stores the lock state (unlocked → biased locked → thin lock → fat lock with OS mutex).
-</details>
-
-**C5. What is the difference between "thread safety" and "atomicity"?**
-<details><summary>Deep Answer</summary>
-
-**Thread safety**: a class is thread-safe if it behaves correctly when accessed from multiple threads concurrently WITHOUT requiring external synchronization. **Atomicity**: an operation is atomic if it completes entirely or not at all, with no intermediate state visible to other threads. Thread safety can be achieved without per-operation atomicity — you can use locks to protect a sequence of non-atomic operations. `Vector` is thread-safe (every method synchronized) but NOT atomically composable: `if(!v.isEmpty()) v.remove(0)` is not atomic — another thread can remove between the check and the remove. Thread safety at the class level doesn't compose into thread safety at the operation sequence level.
-</details>
-
-**C6. Why is `ThreadLocal` NOT the solution for sharing context between parent and child threads?**
-<details><summary>Deep Answer</summary>
-
-`ThreadLocal` is per-thread. A new thread has NO access to its parent's ThreadLocal values. If main thread sets `requestContext.set(ctx)` then submits a task to a thread pool — the pool thread has an EMPTY ThreadLocal. Solutions: (1) `InheritableThreadLocal`: child thread inherits parent's values at creation time, but pool threads are created ONCE and reused → no re-inheritance on submission. (2) Pass context explicitly to the task constructor. (3) Use `MDCAdapter` (SLF4J's MDC): designed for this, pool-aware. (4) Project Loom's `ScopedValue` (Java 21 preview): designed to replace ThreadLocal for this exact use case.
-</details>
-
-**C7. Deadlock: what are the 4 Coffman conditions and why must ALL 4 hold simultaneously?**
-<details><summary>Deep Answer</summary>
-
-1. **Mutual Exclusion**: resource held exclusively (locks can't be shared)
-2. **Hold and Wait**: thread holds resource while waiting for another
-3. **No Preemption**: resources can't be forcibly taken from a thread
-4. **Circular Wait**: A→B→C→A chain of waiting
-
-These are NECESSARY conditions — ALL four must hold for deadlock to be possible (not sufficient on their own). Breaking ANY ONE prevents deadlock: eliminate mutual exclusion (lock-free algorithms), prevent hold-and-wait (acquire all locks at once), allow preemption (tryLock with timeout), prevent circular wait (global lock ordering). In practice: global lock ordering (breaking #4) is the most common and reliable prevention strategy.
-</details>
-
-**C8. What happens inside the JVM when `synchronized` is acquired?**
-<details><summary>Deep Answer</summary>
-
-JVM uses **lock escalation** based on contention: 
-1. **Biased lock** (no contention): object header records the thread ID. No CAS needed — just check header. Fastest path.
-2. **Thin/lightweight lock**: CAS on object header to change lock state. Stack-allocated lock record. No OS call.
-3. **Heavyweight/fat lock**: when multiple threads contend. OS mutex via `pthread_mutex_lock` — expensive (~μs for context switch). Thread parked by OS.
-
-LockSupport.park() (used by AQS and heavyweight locks) suspends the thread using OS primitives (futex on Linux). When `synchronized` is uncontested (> 95% of real-world cases): nearly free. Under contention: expensive. This is why `synchronized` in modern JVMs is much faster than pre-Java-6.
-</details>
-
-
-**Navigation**: [< JVM Object Model](Ch19_JVM_Object_Model.md) | [Back to Index](../00_MASTER_INDEX.md) | [SQL Data Analyst >](../08_SQL/24_SQL_Data_Analyst_RealWorld.md)
 

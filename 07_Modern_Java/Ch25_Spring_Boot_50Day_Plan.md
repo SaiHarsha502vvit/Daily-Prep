@@ -149,10 +149,10 @@ Each day: ~2-3 hours
 
 🔬 **Section Challenge — Week 1: Java Internals + Spring Core**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does Spring use CGLIB proxies by default instead of JDK Dynamic Proxies when you annotate a class with `@Transactional`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+JDK Dynamic Proxies require the target class to implement an interface. If your service class doesn't implement an interface, JDK proxies fail. CGLIB bypasses this by generating a subclass of your actual target class at runtime and overriding its non-final methods. This allows Spring to inject transaction logic (begin/commit/rollback) around your method calls without forcing you to write boilerplate interfaces for every single service. However, because CGLIB creates a subclass, it *cannot* proxy `final` methods or `private` methods—which is exactly why calling a `@Transactional` method from within the *same* class bypasses the proxy and executes without a transaction!
 </details>
 
 
@@ -496,10 +496,10 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 
 🔬 **Section Challenge — Week 5: Testing + Production Features**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** You wrote a `@SpringBootTest` that uses `@MockBean` for a repository. Why does your test suite suddenly take 5x longer to run when you add this single test class?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Context Caching. Spring Boot optimizes test execution by heavily caching the `ApplicationContext` between test classes. However, when you introduce `@MockBean` (or `@SpyBean`), you are fundamentally altering the beans in the context. Spring realizes the cached context is no longer valid for this specific test, forces a context refresh (which drops the cache), boots up a completely new application context just for this test, and then drops it again. If you scatter `@MockBean` randomly across many test classes, Spring will continuously tear down and rebuild the entire application context, destroying your test suite's performance.
 </details>
 
 
@@ -613,10 +613,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — Week 7: Messaging + Reactive**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Spring WebFlux, if you call a blocking database operation (like standard JDBC) inside a reactive `map()` operator, the entire application freezes under load. Why does WebFlux completely collapse, whereas standard Spring MVC survives?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Thread Starvation. Spring MVC allocates one thread per request (e.g., 200 Tomcat threads). If a thread blocks on JDBC, only that specific user is delayed. WebFlux uses the Event Loop model (Netty), running on just a handful of threads (typically 1 per CPU core). If you execute a blocking JDBC call on the Event Loop thread, you literally freeze the core routing engine of the application. No new requests can be accepted, and no ongoing events can be processed until that DB call returns. This is why you **must** use non-blocking drivers (R2DBC) or strictly offload blocking calls to a separate bounded thread pool (`Schedulers.boundedElastic()`) in reactive apps.
 </details>
 
 

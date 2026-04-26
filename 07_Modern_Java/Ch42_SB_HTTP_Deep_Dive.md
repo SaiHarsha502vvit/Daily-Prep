@@ -403,10 +403,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 4: Understanding URL Structure**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does making 100 sequential HTTP/1.1 requests to a microservice take significantly longer than making the exact same 100 requests over HTTP/2?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Head-of-Line Blocking and Connection Overhead. HTTP/1.1 requires opening a new TCP connection (and performing the expensive TCP/TLS handshakes) for every few requests, and requests on the same connection must wait for the previous response to finish (Head-of-Line blocking). HTTP/2 uses a single, persistent TCP connection and multiplexes all 100 requests concurrently as interleaved binary frames, completely eliminating TCP handshake overhead and blocking.
 </details>
 
 
@@ -1586,10 +1586,10 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
 
 🔬 **Section Challenge — Chapter 11: Building Protocol Clients in Spring Boot**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does making 100 sequential HTTP/1.1 requests to a microservice take significantly longer than making the exact same 100 requests over HTTP/2?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Head-of-Line Blocking and Connection Overhead. HTTP/1.1 requires opening a new TCP connection (and performing the expensive TCP/TLS handshakes) for every few requests, and requests on the same connection must wait for the previous response to finish (Head-of-Line blocking). HTTP/2 uses a single, persistent TCP connection and multiplexes all 100 requests concurrently as interleaved binary frames, completely eliminating TCP handshake overhead and blocking.
 </details>
 
 

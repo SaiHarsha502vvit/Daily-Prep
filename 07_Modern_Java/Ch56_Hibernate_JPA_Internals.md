@@ -303,10 +303,10 @@ public void dangerousMerge(User detachedUser) {
 
 🔬 **Section Challenge — 3. Entity States — The 4-State Machine You MUST Know**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is calling `myEntity.getChildren().size()` inside a `@Transactional` method perfectly fine, but doing it outside the transaction throws a `LazyInitializationException`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hibernate injects a proxy collection instead of fetching the real data. When you call `.size()` inside the transaction, the Hibernate Session is still open, so the proxy silently runs a SQL query to fetch the data. If you call it *after* the transaction commits, the Session is closed. The proxy tries to run a query, realizes it has no database connection, and immediately throws the `LazyInitializationException`.
 </details>
 
 
@@ -445,10 +445,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 5. Dirty Checking — How Hibernate Knows You Changed Something**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is calling `myEntity.getChildren().size()` inside a `@Transactional` method perfectly fine, but doing it outside the transaction throws a `LazyInitializationException`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hibernate injects a proxy collection instead of fetching the real data. When you call `.size()` inside the transaction, the Hibernate Session is still open, so the proxy silently runs a SQL query to fetch the data. If you call it *after* the transaction commits, the Session is closed. The proxy tries to run a query, realizes it has no database connection, and immediately throws the `LazyInitializationException`.
 </details>
 
 
@@ -606,10 +606,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 7. Lazy Loading — How Proxy Objects Work**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is calling `myEntity.getChildren().size()` inside a `@Transactional` method perfectly fine, but doing it outside the transaction throws a `LazyInitializationException`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hibernate injects a proxy collection instead of fetching the real data. When you call `.size()` inside the transaction, the Hibernate Session is still open, so the proxy silently runs a SQL query to fetch the data. If you call it *after* the transaction commits, the Session is closed. The proxy tries to run a query, realizes it has no database connection, and immediately throws the `LazyInitializationException`.
 </details>
 
 
@@ -860,10 +860,10 @@ public class Department {
 
 🔬 **Section Challenge — 10. Open Session in View — The Controversial Pattern**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is calling `myEntity.getChildren().size()` inside a `@Transactional` method perfectly fine, but doing it outside the transaction throws a `LazyInitializationException`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hibernate injects a proxy collection instead of fetching the real data. When you call `.size()` inside the transaction, the Hibernate Session is still open, so the proxy silently runs a SQL query to fetch the data. If you call it *after* the transaction commits, the Session is closed. The proxy tries to run a query, realizes it has no database connection, and immediately throws the `LazyInitializationException`.
 </details>
 
 
@@ -948,10 +948,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 11. Connection Pooling — HikariCP Internals**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is calling `myEntity.getChildren().size()` inside a `@Transactional` method perfectly fine, but doing it outside the transaction throws a `LazyInitializationException`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hibernate injects a proxy collection instead of fetching the real data. When you call `.size()` inside the transaction, the Hibernate Session is still open, so the proxy silently runs a SQL query to fetch the data. If you call it *after* the transaction commits, the Session is closed. The proxy tries to run a query, realizes it has no database connection, and immediately throws the `LazyInitializationException`.
 </details>
 
 
@@ -1035,10 +1035,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 12. How Spring Data JPA Generates Repository Implementations**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is calling `myEntity.getChildren().size()` inside a `@Transactional` method perfectly fine, but doing it outside the transaction throws a `LazyInitializationException`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hibernate injects a proxy collection instead of fetching the real data. When you call `.size()` inside the transaction, the Hibernate Session is still open, so the proxy silently runs a SQL query to fetch the data. If you call it *after* the transaction commits, the Session is closed. The proxy tries to run a query, realizes it has no database connection, and immediately throws the `LazyInitializationException`.
 </details>
 
 

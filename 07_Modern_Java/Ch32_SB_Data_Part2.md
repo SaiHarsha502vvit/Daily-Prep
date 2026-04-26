@@ -80,10 +80,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 1: Inversion of Control (IoC) - The Philosophy**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** You are writing a query to find users by email: `findByEmail(String email)`. Why is this inherently vulnerable to SQL injection if implemented using native JDBC string concatenation, but completely safe in Spring Data JPA?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
 </details>
 
 
@@ -275,10 +275,10 @@ flowchart TD
 
 🔬 **Section Challenge — The Problem: Tight Coupling**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** You are writing a query to find users by email: `findByEmail(String email)`. Why is this inherently vulnerable to SQL injection if implemented using native JDBC string concatenation, but completely safe in Spring Data JPA?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
 </details>
 
 
@@ -290,10 +290,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — Chapter 2: Spring Beans - The Building Blocks**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** You are writing a query to find users by email: `findByEmail(String email)`. Why is this inherently vulnerable to SQL injection if implemented using native JDBC string concatenation, but completely safe in Spring Data JPA?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
 </details>
 
 
@@ -403,10 +403,10 @@ public class AppConfig { }
 
 🔬 **Section Challenge — Spring Bean Definition**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** You are writing a query to find users by email: `findByEmail(String email)`. Why is this inherently vulnerable to SQL injection if implemented using native JDBC string concatenation, but completely safe in Spring Data JPA?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
 </details>
 
 
@@ -711,10 +711,10 @@ public class UserService {
 
 🔬 **Section Challenge — Chapter 4: Resolving Dependencies (@Qualifier, @Primary)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** You are writing a query to find users by email: `findByEmail(String email)`. Why is this inherently vulnerable to SQL injection if implemented using native JDBC string concatenation, but completely safe in Spring Data JPA?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
 </details>
 
 

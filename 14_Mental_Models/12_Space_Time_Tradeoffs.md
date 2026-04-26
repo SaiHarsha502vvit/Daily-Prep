@@ -77,7 +77,13 @@ Bitset: 10000/8 = 1.25KB
 
 
 
-> 🔬 **Section Challenge — Classic Tradeoff Examples In Dsa**
+🔬 **Section Challenge — Classic Tradeoff Examples In Dsa**
+
+**Challenge 1 (Reasoning):** HashMap lookup is O(1) and binary search on a sorted array is O(log N). Yet for N < 1000, the sorted array can be *faster* in practice. Why?
+<details><summary>Answer</summary>
+
+HashMap O(1) is *amortized* and hides constant factors: hash computation, modulo operation, possible collision chaining, and — critically — *random memory access* to the bucket array. Each lookup may cause a cache miss (~100+ cycles for L2/L3). A sorted array binary search does O(log 1000) ≈ 10 comparisons, but the array is *contiguous in memory*. For small N, the entire array fits in L1 cache (64KB). Each comparison is ~4 cycles with cache hits. Total: ~40 cycles vs HashMap's ~100+ cycles per lookup. **The lesson**: Big-O ignores constant factors and cache behavior. For small N, cache-friendly O(log N) beats cache-hostile O(1). This is why Java's `Arrays.sort()` switches to insertion sort for N < 47.
+</details>
 
 ## The "When Not To Trade" Guide
 

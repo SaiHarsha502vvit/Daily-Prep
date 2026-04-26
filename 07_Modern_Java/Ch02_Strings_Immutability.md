@@ -12,10 +12,10 @@
 
 🔬 **Section Challenge — PART 1: STRING INTERNALS**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** If you need to concatenate strings in a tight loop 10,000 times, why is using `+` (`str += "a"`) catastrophic compared to `StringBuilder.append("a")`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
 </details>
 
 
@@ -131,10 +131,10 @@ s = s.toUpperCase(); // NOW s points to the NEW "HELLO" string
 
 🔬 **Section Challenge — 2. String Immutability — Why and How**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** If you need to concatenate strings in a tight loop 10,000 times, why is using `+` (`str += "a"`) catastrophic compared to `StringBuilder.append("a")`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
 </details>
 
 
@@ -186,10 +186,10 @@ String s = "Name: " + name + " Age: " + age;
 
 🔬 **Section Challenge — 3. String Concatenation — The Performance Trap**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** If you need to concatenate strings in a tight loop 10,000 times, why is using `+` (`str += "a"`) catastrophic compared to `StringBuilder.append("a")`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
 </details>
 
 
@@ -259,10 +259,10 @@ Each `+=` creates a NEW String object: copies all existing chars + appends new c
 
 🔬 **Section Challenge — 5. Compact Strings (Java 9+)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** If you need to concatenate strings in a tight loop 10,000 times, why is using `+` (`str += "a"`) catastrophic compared to `StringBuilder.append("a")`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
 </details>
 
 
@@ -345,10 +345,10 @@ String.format("Name: %s", name); // Formatted string
 
 🔬 **Section Challenge — 7. Common String Methods — Cheat Sheet**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** If you need to concatenate strings in a tight loop 10,000 times, why is using `+` (`str += "a"`) catastrophic compared to `StringBuilder.append("a")`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
 </details>
 
 

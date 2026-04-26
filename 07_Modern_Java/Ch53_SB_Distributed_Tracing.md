@@ -133,10 +133,10 @@ flowchart TD
 
 🔬 **Section Challenge — 1. Tracing Fundamentals**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
 </details>
 
 
@@ -175,10 +175,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 2. Spring Cloud Sleuth (Spring Boot 2.x)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
 </details>
 
 
@@ -256,10 +256,10 @@ Sleuth automatically traces:
 
 🔬 **Section Challenge — 3. Micrometer Tracing (Spring Boot 3.x)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
 </details>
 
 
@@ -592,10 +592,10 @@ public class BaggageFilter extends OncePerRequestFilter {
 
 🔬 **Section Challenge — 6. Zipkin Integration**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
 </details>
 
 
@@ -852,10 +852,10 @@ public class CustomHeaderPropagation {
 
 🔬 **Section Challenge — 8. Tracing Across Message Queues**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
 </details>
 
 
@@ -967,10 +967,10 @@ public class ObservationConfiguration {
 
 🔬 **Section Challenge — 9. Sampling Strategies**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
 </details>
 
 
@@ -1598,10 +1598,10 @@ public class TracingAnalysisService {
 
 🔬 **Section Challenge — 11. Debugging with Traces**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
 </details>
 
 
@@ -1728,10 +1728,10 @@ class ExternalServiceTracingTest {
 
 🔬 **Section Challenge — 12. Testing Traced Code**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
 </details>
 
 

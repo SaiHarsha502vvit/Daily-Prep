@@ -113,10 +113,10 @@ long start = System.currentTimeMillis();              // REPEATED!
 
 🔬 **Section Challenge — The Cross-Cutting Problem**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
 
 
@@ -214,10 +214,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 2: AOP Terminology**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
 
 
@@ -579,10 +579,10 @@ public class PointcutExamplesAspect {
 
 🔬 **Section Challenge — Chapter 4: Pointcut Expressions**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
 
 
@@ -758,10 +758,10 @@ public class UserService {
 
 🔬 **Section Challenge — Chapter 5: How Spring AOP Works (Proxy Magic)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
 
 
@@ -1049,10 +1049,10 @@ spring:
 
 🔬 **Section Challenge — Chapter 7: The Magic of @SpringBootApplication**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
 
 
@@ -1245,10 +1245,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 9: Profiles in Spring Boot**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
 
 

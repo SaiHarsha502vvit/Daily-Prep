@@ -12,10 +12,10 @@
 
 🔬 **Section Challenge — PART 1: CLASSLOADER — How Java Finds & Loads Classes**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
 </details>
 
 
@@ -213,10 +213,10 @@ Session data (shopping cart, auth state) is stored on ONE server. Round-robin se
 
 🔬 **Section Challenge — PART 2: JDBC — Database Access Internals**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
 </details>
 
 
@@ -356,10 +356,10 @@ try (Connection conn = ds.getConnection()) {  // Borrows from pool
 
 🔬 **Section Challenge — 7. Connection Pooling — Why and How**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
 </details>
 
 
@@ -443,10 +443,10 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 
 🔬 **Section Challenge — PART 3: LOGGING — The Observability Foundation**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
 </details>
 
 
@@ -478,10 +478,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 10. Logging Landscape**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
 </details>
 
 
@@ -696,10 +696,10 @@ Every context consumer re-renders when ANY context value changes. If you have `{
 
 🔬 **Section Challenge — 15. Structured JSON Logging — Production Standard**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
 </details>
 
 
@@ -762,10 +762,10 @@ Logging Rules:
 
 🔬 **Section Challenge — 17. Quick Reference — All Three Combined**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
 </details>
 
 

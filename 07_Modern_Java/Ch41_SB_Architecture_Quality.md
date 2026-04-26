@@ -441,10 +441,10 @@ public class OrderService {
 
 🔬 **Section Challenge — Chapter 3: Clean Code Principles for Spring**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a Hexagonal Architecture (Ports and Adapters), why must the Domain layer NEVER import classes from the `org.springframework.*` or `javax.persistence.*` packages?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Framework Agnosticism. The core principle of Hexagonal Architecture is that the Domain (business logic) is completely isolated from infrastructure, databases, and frameworks. If your Domain models use `@Entity` or `@Service`, they are now tightly coupled to Hibernate and Spring. If you ever need to swap frameworks or databases, your core business logic breaks. The Domain should only contain pure Java (POJOs), and infrastructure details must be implemented in the external Adapter layers.
 </details>
 
 
@@ -629,10 +629,10 @@ public class OrderService {
 
 🔬 **Section Challenge — Chapter 4: Writing Quality Service Methods**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a Hexagonal Architecture (Ports and Adapters), why must the Domain layer NEVER import classes from the `org.springframework.*` or `javax.persistence.*` packages?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Framework Agnosticism. The core principle of Hexagonal Architecture is that the Domain (business logic) is completely isolated from infrastructure, databases, and frameworks. If your Domain models use `@Entity` or `@Service`, they are now tightly coupled to Hibernate and Spring. If you ever need to swap frameworks or databases, your core business logic breaks. The Domain should only contain pure Java (POJOs), and infrastructure details must be implemented in the external Adapter layers.
 </details>
 
 
@@ -982,10 +982,10 @@ public class GlobalExceptionHandler {
 
 🔬 **Section Challenge — Chapter 6: Error Handling Strategy**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a Hexagonal Architecture (Ports and Adapters), why must the Domain layer NEVER import classes from the `org.springframework.*` or `javax.persistence.*` packages?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Framework Agnosticism. The core principle of Hexagonal Architecture is that the Domain (business logic) is completely isolated from infrastructure, databases, and frameworks. If your Domain models use `@Entity` or `@Service`, they are now tightly coupled to Hibernate and Spring. If you ever need to swap frameworks or databases, your core business logic breaks. The Domain should only contain pure Java (POJOs), and infrastructure details must be implemented in the external Adapter layers.
 </details>
 
 
@@ -1199,10 +1199,10 @@ class UserApiIntegrationTest {
 
 🔬 **Section Challenge — Chapter 7: Testing Strategy**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a Hexagonal Architecture (Ports and Adapters), why must the Domain layer NEVER import classes from the `org.springframework.*` or `javax.persistence.*` packages?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Framework Agnosticism. The core principle of Hexagonal Architecture is that the Domain (business logic) is completely isolated from infrastructure, databases, and frameworks. If your Domain models use `@Entity` or `@Service`, they are now tightly coupled to Hibernate and Spring. If you ever need to swap frameworks or databases, your core business logic breaks. The Domain should only contain pure Java (POJOs), and infrastructure details must be implemented in the external Adapter layers.
 </details>
 
 
@@ -1312,10 +1312,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 8: Final Checklist**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a Hexagonal Architecture (Ports and Adapters), why must the Domain layer NEVER import classes from the `org.springframework.*` or `javax.persistence.*` packages?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Framework Agnosticism. The core principle of Hexagonal Architecture is that the Domain (business logic) is completely isolated from infrastructure, databases, and frameworks. If your Domain models use `@Entity` or `@Service`, they are now tightly coupled to Hibernate and Spring. If you ever need to swap frameworks or databases, your core business logic breaks. The Domain should only contain pure Java (POJOs), and infrastructure details must be implemented in the external Adapter layers.
 </details>
 
 

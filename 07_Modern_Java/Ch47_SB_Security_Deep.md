@@ -521,10 +521,10 @@ public class User implements Auditable {
 
 🔬 **Section Challenge — Chapter 6: Tracking Who Did What, When**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does storing a raw, unencrypted JWT in localStorage make your application critically vulnerable to Cross-Site Scripting (XSS)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+If an attacker manages to inject malicious JavaScript into your webpage (XSS), that script has unrestricted access to `window.localStorage`. The script can read the JWT, send it to the attacker's server, and the attacker now has full, unrestricted access to impersonate the user until the token expires. To prevent this, sensitive JWTs should be stored in `HttpOnly` cookies, which are completely invisible and inaccessible to JavaScript execution.
 </details>
 
 
@@ -690,10 +690,10 @@ public class UserSearchService {
 
 🔬 **Section Challenge — Chapter 7: Preventing SQL Injection Attacks**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does storing a raw, unencrypted JWT in localStorage make your application critically vulnerable to Cross-Site Scripting (XSS)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+If an attacker manages to inject malicious JavaScript into your webpage (XSS), that script has unrestricted access to `window.localStorage`. The script can read the JWT, send it to the attacker's server, and the attacker now has full, unrestricted access to impersonate the user until the token expires. To prevent this, sensitive JWTs should be stored in `HttpOnly` cookies, which are completely invisible and inaccessible to JavaScript execution.
 </details>
 
 
@@ -868,10 +868,10 @@ public class EncryptionService {
 
 🔬 **Section Challenge — Chapter 9: Securing Database Connections**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does storing a raw, unencrypted JWT in localStorage make your application critically vulnerable to Cross-Site Scripting (XSS)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+If an attacker manages to inject malicious JavaScript into your webpage (XSS), that script has unrestricted access to `window.localStorage`. The script can read the JWT, send it to the attacker's server, and the attacker now has full, unrestricted access to impersonate the user until the token expires. To prevent this, sensitive JWTs should be stored in `HttpOnly` cookies, which are completely invisible and inaccessible to JavaScript execution.
 </details>
 
 

@@ -237,10 +237,10 @@ class ExternalApiClientTest {
 
 🔬 **Section Challenge — Integration Testing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Testcontainers superior to using an In-Memory Database (like H2) for integration testing Spring Boot applications?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurately replicate native JSONB operators, advanced window functions, or specific transaction isolation anomalies. If tests pass on H2 but run on Postgres in production, you are blind to database-specific bugs. Testcontainers spins up a real Docker container of the exact Postgres version you use in production, ensuring 100% environment parity and eliminating "works on my machine" bugs.
 </details>
 
 
@@ -355,10 +355,10 @@ class UserServiceIntegrationTest extends AbstractContainerBaseTest {
 
 🔬 **Section Challenge — Test Containers**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Testcontainers superior to using an In-Memory Database (like H2) for integration testing Spring Boot applications?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurately replicate native JSONB operators, advanced window functions, or specific transaction isolation anomalies. If tests pass on H2 but run on Postgres in production, you are blind to database-specific bugs. Testcontainers spins up a real Docker container of the exact Postgres version you use in production, ensuring 100% environment parity and eliminating "works on my machine" bugs.
 </details>
 
 
@@ -1073,10 +1073,10 @@ class UserApiSimulation extends Simulation {
 
 🔬 **Section Challenge — Performance Testing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is using Testcontainers superior to using an In-Memory Database (like H2) for integration testing Spring Boot applications?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Syntax and Feature parity. H2 emulates Postgres/MySQL but often fails to accurately replicate native JSONB operators, advanced window functions, or specific transaction isolation anomalies. If tests pass on H2 but run on Postgres in production, you are blind to database-specific bugs. Testcontainers spins up a real Docker container of the exact Postgres version you use in production, ensuring 100% environment parity and eliminating "works on my machine" bugs.
 </details>
 
 

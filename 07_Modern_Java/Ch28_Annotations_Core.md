@@ -789,10 +789,10 @@ public class Car extends Vehicle {
 
 🔬 **Section Challenge — JPA Mapping Annotations**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is `@Service` functionally identical to `@Component`, yet it is highly recommended to use `@Service` for your business logic layer?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally just a meta-annotation of `@Component` and behaves exactly the same in the IoC container. However, it explicitly communicates to other developers that the class holds domain business logic. Furthermore, Spring Pointcuts and AOP interceptors often target `@Service` specifically to apply transaction management or logging rules exclusively to the business layer.
 </details>
 
 
@@ -893,10 +893,10 @@ public class Product extends Auditable {
 
 🔬 **Section Challenge — Spring Data Auditing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is `@Service` functionally identical to `@Component`, yet it is highly recommended to use `@Service` for your business logic layer?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally just a meta-annotation of `@Component` and behaves exactly the same in the IoC container. However, it explicitly communicates to other developers that the class holds domain business logic. Furthermore, Spring Pointcuts and AOP interceptors often target `@Service` specifically to apply transaction management or logging rules exclusively to the business layer.
 </details>
 
 
@@ -1431,10 +1431,10 @@ public class MailProperties {
 
 🔬 **Section Challenge — Spring Core Annotations**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is `@Service` functionally identical to `@Component`, yet it is highly recommended to use `@Service` for your business logic layer?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Semantic Clarity and Future-Proofing. Under the hood, `@Service` is literally just a meta-annotation of `@Component` and behaves exactly the same in the IoC container. However, it explicitly communicates to other developers that the class holds domain business logic. Furthermore, Spring Pointcuts and AOP interceptors often target `@Service` specifically to apply transaction management or logging rules exclusively to the business layer.
 </details>
 
 

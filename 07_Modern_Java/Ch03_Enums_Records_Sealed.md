@@ -215,10 +215,10 @@ State Machine:
 
 🔬 **Section Challenge — 4. Enum as State Machine**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is a Java `Record` vastly superior to a standard Java Class for DTOs (Data Transfer Objects)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
 </details>
 
 
@@ -273,10 +273,10 @@ Why enum singleton is BEST:
 
 🔬 **Section Challenge — 5. Enum Singleton Pattern — Thread-Safe by JVM Guarantee**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is a Java `Record` vastly superior to a standard Java Class for DTOs (Data Transfer Objects)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
 </details>
 
 
@@ -366,10 +366,10 @@ private static final Color[] VALUES = Color.values(); // Cache once
 
 🔬 **Section Challenge — 7. Enum Internals — What the Compiler Creates**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is a Java `Record` vastly superior to a standard Java Class for DTOs (Data Transfer Objects)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
 </details>
 
 
@@ -576,10 +576,10 @@ public record UserResponse(Long id, String name) {}
 
 🔬 **Section Challenge — 11. Records with Jackson, JPA, and Spring**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is a Java `Record` vastly superior to a standard Java Class for DTOs (Data Transfer Objects)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
 </details>
 
 
@@ -591,10 +591,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — PART 3: SEALED CLASSES — Controlled Inheritance (Java 17+)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is a Java `Record` vastly superior to a standard Java Class for DTOs (Data Transfer Objects)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
 </details>
 
 
@@ -702,10 +702,10 @@ public static String classify(Shape shape) {
 
 🔬 **Section Challenge — 13. Pattern Matching with Sealed Classes (Java 21+)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is a Java `Record` vastly superior to a standard Java Class for DTOs (Data Transfer Objects)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
 </details>
 
 
@@ -875,10 +875,10 @@ public class OrderProcessor {
 
 🔬 **Section Challenge — 16. Putting It All Together — Complete Domain Model**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is a Java `Record` vastly superior to a standard Java Class for DTOs (Data Transfer Objects)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Immutability and Boilerplate Elimination. A `Record` is a specialized class designed specifically as a transparent carrier of immutable data. By simply defining `public record UserDTO(String name, int age) {}`, the compiler automatically generates the constructor, getters, `equals()`, `hashCode()`, and `toString()`. Furthermore, because all fields are `final`, a Record is inherently thread-safe and guarantees the integrity of data passing between application layers.
 </details>
 
 

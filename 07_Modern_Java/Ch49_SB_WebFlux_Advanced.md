@@ -466,10 +466,10 @@ public class ErrorResponse {
 
 🔬 **Section Challenge — Chapter 8: Error Handling Operators**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Spring WebFlux, what happens if you forget to subscribe to a `Mono` or `Flux` publisher?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Nothing happens. Absolutely nothing. Reactive streams in Project Reactor are "cold" by default. The entire pipeline of `.map()`, `.filter()`, and `.flatMap()` is just a blueprint of what *should* happen. The execution is never triggered, no network calls are made, and no data is processed until a terminal `.subscribe()` method is called (which Spring WebFlux automatically does for you when you return the Publisher from a Controller).
 </details>
 
 
@@ -805,10 +805,10 @@ public class BackpressureExamples {
 
 🔬 **Section Challenge — Chapter 10: Managing Backpressure**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Spring WebFlux, what happens if you forget to subscribe to a `Mono` or `Flux` publisher?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Nothing happens. Absolutely nothing. Reactive streams in Project Reactor are "cold" by default. The entire pipeline of `.map()`, `.filter()`, and `.flatMap()` is just a blueprint of what *should* happen. The execution is never triggered, no network calls are made, and no data is processed until a terminal `.subscribe()` method is called (which Spring WebFlux automatically does for you when you return the Publisher from a Controller).
 </details>
 
 
@@ -1093,10 +1093,10 @@ public class ProductController {
 
 🔬 **Section Challenge — Chapter 11: Making the Right Choice**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Spring WebFlux, what happens if you forget to subscribe to a `Mono` or `Flux` publisher?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Nothing happens. Absolutely nothing. Reactive streams in Project Reactor are "cold" by default. The entire pipeline of `.map()`, `.filter()`, and `.flatMap()` is just a blueprint of what *should* happen. The execution is never triggered, no network calls are made, and no data is processed until a terminal `.subscribe()` method is called (which Spring WebFlux automatically does for you when you return the Publisher from a Controller).
 </details>
 
 

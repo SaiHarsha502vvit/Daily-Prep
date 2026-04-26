@@ -289,10 +289,10 @@ if (obj instanceof String s && s.length() > 5) {
 
 🔬 **Section Challenge — instanceof Pattern Matching (Java 16)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental architectural shift introduced by Virtual Threads (Project Loom) in Java 21 compared to traditional OS Threads?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Decoupling from OS Threads. A traditional Java `Thread` is a 1:1 wrapper around a heavy Operating System thread (taking 1MB of memory and heavy context switching). Virtual Threads are lightweight entities managed entirely by the JVM. Millions of Virtual Threads are multiplexed onto a small pool of Carrier (OS) Threads. When a Virtual Thread blocks on I/O (e.g., waiting for a database), the JVM instantly unmounts it and mounts a different Virtual Thread onto the Carrier, achieving massive concurrency without thread exhaustion.
 </details>
 
 
@@ -354,10 +354,10 @@ double area(Shape shape) {
 
 🔬 **Section Challenge — Switch Expressions (Java 14) + Pattern Matching (Java 21)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental architectural shift introduced by Virtual Threads (Project Loom) in Java 21 compared to traditional OS Threads?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Decoupling from OS Threads. A traditional Java `Thread` is a 1:1 wrapper around a heavy Operating System thread (taking 1MB of memory and heavy context switching). Virtual Threads are lightweight entities managed entirely by the JVM. Millions of Virtual Threads are multiplexed onto a small pool of Carrier (OS) Threads. When a Virtual Thread blocks on I/O (e.g., waiting for a database), the JVM instantly unmounts it and mounts a different Virtual Thread onto the Carrier, achieving massive concurrency without thread exhaustion.
 </details>
 
 
@@ -395,10 +395,10 @@ String describe(Object obj) {
 
 🔬 **Section Challenge — Record Patterns — Destructuring (Java 21)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental architectural shift introduced by Virtual Threads (Project Loom) in Java 21 compared to traditional OS Threads?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Decoupling from OS Threads. A traditional Java `Thread` is a 1:1 wrapper around a heavy Operating System thread (taking 1MB of memory and heavy context switching). Virtual Threads are lightweight entities managed entirely by the JVM. Millions of Virtual Threads are multiplexed onto a small pool of Carrier (OS) Threads. When a Virtual Thread blocks on I/O (e.g., waiting for a database), the JVM instantly unmounts it and mounts a different Virtual Thread onto the Carrier, achieving massive concurrency without thread exhaustion.
 </details>
 
 
@@ -585,10 +585,10 @@ user.getAddress().getCity().toUpperCase();
 
 🔬 **Section Challenge — Helpful NullPointerExceptions (Java 14)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the fundamental architectural shift introduced by Virtual Threads (Project Loom) in Java 21 compared to traditional OS Threads?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Decoupling from OS Threads. A traditional Java `Thread` is a 1:1 wrapper around a heavy Operating System thread (taking 1MB of memory and heavy context switching). Virtual Threads are lightweight entities managed entirely by the JVM. Millions of Virtual Threads are multiplexed onto a small pool of Carrier (OS) Threads. When a Virtual Thread blocks on I/O (e.g., waiting for a database), the JVM instantly unmounts it and mounts a different Virtual Thread onto the Carrier, achieving massive concurrency without thread exhaustion.
 </details>
 
 

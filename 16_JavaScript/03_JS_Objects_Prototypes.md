@@ -1,8 +1,8 @@
-**JavaScript Chapter 3/7** | [← Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
+﻿**JavaScript Chapter 3/7** | [â† Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next â†’ Async & Promises](04_JS_Async_Promises.md)
 
-# Objects & Prototypes — How JS Really Does Inheritance
+# Objects & Prototypes â€” How JS Really Does Inheritance
 
-## 5W1H — Why This Chapter?
+## 5W1H â€” Why This Chapter?
 
 
 WHAT: Objects are JS's universal data structure. Prototypes are
@@ -12,7 +12,7 @@ WHY:  Everything in JS is (or behaves like) an object.
 Understanding prototypes explains: why [].map works,
 how inheritance works, what `class` really does.
 
-WHO:  Anyone doing JS — React props are objects, APIs return
+WHO:  Anyone doing JS â€” React props are objects, APIs return
 objects, DOM elements are objects.
 
 WHEN: After understanding functions and closures (Ch 2).
@@ -23,7 +23,7 @@ object. When you access a property, JS walks this chain.
 
 ---
 
-## 1. Object Creation — 5 Ways
+## 1. Object Creation â€” 5 Ways
 
 ```javascript
 // WAY 1: Object literal (most common)
@@ -74,19 +74,19 @@ const user5 = createPerson("Harsha", 24);
 
 ```
 WHICH TO USE:
-┌───────────────────┬────────────────────────────────────┐
-│ Approach          │ When to Use                        │
-├───────────────────┼────────────────────────────────────┤
-│ Object literal    │ One-off objects, configs, data     │
-│ Class             │ Multiple instances, inheritance    │
-│ Factory function  │ Privacy, no `this` confusion       │
-│ Object.create     │ When you need specific prototype   │
-│ Constructor fn    │ Legacy code only (use class)       │
-└───────────────────┴────────────────────────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚ Approach          â”‚ When to Use                        â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ Object literal    â”‚ One-off objects, configs, data     â”‚
+â”‚ Class             â”‚ Multiple instances, inheritance    â”‚
+â”‚ Factory function  â”‚ Privacy, no `this` confusion       â”‚
+â”‚ Object.create     â”‚ When you need specific prototype   â”‚
+â”‚ Constructor fn    â”‚ Legacy code only (use class)       â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 
 REASONING: In React, you'll mostly use object literals (props,
 state) and classes (old class components). Factory functions
-avoid `this` problems entirely — good for utility modules.
+avoid `this` problems entirely â€” good for utility modules.
 ```
 
 **Flow:**
@@ -107,7 +107,7 @@ flowchart TD
     N5["Factory function Privacy, no `this` confusion"]
     N6["Object.create When you need specific prototype"]
     N7["Constructor fn Legacy code only (use class)"]
-    N8["avoid `this` problems entirely — good for utility modul"]
+    N8["avoid `this` problems entirely â€” good for utility modul"]
     N1 --> N2
     N2 --> N3
     N3 --> N4
@@ -119,7 +119,7 @@ flowchart TD
 
 ---
 
-## 2. Property Descriptors — What Properties Really Are
+## 2. Property Descriptors â€” What Properties Really Are
 
 ```javascript
 const obj = { name: "Harsha" };
@@ -128,9 +128,9 @@ const obj = { name: "Harsha" };
 console.log(Object.getOwnPropertyDescriptor(obj, "name"));
 // {
 //   value: "Harsha",
-//   writable: true,      ← can change value?
-//   enumerable: true,    ← shows in for...in/Object.keys()?
-//   configurable: true   ← can delete or change descriptor?
+//   writable: true,      â† can change value?
+//   enumerable: true,    â† shows in for...in/Object.keys()?
+//   configurable: true   â† can delete or change descriptor?
 // }
 
 // Define read-only property:
@@ -165,29 +165,29 @@ person.firstName;          // "New"
 
 ---
 
-## 3. Object Immutability — 3 Levels
+## 3. Object Immutability â€” 3 Levels
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  LEVEL 1: Object.preventExtensions(obj)                              ║
-║  → Cannot ADD new properties. Can modify/delete existing.            ║
-║                                                                      ║
-║  LEVEL 2: Object.seal(obj)                                           ║
-║  → Cannot ADD or DELETE properties. CAN modify values.               ║
-║  (Sets configurable: false on all properties)                        ║
-║                                                                      ║
-║  LEVEL 3: Object.freeze(obj)                                         ║
-║  → Cannot ADD, DELETE, or MODIFY. Completely immutable.              ║
-║  (Sets writable: false AND configurable: false)                      ║
-║                                                                      ║
-║  ⚠ ALL THREE ARE SHALLOW! Nested objects are NOT frozen.             ║
-║                                                                      ║
-║  const obj = Object.freeze({ a: 1, b: { c: 2 } });                   ║
-║  obj.a = 10;     // Silently fails ✅                                 ║
-║  obj.b.c = 10;   // WORKS! ❌ b is not frozen                         ║
-║                                                                      ║
-║  For deep freeze, use structuredClone or a recursive freeze.         ║
-╚══════════════════════════════════════════════════════════════════════╝
+â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+â•‘  LEVEL 1: Object.preventExtensions(obj)                              â•‘
+â•‘  â†’ Cannot ADD new properties. Can modify/delete existing.            â•‘
+â•‘                                                                      â•‘
+â•‘  LEVEL 2: Object.seal(obj)                                           â•‘
+â•‘  â†’ Cannot ADD or DELETE properties. CAN modify values.               â•‘
+â•‘  (Sets configurable: false on all properties)                        â•‘
+â•‘                                                                      â•‘
+â•‘  LEVEL 3: Object.freeze(obj)                                         â•‘
+â•‘  â†’ Cannot ADD, DELETE, or MODIFY. Completely immutable.              â•‘
+â•‘  (Sets writable: false AND configurable: false)                      â•‘
+â•‘                                                                      â•‘
+â•‘  âš  ALL THREE ARE SHALLOW! Nested objects are NOT frozen.             â•‘
+â•‘                                                                      â•‘
+â•‘  const obj = Object.freeze({ a: 1, b: { c: 2 } });                   â•‘
+â•‘  obj.a = 10;     // Silently fails âœ…                                 â•‘
+â•‘  obj.b.c = 10;   // WORKS! âŒ b is not frozen                         â•‘
+â•‘                                                                      â•‘
+â•‘  For deep freeze, use structuredClone or a recursive freeze.         â•‘
+â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
 **Flow:**
@@ -202,12 +202,12 @@ person.firstName;          // "New"
 ```mermaid
 flowchart TD
     N1["LEVEL 1: Object.preventExtensions(obj)"]
-    N2["→ Cannot ADD new properties. Can modify/delete existing"]
+    N2["â†’ Cannot ADD new properties. Can modify/delete existing"]
     N3["LEVEL 2: Object.seal(obj)"]
-    N4["→ Cannot ADD or DELETE properties. CAN modify values."]
+    N4["â†’ Cannot ADD or DELETE properties. CAN modify values."]
     N5["(Sets configurable: false on all properties)"]
     N6["LEVEL 3: Object.freeze(obj)"]
-    N7["→ Cannot ADD, DELETE, or MODIFY. Completely immutable."]
+    N7["â†’ Cannot ADD, DELETE, or MODIFY. Completely immutable."]
     N8["(Sets writable: false AND configurable: false)"]
     N1 --> N2
     N2 --> N3
@@ -220,33 +220,33 @@ flowchart TD
 
 ---
 
-## 4. Prototypes — JS's Inheritance Mechanism
+## 4. Prototypes â€” JS's Inheritance Mechanism
 
 ### 5W1H: WHY Prototypes?
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  WHAT: Every object has a hidden [[Prototype]] link to another       ║
-║        object. This forms a CHAIN (until null).                      ║
-║                                                                      ║
-║  WHY:  Memory efficiency. Instead of copying methods to every        ║
-║        instance, all instances SHARE methods via the prototype.      ║
-║        1000 users, 1 copy of greet() — not 1000 copies.              ║
-║                                                                      ║
-║  ANALOGY: Prototype chain is like a family tree.                     ║
-║  If you don't know something, ask your parent.                       ║
-║  If parent doesn't know, ask grandparent. Up to the root (null).     ║
-║                                                                      ║
-║  HOW:  Access via Object.getPrototypeOf(obj) or obj.__proto__        ║
-║        (deprecated but widely known).                                ║
-╚══════════════════════════════════════════════════════════════════════╝
+â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+â•‘  WHAT: Every object has a hidden [[Prototype]] link to another       â•‘
+â•‘        object. This forms a CHAIN (until null).                      â•‘
+â•‘                                                                      â•‘
+â•‘  WHY:  Memory efficiency. Instead of copying methods to every        â•‘
+â•‘        instance, all instances SHARE methods via the prototype.      â•‘
+â•‘        1000 users, 1 copy of greet() â€” not 1000 copies.              â•‘
+â•‘                                                                      â•‘
+â•‘  ANALOGY: Prototype chain is like a family tree.                     â•‘
+â•‘  If you don't know something, ask your parent.                       â•‘
+â•‘  If parent doesn't know, ask grandparent. Up to the root (null).     â•‘
+â•‘                                                                      â•‘
+â•‘  HOW:  Access via Object.getPrototypeOf(obj) or obj.__proto__        â•‘
+â•‘        (deprecated but widely known).                                â•‘
+â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
 **Flow:**
 1. object. This forms a CHAIN (until null).
 2. WHY: Memory efficiency. Instead of copying methods to e
 3. instance, all instances SHARE methods via the prototype
-4. 1000 users, 1 copy of greet() — not 1000 copies.
+4. 1000 users, 1 copy of greet() â€” not 1000 copies.
 5. ANALOGY: Prototype chain is like a family tree.
 6. If you don't know something, ask your parent. HOW: Access via Object.getPrototypeOf(obj) or obj.__pro
 
@@ -255,7 +255,7 @@ flowchart TD
     N1["object. This forms a CHAIN (until null)."]
     N2["WHY: Memory efficiency. Instead of copying methods to e"]
     N3["instance, all instances SHARE methods via the prototype"]
-    N4["1000 users, 1 copy of greet() — not 1000 copies."]
+    N4["1000 users, 1 copy of greet() â€” not 1000 copies."]
     N5["ANALOGY: Prototype chain is like a family tree."]
     N6["If you don't know something, ask your parent."]
     N7["HOW: Access via Object.getPrototypeOf(obj) or obj.__pro"]
@@ -270,43 +270,43 @@ flowchart TD
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  PROTOTYPE CHAIN VISUALIZATION:                                      ║
-║                                                                      ║
-║  const arr = [1, 2, 3];                                              ║
-║                                                                      ║
-║  arr                                                                 ║
-║   │ .__proto__                                                       ║
-║   ▼                                                                  ║
-║  Array.prototype { map, filter, reduce, forEach, ... }               ║
-║   │ .__proto__                                                       ║
-║   ▼                                                                  ║
-║  Object.prototype { toString, hasOwnProperty, valueOf, ... }         ║
-║   │ .__proto__                                                       ║
-║   ▼                                                                  ║
-║  null  ← END OF CHAIN                                                ║
-║                                                                      ║
-║  When you call arr.map(), JS looks:                                  ║
-║  1. Does arr have own property "map"? → No                           ║
-║  2. Does Array.prototype have "map"? → YES! Use it.                  ║
-║                                                                      ║
-║  When you call arr.toString(), JS looks:                             ║
-║  1. arr → No  2. Array.prototype → has its own toString → Use it     ║
-║  (If Array.prototype didn't have it, would go to Object.prototype)   ║
-╚══════════════════════════════════════════════════════════════════════╝
+â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+â•‘  PROTOTYPE CHAIN VISUALIZATION:                                      â•‘
+â•‘                                                                      â•‘
+â•‘  const arr = [1, 2, 3];                                              â•‘
+â•‘                                                                      â•‘
+â•‘  arr                                                                 â•‘
+â•‘   â”‚ .__proto__                                                       â•‘
+â•‘   â–¼                                                                  â•‘
+â•‘  Array.prototype { map, filter, reduce, forEach, ... }               â•‘
+â•‘   â”‚ .__proto__                                                       â•‘
+â•‘   â–¼                                                                  â•‘
+â•‘  Object.prototype { toString, hasOwnProperty, valueOf, ... }         â•‘
+â•‘   â”‚ .__proto__                                                       â•‘
+â•‘   â–¼                                                                  â•‘
+â•‘  null  â† END OF CHAIN                                                â•‘
+â•‘                                                                      â•‘
+â•‘  When you call arr.map(), JS looks:                                  â•‘
+â•‘  1. Does arr have own property "map"? â†’ No                           â•‘
+â•‘  2. Does Array.prototype have "map"? â†’ YES! Use it.                  â•‘
+â•‘                                                                      â•‘
+â•‘  When you call arr.toString(), JS looks:                             â•‘
+â•‘  1. arr â†’ No  2. Array.prototype â†’ has its own toString â†’ Use it     â•‘
+â•‘  (If Array.prototype didn't have it, would go to Object.prototype)   â•‘
+â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
 **Flow:**
 1. PROTOTYPE CHAIN VISUALIZATION: / const arr = [1, 2, 3];
 2. Array.prototype { map, filter, reduce, forEach, ... } /
-3. Object.prototype { toString, hasOwnProperty, valueOf, . null ← END OF CHAIN / When you call arr.map(), JS looks
+3. Object.prototype { toString, hasOwnProperty, valueOf, . null â† END OF CHAIN / When you call arr.map(), JS looks
 
 ```mermaid
 flowchart TD
     N1["PROTOTYPE CHAIN VISUALIZATION: / const arr = [1, 2, 3];"]
     N2["Array.prototype { map, filter, reduce, forEach, ... } /"]
     N3["Object.prototype { toString, hasOwnProperty, valueOf, ."]
-    N4["null ← END OF CHAIN / When you call arr.map(), JS looks"]
+    N4["null â† END OF CHAIN / When you call arr.map(), JS looks"]
     N1 --> N2
     N2 --> N3
     N3 --> N4
@@ -332,9 +332,9 @@ Dog.prototype.bark = function() {
 };
 
 const rex = new Dog("Rex", "German Shepherd");
-rex.bark();   // "Rex barks!"      ← found on Dog.prototype
-rex.speak();  // "Rex makes a sound" ← found on Animal.prototype
-rex.toString(); // "[object Object]" ← found on Object.prototype
+rex.bark();   // "Rex barks!"      â† found on Dog.prototype
+rex.speak();  // "Rex makes a sound" â† found on Animal.prototype
+rex.toString(); // "[object Object]" â† found on Object.prototype
 
 // rex own properties: { name: "Rex", breed: "German Shepherd" }
 // Dog.prototype: { bark, constructor }
@@ -346,16 +346,16 @@ rex.toString(); // "[object Object]" ← found on Object.prototype
 
 
 
-🔬 **Section Challenge — 4. Prototypes — JS's Inheritance Mechanism**
+ðŸ”¬ **Section Challenge â€” 4. Prototypes â€” JS's Inheritance Mechanism**
 
-**Challenge 1 (Reasoning):** `Object.create(proto)` vs `new Constructor()` — what's the practical difference?
+**Challenge 1 (Reasoning):** `Object.create(proto)` vs `new Constructor()` â€” what's the practical difference?
 <details><summary>Answer</summary>
 
-`new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) — useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
+`new Constructor()`: runs the constructor function (initializes instance properties), sets `__proto__` to `Constructor.prototype`. `Object.create(proto)`: creates an object with `proto` as its prototype, NO constructor called. Use `Object.create(null)` to create a pure dictionary with no inherited properties (no `toString`, `hasOwnProperty`, etc.) â€” useful for safe maps. `Object.create(SomeClass.prototype)` creates an instance-like object without running the constructor (used in class inheritance setup).
 </details>
 
 
-## 5. ES6 Classes — Syntactic Sugar
+## 5. ES6 Classes â€” Syntactic Sugar
 
 ```javascript
 class Animal {
@@ -381,7 +381,7 @@ class Animal {
 }
 
 class Dog extends Animal {
-    #tricks = [];  // PRIVATE FIELD (ES2022) — truly private!
+    #tricks = [];  // PRIVATE FIELD (ES2022) â€” truly private!
 
     constructor(name, breed) {
         super(name);        // MUST call super() before using `this`
@@ -413,38 +413,38 @@ rex.speak();          // "Rex woofs!" (overridden)
 Animal.kingdom();     // "Animalia" (static)
 rex.addTrick("sit");
 rex.showTricks();     // "sit"
-// rex.#tricks;       // ❌ SyntaxError — truly private!
+// rex.#tricks;       // âŒ SyntaxError â€” truly private!
 ```
 
 ```
-╔══════════════════════════════════════════════════════════════════════╗
-║  CLASS ≡ PROTOTYPE (what class actually does):                       ║
-║                                                                      ║
-║  class Dog extends Animal { bark() {} }                              ║
-║                                                                      ║
-║  IS EXACTLY THE SAME AS:                                             ║
-║                                                                      ║
-║  function Dog(name, breed) { Animal.call(this, name); ... }          ║
-║  Dog.prototype = Object.create(Animal.prototype);                    ║
-║  Dog.prototype.constructor = Dog;                                    ║
-║  Dog.prototype.bark = function() {};                                 ║
-║                                                                      ║
-║  REASONING: `class` doesn't add new behavior to JS. It's just        ║
-║  cleaner syntax for the prototype pattern. Under the hood, it's      ║
-║  still prototypes. But class syntax prevents common mistakes         ║
-║  like forgetting to set constructor.                                 ║
-╚══════════════════════════════════════════════════════════════════════╝
+â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
+â•‘  CLASS â‰¡ PROTOTYPE (what class actually does):                       â•‘
+â•‘                                                                      â•‘
+â•‘  class Dog extends Animal { bark() {} }                              â•‘
+â•‘                                                                      â•‘
+â•‘  IS EXACTLY THE SAME AS:                                             â•‘
+â•‘                                                                      â•‘
+â•‘  function Dog(name, breed) { Animal.call(this, name); ... }          â•‘
+â•‘  Dog.prototype = Object.create(Animal.prototype);                    â•‘
+â•‘  Dog.prototype.constructor = Dog;                                    â•‘
+â•‘  Dog.prototype.bark = function() {};                                 â•‘
+â•‘                                                                      â•‘
+â•‘  REASONING: `class` doesn't add new behavior to JS. It's just        â•‘
+â•‘  cleaner syntax for the prototype pattern. Under the hood, it's      â•‘
+â•‘  still prototypes. But class syntax prevents common mistakes         â•‘
+â•‘  like forgetting to set constructor.                                 â•‘
+â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
 **Flow:**
-1. CLASS ≡ PROTOTYPE (what class actually does):
+1. CLASS â‰¡ PROTOTYPE (what class actually does):
 2. class Dog extends Animal { bark() {} }
 3. IS EXACTLY THE SAME AS:
 4. function Dog(name, breed) { Animal.call(this, name); .. Dog.prototype = Object.create(Animal.prototype); Dog.prototype.constructor = Dog; Dog.prototype.bark = function() {};
 
 ```mermaid
 flowchart TD
-    N1["CLASS ≡ PROTOTYPE (what class actually does):"]
+    N1["CLASS â‰¡ PROTOTYPE (what class actually does):"]
     N2["class Dog extends Animal { bark() {} }"]
     N3["IS EXACTLY THE SAME AS:"]
     N4["function Dog(name, breed) { Animal.call(this, name); .."]
@@ -463,7 +463,7 @@ flowchart TD
 
 ---
 
-## 6. Object Methods — Essential Toolkit
+## 6. Object Methods â€” Essential Toolkit
 
 ```javascript
 const user = { name: "Harsha", age: 24, role: "developer" };
@@ -476,7 +476,7 @@ Object.entries(user);  // [["name","Harsha"], ["age",24], ["role","developer"]]
 // Destructuring from entries (convert to Map):
 const map = new Map(Object.entries(user));
 
-// ASSIGN (shallow merge — mutates target!)
+// ASSIGN (shallow merge â€” mutates target!)
 const defaults = { theme: "dark", lang: "en" };
 const prefs = { theme: "light" };
 const result = Object.assign({}, defaults, prefs);
@@ -499,7 +499,7 @@ const doubled = Object.fromEntries(
 
 ---
 
-## 7. Destructuring — Extracting Object Properties
+## 7. Destructuring â€” Extracting Object Properties
 
 ```javascript
 // BASIC
@@ -538,7 +538,7 @@ const [first, second, ...rest] = [1, 2, 3, 4, 5];
 
 // SWAP
 let a = 1, b = 2;
-[a, b] = [b, a]; // a = 2, b = 1 — no temp variable needed!
+[a, b] = [b, a]; // a = 2, b = 1 â€” no temp variable needed!
 ```
 
 ---
@@ -552,17 +552,17 @@ let a = 1, b = 2;
 // SYMBOL: Unique, immutable identifier (no two symbols are equal)
 const id = Symbol("id");
 const id2 = Symbol("id");
-id === id2; // false — always unique!
+id === id2; // false â€” always unique!
 
 // Use: Hidden/non-colliding property keys
 const user = {
     name: "Harsha",
-    [id]: 12345    // Symbol as key — won't show in Object.keys()
+    [id]: 12345    // Symbol as key â€” won't show in Object.keys()
 };
-Object.keys(user);           // ["name"] — symbol hidden!
+Object.keys(user);           // ["name"] â€” symbol hidden!
 Object.getOwnPropertySymbols(user); // [Symbol(id)]
 
-// WELL-KNOWN SYMBOLS — customize built-in behavior:
+// WELL-KNOWN SYMBOLS â€” customize built-in behavior:
 class Range {
     constructor(start, end) {
         this.start = start;
@@ -585,7 +585,7 @@ class Range {
 
 const range = new Range(1, 5);
 for (const n of range) console.log(n); // 1, 2, 3, 4, 5
-[...range]; // [1, 2, 3, 4, 5] — spread works too!
+[...range]; // [1, 2, 3, 4, 5] â€” spread works too!
 ```
 
 ---
@@ -593,23 +593,23 @@ for (const n of range) console.log(n); // 1, 2, 3, 4, 5
 ## 9. Comparison: JS vs Java Objects
 
 ```
-┌──────────────────┬──────────────────┬──────────────────┐
-│ Feature          │ JavaScript       │ Java             │
-├──────────────────┼──────────────────┼──────────────────┤
-│ Typing           │ Dynamic          │ Static           │
-│ Inheritance      │ Prototype-based  │ Class-based      │
-│ Class keyword    │ Sugar over proto │ Real class       │
-│ Private fields   │ # prefix (new)   │ private keyword  │
-│ Interfaces       │ None (use TS)    │ interface keyword│
-│ Multiple inherit │ Mixins/compose   │ Interfaces only  │
-│ Object creation  │ Literal {}, new  │ new only         │
-│ Property access  │ Dynamic (obj[x]) │ Fixed at compile │
-│ this keyword     │ Changes by call  │ Always instance  │
-│ Null safety      │ ?. operator      │ Optional (Java17)│
-└──────────────────┴──────────────────┴──────────────────┘
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
+â”‚ Feature          â”‚ JavaScript       â”‚ Java             â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
+â”‚ Typing           â”‚ Dynamic          â”‚ Static           â”‚
+â”‚ Inheritance      â”‚ Prototype-based  â”‚ Class-based      â”‚
+â”‚ Class keyword    â”‚ Sugar over proto â”‚ Real class       â”‚
+â”‚ Private fields   â”‚ # prefix (new)   â”‚ private keyword  â”‚
+â”‚ Interfaces       â”‚ None (use TS)    â”‚ interface keywordâ”‚
+â”‚ Multiple inherit â”‚ Mixins/compose   â”‚ Interfaces only  â”‚
+â”‚ Object creation  â”‚ Literal {}, new  â”‚ new only         â”‚
+â”‚ Property access  â”‚ Dynamic (obj[x]) â”‚ Fixed at compile â”‚
+â”‚ this keyword     â”‚ Changes by call  â”‚ Always instance  â”‚
+â”‚ Null safety      â”‚ ?. operator      â”‚ Optional (Java17)â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 
 KEY INSIGHT: In Java, the class defines the shape forever.
-In JS, objects are "bags of properties" — you can add/remove
+In JS, objects are "bags of properties" â€” you can add/remove
 properties at any time. More flexible, but less safe.
 ```
 
@@ -647,32 +647,32 @@ flowchart TD
 
 ```
 Q: How does prototypal inheritance work?
-→ Every object has a [[Prototype]] link. When a property isn't found
+â†’ Every object has a [[Prototype]] link. When a property isn't found
   on the object, JS walks up the prototype chain until null.
 
 Q: What does `new` keyword do?
-→ 1. Creates empty object {}
+â†’ 1. Creates empty object {}
    2. Sets its [[Prototype]] to Constructor.prototype
    3. Calls constructor with `this` = new object
    4. Returns the object (unless constructor returns an object)
 
 Q: Difference between hasOwnProperty and `in`?
-→ hasOwnProperty: only checks the object itself.
+â†’ hasOwnProperty: only checks the object itself.
   `in`: checks object AND its entire prototype chain.
 
 Q: How to create truly private properties?
-→ ES2022: # prefix (class #field). Before: closures in factory.
+â†’ ES2022: # prefix (class #field). Before: closures in factory.
   WeakMap was used as a workaround.
 
-Q: Object.create(null) — why?
-→ Creates an object with NO prototype. No toString, no hasOwnProperty.
+Q: Object.create(null) â€” why?
+â†’ Creates an object with NO prototype. No toString, no hasOwnProperty.
   Used for pure dictionaries (e.g., Map-like storage) with no
   prototype pollution risk.
 
 Q: How to check if a property exists?
-→ "prop" in obj (includes prototype chain)
+â†’ "prop" in obj (includes prototype chain)
   obj.hasOwnProperty("prop") (own only)
-  Object.hasOwn(obj, "prop") (modern, own only — preferred)
+  Object.hasOwn(obj, "prop") (modern, own only â€” preferred)
 ```
 
 **Flow:**
@@ -689,11 +689,11 @@ flowchart TD
     N1["Q: How does prototypal inheritance work?"]
     N2["on the object, JS walks up the prototype chain until nu"]
     N3["Q: What does `new` keyword do?"]
-    N4["→ 1. Creates empty object {}"]
+    N4["â†’ 1. Creates empty object {}"]
     N5["2. Sets its [[Prototype]] to Constructor.prototype"]
     N6["3. Calls constructor with `this` = new object"]
     N7["Q: Difference between hasOwnProperty and `in`?"]
-    N8["→ hasOwnProperty: only checks the object itself."]
+    N8["â†’ hasOwnProperty: only checks the object itself."]
     N1 --> N2
     N2 --> N3
     N3 --> N4
@@ -705,215 +705,6 @@ flowchart TD
 
 ---
 
-[← Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next → Async & Promises](04_JS_Async_Promises.md)
+[â† Previous: Functions & Closures](02_JS_Functions_Closures.md) | [Index](../00_MASTER_INDEX.md) | [Next â†’ Async & Promises](04_JS_Async_Promises.md)
 
 ---
-
-## 🏋️ Practice & Interview Questions — JavaScript
-
-### Predict / Trace
-**Q1.** What prints?
-```js
-console.log(typeof null);
-console.log(null instanceof Object);
-```
-<details><summary>Answer</summary>
-
-`"object"` (historical JS bug), `false` (null is not an Object instance). This is a well-known JS quirk.
-</details>
-
-**Q2.** What is the output?
-```js
-console.log(1 + "2");
-console.log("3" - 1);
-console.log(true + false);
-```
-<details><summary>Answer</summary>
-
-`"12"` (string concat), `2` (- coerces to number), `1` (true=1, false=0)
-</details>
-
-**Q3.** What prints and why?
-```js
-for (var i = 0; i < 3; i++) {
-  setTimeout(() => console.log(i), 0);
-}
-```
-<details><summary>Answer</summary>
-
-`3 3 3` — `var` is function-scoped, all closures share same `i`. By the time timeouts run, loop is done, i=3. **Fix**: use `let` (block-scoped) or `setTimeout(() => console.log(i), 0, i)`.
-</details>
-
-### Coding Problems
-**Q4.** ⭐ Implement `debounce(fn, delay)`.
-<details><summary>Solution</summary>
-
-```js
-function debounce(fn, delay) {
-  let timer;
-  return function(...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => fn.apply(this, args), delay);
-  };
-}
-```
-</details>
-
-**Q5.** ⭐ Implement `Promise.all` from scratch.
-<details><summary>Solution</summary>
-
-```js
-function promiseAll(promises) {
-  return new Promise((resolve, reject) => {
-    const results = [];
-    let count = 0;
-    promises.forEach((p, i) => {
-      Promise.resolve(p)
-        .then(val => { results[i] = val; if(++count === promises.length) resolve(results); })
-        .catch(reject);
-    });
-    if(promises.length === 0) resolve([]);
-  });
-}
-```
-</details>
-
-**Q6.** ⭐ Deep clone an object without `JSON.parse(JSON.stringify(...))`.
-<details><summary>Solution</summary>
-
-```js
-function deepClone(obj) {
-  if(obj === null || typeof obj !== 'object') return obj;
-  if(obj instanceof Date) return new Date(obj);
-  if(obj instanceof Array) return obj.map(deepClone);
-  const clone = {};
-  for(const key in obj) if(obj.hasOwnProperty(key)) clone[key] = deepClone(obj[key]);
-  return clone;
-}
-// Modern: structuredClone(obj) — built-in, handles more types
-```
-</details>
-
-**Q7.** ⭐⭐ Implement `curry` function.
-<details><summary>Solution</summary>
-
-```js
-function curry(fn) {
-  return function curried(...args) {
-    if(args.length >= fn.length) return fn(...args);
-    return function(...more) { return curried(...args, ...more); };
-  };
-}
-const add = curry((a, b, c) => a + b + c);
-add(1)(2)(3); // 6
-add(1, 2)(3); // 6
-```
-</details>
-
-**Q8.** ⭐⭐ Implement `memoize(fn)`.
-<details><summary>Solution</summary>
-
-```js
-function memoize(fn) {
-  const cache = new Map();
-  return function(...args) {
-    const key = JSON.stringify(args);
-    if(cache.has(key)) return cache.get(key);
-    const result = fn.apply(this, args);
-    cache.set(key, result);
-    return result;
-  };
-}
-```
-</details>
-
-### MCQ Rapid Fire
-| # | Question | Answer |
-|---|---|---|
-| 1 | == vs === | == coerces types; === strict (no coercion) |
-| 2 | `typeof undefined` | "undefined" |
-| 3 | `typeof function(){}` | "function" |
-| 4 | Prototype chain end | null |
-| 5 | Event loop: microtasks vs macrotasks | Microtasks (Promises) run before macrotasks (setTimeout) |
-| 6 | `const` prevents | Reassignment, not mutation |
-| 7 | `var` vs `let` hoisting | var: hoisted+initialized to undefined; let: hoisted but in TDZ |
-| 8 | `this` in arrow function | Lexical (inherited from enclosing scope) |
-| 9 | Optional chaining `?.` | Returns undefined instead of throwing on null/undefined |
-| 10 | Nullish coalescing `??` | Returns right side only if left is null/undefined (not 0 or '') |
-
----
-
-## 🧠 Deep Conceptual Questions — JavaScript Engine & Language
-
-**C1. How does the JavaScript event loop actually work?**
-<details><summary>Deep Answer</summary>
-
-```
-Call Stack → runs synchronous code
-     ↓ (when empty)
-Microtask Queue → Promise callbacks, queueMicrotask, MutationObserver
-     ↓ (when empty)
-Macrotask Queue → setTimeout, setInterval, I/O, requestAnimationFrame
-```
-
-One "tick": (1) Run all synchronous code in call stack until empty, (2) Run ALL microtasks until queue empty (even if new microtasks added!), (3) Run ONE macrotask from the macrotask queue, (4) Repeat.
-
-Critical: microtasks drain COMPLETELY before any macrotask. A microtask that continually enqueues microtasks → infinite loop, browser freezes (no macrotasks can run). `Promise.resolve().then(...)` vs `setTimeout(fn, 0)`: Promise runs BEFORE the timeout even with a 0ms delay.
-</details>
-
-**C2. What is the prototype chain and how does `class` syntax relate to it?**
-<details><summary>Deep Answer</summary>
-
-Every JS object has an internal `[[Prototype]]` link. Property lookup: check own properties → check `[[Prototype]]` → check `[[Prototype]][[Prototype]]` → ... until null. `class` is syntactic sugar over prototype-based inheritance:
-```js
-class Animal { speak() {} }  // same as:
-function Animal() {}
-Animal.prototype.speak = function() {};
-```
-`class extends` sets up the prototype chain: `Dog.prototype.__proto__ = Animal.prototype`. `super` works via `[[HomeObject]]` — a hidden reference to the class where the method was defined. Key: `typeof Dog === 'function'` — classes ARE functions. `instanceof` checks the prototype chain, not the class definition.
-</details>
-
-**C3. Explain closures: why do they exist and what problems do they solve?**
-<details><summary>Deep Answer</summary>
-
-A closure = a function + references to its lexical environment (the variables in scope when the function was created). It solves: **data encapsulation without classes**. Private state in JS (pre-class): use closure.
-```js
-function makeCounter() {
-  let count = 0; // private — inaccessible outside
-  return { increment: () => ++count, get: () => count };
-}
-```
-`count` lives on even after `makeCounter` returns because the returned object's methods close over it. Closures keep the enclosing scope alive in memory as long as any reference to them exists — the classic memory leak: `button.addEventListener('click', heavyFunction)` — even after button is removed from DOM, heavyFunction and all its closed-over variables stay in memory.
-</details>
-
-**C4. What is the difference between `==` and `===` at the engine level?**
-<details><summary>Deep Answer</summary>
-
-`===` (strict equality): checks type first — if types differ, returns false immediately. No coercion. Two objects: only true if same reference. `==` (abstract equality): if types differ, coerces using the "Abstract Equality Comparison Algorithm" (ECMAScript spec §7.2.13). Examples: `null == undefined` → true (special case). `0 == ''` → true ('' → 0). `1 == true` → true (true → 1). `[] == false` → true ([] → '' → 0, false → 0). `[] == ![]` → true (both 0). These coercions are unintuitive and context-dependent. Always use `===` unless specifically relying on null/undefined equivalence.
-</details>
-
-**C5. `this` binding: what determines `this` in JavaScript?**
-<details><summary>Deep Answer</summary>
-
-`this` is determined at CALL TIME, not at definition time (except arrow functions):
-1. **new binding**: `new Foo()` — `this` = new object
-2. **Explicit binding**: `foo.call(obj)` / `foo.apply(obj)` / `foo.bind(obj)` — `this` = obj
-3. **Implicit binding**: `obj.foo()` — `this` = obj (the object before the dot)
-4. **Default binding**: `foo()` — `this` = global (window/global) or `undefined` (strict mode)
-5. **Arrow function**: no own `this` — lexically inherits from enclosing context at DEFINITION time
-
-Priority: new > explicit > implicit > default. Arrow functions use none of these rules — they close over `this` from their lexical scope. Common trap: `obj.method` passed as callback loses its `this` binding (becomes default/undefined-in-strict-mode). Fix: `obj.method.bind(obj)` or arrow function.
-</details>
-
-**C6. What is the Temporal Dead Zone (TDZ) and why does `let` have it?**
-<details><summary>Deep Answer</summary>
-
-All declarations (`var`, `let`, `const`) are hoisted. BUT: `var` is initialized to `undefined` at hoist time. `let`/`const` are hoisted but NOT initialized — they're in the TDZ (temporal dead zone) from block start until the declaration line is reached. Accessing a `let`/`const` variable in its TDZ → `ReferenceError`. WHY it exists: `var`'s behavior (usable before declaration returns undefined) was a source of confusing bugs. TDZ makes it impossible to use a variable before you declared it — forces cleaner code. The declaration IS "seen" by the engine (hence "temporal" — it's available AFTER the declaration, just not before).
-</details>
-
-**C7. What are WeakMap and WeakSet used for, and what makes them "weak"?**
-<details><summary>Deep Answer</summary>
-
-"Weak" = the keys are weakly referenced — they don't prevent garbage collection. If the only reference to an object is a WeakMap key, the GC can collect it, and the WeakMap entry disappears automatically. Normal Map holds strong references: `map.set(node, data)` — `node` can't be GC'd as long as the map exists (memory leak if node removed from DOM). WeakMap: GC can collect `node` when it's no longer referenced elsewhere. Entry disappears. Use cases: (1) private data per instance (WeakMap as private field store), (2) caching computed data per DOM node without memory leaks, (3) tracking active objects without preventing their collection. Cannot iterate WeakMap/WeakSet (indeterminate state due to GC).
-</details>
-

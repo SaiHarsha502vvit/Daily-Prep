@@ -555,10 +555,10 @@ _High-level overview of JPA, Web, Security, Testing. Read for context, but detai
 
 🔬 **Section Challenge — PHASE 2: TOOLING & WEB BASICS (Week 2-3) 🟡**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is the standard Spring MVC architecture divided strictly into Controller, Service, and Repository layers? Why not just put all logic in the Controller?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Separation of Concerns and Testability. Controllers should only handle HTTP protocol translation (JSON to Java, Status Codes). Repositories should only handle SQL/DB translation. Services contain the pure business logic. If logic is in the Controller, you cannot unit test it without mocking HTTP requests. If it's in the Service, you can instantiate the Service class using `new` and pass mock repositories, completely independent of the web layer.
 </details>
 
 
@@ -1234,10 +1234,10 @@ Part 19 (Testing Complete) → Part 22 (Testing annotations)
 
 🔬 **Section Challenge — Learning Paths By Goal**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is the standard Spring MVC architecture divided strictly into Controller, Service, and Repository layers? Why not just put all logic in the Controller?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Separation of Concerns and Testability. Controllers should only handle HTTP protocol translation (JSON to Java, Status Codes). Repositories should only handle SQL/DB translation. Services contain the pure business logic. If logic is in the Controller, you cannot unit test it without mocking HTTP requests. If it's in the Service, you can instantiate the Service class using `new` and pass mock repositories, completely independent of the web layer.
 </details>
 
 

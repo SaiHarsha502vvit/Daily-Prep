@@ -77,10 +77,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 1: Spring Boot at Scale**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a high-traffic production system, why should you NEVER perform a database migration (like adding a non-null column) using `spring.jpa.hibernate.ddl-auto=update`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
 </details>
 
 
@@ -129,10 +129,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — Spring Boot In Enterprise - Real Examples**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a high-traffic production system, why should you NEVER perform a database migration (like adding a non-null column) using `spring.jpa.hibernate.ddl-auto=update`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
 </details>
 
 
@@ -398,10 +398,10 @@ public class SlackNotificationSender implements NotificationSender {
 
 🔬 **Section Challenge — Project 1: 🔔 Notification & Alert Engine**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a high-traffic production system, why should you NEVER perform a database migration (like adding a non-null column) using `spring.jpa.hibernate.ddl-auto=update`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
 </details>
 
 
@@ -712,10 +712,10 @@ public class CheckoutController {
 
 🔬 **Section Challenge — Project 2: 📊 Feature Flag & A/B Testing System**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a high-traffic production system, why should you NEVER perform a database migration (like adding a non-null column) using `spring.jpa.hibernate.ddl-auto=update`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
 </details>
 
 
@@ -1439,10 +1439,10 @@ public class WorkflowEngine {
 
 🔬 **Section Challenge — Project 4: 🔄 Workflow Automation Engine**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a high-traffic production system, why should you NEVER perform a database migration (like adding a non-null column) using `spring.jpa.hibernate.ddl-auto=update`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
 </details>
 
 
@@ -1770,10 +1770,10 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 
 🔬 **Section Challenge — Project 5: 🗓️ Resource Scheduling & Booking System**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In a high-traffic production system, why should you NEVER perform a database migration (like adding a non-null column) using `spring.jpa.hibernate.ddl-auto=update`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
 </details>
 
 

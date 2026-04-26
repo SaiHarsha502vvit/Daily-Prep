@@ -65,10 +65,10 @@
 
 🔬 **Section Challenge — 1. The Performance Mindset**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does optimizing CPU usage sometimes INCREASE latency in a high-throughput Java application?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache hits and 100% CPU utilization, you create artificial queues. Little's Law dictates that as utilization approaches 100%, queue wait times grow exponentially. A system running at 70% CPU might have 10ms latency, while the same system pushed to 95% CPU (via batching/tuning) might process more requests per second but suffer 200ms latency due to thread contention and GC pauses.
 </details>
 
 
@@ -155,10 +155,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 3. CPU-Bound vs I/O-Bound — Know What You're Optimizing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does optimizing CPU usage sometimes INCREASE latency in a high-throughput Java application?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache hits and 100% CPU utilization, you create artificial queues. Little's Law dictates that as utilization approaches 100%, queue wait times grow exponentially. A system running at 70% CPU might have 10ms latency, while the same system pushed to 95% CPU (via batching/tuning) might process more requests per second but suffer 200ms latency due to thread contention and GC pauses.
 </details>
 
 
@@ -272,10 +272,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 5. Garbage Collection Tuning**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does optimizing CPU usage sometimes INCREASE latency in a high-throughput Java application?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache hits and 100% CPU utilization, you create artificial queues. Little's Law dictates that as utilization approaches 100%, queue wait times grow exponentially. A system running at 70% CPU might have 10ms latency, while the same system pushed to 95% CPU (via batching/tuning) might process more requests per second but suffer 200ms latency due to thread contention and GC pauses.
 </details>
 
 
@@ -508,10 +508,10 @@ public class CollectionBenchmark {
 
 🔬 **Section Challenge — 9. JMH — Microbenchmarking Done Right**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does optimizing CPU usage sometimes INCREASE latency in a high-throughput Java application?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache hits and 100% CPU utilization, you create artificial queues. Little's Law dictates that as utilization approaches 100%, queue wait times grow exponentially. A system running at 70% CPU might have 10ms latency, while the same system pushed to 95% CPU (via batching/tuning) might process more requests per second but suffer 200ms latency due to thread contention and GC pauses.
 </details>
 
 
@@ -569,10 +569,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 10. Connection Pool Tuning**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why does optimizing CPU usage sometimes INCREASE latency in a high-throughput Java application?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache hits and 100% CPU utilization, you create artificial queues. Little's Law dictates that as utilization approaches 100%, queue wait times grow exponentially. A system running at 70% CPU might have 10ms latency, while the same system pushed to 95% CPU (via batching/tuning) might process more requests per second but suffer 200ms latency due to thread contention and GC pauses.
 </details>
 
 

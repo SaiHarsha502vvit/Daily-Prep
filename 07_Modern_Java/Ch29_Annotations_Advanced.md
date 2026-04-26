@@ -611,10 +611,10 @@ public class ScheduledTasks {
 
 🔬 **Section Challenge — Async & Scheduling Annotations**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the difference between `@Primary` and `@Qualifier` when resolving ambiguous dependencies (multiple beans of the same type)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Default vs Explicit. `@Primary` is placed on the Bean definition to declare it as the universal default. If a class asks for a `PaymentService`, it gets the `@Primary` one automatically. `@Qualifier("stripe")` is placed on the injection point (the constructor parameter) to explicitly request a specific bean by name, completely overriding any `@Primary` designation.
 </details>
 
 
@@ -965,10 +965,10 @@ class UserServiceTest {
 
 🔬 **Section Challenge — Testing Annotations**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** What is the difference between `@Primary` and `@Qualifier` when resolving ambiguous dependencies (multiple beans of the same type)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Default vs Explicit. `@Primary` is placed on the Bean definition to declare it as the universal default. If a class asks for a `PaymentService`, it gets the `@Primary` one automatically. `@Qualifier("stripe")` is placed on the injection point (the constructor parameter) to explicitly request a specific bean by name, completely overriding any `@Primary` designation.
 </details>
 
 

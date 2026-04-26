@@ -593,7 +593,12 @@ private int kadane(int[] arr) {
 ---
 
 🔬 **Section Challenge — Problem 3: Maximum Sum Rectangle (⭐ NETCRACKER LEVEL)**
->
+
+**Challenge 1 (Reasoning):** Why does extending Kadane's algorithm to 2D require O(cols²) time complexity? What happens if you try to apply a 2D prefix sum instead?
+<details><summary>Answer</summary>
+
+Kadane's algorithm natively finds the maximum contiguous subarray in a 1D array. To apply it to a 2D grid, we must dynamically collapse multiple rows into a single 1D array, which represents the column-wise sum for a specific bounding height. We need two pointers (top and bottom) to dictate this bounding height, requiring `O(rows²)` (or `cols²` depending on orientation) to explore all row combinations. While a 2D prefix sum gives `O(1)` sum queries for any subgrid, you would still need to evaluate all `O(rows² * cols²)` possible bounding boxes to find the maximum, making it drastically slower than the Kadane-based 2D compression approach.
+</details>
 
 # 🕸️ Part 6: Matrix in Graph Problems
 
@@ -652,7 +657,12 @@ public void bfsOnGrid(int[][] grid, int startRow, int startCol) {
 ```
 
 🔬 **Section Challenge — Grid as Graph**
->>
+
+**Challenge 1 (Reasoning):** When performing a BFS on an unweighted grid to find the shortest path, why is a visited set (or marking cells in-place) strictly necessary, and what happens if you mark a cell as visited *after* you poll it from the queue instead of *before* adding it?
+<details><summary>Answer</summary>
+
+The visited set prevents infinite loops and redundant exploration of the same cell. If you mark a cell as visited *after* polling it from the queue (instead of when you discover/enqueue it), multiple paths of the same length might discover the same unvisited node and enqueue it repeatedly. In a dense grid, this causes the queue size to explode exponentially (queue thrashing), leading to TLE or OutOfMemory errors. Always mark as visited the moment you push to the queue!
+</details>
 
 ## Number of Islands (Classic)
 
@@ -1208,16 +1218,16 @@ flowchart TD
 
 🔬 **Section Challenge — Section 2: Matrix Search & Transform**
 
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+**Challenge 1 (Reasoning):** In "Search a 2D Matrix II" (where both rows and columns are sorted, but rows don't strictly wrap around), why do we start our search at the top-right (or bottom-left) corner instead of the top-left or bottom-right?
 <details><summary>Answer</summary>
 
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+We start at the top-right or bottom-left because those corners provide deterministic binary decisions. If you start at the top-right: moving left always decreases the value, and moving down always increases the value. It acts as a binary search tree root. If you started at the top-left, moving right and moving down BOTH increase the value, giving you no logical way to decide which path to eliminate when searching for a target.
 </details>
 
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+**Challenge 2 (Design):** You are tasked with rotating an NxN image matrix by 90 degrees in-place. If you reverse the rows first, what mathematical operation must you perform next to complete the rotation?
 <details><summary>Answer</summary>
 
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+If you reverse the rows first (flip upside down), you must then perform a matrix transpose (swap `matrix[i][j]` with `matrix[j][i]`) to achieve a 90-degree clockwise rotation. Alternatively, the standard pattern is Transpose first, then reverse the elements of each row. Both combinations map the coordinate `(i, j)` to `(j, N-1-i)`.
 </details>
 
 ## Section 3: Advanced Matrix (DP/BFS on Grid)
@@ -1247,265 +1257,3 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 
 _Master 2D arrays = Master half of interview problems!_ 🔲
 
----
-
----
-
-## 🏋️ Practice & Interview Questions — Arrays
-
-Attempt each before looking at the answer. Time yourself.
-
-### Predict / Trace
-
-**Q1.** What is the output? `int[] a = {1,2,3}; int[] b = a; b[0] = 99; System.out.println(a[0]);`
-<details><summary>Answer</summary>
-
-`99` — arrays are objects; `b = a` copies the **reference**, not the data. Both point to the same array.
-</details>
-
-**Q2.** What is the time complexity of inserting at index 0 of an array of size N?
-<details><summary>Answer</summary>
-
-O(N) — every element must shift right by one position.
-</details>
-
-**Q3.** Given sorted array `[1,3,5,7,9]`, binary search for 6 — trace the mid values.
-<details><summary>Answer</summary>
-
-lo=0,hi=4 → mid=2 (value=5) → lo=3,hi=4 → mid=3 (value=7) → lo=3,hi=2 → NOT FOUND
-</details>
-
-### LeetCode / Coding
-
-**Q4.** ⭐ Two Sum — find indices of two numbers that add to target. O(N) solution.
-<details><summary>Solution</summary>
-
-```java
-Map<Integer,Integer> map = new HashMap<>();
-for(int i=0;i<nums.length;i++){
-    int comp = target - nums[i];
-    if(map.containsKey(comp)) return new int[]{map.get(comp), i};
-    map.put(nums[i], i);
-}
-```
-</details>
-
-**Q5.** ⭐ Maximum Subarray (Kadane's Algorithm). Write the O(N) solution.
-<details><summary>Solution</summary>
-
-```java
-int maxSum = nums[0], curr = nums[0];
-for(int i=1;i<nums.length;i++){
-    curr = Math.max(nums[i], curr + nums[i]);
-    maxSum = Math.max(maxSum, curr);
-}
-return maxSum;
-```
-</details>
-
-**Q6.** ⭐ Best Time to Buy and Sell Stock — single pass O(N).
-<details><summary>Solution</summary>
-
-```java
-int minPrice = Integer.MAX_VALUE, maxProfit = 0;
-for(int p : prices){
-    minPrice = Math.min(minPrice, p);
-    maxProfit = Math.max(maxProfit, p - minPrice);
-}
-return maxProfit;
-```
-</details>
-
-**Q7.** ⭐ Product of Array Except Self — without division, O(N).
-<details><summary>Solution</summary>
-
-```java
-int[] res = new int[n];
-res[0] = 1;
-for(int i=1;i<n;i++) res[i] = res[i-1] * nums[i-1];
-int right = 1;
-for(int i=n-1;i>=0;i--){ res[i] *= right; right *= nums[i]; }
-return res;
-```
-</details>
-
-**Q8.** ⭐⭐ Container With Most Water (Two Pointers).
-<details><summary>Solution</summary>
-
-```java
-int l=0, r=nums.length-1, max=0;
-while(l<r){
-    max = Math.max(max, Math.min(height[l],height[r])*(r-l));
-    if(height[l]<height[r]) l++; else r--;
-}
-```
-</details>
-
-**Q9.** ⭐⭐ 3Sum — find all unique triplets summing to 0. O(N²).
-<details><summary>Solution</summary>
-
-```java
-Arrays.sort(nums);
-for(int i=0;i<n-2;i++){
-    if(i>0 && nums[i]==nums[i-1]) continue;
-    int l=i+1, r=n-1;
-    while(l<r){
-        int s=nums[i]+nums[l]+nums[r];
-        if(s==0){ result.add(List.of(nums[i],nums[l++],nums[r--])); 
-            while(l<r&&nums[l]==nums[l-1])l++; while(l<r&&nums[r]==nums[r+1])r--; }
-        else if(s<0) l++; else r--;
-    }
-}
-```
-</details>
-
-**Q10.** ⭐⭐ Rotate Array by k positions in-place O(1) space.
-<details><summary>Solution</summary>
-
-```java
-// Reverse full array, then reverse first k, then reverse rest
-k %= n;
-reverse(nums, 0, n-1);
-reverse(nums, 0, k-1);
-reverse(nums, k, n-1);
-```
-</details>
-
-**Q11.** ⭐⭐ Find the duplicate number in array [1..n] — O(N) time, O(1) space (Floyd's cycle).
-<details><summary>Solution</summary>
-
-```java
-int slow=nums[0], fast=nums[0];
-do{ slow=nums[slow]; fast=nums[nums[fast]]; } while(slow!=fast);
-slow=nums[0];
-while(slow!=fast){ slow=nums[slow]; fast=nums[fast]; }
-return slow;
-```
-</details>
-
-**Q12.** ⭐⭐⭐ Trapping Rain Water — O(N) two-pointer solution.
-<details><summary>Solution</summary>
-
-```java
-int l=0,r=n-1,lMax=0,rMax=0,water=0;
-while(l<r){
-    if(height[l]<=height[r]){
-        if(height[l]>=lMax) lMax=height[l]; else water+=lMax-height[l];
-        l++;
-    } else {
-        if(height[r]>=rMax) rMax=height[r]; else water+=rMax-height[r];
-        r--;
-    }
-}
-```
-</details>
-
-### Interview Questions
-
-**Q13.** What's the difference between `ArrayList` and `LinkedList` for index access?
-<details><summary>Answer</summary>
-
-ArrayList: O(1) random access (array backing). LinkedList: O(N) — must traverse from head. Use ArrayList for most cases; LinkedList only when frequent insertions/deletions at head/tail.
-</details>
-
-**Q14.** When would you use `int[]` over `ArrayList<Integer>`?
-<details><summary>Answer</summary>
-
-`int[]`: primitive, no boxing overhead, fixed-size, cache-friendly. `ArrayList<Integer>`: dynamic resizing, collection API, but 4-16x memory overhead per element due to Integer boxing.
-</details>
-
-**Q15.** What is cache locality and why do arrays benefit from it?
-<details><summary>Answer</summary>
-
-CPU loads data in cache lines (~64 bytes). Arrays store elements contiguously → sequential access loads entire cache line at once → very fast. LinkedList nodes are scattered in heap → each node access = potential cache miss.
-</details>
-
-### MCQ Rapid Fire
-
-| # | Question | Answer |
-|---|---|---|
-| 1 | Array access a[i] time complexity | O(1) |
-| 2 | Array insertion at middle time complexity | O(N) |
-| 3 | Default value of int[] in Java | 0 |
-| 4 | Arrays.sort() algorithm for primitives | Dual-pivot QuickSort |
-| 5 | Arrays.sort() algorithm for objects | TimSort (stable) |
-| 6 | Arrays.copyOfRange(a,2,5) — how many elements? | 3 (indices 2,3,4) |
-| 7 | Can arrays store null? | Yes (reference arrays only) |
-| 8 | Arrays.fill(a, 7) — what does it do? | Sets every element to 7 |
-| 9 | Multi-dim array a[3][4] — total elements? | 12 |
-| 10 | Arrays.binarySearch requires? | Sorted array |
-
----
-
-## 🧠 Deep Conceptual Questions — Arrays & Memory
-
-These questions test your REASONING, not just recall. Think before expanding.
-
-**C1. Why is array access O(1)?**
-<details><summary>Deep Answer</summary>
-
-Arrays store elements at **contiguous memory addresses**. Given base address B and element size S:
-`address(i) = B + (i × S)` — this is a single multiplication and addition (constant time regardless of N).
-The CPU can compute this directly without any traversal. This is why arrays are the fastest data structure for indexed access.
-</details>
-
-**C2. Why does cache performance matter for algorithms, and why do arrays win?**
-<details><summary>Deep Answer</summary>
-
-Modern CPUs fetch memory in **cache lines** (~64 bytes). When you access `array[i]`, the CPU also loads `array[i+1]` through `array[i+7]` into L1 cache automatically (spatial locality). Sequential array access hits cache nearly 100% of the time (~1ns). LinkedList traversal: each node is at a random heap address → each step is a potential **cache miss** (~100ns). For 1M elements: array traversal ≈ 1ms; linked list ≈ 100ms. Same O(N), 100x different in practice.
-</details>
-
-**C3. Why does `Arrays.sort()` use different algorithms for primitives vs objects?**
-<details><summary>Deep Answer</summary>
-
-**Primitives (`int[]`)**: Uses Dual-Pivot QuickSort. No stability needed (equal ints are indistinguishable). QuickSort is in-place (O(1) extra space), cache-friendly (sequential access), fastest in practice. **Objects (`Integer[]`)**: Uses TimSort (hybrid MergeSort + InsertionSort). MUST be stable — equal objects may have different fields that should preserve original order (think: sort by name, then by age — equal names must stay age-ordered). TimSort guarantees O(N log N) worst case; QuickSort can degrade to O(N²) if not careful.
-</details>
-
-**C4. Why is inserting at the beginning of an array O(N) but appending at end is O(1) amortized?**
-<details><summary>Deep Answer</summary>
-
-**Insert at index 0**: must shift every element right → N operations always.
-**Append**: if capacity exists, write at `arr[size]` → O(1). If full, resize (double capacity) → copy all N elements. But resizing happens only after 1, 2, 4, 8... N elements. Total copies over N appends = N/2 + N/4 + ... = N. Average per operation = N/N = O(1) — this is **amortized analysis**. ArrayList uses this strategy.
-</details>
-
-**C5. What is the REAL cost of `ArrayList.remove(0)` in a 1M element list? Why?**
-<details><summary>Deep Answer</summary>
-
-~1 million array element shifts. Java calls `System.arraycopy()` — a native bulk memory move. Even though it's one instruction, it copies 1M references = 4MB-8MB of memory movement. At memory bandwidth ~20GB/s: ~200-400 microseconds actual cost. Not "slow" but definitely O(N) — avoid repeatedly removing from the front of a large ArrayList. Use `ArrayDeque` for front-removal O(1).
-</details>
-
-**C6. Two Sum: why does the HashMap approach work, and what's its actual space tradeoff?**
-<details><summary>Deep Answer</summary>
-
-HashMap approach: as you iterate, store `{value → index}`. For each element, check if `target - current` already seen. This is the **complement pattern**: instead of "find two that sum to target", reframe as "have I seen what I need?". Space: O(N) worst case (all elements unique, no match until last pair). But we trade space for a reduction from O(N²) to O(N) time — classic space-time tradeoff. The 1-pass variant finds the answer in one scan without a second loop.
-</details>
-
-**C7. Sliding Window: what is the INVARIANT being maintained?**
-<details><summary>Deep Answer</summary>
-
-A sliding window maintains a **window [left, right]** where some property (max sum, no duplicates, valid substring) holds. The invariant: the window always satisfies the constraint. When violated: shrink from left until valid again. This avoids re-examining elements already processed — each element enters and leaves the window exactly once → O(N). Mental model: two pointers chasing each other, never crossing, each moving forward-only.
-</details>
-
-**C8. Prefix Sum: why does it reduce range-sum queries from O(N) to O(1)?**
-<details><summary>Deep Answer</summary>
-
-`prefix[i] = arr[0] + arr[1] + ... + arr[i]`. Sum of range [l,r] = `prefix[r] - prefix[l-1]`. Precomputation: O(N). Each query: O(1) subtraction. Without prefix sum: each query scans the range = O(N) per query → O(N×Q) total for Q queries. With prefix sum: O(N) build + O(Q) queries = O(N+Q). Break-even at Q=1; better for Q>1. Classic **precomputation tradeoff**: pay once, query forever.
-</details>
-
-**C9. Why does Kadane's Algorithm work for Maximum Subarray?**
-<details><summary>Deep Answer</summary>
-
-The key insight: at each position i, the maximum subarray ending at i is either:
-1. `arr[i]` alone (start fresh — previous subarray was negative, drags us down)
-2. `arr[i] + best_ending_at[i-1]` (extend the previous best)
-
-`curr = max(arr[i], curr + arr[i])` captures this exactly. If curr becomes negative, it's better to start fresh at next element. We track global max throughout. This is a 1D DP where the "state" is "maximum subarray sum ending here". The recurrence is the key reasoning step.
-</details>
-
-**C10. Binary Search: why does `mid = lo + (hi - lo) / 2` instead of `(lo + hi) / 2`?**
-<details><summary>Deep Answer</summary>
-
-**Integer overflow!** If `lo + hi` exceeds `Integer.MAX_VALUE` (2,147,483,647), the sum wraps to a negative number. For huge arrays (lo=1B, hi=2B), `lo + hi = 3B > 2.1B`. This bug brought down a famous JDK implementation of binary search in 2006 (Joshua Bloch's blog post). `lo + (hi - lo) / 2` can never overflow since `hi - lo` is always positive and smaller than either value alone.
-</details>
-
-> **Navigation**: [< Previous](03_Collections_Java.md) | [Back to Index](../00_MASTER_INDEX.md)

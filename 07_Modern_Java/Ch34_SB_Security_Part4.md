@@ -80,10 +80,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 1: Understanding JPA Architecture**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Spring Security, why must you always prefix role names with `ROLE_` when using `hasRole('ADMIN')` in `@PreAuthorize`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
 </details>
 
 
@@ -302,10 +302,10 @@ public class Address {
 
 🔬 **Section Challenge — Chapter 2: Entity Mapping**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Spring Security, why must you always prefix role names with `ROLE_` when using `hasRole('ADMIN')` in `@PreAuthorize`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
 </details>
 
 
@@ -613,10 +613,10 @@ public class UserService {
 
 🔬 **Section Challenge — Chapter 4: Spring Data JPA Repositories**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Spring Security, why must you always prefix role names with `ROLE_` when using `hasRole('ADMIN')` in `@PreAuthorize`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
 </details>
 
 
@@ -882,10 +882,10 @@ public record ErrorResponse(String message, List<String> errors) {}
 
 🔬 **Section Challenge — Chapter 6: Building REST APIs**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Spring Security, why must you always prefix role names with `ROLE_` when using `hasRole('ADMIN')` in `@PreAuthorize`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
 </details>
 
 
@@ -1274,10 +1274,10 @@ class UserRepositoryTest {
 
 🔬 **Section Challenge — Chapter 8: Testing Spring Boot Applications**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Spring Security, why must you always prefix role names with `ROLE_` when using `hasRole('ADMIN')` in `@PreAuthorize`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
 </details>
 
 

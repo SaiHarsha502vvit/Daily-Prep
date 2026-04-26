@@ -470,10 +470,10 @@ public class UserController {
 
 🔬 **Section Challenge — Chapter 4: Response Handling**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is returning a generic `Map<String, Object>` or a plain `ResponseEntity<?>` from a `@RestController` considered an anti-pattern for REST APIs?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Loss of Type Safety and API Documentation. A generic `Map` completely destroys type safety; the compiler cannot verify what fields are being sent. Furthermore, tools like Swagger/OpenAPI rely on strongly typed DTO classes (e.g., `UserResponseDTO`) to generate API documentation. If you return a `Map`, the API documentation will just show an empty JSON object `{}`, making it impossible for frontend developers to know the contract without executing the endpoint.
 </details>
 
 
@@ -925,10 +925,10 @@ public class GlobalExceptionHandler {
 
 🔬 **Section Challenge — Chapter 6: Exception Handling**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is returning a generic `Map<String, Object>` or a plain `ResponseEntity<?>` from a `@RestController` considered an anti-pattern for REST APIs?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Loss of Type Safety and API Documentation. A generic `Map` completely destroys type safety; the compiler cannot verify what fields are being sent. Furthermore, tools like Swagger/OpenAPI rely on strongly typed DTO classes (e.g., `UserResponseDTO`) to generate API documentation. If you return a `Map`, the API documentation will just show an empty JSON object `{}`, making it impossible for frontend developers to know the contract without executing the endpoint.
 </details>
 
 
@@ -1072,10 +1072,10 @@ public class UserController {
 
 🔬 **Section Challenge — Chapter 7: API Versioning**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is returning a generic `Map<String, Object>` or a plain `ResponseEntity<?>` from a `@RestController` considered an anti-pattern for REST APIs?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Loss of Type Safety and API Documentation. A generic `Map` completely destroys type safety; the compiler cannot verify what fields are being sent. Furthermore, tools like Swagger/OpenAPI rely on strongly typed DTO classes (e.g., `UserResponseDTO`) to generate API documentation. If you return a `Map`, the API documentation will just show an empty JSON object `{}`, making it impossible for frontend developers to know the contract without executing the endpoint.
 </details>
 
 

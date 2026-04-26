@@ -188,10 +188,10 @@
 
 🔬 **Section Challenge — 2. How CPU Scheduling Works — Who Gets to Run**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is reading a 1GB file in 4KB chunks using standard `FileInputStream.read()` significantly slower than using `FileChannel.transferTo()` (Zero-Copy)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Standard I/O requires the OS to read data from disk into Kernel Space, copy it to User Space (JVM buffer), and then copy it back to Kernel Space to send over a socket. `transferTo()` uses Zero-Copy DMA (Direct Memory Access). The OS transfers data directly from the disk buffer to the network socket buffer entirely within Kernel Space. It bypasses the JVM memory and avoids expensive CPU context switches between User and Kernel mode.
 </details>
 
 
@@ -342,10 +342,10 @@ Every context consumer re-renders when ANY context value changes. If you have `{
 
 🔬 **Section Challenge — 4. Virtual Memory — Why Programs Think They Have Unlimited RAM**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is reading a 1GB file in 4KB chunks using standard `FileInputStream.read()` significantly slower than using `FileChannel.transferTo()` (Zero-Copy)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Standard I/O requires the OS to read data from disk into Kernel Space, copy it to User Space (JVM buffer), and then copy it back to Kernel Space to send over a socket. `transferTo()` uses Zero-Copy DMA (Direct Memory Access). The OS transfers data directly from the disk buffer to the network socket buffer entirely within Kernel Space. It bypasses the JVM memory and avoids expensive CPU context switches between User and Kernel mode.
 </details>
 
 
@@ -417,10 +417,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 5. Page Faults — When Memory Isn't Where You Think**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is reading a 1GB file in 4KB chunks using standard `FileInputStream.read()` significantly slower than using `FileChannel.transferTo()` (Zero-Copy)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Standard I/O requires the OS to read data from disk into Kernel Space, copy it to User Space (JVM buffer), and then copy it back to Kernel Space to send over a socket. `transferTo()` uses Zero-Copy DMA (Direct Memory Access). The OS transfers data directly from the disk buffer to the network socket buffer entirely within Kernel Space. It bypasses the JVM memory and avoids expensive CPU context switches between User and Kernel mode.
 </details>
 
 
@@ -720,10 +720,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 9. I/O Models — Blocking, Non-Blocking, Multiplexing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is reading a 1GB file in 4KB chunks using standard `FileInputStream.read()` significantly slower than using `FileChannel.transferTo()` (Zero-Copy)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Standard I/O requires the OS to read data from disk into Kernel Space, copy it to User Space (JVM buffer), and then copy it back to Kernel Space to send over a socket. `transferTo()` uses Zero-Copy DMA (Direct Memory Access). The OS transfers data directly from the disk buffer to the network socket buffer entirely within Kernel Space. It bypasses the JVM memory and avoids expensive CPU context switches between User and Kernel mode.
 </details>
 
 
@@ -885,10 +885,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — 12. OS Concepts in Java — Direct Mapping**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is reading a 1GB file in 4KB chunks using standard `FileInputStream.read()` significantly slower than using `FileChannel.transferTo()` (Zero-Copy)?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Standard I/O requires the OS to read data from disk into Kernel Space, copy it to User Space (JVM buffer), and then copy it back to Kernel Space to send over a socket. `transferTo()` uses Zero-Copy DMA (Direct Memory Access). The OS transfers data directly from the disk buffer to the network socket buffer entirely within Kernel Space. It bypasses the JVM memory and avoids expensive CPU context switches between User and Kernel mode.
 </details>
 
 

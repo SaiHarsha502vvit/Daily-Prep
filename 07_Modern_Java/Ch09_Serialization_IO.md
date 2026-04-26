@@ -644,10 +644,10 @@ Common encodings:
 
 🔬 **Section Challenge — 12. Character Encoding — The Silent Bug Source**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is Java's native built-in Serialization (`implements Serializable`) widely considered an obsolete and dangerous anti-pattern?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Security Vulnerabilities (RCE) and Brittleness. Native serialization stores the exact internal class structure. If an attacker intercepts the byte stream and alters the class metadata, they can trick the JVM into instantiating malicious classes during deserialization, leading to Remote Code Execution (RCE). Furthermore, if you change a field name in the class without updating the `serialVersionUID`, all previously saved data instantly becomes unreadable. Modern apps strictly use JSON/Protobuf instead.
 </details>
 
 

@@ -78,10 +78,10 @@ flowchart TD
 
 🔬 **Section Challenge — Chapter 1: DSA in Enterprise Applications**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is a Trie (Prefix Tree) vastly superior to a standard relational SQL `LIKE 'prefix%'` query for implementing an auto-complete search bar?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Algorithmic complexity. A SQL `LIKE 'prefix%'` query (even if indexed) requires B-Tree range scans that degrade severely as the dataset grows into millions of strings. A Trie stores characters hierarchically. Finding all words that start with "app" takes `O(L + R)` time, where `L` is the length of the prefix (3) and `R` is the number of matching results. It is essentially an instant `O(1)` pointer traversal in memory, perfectly suited for real-time keystroke matching.
 </details>
 
 
@@ -158,10 +158,10 @@ Sliding Window      │ • Rate limiting
 
 🔬 **Section Challenge — Dsa Usage In Spring Boot Applications**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is a Trie (Prefix Tree) vastly superior to a standard relational SQL `LIKE 'prefix%'` query for implementing an auto-complete search bar?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Algorithmic complexity. A SQL `LIKE 'prefix%'` query (even if indexed) requires B-Tree range scans that degrade severely as the dataset grows into millions of strings. A Trie stores characters hierarchically. Finding all words that start with "app" takes `O(L + R)` time, where `L` is the length of the prefix (3) and `R` is the number of matching results. It is essentially an instant `O(1)` pointer traversal in memory, perfectly suited for real-time keystroke matching.
 </details>
 
 
@@ -747,10 +747,10 @@ public class DeliveryController {
 
 🔬 **Section Challenge — Chapter 5: Shortest Path for Delivery Routing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** Why is a Trie (Prefix Tree) vastly superior to a standard relational SQL `LIKE 'prefix%'` query for implementing an auto-complete search bar?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Algorithmic complexity. A SQL `LIKE 'prefix%'` query (even if indexed) requires B-Tree range scans that degrade severely as the dataset grows into millions of strings. A Trie stores characters hierarchically. Finding all words that start with "app" takes `O(L + R)` time, where `L` is the length of the prefix (3) and `R` is the number of matching results. It is essentially an instant `O(1)` pointer traversal in memory, perfectly suited for real-time keystroke matching.
 </details>
 
 

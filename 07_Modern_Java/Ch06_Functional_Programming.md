@@ -10,10 +10,10 @@
 
 🔬 **Section Challenge — Thinking in Functions**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
@@ -112,10 +112,10 @@ int total = orders.stream()
 
 🔬 **Section Challenge — What Problem Does Functional Programming Solve?**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
@@ -133,10 +133,10 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 🔬 **Section Challenge — Why Learn Functional Programming?**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
@@ -183,10 +183,10 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 🔬 **Section Challenge — Difficulties in Learning FP**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
@@ -282,10 +282,10 @@ flowchart LR
 
 🔬 **Section Challenge — Core Principles**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
@@ -420,10 +420,10 @@ square.apply(5);  // 25
 
 🔬 **Section Challenge — Built-in Functional Interfaces**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
@@ -453,10 +453,10 @@ isNotPositive.test(-5);  // true
 
 🔬 **Section Challenge — Chaining Predicates**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
@@ -648,10 +648,10 @@ Integer[] arr = numbers.stream().toArray(Integer[]::new);
 
 🔬 **Section Challenge — Terminal Operations (Produce Result)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
@@ -696,10 +696,10 @@ Map<String, Long> countByCity = people.stream()
 
 🔬 **Section Challenge — Pattern 2: Grouping**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
@@ -718,10 +718,10 @@ Map<Boolean, List<Person>> adultOrNot = people.stream()
 
 🔬 **Section Challenge — Pattern 3: Partitioning**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
@@ -940,10 +940,10 @@ int max = numbers.stream()
 
 🔬 **Section Challenge — Example 1: Find Max Element**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
+**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
 <details><summary>Answer</summary>
 
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
+Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
 </details>
 
 
