@@ -44,6 +44,20 @@ For `x`, at each level:
 - if `want` branch exists, take it
 - else take `bit` branch
 
+### 🔬 Deep Dive: The Mathematical Epiphany (Why Greedy Bitwise Works)
+
+Why can we make a greedy, irrevocable choice at the $k$-th bit and *know* it's optimal, without looking ahead at the remaining branches?
+
+**The $2^k$ Domination Principle:**
+In binary, a bit at position $k$ contributes $2^k$ to the total value. 
+What if we fail to get a 1 at position $k$, but we perfectly match EVERY single bit below it?
+The maximum possible sum of all bits below $k$ is:
+$$\sum_{i=0}^{k-1} 2^i = 2^k - 1$$
+
+Because **$2^k > 2^k - 1$**, successfully getting a 1 at the $k$-th bit is **strictly more valuable** than getting a 1 at *every single lower bit combined*.
+
+Therefore, if the Trie offers a path that gives us a 1 at the current bit, we **must** take it. It doesn't matter if that path leads to all 0s for the rest of the number; it will still mathematically beat a path that gives us a 0 here but all 1s later. This is the exact reason why Trie traversal from MSB (bit 31) down to LSB (bit 0) guarantees the absolute maximum XOR without any backtracking.
+
 ### Interview script
 
 "I model each integer as a fixed-width bit string in a binary trie. To maximize XOR with x, I greedily choose the opposite bit at each position. Since width is fixed (32), each insert/query is O(32), effectively O(1)."

@@ -25,6 +25,25 @@ Almost every algorithm optimization is a space-time tradeoff:
 | Adjacency matrix        | O(V²) more   | O(1) edge lookup |
 | Adj list                | O(V+E) less  | O(degree) edge check |
 ┴──────────────┴
+
+## The Memory Hierarchy Reality (Beyond Big-O)
+
+Big-O notation assumes all memory accesses cost the same $O(1)$. **In reality, memory access costs vary by orders of magnitude.** The CPU doesn't read RAM one byte at a time; it fetches 64-byte chunks called "cache lines" into ultra-fast L1/L2 caches.
+
+| Memory Layer | Latency | DSA / Systems Implication |
+| :--- | :--- | :--- |
+| **L1 Cache** | ~1-2 ns | Fits small arrays ($\sim$64KB). Extremely fast. |
+| **L2 Cache** | ~4-10 ns | Per-core cache ($\sim$1MB). |
+| **L3 Cache** | ~40-75 ns | Shared across cores ($\sim$30MB). |
+| **Main Memory (RAM)** | ~100+ ns | Random access here is a "Cache Miss". Extremely slow. |
+
+**The Linked List vs Array Reality Check:**
+A Linked List traversal is $O(n)$. An Array traversal is $O(n)$. 
+However, an Array is **contiguous in memory**. Fetching index 0 loads indices 1-15 into the L1 cache simultaneously. The next 15 loop iterations take 1 nanosecond each (Cache Hits).
+A Linked List's nodes are scattered randomly across the heap. Every `.next` pointer dereference likely triggers a RAM Cache Miss (100 nanoseconds). 
+**Result:** Array traversal can be 10x to 50x faster than Linked List traversal in the real world, despite both being mathematically $O(n)$.
+**Rule of Thumb:** Always prefer contiguous memory (Arrays) over scattered memory (LinkedLists, Trees, complex object graphs) when raw speed is critical.
+
 ## The Decision Framework
 
 
@@ -72,10 +91,6 @@ EXAMPLE 6: BIT PACKING
 Boolean array visited[10000]: 10KB
 Bitset: 10000/8 = 1.25KB
 → 8× space reduction. Time slightly worse (bit operations).
-
-
-
-
 
 🔬 **Section Challenge — Classic Tradeoff Examples In Dsa**
 

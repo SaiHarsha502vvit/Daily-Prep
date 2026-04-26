@@ -41,14 +41,22 @@ DP doesn't need Q1 — it explores everything anyway.
 ## Proof Techniques For Greedy
 
 How do you PROVE greedy works? Two standard techniques:
-TECHNIQUE 1: EXCHANGE ARGUMENT
-"Suppose greedy solution G and optimal solution O differ.
-Show we can modify O to look more like G without worsening it.
-Therefore G is also optimal."
-Example — Activity Selection (LC 435 variant):
-Greedy: Pick activity ending earliest. If optimal picks a later-ending
-activity first, swap it with our earliest-ending one. The swap can't
-cause conflicts (ends earlier → leaves more room). So greedy ≥ optimal.
+
+### 🔬 Deep Dive: The Exchange Argument (Step-by-Step)
+The Exchange Argument is the most mathematically rigorous way to prove a Greedy algorithm works. It follows a strict 5-step template:
+
+1. **Assume an Optimal Solution ($O$) exists** that differs from our Greedy Solution ($G$). Let them share the first $k$ choices, but differ at step $k+1$.
+2. **Identify the difference:** At step $k+1$, $G$ picks element $g$, while $O$ picks element $o$. (Because $G$ is greedy, $g$ looks "better" locally than $o$).
+3. **Exchange:** Create a new solution $O'$ by taking $O$ and swapping out $o$ for $g$. 
+4. **Prove no degradation:** Prove that $O'$ is still valid (doesn't break constraints) AND its total value is $\ge O$. Since $O$ was assumed to be optimal, and $O'$ is at least as good, $O'$ must *also* be optimal.
+5. **Induction:** Since we can repeatedly swap elements without worsening the score until $O$ becomes exactly $G$, $G$ must be optimal!
+
+**Walkthrough: Activity Selection (Interval Scheduling)**
+- **Greedy Rule:** Always pick the valid activity that *ends earliest*.
+- **Step 1:** Assume Optimal $O$ differs from Greedy $G$.
+- **Step 2:** At the first point of divergence, $G$ picks activity $g$ (ends at $T_g$). $O$ picks activity $o$ (ends at $T_o$). By definition of our greedy rule, $T_g \le T_o$.
+- **Step 3:** Create $O'$ by replacing $o$ with $g$.
+- **Step 4:** Does $O'$ break? No. Since $g$ ends *earlier* than $o$, it frees up MORE time. Any subsequent activities in $O$ that started after $T_o$ will *definitely* start after $T_g$. The total number of activities remains the same. Thus, $O'$ is just as optimal as $O$.
 TECHNIQUE 2: GREEDY STAYS AHEAD
 "At every step, show greedy solution is at least as good
 as any other solution up to that point."

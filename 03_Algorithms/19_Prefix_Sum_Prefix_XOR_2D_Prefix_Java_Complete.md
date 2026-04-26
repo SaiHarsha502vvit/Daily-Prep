@@ -292,6 +292,18 @@ public static long rectSum(long[][] pref, int r1, int c1, int r2, int c2) {
 }
 ```
 
+### 🔬 Deep Dive: The Principle of Inclusion-Exclusion (PIE)
+
+Why does the formula `pref[c][d] - pref[a - 1][d] - pref[c][b - 1] + pref[a - 1][b - 1]` work? It is a direct application of the mathematical **Principle of Inclusion-Exclusion (PIE)** applied to 2D geometry.
+
+When we want the sum of a specific target rectangle from $(r_1, c_1)$ to $(r_2, c_2)$:
+1. **Include the whole:** We start with `pref[r2+1][c2+1]`. This gives us the sum of the *entire* rectangle from $(0,0)$ down to our bottom-right corner $(r_2, c_2)$.
+2. **Exclude the top:** We subtract `pref[r1][c2+1]`. This removes the unwanted area *above* our target rectangle.
+3. **Exclude the left:** We subtract `pref[r2+1][c1]`. This removes the unwanted area to the *left* of our target rectangle.
+4. **Re-include the overlap:** By subtracting both the top and the left sections, we accidentally subtracted their intersection (the top-left corner area `pref[r1][c1]`) **TWICE**. To mathematically correct this, we must add it back exactly once.
+
+This pattern ($|A \cup B| = |A| + |B| - |A \cap B|$, or in our case $\text{Total} - A - B + (A \cap B)$) is the foundation of PIE, ensuring every grid cell in the target rectangle is counted exactly once, and every cell outside is counted zero times.
+
 ---
 
 ## 8. 2D Prefix Use Cases

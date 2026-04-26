@@ -340,32 +340,29 @@ WHEN GREEDY WORKS:
 ✓ Optimal Substructure: Optimal solution contains optimal subsolutions
 
 WHEN GREEDY FAILS:
+✗ Subproblems overlap in ways that restrict future choices (e.g., 0/1 Knapsack)
+✗ Non-monotonic conditions (e.g., Coin change with arbitrary denominations)
 ```
 
-**Flow:**
-1. GREEDY APPROACH:
-2. Make the locally optimal choice at each step, hoping to find a global optimum.
-3. GREEDY STRATEGY
-4. FEASIBILITY: Check if choice valid
-5. LOCAL OPTIMUM: Pick best option NOW
-6. IRREVOCABLE: Never reconsider
+## 🔬 Deep Dive: The Matroid Connection (Why Greedy Actually Works)
 
-```mermaid
-flowchart TD
-    N1["GREEDY APPROACH:"]
-    N2["Make the locally optimal choice at each step,"]
-    N3["hoping to find a global optimum."]
-    N4["GREEDY STRATEGY"]
-    N5["1. FEASIBILITY: Check if choice valid"]
-    N6["2. LOCAL OPTIMUM: Pick best option NOW"]
-    N7["3. IRREVOCABLE: Never reconsider"]
-    N8["WHEN GREEDY WORKS:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
+While the "Exchange Argument" proves greedy works for a *specific* problem, **Matroid Theory** explains the underlying mathematical structure that makes greedy work for an entire *class* of problems. If a problem's solution space forms a weighted Matroid, the standard Greedy algorithm is **guaranteed** to find the optimal solution.
+
+### What is a Matroid?
+A Matroid is a structure $M = (S, I)$ where $S$ is a finite set of elements, and $I$ is a family of "independent" subsets of $S$, satisfying two critical axioms:
+1. **Hereditary Property:** If subset $B \in I$ and $A \subset B$, then $A \in I$. *(Every subset of a valid set is also valid).*
+2. **Exchange Property:** If $A, B \in I$ and $|A| < |B|$, there exists some element $x \in B \setminus A$ such that $A \cup \{x\} \in I$. *(You can always grow a smaller valid set by borrowing an element from a larger valid set).*
+
+### How it connects to the Greedy Algorithm:
+If your problem can be mapped to finding the maximum-weight independent set of a Matroid, the canonical Greedy Algorithm works flawlessly:
+1. Sort all elements in $S$ by weight descending.
+2. Initialize an empty set $A$.
+3. For each element $x$ in sorted order: if $A \cup \{x\}$ is independent (maintains constraints), add $x$ to $A$.
+
+### Classic Matroid Successes:
+- **Kruskal's MST:** The set $S$ is graph edges. Independent sets $I$ are acyclic edge sets (forests). Because graphs satisfy the exchange property (graphic matroids), sorting edges by weight and adding them if they don't form a cycle *mathematically guarantees* the MST.
+- **Task Scheduling with Deadlines & Penalties:** Tasks are $S$. A set of tasks is independent if there exists a valid schedule where *all* of them meet their deadlines. This forms a transversal matroid. Sorting by penalty and greedily scheduling guarantees the minimum penalty.
+
+### Why Greedy Fails (Not a Matroid):
+- **0/1 Knapsack:** Let capacity be 10kg. Suppose $A=\{6kg\}$ and $B=\{5kg, 5kg\}$. Both sets are valid (weight $\le 10$). Notice $|A| = 1$ and $|B| = 2$, so $|A| < |B|$. According to the Matroid Exchange Property, we should be able to take a 5kg item from $B$ and add it to $A$ to get a valid set. But $\{6kg\} \cup \{5kg\} = 11kg$, which exceeds capacity and is INVALID. The exchange property fails! Therefore, the knapsack problem does not form a matroid, and the greedy algorithm is doomed to fail, requiring Dynamic Programming instead.
 
