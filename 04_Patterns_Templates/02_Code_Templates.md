@@ -4,6 +4,8 @@
 
 ## Ready-to-use templates with step-by-step visual diagrams
 
+> Constraint first: before copying a template, confirm the input size, value signs, update behavior, and graph weights. Use [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md) when a template seems tempting but the constraints feel different.
+
 ---
 
 ## 📖 TABLE OF CONTENTS

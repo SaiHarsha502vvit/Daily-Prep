@@ -25,6 +25,19 @@ Fixed window:    j - i + 1 == k        ← count elements, not indices!
 Variable window: expand right, shrink left while invalid
 ```
 
+### ⚠️ Constraint Lens — When Sliding Window Is NOT Correct
+
+| Constraint / Condition | Sliding Window? | Better Pattern |
+|------------------------|-----------------|----------------|
+| fixed window size `k` | yes | fixed window |
+| all numbers positive and condition is `sum <= K` or `sum >= K` | yes | variable window |
+| negative numbers allowed and target is exact sum | no | prefix sum + hashmap |
+| negative numbers allowed and shortest sum `>= K` | no | prefix sum + monotonic deque |
+| exact `K` distinct chars/items | indirect | `atMost(K) - atMost(K-1)` |
+| online range updates/queries | no | Fenwick / segment tree |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 🔗 **Practice problems here:** [Sliding Window PS](../05_Problem_Solving/05_Sliding_Window.md)
 📖 **Algo connection:** [Sorting (why arrays must be structured)](../03_Algorithms/02a_Sorting_Fundamentals.md)
 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)

@@ -4,6 +4,21 @@
 
 **WHY this combination?** A stack processes elements in LIFO order. A **monotonic stack** maintains elements in sorted order, enabling O(n) solutions for "next greater/smaller element" problems that seem to need O(n²).
 
+
+### 🧠 Deep Intuition — Why Monotonic Stack Is O(n)
+
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| next greater/smaller element | monotonic stack |
+| circular next greater | scan `2N` with modulo |
+| sliding window maximum/minimum | monotonic deque, not stack |
+| need nearest previous boundary | stack stores indices |
+| duplicates matter | choose strict vs non-strict comparison carefully |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ### 🧠 Deep Intuition — Why Monotonic Stack Is O(n)
 
 The brute force for "next greater element" checks every element to the right for each position — nested loops, O(n²). The monotonic stack solves this in O(n) through a key insight: **elements that get "answered" can be permanently discarded.**

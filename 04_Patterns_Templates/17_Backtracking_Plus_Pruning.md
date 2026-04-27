@@ -4,6 +4,19 @@
 
 **WHY this combination?** Backtracking explores ALL possibilities systematically. Pruning eliminates impossible branches early ⇒ can reduce exponential time dramatically. Together they solve constraint satisfaction problems.
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| `N <= 10` | permutations/backtracking can pass |
+| `N <= 20` | subsets/bitmask/backtracking can pass |
+| duplicates in candidates | sort + skip duplicate branches |
+| need one solution only | return early |
+| need count/best over repeated states | memoization / DP |
+| constraints allow pruning by sum/order | sort before search |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ### 🧠 Deep Intuition — Why Backtracking Works
 
 Backtracking is **exhaustive search done systematically**. Instead of generating all possible configurations and checking each one, it builds solutions incrementally and abandons ("backtracks from") partial solutions that can't possibly lead to valid complete solutions.

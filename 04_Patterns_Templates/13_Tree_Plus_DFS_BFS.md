@@ -4,6 +4,19 @@
 
 **WHY this combination?** Trees are hierarchical. DFS explores depth-first (recursion/stack) — ideal for path problems. BFS explores level-by-level (queue) — ideal for shortest path and level-order problems.
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| level order / minimum depth | BFS |
+| path sum / subtree aggregate | DFS postorder/preorder |
+| `N` can be very deep in Java | iterative stack to avoid stack overflow |
+| BST ordered query | inorder / TreeMap logic |
+| many path queries | LCA / HLD |
+| subtree queries | Euler Tour + Fenwick/segment tree |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ### 🧠 Deep Intuition — DFS vs BFS Are Fundamentally Different Questions
 
 Choosing between DFS and BFS isn't arbitrary — each algorithm answers a fundamentally different question:

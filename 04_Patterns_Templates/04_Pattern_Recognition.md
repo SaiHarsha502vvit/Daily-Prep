@@ -7,6 +7,9 @@
 **Read this FIRST. Use this every time you see a new problem.**
 The fastest skill you can build is: see a problem → immediately know which pattern to use.
 
+> Constraint override: keywords suggest patterns, but constraints confirm them. If values may be negative, updates exist, graph weights differ, or `N` is huge, switch using [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+> Rewrite method: when you only have brute force, use [Brute Force to Optimal](../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md) to identify which DS/Algo replaces the slow loop.
+
 ### 🔑 Step 1: Read the Problem. Look for These Keywords
 
 | If you see... | First think... | Then verify with... |

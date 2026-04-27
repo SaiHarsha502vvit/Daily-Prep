@@ -2,7 +2,21 @@
 
 # Array + Two Pointers — Combined Pattern Guide
 
+### 🧠 Deep Intuition — Why Two Pointers Works
 **WHY this combination?** Arrays provide O(1) random access. Two pointers exploit **sorted order** or **structural constraints** to avoid nested loops, reducing O(n²) → O(n).
+
+
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| array is sorted | use opposite/same-direction pointers directly |
+| array is unsorted but order/index not important | sort, then two pointers |
+| array is unsorted and original indices matter | use hashmap complement |
+| `N <= 2e5` and pair/triplet search | sort + two pointers is usually safe |
+| duplicates exist | skip duplicates after moving pointers |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
 ### 🧠 Deep Intuition — Why Two Pointers Works
 

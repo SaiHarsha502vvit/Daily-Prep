@@ -4,6 +4,21 @@
 
 **WHY this matters?** DP problems look overwhelming because there are hundreds of them. But they ALL fall into ~8 pattern families. Recognize the family → apply the template → solve.
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| `N <= 20` and subsets | bitmask DP |
+| choose/skip items with capacity | 0/1 knapsack |
+| unlimited item reuse | unbounded knapsack |
+| two strings | 2D prefix DP |
+| intervals/ranges | interval DP |
+| tree choices | tree DP |
+| huge number length / upper bound like `1e18` | digit DP |
+| local greedy seems tempting but no exchange proof | DP |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ### 🧠 Deep Intuition — What Makes a Problem DP?
 
 Two conditions must BOTH be present for DP to be applicable:

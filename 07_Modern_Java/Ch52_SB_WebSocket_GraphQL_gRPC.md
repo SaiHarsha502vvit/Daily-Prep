@@ -43,6 +43,7 @@ But what if the SERVER needs to push data to the client?
 | File upload progress | ❌ | ✅ | ✅ |
 
 ### The Problem with HTTP Polling
+
 ```
 Client: "Any new messages?" → Server: "No"       (wasted request)
 Client: "Any new messages?" → Server: "No"       (wasted request)
@@ -57,47 +58,101 @@ Client: "Any new messages?" → Server: "Yes! Here" (finally useful)
 5. Client: 'Any new messages?'
 6. Server: 'Yes! Here' (finally useful)
 
-```mermaid
-flowchart LR
-    N1["Client: 'Any new messages?'"]
-    N2["Server: 'No' (wasted request)"]
-    N3["Server: 'Yes! Here' (finally useful)"]
-    N1 --> N2
-    N1 --> N3
+```text
++-------------------+                                +-------------------+
+|                   |  --- (1) Any messages? ---->   |                   |
+|      Client       |  <--------- (2) No ---------   |      Server       |
+|                   |                                |                   |
+|                   |  --- (3) Any messages? ---->   |                   |
+|                   |  <--------- (4) No ---------   |                   |
+|                   |                                |                   |
+|                   |  --- (5) Any messages? ---->   |                   |
+|                   |  <------ (6) Yes! Here -----   |                   |
++-------------------+                                +-------------------+
 ```
 **1000 users polling every 2 seconds = 500 requests/second doing NOTHING**
 
+### The Hidden Cost of WebSockets (Why Polling is Sometimes Better)
+
+Many believe holding a WebSocket connection is "free" because it doesn't incur the HTTP header overhead. **It is not free.**
+
+Every open WebSocket on the server eats persistent memory:
+- **~1KB** for the OS File Descriptor (FD)
+- **~128KB** (default) for TCP Send/Receive Buffers natively allocated by the OS
+- **~2-5KB** for the application library state (Spring, Node, etc.)
+
+When you have **100,000 idle users** holding open WebSockets, your server is constantly pinning **2 to 10 GB of RAM** just doing absolutely nothing.
+
+**The Polling Advantage:**
+With HTTP Polling, the connection is alive for maybe **50ms**. The server replies and *instantly* recycles that memory for the next user.
+
+**Architectural Takeaway:**
+Before defaulting to WebSockets, ask: *Does this actually need a persistent two-way connection?*
+If users only get a real notification every 2 hours, polling every 30 seconds uses **significantly less server memory** than holding a persistent pipe. WebSockets excel for **high-frequency, bidirectional exchanges** (multiplayer games, live trading), but fail as idle event listeners at scale.
+
+---
+
+### Production Reality Checks Before Choosing WebSockets
+
+The exact memory numbers depend on OS socket buffer settings, TLS, compression, framework session objects, STOMP subscriptions, reverse proxy state, and Kubernetes/load-balancer connection tracking. The architectural point still holds: **an idle persistent connection is not free just because it is quiet.**
+
+Hidden costs to remember:
+
+- **Kernel state:** file descriptors, socket buffers, TCP keepalive metadata.
+- **Runtime state:** WebSocket session objects, message queues, subscriptions, auth principal/context.
+- **Network edge state:** load balancer connection tables, proxy buffers, sticky routing.
+- **Operational state:** graceful deploy draining, reconnect storms, heartbeat traffic, backpressure handling.
+
+### Choosing Polling vs SSE vs WebSocket
+
+| Need | Best Fit | Why |
+|------|----------|-----|
+| User refreshes rarely and latency can be seconds/minutes | Normal polling | Simple, cheap, stateless between requests |
+| Server pushes events one-way | SSE | One persistent HTTP stream, simpler than WebSocket |
+| Client and server both send frequent events | WebSocket | True bidirectional low-latency pipe |
+| Mobile clients with unreliable networks | Polling or SSE | Easier reconnect/retry behavior |
+| Multiplayer/editor/trading/typing indicators | WebSocket | Latency and bidirectionality matter |
+| Notification every few hours | Polling | Persistent memory is usually wasteful |
+
+Rule:
+
+```text
+Low frequency + one-way-ish updates  -> polling or SSE
+High frequency + bidirectional state -> WebSocket
+```
+
+For 100,000 users polling every 30 seconds, the average request rate is roughly:
+
+```text
+100,000 / 30 = 3,333 requests per second
+```
+
+If each request occupies the server for roughly `50ms`, the average active request concurrency is closer to:
+
+```text
+3,333 * 0.05 = about 167 active requests
+```
+
+That may sound high, but each request is short-lived and horizontally scalable through stateless HTTP. A WebSocket design may reduce request count, but it pins long-lived memory and connection state. The winning design depends on which resource is actually scarce: CPU/request handling, memory/connection count, latency, or operational simplicity.
+
 ### WebSocket = Persistent Two-Way Connection
-```
-Client ←→ Server (always connected)
-Server: "Hey, new message!" → Client gets it INSTANTLY
-Client: "I'm typing..."     → Server knows INSTANTLY
-```
 
-**Flow:**
-1. Client ←
-2. Server (always connected)
-3. Server: 'Hey, new message!'
-4. Client gets it INSTANTLY
-5. Client: 'I'm typing...'
-6. Server knows INSTANTLY
-
-```mermaid
-flowchart LR
-    N1["Client ←"]
-    N2["Server (always connected)"]
-    N3["Server: 'Hey, new message!'"]
-    N4["Client gets it INSTANTLY"]
-    N5["Client: 'I'm typing...'"]
-    N6["Server knows INSTANTLY"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
+```text
++-------------------+                                  +-------------------+
+|                   |  <===== Persistent TCP Pipe ===> |                   |
+|                   |                                  |                   |
+|      Client       |  <------ (Msg pushed) ---------  |      Server       |
+|                   |       "Hey, new message!"        |                   |
+|                   |                                  |                   |
+|                   |  ------- (Msg pushed) -------->  |                   |
+|                   |         "I'm typing..."          |                   |
++-------------------+                                  +-------------------+
 ```
 
 ## HOW — WebSocket in Spring Boot
 
 ### Step 1: Add Dependency
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -106,6 +161,7 @@ flowchart LR
 ```
 
 ### Step 2: Configure WebSocket with STOMP
+
 ```java
 @Configuration
 @EnableWebSocketMessageBroker
@@ -131,6 +187,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 ```
 
 ### Step 3: Create Message Controller
+
 ```java
 @Controller
 public class ChatController {
@@ -154,6 +211,7 @@ public class ChatController {
 ```
 
 ### Step 4: Send Messages from Backend (SimpMessagingTemplate)
+
 ```java
 @Service
 public class NotificationService {
@@ -174,8 +232,6 @@ public class NotificationService {
 }
 ```
 
-
-
 🔬 **Section Challenge — HOW — WebSocket in Spring Boot**
 
 **Challenge 1 (Reasoning):** Why is gRPC significantly faster and more efficient than standard REST APIs over HTTP/1.1 for internal microservice communication?
@@ -183,7 +239,6 @@ public class NotificationService {
 
 Protocol Buffers and HTTP/2. REST typically serializes payloads as massive, human-readable JSON strings over HTTP/1.1 (which suffers from Head-of-Line blocking). gRPC uses Protocol Buffers (protobufs), a tightly packed binary serialization format that is much smaller to parse. Furthermore, gRPC runs strictly on HTTP/2, allowing true bidirectional streaming, multiplexed requests over a single TCP connection, and built-in header compression.
 </details>
-
 
 ## HOW — Server-Sent Events (SSE)
 
@@ -245,6 +300,7 @@ public class SSEController {
 | Complexity | High | Low | Medium |
 
 ### 📌 Pitfall
+
 ```java
 // ❌ WRONG: Don't use WebSocket for everything
 // If data flows only one way (server → client), use SSE
@@ -266,6 +322,7 @@ public ChatMessage handle(ChatMessage msg) {
 ```
 
 ### Interview Questions
+
 1. **Q: WebSocket vs HTTP?** A: HTTP = stateless request-response. WebSocket = persistent bidirectional. Use WS for real-time (chat, gaming).
 2. **Q: What is STOMP?** A: Simple Text Oriented Messaging Protocol — adds structure (headers, body) on top of raw WebSocket.
 3. **Q: How to scale WebSocket across multiple servers?** A: Use a message broker like Redis/RabbitMQ as the STOMP broker instead of SimpleBroker.
@@ -289,25 +346,16 @@ REST GET /api/orders/5/items → gets items
 → 3 API calls for 1 page (UNDER-FETCHING)
 ```
 
-**Flow:**
-1. REST GET /api/users/1
-2. gets user
-3. REST GET /api/users/1/orders
-4. gets orders
-5. REST GET /api/orders/5/items
-6. gets items
-
-```mermaid
-flowchart LR
-    N1["REST GET /api/users/1"]
-    N2["gets user"]
-    N3["REST GET /api/users/1/orders"]
-    N4["gets orders"]
-    N5["REST GET /api/orders/5/items"]
-    N6["gets items"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
+**REST Example (Multiple Round-Trips):**
+```text
+[Client] ---- GET /api/users/1 --------------> [Server]
+         <--- (User profile, 50 fields) ------
+         
+[Client] ---- GET /api/users/1/orders -------> [Server]
+         <--- (List of order IDs) ------------
+         
+[Client] ---- GET /api/orders/5/items -------> [Server]
+         <--- (Item details) -----------------
 ```
 
 GraphQL solution: **Client asks for EXACTLY what it needs**
@@ -324,14 +372,13 @@ query {
 → ONE request, EXACT data
 ```
 
-
-
 🔬 **Section Challenge — WHY GraphQL?**
 >>
 
 ## HOW — Spring for GraphQL
 
 ### Step 1: Dependencies
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -344,6 +391,7 @@ query {
 ```
 
 ### Step 2: Define Schema (src/main/resources/graphql/schema.graphqls)
+
 ```graphql
 
 
@@ -394,6 +442,7 @@ input UpdateUserInput {
 ```
 
 ### Step 3: Create Controllers (Spring way)
+
 ```java
 @Controller
 public class UserGraphQLController {
@@ -428,6 +477,7 @@ public class UserGraphQLController {
 ```
 
 ### Step 4: N+1 Problem Solution with DataLoader
+
 ```java
 // WHY: Without DataLoader, fetching 100 users with orders = 101 queries
 // With DataLoader, it's 2 queries (1 for users, 1 batch for all orders)
@@ -451,6 +501,7 @@ public class UserGraphQLController {
 ```
 
 ### Step 5: Error Handling
+
 ```java
 @ControllerAdvice
 public class GraphQLExceptionHandler {
@@ -466,6 +517,7 @@ public class GraphQLExceptionHandler {
 ```
 
 ### Step 6: Configuration
+
 ```yaml
 spring:
   graphql:
@@ -490,6 +542,7 @@ spring:
 | Learning curve | ✅ Easy | ❌ Steeper |
 
 ### 📌 Pitfall
+
 ```java
 // ❌ WRONG: Allowing unlimited query depth
 // A malicious query could crash your server:
@@ -501,6 +554,7 @@ spring.graphql.schema.introspection.enabled=false  // Disable in prod
 ```
 
 ### Interview Questions
+
 1. **Q: GraphQL vs REST?** A: REST = multiple endpoints, fixed structure. GraphQL = single endpoint, client-defined structure. Use GraphQL when frontend needs vary widely.
 2. **Q: What is N+1 in GraphQL?** A: Each nested field triggers a separate query. Solution: @BatchMapping / DataLoader.
 3. **Q: What are Subscriptions?** A: Real-time GraphQL — server pushes updates over WebSocket when data changes.
@@ -531,6 +585,7 @@ gRPC: Client → Binary protobuf → HTTP/2 → Deserialize → Server
 ## HOW — gRPC in Spring Boot
 
 ### Step 1: Define .proto File (src/main/proto/user.proto)
+
 ```protobuf
 syntax = "proto3";
 
@@ -570,6 +625,7 @@ message Message {
 ```
 
 ### Step 2: Implement Server
+
 ```java
 @GrpcService
 public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
@@ -606,6 +662,7 @@ public class UserGrpcService extends UserServiceGrpc.UserServiceImplBase {
 ```
 
 ### Step 3: gRPC Client
+
 ```java
 @Service
 public class UserGrpcClient {
@@ -624,50 +681,27 @@ public class UserGrpcClient {
 ```
 
 ### 4 Streaming Modes
-```
-1. Unary:           Client → 1 request → Server → 1 response
-2. Server Stream:   Client → 1 request → Server → N responses (streaming)
-3. Client Stream:   Client → N requests → Server → 1 response
-4. Bidirectional:   Client ↔ N messages ↔ Server (like WebSocket)
-```
 
-**Flow:**
-1. 1. Unary: Client
-2. 1 request
-3. Server
-4. 1 response
-5. 2. Server Stream: Client
-6. 1 request
-7. Server
-8. N responses (streaming)
+```text
+1. Unary:         [Client] --- (1 Request) ---> [Server]
+                  [Client] <--- (1 Response) -- [Server]
 
-```mermaid
-flowchart TD
-    N1["1. Unary: Client"]
-    N2["1 request"]
-    N3["Server"]
-    N4["1 response"]
-    N5["2. Server Stream: Client"]
-    N6["N responses (streaming)"]
-    N7["3. Client Stream: Client"]
-    N8["N requests"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N2
-    N3 --> N6
-    N7 --> N8
-    N8 --> N3
+2. Server Stream: [Client] --- (1 Request) ---> [Server]
+                  [Client] <--- (N Responses) - [Server] (Streaming!)
+
+3. Client Stream: [Client] --- (N Requests) --> [Server] (Streaming!)
+                  [Client] <--- (1 Response) -- [Server]
+
+4. Bidirectional: [Client] <=== (N Messages) => [Server] (Full Duplex)
 ```
 
 ### Interview Questions
+
 1. **Q: When gRPC over REST?** A: Internal microservice communication where speed matters. REST for public/browser APIs.
 2. **Q: What is Protocol Buffers?** A: Binary serialization format — smaller, faster than JSON. Needs .proto schema file.
 3. **Q: 4 types of gRPC calls?** A: Unary, Server streaming, Client streaming, Bidirectional streaming.
 
 ---
-
-
 
 🔬 **Section Challenge — HOW — gRPC in Spring Boot**
 
@@ -676,7 +710,6 @@ flowchart TD
 
 Protocol Buffers and HTTP/2. REST typically serializes payloads as massive, human-readable JSON strings over HTTP/1.1 (which suffers from Head-of-Line blocking). gRPC uses Protocol Buffers (protobufs), a tightly packed binary serialization format that is much smaller to parse. Furthermore, gRPC runs strictly on HTTP/2, allowing true bidirectional streaming, multiplexed requests over a single TCP connection, and built-in header compression.
 </details>
-
 
 # 4. Spring Batch (Batch Processing)
 
@@ -690,8 +723,6 @@ Your app needs to:
 
 You can't do this with REST APIs. You need **batch processing**.
 
-
-
 🔬 **Section Challenge — WHY Spring Batch?**
 
 **Challenge 1 (Reasoning):** Why is gRPC significantly faster and more efficient than standard REST APIs over HTTP/1.1 for internal microservice communication?
@@ -700,51 +731,27 @@ You can't do this with REST APIs. You need **batch processing**.
 Protocol Buffers and HTTP/2. REST typically serializes payloads as massive, human-readable JSON strings over HTTP/1.1 (which suffers from Head-of-Line blocking). gRPC uses Protocol Buffers (protobufs), a tightly packed binary serialization format that is much smaller to parse. Furthermore, gRPC runs strictly on HTTP/2, allowing true bidirectional streaming, multiplexed requests over a single TCP connection, and built-in header compression.
 </details>
 
-
 ## HOW — Core Concepts
 
-```
-Job
-├── Step 1: Read CSV → Process → Write to DB
-├── Step 2: Validate records
-└── Step 3: Generate report
-
-Each Step has:
-  ItemReader  → reads one item at a time
-  ItemProcessor → transforms/validates
-  ItemWriter  → writes in chunks (e.g., 100 at a time)
-```
-
-**Flow:**
-1. Step 1: Read CSV
-2. Process
-3. Write to DB
-4. ItemReader
-5. reads one item at a time
-6. ItemProcessor
-7. transforms/validates
-8. ItemWriter
-9. writes in chunks (e.g., 100 at a time)
-
-```mermaid
-flowchart TD
-    N1["Step 1: Read CSV"]
-    N2["Process"]
-    N3["Write to DB"]
-    N4["ItemReader"]
-    N5["reads one item at a time"]
-    N6["ItemProcessor"]
-    N7["transforms/validates"]
-    N8["ItemWriter"]
-    N9["writes in chunks (e.g., 100 at a time)"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N6 --> N7
-    N8 --> N9
+```text
+======================= SPRING BATCH JOB ========================
+|                                                               |
+|  [Step 1: Ingest Data]                                        |
+|   +---------------+     +---------------+    +------------+   |
+|   |  ItemReader   | --> | ItemProcessor | -> | ItemWriter |   |
+|   | (Read 1 by 1) |     | (Transform)   |    | (By Chunk) |   |
+|   +---------------+     +---------------+    +------------+   |
+|           |                                                   |
+|           V                                                   |
+|  [Step 2: Validate Data]                                      |
+|                                                               |
+|  [Step 3: Generate Summary Report]                            |
+|                                                               |
+=================================================================
 ```
 
 ### Step 1: Dependencies
+
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -753,6 +760,7 @@ flowchart TD
 ```
 
 ### Step 2: Define a Job
+
 ```java
 @Configuration
 public class UserImportJobConfig {
@@ -789,6 +797,7 @@ public class UserImportJobConfig {
 ```
 
 ### Step 3: ItemReader (Read from CSV)
+
 ```java
 @Bean
 public FlatFileItemReader<UserCsv> reader() {
@@ -814,6 +823,7 @@ public JdbcCursorItemReader<User> jdbcReader(DataSource dataSource) {
 ```
 
 ### Step 4: ItemProcessor
+
 ```java
 @Component
 public class UserProcessor implements ItemProcessor<UserCsv, User> {
@@ -834,6 +844,7 @@ public class UserProcessor implements ItemProcessor<UserCsv, User> {
 ```
 
 ### Step 5: ItemWriter
+
 ```java
 @Bean
 public JdbcBatchItemWriter<User> writer(DataSource dataSource) {
@@ -846,6 +857,7 @@ public JdbcBatchItemWriter<User> writer(DataSource dataSource) {
 ```
 
 ### Step 6: Launch Job
+
 ```java
 @RestController
 public class JobController {
@@ -865,42 +877,35 @@ public class JobController {
 ```
 
 ### Chunk Processing Visualization
-```
-CSV File (10,000 records)
-    │
-    ▼ Read 1 by 1 (ItemReader)
-    │
-    ▼ Process 1 by 1 (ItemProcessor)
-    │
-    ▼ Write in CHUNKS of 100 (ItemWriter)
-    │
-    ├── Chunk 1: Records 1-100    → INSERT 100 rows (1 transaction)
-    ├── Chunk 2: Records 101-200  → INSERT 100 rows (1 transaction)
-    ├── ...
-    └── Chunk 100: Records 9901-10000 → INSERT 100 rows (1 transaction)
 
-WHY Chunks?
-- Memory efficient (don't load all 10K at once)
-- Transaction safety (if chunk 50 fails, only 100 records lost)
-- Restartable (resume from last successful chunk)
+```text
+[ CSV File (10,000 records) ]
+           |
+           v
+[ Read 1-by-1 ]  (ItemReader)
+           |
+           v
+[ Process 1-by-1 ] (ItemProcessor)
+           |
+           v
+[ Buffer until Chunk Size (100) Reached ]
+           |
+           +--> [ Chunk 1: Records 1..100 ]   ----> (INSERT 100 rows, 1 Commit)
+           |
+           +--> [ Chunk 2: Records 101..200 ] ----> (INSERT 100 rows, 1 Commit)
+           |
+           +--> ...
+           |
+           +--> [ Chunk 100: Records 9901..]  ----> (INSERT 100 rows, 1 Commit)
 ```
 
-**Flow:**
-1. Chunk 1: Records 1-100
-2. INSERT 100 rows (1 transaction)
-3. Chunk 2: Records 101-200
-4. INSERT 100 rows (1 transaction)
-
-```mermaid
-flowchart LR
-    N1["Chunk 1: Records 1-100"]
-    N2["INSERT 100 rows (1 transaction)"]
-    N3["Chunk 2: Records 101-200"]
-    N1 --> N2
-    N3 --> N2
-```
+**WHY Chunks?**
+- **Memory Efficient:** Avoid loading all 10,000 records into RAM at once.
+- **Transaction Safety:** If Chunk 50 fails, only 100 records roll back.
+- **Restartability:** Can resume processing from exactly where the job failed.
 
 ### Interview Questions
+
 1. **Q: What is chunk processing?** A: Read items one by one, process one by one, then write in batches (chunks). Efficient + transactional.
 2. **Q: Job vs Step?** A: Job = entire batch process. Step = one phase (read-process-write). A Job has 1+ Steps.
 3. **Q: How to handle failures?** A: skip(), retry(), and restartability. Spring Batch tracks progress in its metadata tables.
@@ -919,20 +924,20 @@ List<User> users = userRepository.findAll(); // 10 MILLION users in memory = OOM
 Page<User> users = userRepository.findAll(PageRequest.of(0, 20)); // Just 20 users
 ```
 
-
-
 🔬 **Section Challenge — WHY Pagination?**
 
-**Challenge 1 (Reasoning):** Why is gRPC significantly faster and more efficient than standard REST APIs over HTTP/1.1 for internal microservice communication?
+**Challenge 1 (Reasoning):** Without Pagination, what are the primary architectural bottlenecks that could cause a REST API endpoint returning a large database table to crash an application server?
 <details><summary>Answer</summary>
 
-Protocol Buffers and HTTP/2. REST typically serializes payloads as massive, human-readable JSON strings over HTTP/1.1 (which suffers from Head-of-Line blocking). gRPC uses Protocol Buffers (protobufs), a tightly packed binary serialization format that is much smaller to parse. Furthermore, gRPC runs strictly on HTTP/2, allowing true bidirectional streaming, multiplexed requests over a single TCP connection, and built-in header compression.
+Two primary bottlenecks occur:
+1. **Memory Exhaustion (OOM):** The ORM (like Hibernate) will pull all millions of rows into JVM memory simultaneously to construct objects, causing a massive GC spike and an OutOfMemoryError.
+2. **Network/Bandwidth Saturation:** Serializing 10 million entities into JSON and pushing them over the TCP socket will overwhelm the network buffer and cause widespread timeout failures for the client, blocking threads waiting for the operation to complete.
 </details>
-
 
 ## HOW — Spring Data Pagination
 
 ### Basic Pagination
+
 ```java
 // WHY Page: Contains data + metadata (totalPages, totalElements, hasNext)
 @GetMapping("/api/users")
@@ -964,6 +969,7 @@ public Page<UserDTO> getUsers(
 ```
 
 ### Multi-Column Sorting
+
 ```java
 // WHY: Sort by multiple fields — e.g., department ASC, then salary DESC
 Sort sort = Sort.by(
@@ -975,6 +981,7 @@ Pageable pageable = PageRequest.of(0, 20, sort);
 ```
 
 ### Slice vs Page
+
 ```java
 // Page: Runs COUNT query (knows total) — EXPENSIVE for large tables
 Page<User> page = userRepository.findAll(pageable);
@@ -990,6 +997,7 @@ Slice<User> slice = userRepository.findAll(pageable);
 ```
 
 ### Cursor-Based Pagination (For Large Datasets)
+
 ```java
 // WHY: OFFSET-based pagination gets SLOWER as pages increase
 // Page 1: OFFSET 0     → Fast
@@ -1011,6 +1019,7 @@ public List<UserDTO> getUsersCursor(
 ```
 
 ### 📌 Pitfall
+
 ```java
 // ❌ WRONG: Paginating in Java instead of database
 List<User> all = userRepository.findAll();              // Load ALL into memory
@@ -1021,13 +1030,12 @@ Page<User> page = userRepository.findAll(PageRequest.of(0, 20)); // DB does LIMI
 ```
 
 ### Interview Questions
+
 1. **Q: Page vs Slice?** A: Page runs COUNT query (knows total). Slice doesn't (faster). Use Slice for infinite scroll, Page for numbered pages.
 2. **Q: Why is OFFSET slow for large pages?** A: DB must scan and skip N rows. Solution: cursor-based (keyset) pagination.
 3. **Q: How to sort by multiple columns?** A: `Sort.by(Order.asc("col1"), Order.desc("col2"))`.
 
 ---
-
-
 
 🔬 **Section Challenge — HOW — Spring Data Pagination**
 
@@ -1036,7 +1044,6 @@ Page<User> page = userRepository.findAll(PageRequest.of(0, 20)); // DB does LIMI
 
 Protocol Buffers and HTTP/2. REST typically serializes payloads as massive, human-readable JSON strings over HTTP/1.1 (which suffers from Head-of-Line blocking). gRPC uses Protocol Buffers (protobufs), a tightly packed binary serialization format that is much smaller to parse. Furthermore, gRPC runs strictly on HTTP/2, allowing true bidirectional streaming, multiplexed requests over a single TCP connection, and built-in header compression.
 </details>
-
 
 # 6. HATEOAS (Hypermedia-Driven REST)
 
@@ -1103,12 +1110,11 @@ public class UserController {
 ```
 
 ### Interview Questions
+
 1. **Q: What is HATEOAS?** A: Hypermedia As The Engine Of Application State — REST responses include links to related actions/resources.
 2. **Q: Why use it?** A: Decouples client from URL structure. API is self-discoverable. Easier versioning.
 
 ---
-
-
 
 🔬 **Section Challenge — HOW — Spring HATEOAS**
 
@@ -1117,7 +1123,6 @@ public class UserController {
 
 Protocol Buffers and HTTP/2. REST typically serializes payloads as massive, human-readable JSON strings over HTTP/1.1 (which suffers from Head-of-Line blocking). gRPC uses Protocol Buffers (protobufs), a tightly packed binary serialization format that is much smaller to parse. Furthermore, gRPC runs strictly on HTTP/2, allowing true bidirectional streaming, multiplexed requests over a single TCP connection, and built-in header compression.
 </details>
-
 
 # 7. Internationalization (i18n)
 
@@ -1129,35 +1134,13 @@ Error messages, labels, emails — all need translation.
 ## HOW
 
 ### Step 1: Create Message Files
-```
+
+```text
 src/main/resources/
-├── messages.properties              # Default (English)
-├── messages_hi.properties           # Hindi
-├── messages_ja.properties           # Japanese
-└── messages_te.properties           # Telugu
-```
-
-**Flow:**
-1. src/main/resources/
-2. messages.properties # Default (English)
-3. src/main/resources/
-4. messages_hi.properties # Hindi
-5. src/main/resources/
-6. messages_ja.properties # Japanese
-7. src/main/resources/
-8. messages_te.properties # Telugu
-
-```mermaid
-flowchart TD
-    N1["src/main/resources/"]
-    N2["messages.properties # Default (English)"]
-    N3["messages_hi.properties # Hindi"]
-    N4["messages_ja.properties # Japanese"]
-    N5["messages_te.properties # Telugu"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
+ ├── messages.properties              # Default (Usually English)
+ ├── messages_hi.properties           # Hindi locale translations
+ ├── messages_ja.properties           # Japanese locale translations
+ └── messages_te.properties           # Telugu locale translations
 ```
 
 ```properties
@@ -1173,6 +1156,7 @@ user.not.found=इस आईडी वाला उपयोगकर्ता �
 ```
 
 ### Step 2: Configure Locale Resolver
+
 ```java
 @Configuration
 public class LocaleConfig {
@@ -1196,6 +1180,7 @@ public class LocaleConfig {
 ```
 
 ### Step 3: Use in Controller
+
 ```java
 @RestController
 public class UserController {
@@ -1219,29 +1204,19 @@ public class UserController {
 ```
 
 ### Step 4: Client sends language
-```
-GET /api/users/1
-Accept-Language: hi     → responds in Hindi
-Accept-Language: en     → responds in English
-```
 
-**Flow:**
-1. Accept-Language: hi
-2. responds in Hindi
-3. Accept-Language: en
-4. responds in English
+```text
+[Client] ---- GET /api/users/1 --------------> [Server]
+         ---- Accept-Language: hi -----------> (MessageSource loads Hindi locale)
+         <--- {"message": "स्वागत है, User"} --
 
-```mermaid
-flowchart LR
-    N1["Accept-Language: hi"]
-    N2["responds in Hindi"]
-    N3["Accept-Language: en"]
-    N4["responds in English"]
-    N1 --> N2
-    N3 --> N4
+[Client] ---- GET /api/users/1 --------------> [Server]
+         ---- Accept-Language: en -----------> (MessageSource loads Default locale)
+         <--- {"message": "Welcome, User"} ---
 ```
 
 ### Interview Questions
+
 1. **Q: How does Spring resolve locale?** A: Accept-Language header → LocaleResolver → MessageSource lookup.
 2. **Q: What is {0} in messages.properties?** A: Placeholder for dynamic values, replaced at runtime.
 
@@ -1261,57 +1236,28 @@ One application serves MULTIPLE organizations (tenants):
 ## HOW — 3 Strategies
 
 ### Strategy 1: Separate Database per Tenant
+
+```text
+[Tenant A Config] -----> [ Database A (Company X) ]
+[Tenant B Config] -----> [ Database B (Company Y) ]
 ```
-Tenant A → database_company_a
-Tenant B → database_company_b
 
 ✅ Best isolation, ✅ Easy compliance
 ❌ Expensive, ❌ Hard to manage 100+ databases
-```
-
-**Flow:**
-1. Tenant A
-2. database_company_a
-3. Tenant B
-4. database_company_b
-
-```mermaid
-flowchart LR
-    N1["Tenant A"]
-    N2["database_company_a"]
-    N3["Tenant B"]
-    N4["database_company_b"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Strategy 2: Shared Database, Separate Schema
+
+```text
+[Shared Database Server]
+   ├── [ Schema A ] ---> Tables: users, orders (Company X)
+   └── [ Schema B ] ---> Tables: users, orders (Company Y)
 ```
-Same DB, different schemas:
-Tenant A → schema_a.users, schema_a.orders
-Tenant B → schema_b.users, schema_b.orders
 
 ✅ Good isolation, ✅ Moderate cost
 ❌ Schema migrations must run for each tenant
-```
-
-**Flow:**
-1. Tenant A
-2. schema_a.users, schema_a.orders
-3. Tenant B
-4. schema_b.users, schema_b.orders
-
-```mermaid
-flowchart LR
-    N1["Tenant A"]
-    N2["schema_a.users, schema_a.orders"]
-    N3["Tenant B"]
-    N4["schema_b.users, schema_b.orders"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Strategy 3: Shared Everything + Tenant Column (Most Common)
+
 ```java
 // WHY: Simplest, cheapest, most scalable
 // Every table has a tenant_id column
@@ -1328,6 +1274,7 @@ public class User {
 ```
 
 ### Implementation (Strategy 3 — Discriminator Column)
+
 ```java
 // Step 1: Tenant Context Holder (ThreadLocal)
 public class TenantContext {
@@ -1392,6 +1339,7 @@ public class TenantHibernateFilter {
 ```
 
 ### Interview Questions
+
 1. **Q: 3 multi-tenancy strategies?** A: Separate DB, Shared DB separate schema, Shared everything with tenant_id column.
 2. **Q: How to ensure data isolation?** A: Hibernate filters, row-level security, or separate connections per tenant.
 
@@ -1414,6 +1362,7 @@ public class TenantHibernateFilter {
 ## HOW — Key Features
 
 ### Records (Replace DTOs, Lombok for simple cases)
+
 ```java
 // OLD WAY (Java 8): 50 lines for a simple DTO
 public class UserDTO {
@@ -1441,6 +1390,7 @@ public UserDTO getUser(@PathVariable Long id) {
 ```
 
 ### Sealed Classes (Type-Safe Hierarchies)
+
 ```java
 // WHY: Limit WHO can extend a class — compiler verifies exhaustive switches
 public sealed interface PaymentResult
@@ -1463,6 +1413,7 @@ public String handlePayment(PaymentResult result) {
 ```
 
 ### Virtual Threads (Java 21 — Game Changer)
+
 ```java
 // WHY: Traditional threads are expensive (1MB stack each)
 // 10,000 requests = 10,000 threads = 10GB RAM
@@ -1484,6 +1435,7 @@ spring:
 ```
 
 ### Pattern Matching
+
 ```java
 // OLD WAY:
 if (obj instanceof User) {
@@ -1510,6 +1462,7 @@ public String describe(Object obj) {
 ```
 
 ### Jakarta Namespace Migration
+
 ```java
 // Spring Boot 2.x:
 import javax.persistence.Entity;
@@ -1524,6 +1477,7 @@ import jakarta.validation.constraints.NotNull;
 ```
 
 ### Interview Questions
+
 1. **Q: Records vs Lombok @Data?** A: Records are immutable (no setters), built into Java, no dependency. Use Records for DTOs, Lombok for entities.
 2. **Q: What are Virtual Threads?** A: Lightweight threads managed by JVM, not OS. Enable millions of concurrent tasks without thread pool tuning.
 3. **Q: javax vs jakarta?** A: Spring Boot 3 uses Jakarta EE namespace. Simple find-replace migration.
@@ -1567,6 +1521,7 @@ GraalVM Native Image:
 ```
 
 ### Limitations
+
 ```
 ❌ No runtime reflection (must declare in reflect-config.json)
 ❌ No dynamic class loading
@@ -1578,6 +1533,7 @@ GraalVM Native Image:
 ```
 
 ### Interview Questions
+
 1. **Q: What is AOT compilation?** A: Ahead-Of-Time — compiles to native binary at build time instead of JIT at runtime. Faster start, less memory.
 2. **Q: Limitations?** A: No reflection, no dynamic proxies, limited library support. Must declare everything at build time.
 
@@ -1642,6 +1598,7 @@ public class OrderService {
 ```
 
 ### Interview Questions
+
 1. **Q: What is a modular monolith?** A: Single deployment with enforced internal module boundaries. Easier than microservices, cleaner than monolith.
 2. **Q: How to communicate between modules?** A: Application events (async decoupling). NOT direct method calls.
 
@@ -1701,6 +1658,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
 ```
 
 ### With Spring Cloud Gateway
+
 ```yaml
 spring:
   cloud:
@@ -1717,6 +1675,7 @@ spring:
 ```
 
 ### Interview Questions
+
 1. **Q: What is Token Bucket algorithm?** A: Bucket holds N tokens, each request consumes 1, tokens refill at fixed rate. If empty → reject.
 2. **Q: Where to implement rate limiting?** A: API Gateway (global), Filter (per-service), or @Aspect (per-method).
 
@@ -1756,6 +1715,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 ```
 
 ### Interview Questions
+
 1. **Q: When to use Spring Data REST?** A: Quick prototypes, admin panels, internal tools. NOT for complex business logic APIs.
 2. **Q: How to customize?** A: @RepositoryRestResource for path, Projections for field selection, Events for hooks.
 
@@ -1826,6 +1786,7 @@ databaseChangeLog:
 ```
 
 ### Interview Questions
+
 1. **Q: Flyway vs Liquibase?** A: Flyway = simple SQL migrations. Liquibase = more powerful, supports YAML/XML, free rollbacks, schema diffing.
 2. **Q: How do rollbacks work?** A: Define rollback in each changeSet. Run `liquibase rollback <tag>` to undo changes.
 
@@ -1852,6 +1813,4 @@ databaseChangeLog:
 
 ---
 
-_Now Parts 0-23 cover EVERY important Spring Boot topic from beginner to expert level._
-
-
+*Now Parts 0-23 cover EVERY important Spring Boot topic from beginner to expert level.*

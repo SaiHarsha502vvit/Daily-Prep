@@ -2,7 +2,22 @@
 
 # Array + Sliding Window — Combined Pattern Guide
 
+### 🧠 Deep Intuition — Why Sliding Window Is O(n)
 **WHY this combination?** When you need to find optimal **contiguous subarrays** or **substrings**, the sliding window maintains a running computation as it moves across the array. Reduces O(n²) brute force → O(n).
+
+
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| fixed size `k` | fixed window |
+| all values positive + threshold condition | variable sliding window |
+| negatives allowed + exact sum `K` | prefix sum + hashmap |
+| negatives allowed + shortest sum at least `K` | prefix sum + monotonic deque |
+| exact `K` distinct | compute `atMost(K) - atMost(K-1)` |
+| values are binary (`0/1`) | window often works by counting zeros/ones |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
 ### 🧠 Deep Intuition — Why Sliding Window Is O(n)
 

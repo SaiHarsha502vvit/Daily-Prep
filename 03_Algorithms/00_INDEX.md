@@ -38,6 +38,9 @@
 | 19 | [Algorithm Patterns](06e_Algorithm_Patterns.md) | Meta-patterns across all categories |
 | 20 | [Advanced DS Core](07a_Advanced_DS_Core.md) | Trie, segment tree implementations |
 | 21 | [Advanced DS Patterns](07b_Advanced_DS_Patterns.md) | When to use which advanced DS |
+| 21.5| [Advanced Trees Deep Dive](07c_Advanced_Trees_Deep.md) | Red-Black, B-Trees, LSM, Spatial & Merkle |
+| 21.6| [Probabilistic DS Deep Dive](07d_Probabilistic_DS_Deep.md) | Bloom Filters, HyperLogLog, Consistent Hashing |
+| 21.7| [Advanced Algorithm Engineering Deep Dive](07e_Advanced_Algorithm_Engineering_Deep.md) | HLD, Mo's, Wavelet Tree, Flow, DP optimization |
 | 22 | [Number Theory Core](08a_NumberTheory_Core.md) | GCD, primes, modular arithmetic |
 | 23 | [Number Theory Advanced](08b_NumberTheory_Advanced.md) | Chinese remainder, Euler's totient |
 
@@ -58,13 +61,16 @@
 | 33 | [Bitwise Trie Java Complete](18_Bitwise_Trie_Java_Complete.md) | Maximum/minimum XOR, offline queries, counting variants |
 | 34 | [Prefix Family Java Complete](19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | Prefix sum, prefix xor, 2D prefix, difference arrays |
 | 35 | [PDF Coverage Map (Java)](20_DSA_Patterns_PDF_Java_Coverage_Map.md) | DSA patterns to Java chapter mapping + revision route |
+| 36 | [Competitive Coding Deep Thinking](../14_Mental_Models/21_Competitive_Coding_Deep_Thinking.md) | Constraints, formulas, proof, pattern choice under time |
+| 37 | [Constraint-Based Pattern Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md) | If constraints say X, choose Y |
+| 38 | [Brute Force to Optimal Playbook](../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md) | Naive loop to DS/Algo rewrite |
 
 ## Roadmap
 
 ```
 Thinking → Sorting → Divide&Conquer → Recursion → DP → Trees → Graphs
     ↓
-Greedy → Strings → Advanced DS → Number Theory → Complete Guides → Java Deep Additions
+Greedy → Strings → Advanced DS → Algorithm Engineering → Number Theory → Complete Guides → Java Deep Additions → Competitive Thinking
 ```
 
 ---

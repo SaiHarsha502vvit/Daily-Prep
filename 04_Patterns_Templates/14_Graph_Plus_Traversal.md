@@ -4,6 +4,20 @@
 
 **WHY this combination?** Graphs model relationships. BFS gives shortest unweighted path. DFS explores all reachable nodes. Dijkstra handles weighted graphs. Union-Find manages connected components. Choosing the right traversal is THE key skill.
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| unweighted shortest path | BFS |
+| weights are 0 or 1 | 0-1 BFS |
+| non-negative weights | Dijkstra |
+| negative weights | Bellman-Ford / potentials |
+| DAG dependencies | topological sort + DP |
+| connectivity with edge additions | DSU |
+| edge deletions offline | DSU rollback |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ### 🧠 Deep Intuition — Choosing the Right Graph Algorithm
 
 #### Graph Representation — The First Decision

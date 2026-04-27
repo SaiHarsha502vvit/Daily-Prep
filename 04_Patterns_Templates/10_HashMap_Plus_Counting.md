@@ -2,7 +2,24 @@
 
 # HashMap + Frequency Counting — Combined Pattern Guide
 
+
+
 **WHY this combination?** HashMap gives O(1) lookup/insert. Combined with counting, grouping, or existence checks, it transforms O(n²) comparisons into O(n) lookups. The most versatile DS+Algo combination.
+
+### 🧠 Deep Intuition — Why HashMap Transforms Quadratic to Linear
+
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| unsorted lookup/complement | hashmap |
+| count subarrays with exact sum and negatives allowed | prefix sum + hashmap |
+| count subarrays divisible by `K` | prefix remainder frequency |
+| fixed alphabet lowercase only | `int[26]` instead of hashmap |
+| need sorted order/rank | TreeMap / TreeSet, not HashMap |
+| memory too high for huge key space | coordinate compression or sorting |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
 ### 🧠 Deep Intuition — Why HashMap Transforms Quadratic to Linear
 

@@ -4,6 +4,8 @@
 
 **The key insight**: Every problem — DSA, SQL, system design — follows the same thinking process. Master this 6-step framework and you'll never freeze in front of a problem again.
 
+> Companion playbook: [Brute Force to Optimal](22_Brute_Force_To_Optimal_Playbook.md) shows how to start with loops, identify the bottleneck, and replace it with the right data structure or algorithm.
+
 ---
 
 ## The 6 Steps
@@ -63,6 +65,21 @@ n ≤ 1,000,000 → O(n) — Linear scan, HashMap, Two pointers
 n ≤ 10⁸       → O(n) — Must be single pass
 n > 10⁸       → O(log n) or O(1) — Math, Binary search on answer
 ```
+
+### Constraint-to-Pattern Overrides
+
+After choosing the rough complexity, check the value rules:
+
+| If Constraints Say | Avoid | Prefer |
+|--------------------|-------|--------|
+| negative numbers in subarray sum | naive sliding window | prefix sum + hashmap/tree/deque |
+| online updates after range queries | static prefix/sparse table | Fenwick / segment tree |
+| weighted graph edges | plain BFS | Dijkstra / 0-1 BFS / Bellman-Ford |
+| negative graph edges | Dijkstra | Bellman-Ford / potentials |
+| original indices required | sorting blindly | hashmap/index-preserving structure |
+| recursion depth can hit `1e5+` in Java | recursive DFS | iterative stack/BFS |
+
+Full map: [Constraint-Based Pattern Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md).
 
 **Flow:**
 1. n ≤ 10

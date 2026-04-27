@@ -7,6 +7,23 @@
 
 ---
 
+## ⚠️ Constraint Overrides
+
+The trigger table gives your first guess. Constraints decide if that guess survives.
+
+| Trigger Guess | Constraint That Breaks It | Switch To |
+|---------------|---------------------------|-----------|
+| Sliding window for sum | negative numbers allowed | prefix sum + hashmap/tree/deque |
+| Prefix sum for range query | online updates | Fenwick / segment tree |
+| BFS shortest path | weighted edges | Dijkstra / 0-1 BFS |
+| Dijkstra | negative edges | Bellman-Ford / potentials |
+| Two pointers | array unsorted and original indices required | hashmap complement |
+| Greedy | no exchange/stays-ahead proof | DP/search |
+
+Detailed table: [Constraint-Based Pattern Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md).
+
+---
+
 ## 🔑 The Master Signal → Pattern Table
 
 > For each problem, find the strongest matching signal. That's your starting pattern.

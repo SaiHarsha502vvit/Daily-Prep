@@ -19,6 +19,23 @@ Algorithmic thinking is a METHOD of thinking about problems that involves:
 💡 **KEY INSIGHT: It's NOT about memorizing algorithms - it's about developing**
 a THINKING PROCESS that lets you CREATE solutions.
 
+## Constraint-First Thinking
+
+Before choosing any algorithm, read the constraints as if they are hints.
+
+| Constraint Signal | Algorithmic Direction |
+|-------------------|-----------------------|
+| `N <= 20` | subsets, bitmask DP, backtracking |
+| `N <= 2e5` | `O(N log N)` or better |
+| negative numbers in subarray sum | prefix sum + hashmap/tree/deque, not basic sliding window |
+| range queries with updates | Fenwick / segment tree |
+| unweighted shortest path | BFS |
+| weighted non-negative graph | Dijkstra |
+| negative graph edges | Bellman-Ford / potentials |
+| static range min/max | sparse table |
+
+Full decision map: [Constraint-Based Pattern Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md).
+
 **Historical Perspective**:
 - 300 BC: Euclid's GCD algorithm (first recorded algorithm)
 - 820 AD: Al-Khwarizmi (the word "algorithm" comes from his name!)

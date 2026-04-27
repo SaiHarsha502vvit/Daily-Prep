@@ -4,6 +4,20 @@
 
 **WHY this combination?** 2D grids are graphs where each cell connects to its 4 (or 8) neighbors. BFS/DFS on grids solve island counting, flood fill, shortest path, and rotation problems.
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| shortest path unweighted grid | BFS |
+| count islands/components | DFS/BFS/DSU |
+| weighted grid path | Dijkstra |
+| many rectangle sum queries | 2D prefix |
+| rectangle updates | 2D difference / 2D BIT |
+| recursion depth may be huge | iterative stack/queue |
+| grid has obstacles + state like keys | BFS with state bitmask |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ### 🧠 Deep Intuition — Grids Are Implicit Graphs
 
 A 2D matrix with R rows and C columns is really a **graph with R×C nodes** where each cell (r,c) has edges to its 4 (or 8) neighbors. You never need to explicitly build this graph — the adjacency is implicit in the grid structure. This is why DFS/BFS on grids use the direction array `{{0,1},{0,-1},{1,0},{-1,0}}` — it defines the edges.

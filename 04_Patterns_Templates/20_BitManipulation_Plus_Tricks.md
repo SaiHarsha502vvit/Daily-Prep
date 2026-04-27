@@ -4,6 +4,19 @@
 
 **WHY this matters?** Bit manipulation provides O(1) operations that replace expensive loops. XOR finds unique elements, bitmasks encode sets, and bit tricks optimize space and time.
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| `N <= 20` and subset choices | bitmask enumeration / DP |
+| exactly one unique, others twice | XOR all |
+| count set bits many times | built-in bit count / DP bits |
+| need lowest set bit | `x & -x` |
+| values may exceed `int` | use `long` masks carefully |
+| `N > 63` subset mask | cannot fit in one long; use arrays/BitSet |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ### 🧠 Deep Intuition — Why Bit Operations Are So Powerful
 
 #### CPU-Native Operations — True O(1)

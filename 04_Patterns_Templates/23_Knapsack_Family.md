@@ -1,6 +1,6 @@
-**Navigation**: [< Previous](22_Cyclic_Sort_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](22_Cyclic_Sort_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Kadanes_Subarray_Patterns.md)
 
-**Pattern 23** | [Index](../00_MASTER_INDEX.md)
+**Pattern 23** | [Index](../00_MASTER_INDEX.md) | [Next](24_Kadanes_Subarray_Patterns.md)
 
 ---
 
@@ -22,6 +22,19 @@ Coin Ways
 **Insight**: ALL these problems share ONE core recurrence:
 dp[i][w] = max/min/count of (take item, skip item)
 The ONLY difference: 0/1 vs unbounded vs bounded.
+
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| each item used once | 0/1 knapsack, iterate capacity backward |
+| item can be reused | unbounded knapsack, iterate capacity forward |
+| count ways | addition recurrence |
+| min coins/items | min recurrence with infinity initialization |
+| target sum is huge but `N` small | meet-in-the-middle or pruning |
+| weights include negatives | classic knapsack does not apply directly |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
 ---
 

@@ -9,6 +9,26 @@
 
 ---
 
+## ⚠️ Constraint Lens Before Pattern Lens
+
+Do not choose a pattern from keywords alone. First check constraints:
+
+| If the problem says... | Do this |
+|------------------------|---------|
+| `subarray sum` + positives only | sliding window can work |
+| `subarray sum` + negatives allowed | prefix sum + hashmap/tree/deque |
+| static range queries | prefix/sparse table |
+| range queries with updates | Fenwick/segment tree |
+| unweighted shortest path | BFS |
+| weighted non-negative shortest path | Dijkstra |
+| negative edge weights | Bellman-Ford / potentials |
+| `N <= 20` | bitmask/backtracking is possible |
+| `N <= 2e5` | aim for `O(N log N)` or better |
+
+Full decision guide: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
+---
+
 ## 🔗 How This Connects to the Rest of Your Repo
 
 ```

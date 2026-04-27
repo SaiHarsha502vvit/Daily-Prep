@@ -4,6 +4,18 @@
 
 **WHY this combination?** LinkedLists have no random access — you can't use indices. Two pointers (fast/slow) let you find midpoints, detect cycles, and locate k-th from end in a single pass.
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| no random access | use pointers, not indexing |
+| find middle/cycle | fast + slow |
+| kth from end | maintain `k` gap |
+| many repeated queries | consider converting to array if mutation is not needed |
+| recursion over long list | avoid recursion; use iterative reversal/traversal |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ### 🧠 Deep Intuition — Why Pointer Techniques Are Essential for Linked Lists
 
 With arrays, finding the middle element is trivial: `arr[arr.length / 2]` — O(1). With linked lists, you can't do this because there's no index. You don't even know the length without traversing the entire list first. Fast/slow pointers solve this **without needing to know the length**.

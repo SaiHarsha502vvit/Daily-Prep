@@ -4,6 +4,20 @@
 
 **WHY this combination?** Strings combine array access, hashing, sliding window, DP, and specialized algorithms (KMP, Rabin-Karp). Most "string" problems are actually pattern problems in disguise.
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| substring with character limit | sliding window |
+| subsequence / edit relation | DP |
+| exact pattern matching once | KMP / rolling hash |
+| many patterns | Aho-Corasick |
+| fixed lowercase alphabet | `int[26]` frequency |
+| Unicode/general chars | hashmap/code-point aware logic |
+| repeated substring/palindrome hard constraints | suffix/Manacher/rolling hash |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ### 🧠 Deep Intuition — Strings Are Disguised Pattern Problems
 
 Most string problems aren't really "string" problems — they're array, hash, or DP problems wearing a string costume. The key is to **identify the underlying pattern**:

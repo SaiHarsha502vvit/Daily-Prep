@@ -6,6 +6,19 @@
 
 # 📚 INTERVAL PROBLEMS — THE COMPLETE PATTERN GUIDE
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| merge overlaps | sort by start, scan |
+| max simultaneous intervals | sweep line or min-heap |
+| online insert/query overlaps | interval tree / TreeMap |
+| coordinates huge but events few | coordinate compression |
+| many range add events | difference array / sweep |
+| closed vs half-open intervals | define boundary rule before coding |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                 INTERVALS FUNDAMENTALS                           │

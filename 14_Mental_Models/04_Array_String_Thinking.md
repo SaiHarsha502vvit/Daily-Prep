@@ -6,6 +6,25 @@
 
 ---
 
+## Part 0: Constraint Overrides Before the Decision Tree
+
+The same keyword can point to different patterns depending on constraints.
+
+| If You See | Check This | Choose |
+|------------|------------|--------|
+| `subarray sum` | all values positive? | sliding window may work |
+| `subarray sum` | negatives allowed? | prefix sum + hashmap/tree/deque |
+| `pair sum` | sorted? | two pointers |
+| `pair sum` | unsorted and indices needed? | hashmap complement |
+| `range sum query` | no updates? | prefix sum |
+| `range query` | updates exist? | Fenwick / segment tree |
+| `substring` | contiguous char condition? | sliding window |
+| `subsequence` | can skip characters? | DP / greedy / binary search |
+
+Full map: [Constraint-Based Pattern Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md).
+
+---
+
 ## Part 1: The Master Decision Tree
 
 ```

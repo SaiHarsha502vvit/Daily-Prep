@@ -13,53 +13,21 @@ How production systems communicate asynchronously — from simple queues to stre
 
 **Without a Queue (Synchronous — tightly coupled):**
 
-```
-  Order Service ──HTTP──→ Payment Service ──HTTP──→ Email Service
-                                                    ↑
-                                         If slow/down, ENTIRE order fails!
-```
-
-**Flow:**
-1. Order Service --(HTTP)--> Payment Service
-2. Payment Service --(HTTP)--> Email Service
-
-```mermaid
-flowchart LR
-    N1["Order Service"]
-    N2["Payment Service"]
-    N3["Email Service"]
-    N1 -->|"HTTP"| N2
-    N2 -->|"HTTP"| N3
+```text
+[Order Service] --HTTP--> [Payment Service] --HTTP--> [Email Service]
+                                                       ^
+                                                       |
+                             If Email Service is down, the ENTIRE order fails!
 ```
 
 **With a Queue (Asynchronous — decoupled):**
 
-```
-  Order Service ──→ [ MESSAGE QUEUE ] ──→ Payment Worker
-                    [ MESSAGE QUEUE ] ──→ Email Worker
-                    [ MESSAGE QUEUE ] ──→ Analytics Worker
-```
-
-**Flow:**
-1. Order Service
-2. [ MESSAGE QUEUE ]
-3. Payment Worker
-4. [ MESSAGE QUEUE ]
-5. Email Worker
-6. [ MESSAGE QUEUE ]
-7. Analytics Worker
-
-```mermaid
-flowchart LR
-    N1["Order Service"]
-    N2["[ MESSAGE QUEUE ]"]
-    N3["Payment Worker"]
-    N4["Email Worker"]
-    N5["Analytics Worker"]
-    N1 --> N2
-    N2 --> N3
-    N2 --> N4
-    N2 --> N5
+```text
+                             +--> [Payment Worker]
+                             |
+ [Order Service] --> [MESSAGE QUEUE] ---> [Email Worker]
+                             |
+                             +--> [Analytics Worker]
 ```
 
 **Why This Matters:**
@@ -79,7 +47,16 @@ POINT-TO-POINT (Work Queue):
   Producer ──→ [Queue] ──→ Consumer A   (only ONE consumer gets each message)
                        ──→ Consumer B
   Use case: Task distribution (each email sent once)
-  Examples: RabbitMQ default, SQS
+```text
+POINT-TO-POINT (Work Queue):
+                             +---> [Consumer A] (Only one gets the message)
+                             |
+  [Producer] ---> [Queue] ---+
+                             |
+                             +---> [Consumer B]
+
+  Use case: Task distribution (e.g., sending an email exactly once).
+  Examples: RabbitMQ, AWS SQS.
 
 PUB/SUB (Publish-Subscribe):
   Publisher ──→ [Topic] ──→ Subscriber A  (ALL subscribers get each message)
@@ -118,22 +95,19 @@ flowchart TD
 
 ---
 
-
-
 🔬 **Section Challenge — Part 2: Queue Types — Point-to-Point vs Pub/Sub**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Reasoning):** In a Pub/Sub model, if `Subscriber B` goes offline for 10 minutes while messages continue to be published to the topic, what happens when it reconnects? Does it lose the messages?
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+It depends on the underlying technology. In standard transient Pub/Sub (like basic Redis Pub/Sub), the messages check the active connections; if the subscriber is disconnected, the messages are gone. In a persistent log-based system like Kafka, messages are durably stored on disk for a configured retention period. When Subscriber B reconnects, it simply resumes reading from its last committed offset and processes all the missed messages.
 </details>
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
+**Challenge 2 (Bug Hunt):** You have a Point-to-Point queue for sending emails. You notice that occasionally, a user receives the exact same welcome email twice. What architectural flow likely caused this?
 <details><summary>Answer</summary>
 
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
+This is usually caused by a failure in acknowledging the message. The Email Worker receives the message, sends the email, but crashes (or times out) *before* sending the ACK back to the queue. The queue assumes the message was never processed and re-queues it for another worker to pick up, resulting in a duplicate email limit. This is why consumer operations must ideally be idempotent.
 </details>
-
 
 ## Part 3: Apache Kafka — Deep Dive
 

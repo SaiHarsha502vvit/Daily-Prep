@@ -26,6 +26,19 @@
 "Remove in-place?"        → Reader stays ahead of writer
 ```
 
+### ⚠️ Constraint Lens — Two Pointers Needs Structure
+
+| Constraint / Signal | Use |
+|---------------------|-----|
+| sorted array + pair sum | opposite-end two pointers |
+| unsorted pair sum + need original indices | hashmap complement |
+| unsorted pair sum + only values/count | sort first if order does not matter |
+| linked list cycle/middle/kth from end | fast/slow pointers |
+| palindrome/string compare | inward pointers |
+| values can be negative | still ok if sorted; issue is order, not sign |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 🔗 **Practice problems:** [Two Pointers PS](../05_Problem_Solving/03_TwoPointers.md)
 🔗 **Related:** [Sliding Window template](01_Sliding_Window.md) — sliding window IS two pointers + window state
 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)

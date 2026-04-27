@@ -54,7 +54,7 @@ THE BIG PICTURE:
   ├───────────────┼──────────────────┼──────────────────────────┤
   │ Has labels    │ No labels        │ Has rewards/penalties    │
   │ Learn mapping │ Find structure   │ Learn optimal actions    │
-  │ x → y        │ x → patterns     │ state → action           │
+  │ x → y         │ x → patterns     │ state → action           │
   ├───────────────┼──────────────────┼──────────────────────────┤
   │ Classification│ Clustering       │ Game playing             │
   │ Regression    │ Dimensionality   │ Robot navigation         │
@@ -321,9 +321,6 @@ WHY IT MATTERS:
 ```
 
 ---
-
-
-
 
 
 

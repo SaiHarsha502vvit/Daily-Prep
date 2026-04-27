@@ -32,6 +32,8 @@
 | 21 | [Intervals](21_Intervals_Pattern.md) | Merge, insert, overlap detection |
 | 22 | [Cyclic Sort](22_Cyclic_Sort_Pattern.md) | Place elements at correct index |
 | 23 | [Knapsack Family](23_Knapsack_Family.md) | 0/1, unbounded, partition variants |
+| 24 | [Kadane's Subarray Patterns](24_Kadanes_Subarray_Patterns.md) | Maximum/minimum subarray optimization |
+| 25 | [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md) | Choose patterns from constraints, values, updates, weights |
 
 ---
 [← Back to Master Index](../00_MASTER_INDEX.md)

@@ -38,6 +38,9 @@ Other folders teach: "Here's the Two Pointer template, here's the code."
 | 13 | [🧩 Pattern Composition](13_Pattern_Composition.md) | Combining multiple patterns in one solution | Hard / multi-technique problems |
 | 14 | [🚀 Optimization Pipeline](14_Optimization_Pipeline.md) | Brute force → optimal: identify redundancy, choose technique | **Hard problems** |
 | 20 | [🎯 Pattern Trigger Guide](20_Pattern_Trigger_Guide.md) | **NEW** — I see X in a problem → my brain says Y → how to verify | **First thing to read every morning** |
+| 21 | [Competitive Coding Deep Thinking](21_Competitive_Coding_Deep_Thinking.md) | Constraint reading, formulas, proof styles, pattern choice, timed solving | Competitive coding / DSA revision |
+| 22 | [Brute Force to Optimal Playbook](22_Brute_Force_To_Optimal_Playbook.md) | Start naive, identify bottleneck, replace with DS/Algo | When you can solve brute force but not optimize |
+| — | [Constraint-Based Pattern Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md) | If constraints say X, choose Y; negative-number and weighted-graph traps | Before locking any pattern |
 
 ---
 
@@ -60,7 +63,9 @@ Other folders teach: "Here's the Two Pointer template, here's the code."
 | Recursion / Tree / Graph | [01 Recursion Tree](01_Recursion_Tree_Thinking.md) | [03 Graph & Tree](03_Graph_Tree_Thinking.md) |
 | Dynamic Programming | [02 DP State Thinking](02_DP_State_Thinking.md) | [11 Greedy vs DP](11_Greedy_vs_DP_Decision.md) |
 | Backtracking | [01 Recursion Tree](01_Recursion_Tree_Thinking.md) | [13 Pattern Composition](13_Pattern_Composition.md) |
-| New / unknown problem | [20 Pattern Trigger Guide](20_Pattern_Trigger_Guide.md) | [05 Universal Framework](05_Universal_Problem_Framework.md) |
+| New / unknown problem | [20 Pattern Trigger Guide](20_Pattern_Trigger_Guide.md) | [Constraint-Based Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md) |
+| Competitive coding practice | [21 Competitive Coding Deep Thinking](21_Competitive_Coding_Deep_Thinking.md) | [Constraint-Based Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md) |
+| Brute force works but is slow | [22 Brute Force to Optimal](22_Brute_Force_To_Optimal_Playbook.md) | [14 Optimization Pipeline](14_Optimization_Pipeline.md) |
 | Hard problem | [14 Optimization Pipeline](14_Optimization_Pipeline.md) | [11 Greedy vs DP](11_Greedy_vs_DP_Decision.md) |
 | Interview in 1 hour | [10 Interview Thinking](10_Interview_Thinking.md) | [06 Implementation Checklist](06_Implementation_Checklist.md) |
 | Stuck / wrong output | [08 Debugging Dry Run](08_Debugging_DryRun.md) | — |
@@ -73,10 +78,12 @@ Other folders teach: "Here's the Two Pointer template, here's the code."
 ```
 Morning Routine (Do this before solving ANY problem):
 
-1. Open 20_Pattern_Trigger_Guide.md — scan the signal table (2 min)
-2. Open 06_Implementation_Checklist.md — glance at the checklist (1 min)
-3. Open 09_Complexity_Intuition.md — recall what O(n log n) feels like (1 min)
-4. Then start solving.
+1. Open 21_Competitive_Coding_Deep_Thinking.md — scan constraints + formula sheet (2 min)
+2. Open 22_Brute_Force_To_Optimal_Playbook.md — recall brute loop -> bottleneck -> DS/Algo rewrite (1 min)
+3. Open 04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md — scan the override traps (1 min)
+4. Open 20_Pattern_Trigger_Guide.md — scan the signal table (1 min)
+5. Open 06_Implementation_Checklist.md — glance at the checklist (1 min)
+6. Then start solving.
 
 Why? Your pattern recognition fires BEFORE conscious thought.
 Reading these primes your brain to see signals automatically.
@@ -87,8 +94,10 @@ Reading these primes your brain to see signals automatically.
 📖 **Related Folders:**
 - [03_Algorithms/](../03_Algorithms/) — The algorithms themselves
 - [04_Patterns_Templates/](../04_Patterns_Templates/) — Combined DS+Algo pattern templates
+- [Constraint-Based Pattern Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md) — Constraint-first pattern choice map
+- [Brute Force to Optimal Playbook](22_Brute_Force_To_Optimal_Playbook.md) — Naive loop to DS/Algo rewrite map
 - [05_Problem_Solving/](../05_Problem_Solving/) — Practice problems by topic
 - [02_Data_Structures/00_DS_PROBLEM_BRIDGES.md](../02_Data_Structures/00_DS_PROBLEM_BRIDGES.md) — DS → Pattern → Problems bridge map
 
 ---
-_Updated: April 2026 — 20 MIT/KTH-style mental model guides_
+_Updated: April 2026 — 21 MIT/KTH-style mental model guides_

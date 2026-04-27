@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](23_Knapsack_Family.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](23_Knapsack_Family.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](25_Constraint_Based_Pattern_Selection.md)
 
 # Kadane's Algorithm & Subarray Patterns — Complete Guide
 
@@ -8,6 +8,19 @@
 > - 🧠 **How to Think:** [Array & String Thinking — Part 4: Prefix/Kadane](../14_Mental_Models/04_Array_String_Thinking.md#part-4-prefix-sum--kadane) | [Optimization Pipeline — Kadane Example](../14_Mental_Models/14_Optimization_Pipeline.md#example-2-maximum-subarray-sum-lc-53) | [Greedy vs DP](../14_Mental_Models/11_Greedy_vs_DP_Decision.md)
 > - 📐 **Related Patterns:** [Prefix Sum/XOR](../03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) | [Sliding Window](09_Array_Plus_SlidingWindow.md) | [DP Patterns](16_DP_Pattern_Recognition.md)
 > - 📚 **Theory:** [Arrays DS](../02_Data_Structures/01b_Arrays.md)
+
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| maximum subarray sum, mixed signs | Kadane |
+| maximum circular subarray | max(Kadane normal, total - minSubarray) |
+| exact sum `K` | prefix sum + hashmap |
+| longest/shortest threshold with positives | sliding window |
+| threshold with negatives | prefix + deque/tree |
+| need subarray product | track max/min product due to negatives |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
 ---
 

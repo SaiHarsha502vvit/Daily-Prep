@@ -2,7 +2,7 @@
 
 # MASTER INDEX — Complete DSA, SQL, Spring Boot & Career Preparation
 
-**Last Updated: March 2026 | 336+ files | 19 folders**
+**Last Updated: April 2026 | 336+ files | 19 folders**
 
 ---
 
@@ -15,15 +15,15 @@
 | 76-Day Study Calendar | [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) |
 | DSA Guide (Foundations) | [09_Career_Reference/07_DSA_Guide_Foundations.md](09_Career_Reference/07_DSA_Guide_Foundations.md) |
 | **Data Structures (11 chapters)** | [→ Jump to section](#data-structures-11-chapters) |
-| **Algorithms (29 chapters)** | [→ Jump to section](#algorithms-29-chapters) |
-| **Coding Patterns (20 files)** | [→ Jump to section](#coding-patterns-20-files--7-original--13-combined-dsalgo) |
+| **Algorithms (32+ chapters)** | [→ Jump to section](#algorithms-32-chapters) |
+| **Coding Patterns (25 files)** | [→ Jump to section](#coding-patterns-25-files--constraint-first-dsalgo-patterns) |
 | **Practice Problems (23 files)** | [→ Jump to section](#practice--problem-solving-23-files) |
 | **OOP & Design (8 files)** | [→ Jump to section](#oop--design-8-files) |
 | **SQL from Zero (42 chapters)** | [→ Jump to section](#sql-42-chapters) |
 | **SQL Advanced + Analytics** | [→ Jump to section](#sql--database--advanced-5-files) |
 | **Spring Boot (60 chapters, 12 Parts)** | [→ Jump to section](#modern-java--spring-boot-60-chapters--12-parts-textbook-order) |
 | **Developer Essentials (20 guides)** | [→ Jump to section](#developer-essentials-18-files--concurrency-guide) |
-| **Mental Models — HOW TO THINK** | [→ Jump to section](#mental-models--how-to-think-18-files) |
+| **Mental Models — HOW TO THINK** | [→ Jump to section](#mental-models--how-to-think-21-guides) |
 | **React Frontend (11 files)** | [→ Jump to section](#react-frontend-9-files--new) |
 | **JavaScript Complete (11 chapters)** | [→ Jump to section](#javascript-complete-11-chapters) |
 | **TypeScript (4 chapters)** | [→ Jump to section](#typescript-4-chapters) |
@@ -63,7 +63,7 @@ Daily-Prep/
 │   ├── 03_Collections_Java.md          → Java Collections Framework
 │   └── 04_2D_Arrays_Matrix.md          → Matrix traversal, rotation, spiral
 │
-├── 03_Algorithms/                       (29 chapter files)
+├── 03_Algorithms/                       (32+ chapter files)
 │   ├── 01_Algorithm_Thinking.md         → Problem-solving mindset & Big O
 │   ├── 02a_Sorting_Fundamentals.md      → Bubble, Selection, Insertion, Merge Sort
 │   ├── 02b_Sorting_Advanced.md          → Quick, Heap, Counting, Radix, Binary Search
@@ -85,6 +85,9 @@ Daily-Prep/
 │   ├── 06e_Algorithm_Patterns.md       → Interview patterns, competitive programming tips
 │   ├── 07a_Advanced_DS_Core.md         → Trie, Segment Tree, BIT (Fenwick)
 │   ├── 07b_Advanced_DS_Patterns.md     → Advanced heap, LRU Cache, skip lists
+│   ├── 07c_Advanced_Trees_Deep.md      → Red-Black, B+ trees, LSM, spatial and Merkle trees
+│   ├── 07d_Probabilistic_DS_Deep.md    → Bloom, Cuckoo, HLL, sketches, CRDTs
+│   ├── 07e_Advanced_Algorithm_Engineering_Deep.md → HLD, Mo's, Wavelet Tree, Flow, DP optimization
 │   ├── 08a_NumberTheory_Core.md        → GCD, LCM, primes, Sieve of Eratosthenes
 │   ├── 08b_NumberTheory_Advanced.md    → Modular arithmetic, Euler's totient, CRT
 │   ├── 09_Pattern_Programs_Complete.md  → 50+ star/number/character patterns
@@ -100,7 +103,7 @@ Daily-Prep/
 │   ├── 19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md → 🆕 Prefix Sum/XOR/2D Prefix + difference arrays in Java
 │   └── 20_DSA_Patterns_PDF_Java_Coverage_Map.md → 🆕 PDF pattern-to-chapter mapping + 21-day Java revision route
 │
-├── 04_Patterns_Templates/              (23 files)
+├── 04_Patterns_Templates/              (25 files)
 │   ├── 01_Sliding_Window.md             → Fixed & variable window techniques
 │   ├── 02_Code_Templates.md            → Ready-to-use code templates
 │   ├── 03_Visual_Diagrams.md           → Visual algorithm walkthroughs
@@ -123,7 +126,9 @@ Daily-Prep/
 │   ├── 20_BitManipulation_Plus_Tricks.md → 🆕 Bit tricks, XOR, bitmask + Math/Search
 │   ├── 21_Intervals_Pattern.md          → 🆕 Interval merge/insert/sweep line (7 solved)
 │   ├── 22_Cyclic_Sort_Pattern.md        → 🆕 Cyclic sort for missing/duplicate (6 solved)
-│   └── 23_Knapsack_Family.md            → 🆕 0/1, Unbounded, Bounded unification (6 solved)
+│   ├── 23_Knapsack_Family.md            → 🆕 0/1, Unbounded, Bounded unification (6 solved)
+│   ├── 24_Kadanes_Subarray_Patterns.md  → Kadane plus subarray constraint choices
+│   └── 25_Constraint_Based_Pattern_Selection.md → If constraints say X, choose Y
 │
 ├── 05_Problem_Solving/                  (25 files)
 │   ├── 01_Intro_Checklist.md    → Problem-solving methodology
@@ -391,7 +396,7 @@ Daily-Prep/
 │   ├── 18_Backend_Cloud_Integration.md  → 🆕 Cloud deployment, CI/CD, monitoring, Spring Boot on AWS
 │   └── 19_Concurrency_Models_Coroutines.md → 🆕 Coroutines vs Continuations, Virtual Threads, Event Loop, Go goroutines
 │
-├── 14_Mental_Models/                    (19 files — HOW TO THINK guides!)
+├── 14_Mental_Models/                    (22 files — HOW TO THINK guides!)
 │   ├── 00_INDEX.md                      → Reading order & usage guide
 │   ├── 01_Recursion_Tree_Thinking.md    → Draw recursion trees, leap of faith, memo→tab
 │   ├── 02_DP_State_Thinking.md          → State identification, transitions, optimization
@@ -410,7 +415,10 @@ Daily-Prep/
 │   ├── 15_System_Design_Thinking.md     → 🆕 Napkin math, scale stages, trade-off triangle
 │   ├── 16_Distributed_Systems_Thinking.md → 🆕 8 Fallacies, CAP spectrum, split-brain
 │   ├── 17_Frontend_Architecture_Thinking.md → 🆕 State location, render cascade, composition
-│   └── 18_Production_Debugging_Thinking.md → 🆕 Incident timeline, 5 Whys, postmortem
+│   ├── 18_Production_Debugging_Thinking.md → 🆕 Incident timeline, 5 Whys, postmortem
+│   ├── 20_Pattern_Trigger_Guide.md      → Signal table for choosing DSA patterns
+│   ├── 21_Competitive_Coding_Deep_Thinking.md → Constraints, formulas, proof, timed-solving mindset
+│   └── 22_Brute_Force_To_Optimal_Playbook.md → Naive loop to DS/Algo rewrite map
 │
 ├── 15_React_Frontend/                   (11 files — full React curriculum NEW!)
 │   ├── 01_React_Fundamentals.md         → 🆕 JSX, components, props, state, events
@@ -488,15 +496,15 @@ Daily-Prep/
 - **Variants**: [Core Variants](02_Data_Structures/02a_DS_Variants_Core.md) | [Advanced Variants](02_Data_Structures/02b_DS_Variants_Advanced.md)
 - **Reference**: [Java Collections](02_Data_Structures/03_Collections_Java.md) | [2D Arrays / Matrix](02_Data_Structures/04_2D_Arrays_Matrix.md)
 
-### Algorithms (29 chapters)
+### Algorithms (32+ chapters)
 - **Thinking**: [Algorithm Thinking & Big O](03_Algorithms/01_Algorithm_Thinking.md)
 - **Sorting**: [Fundamentals](03_Algorithms/02a_Sorting_Fundamentals.md) → [Advanced](03_Algorithms/02b_Sorting_Advanced.md) → [Divide & Conquer](03_Algorithms/02c_Divide_And_Conquer.md)
 - **Recursion**: [Internals](03_Algorithms/03a_Recursion_Internals.md) → [Fundamentals](03_Algorithms/03b_Recursion_Fundamentals.md) → [Advanced](03_Algorithms/03c_Recursion_Advanced.md)
 - **Dynamic Programming**: [Internals](03_Algorithms/04a_DP_Internals.md) → [Fundamentals](03_Algorithms/04b_DP_Fundamentals.md) → [Advanced](03_Algorithms/04c_DP_Advanced.md)
 - **Trees**: [Trees Complete](03_Algorithms/05_Trees.md)
 - **Graphs**: [Internals](03_Algorithms/05b_Graphs_Internals.md) → [Fundamentals](03_Algorithms/05c_Graphs_Fundamentals.md) → [Advanced Algos](03_Algorithms/05d_Graphs_Advanced_Algos.md) → [Patterns](03_Algorithms/05e_Graphs_Patterns.md)
-- **Advanced Algos**: [Greedy & Bit Manipulation](03_Algorithms/06a_Greedy_BitManip.md) | [Deep Dive](03_Algorithms/06c_Advanced_Algo_Deep.md) | [String Algorithms](03_Algorithms/06d_String_Algorithms.md) | [Patterns](03_Algorithms/06e_Algorithm_Patterns.md)
-- **Advanced DS**: [Core (Trie, Segment Tree)](03_Algorithms/07a_Advanced_DS_Core.md) | [Patterns](03_Algorithms/07b_Advanced_DS_Patterns.md)
+- **Advanced Algos**: [Greedy & Bit Manipulation](03_Algorithms/06a_Greedy_BitManip.md) | [Deep Dive](03_Algorithms/06c_Advanced_Algo_Deep.md) | [String Algorithms](03_Algorithms/06d_String_Algorithms.md) | [Patterns](03_Algorithms/06e_Algorithm_Patterns.md) | [Algorithm Engineering](03_Algorithms/07e_Advanced_Algorithm_Engineering_Deep.md)
+- **Advanced DS**: [Core (Trie, Segment Tree)](03_Algorithms/07a_Advanced_DS_Core.md) | [Patterns](03_Algorithms/07b_Advanced_DS_Patterns.md) | [Advanced Trees](03_Algorithms/07c_Advanced_Trees_Deep.md) | [Probabilistic DS](03_Algorithms/07d_Probabilistic_DS_Deep.md)
 - **Number Theory**: [Core (GCD, Primes)](03_Algorithms/08a_NumberTheory_Core.md) | [Advanced (Modular, CRT)](03_Algorithms/08b_NumberTheory_Advanced.md)
 - **Specialized**: [Pattern Programs](03_Algorithms/09_Pattern_Programs_Complete.md) | [Bit Manipulation](03_Algorithms/10_Bit_Manipulation_Complete.md) | [Backtracking](03_Algorithms/11_Backtracking_Complete.md) | [Greedy](03_Algorithms/12_Greedy_Algorithms_Complete.md) | [String Algos](03_Algorithms/13_String_Algorithms_Complete.md) | [Union-Find](03_Algorithms/14_Union_Find_DSU_Complete.md) | [Monotonic Stack](03_Algorithms/15_Monotonic_Stack_Queue_Complete.md)
 - **⚡ Deep Reasoning**: [DSA Deep Reasoning](03_Algorithms/16_DSA_Deep_Reasoning.md) — 10 interview "freeze moments" with senior-level reasoning
@@ -505,7 +513,7 @@ Daily-Prep/
 - **🆕 Java Prefix Family**: [Prefix Sum/XOR/2D Prefix Java Complete](03_Algorithms/19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md) — Range queries, hashmap variants, 2D inclusion-exclusion
 - **🆕 Java Revision Map**: [DSA Patterns PDF to Java Coverage Map](03_Algorithms/20_DSA_Patterns_PDF_Java_Coverage_Map.md) — Topic routing + 21-day revision flow
 
-### Coding Patterns (20 files — 7 original + 13 combined DS+Algo)
+### Coding Patterns (25 files — constraint-first DS+Algo patterns)
 - [Sliding Window](04_Patterns_Templates/01_Sliding_Window.md) | [Code Templates](04_Patterns_Templates/02_Code_Templates.md) | [Visual Diagrams](04_Patterns_Templates/03_Visual_Diagrams.md)
 - [Pattern Recognition](04_Patterns_Templates/04_Pattern_Recognition.md) | [LeetCode → Real World](04_Patterns_Templates/05_LeetCode_RealWorld_Map.md)
 - [Binary Search Patterns](04_Patterns_Templates/06_Binary_Search_Patterns.md) | [Two Pointers](04_Patterns_Templates/07_Two_Pointers_Complete.md)
@@ -516,6 +524,7 @@ Daily-Prep/
 - [Graph+Traversal](04_Patterns_Templates/14_Graph_Plus_Traversal.md) | [Heap+Greedy](04_Patterns_Templates/15_Heap_Plus_GreedySelection.md) | [DP Patterns](04_Patterns_Templates/16_DP_Pattern_Recognition.md)
 - [Backtracking+Pruning](04_Patterns_Templates/17_Backtracking_Plus_Pruning.md) | [String+Advanced](04_Patterns_Templates/18_String_Plus_Advanced.md) | [Matrix+Grid](04_Patterns_Templates/19_Matrix_Plus_Grid_Traversal.md) | [BitManip+Tricks](04_Patterns_Templates/20_BitManipulation_Plus_Tricks.md)
 - [Intervals](04_Patterns_Templates/21_Intervals_Pattern.md) | [Cyclic Sort](04_Patterns_Templates/22_Cyclic_Sort_Pattern.md) | [Knapsack Family](04_Patterns_Templates/23_Knapsack_Family.md)
+- [Kadane/Subarray](04_Patterns_Templates/24_Kadanes_Subarray_Patterns.md) | [Constraint-Based Pattern Selection](04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md)
 
 ### Practice & Problem Solving (23 files)
 - [Intro & Checklist](05_Problem_Solving/01_Intro_Checklist.md)
@@ -684,7 +693,7 @@ Daily-Prep/
 - **🆕** [Servers, Ports & Networking](13_Developer_Essentials/17_Servers_Ports_Networking.md) | [Backend Cloud Integration](13_Developer_Essentials/18_Backend_Cloud_Integration.md)
 - **⚡** [Concurrency Models & Coroutines](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) — Coroutines vs Continuations, Virtual Threads, Event Loop, Go goroutines
 
-### Mental Models — HOW TO THINK (18 files)
+### Mental Models — HOW TO THINK (21 guides)
 - [Index & Reading Order](14_Mental_Models/00_INDEX.md)
 - [Recursion Tree Thinking](14_Mental_Models/01_Recursion_Tree_Thinking.md) | [DP State Thinking](14_Mental_Models/02_DP_State_Thinking.md)
 - [Graph & Tree Thinking](14_Mental_Models/03_Graph_Tree_Thinking.md) | [Array & String Thinking](14_Mental_Models/04_Array_String_Thinking.md)
@@ -695,6 +704,7 @@ Daily-Prep/
 - [Optimization Pipeline](14_Mental_Models/14_Optimization_Pipeline.md)
 - **🆕** [System Design Thinking](14_Mental_Models/15_System_Design_Thinking.md) | [Distributed Systems Thinking](14_Mental_Models/16_Distributed_Systems_Thinking.md)
 - **🆕** [Frontend Architecture Thinking](14_Mental_Models/17_Frontend_Architecture_Thinking.md) | [Production Debugging Thinking](14_Mental_Models/18_Production_Debugging_Thinking.md)
+- **🆕** [Pattern Trigger Guide](14_Mental_Models/20_Pattern_Trigger_Guide.md) | [Competitive Coding Deep Thinking](14_Mental_Models/21_Competitive_Coding_Deep_Thinking.md) | [Brute Force to Optimal](14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md)
 
 ### React Frontend (9 files — NEW!)
 - [Fundamentals](15_React_Frontend/01_React_Fundamentals.md) | [Component Patterns](15_React_Frontend/02_Component_Patterns.md) | [Hooks Deep Dive](15_React_Frontend/03_Hooks_Deep_Dive.md)
@@ -768,6 +778,8 @@ Daily-Prep/
 | Spring Boot | [Spring Boot Deep Reasoning](07_Modern_Java/Ch58_SB_Deep_Reasoning.md) | 12 — DispatcherServlet vs Filter, proxy/self-call, bean lifecycle |
 | DSA | [DSA Deep Reasoning](03_Algorithms/16_DSA_Deep_Reasoning.md) | 10 — Big O misconceptions, HashMap O(1), quicksort vs mergesort |
 | DSA (Java) | [DSA Java Implementation](03_Algorithms/17_DSA_Java_Implementation_Mastery.md) | 11 — PriorityQueue gotchas, TreeMap, Comparator overflow, sort internals |
+| Competitive Coding | [Competitive Coding Deep Thinking](14_Mental_Models/21_Competitive_Coding_Deep_Thinking.md) | 12 — constraints, formulas, invariants, proof styles, timed-solving pipeline |
+| DSA Optimization | [Brute Force to Optimal](14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md) | 9 — categorize problem, write brute force, identify bottleneck, choose DS/Algo |
 | SQL | [SQL Deep Reasoning](08_SQL/23_SQL_Deep_Reasoning.md) | 10 — NULL logic, JOIN execution, isolation levels, N+1 problem |
 | SQL (Analyst) | [SQL Data Analyst](08_SQL/24_SQL_Data_Analyst_RealWorld.md) | 12 — Cohort, funnel, retention, A/B testing, RFM, KPI dashboards |
 | Java Streams | [Streams Deep Reasoning](07_Modern_Java/Ch23_Streams_Deep_Reasoning.md) | 12 — Lazy evaluation, flatMap, parallelStream traps, Collector internals |
@@ -818,8 +830,8 @@ Open [07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md](07_Modern_Java/Ch25_Spring_
 | Root (indexes) | 2 | Master index + Textbook preface |
 | 01_Getting_Started | 3 | Start here + Study plan + Feb 10 plan |
 | 02_Data_Structures | 4 | DS Complete, Variants, Collections, 2D Arrays |
-| 03_Algorithms | 29 | Full algorithms track: foundations, recursion/DP, trees/graphs, complete guides, Java deep additions |
-| 04_Patterns_Templates | 5 | Sliding Window, Templates, Visual Diagrams, Pattern Recognition, LeetCode Map |
+| 03_Algorithms | 32+ | Full algorithms track: foundations, recursion/DP, trees/graphs, advanced DS/algorithm engineering, complete guides, Java deep additions |
+| 04_Patterns_Templates | 25 | Sliding Window, templates, DS+Algo patterns, Kadane, constraint-based pattern selection |
 | 05_Problem_Solving | 25 | 22 topic chapters + Edge Cases, Common Mistakes, Problem Origins |
 | 06_OOP_Design | 4 | OOP, Design Patterns, System Design, User Flows |
 | 07_Modern_Java | 69 | Ch01–Ch69: Core Java → Collections → Concurrency → Spring Boot → Microservices → Infrastructure |
@@ -828,7 +840,7 @@ Open [07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md](07_Modern_Java/Ch25_Spring_
 | 10_Enterprise_Systems | 8 | ERP, Finance, Real-world problems & incidents |
 | 12_Daily_Practice | 29 | Index + 28 days (4 weeks) with cross-reference links |
 | 13_Developer_Essentials | 20 | Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, Cloud, Terraform, Agile |
-| 14_Mental_Models | 19 | Index + 18 HOW-TO-THINK guides: DSA, System Design, Distributed, Frontend, Debugging |
+| 14_Mental_Models | 22 | Index + 21 HOW-TO-THINK guides: DSA, brute-force optimization, competitive coding, System Design, Distributed, Frontend, Debugging |
 | 15_React_Frontend | 9 | Full React curriculum: Fundamentals to Performance + Deep Reasoning |
 | 16_JavaScript | 8 | Complete JS: Foundations, Closures, Async, DOM, ES6+, Debugging, Deep Reasoning |
 | 17_TypeScript | 4 | TS standalone: Foundations, Advanced Types, Patterns, Deep Reasoning |

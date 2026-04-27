@@ -4,6 +4,8 @@
 
 ## This file contains VISUAL diagrams for ALL algorithm patterns
 
+> Constraint first: a diagram explains how a pattern moves, but constraints decide whether that movement is legal. Check [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md) for cases like negative numbers breaking sliding window or weighted edges breaking BFS.
+
 ---
 
 ## 📚 TABLE OF CONTENTS

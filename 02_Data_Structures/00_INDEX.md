@@ -18,11 +18,19 @@
 | 10 | [Collections Framework](03_Collections_Java.md) | Java Collections API, iterators, Comparable |
 | 11 | [2D Arrays & Matrix](04_2D_Arrays_Matrix.md) | Matrix operations, spiral, rotation |
 
+## Advanced Deep Add-ons
+
+| File | What You'll Learn |
+|------|-------------------|
+| [Advanced Trees Deep Dive](../03_Algorithms/07c_Advanced_Trees_Deep.md) | Red-Black invariants, B+ trees, LSM trees, interval/order-statistic trees |
+| [Probabilistic DS Deep Dive](../03_Algorithms/07d_Probabilistic_DS_Deep.md) | Bloom, Cuckoo, HyperLogLog, sketches, CRDTs, sizing formulas |
+| [Advanced Algorithm Engineering](../03_Algorithms/07e_Advanced_Algorithm_Engineering_Deep.md) | HLD, Mo's, Wavelet Tree, persistent segment tree, flow, DP optimization |
+
 ## Roadmap
 ```
 Memory → Arrays → LinkedList → Stack/Queue → HashTable → Trees/Heaps
     ↓
-DS Internals → Variants → Collections → 2D Arrays
+DS Internals → Variants → Collections → 2D Arrays → Advanced Deep Add-ons
 ```
 
 ---

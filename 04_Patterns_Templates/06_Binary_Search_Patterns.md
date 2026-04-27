@@ -27,6 +27,19 @@ T3: left <  right, left  = mid+1                  → First pos >  target (Upper
 ⚠️ BS on Answer: think "can I achieve X?" → monotonic Yes/No function
 ```
 
+### ⚠️ Constraint Lens — Binary Search Needs Monotonicity
+
+| Constraint / Signal | Use |
+|---------------------|-----|
+| sorted data, find value | classic binary search |
+| first/last valid position | lower/upper bound |
+| `minimum X such that possible(X)` | binary search on answer |
+| predicate flips once (`false...true`) | binary search works |
+| predicate can flip multiple times | binary search is invalid |
+| answer range up to `1e9` / `1e18` | binary search over value range |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 🔗 **Practice problems:** [Binary Search PS](../05_Problem_Solving/07_Binary_Search_Patterns.md)
 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](00_PATTERN_MASTER_GUIDE.md)
 

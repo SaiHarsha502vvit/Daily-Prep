@@ -4,6 +4,8 @@
 
 ## Every Problem You Solve Has a Real-World Purpose
 
+> Constraint first: real systems change the pattern when data is dynamic, weighted, negative, streaming, or too large. Use [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md) to map those constraints before choosing the template.
+
 ---
 
 # ❓ Part 0: Why Understanding Real — World Applications Matters

@@ -6,6 +6,18 @@
 
 # 📚 CYCLIC SORT — THE MISSING PATTERN
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| values are exactly in `[1..N]` or `[0..N-1]` | cyclic sort is possible |
+| need `O(1)` extra space | cyclic sort fits |
+| values are arbitrary/huge | use hashmap/sort instead |
+| duplicates exist | guard swaps to avoid infinite loops |
+| input cannot be mutated | use hashmap/boolean array instead |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │                  CYCLIC SORT PATTERN                            │

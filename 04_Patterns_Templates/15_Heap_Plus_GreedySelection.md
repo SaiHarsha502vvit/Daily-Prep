@@ -4,6 +4,19 @@
 
 **WHY this combination?** Heaps give O(log n) access to the min/max element. Combined with greedy strategy (always pick the best available), they solve "Top K", "merge K sorted", and scheduling problems efficiently.
 
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| top `K`, `K << N` | heap of size `K` |
+| exact kth in static array | quickselect can be faster average `O(N)` |
+| streaming median | two heaps |
+| repeatedly choose min/max | priority queue |
+| need remove arbitrary item | TreeMap/multiset or lazy deletion |
+| greedy choice lacks proof | switch to DP/search |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
 ### 🧠 Deep Intuition — Heaps and Greedy Correctness
 
 #### Why Heaps Give O(log n) Insert/Extract
