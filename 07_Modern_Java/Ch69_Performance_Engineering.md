@@ -218,7 +218,12 @@ Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache
 
 
 🔬 **Section Challenge — 4. JVM Memory Model — Heap, Stack, and GC Roots**
->
+
+**Challenge 1 (Memory Leaks):** Why does a memory leak in a `ThreadLocal` variable often cause out-of-memory errors in Tomcat/Spring Boot applications, but not in simple command-line Java scripts?
+<details><summary>Answer</summary>
+
+In a simple script, the thread dies when the script finishes, taking the `ThreadLocal` map with it (since active threads are GC roots). In Tomcat, threads are part of a long-lived **Thread Pool**. They never die; they are just returned to the pool. If you don't call `.remove()` on a `ThreadLocal` in a `finally` block, the object remains attached to the pooled thread's GC root forever, causing a massive memory leak across thousands of requests.
+</details>
 
 ## 5. Garbage Collection Tuning
 
@@ -272,10 +277,10 @@ Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache
 
 🔬 **Section Challenge — 5. Garbage Collection Tuning**
 
-**Challenge 1 (Reasoning):** Why does optimizing CPU usage sometimes INCREASE latency in a high-throughput Java application?
+**Challenge 1 (Log Analysis):** You see frequent "Full GC" events in your logs, but the Old Generation space is only 20% full. What could be causing this?
 <details><summary>Answer</summary>
 
-Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache hits and 100% CPU utilization, you create artificial queues. Little's Law dictates that as utilization approaches 100%, queue wait times grow exponentially. A system running at 70% CPU might have 10ms latency, while the same system pushed to 95% CPU (via batching/tuning) might process more requests per second but suffer 200ms latency due to thread contention and GC pauses.
+Two common causes: (1) **Explicit GC Calls:** Somewhere in the code (or a 3rd-party library), `System.gc()` is being explicitly called, forcing a STW Full GC. You can disable this with `-XX:+DisableExplicitGC`. (2) **Metaspace Exhaustion:** The heap's Old Gen might be fine, but the Metaspace (where class metadata is stored) might be full, triggering a Full GC to unload unused classes. This often happens with dynamic proxy generation (e.g., Hibernate, Spring AOP) if not tuned properly.
 </details>
 
 
@@ -324,7 +329,12 @@ Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache
 
 
 🔬 **Section Challenge — 6. Profiling with async-profiler and Flamegraphs**
->>
+
+**Challenge 1 (Reasoning):** When reading a CPU Flamegraph, you notice that a specific function forms a very wide plateau at the very top of a stack trace. What does this indicate?
+<details><summary>Answer</summary>
+
+The width of a block indicates the percentage of CPU time spent in that function (and its children). Because it is at the *top* of the stack, it means the CPU was actually executing instructions directly inside this function, not waiting for a child function to return. A wide block at the very top is a **CPU Hotspot** and is your primary target for algorithmic optimization.
+</details>
 
 ## 7. Memory Leak Detection
 
@@ -508,10 +518,10 @@ public class CollectionBenchmark {
 
 🔬 **Section Challenge — 9. JMH — Microbenchmarking Done Right**
 
-**Challenge 1 (Reasoning):** Why does optimizing CPU usage sometimes INCREASE latency in a high-throughput Java application?
+**Challenge 1 (Pitfalls):** Why must a JMH benchmark method return a value or use a `Blackhole` object instead of just performing a calculation and returning `void`?
 <details><summary>Answer</summary>
 
-Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache hits and 100% CPU utilization, you create artificial queues. Little's Law dictates that as utilization approaches 100%, queue wait times grow exponentially. A system running at 70% CPU might have 10ms latency, while the same system pushed to 95% CPU (via batching/tuning) might process more requests per second but suffer 200ms latency due to thread contention and GC pauses.
+Dead Code Elimination (DCE). The JVM's Just-In-Time (JIT) compiler is extremely smart. If a method computes a value but never uses it or returns it, the JIT compiler will recognize that the code has no side effects and completely optimize it away. Your benchmark will measure the time it takes to do literally nothing. Returning the value forces the JVM to actually execute the instructions.
 </details>
 
 
@@ -569,10 +579,10 @@ Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache
 
 🔬 **Section Challenge — 10. Connection Pool Tuning**
 
-**Challenge 1 (Reasoning):** Why does optimizing CPU usage sometimes INCREASE latency in a high-throughput Java application?
+**Challenge 1 (Database Tuning):** Your server has a 4-core CPU. You increase your HikariCP database connection pool size from 10 to 500 to handle more concurrent users. Performance immediately drops. Why?
 <details><summary>Answer</summary>
 
-Context Switching and Queueing. If you heavily batch tasks to maximize CPU cache hits and 100% CPU utilization, you create artificial queues. Little's Law dictates that as utilization approaches 100%, queue wait times grow exponentially. A system running at 70% CPU might have 10ms latency, while the same system pushed to 95% CPU (via batching/tuning) might process more requests per second but suffer 200ms latency due to thread contention and GC pauses.
+A 4-core CPU can only physically execute 4 threads at any given microsecond. Having 500 active database connections means 500 threads fighting for those 4 cores. The CPU spends all its time context-switching rather than doing actual work, and the database itself becomes overwhelmed trying to manage 500 concurrent locking/transaction contexts. This is why HikariCP recommends `pool_size = (core_count * 2) + effective_spindle_count`.
 </details>
 
 

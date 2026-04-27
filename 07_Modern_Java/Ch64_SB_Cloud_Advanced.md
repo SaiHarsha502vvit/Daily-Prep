@@ -464,10 +464,11 @@ images:
 
 🔬 **Section Challenge — CI/CD Pipelines**
 
-**Challenge 1 (Reasoning):** Why should you never use `UUID.randomUUID()` as a primary key in a highly distributed clustered database (like Cassandra or CockroachDB)?
+**Challenge 1 (Deployment Strategy):** In a CI/CD pipeline, what is the difference between Blue-Green Deployment and Canary Release, and when would you choose one over the other?
 <details><summary>Answer</summary>
 
-Index Fragmentation. Standard V4 UUIDs are completely random. When you insert them as primary keys, they force the database's B-Tree indexes to split constantly because the inserts are not sequential. This crushes write performance and bloats disk storage. Instead, distributed systems use Time-Sorted unique identifiers (like Snowflake IDs, ULIDs, or UUIDv7), which are lexicographically sortable by time, ensuring sequential disk writes and massive performance gains.
+**Blue-Green Deployment**: You spin up an exact parallel copy of your production environment (Green) running the new version. Once tested, you flip a router switch to direct 100% of traffic to Green. If it fails, you instantly flip back to Blue. *Use case*: Applications where multiple versions cannot coexist in the database, or when you need instant rollback capability without slow traffic shifting.
+**Canary Release**: You route a tiny percentage of live traffic (e.g., 2%) to the new version while the rest stays on the old version. You monitor metrics (error rates, CPU). If healthy, you gradually ramp up to 100%. *Use case*: When you need to test against real-world user behavior and data payloads that synthetic tests might miss, mitigating the "blast radius" of a bad release.
 </details>
 
 
@@ -747,10 +748,10 @@ flowchart TD
 
 🔬 **Section Challenge — Infrastructure as Code**
 
-**Challenge 1 (Reasoning):** Why should you never use `UUID.randomUUID()` as a primary key in a highly distributed clustered database (like Cassandra or CockroachDB)?
+**Challenge 1 (State Management):** You and a teammate are both using Terraform to manage your AWS infrastructure. You run `terraform apply` locally at the exact same time. What catastrophic failure could occur, and how do you prevent it?
 <details><summary>Answer</summary>
 
-Index Fragmentation. Standard V4 UUIDs are completely random. When you insert them as primary keys, they force the database's B-Tree indexes to split constantly because the inserts are not sequential. This crushes write performance and bloats disk storage. Instead, distributed systems use Time-Sorted unique identifiers (like Snowflake IDs, ULIDs, or UUIDv7), which are lexicographically sortable by time, ensuring sequential disk writes and massive performance gains.
+State Corruption. If both developers run `terraform apply` simultaneously using a local `terraform.tfstate` file (or a shared S3 bucket without locking), Terraform will attempt to mutate the same AWS resources concurrently. One execution will overwrite the other's state file, causing Terraform to lose track of resources (leading to orphaned infrastructure or accidental deletions on the next run). To prevent this, you MUST configure a remote state backend with state locking (e.g., S3 for state storage + DynamoDB for state locking). DynamoDB ensures that only one `terraform apply` can acquire the lock and modify the state at a time.
 </details>
 
 

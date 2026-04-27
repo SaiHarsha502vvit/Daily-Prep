@@ -152,12 +152,13 @@ Daily-Prep/
 │   ├── 24_Common_Mistakes.md    → Common mistakes to avoid
 │   └── 25_Problem_Origins.md    → Real-world problem origins
 │
-├── 06_OOP_Design/                       (8 files)
+├── 06_OOP_Design/                       (9 files)
 │   ├── 01_OOPS_Principles.md            → OOP concepts + SOLID
 │   ├── 02_Design_Patterns.md            → GoF Design Patterns
 │   ├── 03_System_Design.md              → System design basics
 │   ├── 04_User_System_Flows.md          → User flows & sequence diagrams
 │   ├── 05_SD_Interview_Problems.md      → 🆕 8 system design problems (URL Shortener, Twitter, Chat...)
+│   ├── 05_System_Design_Fundamentals.md → 🆕 GOOS methodology, Walking Skeleton, Mock Roles
 │   ├── 06_Distributed_Systems_Fundamentals.md → 🆕 CAP, consistency, replication, Raft
 │   ├── 07_LLD_Solved_Problems.md        → 🆕 5 LLD problems with full Java code
 │   └── 08_Design_Patterns_Java.md       → 🆕 GoF patterns with Java + Spring Boot mapping
@@ -350,8 +351,9 @@ Daily-Prep/
 │   ├── 14_Resources_Links.md            → External resources & links
 │   └── 15_Behavioral_Interview.md       → 🆕 STAR method, 8 question categories, Amazon LPs
 │
-├── 10_Enterprise_Systems/               (8 chapter files)
+├── 10_Enterprise_Systems/               (9 chapter files)
 │   ├── 01_ERP_Fundamentals.md          → ERP concepts, modules, architecture
+│   ├── 01b_DDD_Tactical_Patterns.md    → 🆕 Domain-Driven Design, Bounded Contexts, Aggregates
 │   ├── 02_ERP_Advanced.md              → Integration, customization, cloud
 │   ├── 03_ERP_Finance_Core.md          → GL, AP, AR, fixed assets
 │   ├── 04_ERP_Finance_RealWorld.md     → Finance optimization, reconciliation
@@ -526,11 +528,12 @@ Daily-Prep/
 - [Sorting](05_Problem_Solving/20_Sorting.md) | [Design](05_Problem_Solving/21_Design.md) | [Recursion & Subsets](05_Problem_Solving/22_Recursion_Subsets.md)
 - [Edge Cases](05_Problem_Solving/23_Edge_Cases.md) | [Common Mistakes](05_Problem_Solving/24_Common_Mistakes.md) | [Problem Origins](05_Problem_Solving/25_Problem_Origins.md)
 
-### OOP & Design (8 files)
+### OOP & Design (9 files)
 - [OOP Principles + SOLID](06_OOP_Design/01_OOPS_Principles.md) | [Design Patterns](06_OOP_Design/02_Design_Patterns.md)
 - [System Design](06_OOP_Design/03_System_Design.md) | [User/System Flows](06_OOP_Design/04_User_System_Flows.md)
-- **🆕** [SD Interview Problems](06_OOP_Design/05_SD_Interview_Problems.md) | [Distributed Systems](06_OOP_Design/06_Distributed_Systems_Fundamentals.md)
-- **🆕** [LLD Solved Problems](06_OOP_Design/07_LLD_Solved_Problems.md) | [Design Patterns Java](06_OOP_Design/08_Design_Patterns_Java.md)
+- **🆕** [SD Interview Problems](06_OOP_Design/05_SD_Interview_Problems.md) | [SD Fundamentals / GOOS](06_OOP_Design/05_System_Design_Fundamentals.md)
+- **🆕** [Distributed Systems](06_OOP_Design/06_Distributed_Systems_Fundamentals.md) | [LLD Solved Problems](06_OOP_Design/07_LLD_Solved_Problems.md)
+- **🆕** [Design Patterns Java](06_OOP_Design/08_Design_Patterns_Java.md)
 
 ### Modern Java & Spring Boot (60 chapters — 12 Parts, textbook order)
 
@@ -655,8 +658,9 @@ Daily-Prep/
 - [Quick Reference](09_Career_Reference/11_Quick_Reference.md) | [Brain & Psychology](09_Career_Reference/12_Brain_Psychology.md) | [Daily Habits](09_Career_Reference/13_Daily_Habits_Tracking.md) | [Resources](09_Career_Reference/14_Resources_Links.md)
 - **🆕** [Behavioral Interview](09_Career_Reference/15_Behavioral_Interview.md) — STAR method, 8 categories, Amazon LPs, story bank
 
-### Enterprise & Real-World (8 files)
-- ERP: [Fundamentals](10_Enterprise_Systems/01_ERP_Fundamentals.md) | [Advanced](10_Enterprise_Systems/02_ERP_Advanced.md) | [Finance Core](10_Enterprise_Systems/03_ERP_Finance_Core.md) | [Finance Real-World](10_Enterprise_Systems/04_ERP_Finance_RealWorld.md)
+### Enterprise & Real-World (9 files)
+- ERP/DDD: [Fundamentals](10_Enterprise_Systems/01_ERP_Fundamentals.md) | [DDD Tactical Patterns](10_Enterprise_Systems/01b_DDD_Tactical_Patterns.md) | [Advanced](10_Enterprise_Systems/02_ERP_Advanced.md)
+- Finance: [Finance Core](10_Enterprise_Systems/03_ERP_Finance_Core.md) | [Finance Real-World](10_Enterprise_Systems/04_ERP_Finance_RealWorld.md)
 - Real-World Problems: [Part 1](10_Enterprise_Systems/05_RealWorld_Problems_DSA.md) | [Part 2](10_Enterprise_Systems/06_RealWorld_Problems_Part2.md) | [Part 3](10_Enterprise_Systems/07_RealWorld_Problems_Part3.md)
 - [Production Incidents & DSA](10_Enterprise_Systems/08_RealWorld_Incidents_DSA.md)
 

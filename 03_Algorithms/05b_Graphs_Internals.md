@@ -450,3 +450,45 @@ flowchart TD
 
 ---
 
+## 📐 Modeling Problems as Graphs (Skiena's Approach)
+
+In *The Algorithm Design Manual*, Steven Skiena emphasizes that the hardest part of graph algorithms isn't the algorithm itself (BFS/DFS/Dijkstra)—it's **recognizing that the problem is a graph problem** and defining the vertices and edges correctly.
+
+### The 3 Core Questions to Ask:
+1. **What are the Vertices?** (States, objects, configurations)
+2. **What are the Edges?** (Transitions, relationships, dependencies)
+3. **Are the edges Directed or Undirected? Weighted or Unweighted?**
+
+### Classic Modeling Archetypes
+
+#### 1. The State Space Graph (Implicit Graphs)
+**Problem:** Word Ladder (transform "hit" to "cog" changing one letter at a time).
+**Model:**
+*   **Vertices:** Every possible valid word in the dictionary.
+*   **Edges:** An undirected, unweighted edge connects two words if they differ by exactly one character.
+*   **Algorithm:** BFS to find the shortest path (minimum transitions).
+*   *Key Insight:* You don't build the entire graph upfront! You generate neighbors dynamically (Implicit Graph).
+
+#### 2. The Dependency Graph
+**Problem:** Course Schedule (take courses given prerequisites).
+**Model:**
+*   **Vertices:** The courses.
+*   **Edges:** A directed edge from Course A to Course B if A is a prerequisite for B.
+*   **Algorithm:** Topological Sort (DFS or Kahn's). Cycle detection (if cycle exists, graduation is impossible).
+
+#### 3. The Grid Graph
+**Problem:** Number of Islands, Maze Solving.
+**Model:**
+*   **Vertices:** Each `(row, col)` cell in the 2D matrix.
+*   **Edges:** Implicit undirected edges connecting a cell to its Up, Down, Left, Right neighbors (if they are valid/passable).
+*   **Algorithm:** BFS/DFS.
+*   *Key Insight:* A 2D matrix *is* a graph. You don't need an Adjacency List to traverse it; just use a `int[][] directions = {{0,1}, {1,0}, {0,-1}, {-1,0}}` array.
+
+#### 4. The Compatibility Graph
+**Problem:** Bipartite Matching (Assigning workers to jobs, scheduling exams without conflicts).
+**Model:**
+*   **Vertices:** Entities (e.g., Workers and Jobs).
+*   **Edges:** An undirected edge if Worker A can do Job B.
+*   **Algorithm:** Bipartite Graph checking (Coloring) or Maximum Flow.
+
+---

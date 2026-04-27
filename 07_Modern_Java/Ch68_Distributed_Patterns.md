@@ -210,10 +210,10 @@
 
 🔬 **Section Challenge — 3. Two-Phase Commit (2PC) — Distributed Transactions**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (System Failure):** In a Two-Phase Commit protocol, the Coordinator sends the "Prepare" message, and all participants vote "YES" and acquire locks. Immediately after, the Coordinator's server crashes and its hard drive burns before it can send the "Commit" message. What happens to the participants?
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+This exposes the fatal flaw of 2PC: **Blocking**. The participants are stuck holding exclusive write locks on the records they prepared, waiting for a coordinator that will never respond. They cannot unilaterally abort (because another participant might have committed), nor can they commit. The system grinds to a halt until the coordinator is restored or manual DBA intervention clears the locks.
 </details>
 
 
@@ -278,10 +278,10 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 
 🔬 **Section Challenge — 4. Consistent Hashing — How Data Is Distributed**
 
-**Challenge 1 (Reasoning):** In a microservice architecture, why is a naive Retry mechanism often more dangerous than failing fast?
+**Challenge 1 (System Design):** You have a cache cluster with 3 servers using Consistent Hashing. You notice Server A is taking 80% of all the traffic, while Servers B and C are mostly idle. Why is this happening, and how do Virtual Nodes fix it?
 <details><summary>Answer</summary>
 
-Retry Storms. If Service B is struggling and timing out, Service A aggressively retrying requests will multiply the load on Service B, causing it to completely collapse (cascading failure). Retries must *always* be paired with Exponential Backoff (to space out load), Jitter (to prevent synchronized waves of retries), and a Circuit Breaker (to completely cut off traffic and let Service B recover once a failure threshold is reached).
+The random hashing of just 3 server IP addresses placed them unevenly on the ring (e.g., A at 10°, B at 20°, C at 30°). This means Server A "owns" the vast 330° remaining segment of the hash space. **Virtual Nodes (vnodes)** fix this by assigning each physical server hundreds of points on the ring (A1, A2, A3...). This artificially interweaves their coverage areas, mathematically guaranteeing an even distribution of the hash space regardless of the physical server count.
 </details>
 
 
@@ -345,10 +345,10 @@ Retry Storms. If Service B is struggling and timing out, Service A aggressively 
 
 🔬 **Section Challenge — 5. Leader Election — Who's in Charge**
 
-**Challenge 1 (Reasoning):** In a microservice architecture, why is a naive Retry mechanism often more dangerous than failing fast?
+**Challenge 1 (Edge Cases):** Service Instance A acquires a distributed lock in Redis to process an important daily batch job. While processing, Instance A experiences a 60-second JVM Garbage Collection pause. The lock expires in Redis after 30 seconds, and Instance B takes the lock and starts processing. Instance A wakes up and continues processing. Both instances write to the database. How do you prevent this?
 <details><summary>Answer</summary>
 
-Retry Storms. If Service B is struggling and timing out, Service A aggressively retrying requests will multiply the load on Service B, causing it to completely collapse (cascading failure). Retries must *always* be paired with Exponential Backoff (to space out load), Jitter (to prevent synchronized waves of retries), and a Circuit Breaker (to completely cut off traffic and let Service B recover once a failure threshold is reached).
+You must use **Fencing Tokens**. When a lock is acquired, the lock service must return a monotonically increasing integer (e.g., token 34). The service passes this token to the database with its writes. When Instance B acquires the lock, it gets token 35. If Instance A wakes up and tries to write to the database with token 34, the database sees that a newer token (35) has already been active, and outright rejects Instance A's write.
 </details>
 
 
@@ -531,10 +531,10 @@ Retry Storms. If Service B is struggling and timing out, Service A aggressively 
 
 🔬 **Section Challenge — 8. Idempotency — Safe Retries in Distributed Systems**
 
-**Challenge 1 (Reasoning):** In a microservice architecture, why is a naive Retry mechanism often more dangerous than failing fast?
+**Challenge 1 (Edge Cases):** A client sends a `POST /checkout` request with an `Idempotency-Key`. The server receives it, but before the database transaction finishes, the client times out and retries with the *exact same* `Idempotency-Key`. If the server simply checks the database for an existing completed response, what race condition occurs?
 <details><summary>Answer</summary>
 
-Retry Storms. If Service B is struggling and timing out, Service A aggressively retrying requests will multiply the load on Service B, causing it to completely collapse (cascading failure). Retries must *always* be paired with Exponential Backoff (to space out load), Jitter (to prevent synchronized waves of retries), and a Circuit Breaker (to completely cut off traffic and let Service B recover once a failure threshold is reached).
+Because the first request hasn't committed yet, the `Idempotency-Key` check in the database will return "Not Found". The server will spin up a *second* transaction for the retry, resulting in a double-charge! To fix this, you must acquire a distributed lock on the `Idempotency-Key` *before* checking the DB, or use a unique constraint on the database column so the second transaction fails to insert the pending key.
 </details>
 
 
@@ -599,10 +599,10 @@ Retry Storms. If Service B is struggling and timing out, Service A aggressively 
 
 🔬 **Section Challenge — 9. Distributed Locking — Mutual Exclusion Across Services**
 
-**Challenge 1 (Reasoning):** In a microservice architecture, why is a naive Retry mechanism often more dangerous than failing fast?
+**Challenge 1 (System Design):** Why is implementing a distributed lock using `SET key value NX` in a single Redis node dangerous for mission-critical operations, and what is the Redlock algorithm?
 <details><summary>Answer</summary>
 
-Retry Storms. If Service B is struggling and timing out, Service A aggressively retrying requests will multiply the load on Service B, causing it to completely collapse (cascading failure). Retries must *always* be paired with Exponential Backoff (to space out load), Jitter (to prevent synchronized waves of retries), and a Circuit Breaker (to completely cut off traffic and let Service B recover once a failure threshold is reached).
+A single Redis node is a single point of failure. If the master crashes *after* granting a lock, but *before* replicating that key to the replica, the replica will get promoted to master without knowing about the lock. It will then grant the lock to a second client! The **Redlock algorithm** solves this by requiring the client to sequentially request the lock from N independent Redis nodes. The lock is only considered acquired if the client successfully locks `(N/2)+1` majority nodes.
 </details>
 
 
@@ -694,10 +694,10 @@ Retry Storms. If Service B is struggling and timing out, Service A aggressively 
 
 🔬 **Section Challenge — 10. Outbox Pattern — Reliable Event Publishing**
 
-**Challenge 1 (Reasoning):** In a microservice architecture, why is a naive Retry mechanism often more dangerous than failing fast?
+**Challenge 1 (System Design):** In the Transactional Outbox pattern, you write the business entity (Order) and the Event (OrderCreated) to the database in the same transaction. A background publisher reads the Outbox table and publishes to Kafka. Why must the Kafka Consumer on the other end be built to be completely Idempotent?
 <details><summary>Answer</summary>
 
-Retry Storms. If Service B is struggling and timing out, Service A aggressively retrying requests will multiply the load on Service B, causing it to completely collapse (cascading failure). Retries must *always* be paired with Exponential Backoff (to space out load), Jitter (to prevent synchronized waves of retries), and a Circuit Breaker (to completely cut off traffic and let Service B recover once a failure threshold is reached).
+Because of the **At-Least-Once** delivery guarantee. If the background publisher successfully sends the message to Kafka, but its server crashes *before* it can update the `published = true` flag in the database, it will restart, read the table, and publish the exact same event again. The consumer is guaranteed to see every message *at least once*, but will likely see duplicates during failure recoveries.
 </details>
 
 

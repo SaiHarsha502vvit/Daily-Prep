@@ -703,6 +703,71 @@ int[] dp = new int[n + 1];
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
+## 🔍 Reconstructing the Solution (Traceback)
+
+In *The Algorithm Design Manual*, Skiena points out a common pitfall: Dynamic Programming natively computes the *value* of the optimal solution (e.g., "The longest path is 15"), but often the interviewer actually wants the *path itself* (e.g., "The items to pick are A, C, and F").
+
+To reconstruct the solution, you must walk backward through your DP table, tracing the sequence of optimal decisions.
+
+### Two Ways to Traceback
+
+#### 1. The "Parent Pointer" Array (Explicit Tracking)
+Store the optimal decision at each step in a separate array/table.
+*   **Pros:** Very easy to write the traceback loop.
+*   **Cons:** Doubles your memory usage.
+
+```java
+// Example: Longest Increasing Subsequence (LIS)
+int[] dp = new int[n];
+int[] parent = new int[n];
+Arrays.fill(parent, -1);
+
+// ... during DP transition ...
+if (nums[j] < nums[i] && dp[j] + 1 > dp[i]) {
+    dp[i] = dp[j] + 1;
+    parent[i] = j;  // Record that i came from j!
+}
+
+// Reconstruct
+List<Integer> path = new ArrayList<>();
+int curr = maxIndex; // index where DP array is max
+while (curr != -1) {
+    path.add(nums[curr]);
+    curr = parent[curr];
+}
+Collections.reverse(path);
+```
+
+#### 2. Re-evaluating the Recurrence (Implicit Tracking - Preferred)
+You don't need a `parent` array! The DP table already contains all the information needed to deduce *which* choice was optimal. You just check which subproblem + transition equals the current cell's value.
+
+*   **Pros:** Saves memory. Shows deep understanding of the recurrence relation.
+*   **Cons:** Slightly more complex to write the traceback logic.
+
+```java
+// Example: 0/1 Knapsack Traceback
+// dp[i][w] = max(dp[i-1][w], dp[i-1][w - weight[i]] + value[i])
+
+List<Integer> itemsPicked = new ArrayList<>();
+int i = n;
+int w = capacity;
+
+while (i > 0 && w > 0) {
+    // If the value is the same as the row above, we DID NOT pick item i
+    if (dp[i][w] == dp[i-1][w]) {
+        i--;
+    } 
+    // Otherwise, we MUST have picked item i
+    else {
+        itemsPicked.add(i);
+        w -= weight[i]; // Reduce capacity
+        i--;
+    }
+}
+```
+
+**Rule of Thumb:** Always use Implicit Tracking unless the transition logic is extremely complex or depends on non-deterministic ties where you must remember the exact tie-breaker you chose.
+
 **Flow:**
 1. STRATEGY 3: USE PRIMITIVES, NOT OBJECTS
 2. Storage Memory per element Access time

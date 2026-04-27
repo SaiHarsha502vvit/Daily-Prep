@@ -527,6 +527,19 @@ public class MyMinHeap {
 }
 ```
 
+🔬 **Section Challenge — Heap Construction Mechanics**
+
+**Challenge 1 (Algorithmic Complexity):** If you are given an array of `N` random integers and need to turn it into a valid Min-Heap, you have two options: 1) Insert them one by one into an empty heap using `insert()`. 2) Use Floyd's `buildHeap()` algorithm. Explain the exact time complexity of both approaches and why Floyd's algorithm mathematically outperforms sequential insertion.
+<details><summary>Answer</summary>
+
+**Approach 1: Sequential Insertion `O(N log N)`**
+Inserting an element takes `O(log N)` because it might bubble *up* from a leaf to the root. In a tree, the vast majority of nodes are at the bottom leaves. Therefore, most of the `N` elements you insert will have to bubble up through the entire height of the tree `O(log N)`. Summing this up gives `O(N log N)`.
+
+**Approach 2: Floyd's `buildHeap` `O(N)`**
+Floyd's algorithm treats the unsorted array as a complete binary tree and calls `heapifyDown()` starting from the lowest non-leaf nodes up to the root. `heapifyDown` pushes nodes *down*.
+The mathematical trick: the majority of nodes (the leaves, `N/2` nodes) are already at the bottom, so they move 0 steps! `N/4` nodes move at most 1 step. `N/8` nodes move at most 2 steps. Only the single root node moves `log N` steps. The work is proportional to the node's height, not its depth. The sum of this series `(N/2 * 0) + (N/4 * 1) + (N/8 * 2) + ...` converges to exactly `O(N)`.
+</details>
+
 ---
 
 ## 🧭 Traversal Decision Guide — Which to Use When?

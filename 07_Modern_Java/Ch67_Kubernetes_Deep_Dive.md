@@ -68,16 +68,10 @@
 
 🔬 **Section Challenge — 1. The Big Picture — What Kubernetes Actually Solves**
 
-**Challenge 1 (Reasoning):** Your K8s pod is stuck in `CrashLoopBackOff`. How do you diagnose it step by step?
+**Challenge 1 (Architecture):** Kubernetes is often described as a "Declarative" system rather than an "Imperative" system. Why is this distinction critical for recovering from a sudden node failure?
 <details><summary>Answer</summary>
 
-1) `kubectl describe pod <name>` — check Events section for reasons. 2) `kubectl logs <pod> --previous` — see logs from the CRASHED container (not the current restart). 3) Check: OOMKilled (out of memory → increase memory limit), exit code 1 (app error → check logs), exit code 137 (SIGKILL from OOM or liveness probe). 4) If liveness probe failing: disable temporarily to investigate live state. 5) Check startup probe vs liveness probe config — maybe app needs more init time.
-</details>
-
-**Challenge 2 (Design):** Explain the difference between a liveness probe and a readiness probe. What happens when each fails?
-<details><summary>Answer</summary>
-
-**Liveness**: is the pod healthy? Failure → K8s KILLS and restarts the pod. Use for: hung processes that are running but unresponsive. **Readiness**: is the pod ready to serve traffic? Failure → pod is REMOVED from Service endpoints (no traffic sent), but NOT restarted. Use for: app still initializing, temporarily overloaded, downstream dependency unavailable. Common mistake: using liveness for readiness scenarios → pod gets killed/restarted when it should just be temporarily excluded from load balancing.
+In an imperative system (like a script), you tell the system *how* to do things (e.g., "Start Pod A on Node 1"). If Node 1 crashes, the script doesn't know what to do unless you wrote explicit failure-handling code. In a declarative system, you tell Kubernetes the *desired state* ("I want 3 instances of Pod A running"). Kubernetes continuously runs control loops comparing the actual state to the desired state. When Node 1 crashes, the actual state drops to 2 instances. Kubernetes automatically detects this divergence and schedules a new pod on another node to restore the desired state of 3, requiring zero human intervention.
 </details>
 
 
@@ -215,10 +209,10 @@
 
 🔬 **Section Challenge — 4. Deployments — How Rolling Updates Work**
 
-**Challenge 1 (Reasoning):** You configured a Kubernetes `livenessProbe` to hit your `/health` endpoint. Under heavy load, your pods keep crashing and restarting. Why?
+**Challenge 1 (Deployment Strategy):** During a Rolling Update of your Deployment, your new v2 pods are starting up, but they have a fatal bug and crash immediately on boot. How does Kubernetes prevent this from taking down your entire application?
 <details><summary>Answer</summary>
 
-A `livenessProbe` dictates if a pod should be killed and restarted. If your application is simply overwhelmed by traffic (CPU throttling), it might take too long to answer the `/health` check. Kubernetes assumes the app is dead, kills the pod, and restarts it. This makes the outage worse, as the remaining pods now take *more* traffic and also crash. Liveness probes should ONLY check true deadlocks (e.g., a simple TCP port check). For dependency checks or traffic shedding, use `readinessProbe`!
+Kubernetes relies on the `maxUnavailable` setting and Readiness Probes. When the Deployment Controller spins up a new v2 pod, it waits for that pod's Readiness Probe to pass before it terminates one of the old v1 pods. Because the v2 pods are crashing, their Readiness Probes fail. The rollout pauses indefinitely, leaving the remaining healthy v1 pods untouched and continuing to serve traffic. This provides automatic "Zero Downtime" protection against bad releases.
 </details>
 
 
@@ -357,10 +351,10 @@ spec:
 
 🔬 **Section Challenge — 5. Services — How Networking Works Inside the Cluster**
 
-**Challenge 1 (Reasoning):** You configured a Kubernetes `livenessProbe` to hit your `/health` endpoint. Under heavy load, your pods keep crashing and restarting. Why?
+**Challenge 1 (Networking):** You have a `payment-service` Deployment with 3 pods and a `ClusterIP` Service. If `order-service` makes an HTTP call to `http://payment-service:8080`, does the traffic go through a centralized load balancer proxy like NGINX?
 <details><summary>Answer</summary>
 
-A `livenessProbe` dictates if a pod should be killed and restarted. If your application is simply overwhelmed by traffic (CPU throttling), it might take too long to answer the `/health` check. Kubernetes assumes the app is dead, kills the pod, and restarts it. This makes the outage worse, as the remaining pods now take *more* traffic and also crash. Liveness probes should ONLY check true deadlocks (e.g., a simple TCP port check). For dependency checks or traffic shedding, use `readinessProbe`!
+No. Kubernetes `ClusterIP` Services do not use a centralized proxy hop. The DNS resolves the service name to a virtual IP (the ClusterIP). When the pod sends traffic to that IP, `kube-proxy` (which manages `iptables` or `IPVS` rules on *every single node*) intercepts the packet at the kernel level and rewrites the destination IP to directly target one of the 3 healthy pod IPs. It's a completely distributed, client-side (kernel-level) load balancing mechanism.
 </details>
 
 
@@ -403,10 +397,10 @@ A `livenessProbe` dictates if a pod should be killed and restarted. If your appl
 
 🔬 **Section Challenge — 6. Ingress — How External Traffic Reaches Your App**
 
-**Challenge 1 (Reasoning):** You configured a Kubernetes `livenessProbe` to hit your `/health` endpoint. Under heavy load, your pods keep crashing and restarting. Why?
+**Challenge 1 (Architecture):** If a `LoadBalancer` Service already provisions a cloud load balancer (like AWS ALB) to expose your app to the internet, why do we need `Ingress`?
 <details><summary>Answer</summary>
 
-A `livenessProbe` dictates if a pod should be killed and restarted. If your application is simply overwhelmed by traffic (CPU throttling), it might take too long to answer the `/health` check. Kubernetes assumes the app is dead, kills the pod, and restarts it. This makes the outage worse, as the remaining pods now take *more* traffic and also crash. Liveness probes should ONLY check true deadlocks (e.g., a simple TCP port check). For dependency checks or traffic shedding, use `readinessProbe`!
+Cost and Routing complexity. If you have 20 microservices and expose each using a `LoadBalancer` Service, the cloud provider will spin up 20 separate physical load balancers, and you will pay for all of them. An `Ingress` acts as a single Layer 7 reverse proxy (backed by a *single* LoadBalancer). It allows you to route external traffic to all 20 services based on URL paths (`/orders`, `/users`) or hostnames, using only one public IP and paying for only one cloud load balancer.
 </details>
 
 
@@ -645,10 +639,16 @@ resources:
 
 🔬 **Section Challenge — 10. Health Checks — Liveness, Readiness, Startup Probes**
 
-**Challenge 1 (Reasoning):** You configured a Kubernetes `livenessProbe` to hit your `/health` endpoint. Under heavy load, your pods keep crashing and restarting. Why?
+**Challenge 1 (Reasoning):** Your K8s pod is stuck in `CrashLoopBackOff`. How do you diagnose it step by step?
 <details><summary>Answer</summary>
 
-A `livenessProbe` dictates if a pod should be killed and restarted. If your application is simply overwhelmed by traffic (CPU throttling), it might take too long to answer the `/health` check. Kubernetes assumes the app is dead, kills the pod, and restarts it. This makes the outage worse, as the remaining pods now take *more* traffic and also crash. Liveness probes should ONLY check true deadlocks (e.g., a simple TCP port check). For dependency checks or traffic shedding, use `readinessProbe`!
+1) `kubectl describe pod <name>` — check Events section for reasons. 2) `kubectl logs <pod> --previous` — see logs from the CRASHED container (not the current restart). 3) Check: OOMKilled (out of memory → increase memory limit), exit code 1 (app error → check logs), exit code 137 (SIGKILL from OOM or liveness probe). 4) If liveness probe failing: disable temporarily to investigate live state. 5) Check startup probe vs liveness probe config — maybe app needs more init time.
+</details>
+
+**Challenge 2 (Design):** Explain the difference between a liveness probe and a readiness probe. What happens when each fails?
+<details><summary>Answer</summary>
+
+**Liveness**: is the pod healthy? Failure → K8s KILLS and restarts the pod. Use for: hung processes that are running but unresponsive. **Readiness**: is the pod ready to serve traffic? Failure → pod is REMOVED from Service endpoints (no traffic sent), but NOT restarted. Use for: app still initializing, temporarily overloaded, downstream dependency unavailable. Common mistake: using liveness for readiness scenarios → pod gets killed/restarted when it should just be temporarily excluded from load balancing.
 </details>
 
 
@@ -741,10 +741,10 @@ containers:
 
 🔬 **Section Challenge — 11. How Scheduling Works — From YAML to Running Pod**
 
-**Challenge 1 (Reasoning):** You configured a Kubernetes `livenessProbe` to hit your `/health` endpoint. Under heavy load, your pods keep crashing and restarting. Why?
+**Challenge 1 (System Design):** You submit a Deployment YAML to create a Pod that requests `1000m` CPU. All nodes in your cluster only have `500m` CPU available. What is the exact status of the Pod, and which component made that decision?
 <details><summary>Answer</summary>
 
-A `livenessProbe` dictates if a pod should be killed and restarted. If your application is simply overwhelmed by traffic (CPU throttling), it might take too long to answer the `/health` check. Kubernetes assumes the app is dead, kills the pod, and restarts it. This makes the outage worse, as the remaining pods now take *more* traffic and also crash. Liveness probes should ONLY check true deadlocks (e.g., a simple TCP port check). For dependency checks or traffic shedding, use `readinessProbe`!
+The Pod will remain in a `Pending` state indefinitely. The **kube-scheduler** made this decision during the "Filtering" phase. It evaluated all available nodes, saw that none of them met the `1000m` CPU resource request, and therefore refused to bind the pod to any node. The API server stores the pod as `Pending` until a node frees up enough resources or a new node is added to the cluster.
 </details>
 
 

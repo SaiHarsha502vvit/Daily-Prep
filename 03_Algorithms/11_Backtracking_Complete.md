@@ -1243,7 +1243,25 @@ private boolean isPalindrome(String s) {
 
 ## Optimization Techniques <a name="optimization"></a>
 
-### 1. Pruning - Cut Branches Early
+### 1. Pruning Strategies Hierarchy (Skiena's Approach)
+
+In *The Algorithm Design Manual*, Steven Skiena categorizes backtracking optimization (pruning) into a clear hierarchy. When your backtracking algorithm is too slow (TLE), apply these strategies in order:
+
+#### A. Look-Ahead (Feasibility Pruning)
+Can the current partial solution *ever* be completed to form a valid solution?
+*   **Example:** In Sudoku, if placing a '5' leaves another cell with no possible valid numbers (e.g., all 1-9 are blocked in its row/col/box), prune immediately. Don't wait until you actually reach that empty cell.
+*   *Implementation:* Often requires maintaining additional state (like remaining capacity or available elements).
+
+#### B. Symmetry Breaking
+Are you exploring a branch that is mathematically identical to one you already explored?
+*   **Example:** In generating combinations, `[1, 2, 3]` is the same as `[2, 1, 3]`. By enforcing an ordering (e.g., `start = i + 1` and skipping duplicates `nums[i] == nums[i-1]`), you break the symmetry and eliminate redundant branches.
+*   **Example 2:** In N-Queens, the board is symmetrical. You can cut the search space in half by only exploring the first half of the first row and mirroring the results.
+
+#### C. Heuristic Ordering
+Which choice should you make *first* to find a solution quickly or prune faster?
+*   **Fail-First Principle (Most Constrained Variable):** Pick the decision that has the *fewest* valid options. In Sudoku, pick the empty cell that only has 1 or 2 valid numbers left, rather than just the next cell left-to-right. This forces failures (and thus pruning) as high up in the decision tree as possible.
+
+### 2. Basic Pruning - Code Example
 
 ```java
 // Without pruning: explores invalid paths

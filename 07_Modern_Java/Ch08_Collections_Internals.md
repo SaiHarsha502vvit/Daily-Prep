@@ -348,6 +348,17 @@ Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 
 Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
 </details>
 
+**Challenge 3 (Architecture & GOOS Testing):** Java 8 introduced Red-Black treeification for HashMap buckets exceeding 8 nodes to mitigate Hash-Flooding DoS attacks. According to the principles of *Growing Object-Oriented Software* (GOOS), testing internal thresholds like `TREEIFY_THRESHOLD = 8` breaks encapsulation. How would you design a robust test suite for a custom HashTable to verify worst-case collision mitigation without directly inspecting the internal node types?
+<details><summary>Answer</summary>
+
+**GOOS TDD Approach (Testing Behaviors, Not State):**
+You do not mock or inspect the internal `Node` vs `TreeNode` classes—that binds tests to implementation details. Instead, test the **externally observable behavior**: Time Complexity.
+1. **Define the Boundary:** Create a deterministic Hash Strategy interface (a Port in Hexagonal Architecture) that forces all keys to return the same hash code (e.g., `hash = 42`).
+2. **The Test:** Insert 10,000 items using this mocked hash strategy.
+3. **The Assertion:** Measure the elapsed time for 1,000 random `get()` operations. If the internal structure remains a LinkedList, the time will scale quadratically `O(N²)`. If treeification correctly engages, the time scales logarithmically `O(N log N)`.
+By asserting on the non-functional requirement (Performance SLA) injected via a test double, you verify the architectural mitigation without compromising encapsulation.
+</details>
+
 
 ## 5. TreeMap Internals — Red-Black Tree
 
@@ -407,6 +418,16 @@ map.tailMap(4);           // {4=four, 5=five, 8=eight} (keys ≥ 4)
 <details><summary>Answer</summary>
 
 `TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
+</details>
+
+**Challenge 2 (Algorithmic Diagnostics):** You insert sequentially strictly increasing elements (1, 2, 3, 4, 5, 6, 7) into a standard Unbalanced BST and a Red-Black Tree (`TreeMap`). Explain exactly how the Red-Black Tree's invariant prevents the O(N) linked-list degeneration that destroys the Unbalanced BST.
+<details><summary>Answer</summary>
+
+An unbalanced BST degrades into a right-leaning linked list `(1 -> 2 -> 3 -> 4 -> ...)` because it passively accepts node placement. A Red-Black Tree enforces maximum height limits via invariant violation checks on every insertion:
+1. **Insertion:** `1` is black (root). `2` is red. `3` is inserted as red.
+2. **Invariant Violation:** Node `2` and `3` are both red (Red-Black Rule: No two consecutive red nodes allowed).
+3. **Restructuring (Rotations & Color Flips):** The tree recognizes the imbalance. It performs a **Left Rotation** on `1`, making `2` the new black root, and `1` and `3` its red children.
+4. **Result:** The tree is perfectly balanced `(1 <- 2 -> 3)`. As `4`, `5`, etc., are added, a cascade of color flips and rotations continuously pulls the right-leaning chain back into a balanced pyramid. This active self-correction is the exact mechanism that guarantees `O(log N)` search times, underpinning both `TreeMap` and Java 8's `HashMap` treeification defense.
 </details>
 
 

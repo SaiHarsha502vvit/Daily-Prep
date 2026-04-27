@@ -252,6 +252,40 @@ void shouldCalculateTotalWithTax() {
 }
 ```
 
+## Test Data Builders (GOOS Pattern)
+
+In *Growing Object-Oriented Software, Guided by Tests* (GOOS), the authors strongly advocate for the **Test Data Builder** pattern to construct complex domain objects for tests.
+
+```java
+// BAD: Brittle constructors make tests hard to read and fragile
+@Test
+void shouldCalculateDiscount() {
+    // What do all these nulls and booleans mean? If Order adds a field, this breaks!
+    Order order = new Order(123L, null, "USD", true, false, new Customer("John", "Doe", 30), new ArrayList<>());
+    
+    BigDecimal total = service.calculateTotal(order);
+    // ...
+}
+
+// GOOD: Test Data Builder
+@Test
+void shouldCalculateDiscount() {
+    // Only specify the data relevant to THIS specific test
+    Order order = anOrder()
+        .withCurrency("USD")
+        .withCustomer(aCustomer().withAge(30).build())
+        .isPriority()
+        .build();
+        
+    BigDecimal total = service.calculateTotal(order);
+    // ...
+}
+```
+
+### Why it matters:
+1. **Readability**: It highlights *only* the data relevant to the specific test scenario. The irrelevant fields are filled with sensible defaults by the builder.
+2. **Resilience**: If you add a new mandatory field to `Order`, you only update the `OrderBuilder` class with a default value. You don't have to fix 500 broken tests that were calling the `Order` constructor directly.
+
 
 
 ## Test Naming Convention

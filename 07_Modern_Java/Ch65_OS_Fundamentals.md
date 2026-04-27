@@ -188,7 +188,7 @@
 
 🔬 **Section Challenge — 2. How CPU Scheduling Works — Who Gets to Run**
 
-**Challenge 1 (Reasoning):** Why is reading a 1GB file in 4KB chunks using standard `FileInputStream.read()` significantly slower than using `FileChannel.transferTo()` (Zero-Copy)?
+**Challenge 1 (Reasoning):** If a Java thread enters a `synchronized` block and the lock is already held, what state does the thread transition into, and how does this affect the CPU scheduler?
 <details><summary>Answer</summary>
 
 Standard I/O requires the OS to read data from disk into Kernel Space, copy it to User Space (JVM buffer), and then copy it back to Kernel Space to send over a socket. `transferTo()` uses Zero-Copy DMA (Direct Memory Access). The OS transfers data directly from the disk buffer to the network socket buffer entirely within Kernel Space. It bypasses the JVM memory and avoids expensive CPU context switches between User and Kernel mode.
@@ -257,10 +257,10 @@ Standard I/O requires the OS to read data from disk into Kernel Space, copy it t
 
 🔬 **Section Challenge — 3. Context Switching — The Hidden Cost**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Reasoning):** Why do heavily I/O-bound applications (like typical web servers) experience severe performance degradation when scaled to 10,000 concurrent threads, and how do Virtual Threads (Project Loom) solve this?
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+10,000 OS threads require ~10GB of memory just for stacks. More importantly, when threads constantly block on I/O, the OS performs thousands of context switches per second, destroying CPU caches (TLB/L1/L2 pollution) and wasting CPU cycles just swapping context. Virtual Threads solve this by mapping millions of lightweight threads onto a small pool of OS carrier threads. When a Virtual Thread blocks on I/O, the JVM 'unmounts' it in user-space without triggering an OS-level context switch.
 </details>
 
 
@@ -342,10 +342,10 @@ Every context consumer re-renders when ANY context value changes. If you have `{
 
 🔬 **Section Challenge — 4. Virtual Memory — Why Programs Think They Have Unlimited RAM**
 
-**Challenge 1 (Reasoning):** Why is reading a 1GB file in 4KB chunks using standard `FileInputStream.read()` significantly slower than using `FileChannel.transferTo()` (Zero-Copy)?
+**Challenge 1 (Reasoning):** How can a Java process with `-Xmx4g` (4GB heap) successfully run on a server with only 2GB of physical RAM, and what is the severe performance risk of doing so?
 <details><summary>Answer</summary>
 
-Standard I/O requires the OS to read data from disk into Kernel Space, copy it to User Space (JVM buffer), and then copy it back to Kernel Space to send over a socket. `transferTo()` uses Zero-Copy DMA (Direct Memory Access). The OS transfers data directly from the disk buffer to the network socket buffer entirely within Kernel Space. It bypasses the JVM memory and avoids expensive CPU context switches between User and Kernel mode.
+The OS allocates 4GB of *Virtual Memory* address space. Physical memory frames are only mapped on demand when the JVM actually writes to the pages. The risk is that if the JVM actually tries to use >2GB, the OS will start 'swapping' pages to disk. When the Garbage Collector runs, it must scan the heap, triggering massive numbers of Major Page Faults as pages are pulled from disk. This can turn a 20ms GC pause into a 10-second system freeze.
 </details>
 
 
@@ -417,10 +417,10 @@ Standard I/O requires the OS to read data from disk into Kernel Space, copy it t
 
 🔬 **Section Challenge — 5. Page Faults — When Memory Isn't Where You Think**
 
-**Challenge 1 (Reasoning):** Why is reading a 1GB file in 4KB chunks using standard `FileInputStream.read()` significantly slower than using `FileChannel.transferTo()` (Zero-Copy)?
+**Challenge 1 (Reasoning):** What is the difference between a Minor Page Fault and a Major Page Fault, and which one occurs when a JVM first allocates an object in Eden space?
 <details><summary>Answer</summary>
 
-Standard I/O requires the OS to read data from disk into Kernel Space, copy it to User Space (JVM buffer), and then copy it back to Kernel Space to send over a socket. `transferTo()` uses Zero-Copy DMA (Direct Memory Access). The OS transfers data directly from the disk buffer to the network socket buffer entirely within Kernel Space. It bypasses the JVM memory and avoids expensive CPU context switches between User and Kernel mode.
+A Minor Page Fault occurs when a page is valid but not yet mapped to a physical frame in the MMU (resolved quickly in RAM). A Major Page Fault occurs when the page has been swapped out to disk and requires a slow disk I/O operation to retrieve. When the JVM allocates a new object in previously unused Eden space, a Minor Page Fault occurs as the OS provisions a new zeroed-out physical frame for that virtual page.
 </details>
 
 
@@ -509,7 +509,12 @@ Standard I/O requires the OS to read data from disk into Kernel Space, copy it t
 
 
 🔬 **Section Challenge — 6. Threads vs Async I/O — Two Models for Concurrency**
->
+
+**Challenge 1 (System Design):** In an event-loop architecture like Node.js or Spring WebFlux, a single thread can handle thousands of concurrent I/O operations without blocking. What underlying OS system call makes this possible?
+<details><summary>Answer</summary>
+
+System calls like `epoll` (Linux), `kqueue` (macOS), or `IOCP` (Windows). These allow a single thread to register interest in thousands of non-blocking file descriptors (sockets) and then 'sleep' until the OS notifies it that specific sockets have data ready to read or write. This I/O multiplexing eliminates the need for one thread per connection.
+</details>
 
 ## 7. File Descriptors — Why "Too Many Open Files" Happens
 
@@ -847,7 +852,12 @@ Standard I/O requires the OS to read data from disk into Kernel Space, copy it t
 
 
 🔬 **Section Challenge — 11. How the Network Stack Processes Your API Call**
->
+
+**Challenge 1 (Reasoning):** What is the primary latency cost of establishing a new database connection over a WAN, and how does connection pooling mitigate it?
+<details><summary>Answer</summary>
+
+A new TCP connection requires a 3-way handshake (1.5 Round Trip Times) before any data is sent. Over a WAN with 100ms latency, this adds 150ms of pure overhead. If TLS is involved, it adds another 1-2 RTTs (up to 350ms total). Connection pooling (like HikariCP) mitigates this by keeping a pool of already-established TCP connections open and reusing them, reducing connection setup overhead to 0.
+</details>
 
 ## 12. OS Concepts in Java — Direct Mapping
 
@@ -885,10 +895,10 @@ Standard I/O requires the OS to read data from disk into Kernel Space, copy it t
 
 🔬 **Section Challenge — 12. OS Concepts in Java — Direct Mapping**
 
-**Challenge 1 (Reasoning):** Why is reading a 1GB file in 4KB chunks using standard `FileInputStream.read()` significantly slower than using `FileChannel.transferTo()` (Zero-Copy)?
+**Challenge 1 (Reasoning):** If a developer uses `Runtime.getRuntime().exec("ls")` in Java, which two fundamental OS system calls are being triggered underneath?
 <details><summary>Answer</summary>
 
-Standard I/O requires the OS to read data from disk into Kernel Space, copy it to User Space (JVM buffer), and then copy it back to Kernel Space to send over a socket. `transferTo()` uses Zero-Copy DMA (Direct Memory Access). The OS transfers data directly from the disk buffer to the network socket buffer entirely within Kernel Space. It bypasses the JVM memory and avoids expensive CPU context switches between User and Kernel mode.
+The `fork()` and `exec()` system calls. The JVM first calls `fork()` to create a child process (copying the parent's file descriptors and virtual address space), and then the child calls `exec()` to replace its memory space with the `ls` executable. This is extremely heavy compared to simply spawning a new thread.
 </details>
 
 

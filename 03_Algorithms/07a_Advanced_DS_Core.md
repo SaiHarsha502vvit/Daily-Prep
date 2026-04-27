@@ -852,6 +852,28 @@ public String longestCommonPrefix(String[] words) {
 }
 ```
 
+🔬 **Section Challenge — Trie Architecture & GOOS Testing**
+
+**Challenge 1 (Architectural Trade-offs):** You are building an autocomplete service for a 1-million word English vocabulary. A standard `TrieNode` uses an array `TrieNode[] children = new TrieNode[26]`. A memory-optimized version uses a `HashMap<Character, TrieNode>`. Explain the exact performance degradation you will face if you switch to `HashMap` to save memory, specifically referencing CPU cache lines and memory indirection.
+<details><summary>Answer</summary>
+
+**The Performance Hit (Cache Misses):**
+An array of 26 pointers takes exactly `26 * 8 = 208 bytes`. This fits within just 4 CPU cache lines (64 bytes each). Accessing `children['c' - 'a']` is a single contiguous memory offset calculation (`O(1)` pointer math) that almost guarantees an L1/L2 cache hit.
+Conversely, a `HashMap` node forces an additional object instantiation, hashing overhead, and most importantly: **Memory Indirection**. Looking up a character in the `HashMap` requires jumping to a non-contiguous memory address on the heap to fetch the bucket. Each jump is a guaranteed cache miss (~100x slower than a cache hit). Thus, while `HashMap` saves RAM in sparse nodes, it destroys CPU cache locality, drastically slowing down traversal speed.
+</details>
+
+**Challenge 2 (TDD Boundary - GOOS):** Following *Growing Object-Oriented Software (GOOS)*, you want to drive the implementation of this Autocomplete Trie using "Outside-In TDD". What is the "Walking Skeleton" boundary interface you would define, and how would you verify it using a Mock Object before writing any Trie logic?
+<details><summary>Answer</summary>
+
+**GOOS Outside-In Approach:**
+You start by defining the Port (Interface) required by the client (e.g., the REST Controller):
+`public interface AutocompleteService { List<String> getSuggestions(String prefix); }`
+You do not test the `TrieNode` directly. Instead:
+1. **The Test:** You write a test for the `SearchController`. You inject a **Mock** `AutocompleteService`.
+2. **The Verification:** You verify that when the Controller receives a request for `"app"`, it strictly passes exactly `"app"` to the `AutocompleteService.getSuggestions("app")` method, and properly serializes the mock's returned list.
+This forces you to design the API boundaries based on *messages passed* (Behavior) rather than *internal structure* (State). Once the boundary is proven, you step inward to implement the actual `Trie` class that implements `AutocompleteService`.
+</details>
+
 ---
 
 # 🌳 Part 3: Segment Tree
@@ -1132,6 +1154,35 @@ class SegmentTree {
 //
 // Result: 0 + 3 + 5 + 16 + 0 = 24 ✓
 ```
+
+🔬 **Section Challenge — Segment Tree Mechanics & Spring Boot Integration**
+
+**Challenge 1 (Algorithmic Rigor):** Standard Segment Trees offer `O(log N)` point updates. However, if you need to perform a **Range Update** (e.g., add `+5` to all elements from index `100` to `50000`), a standard Segment Tree degrades to `O(N)`. Why? And how does "Lazy Propagation" restore `O(log N)`?
+<details><summary>Answer</summary>
+
+**The Problem:** A naive range update requires updating every single leaf node in the range `[100, 50000]`. Even though finding the covering segments takes `O(log N)`, pushing the update down to the individual leaves requires traversing the entire subtree, which is `O(K)` where `K` is the range size. In the worst case, this is `O(N)`.
+**Lazy Propagation (Deferred Resolution):** Instead of pushing the update to the leaves, Lazy Propagation updates only the highest possible covering nodes and marks them with a `lazy` flag. It *defers* updating the children. Only when a subsequent query or update forces traversal *through* that node do we push the lazy value down one level. By deferring work until absolutely necessary, we touch at most `4 * log(N)` nodes per range update, restoring the `O(log N)` bound.
+</details>
+
+**Challenge 2 (Spring Boot AutoConfiguration):** You have wrapped your highly optimized Segment Tree in a service class: `RangeQueryEngine`. How would you write a custom Spring Boot Starter that automatically provisions this engine into the ApplicationContext **only if** the user hasn't defined their own, and **only if** a specific property `engine.type=segment-tree` is set?
+<details><summary>Answer</summary>
+
+**AutoConfiguration Design:**
+Create a `@Configuration` class named `RangeQueryAutoConfiguration`. To enforce the conditions, you apply Spring Boot's conditional annotations:
+```java
+@Configuration
+@ConditionalOnProperty(name = "engine.type", havingValue = "segment-tree")
+public class RangeQueryAutoConfiguration {
+
+    @Bean
+    @ConditionalOnMissingBean(RangeQueryEngine.class)
+    public RangeQueryEngine rangeQueryEngine() {
+        return new SegmentTreeRangeQueryEngine();
+    }
+}
+```
+Register this class in `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` (Spring Boot 2.7/3.0+). When the application starts, Spring evaluates the environment. If the property matches, and no other `@Bean` of type `RangeQueryEngine` exists, it instantiates the Segment Tree. This is exactly how Spring Boot's internal caching (`@EnableCaching`) seamlessly provisions `ConcurrentHashMapCacheManager` by default.
+</details>
 
 ---
 

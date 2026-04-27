@@ -13,10 +13,10 @@
 
 🔬 **Section Challenge — AWS, Azure, and GCP Integration Complete Guide**
 
-**Challenge 1 (Reasoning):** In a 12-Factor App, why are configuration files (`application-prod.yml`) discouraged for storing secrets and environment-specific data?
+**Challenge 1 (Architecture):** When migrating a Spring Boot application to AWS, Azure, or GCP, why is it considered an anti-pattern to use the cloud provider's native SDK (like `software.amazon.awssdk`) directly in your business logic?
 <details><summary>Answer</summary>
 
-Immutability and Security. The 12-Factor methodology demands that the exact same compiled artifact (Docker image/JAR) is promoted from Dev to Staging to Prod. If config is baked into the code repo or JAR, you risk leaking secrets and violating immutability. All environment-specific config (DB URLs, passwords) must be injected strictly via OS Environment Variables or external config servers (Spring Cloud Config/HashiCorp Vault) at runtime.
+Vendor lock-in and testability. Hardcoding AWS SDK calls (e.g., `s3Client.putObject()`) directly in your `@Service` classes tightly couples your application to AWS. If the business decides to move to Azure or GCP, or if you want to run local integration tests without a mock cloud environment, you have to rewrite the core logic. Instead, use the **Dependency Inversion Principle**: create a generic interface (e.g., `DocumentStorageService`), and inject cloud-specific implementations (e.g., `AwsS3StorageServiceImpl`) via Spring Profiles. Spring Cloud abstractions (like Spring Cloud Stream or Spring Cloud AWS) often handle this natively.
 </details>
 
 
@@ -422,10 +422,10 @@ flowchart TD
 
 🔬 **Section Challenge — Kubernetes Deployment**
 
-**Challenge 1 (Reasoning):** Your K8s pod is stuck in `CrashLoopBackOff`. How do you diagnose it step by step?
+**Challenge 1 (Design):** You deploy a Spring Boot application to Kubernetes using a `Deployment` with 3 replicas. You notice that when Kubernetes scales down or updates the pods, user requests currently being processed are abruptly dropped, causing 500 errors. How do you fix this at the Spring Boot level?
 <details><summary>Answer</summary>
 
-1) `kubectl describe pod <name>` — check Events section for reasons. 2) `kubectl logs <pod> --previous` — see logs from the CRASHED container (not the current restart). 3) Check: OOMKilled (out of memory → increase memory limit), exit code 1 (app error → check logs), exit code 137 (SIGKILL from OOM or liveness probe). 4) If liveness probe failing: disable temporarily to investigate live state. 5) Check startup probe vs liveness probe config — maybe app needs more init time.
+You need to enable Graceful Shutdown in Spring Boot. By default, when Kubernetes sends a `SIGTERM` signal to stop a pod, Spring Boot immediately shuts down the Tomcat server, dropping active requests. By adding `server.shutdown=graceful` and configuring a timeout (`spring.lifecycle.timeout-per-shutdown-phase=30s`) in your `application.yml`, Spring Boot will stop accepting *new* requests but allow *existing* requests to finish before shutting down. You must also add a `preStop` hook in your Kubernetes deployment YAML (`sleep 10`) to give the kube-proxy time to remove the pod from the Service endpoints before the `SIGTERM` is sent.
 </details>
 
 **Challenge 2 (Design):** Explain the difference between a liveness probe and a readiness probe. What happens when each fails?
