@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_002_Mar04_Tue.md)
+﻿> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_002_Mar04_Tue.md)
 
 # Day 001 - Monday, March 3, 2026
 
@@ -65,28 +65,6 @@ Delete at index i   O(n)      Must shift elements left
 ─────────────────────────────────────────────────────
 ```
 
-**Flow:**
-1. OPERATION TIME WHY?
-2. Access arr[i] O(1) Direct address calculation
-3. Search (unsorted) O(n) Must check every element
-4. Search (sorted) O(log n) Binary search possible
-5. Insert at index i O(n) Must shift elements right
-6. Delete at index i O(n) Must shift elements left
-
-```mermaid
-flowchart TD
-    N1["OPERATION TIME WHY?"]
-    N2["Access arr[i] O(1) Direct address calculation"]
-    N3["Search (unsorted) O(n) Must check every element"]
-    N4["Search (sorted) O(log n) Binary search possible"]
-    N5["Insert at index i O(n) Must shift elements right"]
-    N6["Delete at index i O(n) Must shift elements left"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 #### WHEN to use Arrays vs alternatives?
 
@@ -104,31 +82,6 @@ DON'T USE ARRAY WHEN:
   - Size changes dramatically → ArrayList (dynamic array)
 ```
 
-**Flow:**
-1. - Frequent insertions/deletions in middle
-2. LinkedList
-3. - Need key-value lookup
-4. HashMap
-5. - Need sorted dynamic data
-6. TreeSet/BST
-7. - Size changes dramatically
-8. ArrayList (dynamic array)
-
-```mermaid
-flowchart LR
-    N1["- Frequent insertions/deletions in middle"]
-    N2["LinkedList"]
-    N3["- Need key-value lookup"]
-    N4["HashMap"]
-    N5["- Need sorted dynamic data"]
-    N6["TreeSet/BST"]
-    N7["- Size changes dramatically"]
-    N8["ArrayList (dynamic array)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
 
 #### Code: Implement these by hand
 
@@ -277,19 +230,6 @@ Bubble Sort      O(n)     O(n^2)    O(n^2)   O(1)   Yes       Yes
 "Stable"   = equal elements keep their relative order
 ```
 
-**Flow:**
-1. Algorithm Best Average Worst Space Stable? Adaptive?
-2. 'Adaptive' = performs better on partially sorted data
-3. 'Stable' = equal elements keep their relative order
-
-```mermaid
-flowchart TD
-    N1["Algorithm Best Average Worst Space Stable? Adaptive?"]
-    N2["'Adaptive' = performs better on partially sorted data"]
-    N3["'Stable' = equal elements keep their relative order"]
-    N1 --> N2
-    N2 --> N3
-```
 
 > **Read more:** [03_Algorithms/02a_Sorting_Fundamentals.md](../../03_Algorithms/02a_Sorting_Fundamentals.md)
 
@@ -462,41 +402,6 @@ There are 4 types of SQL commands:
   TCL (Txn)     : COMMIT, ROLLBACK, SAVEPOINT → Transaction safety
 ```
 
-**Flow:**
-1. YOU
-2. SQL Query
-3. DATABASE ENGINE
-4. DISK
-5. Results back to YOU
-6. DDL (Define) : CREATE, ALTER, DROP
-7. Build the structure
-8. DML (Data) : SELECT, INSERT, UPDATE, DELETE
-9. Work with data
-
-```mermaid
-flowchart TD
-    N1["YOU"]
-    N2["SQL Query"]
-    N3["DATABASE ENGINE"]
-    N4["DISK"]
-    N5["Results back to YOU"]
-    N6["DDL (Define) : CREATE, ALTER, DROP"]
-    N7["Build the structure"]
-    N8["DML (Data) : SELECT, INSERT, UPDATE, DELETE"]
-    N9["Work with data"]
-    N10["DCL (Control) : GRANT, REVOKE"]
-    N11["Permissions"]
-    N12["TCL (Txn) : COMMIT, ROLLBACK, SAVEPOINT"]
-    N13["Transaction safety"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N6 --> N7
-    N8 --> N9
-    N10 --> N11
-    N12 --> N13
-```
 
 #### HOW — Your First Queries
 
@@ -623,25 +528,6 @@ Example 2: nums = [0, 1]    → Output: 2
 Example 3: nums = [9,6,4,2,3,5,7,0,1] → Output: 8
 ```
 
-**Flow:**
-1. Example 1: nums = [3, 0, 1]
-2. Output: 2
-3. Example 2: nums = [0, 1]
-4. Output: 2
-5. Example 3: nums = [9,6,4,2,3,5,7,0,1]
-6. Output: 8
-
-```mermaid
-flowchart LR
-    N1["Example 1: nums = [3, 0, 1]"]
-    N2["Output: 2"]
-    N3["Example 2: nums = [0, 1]"]
-    N4["Example 3: nums = [9,6,4,2,3,5,7,0,1]"]
-    N5["Output: 8"]
-    N1 --> N2
-    N3 --> N2
-    N4 --> N5
-```
 
 **Think before coding:** What approaches exist?
 1. Sort + check gaps → O(n log n)
@@ -701,25 +587,6 @@ Example 2: [1, 1, 2]             → Output: 2
 Example 3: [7]                    → Output: 7
 ```
 
-**Flow:**
-1. Example 1: [2, 3, 5, 4, 5, 3, 4]
-2. Output: 2
-3. Example 2: [1, 1, 2]
-4. Output: 2
-5. Example 3: [7]
-6. Output: 7
-
-```mermaid
-flowchart LR
-    N1["Example 1: [2, 3, 5, 4, 5, 3, 4]"]
-    N2["Output: 2"]
-    N3["Example 2: [1, 1, 2]"]
-    N4["Example 3: [7]"]
-    N5["Output: 7"]
-    N1 --> N2
-    N3 --> N2
-    N4 --> N5
-```
 
 **The XOR pattern (memorize this — it appears in 10+ problems):**
 ```
@@ -733,19 +600,6 @@ So: 2 ^ 3 ^ 5 ^ 4 ^ 5 ^ 3 ^ 4
   = 2  ← The single element!
 ```
 
-**Flow:**
-1. PROPERTY: a ^ a = 0 (any number XOR itself = 0)
-2. PROPERTY: a ^ 0 = a (any number XOR 0 = itself)
-3. = 2 ← The single element!
-
-```mermaid
-flowchart TD
-    N1["PROPERTY: a ^ a = 0 (any number XOR itself = 0)"]
-    N2["PROPERTY: a ^ 0 = a (any number XOR 0 = itself)"]
-    N3["= 2 ← The single element!"]
-    N1 --> N2
-    N2 --> N3
-```
 
 <details>
 <summary>Solution</summary>

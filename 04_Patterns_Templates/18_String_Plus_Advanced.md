@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
+﻿**Navigation**: [< Previous](17_Backtracking_Plus_Pruning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix_Plus_Grid_Traversal.md)
 
 # String + Advanced Tricks — Combined Pattern Guide
 
@@ -59,47 +59,6 @@ String problem?
 └── "Justify/format" → Simulation
 ```
 
-**Flow:**
-1. 'Parentheses'
-2. Stack
-3. 'Anagram/permutation'
-4. HashMap frequency / sorted key
-5. 'Substring with condition'
-6. Sliding Window + HashMap
-7. 'Palindrome'
-8. Two Pointers (expand from center) or DP
-9. 'Pattern matching'
-10. KMP / Rabin-Karp / Z-algorithm
-11. 'Transform A to B'
-12. DP (Edit Distance)
-
-```mermaid
-flowchart TD
-    N1["'Parentheses'"]
-    N2["Stack"]
-    N3["'Anagram/permutation'"]
-    N4["HashMap frequency / sorted key"]
-    N5["'Substring with condition'"]
-    N6["Sliding Window + HashMap"]
-    N7["'Palindrome'"]
-    N8["Two Pointers (expand from center) or DP"]
-    N9["'Pattern matching'"]
-    N10["KMP / Rabin-Karp / Z-algorithm"]
-    N11["'Transform A to B'"]
-    N12["DP (Edit Distance)"]
-    N13["'Word break'"]
-    N14["DP + Trie/Set"]
-    N15["'Expression evaluation'"]
-    N16["Stack (operator precedence)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-```
 
 ---
 
@@ -176,66 +135,6 @@ Time: O(n · k log k) where k = max word length | Space: O(nk)
 Optimization: Use int[26] frequency as key instead of sorting → O(nk)
 ```
 
-**Flow:**
-1. Approach: Sort each word
-2. use as HashMap key
-3. group by key.
-4. Sorted form: 'eat'
-5. 'aet', 'tea'
-6. 'aet', 'ate'
-7. 'aet' — all same key!
-8. 'eat'
-9. sort
-
-```mermaid
-flowchart TD
-    N1["Approach: Sort each word"]
-    N2["use as HashMap key"]
-    N3["group by key."]
-    N4["Sorted form: 'eat'"]
-    N5["'aet', 'tea'"]
-    N6["'aet', 'ate'"]
-    N7["'aet' — all same key!"]
-    N8["'eat'"]
-    N9["sort"]
-    N10["'aet'"]
-    N11["map{'aet': ['eat']}"]
-    N12["'tea'"]
-    N13["map{'aet': ['eat','tea']}"]
-    N14["'tan'"]
-    N15["'ant'"]
-    N16["map{'aet': ['eat','tea'], 'ant': ['tan']}"]
-    N17["'ate'"]
-    N18["map{'aet': ['eat','tea','ate'], 'ant': ['tan']}"]
-    N19["'nat'"]
-    N20["map{'aet': [...], 'ant': ['tan','nat']}"]
-    N21["'bat'"]
-    N22["'abt'"]
-    N23["map{..., 'abt': ['bat']}"]
-    N24["Optimization: Use int[26] frequency as key instead"]
-    N25["O(nk)"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N8 --> N9
-    N9 --> N10
-    N10 --> N11
-    N12 --> N9
-    N10 --> N13
-    N14 --> N9
-    N9 --> N15
-    N15 --> N16
-    N17 --> N9
-    N10 --> N18
-    N19 --> N9
-    N15 --> N20
-    N21 --> N9
-    N9 --> N22
-    N22 --> N23
-    N24 --> N25
-```
 
 ---
 
@@ -267,53 +166,6 @@ Time: O(n²) | Space: O(1)
 NOTE: Manacher's algorithm does this in O(n) but is rarely asked.
 ```
 
-**Flow:**
-1. Center at 'b'(0): 'b'
-2. expand
-3. 'b' (length 1)
-4. Center at 'a'(1): 'a'
-5. expand
-6. s[0]='b' ≠ s[2]='b'? Wait...
-7. Actually: s[0]='b', s[2]='b'
-8. 'bab' (length 3) ✅
-9. Expand more: s[-1] out of bounds
-10. stop.
-
-```mermaid
-flowchart TD
-    N1["Center at 'b'(0): 'b'"]
-    N2["expand"]
-    N3["'b' (length 1)"]
-    N4["Center at 'a'(1): 'a'"]
-    N5["s[0]='b' ≠ s[2]='b'? Wait..."]
-    N6["Actually: s[0]='b', s[2]='b'"]
-    N7["'bab' (length 3) ✅"]
-    N8["Expand more: s[-1] out of bounds"]
-    N9["stop."]
-    N10["Center at 'b'(2): 'b'"]
-    N11["s[1]='a' ≠ s[3]='a'? Yes!"]
-    N12["'aba' (length 3). Expand: s[0]='b' ≠ s[4]='d'"]
-    N13["Center between (1,2): s[1]='a' ≠ s[2]='b'"]
-    N14["no even palindrome"]
-    N15["Center at 'a'(3): 'a'"]
-    N16["s[2]='b' ≠ s[4]='d'"]
-    N17["length 1"]
-    N18["Center at 'd'(4): 'd'"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N2
-    N2 --> N5
-    N6 --> N7
-    N8 --> N9
-    N10 --> N2
-    N2 --> N11
-    N12 --> N9
-    N13 --> N14
-    N15 --> N2
-    N2 --> N16
-    N16 --> N17
-    N18 --> N17
-```
 
 ---
 
@@ -359,6 +211,160 @@ COMMON MISTAKES:
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
 </details>
+
+---
+
+## 🌲 ADVANCED STRING DATA STRUCTURES: TRIES (Prefix Trees)
+
+A **Trie** is a tree-like data structure used to store a dynamic set of strings where the keys are usually strings. It is extremely efficient for solving "prefix" problems.
+
+**WHY use a Trie?**
+- Searching for a string of length `M` in `N` strings takes **O(M)** time, whereas a Hash table takes O(M) time but with high constant factors, and collision risks.
+- Solves "Find all words starting with prefix X" instantly (Auto-complete).
+- Space optimization when storing many strings with shared prefixes.
+
+### Template 4: Basic Trie Implementation
+
+```java
+class TrieNode {
+    TrieNode[] children = new TrieNode[26];
+    boolean isEnd = false; // true if this node represents the end of a word
+}
+
+class Trie {
+    TrieNode root = new TrieNode();
+
+    // Insertion: O(M) where M is word length
+    public void insert(String word) {
+        TrieNode curr = root;
+        for (char c : word.toCharArray()) {
+            if (curr.children[c - 'a'] == null) {
+                curr.children[c - 'a'] = new TrieNode();
+            }
+            curr = curr.children[c - 'a'];
+        }
+        curr.isEnd = true;
+    }
+
+    // Search exact word: O(M)
+    public boolean search(String word) {
+        TrieNode curr = root;
+        for (char c : word.toCharArray()) {
+            if (curr.children[c - 'a'] == null) return false;
+            curr = curr.children[c - 'a'];
+        }
+        return curr.isEnd;
+    }
+
+    // Check if any word starts with prefix: O(M)
+    public boolean startsWith(String prefix) {
+        TrieNode curr = root;
+        for (char c : prefix.toCharArray()) {
+            if (curr.children[c - 'a'] == null) return false;
+            curr = curr.children[c - 'a'];
+        }
+        return true;
+    }
+}
+```
+
+**Common Trie Variations:**
+1. **Trie + DFS/Backtracking**: Used in "Word Search II" (2D Grid + Dictionary).
+2. **Bitwise Trie**: Used for finding Maximum XOR of two numbers in an array. The children array size is 2 (for bits 0 and 1).
+
+---
+
+## 🚀 ADVANCED STRING PATTERNS: RABIN-KARP & Z-ALGORITHM
+
+### Pattern 5: Rolling Hash (Rabin-Karp)
+
+**Goal:** Find a pattern `P` (length M) in a text `T` (length N) in O(N) time.
+
+**How it works (The Intuition):**
+Instead of comparing strings `O(M)`, we compare their **hashes** `O(1)`. But computing a hash takes `O(M)`. The magic of *Rolling Hash* is that we can update the hash in `O(1)` time when the window slides:
+`New Hash = (Old Hash - Value of Dropped Char) * Base + Value of Added Char`
+
+```java
+public int rabinKarp(String text, String pattern) {
+    if (pattern.length() > text.length()) return -1;
+    
+    int N = text.length(), M = pattern.length();
+    int PRIME = 31; // Base (number of chars in alphabet)
+    int MOD = 1_000_000_009; // Large prime to avoid overflow
+    
+    long patternHash = 0, textHash = 0, highestPower = 1;
+    
+    // 1. Calculate highest power and initial hashes
+    for (int i = 0; i < M; i++) {
+        patternHash = (patternHash * PRIME + pattern.charAt(i)) % MOD;
+        textHash = (textHash * PRIME + text.charAt(i)) % MOD;
+        if (i < M - 1) {
+            highestPower = (highestPower * PRIME) % MOD;
+        }
+    }
+    
+    // 2. Slide the window
+    for (int i = 0; i <= N - M; i++) {
+        // If hashes match, verify characters (to prevent collision errors)
+        if (patternHash == textHash && text.substring(i, i + M).equals(pattern)) {
+            return i; // Found!
+        }
+        
+        // Calculate hash for next window
+        if (i < N - M) {
+            // Remove leading digit, add trailing digit
+            textHash = (textHash - text.charAt(i) * highestPower) % MOD;
+            textHash = (textHash * PRIME + text.charAt(i + M)) % MOD;
+            if (textHash < 0) {
+                textHash += MOD; // Keep positive
+            }
+        }
+    }
+    return -1;
+}
+```
+
+### Pattern 6: The Z-Algorithm
+
+**Goal:** Find all occurrences of pattern `P` in text `T` in linear time O(N+M).
+
+**How it works:** 
+We concatenate the pattern and text with a special separator: `S = P + "$" + T`.
+We then compute the **Z-Array** for `S`. `Z[i]` represents the length of the longest substring starting from `S[i]` which is also a prefix of `S`. If `Z[i] == length(P)`, we found a match starting at index `i - length(P) - 1` in the original text!
+
+```java
+int[] calculateZ(String str) {
+    int n = str.length();
+    int[] Z = new int[n];
+    int L = 0, R = 0; // The window [L, R] represents the current matching prefix
+    
+    for (int i = 1; i < n; i++) {
+        if (i > R) {
+            // No previous match to reuse, compute manually
+            L = R = i;
+            while (R < n && str.charAt(R - L) == str.charAt(R)) R++;
+            Z[i] = R - L;
+            R--;
+        } else {
+            // We are inside a matching window! Look at the previously computed value.
+            int k = i - L;
+            if (Z[k] < R - i + 1) {
+                Z[i] = Z[k]; // Safe to copy
+            } else {
+                // Touches or crosses the right bound, need manual matching beyond R
+                L = i;
+                while (R < n && str.charAt(R - L) == str.charAt(R)) R++;
+                Z[i] = R - L;
+                R--;
+            }
+        }
+    }
+    return Z;
+}
+```
+*Why Z over KMP?* Both are O(N+M). Z-algorithm is often conceptually easier to understand because it directly tracks prefix matches using a sliding window [L, R], whereas KMP requires understanding the abstract "fall back" mechanisms of the LPS array.
+
+---
 
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet

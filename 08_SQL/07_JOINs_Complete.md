@@ -1,4 +1,4 @@
-**SQL Chapter 07/20** | [← Previous](06_Aggregations_GroupBy.md) | [Index](../00_MASTER_INDEX.md) | [Next →](08_Subqueries_CTEs.md)
+﻿**SQL Chapter 07/20** | [← Previous](06_Aggregations_GroupBy.md) | [Index](../00_MASTER_INDEX.md) | [Next →](08_Subqueries_CTEs.md)
 
 ---
 
@@ -151,31 +151,6 @@ WHERE <table_B>.<column> IS NULL;               -- Rows in A with no match in B
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. emp_id name dept / 1 Alice 10 / 2 Bob 20 / 3 Carol 10 /
-2. dept_id dept_name / 10 Engineering / 20 Marketing / 30
-3. A ████ ████ B / ████ ████ / Result: Alice, Bob, Carol (
-4. ████████ ████ B / ████████ ████ / Result: Alice, Bob, C
-5. A ████ ████████ / ████ ████████ / Result: Alice, Bob, C
-6. ████████ ████████ / ████████ ████████ / Result: Alice,
-7. 4 employees × 3 departments = 12 rows / (Alice, Eng), (
-
-```mermaid
-flowchart TD
-    N1["emp_id name dept / 1 Alice 10 / 2 Bob 20 / 3 Carol 10 /"]
-    N2["dept_id dept_name / 10 Engineering / 20 Marketing / 30 "]
-    N3["A ████ ████ B / ████ ████ / Result: Alice, Bob, Carol ("]
-    N4["████████ ████ B / ████████ ████ / Result: Alice, Bob, C"]
-    N5["A ████ ████████ / ████ ████████ / Result: Alice, Bob, C"]
-    N6["████████ ████████ / ████████ ████████ / Result: Alice, "]
-    N7["4 employees × 3 departments = 12 rows / (Alice, Eng), ("]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### JOIN Syntax and Examples
 

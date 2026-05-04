@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_011_Mar13_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_013_Mar15_Sat.md)
+﻿> **Navigation**: [< Previous](Day_011_Mar13_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_013_Mar15_Sat.md)
 
 # Day 012 - Friday, March 14, 2026
 
@@ -66,24 +66,6 @@ contains(x)     O(1)      set.contains("apple")
 size()          O(1)      set.size()
 ```
 
-**Flow:**
-1. OPERATIONS: TIME EXAMPLE add(x) O(1) set.add('apple')
-2. remove(x) O(1) set.remove('apple')
-3. contains(x) O(1) set.contains('apple')
-4. size() O(1) set.size()
-
-```mermaid
-flowchart TD
-    N1["OPERATIONS: TIME EXAMPLE"]
-    N2["add(x) O(1) set.add('apple')"]
-    N3["remove(x) O(1) set.remove('apple')"]
-    N4["contains(x) O(1) set.contains('apple')"]
-    N5["size() O(1) set.size()"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ```java
 // Common patterns
@@ -148,16 +130,6 @@ TWO VARIANTS:
 └──────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array) /
-2. SAME DIRECTION EXAMPLE: Remove Duplicates (sorted) / [1
-
-```mermaid
-flowchart TD
-    N1["OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array) /"]
-    N2["SAME DIRECTION EXAMPLE: Remove Duplicates (sorted) / [1"]
-    N1 --> N2
-```
 
 #### 📐 Templates
 
@@ -256,20 +228,6 @@ WHY HashMap + HashSet?
   LinkedHashMap can auto-evict old entries (removeEldestEntry)
 ```
 
-**Flow:**
-1. HashMap<String, Long>: key last timestamp
-2. O(1) per transaction
-3. can handle millions in real-time
-
-```mermaid
-flowchart LR
-    N1["HashMap&lt;String, Long&gt;: key"]
-    N2["last timestamp"]
-    N3["O(1) per transaction"]
-    N4["can handle millions in real-time"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 

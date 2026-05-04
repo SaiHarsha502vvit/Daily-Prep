@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](02_CSS_Layout_Systems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_CSS_Modern_Architecture.md)
+﻿> **Navigation**: [< Previous](02_CSS_Layout_Systems.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_CSS_Modern_Architecture.md)
 
 > **CSS Chapter 3/4** | [← Layout Systems](02_CSS_Layout_Systems.md) | [Index](../00_MASTER_INDEX.md) | [Next → Modern Architecture](04_CSS_Modern_Architecture.md)
 
@@ -117,32 +117,6 @@
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. STANDARD BREAKPOINTS (Tailwind-inspired):
-2. Name Min-Width Typical Device
-3. sm 640px Large phone (landscape)
-4. md 768px Tablet
-5. lg 1024px Small laptop / Tablet landscape
-6. xl 1280px Desktop 2xl 1536px Large desktop
-
-```mermaid
-flowchart TD
-    N1["STANDARD BREAKPOINTS (Tailwind-inspired):"]
-    N2["Name Min-Width Typical Device"]
-    N3["sm 640px Large phone (landscape)"]
-    N4["md 768px Tablet"]
-    N5["lg 1024px Small laptop / Tablet landscape"]
-    N6["xl 1280px Desktop"]
-    N7["2xl 1536px Large desktop"]
-    N8["CSS CUSTOM PROPERTIES for reuse:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Advanced Media Query Features
 
@@ -293,32 +267,6 @@ SLOW (triggers reflow):        FAST (GPU, no reflow):
 RULE: Animate ONLY transform and opacity for 60fps.
 ```
 
-**Flow:**
-1. SLOW (triggers reflow): FAST (GPU, no reflow):
-2. left, top, right, bottom transform: translate()
-3. SLOW (triggers reflow): FAST (GPU, no reflow):
-4. width, height transform: scale()
-5. SLOW (triggers reflow): FAST (GPU, no reflow):
-6. margin, padding transform: rotate()
-7. SLOW (triggers reflow): FAST (GPU, no reflow):
-8. font-size opacity
-9. SLOW (triggers reflow): FAST (GPU, no reflow):
-10. filter
-
-```mermaid
-flowchart TD
-    N1["SLOW (triggers reflow): FAST (GPU, no reflow):"]
-    N2["left, top, right, bottom transform: translate()"]
-    N3["width, height transform: scale()"]
-    N4["margin, padding transform: rotate()"]
-    N5["font-size opacity"]
-    N6["filter"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-```
 
 ---
 
@@ -389,33 +337,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. TIMING FUNCTION: Controls acceleration of animation
-2. ease (default): slow fast slow
-3. ease-in: slow fast (accelerate)
-4. ease-out: fast slow (decelerate)
-5. ease-in-out: slow fast slow ease-in-out: slow
-6. fast slow linear: constant speed
-7. CUSTOM: cubic-bezier(x1, y1, x2, y2)
-
-```mermaid
-flowchart TD
-    N1["TIMING FUNCTION: Controls acceleration of animation"]
-    N2["ease (default): slow → fast → slow"]
-    N3["ease-in: slow → fast (accelerate)"]
-    N4["ease-out: fast → slow (decelerate)"]
-    N5["ease-in-out: slow → fast → slow"]
-    N6["linear: constant speed"]
-    N7["CUSTOM: cubic-bezier(x1, y1, x2, y2)"]
-    N8["Bouncy: cubic-bezier(0.68, -0.55, 0.265, 1.55)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Common Transition Patterns
 
@@ -551,40 +472,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. animation-fill-mode:
-2. Before
-3. [Animation runs...]
-4. After (back to original)
-5. forwards: Element STAYS at the final keyframe
-6. Before
-7. [Animation runs...]
-8. Stays at 100% state
-9. backwards: Element takes 0% state during delay
-10. At 0% state
-11. [delay...]
-12. [Animation runs...]
-13. Origin
-14. both: Combines forwards + backwards
-
-```mermaid
-flowchart TD
-    N1["animation-fill-mode:"]
-    N2["Before → [Animation runs...] → After (back to original)"]
-    N3["forwards: Element STAYS at the final keyframe"]
-    N4["Before → [Animation runs...] → Stays at 100% state"]
-    N5["backwards: Element takes 0% state during delay"]
-    N6["At 0% state → [delay...] → [Animation runs...] → Origin"]
-    N7["both: Combines forwards + backwards"]
-    N8["At 0% state → [delay...] → [Animation runs...] → At 100"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Stunning Animation Examples
 
@@ -733,33 +620,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. 60 FPS ANIMATION RULES:
-2. ✅ DO animate:
-3. • transform (translate, scale, rotate) ← GPU accelerate
-4. • opacity ← GPU accelerated
-5. • filter (blur, brightness) ← GPU accelerated
-6. ❌ AVOID animating:
-7. • width, height ← Triggers layout + paint + composite
-
-```mermaid
-flowchart TD
-    N1["60 FPS ANIMATION RULES:"]
-    N2["✅ DO animate:"]
-    N3["• transform (translate, scale, rotate) ← GPU accelerate"]
-    N4["• opacity ← GPU accelerated"]
-    N5["• filter (blur, brightness) ← GPU accelerated"]
-    N6["❌ AVOID animating:"]
-    N7["• width, height ← Triggers layout + paint + composite"]
-    N8["• margin, padding ← Triggers layout + paint + composite"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```css
 /* PROMOTE element for better animation performance: */
@@ -854,16 +714,6 @@ Q: What is animation-fill-mode: forwards?
   Without it, element snaps back to its original state.
 ```
 
-**Flow:**
-1. Transition: A
-2. B state change triggered by event (hover, class to
-
-```mermaid
-flowchart LR
-    N1["Transition: A"]
-    N2["B state change triggered by event (hover, class to"]
-    N1 --> N2
-```
 
 ---
 

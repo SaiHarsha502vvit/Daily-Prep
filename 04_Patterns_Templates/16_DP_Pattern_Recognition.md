@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)
+﻿**Navigation**: [< Previous](15_Heap_Plus_GreedySelection.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Backtracking_Plus_Pruning.md)
 
 # DP Pattern Recognition — Combined Pattern Guide
 
@@ -68,50 +68,6 @@ Which family?
 └── String palindrome → PALINDROME DP
 ```
 
-**Flow:**
-1. 'How many ways?'
-2. COUNTING DP
-3. 'Minimum/Maximum cost?'
-4. OPTIMIZATION DP
-5. 'Can we achieve X?'
-6. FEASIBILITY DP
-7. Involves two sequences
-8. LCS / EDIT DISTANCE family
-9. Involves one sequence
-10. LIS / KADANE family
-11. Items with weights/values
-12. KNAPSACK family
-
-```mermaid
-flowchart TD
-    N1["'How many ways?'"]
-    N2["COUNTING DP"]
-    N3["'Minimum/Maximum cost?'"]
-    N4["OPTIMIZATION DP"]
-    N5["'Can we achieve X?'"]
-    N6["FEASIBILITY DP"]
-    N7["Involves two sequences"]
-    N8["LCS / EDIT DISTANCE family"]
-    N9["Involves one sequence"]
-    N10["LIS / KADANE family"]
-    N11["Items with weights/values"]
-    N12["KNAPSACK family"]
-    N13["Interval operations"]
-    N14["INTERVAL DP"]
-    N15["Grid traversal"]
-    N16["GRID DP"]
-    N17["Choices at each step"]
-    N18["DECISION DP"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-    N17 --> N18
-```
 
 ---
 
@@ -228,16 +184,6 @@ Step 4: BUILD (left to right)
 Time: O(n) | Space: O(1) using two variables
 ```
 
-**Flow:**
-1. Answer: dp[4] = 12 ✅ (rob houses 0, 2, 4
-2. 2+9+1=12)
-
-```mermaid
-flowchart LR
-    N1["Answer: dp[4] = 12 ✅ (rob houses 0, 2, 4"]
-    N2["2+9+1=12)"]
-    N1 --> N2
-```
 
 ---
 
@@ -274,41 +220,6 @@ To recover the actual subsequence: backtrack from dp[m][n].
 Time: O(m×n) | Space: O(m×n), optimizable to O(min(m,n))
 ```
 
-**Flow:**
-1. a 0 1 1 1 ← 'a'=='a'
-2. dp[0][0]+1=1
-3. b 0 1 1 1 ← 'b'≠'a','c','e'
-4. carry forward
-5. c 0 1 2 2 ← 'c'=='c'
-6. dp[1][1]+1=2
-7. e 0 1 2 3 ← 'e'=='e'
-8. dp[3][2]+1=3
-9. If chars match
-10. include it, move diagonal.
-11. Else
-12. move in direction of larger dp value.
-
-```mermaid
-flowchart TD
-    N1["a 0 1 1 1 ← 'a'=='a'"]
-    N2["dp[0][0]+1=1"]
-    N3["b 0 1 1 1 ← 'b'≠'a','c','e'"]
-    N4["carry forward"]
-    N5["c 0 1 2 2 ← 'c'=='c'"]
-    N6["dp[1][1]+1=2"]
-    N7["e 0 1 2 3 ← 'e'=='e'"]
-    N8["dp[3][2]+1=3"]
-    N9["If chars match"]
-    N10["include it, move diagonal."]
-    N11["Else"]
-    N12["move in direction of larger dp value."]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-```
 
 ---
 

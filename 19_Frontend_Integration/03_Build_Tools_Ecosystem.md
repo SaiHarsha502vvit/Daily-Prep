@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](02_Frontend_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Frontend_Mental_Models_UI.md)
+﻿> **Navigation**: [< Previous](02_Frontend_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Frontend_Mental_Models_UI.md)
 
 > **Frontend Integration Chapter 3/4** | [← Debugging](02_Frontend_Debugging.md) | [Index](../00_MASTER_INDEX.md) | [Next → Mental Models](04_Frontend_Mental_Models_UI.md)
 
@@ -64,22 +64,6 @@ Source Code
 └─────────────┘
 ```
 
-**Flow:**
-1. TypeScript / Compiler
-2. Babel / / SWC
-3. Webpack / / Vite
-4. Output: / dist/
-
-```mermaid
-flowchart TD
-    N1["TypeScript / Compiler"]
-    N2["Babel / / SWC"]
-    N3["Webpack / / Vite"]
-    N4["Output: / dist/"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -162,48 +146,6 @@ npm run dev          → Execute the "dev" script
 npx create-vite      → Run a package without installing
 ```
 
-**Flow:**
-1. '^18.3.1'
-2. caret: allows 18.x.x updates (minor + patch)
-3. '~18.3.1'
-4. tilde: allows 18.3.x updates (patch only)
-5. '18.3.1' exact: only this version
-6. npm install
-7. Install all dependencies from lock file
-8. npm install react
-9. Add to dependencies npm install -D vite
-10. Add to devDependencies
-
-```mermaid
-flowchart TD
-    N1["'^18.3.1'"]
-    N2["caret: allows 18.x.x updates (minor + patch)"]
-    N3["'~18.3.1'"]
-    N4["tilde: allows 18.3.x updates (patch only)"]
-    N5["'18.3.1'"]
-    N6["exact: only this version"]
-    N7["npm install"]
-    N8["Install all dependencies from lock file"]
-    N9["npm install react"]
-    N10["Add to dependencies"]
-    N11["npm install -D vite"]
-    N12["Add to devDependencies"]
-    N13["npm update"]
-    N14["Update within version ranges"]
-    N15["npm run dev"]
-    N16["Execute the 'dev' script"]
-    N17["npx create-vite"]
-    N18["Run a package without installing"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-    N17 --> N18
-```
 
 ---
 
@@ -234,33 +176,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHAT BABEL DOES — Translate modern JS to older JS:
-2. YOUR CODE: BABEL OUTPUT:
-3. `Hello, ${name}!`; return 'Hello, ' + name
-4. const user = data?.user; var _data;
-5. var user = (_data = data)
-6. void 0 ? _data.user
-7. : void 0;
-
-```mermaid
-flowchart TD
-    N1["WHAT BABEL DOES — Translate modern JS to older JS:"]
-    N2["YOUR CODE: BABEL OUTPUT:"]
-    N3["`Hello, ${name}!`; return 'Hello, ' + name"]
-    N4["const user = data?.user; var _data;"]
-    N5["var user = (_data = data)"]
-    N6["void 0 ? _data.user"]
-    N7[": void 0;"]
-    N8["WHY: Older browsers (and some devices) don't support mo"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### What Babel Does with JSX
 
@@ -286,34 +201,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. JSX IS NOT JAVASCRIPT. Browsers cannot run it.
-2. Babel (or SWC) transforms JSX
-3. function calls:
-4. WHAT YOU WRITE:
-5. <div className='card'>
-6. <h1>{title}</h1>
-7. <p>Hello</p>
-8. </div>
-
-```mermaid
-flowchart TD
-    N1["JSX IS NOT JAVASCRIPT. Browsers cannot run it."]
-    N2["Babel (or SWC) transforms JSX → function calls:"]
-    N3["WHAT YOU WRITE:"]
-    N4["&lt;div className='card'&gt;"]
-    N5["&lt;h1&gt;{title}&lt;/h1&gt;"]
-    N6["&lt;p&gt;Hello&lt;/p&gt;"]
-    N7["&lt;/div&gt;"]
-    N8["WHAT BROWSER RECEIVES:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -350,52 +237,6 @@ dist/
 └── images/ (optimized)
 ```
 
-**Flow:**
-1. src/
-2. App.tsx (imports Header, Router, Context)
-3. src/ components/ src/
-4. Header.tsx (imports Button, Logo, useAuth)
-5. src/
-6. Button.tsx (imports styles)
-7. src/
-8. UserCard.tsx (imports Badge, Avatar, date-fns)
-9. src/ hooks/
-
-```mermaid
-flowchart TD
-    N1["src/"]
-    N2["App.tsx (imports Header, Router, Context)"]
-    N3["components/"]
-    N4["Header.tsx (imports Button, Logo, useAuth)"]
-    N5["Button.tsx (imports styles)"]
-    N6["UserCard.tsx (imports Badge, Avatar, date-fns)"]
-    N7["hooks/"]
-    N8["useAuth.ts (imports API client)"]
-    N9["styles/"]
-    N10["global.css"]
-    N11["dist/"]
-    N12["index.html"]
-    N13["assets/"]
-    N14["index-abc123.js (all JS, minified, tree-shaken)"]
-    N15["vendor-def456.js (3rd party libs, cached separately)"]
-    N16["style-ghi789.css (all CSS, combined, minified)"]
-    N17["images/ (optimized)"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N1 --> N9
-    N1 --> N10
-    N11 --> N12
-    N11 --> N13
-    N11 --> N14
-    N11 --> N15
-    N11 --> N16
-    N11 --> N17
-```
 
 ### Webpack — The Veteran
 
@@ -423,20 +264,6 @@ PROS:                         CONS:
 └── Works with anything      └── Steep learning curve
 ```
 
-**Flow:**
-1. Follow every import/require build dependency graph
-2. babel-loader: .tsx/.jsx
-3. JavaScript
-
-```mermaid
-flowchart LR
-    N1["2. Follow every import/require"]
-    N2["build dependency graph"]
-    N3["babel-loader: .tsx/.jsx"]
-    N4["JavaScript"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Vite — The Modern Standard
 
@@ -471,21 +298,6 @@ RESULT:
 └── Production builds are fully optimized
 ```
 
-**Flow:**
-1. Source
-2. Bundle ALL files
-3. Serve
-4. You see page / ^^^^
-5. Source
-6. Start server immediately
-7. Transform / on requ
-
-```mermaid
-flowchart TD
-    N1["Source → Bundle ALL files → Serve → You see page / ^^^^"]
-    N2["Source → Start server immediately → Transform / on requ"]
-    N1 --> N2
-```
 
 ### Comparison Table
 
@@ -506,33 +318,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Feature Webpack Vite
-2. Dev startup Slow (bundles) Instant (native ESM)
-3. HMR speed Seconds Milliseconds
-4. Config Complex Minimal
-5. Production Battle-tested Uses Rollup (also solid)
-6. Plugin ecosystem Huge Growing fast, Rollup compat
-7. Learning curve Steep Low
-
-```mermaid
-flowchart TD
-    N1["Feature Webpack Vite"]
-    N2["Dev startup Slow (bundles) Instant (native ESM)"]
-    N3["HMR speed Seconds Milliseconds"]
-    N4["Config Complex Minimal"]
-    N5["Production Battle-tested Uses Rollup (also solid)"]
-    N6["Plugin ecosystem Huge Growing fast, Rollup compat"]
-    N7["Learning curve Steep Low"]
-    N8["TypeScript Needs loader Built-in"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -563,33 +348,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. TREE SHAKING — Remove unused code from bundles
-2. Tree shaking tears out the unused chapters before shipp
-3. export function add(a, b) { return a + b; }
-4. export function subtract(a, b) { return a - b; } // unu
-5. export function multiply(a, b) { return a * b; } // unu
-6. import { add } from './utils';
-7. REQUIRES: ES Module syntax (import/export, NOT require)
-
-```mermaid
-flowchart TD
-    N1["TREE SHAKING — Remove unused code from bundles"]
-    N2["Tree shaking tears out the unused chapters before shipp"]
-    N3["export function add(a, b) { return a + b; }"]
-    N4["export function subtract(a, b) { return a - b; } // unu"]
-    N5["export function multiply(a, b) { return a * b; } // unu"]
-    N6["import { add } from './utils';"]
-    N7["REQUIRES: ES Module syntax (import/export, NOT require)"]
-    N8["WHY: ES modules are statically analyzable — bundler can"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Code Splitting
 
@@ -622,27 +380,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CODE SPLITTING — Load only what's needed, when needed WITHOUT Splitting: User visits login page downloads ENTIRE app (5MB) User visits login page downloads ENTIRE app (5MB) WITH Splitting: User visits login page downloads login chunk (50KB) User visits login page downloads login chunk (50KB) Admin page? Only loaded if user is admin HOW IN REACT:
-
-```mermaid
-flowchart TD
-    N1["CODE SPLITTING — Load only what's needed, when needed"]
-    N2["WITHOUT Splitting:"]
-    N3["User visits login page → downloads ENTIRE app (5MB)"]
-    N4["WITH Splitting:"]
-    N5["User visits login page → downloads login chunk (50KB)"]
-    N6["Admin page? Only loaded if user is admin"]
-    N7["HOW IN REACT:"]
-    N8["&lt;Suspense fallback={&lt;Spinner /&gt;}&gt;"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Source Maps
 
@@ -665,29 +402,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SOURCE MAPS — Bridge between minified and original code
-2. Production bundle: (minified, unreadable)
-3. var a=function(t){return t.map(function(e){return e*2}) Your original: const doubleAll = (numbers: number[]) => numbers.map(n => n * 2); Source map (.js.map) contains the MAPPING between them.
-
-```mermaid
-flowchart TD
-    N1["SOURCE MAPS — Bridge between minified and original code"]
-    N2["Production bundle: (minified, unreadable)"]
-    N3["var a=function(t){return t.map(function(e){return e*2})"]
-    N4["Your original:"]
-    N5["const doubleAll = (numbers: number[]) =&gt;"]
-    N6["numbers.map(n =&gt; n * 2);"]
-    N7["Source map (.js.map) contains the MAPPING between them."]
-    N8["DevTools uses it to show YOUR code in debugging."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -768,20 +482,6 @@ Q: What's the difference between Babel and TypeScript compiler?
   Vite uses esbuild/SWC for speed + TSC for type checking separately.
 ```
 
-**Flow:**
-1. Babel: transforms syntax (JSX, ES2024+ ES5). No type checking.
-2. TSC: transforms TS
-3. JS AND does type checking. Slower but safer.
-
-```mermaid
-flowchart LR
-    N1["Babel: transforms syntax (JSX, ES2024+"]
-    N2["ES5). No type checking."]
-    N3["TSC: transforms TS"]
-    N4["JS AND does type checking. Slower but safer."]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 
@@ -790,4 +490,3 @@ flowchart LR
 
 ---
 
-> **Navigation**: [< Previous](02_Frontend_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Frontend_Mental_Models_UI.md)

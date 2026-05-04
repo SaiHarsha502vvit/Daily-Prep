@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](01_React_JS_CSS_Combined.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Build_Tools_Ecosystem.md)
+﻿> **Navigation**: [< Previous](01_React_JS_CSS_Combined.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Build_Tools_Ecosystem.md)
 
 > **Frontend Integration Chapter 2/4** | [← React Combined](01_React_JS_CSS_Combined.md) | [Index](../00_MASTER_INDEX.md) | [Next → Build Tools](03_Build_Tools_Ecosystem.md)
 
@@ -128,39 +128,6 @@ Exception Breakpoint:
 └── Code pauses the moment an error is thrown
 ```
 
-**Flow:**
-1. Right-click line
-2. 'Add conditional breakpoint'
-3. Right-click line
-4. 'Add logpoint'
-5. 'Break on'
-6. subtree modifications / attribute changes
-7. Sources tab
-8. Event Listener Breakpoints panel
-9. Check 'Mouse'
-10. 'click' to pause on ANY click handler
-11. ⏸ button check 'Pause on exceptions'
-
-```mermaid
-flowchart TD
-    N1["Right-click line"]
-    N2["'Add conditional breakpoint'"]
-    N3["'Add logpoint'"]
-    N4["'Break on'"]
-    N5["subtree modifications / attribute changes"]
-    N6["Sources tab"]
-    N7["Event Listener Breakpoints panel"]
-    N8["Check 'Mouse'"]
-    N9["'click' to pause on ANY click handler"]
-    N10["⏸ button"]
-    N11["check 'Pause on exceptions'"]
-    N1 --> N2
-    N1 --> N3
-    N4 --> N5
-    N6 --> N7
-    N8 --> N9
-    N10 --> N11
-```
 
 ### 2.3 Network Tab
 
@@ -187,33 +154,6 @@ KEY THINGS TO CHECK:
 • CORS errors: look for preflight OPTIONS request failing
 ```
 
-**Flow:**
-1. NETWORK TAB — Debug API Calls, Loading Issues, CORS
-2. Filter: [All] [Fetch/XHR] [JS] [CSS] [Img] [Media]
-3. Name Status Type Size Time Waterfall
-4. /api/users 200 fetch 2.4kB 140ms ████
-5. /api/stats 500 fetch 0.1kB 250ms █████████
-6. bundle.js 200 script 450kB 1.2s ██████
-7. style.css 200 stylesheet 22kB 85ms ██
-
-```mermaid
-flowchart TD
-    N1["NETWORK TAB — Debug API Calls, Loading Issues, CORS"]
-    N2["Filter: [All] [Fetch/XHR] [JS] [CSS] [Img] [Media]"]
-    N3["Name Status Type Size Time Waterfall"]
-    N4["/api/users 200 fetch 2.4kB 140ms ████"]
-    N5["/api/stats 500 fetch 0.1kB 250ms █████████"]
-    N6["bundle.js 200 script 450kB 1.2s ██████"]
-    N7["style.css 200 stylesheet 22kB 85ms ██"]
-    N8["KEY THINGS TO CHECK:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -254,33 +194,6 @@ REACT DEVTOOLS (Browser Extension — Components + Profiler Tab)
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Components Tab
-2. WHAT YOU CAN SEE:
-3. Component tree (parent child hierarchy)
-4. Props passed to each component
-5. State values (useState, useReducer)
-6. Context values consumed
-7. Hooks list (with current values!)
-
-```mermaid
-flowchart TD
-    N1["Components Tab"]
-    N2["WHAT YOU CAN SEE:"]
-    N3["Component tree (parent → child hierarchy)"]
-    N4["Props passed to each component"]
-    N5["State values (useState, useReducer)"]
-    N6["Context values consumed"]
-    N7["Hooks list (with current values!)"]
-    N8["Source file location"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -395,40 +308,6 @@ COMMON CSS BUGS:
 • "Grid gap not showing"    → Check if container has display:grid
 ```
 
-**Flow:**
-1. Right-click
-2. Inspect
-3. Computed tab visual box model diagram
-4. Styles panel strikethrough = overridden
-5. • 'Why doesn't this center?' Check display/position/parent • 'Why is text cut off?' Check overflow, line-height • 'Z-index not working' Parent needs position:relative
-
-```mermaid
-flowchart TD
-    N1["Right-click"]
-    N2["Inspect"]
-    N3["Computed tab"]
-    N4["visual box model diagram"]
-    N5["Styles panel"]
-    N6["strikethrough = overridden"]
-    N7["• 'Why doesn't this center?'"]
-    N8["Check display/position/parent"]
-    N9["• 'Why is text cut off?'"]
-    N10["Check overflow, line-height"]
-    N11["• 'Z-index not working'"]
-    N12["Parent needs position:relative"]
-    N13["• 'Flex item won't shrink'"]
-    N14["Add min-width:0 or overflow"]
-    N15["• 'Grid gap not showing'"]
-    N16["Check if container has display:grid"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-```
 
 ### 4.4 Performance Debugging
 
@@ -461,26 +340,6 @@ Problem: Bundle too large (slow initial load)
 └── Tool: Webpack Bundle Analyzer to see what's big
 ```
 
-**Flow:**
-1. Open Performance tab
-2. Record interact
-3. Stop
-4. Tool: React Profiler
-5. 'Why did this render?'
-
-```mermaid
-flowchart LR
-    N1["1. Open Performance tab"]
-    N2["Record"]
-    N3["interact"]
-    N4["Stop"]
-    N5["Tool: React Profiler"]
-    N6["'Why did this render?'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
@@ -519,32 +378,6 @@ flowchart LR
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHAT IS CORS?
-2. Browser Security Rule:
-3. 'A page from origin A cannot fetch data from origin B unless origin B explicitly allows it.'
-4. Origin = Protocol + Domain + Port
-5. WHAT HAPPENS:
-6. Browser Server
-
-```mermaid
-flowchart TD
-    N1["WHAT IS CORS?"]
-    N2["Browser Security Rule:"]
-    N3["'A page from origin A cannot fetch data from origin B"]
-    N4["unless origin B explicitly allows it.'"]
-    N5["Origin = Protocol + Domain + Port"]
-    N6["WHAT HAPPENS:"]
-    N7["Browser Server"]
-    N8["OPTIONS (preflight) → 'Can I send a POST?'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -593,35 +426,6 @@ flowchart TD
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SYMPTOM
-2. WHERE TO LOOK
-3. TOOL TO USE
-4. 'Blank page'
-5. Console tab for JS errors
-6. Network tab: is bundle loading?
-7. Check root element exists in HTML
-8. 'Data not showing'
-9. Network tab: is API returning data?
-
-```mermaid
-flowchart TD
-    N1["SYMPTOM → WHERE TO LOOK → TOOL TO USE"]
-    N2["'Blank page'"]
-    N3["→ Console tab for JS errors"]
-    N4["→ Network tab: is bundle loading?"]
-    N5["→ Check root element exists in HTML"]
-    N6["'Data not showing'"]
-    N7["→ Network tab: is API returning data?"]
-    N8["→ React DevTools: is state populated?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -656,22 +460,6 @@ Q: How do you debug a CORS error?
   use a Vite/webpack proxy to avoid CORS entirely.
 ```
 
-**Flow:**
-1. React DevTools check props/state values
-2. trace up the component tree
-3. find where the wrong value originates
-
-```mermaid
-flowchart LR
-    N1["React DevTools"]
-    N2["check props/state values"]
-    N3["trace up the"]
-    N4["component tree"]
-    N5["find where the wrong value originates"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-```
 
 ---
 
@@ -680,4 +468,3 @@ flowchart LR
 
 ---
 
-> **Navigation**: [< Previous](01_React_JS_CSS_Combined.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Build_Tools_Ecosystem.md)

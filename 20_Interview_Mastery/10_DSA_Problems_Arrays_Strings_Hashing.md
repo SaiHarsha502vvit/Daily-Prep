@@ -484,26 +484,14 @@ Step 2: For each number:
 
 ---
 
-
-
-
-
-
-🔬 **Section Challenge — STRINGS**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
 It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
 </details>
-
 
 ## HASHING (Advanced)
 
 ---
 
 ### Problem 17: Subarray Sum Equals K
-
 **WHAT**: Count subarrays whose elements sum to k.
 
 **WHY prefix sum + HashMap works**:
@@ -528,7 +516,7 @@ Step 3: For each element:
 
 **Why HashSet doesn't work**: We need COUNT (multiple subarrays can have same prefix sum).
 
-**Related problems using same technique**: 
+**Related problems using same technique**:
 - Subarray sum divisible by K → prefix sum mod K
 - Continuous Subarray Sum (multiple of k) → if same prefix mod appears twice
 - Path Sum III in a tree → same idea but on root-to-node paths
@@ -626,32 +614,12 @@ Decode:
 
 ---
 
-
-
-
-
-
 🔬 **Section Challenge — HASHING (Advanced)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
-## MASTER PROBLEM MAP — Arrays, Strings, Hashing
-
-| # | Problem | Core Logic | Pattern | Key Insight |
-|---|---------|------------|---------|-------------|
-| 1 | Two Sum | complement = target - num | HashMap Lookup | Check before insert |
-| 2 | Buy/Sell Stock | track running min | Greedy/Running Min | Min so far is best possible buy |
-| 3 | Contains Duplicate | membership check | HashSet | Set.add() returns false = duplicate |
 | 4 | Product Except Self | prefix × suffix | Prefix/Suffix | Decompose into left and right products |
 | 5 | Maximum Subarray | extend or restart | Kadane's | Negative prefix always hurts |
 | 6 | Merge Intervals | sort + greedy merge | Sort + Scan | Overlapping iff next.start ≤ curr.end |
 | 7 | Majority Element | cancel votes | Boyer-Moore | Majority survives all cancellations |
-| 8 | Move Zeroes | write pointer | Partition | Swap maintains relative order |
 | 9 | Rotate Array | triple reversal | Reversal Trick | Reverse all, reverse halves |
 | 10 | First Missing Positive | index as hash | Cyclic Sort | Answer in [1, n+1], use array as map |
 | 11 | Valid Anagram | frequency match | Freq Array | int[26] is faster than HashMap |
@@ -667,29 +635,9 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 ---
 
-
-
-
-
-
 🔬 **Section Challenge — MASTER PROBLEM MAP — Arrays, Strings, Hashing**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
-## Interview Quick-Fire: "What Would You Do If..."
 
 **Q: "Array is sorted?"** → Binary Search or Two Pointers first. Don't use HashMap.
 
-**Q: "Must be O(1) space?"** → In-place techniques: swap, reversal, bit manipulation, cyclic sort.
-
-**Q: "Subarray vs subsequence?"** → Subarray = contiguous (sliding window, prefix sum). Subsequence = non-contiguous (DP, two pointers on sorted).
-
-**Q: "Find vs Count?"** → Find = stop at first match. Count = accumulate all matches (prefix sum with HashMap for count).
 
 **Q: "Deal with negative numbers?"** → Kadane's still works (take max of extend/restart). Prefix sum still works. But sliding window for positive-sum won't work — need prefix sum approach.
-

@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch36_SB_Service_Repository.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch40_SB_JPA_Deep_Dive.md)
+﻿**Navigation**: [< Previous](Ch36_SB_Service_Repository.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch40_SB_JPA_Deep_Dive.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 7: Controllers & REST API Architecture
 
@@ -49,22 +49,6 @@ _"Controllers are thin - they delegate, not implement"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why REST Controllers? / • REST is the standard: We
-2. HOW: How Controllers Handle Requests? / • @GetMapping:
-3. WHEN: When to Use Which Parameter Type? / • @PathVariab
-4. WHICH: Which Controller Patterns to Use? / ESSENTIAL: @
-
-```mermaid
-flowchart TD
-    N1["WHY: Why REST Controllers? / • REST is the standard: We"]
-    N2["HOW: How Controllers Handle Requests? / • @GetMapping: "]
-    N3["WHEN: When to Use Which Parameter Type? / • @PathVariab"]
-    N4["WHICH: Which Controller Patterns to Use? / ESSENTIAL: @"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -175,33 +159,6 @@ public class UserController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. HTTP METHODS & SPRING MAPPINGS
-2. HTTP Method Annotation Purpose Idempotent Safe
-3. GET @GetMapping Read resource ✅ ✅
-4. POST @PostMapping Create resource ❌ ❌
-5. PUT @PutMapping Replace resource ✅ ❌
-6. PATCH @PatchMapping Partial update ❌* ❌
-7. DELETE @DeleteMapping Delete resource ✅ ❌
-
-```mermaid
-flowchart TD
-    N1["HTTP METHODS & SPRING MAPPINGS"]
-    N2["HTTP Method Annotation Purpose Idempotent Safe"]
-    N3["GET @GetMapping Read resource ✅ ✅"]
-    N4["POST @PostMapping Create resource ❌ ❌"]
-    N5["PUT @PutMapping Replace resource ✅ ❌"]
-    N6["PATCH @PatchMapping Partial update ❌* ❌"]
-    N7["DELETE @DeleteMapping Delete resource ✅ ❌"]
-    N8["HEAD @RequestMapping Get headers only ✅ ✅"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1159,33 +1116,6 @@ Loss of Type Safety and API Documentation. A generic `Map` completely destroys t
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CONTROLLER BEST PRACTICES
-2. 1. THIN CONTROLLERS
-3. Controllers should:
-4. ✅ Receive request
-5. ✅ Validate (via @Valid)
-6. ✅ Delegate to service
-7. ✅ Return response
-
-```mermaid
-flowchart TD
-    N1["CONTROLLER BEST PRACTICES"]
-    N2["1. THIN CONTROLLERS"]
-    N3["Controllers should:"]
-    N4["✅ Receive request"]
-    N5["✅ Validate (via @Valid)"]
-    N6["✅ Delegate to service"]
-    N7["✅ Return response"]
-    N8["Controllers should NOT:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Example: Complete CRUD Controller
 
@@ -1364,33 +1294,6 @@ public class UserController {
 □ Thin controllers - delegate to services
 ```
 
-**Flow:**
-1. □ @RequiredArgsConstructor for DI
-2. □ @Validated for method-level validation
-3. □ @Valid on @RequestBody DTOs
-4. □ Appropriate HTTP methods (GET, POST, PUT, PATCH, DELE
-5. □ Correct status codes (200, 201, 204, 400, 404, etc.)
-6. □ ResponseEntity for explicit control
-7. □ POST returns 201 with Location header
-
-```mermaid
-flowchart TD
-    N1["□ @RequiredArgsConstructor for DI"]
-    N2["□ @Validated for method-level validation"]
-    N3["□ @Valid on @RequestBody DTOs"]
-    N4["□ Appropriate HTTP methods (GET, POST, PUT, PATCH, DELE"]
-    N5["□ Correct status codes (200, 201, 204, 400, 404, etc.)"]
-    N6["□ ResponseEntity for explicit control"]
-    N7["□ POST returns 201 with Location header"]
-    N8["□ DELETE returns 204 No Content"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

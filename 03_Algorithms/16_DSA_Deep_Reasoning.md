@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](15_Monotonic_Stack_Queue_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_DSA_Java_Implementation_Mastery.md)
+﻿**Navigation**: [< Previous](15_Monotonic_Stack_Queue_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_DSA_Java_Implementation_Mastery.md)
 
 # Chapter 16 — DSA Deep Reasoning: The Questions That Freeze People
 
@@ -180,42 +180,6 @@ Maze solving                  → DFS + backtracking ✅
 Word ladder (min transforms)  → BFS ✅
 ```
 
-**Flow:**
-1. Identify the use case category.
-2. Use BFS for shortest path in unweighted graphs (and word ladder style problems).
-3. Use Dijkstra for shortest path in weighted graphs.
-4. Use DFS for cycle detection and topological sorting (or Kahn's BFS for topo). For connected components and simple path-existence checks, BFS or DFS both work.
-
-```mermaid
-flowchart TD
-    N1["USE CASE"]
-    N2["ALGORITHM MAP:"]
-    N3["Shortest path (unweighted)"]
-    N4["BFS ✅"]
-    N5["Shortest path (weighted)"]
-    N6["Dijkstra (modified BFS with priority queue)"]
-    N7["Detect cycle"]
-    N8["DFS ✅"]
-    N9["Topological sort"]
-    N10["DFS ✅ (or Kahn's BFS)"]
-    N11["Connected components"]
-    N12["Either (DFS simpler)"]
-    N13["Level-order traversal"]
-    N14["Find if path exists"]
-    N15["Maze solving"]
-    N16["DFS + backtracking ✅"]
-    N17["Word ladder (min transforms)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N4
-    N14 --> N12
-    N15 --> N16
-    N17 --> N4
-```
 
 ---
 
@@ -374,30 +338,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Start with records already sorted by name.
-2. Re-sort by department.
-3. Stable sort preserves prior order inside ties (Alice-A before Alice-B).
-4. Unstable sort may reorder ties and lose the earlier name ordering.
-
-```mermaid
-flowchart TD
-    N1["Stable: Equal elements keep their ORIGINAL order."]
-    N2["Unstable: Equal elements can be rearranged."]
-    N3["THE SPREADSHEET ANALOGY:"]
-    N4["You have records sorted by NAME:"]
-    N5["[Alice-A, Alice-B, Bob-A, Charlie-A]"]
-    N6["Now sort by DEPARTMENT (all Alice entries same dept):"]
-    N7["Stable: [Alice-A, Alice-B, Bob-A, Charlie-A]"]
-    N8["↑ Original name order preserved within department"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -434,32 +374,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Pattern 1: Opposite ends on sorted input.
-Use cases: Two Sum (sorted), Container With Most Water, Valid Palindrome, 3Sum.
-2. Pattern 2: Same direction (fast/slow pointers).
-Use cases: Remove duplicates, Move zeroes, Remove element, cycle-style pointer movement.
-3. Pattern 3: Two arrays / merge pointers.
-Use cases: Merge sorted arrays, intersection, and pairwise string/array comparison.
-
-```mermaid
-flowchart TD
-    N1["THREE PATTERNS of Two Pointers:"]
-    N2["PATTERN 1: Opposite ends (sorted array)"]
-    N3["Use: Two Sum (sorted), Container With Most Water, Valid"]
-    N4["Palindrome, 3Sum"]
-    N5["PATTERN 2: Same direction (fast & slow)"]
-    N6["Move zeroes, Remove element"]
-    N7["PATTERN 3: Two arrays / merge"]
-    N8["Use: Merge sorted arrays, Intersection, Compare strings"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -503,31 +417,6 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. HashMap gives fastest average key lookup, but no ordering.
-2. TreeMap/BST keeps keys sorted at O(log n) operations.
-3. Range query (`subMap(50, 100)`): TreeMap O(log n + k), HashMap O(n) scan.
-4. Nearest-key query (`higherKey(75)`): TreeMap O(log n), HashMap O(n) scan.
-5. Rule: lookup-only workloads -> HashMap; ordering/range/min-max workloads -> TreeMap.
-
-```mermaid
-flowchart TD
-    N1["HashMap: O(1) average but GIVES UP ordering."]
-    N2["TreeMap/BST: O(log n) but KEEPS elements sorted."]
-    N3["Things TreeMap can do that HashMap CANNOT:"]
-    N4["1. 'Give me all keys between 50 and 100'"]
-    N5["treeMap.subMap(50, 100) → O(log n + k)"]
-    N6["HashMap: must scan ALL entries → O(n)"]
-    N7["2. 'What's the smallest key greater than 75?'"]
-    N8["treeMap.higherKey(75) → O(log n)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -585,30 +474,6 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Textbook view: LinkedList insert at known node is O(1), ArrayList middle insert is O(n).
-2. Real workload: finding the LinkedList insertion position is usually O(n).
-3. Pointer chasing adds cache misses, so LinkedList often loses in practice.
-4. For most production use, ArrayList is faster overall; for frequent end operations, prefer ArrayDeque.
-
-```mermaid
-flowchart TD
-    N1["TEXTBOOK vs REALITY"]
-    N2["Textbook:"]
-    N3["LinkedList insert at known position: O(1)"]
-    N4["ArrayList insert in middle: O(n) (shift elements)"]
-    N5["'LinkedList wins for insertions!'"]
-    N6["Reality:"]
-    N7["LinkedList insert: O(1) for the insert, but O(n) to FIN"]
-    N8["the position first! Plus pointer overhead + cache misse"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](03b_Recursion_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](03b_Recursion_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
 🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — include/exclude pattern and decision trees
 
 ---
@@ -621,33 +621,6 @@ SPACE COMPLEXITY:
 - Plus any data structures passed/returned
 ```
 
-**Flow:**
-1. RECURSION TYPE RECURRENCE TIME
-2. Tree traversal T(n) = 2T(n/2)+1 O(n)
-3. Subsets T(n) = 2T(n-1)+1 O(2^n)
-4. Permutations T(n) = n*T(n-1) O(n!)
-5. SPACE COMPLEXITY:
-6. - Usually O(max recursion depth)
-7. - For trees: O(height) = O(log n) balanced, O(n) skewed
-
-```mermaid
-flowchart TD
-    N1["RECURSION TYPE RECURRENCE TIME"]
-    N2["Tree traversal T(n) = 2T(n/2)+1 O(n)"]
-    N3["Subsets T(n) = 2T(n-1)+1 O(2^n)"]
-    N4["Permutations T(n) = n*T(n-1) O(n!)"]
-    N5["SPACE COMPLEXITY:"]
-    N6["- Usually O(max recursion depth)"]
-    N7["- For trees: O(height) = O(log n) balanced, O(n) skewed"]
-    N8["- For subsets/permutations: O(n) for the path being bui"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Counting Recursive Calls
 
@@ -708,16 +681,6 @@ You don't care HOW factorial(4) got 24.
 You just trust that it did its job correctly.
 ```
 
-**Flow:**
-1. YOU (CEO)
-2. Don't do all the work yourself!
-
-```mermaid
-flowchart LR
-    N1["YOU (CEO)"]
-    N2["Don't do all the work yourself!"]
-    N1 --> N2
-```
 
 ### Model 2: The Smaller Copy Model
 
@@ -735,15 +698,6 @@ Sort smaller: Sort [8, 1, 9]
 Then combine results back up.
 ```
 
-**Flow:**
-1. ... eventually sort [9] trivially sorted!
-
-```mermaid
-flowchart LR
-    N1["... eventually sort [9]"]
-    N2["trivially sorted!"]
-    N1 --> N2
-```
 
 ### Model 3: The Trust Model
 
@@ -763,34 +717,6 @@ Don't trace through every call!
 Just trust the smaller call works.
 ```
 
-**Flow:**
-1. TRUST that your recursive call works correctly.
-2. Example: Reverse a linked list
-3. reverseList(1 2 3 4 null)
-4. TRUST: reverseList(2 3 4 null) = 4
-5. 3 2 null
-6. Now just attach node 1: 4 3 2
-7. 1 null 4 3 2 1 null
-8. Don't trace through every call!
-
-```mermaid
-flowchart TD
-    N1["TRUST that your recursive call works correctly."]
-    N2["Example: Reverse a linked list"]
-    N3["reverseList(1 → 2 → 3 → 4 → null)"]
-    N4["TRUST: reverseList(2 → 3 → 4 → null) = 4 → 3 → 2 → null"]
-    N5["Now just attach node 1:"]
-    N6["4 → 3 → 2 → 1 → null"]
-    N7["Don't trace through every call!"]
-    N8["Just trust the smaller call works."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Model 4: The Leap of Faith
 
@@ -972,33 +898,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. ADVANCED RECURSION - BEYOND THE BASICS
-2. system-level programming:
-3. • Mutual recursion
-4. • Indirect recursion
-5. • Continuation Passing Style (CPS)
-6. • Y-Combinator (anonymous recursion)
-7. • Recursion with immutable state
-
-```mermaid
-flowchart TD
-    N1["ADVANCED RECURSION - BEYOND THE BASICS"]
-    N2["system-level programming:"]
-    N3["• Mutual recursion"]
-    N4["• Indirect recursion"]
-    N5["• Continuation Passing Style (CPS)"]
-    N6["• Y-Combinator (anonymous recursion)"]
-    N7["• Recursion with immutable state"]
-    N8["• Advanced backtracking optimizations"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## 🔁 Mutual Recursion
 
@@ -1020,15 +919,6 @@ flowchart TD
 │  ────────────────────────────────────────────────────────                       │
 ```
 
-**Flow:**
-1. isEven isOdd
-
-```mermaid
-flowchart LR
-    N1["isEven"]
-    N2["isOdd"]
-    N1 --> N2
-```
 
 ```java
 // Mutually recursive functions
@@ -1116,30 +1006,6 @@ class Parser {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CALL GRAPH for parsing '(2+3)*4':
-2. parseExpr()
-3. parseTerm()
-4. parseFactor() [sees '('] parseExpr() ← MUTUAL CALL parseFactor() 2 parseFactor() 2 parseFactor() 3
-
-```mermaid
-flowchart TD
-    N1["CALL GRAPH for parsing '(2+3)*4':"]
-    N2["parseExpr()"]
-    N3["→ parseTerm()"]
-    N4["→ parseFactor() [sees '(']"]
-    N5["→ parseExpr() ← MUTUAL CALL"]
-    N6["→ parseFactor() → 2"]
-    N7["→ parseFactor() → 3"]
-    N8["→ returns 5"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 🔬 **Section Challenge — 🔁 Mutual Recursion**
 
@@ -1179,26 +1045,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 │ ───────────────────────────                                                     │
 ```
 
-**Flow:**
-1. CONTINUATION PASSING STYLE (CPS)
-2. result. Every call becomes a tail call!
-3. TRADITIONAL: CPS:
-4. return value ← caller continuation(value)
-5. no return
-6. EXAMPLE: Factorial in CPS
-
-```mermaid
-flowchart TD
-    N1["CONTINUATION PASSING STYLE (CPS)"]
-    N2["result. Every call becomes a tail call!"]
-    N3["TRADITIONAL: CPS:"]
-    N4["return value ← caller continuation(value) → no return"]
-    N5["EXAMPLE: Factorial in CPS"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ```java
 // Traditional recursive factorial
@@ -1246,36 +1092,6 @@ factorialCPS(5, result -> System.out.println(result));  // Prints 120
 │  ─────────────────                                                              │
 ```
 
-**Flow:**
-1. TRACE OF factorialCPS(4, print):
-2. factorialCPS(4, k₀) where k₀ = print
-3. factorialCPS(3, k₁) where k₁ = r
-4. k₀(4 * r)
-5. factorialCPS(2, k₂) where k₂ = r
-6. k₁(3 * r)
-7. factorialCPS(1, k₃) where k₃ = r
-8. k₂(2 * r)
-9. k₃.accept(1)
-10. k₂.accept(2) // 2 * 1
-
-```mermaid
-flowchart TD
-    N1["TRACE OF factorialCPS(4, print):"]
-    N2["factorialCPS(4, k₀) where k₀ = print"]
-    N3["→ factorialCPS(3, k₁) where k₁ = r → k₀(4 * r)"]
-    N4["→ factorialCPS(2, k₂) where k₂ = r → k₁(3 * r)"]
-    N5["→ factorialCPS(1, k₃) where k₃ = r → k₂(2 * r)"]
-    N6["→ k₃.accept(1)"]
-    N7["→ k₂.accept(2) // 2 * 1"]
-    N8["→ k₁.accept(6) // 3 * 2"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 void fibCPS(int n, Continuation<Integer> k) {
@@ -1301,19 +1117,6 @@ void fibCPS(int n, Continuation<Integer> k) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY USE CPS?
-2. • Explicit control flow useful for async programming
-3. • Foundation of async/await patterns
-
-```mermaid
-flowchart TD
-    N1["WHY USE CPS?"]
-    N2["• Explicit control flow → useful for async programming"]
-    N3["• Foundation of async/await patterns"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ## 🔁 Y — Combinator — Anonymous Recursion
 
@@ -1334,22 +1137,6 @@ flowchart TD
 │ ─────────────────────                                                           │
 ```
 
-**Flow:**
-1. Y-COMBINATOR - RECURSION WITHOUT NAMING
-2. (Lambda calculus has no assignment!)
-3. MATHEMATICAL DEFINITION:
-4. JAVA IMPLEMENTATION:
-
-```mermaid
-flowchart TD
-    N1["Y-COMBINATOR - RECURSION WITHOUT NAMING"]
-    N2["(Lambda calculus has no assignment!)"]
-    N3["MATHEMATICAL DEFINITION:"]
-    N4["JAVA IMPLEMENTATION:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```java
 // Function that takes itself and returns a function
@@ -1407,22 +1194,6 @@ Function<Integer, Integer> factorial = new Function<>() {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY CARE ABOUT Y-COMBINATOR?
-2. • Foundation of lambda calculus and functional programm
-3. • Proves recursion can be derived from simpler construc
-4. • Asked in advanced interviews about programming theory
-
-```mermaid
-flowchart TD
-    N1["WHY CARE ABOUT Y-COMBINATOR?"]
-    N2["• Foundation of lambda calculus and functional programm"]
-    N3["• Proves recursion can be derived from simpler construc"]
-    N4["• Asked in advanced interviews about programming theory"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 🔬 **Section Challenge — 🔁 Y — Combinator — Anonymous Recursion**
 
@@ -1659,69 +1430,6 @@ class SudokuSolver {
 
 ```
 
-**Flow:**
-1. ADVANCED DIVIDE AND CONQUER PATTERNS
-2. PATTERN 1: CLOSEST PAIR OF POINTS (2D)
-
-```mermaid
-flowchart TD
-    N1["ADVANCED DIVIDE AND CONQUER PATTERNS"]
-    N2["PATTERN 1: CLOSEST PAIR OF POINTS (2D)"]
-    N1 --> N2
-```java
-class ClosestPair {
-    // Find minimum distance between any two points
-    double closestPair(Point[] points) {
-        Point[] sortedByX = points.clone();
-        Point[] sortedByY = points.clone();
-        Arrays.sort(sortedByX, (a, b) -> Double.compare(a.x, b.x));
-        Arrays.sort(sortedByY, (a, b) -> Double.compare(a.y, b.y));
-
-        return closestPairRec(sortedByX, sortedByY, 0, points.length - 1);
-    }
-
-    double closestPairRec(Point[] X, Point[] Y, int lo, int hi) {
-        // Base case: use brute force for small inputs
-        if (hi - lo <= 3) {
-            return bruteForce(X, lo, hi);
-        }
-
-        int mid = lo + (hi - lo) / 2;
-        Point midPoint = X[mid];
-
-        // Divide Y into left and right
-        List<Point> YL = new ArrayList<>();
-        List<Point> YR = new ArrayList<>();
-        for (Point p : Y) {
-            if (p.x <= midPoint.x) YL.add(p);
-            else YR.add(p);
-        }
-
-        // DIVIDE: Find closest in each half
-        double dL = closestPairRec(X, YL.toArray(new Point[0]), lo, mid);
-        double dR = closestPairRec(X, YR.toArray(new Point[0]), mid + 1, hi);
-        double d = Math.min(dL, dR);
-
-        // CONQUER: Check strip around middle
-        List<Point> strip = new ArrayList<>();
-        for (Point p : Y) {
-            if (Math.abs(p.x - midPoint.x) < d) strip.add(p);
-        }
-
-        // Check points in strip
-        for (int i = 0; i < strip.size(); i++) {
-            // Only need to check next 7 points (proven mathematically!)
-            for (int j = i + 1; j < Math.min(i + 8, strip.size()); j++) {
-                double dist = distance(strip.get(i), strip.get(j));
-                d = Math.min(d, dist);
-            }
-        }
-
-        return d;
-    }
-    // Time: O(n log n)
-}
-```
 
 ```
 │                                                                                 │
@@ -1828,46 +1536,6 @@ int[][] strassen(int[][] A, int[][] B) {
 
 ```
 
-**Flow:**
-1. IMMUTABLE STATE IN RECURSION
-2. SOLUTION: Pass state as parameters, return new state
-3. MUTABLE (hard to reason): IMMUTABLE (easier to reason):
-
-```mermaid
-flowchart TD
-    N1["IMMUTABLE STATE IN RECURSION"]
-    N2["SOLUTION: Pass state as parameters, return new state"]
-    N3["MUTABLE (hard to reason): IMMUTABLE (easier to reason):"]
-    N1 --> N2
-    N2 --> N3
-```java
-// MUTABLE - state is shared/modified
-List<String> result = new ArrayList<>();
-void generate(StringBuilder sb, int n) {
-    if (sb.length() == n) {
-        result.add(sb.toString());
-        return;
-    }
-    sb.append('0');
-    generate(sb, n);
-    sb.deleteCharAt(sb.length()-1);  // Must undo!
-    sb.append('1');
-    generate(sb, n);
-    sb.deleteCharAt(sb.length()-1);  // Must undo!
-}
-
-// IMMUTABLE - state passed as parameter
-List<String> generateImmutable(String prefix, int n) {
-    if (prefix.length() == n) {
-        return Arrays.asList(prefix);
-    }
-    List<String> result = new ArrayList<>();
-    result.addAll(generateImmutable(prefix + "0", n));  // New string
-    result.addAll(generateImmutable(prefix + "1", n));  // New string
-    return result;
-}
-// No backtracking needed! Each call is independent.
-```
 
 ```
 │                                                                                 │
@@ -1986,16 +1654,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ```
 
-**Flow:**
-1. Problem Recursive (ns) Iterative (ns) Ratio / Factorial
-2. Problem Recursive Iterative / Factorial(1000) 32 KB sta
-
-```mermaid
-flowchart TD
-    N1["Problem Recursive (ns) Iterative (ns) Ratio / Factorial"]
-    N2["Problem Recursive Iterative / Factorial(1000) 32 KB sta"]
-    N1 --> N2
-```
 
 🔬 **Section Challenge — RECURSION PERFORMANCE COMPARISON**
 
@@ -2074,33 +1732,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ```
 
-**Flow:**
-1. RECURSION PROBLEM CLASSIFICATION
-2. RECURSION PROBLEM TYPES
-3. LINEAR Only ONE recursive call per invocation
-4. RECURSION • Factorial, Sum, Array traversal
-5. O(n) calls • Can always convert to simple iteration
-6. BINARY TWO recursive calls per invocation
-7. RECURSION • Fibonacci, Merge Sort, Binary Tree traversa
-
-```mermaid
-flowchart TD
-    N1["RECURSION PROBLEM CLASSIFICATION"]
-    N2["RECURSION PROBLEM TYPES"]
-    N3["LINEAR Only ONE recursive call per invocation"]
-    N4["RECURSION • Factorial, Sum, Array traversal"]
-    N5["O(n) calls • Can always convert to simple iteration"]
-    N6["BINARY TWO recursive calls per invocation"]
-    N7["RECURSION • Fibonacci, Merge Sort, Binary Tree traversa"]
-    N8["O(2ⁿ) naive • Often needs memoization for efficiency"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 🔬 **Section Challenge — COMPLETE RECURSION PROBLEM TAXONOMY**
 
@@ -2167,33 +1798,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ```
 
-**Flow:**
-1. RECURSION WRITING CHECKLIST ✓
-2. BEFORE CODING:
-3. □ Identify the subproblem - what's the 'smaller version
-4. □ Identify base case(s) - when can you answer directly?
-5. □ Identify what each call returns (or modifies)
-6. □ Estimate max depth - will stack overflow?
-7. □ Check for overlapping subproblems - need memoization?
-
-```mermaid
-flowchart TD
-    N1["RECURSION WRITING CHECKLIST ✓"]
-    N2["BEFORE CODING:"]
-    N3["□ Identify the subproblem - what's the 'smaller version"]
-    N4["□ Identify base case(s) - when can you answer directly?"]
-    N5["□ Identify what each call returns (or modifies)"]
-    N6["□ Estimate max depth - will stack overflow?"]
-    N7["□ Check for overlapping subproblems - need memoization?"]
-    N8["WHILE CODING:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -2259,28 +1863,6 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 
 ```
 
-**Flow:**
-1. RECURSION QUICK REFERENCE
-2. TEMPLATE: returnType solve(input) { return combine(solve(smallerInput)); COMPLEXITY RULES: BACKTRACKING TEMPLATE: void backtrack(state, choices) {
-
-```mermaid
-flowchart TD
-    N1["RECURSION QUICK REFERENCE"]
-    N2["TEMPLATE:"]
-    N3["returnType solve(input) {"]
-    N4["return combine(solve(smallerInput));"]
-    N5["COMPLEXITY RULES:"]
-    N6["BACKTRACKING TEMPLATE:"]
-    N7["void backtrack(state, choices) {"]
-    N8["make(choice);"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

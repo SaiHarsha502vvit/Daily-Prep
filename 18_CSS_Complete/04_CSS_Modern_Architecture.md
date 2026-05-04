@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](03_CSS_Responsive_Animations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_CSS_Deep_Reasoning.md)
+﻿**Navigation**: [< Previous](03_CSS_Responsive_Animations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_CSS_Deep_Reasoning.md)
 
 **CSS Chapter 4/4** | [← Responsive & Animations](03_CSS_Responsive_Animations.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Frontend Integration](../19_Frontend_Integration/01_React_JS_CSS_Combined.md)
 
@@ -186,33 +186,6 @@ WHY BEM: Flat specificity (all single class), self-documenting,
 no nesting conflicts, easy to understand relationship.
 ```
 
-**Flow:**
-1. BEM: Block__Element--Modifier
-2. Block: Independent component .card
-3. Element: Part of a block .card__title
-4. Modifier: Variation/state .card--featured
-5. VISUAL:
-6. .card ← Block
-7. .card__image ← Element
-
-```mermaid
-flowchart TD
-    N1["BEM: Block__Element--Modifier"]
-    N2["Block: Independent component .card"]
-    N3["Element: Part of a block .card__title"]
-    N4["Modifier: Variation/state .card--featured"]
-    N5["VISUAL:"]
-    N6[".card ← Block"]
-    N7[".card__image ← Element"]
-    N8[".card__title ← Element"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```css
 /* BEM IN PRACTICE: */
@@ -643,33 +616,6 @@ form:has(:invalid) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. CSS APPROACH WHEN TO USE TRADE-OFFS
-2. Plain CSS Small projects Global scope issues
-3. CSS Modules React projects Best scoping (✅)
-4. Tailwind CSS Rapid prototyping Verbose HTML, learn
-5. styled-components Dynamic styling Runtime cost, bundle
-6. CSS-in-JS (Panda) Design system libs Zero-runtime (✅)
-7. INDUSTRY TREND (2024):
-
-```mermaid
-flowchart TD
-    N1["CSS APPROACH WHEN TO USE TRADE-OFFS"]
-    N2["Plain CSS Small projects Global scope issues"]
-    N3["CSS Modules React projects Best scoping (✅)"]
-    N4["Tailwind CSS Rapid prototyping Verbose HTML, learn"]
-    N5["styled-components Dynamic styling Runtime cost, bundle"]
-    N6["CSS-in-JS (Panda) Design system libs Zero-runtime (✅)"]
-    N7["INDUSTRY TREND (2024):"]
-    N8["CSS Modules + Tailwind = most popular combo"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Tailwind Core Concepts
 
@@ -738,16 +684,6 @@ Q: What is a design system?
   a product. Implemented as CSS variables + component library.
 ```
 
-**Flow:**
-1. Components use var(--color-bg)
-2. automatically switch.
-
-```mermaid
-flowchart LR
-    N1["Components use var(--color-bg)"]
-    N2["automatically switch."]
-    N1 --> N2
-```
 
 ---
 

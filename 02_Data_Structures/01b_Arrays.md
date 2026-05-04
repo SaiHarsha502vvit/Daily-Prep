@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](01a_Memory_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01c_LinkedList.md)
+﻿**Navigation**: [< Previous Chapter](01a_Memory_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01c_LinkedList.md)
 
 ---
 
@@ -230,33 +230,6 @@ WHY CONTIGUOUS MATTERS:
 - This is O(1) random access!
 ```
 
-**Flow:**
-1. PHYSICAL REALITY:
-2. Memory is a long tape of numbered boxes
-3. Address: 1000 1004 1008 1012 1016 1020
-4. arr[0] arr[1] arr[2] arr[3] arr[4] arr[5]
-5. CONTIGUOUS = Next to each other in memory
-6. WHY CONTIGUOUS MATTERS:
-7. - arr[3] = baseAddress + (3 × elementSize)
-
-```mermaid
-flowchart TD
-    N1["PHYSICAL REALITY:"]
-    N2["Memory is a long tape of numbered boxes"]
-    N3["Address: 1000 1004 1008 1012 1016 1020"]
-    N4["arr[0] arr[1] arr[2] arr[3] arr[4] arr[5]"]
-    N5["CONTIGUOUS = Next to each other in memory"]
-    N6["WHY CONTIGUOUS MATTERS:"]
-    N7["- arr[3] = baseAddress + (3 × elementSize)"]
-    N8["- arr[3] = 1000 + (3 × 4) = 1012"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Array Characteristics
 

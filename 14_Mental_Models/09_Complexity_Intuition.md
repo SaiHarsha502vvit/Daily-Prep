@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](08_Debugging_DryRun.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Interview_Thinking.md)
+﻿**Navigation**: [< Previous](08_Debugging_DryRun.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Interview_Thinking.md)
 
 # ⏱️ Complexity Intuition — Reason About Time & Space Without Formulas
 
@@ -18,47 +18,6 @@ Try all subsets:              → 2ⁿ subsets → O(2ⁿ)
 Try all permutations:         → n! orderings → O(n!)
 ```
 
-**Flow:**
-1. Single loop 0 to n: n times
-2. O(n)
-3. Nested loop n × n: n² times
-4. O(n²)
-5. Loop that halves each time: log n times
-6. O(log n)
-
-```mermaid
-flowchart TD
-    N1["Single loop 0 to n:"]
-    N2["n times"]
-    N3["O(n)"]
-    N4["Nested loop n × n:"]
-    N5["n² times"]
-    N6["O(n²)"]
-    N7["Loop that halves each time:"]
-    N8["log n times"]
-    N9["O(log n)"]
-    N10["Loop for each + sort first:"]
-    N11["n log n + n"]
-    N12["O(n log n)"]
-    N13["Try all subsets:"]
-    N14["2ⁿ subsets"]
-    N15["O(2ⁿ)"]
-    N16["Try all permutations:"]
-    N17["n! orderings"]
-    N18["O(n!)"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-    N7 --> N8
-    N8 --> N9
-    N10 --> N11
-    N11 --> N12
-    N13 --> N14
-    N14 --> N15
-    N16 --> N17
-    N17 --> N18
-```
 
 ### Visual Intuition
 ```
@@ -86,49 +45,6 @@ O(n!)      →  Factorial: even worse
                Everything × everything × everything...
 ```
 
-**Flow:**
-1. O(1)
-2. Constant: same work regardless of input size
-3. O(log n)
-4. Binary search: halving each step
-5. O(n)
-6. Single pass: touch each element once
-7. O(n log n)
-8. Sort + process: sorting dominates
-9. O(n²)
-10. Nested loops: each pair
-11. O(2ⁿ)
-12. Exponential: doubles each step
-
-```mermaid
-flowchart TD
-    N1["O(1)"]
-    N2["Constant: same work regardless of input size"]
-    N3["O(log n)"]
-    N4["Binary search: halving each step"]
-    N5["O(n)"]
-    N6["Single pass: touch each element once"]
-    N7["O(n log n)"]
-    N8["Sort + process: sorting dominates"]
-    N9["O(n²)"]
-    N10["Nested loops: each pair"]
-    N11["O(2ⁿ)"]
-    N12["Exponential: doubles each step"]
-    N13["●●"]
-    N14["●●●●"]
-    N15["●●●●●●●● (explodes!)"]
-    N16["O(n!)"]
-    N17["Factorial: even worse"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N14 --> N15
-    N16 --> N17
-```
 
 ---
 
@@ -156,33 +72,6 @@ DP with 1D table                                O(n)
 DP with 2D table                                O(n × m) or O(n²)
 ```
 
-**Flow:**
-1. CODE PATTERN COMPLEXITY
-2. Single for loop (0 to n) O(n)
-3. Nested for loops (both 0 to n) O(n²)
-4. Three nested loops O(n³)
-5. Sort array + single pass O(n log n)
-6. Loop that halves (i /= 2 or i *= 2) O(log n)
-7. Recursion with 2 branches, depth n O(2ⁿ)
-
-```mermaid
-flowchart TD
-    N1["CODE PATTERN COMPLEXITY"]
-    N2["Single for loop (0 to n) O(n)"]
-    N3["Nested for loops (both 0 to n) O(n²)"]
-    N4["Three nested loops O(n³)"]
-    N5["Sort array + single pass O(n log n)"]
-    N6["Loop that halves (i /= 2 or i *= 2) O(log n)"]
-    N7["Recursion with 2 branches, depth n O(2ⁿ)"]
-    N8["HashMap lookup inside loop O(n) × O(1) = O(n)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The "How Many Times Does Each Line Run?" Method
 ```java
@@ -235,31 +124,6 @@ Work per level: O(n)
 TOTAL: O(n) × log₂(n) = O(n log n)  ✅
 ```
 
-**Flow:**
-1. mergeSort(n)
-2. merge work: n
-3. mergeSort(n/2) mergeSort(n/2)
-4. merge work: n/2 + n/2 = n
-5. ms(n/4) ms(n/4) ms(n/4) ms(n/4)
-6. merge work: 4 × n/4 = n
-7. ...
-8. each level does O(n) total work
-
-```mermaid
-flowchart LR
-    N1["mergeSort(n)"]
-    N2["merge work: n"]
-    N3["mergeSort(n/2) mergeSort(n/2)"]
-    N4["merge work: n/2 + n/2 = n"]
-    N5["ms(n/4) ms(n/4) ms(n/4) ms(n/4)"]
-    N6["merge work: 4 × n/4 = n"]
-    N7["..."]
-    N8["each level does O(n) total work"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
 
 ```
 Example: Fibonacci(n) — naive recursion
@@ -283,33 +147,6 @@ Work per state: O(1)
 TOTAL: O(n)  ✅ Huge improvement!
 ```
 
-**Flow:**
-1. Example: Fibonacci(n) — naive recursion
-2. fib(5)
-3. fib(4) fib(3)
-4. fib(2) fib(1)
-5. Branching factor: 2
-6. Depth: n
-7. Total nodes: ~2ⁿ (each level doubles)
-
-```mermaid
-flowchart TD
-    N1["Example: Fibonacci(n) — naive recursion"]
-    N2["fib(5)"]
-    N3["fib(4) fib(3)"]
-    N4["fib(2) fib(1)"]
-    N5["Branching factor: 2"]
-    N6["Depth: n"]
-    N7["Total nodes: ~2ⁿ (each level doubles)"]
-    N8["Work per call: O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The Master Theorem (Intuitive Version)
 ```
@@ -329,41 +166,6 @@ Examples:
   Karatsuba:     T(n) = 3·T(n/2) + O(n) → O(n^1.58)
 ```
 
-**Flow:**
-1. - If splitting work is cheap
-2. O(n^(log_b(a))) [leaves dominate]
-3. - If splitting work matches
-4. O(nᶜ · log n) [balanced]
-5. - If splitting work is expensive
-6. O(nᶜ) [root dominates]
-7. Binary Search: T(n) = 1·T(n/2) + O(1)
-8. O(log n)
-9. Merge Sort: T(n) = 2·T(n/2) + O(n)
-10. O(n log n)
-11. Karatsuba: T(n) = 3·T(n/2) + O(n)
-12. O(n^1.58)
-
-```mermaid
-flowchart TD
-    N1["- If splitting work is cheap"]
-    N2["O(n^(log_b(a))) [leaves dominate]"]
-    N3["- If splitting work matches"]
-    N4["O(nᶜ · log n) [balanced]"]
-    N5["- If splitting work is expensive"]
-    N6["O(nᶜ) [root dominates]"]
-    N7["Binary Search: T(n) = 1·T(n/2) + O(1)"]
-    N8["O(log n)"]
-    N9["Merge Sort: T(n) = 2·T(n/2) + O(n)"]
-    N10["O(n log n)"]
-    N11["Karatsuba: T(n) = 3·T(n/2) + O(n)"]
-    N12["O(n^1.58)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-```
 
 ---
 
@@ -409,16 +211,6 @@ Adjacency list                    O(V + E)
 Sorting (merge sort)              O(n) extra; quicksort O(log n) stack
 ```
 
-**Flow:**
-1. 2D DP table O(n²)
-2. can often reduce to O(n)
-
-```mermaid
-flowchart LR
-    N1["2D DP table O(n²)"]
-    N2["can often reduce to O(n)"]
-    N1 --> N2
-```
 
 ### The "Rolling Array" Optimization
 ```
@@ -428,26 +220,6 @@ When DP row i only depends on row i-1:
   Even better: dp[m] → O(m) (overwrite in-place if direction allows)
 ```
 
-**Flow:**
-1. Original: dp[n][m]
-2. O(n × m) space
-3. Optimized: dp[2][m]
-4. O(m) space (alternate between rows)
-5. Even better: dp[m]
-6. O(m) (overwrite in-place if direction allows)
-
-```mermaid
-flowchart LR
-    N1["Original: dp[n][m]"]
-    N2["O(n × m) space"]
-    N3["Optimized: dp[2][m]"]
-    N4["O(m) space (alternate between rows)"]
-    N5["Even better: dp[m]"]
-    N6["O(m) (overwrite in-place if direction allows)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
@@ -489,37 +261,6 @@ Total cost for n inserts:
   Amortized cost per insert = 2n / n = O(1) ✓
 ```
 
-**Flow:**
-1. Insert # Capacity Cost What Happens
-2. 1 1 1 Insert 2 1
-3. 2 1+1 = 2 Resize (copy 1) + Insert
-4. 2 1
-5. 2 1+1 = 2 Resize (copy 1) + Insert
-6. 3 2
-7. 4 2+1 = 3 Resize (copy 2) + Insert
-8. 4 4 1 Insert (still room)
-9. 5 4
-10. 8 4+1 = 5 Resize (copy 4) + Insert
-11. 6–8 8 1 each Insert (still room)
-
-```mermaid
-flowchart TD
-    N1["Insert # Capacity Cost What Happens"]
-    N2["1 1 1 Insert"]
-    N3["2 1→2 1+1 = 2 Resize (copy 1) + Insert"]
-    N4["3 2→4 2+1 = 3 Resize (copy 2) + Insert"]
-    N5["4 4 1 Insert (still room)"]
-    N6["5 4→8 4+1 = 5 Resize (copy 4) + Insert"]
-    N7["6–8 8 1 each Insert (still room)"]
-    N8["9 8→16 8+1 = 9 Resize (copy 8) + Insert"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Three Formal Methods of Amortized Analysis
 
@@ -546,33 +287,6 @@ methods. All three give the SAME answer. Pick the one that "clicks."
 ╚═══════════════════════════════════════════════════════════ ╝
 ```
 
-**Flow:**
-1. AGGREGATE METHOD: Count total work, divide by n
-2. Total cost of n operations = T(n)
-3. Amortized cost per op = T(n) / n
-4. Dynamic Array Example:
-5. Amortized = 3n / n = O(1)
-6. Stack with multipop(k) Example:
-7. Each element pushed at most once, popped at most once
-
-```mermaid
-flowchart TD
-    N1["AGGREGATE METHOD: Count total work, divide by n"]
-    N2["Total cost of n operations = T(n)"]
-    N3["Amortized cost per op = T(n) / n"]
-    N4["Dynamic Array Example:"]
-    N5["Amortized = 3n / n = O(1)"]
-    N6["Stack with multipop(k) Example:"]
-    N7["Each element pushed at most once, popped at most once"]
-    N8["Total pushes + pops over n operations ≤ 2n"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### Method 2: Accounting (The Coin Method)
 ```
@@ -599,34 +313,6 @@ We charged $3 per operation → amortized cost = O(3) = O(1)
 └─────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ACCOUNTING: Charge EXTRA on cheap ops, save for expensi
-2. Rule: Credit balance must NEVER go negative
-3. Dynamic Array — Charge 3 per insert:
-4. $1 pays for the insert itself
-5. $2
-6. saved as credit (stored on the element)
-7. When resize happens (double from m to 2m):
-8. Need to copy m elements
-
-```mermaid
-flowchart TD
-    N1["ACCOUNTING: Charge EXTRA on cheap ops, save for expensi"]
-    N2["Rule: Credit balance must NEVER go negative"]
-    N3["Dynamic Array — Charge 3 per insert:"]
-    N4["$1 → pays for the insert itself"]
-    N5["$2 → saved as credit (stored on the element)"]
-    N6["When resize happens (double from m to 2m):"]
-    N7["Need to copy m elements"]
-    N8["Each of the m/2 NEW elements since last resize saved $2"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### Method 3: Potential (The Physics Method)
 ```
@@ -656,27 +342,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. POTENTIAL: Define Φ (potential energy of data structure Amortized cost ĉᵢ = cᵢ + Φ(Dᵢ) − Φ(Dᵢ₋₁) = actual cost + change in potential Requirement: Φ(Dₙ) ≥ Φ(D₀) (potential doesn't drop belo starting value over entire sequence) Dynamic Array — Choose Φ = 2·size − capacity Normal insert (no resize):
-
-```mermaid
-flowchart TD
-    N1["POTENTIAL: Define Φ (potential energy of data structure"]
-    N2["Amortized cost ĉᵢ = cᵢ + Φ(Dᵢ) − Φ(Dᵢ₋₁)"]
-    N3["= actual cost + change in potential"]
-    N4["Requirement: Φ(Dₙ) ≥ Φ(D₀) (potential doesn't drop belo"]
-    N5["starting value over entire sequence)"]
-    N6["Dynamic Array — Choose Φ = 2·size − capacity"]
-    N7["Normal insert (no resize):"]
-    N8["ΔΦ = 2(size+1) − cap − (2·size − cap) = +2"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### When to Use Which Method
 ```
@@ -691,28 +356,6 @@ flowchart TD
 ╚═══════════════════╩══════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Method Best When
-2. Aggregate Simple count — all ops cost the same
-3. Accounting Different ops cost differently, want
-4. intuitive 'prepay' explanation
-5. Potential Need a formal proof, complex structure
-6. (e.g., splay trees, Fibonacci heaps)
-
-```mermaid
-flowchart TD
-    N1["Method Best When"]
-    N2["Aggregate Simple count — all ops cost the same"]
-    N3["Accounting Different ops cost differently, want"]
-    N4["intuitive 'prepay' explanation"]
-    N5["Potential Need a formal proof, complex structure"]
-    N6["(e.g., splay trees, Fibonacci heaps)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ### Common Amortized O(1) Operations
 ```
@@ -729,25 +372,6 @@ flowchart TD
 ╚══════════════════════════╩═══════════════════╩═══════════════════════════╝
 ```
 
-**Flow:**
-1. Operation Worst Case Single Amortized
-2. Stack multipop O(n) O(1) per op
-3. Monotonic stack (total) O(n) per push O(1) per element
-4. Splay tree operations O(n) O(log n)
-5. Fibonacci heap decrease O(1) O(1) (with cascading cut)
-
-```mermaid
-flowchart TD
-    N1["Operation Worst Case Single Amortized"]
-    N2["Stack multipop O(n) O(1) per op"]
-    N3["Monotonic stack (total) O(n) per push O(1) per element"]
-    N4["Splay tree operations O(n) O(log n)"]
-    N5["Fibonacci heap decrease O(1) O(1) (with cascading cut)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ### Common Mistake: Amortized ≠ Average Case
 ```
@@ -761,21 +385,6 @@ Example:
   Amortized is STRONGER than average — no randomness needed!
 ```
 
-**Flow:**
-1. QuickSort average = O(n log n)
-2. bad luck gives O(n²)
-3. ArrayList.add() amortized O(1)
-4. ALWAYS O(1) per op over n ops
-
-```mermaid
-flowchart LR
-    N1["QuickSort average = O(n log n)"]
-    N2["bad luck gives O(n²)"]
-    N3["ArrayList.add() amortized O(1)"]
-    N4["ALWAYS O(1) per op over n ops"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 
@@ -797,58 +406,6 @@ n ≤ 10⁸     → O(n) only
 n > 10⁸     → O(log n), O(√n), or O(1)
 ```
 
-**Flow:**
-1. n ≤ 10
-2. Anything goes: O(n!), O(2ⁿ), O(n⁴)
-3. n ≤ 20
-4. O(2ⁿ), O(n² · 2ⁿ)
-5. n ≤ 100
-6. O(n³)
-7. n ≤ 500
-8. O(n³) with small constant n ≤ 1,000
-9. O(n²)
-10. n ≤ 5,000
-11. O(n²) comfortably
-
-```mermaid
-flowchart TD
-    N1["n ≤ 10"]
-    N2["Anything goes: O(n!), O(2ⁿ), O(n⁴)"]
-    N3["n ≤ 20"]
-    N4["O(2ⁿ), O(n² · 2ⁿ)"]
-    N5["n ≤ 100"]
-    N6["O(n³)"]
-    N7["n ≤ 500"]
-    N8["O(n³) with small constant"]
-    N9["n ≤ 1,000"]
-    N10["O(n²)"]
-    N11["n ≤ 5,000"]
-    N12["O(n²) comfortably"]
-    N13["n ≤ 10,000"]
-    N14["O(n²) barely, prefer O(n log n)"]
-    N15["n ≤ 100,000"]
-    N16["O(n log n) or O(n)"]
-    N17["n ≤ 500,000"]
-    N18["O(n log n)"]
-    N19["n ≤ 10⁶"]
-    N20["O(n) or O(n log n) with small constant"]
-    N21["n ≤ 10⁸"]
-    N22["O(n) only"]
-    N23["n &gt; 10⁸"]
-    N24["O(log n), O(√n), or O(1)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-    N17 --> N18
-    N19 --> N20
-    N21 --> N22
-    N23 --> N24
-```
 
 ### Given Complexity, How Fast In Practice?
 ```
@@ -862,46 +419,6 @@ O(2ⁿ)      with n = 25    → ~33 million → ~0.3 seconds
 O(n!)      with n = 11    → ~40 million → ~0.4 seconds
 ```
 
-**Flow:**
-1. O(n) with n = 10⁸
-2. ~1 second
-3. O(n log n) with n = 10⁶
-4. ~20 million ops
-5. ~0.2 seconds
-6. O(n²) with n = 10⁴ 10⁸
-7. ~1 second
-8. O(n³) with n = 500 1.25 × 10⁸
-
-```mermaid
-flowchart TD
-    N1["O(n) with n = 10⁸"]
-    N2["~1 second"]
-    N3["O(n log n) with n = 10⁶"]
-    N4["~20 million ops"]
-    N5["~0.2 seconds"]
-    N6["O(n²) with n = 10⁴"]
-    N7["10⁸"]
-    N8["O(n³) with n = 500"]
-    N9["1.25 × 10⁸"]
-    N10["~1.2 seconds"]
-    N11["O(2ⁿ) with n = 25"]
-    N12["~33 million"]
-    N13["~0.3 seconds"]
-    N14["O(n!) with n = 11"]
-    N15["~40 million"]
-    N16["~0.4 seconds"]
-    N1 --> N2
-    N3 --> N4
-    N4 --> N5
-    N6 --> N7
-    N7 --> N2
-    N8 --> N9
-    N9 --> N10
-    N11 --> N12
-    N12 --> N13
-    N14 --> N15
-    N15 --> N16
-```
 
 ---
 
@@ -927,37 +444,6 @@ For SPACE complexity:
 □ Can I do it in-place?
 ```
 
-**Flow:**
-1. □ Count nested loop depth O(n^depth)
-2. □ Does any loop halve? Multiply by log n
-3. □ Recursion? Draw tree, count total calls
-4. □ Using sorting? At least O(n log n)
-5. □ HashMap operations O(1) each
-6. □ Recursion? Stack depth = O(depth)
-
-```mermaid
-flowchart TD
-    N1["□ Count nested loop depth"]
-    N2["O(n^depth)"]
-    N3["□ Does any loop halve?"]
-    N4["Multiply by log n"]
-    N5["□ Recursion?"]
-    N6["Draw tree, count total calls"]
-    N7["□ Using sorting?"]
-    N8["At least O(n log n)"]
-    N9["□ HashMap operations"]
-    N10["O(1) each"]
-    N11["Stack depth = O(depth)"]
-    N12["□ Am I creating strings in a loop?"]
-    N13["O(n) per iteration!"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N5 --> N11
-    N12 --> N13
-```
 
 ---
 

@@ -78,16 +78,6 @@ Microtasks ALWAYS run before macrotasks.
 After each macrotask, ALL pending microtasks run first.
 ```
 
-**Flow:**
-1. WEB APIs (browser) or / C++ APIs (Node) / â€¢ setTimeout/
-2. CALLBACK QUEUES / Microtask Queue: / Promise.then() / q
-
-```mermaid
-flowchart TD
-    N2["WEB APIs (browser) or / C++ APIs (Node) / â€¢ setTimeout/"]
-    N3["CALLBACK QUEUES / Microtask Queue: / Promise.then() / q"]
-    N2 --> N3
-```
 
 ### The Event Loop in Action â€” Step by Step
 
@@ -127,33 +117,6 @@ console.log("4");                          // Sync â†’ call stack
 â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-**Flow:**
-1. STEP-BY-STEP TRACE:
-2. CALL STACK MICROTASK Q MACROTASK Q OUTPUT
-3. log('1') [] [] '1' setTimeout(cb,0) [] [cb '2'] '1'
-4. setTimeout(cb,0) [] [cb '2'] '1'
-5. Promise.then(cb) [cb '3'] [cb '2'] '1'
-6. log('4') [cb '3'] [cb '2'] '1','4'
-7. â† stack empty
-
-```mermaid
-flowchart TD
-    N1["STEP-BY-STEP TRACE:"]
-    N2["CALL STACK MICROTASK Q MACROTASK Q OUTPUT"]
-    N3["log('1') [] [] '1'"]
-    N4["setTimeout(cb,0) [] [cbâ†’'2'] '1'"]
-    N5["Promise.then(cb) [cbâ†’'3'] [cbâ†’'2'] '1'"]
-    N6["log('4') [cbâ†’'3'] [cbâ†’'2'] '1','4'"]
-    N7["â† stack empty â†’"]
-    N8["â† microtasks done â†’"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -226,18 +189,6 @@ STATES:
 Once settled (fulfilled/rejected), a promise NEVER changes state.
 ```
 
-**Flow:**
-1. PENDING --(resolve())--> FULFILLED
-2. PENDING --(resolve())--> REJECTED
-
-```mermaid
-flowchart LR
-    N1["PENDING"]
-    N2["FULFILLED"]
-    N3["REJECTED"]
-    N1 -->|"resolve()"| N2
-    N1 -->|"resolve()"| N3
-```
 
 ```javascript
 // CREATING a Promise:
@@ -324,28 +275,6 @@ PROMISE METHODS COMPARISON:
 â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-**Flow:**
-1. PROMISE METHODS COMPARISON:
-2. Method Resolves Rejects Use Case
-3. Promise.all ALL fulfill ANY rejects Need all results
-4. Promise.allSettled ALL settle Never Check each
-5. Promise.race First done First done Timeout/fastest
-6. Promise.any First win ALL reject Multiple sources
-
-```mermaid
-flowchart TD
-    N1["PROMISE METHODS COMPARISON:"]
-    N2["Method Resolves Rejects Use Case"]
-    N3["Promise.all ALL fulfill ANY rejects Need all results"]
-    N4["Promise.allSettled ALL settle Never Check each"]
-    N5["Promise.race First done First done Timeout/fastest"]
-    N6["Promise.any First win ALL reject Multiple sources"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ---
 
@@ -392,22 +321,6 @@ Once the first promise settles, the outer promise is settled. Other promises con
 â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-**Flow:**
-1. BEHAVE like synchronous code.
-2. HOW: `async` marks a function as returning a Promise.
-3. `await` pauses execution until the Promise resolves.
-4. (The thread isn't blocked â€” other code can run!)
-
-```mermaid
-flowchart TD
-    N1["BEHAVE like synchronous code."]
-    N2["HOW: `async` marks a function as returning a Promise."]
-    N3["`await` pauses execution until the Promise resolves."]
-    N4["(The thread isn't blocked â€” other code can run!)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```javascript
 // WITH PROMISES (chaining):
@@ -662,24 +575,6 @@ If microtasks keep adding more microtasks, setTimeout callbacks
 and UI rendering NEVER run. The page freezes.
 ```
 
-**Flow:**
-1. EVENT LOOP CYCLE: / 1. Execute ALL synchronous code in
-2. Drain ENTIRE microtask queue / (including microtasks Pick ONE macrotask from macrotask queue Drain ENTIRE microtask queue again Render/paint (if needed) Go to step 3 (next macrotask) / IMPLICATION: Microta
-
-```mermaid
-flowchart TD
-    N1["EVENT LOOP CYCLE: / 1. Execute ALL synchronous code in"]
-    N2["2. Drain ENTIRE microtask queue / (including microtasks"]
-    N3["3. Pick ONE macrotask from macrotask queue"]
-    N4["4. Drain ENTIRE microtask queue again"]
-    N5["5. Render/paint (if needed)"]
-    N6["6. Go to step 3 (next macrotask) / IMPLICATION: Microta"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ---
 
@@ -785,33 +680,6 @@ Q: How to run async operations in parallel?
   NOT: await p1; await p2; (this runs sequentially!)
 ```
 
-**Flow:**
-1. Q: What is the event loop?
-2. It checks if the call stack is empty, then moves tasks
-3. queues (microtask first, then macrotask) to the stack.
-4. Q: Difference between microtask and macrotask?
-5. Q: Promise.all vs Promise.allSettled?
-6. .all: rejects immediately if ANY promise rejects.
-7. .allSettled: waits for ALL, returns status of each.
-
-```mermaid
-flowchart TD
-    N1["Q: What is the event loop?"]
-    N2["It checks if the call stack is empty, then moves tasks"]
-    N3["queues (microtask first, then macrotask) to the stack."]
-    N4["Q: Difference between microtask and macrotask?"]
-    N5["Q: Promise.all vs Promise.allSettled?"]
-    N6["â†’ .all: rejects immediately if ANY promise rejects."]
-    N7[".allSettled: waits for ALL, returns status of each."]
-    N8["Q: What does async do to a function?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

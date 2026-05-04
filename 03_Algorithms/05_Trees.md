@@ -1,4 +1,4 @@
-# TREES - Complete Guide
+﻿# TREES - Complete Guide
 
 ## From Binary Trees to Advanced Tree Algorithms
 
@@ -80,16 +80,6 @@ Understanding the PHYSICAL reality of trees and graphs:
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. TreeNode / val: 10 / left: 0x00110000 / right: 0x002200
-2. val: 15 / left: 0x440000 / right: 0x660000
-
-```mermaid
-flowchart TD
-    N2["TreeNode / val: 10 / left: 0x00110000 / right: 0x002200"]
-    N4["val: 15 / left: 0x440000 / right: 0x660000"]
-    N2 --> N4
-```
 
 ## 📚 Recursion Stack — What Actually Happens
 
@@ -317,16 +307,6 @@ For SKEWED tree (h = 100,000):
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Address 0x1000 0x1004 0x1008 0x100C 0x1010 0x1014 0x101
-2. HEAP LAYOUT: / 0x1000: [Node A] left 0x5000: [Node B] /
-
-```mermaid
-flowchart TD
-    N1["Address 0x1000 0x1004 0x1008 0x100C 0x1010 0x1014 0x101"]
-    N2["HEAP LAYOUT: / 0x1000: [Node A] left 0x5000: [Node B] /"]
-    N1 --> N2
-```
 
 ## 🧠 Graph Representation — Memory Deep Dive
 
@@ -527,33 +507,6 @@ TERMINOLOGY:
 • Subtree: Any node and its descendants
 ```
 
-**Flow:**
-1. [1] ← Root (level 0)
-2. [2] [3] ← Level 1
-3. [4] [5] [6] ← Level 2 (Leaves: 4, 5, 6)
-4. TERMINOLOGY:
-5. • Root: Top node (1)
-6. • Parent: Node above (2 is parent of 4, 5)
-7. • Child: Node below (4, 5 are children of 2)
-
-```mermaid
-flowchart TD
-    N1["[1] ← Root (level 0)"]
-    N2["[2] [3] ← Level 1"]
-    N3["[4] [5] [6] ← Level 2 (Leaves: 4, 5, 6)"]
-    N4["TERMINOLOGY:"]
-    N5["• Root: Top node (1)"]
-    N6["• Parent: Node above (2 is parent of 4, 5)"]
-    N7["• Child: Node below (4, 5 are children of 2)"]
-    N8["• Siblings: Same parent (4, 5 are siblings)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## Tree Node Structure
 
@@ -1668,37 +1621,6 @@ public class TreeSerializer {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. TREE PROBLEM RECOGNITION GUIDE
-2. 'Find common ancestor...'
-3. LCA algorithm
-4. 'Path between nodes...'
-5. Find LCA, then paths from LCA
-6. 'Serialize tree...'
-7. Preorder with null markers
-8. 'Validate BST...'
-9. Inorder should be sorted
-10. TREE ARRAY INDEX FORMULAS (0-indexed):
-11. • Parent of i: (i - 1) / 2
-
-```mermaid
-flowchart TD
-    N1["TREE PROBLEM RECOGNITION GUIDE"]
-    N2["'Find common ancestor...' → LCA algorithm"]
-    N3["'Path between nodes...' → Find LCA, then paths from LCA"]
-    N4["'Serialize tree...' → Preorder with null markers"]
-    N5["'Validate BST...' → Inorder should be sorted"]
-    N6["TREE ARRAY INDEX FORMULAS (0-indexed):"]
-    N7["• Parent of i: (i - 1) / 2"]
-    N8["• Left child of i: 2 * i + 1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

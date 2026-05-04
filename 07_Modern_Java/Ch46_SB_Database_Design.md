@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch47_SB_Security_Deep.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch47_SB_Security_Deep.md)
 
 ---
 
@@ -51,22 +51,6 @@ _"Secure your data from the ground up"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Database Security Matters? / • SQL injection i
-2. HOW: How to Secure Database Layer? / • Use parameterize
-3. WHEN: When to Apply Security Measures? / • User managem
-4. WHICH: Which Security Layers to Implement? / ESSENTIAL:
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Database Security Matters? / • SQL injection i"]
-    N2["HOW: How to Secure Database Layer? / • Use parameterize"]
-    N3["WHEN: When to Apply Security Measures? / • User managem"]
-    N4["WHICH: Which Security Layers to Implement? / ESSENTIAL:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -93,33 +77,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHAT THIS PART COVERS
-2. 1. User Management Entity Design
-3. 2. Role-Based Access Control (RBAC)
-4. 3. Permission/Authority Management
-5. 4. Password Security (BCrypt, Argon2)
-6. 5. Custom UserDetailsService Implementation
-7. 6. Method-Level Security (@PreAuthorize, @Secured)
-
-```mermaid
-flowchart TD
-    N1["WHAT THIS PART COVERS"]
-    N2["1. User Management Entity Design"]
-    N3["2. Role-Based Access Control (RBAC)"]
-    N4["3. Permission/Authority Management"]
-    N5["4. Password Security (BCrypt, Argon2)"]
-    N6["5. Custom UserDetailsService Implementation"]
-    N7["6. Method-Level Security (@PreAuthorize, @Secured)"]
-    N8["7. Database Row-Level Security"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -158,21 +115,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. USER / - id / - username / - email / - password / - ena
-2. USER_ROLES / (Join Table) / - user_id / - role_id
-3. ROLE / - id / - name / - desc
-4. PERMISSION / - id / - name / - resource / - action
-
-```mermaid
-flowchart TD
-    N1["USER / - id / - username / - email / - password / - ena"]
-    N2["USER_ROLES / (Join Table) / - user_id / - role_id"]
-    N3["ROLE / - id / - name / - desc"]
-    N5["PERMISSION / - id / - name / - resource / - action"]
-    N1 --> N2
-    N3 --> N5
-```
 
 ### Entity Classes
 

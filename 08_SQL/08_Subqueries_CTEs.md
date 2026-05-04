@@ -1,4 +1,4 @@
-> **SQL Chapter 08/20** | [← Previous](07_JOINs_Complete.md) | [Index](../00_MASTER_INDEX.md) | [Next →](09_Window_Functions.md)
+﻿> **SQL Chapter 08/20** | [← Previous](07_JOINs_Complete.md) | [Index](../00_MASTER_INDEX.md) | [Next →](09_Window_Functions.md)
 
 ---
 
@@ -150,25 +150,6 @@ SELECT * FROM <cte_name>;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SELECT * FROM employees / WHERE salary > (SELECT AVG
-2. SELECT * FROM employees / WHERE (dept_id, job_title) =
-3. SELECT * FROM employees / WHERE dept_id IN (SELECT dept
-4. SELECT d.dept_name, sub.avg_salary / FROM departments d
-5. SELECT * FROM employees e / WHERE salary > (SELECT A
-
-```mermaid
-flowchart TD
-    N1["SELECT * FROM employees / WHERE salary &gt; (SELECT AVG"]
-    N2["SELECT * FROM employees / WHERE (dept_id, job_title) = "]
-    N3["SELECT * FROM employees / WHERE dept_id IN (SELECT dept"]
-    N4["SELECT d.dept_name, sub.avg_salary / FROM departments d"]
-    N5["SELECT * FROM employees e / WHERE salary &gt; (SELECT A"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════

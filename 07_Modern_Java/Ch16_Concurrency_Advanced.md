@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch15_Concurrency_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous](Ch15_Concurrency_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md) — debugging concurrency in prod
 
 ---
@@ -29,16 +29,6 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. [T1] [T2] [T3] [T4] / ↓ ↓ ↓ ↓ / Idle Working Idle Worki
-2. Task5, Task6..
-
-```mermaid
-flowchart TD
-    N1["[T1] [T2] [T3] [T4] / ↓ ↓ ↓ ↓ / Idle Working Idle Worki"]
-    N2["Task5, Task6.."]
-    N1 --> N2
-```
 
 ## Thread Pool Types
 
@@ -90,19 +80,6 @@ ThreadPoolExecutor production = new ThreadPoolExecutor(
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. AbortPolicy (default) — throws RejectedExecutionExcepti
-2. DiscardPolicy — silently drops the task (dangerous!)
-3. PRODUCTION RULE: Almost always use CallerRunsPolicy
-
-```mermaid
-flowchart TD
-    N1["AbortPolicy (default) — throws RejectedExecutionExcepti"]
-    N2["DiscardPolicy — silently drops the task (dangerous!)"]
-    N3["PRODUCTION RULE: Almost always use CallerRunsPolicy"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ## Submitting Tasks — Runnable vs Callable
 
@@ -172,31 +149,6 @@ Formula: `Threads = CPU cores × (1 + Wait time/Compute time)`. I/O-bound: wait=
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Future PROBLEMS:
-2. • get() blocks the calling thread
-3. • Can't chain multiple async operations
-4. • No way to combine futures
-5. • No callback support
-6. CompletableFuture SOLVES ALL OF THESE.
-7. It's Java's Promise (like JavaScript Promise).
-
-```mermaid
-flowchart TD
-    N1["Future PROBLEMS:"]
-    N2["• get() blocks the calling thread"]
-    N3["• Can't chain multiple async operations"]
-    N4["• No way to combine futures"]
-    N5["• No callback support"]
-    N6["CompletableFuture SOLVES ALL OF THESE."]
-    N7["It's Java's Promise (like JavaScript Promise)."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```java
 import java.util.concurrent.CompletableFuture;
@@ -350,37 +302,74 @@ CompletableFuture<String> logged = CompletableFuture
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COMPLETABLEFUTURE CHEAT SHEET
-2. Operation Description
-3. supplyAsync() Start async with return value
-4. runAsync() Start async, no return value
-5. thenApply() Transform result (sync)
-6. thenApplyAsync() Transform result (async, different thr
-7. thenCompose() Chain another CF (flatMap)
-
-```mermaid
-flowchart TD
-    N1["COMPLETABLEFUTURE CHEAT SHEET"]
-    N2["Operation Description"]
-    N3["supplyAsync() Start async with return value"]
-    N4["runAsync() Start async, no return value"]
-    N5["thenApply() Transform result (sync)"]
-    N6["thenApplyAsync() Transform result (async, different thr"]
-    N7["thenCompose() Chain another CF (flatMap)"]
-    N8["thenAccept() Consume result, return void"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
-# PART 10: java.util.concurrent LOCKS
+# PART 10: java.util.concurrent LOCKS (The Physics of Mutex vs CAS)
+
+> *"There are exactly two ways to prevent thread collisions: Pessimistic OS Locking and Optimistic CPU Locking. `java.util.concurrent.locks` provides the mechanical abstractions to interact directly with the OS Scheduler and the CPU's atomic instruction sets."*
+
+### 10.1 The Hardware Reality: Pessimistic Mutexes vs Optimistic CAS
+
+Before using `ReentrantLock` or `AtomicInteger`, you must understand the physical hardware cost of locking.
+
+**1. Pessimistic Locking (The OS Mutex / `ReentrantLock`)**
+When multiple threads contend for a `ReentrantLock` or a `synchronized` block that has escalated to a "Fat Lock":
+1. The JVM makes an OS System Call (e.g., `futex` on Linux).
+2. The OS Scheduler physically rips the competing threads off the CPU core.
+3. The OS places them in a Wait Queue and dumps their L1 cache registers to RAM.
+4. When the lock is released, the OS wakes up a thread, triggering a violently expensive **Context Switch** (~10,000 nanoseconds).
+*Rule:* Pessimistic locks assume contention will be high. They sacrifice massive overhead to prevent the CPU from spinning wastefully.
+
+```mermaid
+sequenceDiagram
+    %% Pessimistic Locking OS Mutex Physics
+    participant T1 as Thread 1 (Owner)
+    participant OS as Linux Kernel (Scheduler)
+    participant T2 as Thread 2 (Waiting)
+
+    T1->>OS: futex(lock_addr) : Acquire Lock
+    Note over T1: Executes Critical Section
+    T2->>OS: futex(lock_addr) : Acquire Lock
+    Note over OS: Lock is held! Ripping T2 off CPU...
+    OS->>OS: Dump T2 L1 Cache/Registers to RAM
+    OS->>T2: Park Thread (Sleep) : 0% CPU
+    T1->>OS: futex_wake() : Release Lock
+    OS->>OS: Context Switch (10,000ns penalty)
+    OS->>T2: Wake up & Load Registers
+    T2->>OS: futex(lock_addr) : Acquire Lock
+    Note over T2: Executes Critical Section
+```
+
+**2. Optimistic Locking (The CPU CAS / `AtomicInteger`)**
+When multiple threads contend for an `AtomicInteger`:
+1. The JVM issues a hardware-level instruction: **Compare-And-Swap (CAS)** (e.g., `LOCK CMPXCHG` on x86).
+2. The CPU locks the memory bus (or just the Cache Line via MESI) for a single clock cycle.
+3. Thread A checks if the value is exactly what it expects. If yes, it updates it.
+4. If Thread B tries to update it at the exact same nanosecond, the CPU hardware itself rejects Thread B.
+5. Thread B does *not* go to sleep. It stays on the CPU core and immediately retries the operation in a tight `while` loop (Spin Lock).
+*Rule:* Optimistic locks assume contention will be low. They avoid the 10,000ns OS Context Switch, but if contention is high, they burn 100% CPU cycles spinning in an infinite retry loop.
+
+```mermaid
+sequenceDiagram
+    %% Optimistic Locking CPU CAS Physics
+    participant T1 as Thread 1 (CPU Core 1)
+    participant BUS as Hardware Bus / L1 Cache
+    participant T2 as Thread 2 (CPU Core 2)
+
+    Note over BUS: Current Value = 5
+    T1->>BUS: LOCK CMPXCHG (Expect 5, Set 6)
+    T2->>BUS: LOCK CMPXCHG (Expect 5, Set 6)
+    Note over BUS: Hardware resolves race at nanosecond level
+    BUS-->>T1: Success! Value is now 6
+    BUS-->>T2: Failure! Value is 6, not 5
+    Note over T1: Continues execution (0ns OS overhead)
+    Note over T2: Stays on CPU (100% usage)
+    T2->>BUS: Retry: LOCK CMPXCHG (Expect 6, Set 7)
+    BUS-->>T2: Success! Value is now 7
+```
+
+---
 
 ```java
 import java.util.concurrent.locks.*;
@@ -451,33 +440,6 @@ if (!sl.validate(stamp)) {    // Check if a write happened
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. synchronized vs ReentrantLock
-2. Feature synchronized ReentrantLock
-3. Auto-release ✅ Yes ❌ Manual (finally)
-4. tryLock ❌ No ✅ Yes
-5. Fairness ❌ No ✅ new RL(true)
-6. Multiple conditions ❌ 1 wait set ✅ newCondition()
-7. Interruptible ❌ No ✅ lockInterruptibly
-
-```mermaid
-flowchart TD
-    N1["synchronized vs ReentrantLock"]
-    N2["Feature synchronized ReentrantLock"]
-    N3["Auto-release ✅ Yes ❌ Manual (finally)"]
-    N4["tryLock ❌ No ✅ Yes"]
-    N5["Fairness ❌ No ✅ new RL(true)"]
-    N6["Multiple conditions ❌ 1 wait set ✅ newCondition()"]
-    N7["Interruptible ❌ No ✅ lockInterruptibly"]
-    N8["Performance Similar Similar"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -546,50 +508,6 @@ Depends on context: (1) **Deadlock prevention**: retry with exponential backoff 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. T1
-2. OS T1
-3. T1
-4. OS T2
-5. T2
-6. OS T1
-7. T2
-8. OS T2
-9. v1
-10. OS T2
-11. v1
-12. Carrier T1
-
-```mermaid
-flowchart TD
-    N1["T1"]
-    N2["T2"]
-    N3["v1"]
-    N4["v2"]
-    N5["v3"]
-    N6["v4"]
-    N7["v5"]
-    N8["v6"]
-    N9["OS T1"]
-    N10["OS T2"]
-    N11["Carrier T1"]
-    N12["Car T2"]
-    N1 --> N9
-    N1 --> N10
-    N2 --> N9
-    N2 --> N10
-    N3 --> N10
-    N3 --> N11
-    N4 --> N11
-    N5 --> N11
-    N5 --> N12
-    N6 --> N11
-    N6 --> N12
-    N7 --> N11
-    N7 --> N12
-    N8 --> N11
-    N8 --> N12
-```
 
 ```java
 // Creating virtual threads (Java 21+)
@@ -651,33 +569,6 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. VIRTUAL THREADS — WHEN TO USE
-2. ✅ USE for: ❌ DON'T USE for:
-3. • I/O-bound tasks (HTTP, DB, files) • CPU-bound computa
-4. simpler I/O-bound concurrent code
-5. GOTCHAS:
-6. • Not faster for CPU work — only for I/O waiting
-7. STRUCTURED CONCURRENCY (Preview, Java 21+):
-
-```mermaid
-flowchart TD
-    N1["VIRTUAL THREADS — WHEN TO USE"]
-    N2["✅ USE for: ❌ DON'T USE for:"]
-    N3["• I/O-bound tasks (HTTP, DB, files) • CPU-bound computa"]
-    N4["simpler I/O-bound concurrent code"]
-    N5["GOTCHAS:"]
-    N6["• Not faster for CPU work — only for I/O waiting"]
-    N7["STRUCTURED CONCURRENCY (Preview, Java 21+):"]
-    N8["var user = scope.fork(() -&gt; fetchUser(id));"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -795,33 +686,6 @@ for (int i = 0; i < tasks.size(); i++) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PRODUCTION CONCURRENCY CHECKLIST
-2. □ Set bounded queues (prevent OOM)
-3. □ Name your threads (ThreadFactory with meaningful name
-4. □ Always handle InterruptedException properly
-5. □ Use try-finally for lock.unlock()
-6. □ Prefer concurrent collections over synchronized wrapp
-7. □ Use CompletableFuture over raw Future
-
-```mermaid
-flowchart TD
-    N1["PRODUCTION CONCURRENCY CHECKLIST"]
-    N2["□ Set bounded queues (prevent OOM)"]
-    N3["□ Name your threads (ThreadFactory with meaningful name"]
-    N4["□ Always handle InterruptedException properly"]
-    N5["□ Use try-finally for lock.unlock()"]
-    N6["□ Prefer concurrent collections over synchronized wrapp"]
-    N7["□ Use CompletableFuture over raw Future"]
-    N8["□ Set timeouts on all blocking calls"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1055,25 +919,29 @@ ForkJoinPool ioForkJoinPool = new ForkJoinPool(100);  // 100 worker threads
 
 Virtual threads are NOT magic. One specific pattern completely breaks them: `synchronized` blocks.
 
-```
-╔══════════════════════════════════════════════════════════════════╗
-║  THE BUS DRIVER ANALOGY                                          ║
-║                                                                  ║
-║  Virtual thread = Passenger on a bus                             ║
-║  Carrier thread = Bus driver                                     ║
-║                                                                  ║
-║  Normal virtual thread I/O wait:                                 ║
-║  → Passenger says "I'll wait at the next stop" (I/O starts)     ║
-║  → Driver drops them off, picks up OTHER passengers              ║
-║  → Driver is NEVER idle (always carrying someone)                ║
-║  → Efficient!                                                    ║
-║                                                                  ║
-║  With synchronized block (PINNING):                              ║
-║  → Passenger handcuffs themselves to the driver's seat           ║
-║  → Driver says "I have to wait for this passenger's I/O too"    ║
-║  → Driver is STUCK until the passenger is done                   ║
-║  → Other passengers wait. This defeats virtual thread benefits!  ║
-╚══════════════════════════════════════════════════════════════════╝
+```mermaid
+flowchart LR
+    %% Virtual Thread Pinning Physics
+    subgraph "Virtual Thread (VT1) Execution"
+        SYNC["Enters: synchronized(obj)"]
+        IO["Executes: Network I/O (Wait)"]
+
+    subgraph "JVM Carrier Thread (OS Thread)"
+        MOUNT["VT1 Mounted"]
+        PINNED["Carrier Pinned!\nCannot unmount VT1"]
+
+    subgraph "Other Virtual Threads"
+        VT2["VT2: Ready"]
+        VT3["VT3: Ready"]
+        STARVE["Starvation\n(Waiting for Carrier)"]
+
+    MOUNT --> SYNC
+    SYNC --> IO
+    IO -.->|JVM attempts unmount| PINNED
+    PINNED -->|Blocks| STARVE
+    VT2 --> STARVE
+    VT3 --> STARVE
+
 ```
 
 ```java

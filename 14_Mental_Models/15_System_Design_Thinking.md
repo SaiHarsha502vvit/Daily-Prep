@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](14_Optimization_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_Distributed_Systems_Thinking.md)
+﻿> **Navigation**: [< Previous](14_Optimization_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_Distributed_Systems_Thinking.md)
 
 # Mental Models — System Design Thinking
 
@@ -44,22 +44,6 @@ STEP 4: NOW design the storage to support those queries.
 └──────────┘    └──────────┘    └──────────┘    └──────────┘
 ```
 
-**Flow:**
-1. Users
-2. Actions
-3. Views
-4. Storage
-
-```mermaid
-flowchart LR
-    N1["Users"]
-    N2["Actions"]
-    N3["Views"]
-    N4["Storage"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -94,33 +78,6 @@ Storage/year:  3 GB × 365 ≈ 1 TB
 Insight: Read-heavy (100:1 ratio) → need caching + CDN
 ```
 
-**Flow:**
-1. BACK-OF-THE-ENVELOPE ESTIMATION
-2. Before designing, ESTIMATE the scale:
-3. NUMBERS TO MEMORIZE:
-4. 1 day = 86,400 seconds ≈ 100K seconds
-5. 1 month = 2.5 million seconds
-6. 1 year = 30 million seconds
-7. 1 char = 1 byte (ASCII) / 2 bytes (UTF)
-
-```mermaid
-flowchart TD
-    N1["BACK-OF-THE-ENVELOPE ESTIMATION"]
-    N2["Before designing, ESTIMATE the scale:"]
-    N3["NUMBERS TO MEMORIZE:"]
-    N4["1 day = 86,400 seconds ≈ 100K seconds"]
-    N5["1 month = 2.5 million seconds"]
-    N6["1 year = 30 million seconds"]
-    N7["1 char = 1 byte (ASCII) / 2 bytes (UTF)"]
-    N8["1 tweet ≈ 300 bytes"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -180,23 +137,6 @@ KEY INSIGHT: Over-engineering at Stage 1 is worse than
 under-engineering. Build for 10x your current scale, not 1000x.
 ```
 
-**Flow:**
-1. App / Server
-2. Database / (separate)
-3. App / Server
-4. Cache / (Redis)
-5. DB
-
-```mermaid
-flowchart TD
-    N2["App / Server"]
-    N3["Database / (separate)"]
-    N4["Cache / (Redis)"]
-    N5["DB"]
-    N2 --> N3
-    N2 --> N4
-    N4 --> N5
-```
 
 ---
 

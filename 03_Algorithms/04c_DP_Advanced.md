@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](04b_DP_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿> **Navigation**: [< Previous Chapter](04b_DP_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
 > 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — advanced state design and optimization
 
 ---
@@ -800,30 +800,6 @@ MISTAKE 6: Redundant states
 │  ───────────                                                                    │
 ```
 
-**Flow:**
-1. This section covers advanced DP patterns used in competitive programming, interviews, and optimization problems.
-2. Digit DP focuses on counting numbers in a range that satisfy digit-based properties.
-3. Core pattern: build numbers digit-by-digit with bounded-state tracking.
-4. Typical examples include digit-sum, non-repeating digits, and divisibility constraints.
-
-```mermaid
-flowchart TD
-    N1["This section covers advanced DP patterns used in:"]
-    N2["• Competitive programming (Codeforces, ICPC, IOI)"]
-    N3["• Technical interviews at top companies"]
-    N4["• Real-world optimization problems"]
-    N5["## DIGIT DP - COUNTING NUMBERS WITH PROPERTIES"]
-    N6["DIGIT DP - THE PATTERN"]
-    N7["Examples:"]
-    N8["• Count numbers with digit sum = K"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // Count numbers from 0 to N with digit sum = targetSum
@@ -928,34 +904,6 @@ long solve(String N, int pos, int prev, boolean tight) {
 │ ──────────────────────────────────                                              │
 ```
 
-**Flow:**
-1. BITMASK DP - COMPLETE GUIDE
-2. BITMASK OPERATIONS:
-3. Operation Code Example
-4. Check if bit i is set (mask >> i) & 1 mask=5: bit
-5. Set bit i mask
-6. (1 << i) 5 2=7 (set bit 1)
-7. Clear bit i mask & ~(1 << i) 7&~2=5 (clear bit 1)
-8. Toggle bit i mask ^ (1 << i) 5^4=1 (toggle bit 2)
-
-```mermaid
-flowchart TD
-    N1["BITMASK DP - COMPLETE GUIDE"]
-    N2["BITMASK OPERATIONS:"]
-    N3["Operation Code Example"]
-    N4["Check if bit i is set (mask &gt;&gt; i) & 1 mask=5: bit"]
-    N5["Set bit i mask | (1 &lt;&lt; i) 5|2=7 (set bit 1)"]
-    N6["Clear bit i mask & ~(1 &lt;&lt; i) 7&~2=5 (clear bit 1)"]
-    N7["Toggle bit i mask ^ (1 &lt;&lt; i) 5^4=1 (toggle bit 2)"]
-    N8["Count set bits Integer.bitCount() bitCount(5)=2"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // dp[mask][i] = min cost to visit cities in mask, ending at city i
@@ -1071,33 +1019,6 @@ int assignmentProblem(int[][] cost) {
 │ ───────────                                                                     │
 ```
 
-**Flow:**
-1. INTERVAL DP - THE PATTERN
-2. CLASSIC PROBLEMS:
-3. • Matrix chain multiplication
-4. • Optimal BST
-5. • Palindrome partitioning
-6. • Burst balloons
-7. • Stone game
-
-```mermaid
-flowchart TD
-    N1["INTERVAL DP - THE PATTERN"]
-    N2["CLASSIC PROBLEMS:"]
-    N3["• Matrix chain multiplication"]
-    N4["• Optimal BST"]
-    N5["• Palindrome partitioning"]
-    N6["• Burst balloons"]
-    N7["• Stone game"]
-    N8["TEMPLATE:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // dp[i][j] = optimal solution for interval [i, j]
@@ -1280,28 +1201,6 @@ int minCost(int n, int[] cuts) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. INTERVAL DP DECISION GUIDE:
-2. Signal It's Interval DP 'Merge' or 'split' Matrix chain, cut a stick 'Remove from ends' Stone game, burst balloons 'Optimal over range' Any [i..j] optimization Answer for [i,j] uses O(n³) — try all split points k answers for sub-ranges
-
-```mermaid
-flowchart TD
-    N1["INTERVAL DP DECISION GUIDE:"]
-    N2["Signal It's Interval DP"]
-    N3["'Merge' or 'split' Matrix chain, cut a stick"]
-    N4["'Remove from ends' Stone game, burst balloons"]
-    N5["'Optimal over range' Any [i..j] optimization"]
-    N6["Answer for [i,j] uses O(n³) — try all split points k"]
-    N7["answers for sub-ranges"]
-    N8["Trick: 'LAST to remove' Burst Balloons thinking"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## 🌳 DP on Trees
 
@@ -1319,19 +1218,6 @@ flowchart TD
 │ ─────────────────────────────────────────                                       │
 ```
 
-**Flow:**
-1. TREE DP - THE PATTERN
-2. WHEN TO USE: Compute optimal values on tree structures
-3. BASIC TREE DP - MAXIMUM INDEPENDENT SET:
-
-```mermaid
-flowchart TD
-    N1["TREE DP - THE PATTERN"]
-    N2["WHEN TO USE: Compute optimal values on tree structures"]
-    N3["BASIC TREE DP - MAXIMUM INDEPENDENT SET:"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 // Select maximum weight of non-adjacent nodes
@@ -1493,33 +1379,6 @@ void dfs2(int v, int parent) {
 │ ─────────────────────────────────────────────                                   │
 ```
 
-**Flow:**
-1. CONVEX HULL TRICK (CHT)
-2. Reduces O(n²) to O(n) or O(n log n)
-3. CONDITIONS:
-4. • Slopes b[j] are monotonic
-5. • Query values a[i] are monotonic
-6. • Want minimum (or can convert to minimum)
-7. INTUITION:
-
-```mermaid
-flowchart TD
-    N1["CONVEX HULL TRICK (CHT)"]
-    N2["Reduces O(n²) to O(n) or O(n log n)"]
-    N3["CONDITIONS:"]
-    N4["• Slopes b[j] are monotonic"]
-    N5["• Query values a[i] are monotonic"]
-    N6["• Want minimum (or can convert to minimum)"]
-    N7["INTUITION:"]
-    N8["Each j gives a line: y = b[j] _ x + dp[j]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 class ConvexHullTrick {
@@ -1590,25 +1449,6 @@ for (int i = 1; i < n; i++) {
 │ ───────────────                                                                 │
 ```
 
-**Flow:**
-1. DIVIDE AND CONQUER DP
-2. And: optimal k for j₁ ≤ optimal k for j₂ when j₁ < j
-3. (This is the 'monotonicity of optimal splits' property)
-4. Reduces O(n × m × n) to O(n × m × log n)
-5. IMPLEMENTATION:
-
-```mermaid
-flowchart TD
-    N1["DIVIDE AND CONQUER DP"]
-    N2["And: optimal k for j₁ ≤ optimal k for j₂ when j₁ &lt; j"]
-    N3["(This is the 'monotonicity of optimal splits' property)"]
-    N4["Reduces O(n × m × n) to O(n × m × log n)"]
-    N5["IMPLEMENTATION:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ```java
 // dp[i][j] = optimal value using exactly i partitions ending at j
@@ -1706,16 +1546,6 @@ long cost(int l, int r) {
 │ ──────────────────────────────────────────────────────────────                  │
 ```
 
-**Flow:**
-1. ✓ ✓ ✓ / ✓ ✓ ▐▌ ←
-2. ✓ ✓ ✓ / here ✓ ✓ ?
-
-```mermaid
-flowchart TD
-    N1["✓ ✓ ✓ / ✓ ✓ ▐▌ ←"]
-    N2["✓ ✓ ✓ / here ✓ ✓ ?"]
-    N1 --> N2
-```
 
 ```java
 // Count ways to tile n×m grid with dominoes
@@ -1775,19 +1605,6 @@ long dominoTiling(int n, int m) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Time: O(m × n × 2^n)
-2. Space: O(2^n)
-3. Practical for n ≤ 15-20
-
-```mermaid
-flowchart TD
-    N1["Time: O(m × n × 2^n)"]
-    N2["Space: O(2^n)"]
-    N3["Practical for n ≤ 15-20"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ## 🎨 DP Pattern Quick Reference
 
@@ -1814,17 +1631,6 @@ flowchart TD
 _DP is not about memorizing solutions - it's about SEEING the substructure!_
 ```
 
-**Flow:**
-1. Knuth Optimization
-2. Quadratic near-linear
-3. O(n²)
-
-```mermaid
-flowchart LR
-    N1["| Knuth Optimization|Quadratic"]
-    N2["near-linear | O(n²) | O(n²) |"]
-    N1 --> N2
-```
 
 ---
 

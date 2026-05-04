@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch62_SB_Microservices_Patterns.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch62_SB_Microservices_Patterns.md)
 
 ---
 
@@ -54,22 +54,6 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Microservices? / • Scale independently: Scale
-2. HOW: How Do Microservices Communicate? / • Service Disc
-3. WHEN: When to Use Microservices? / USE MICROSERVICES: /
-4. WHICH: Which Patterns to Master? / ESSENTIAL: API Gatew
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Microservices? / • Scale independently: Scale "]
-    N2["HOW: How Do Microservices Communicate? / • Service Disc"]
-    N3["WHEN: When to Use Microservices? / USE MICROSERVICES: /"]
-    N4["WHICH: Which Patterns to Master? / ESSENTIAL: API Gatew"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -131,44 +115,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Load Balancer / Reverse Proxy
-2. Order / Service
-3. Load Balancer / Reverse Proxy
-4. Payment / Service
-5. User / Service
-6. User DB / (Postgres)
-7. User / Service
-8. Order DB / (Mongo)
-9. Order / Service
-10. User DB / (Postgres)
-11. Order / Service
-12. Order DB / (Mongo)
-
-```mermaid
-flowchart TD
-    N2["Load Balancer / Reverse Proxy"]
-    N3["User / Service"]
-    N4["Order / Service"]
-    N5["Payment / Service"]
-    N6["Inventory / Service"]
-    N7["User DB / (Postgres)"]
-    N8["Order DB / (Mongo)"]
-    N9["Payment DB / (Postgres)"]
-    N10["Inventory / DB"]
-    N2 --> N4
-    N2 --> N5
-    N3 --> N7
-    N3 --> N8
-    N4 --> N7
-    N4 --> N8
-    N4 --> N9
-    N5 --> N8
-    N5 --> N9
-    N5 --> N10
-    N6 --> N9
-    N6 --> N10
-```
 
 ### Key Principles
 
@@ -206,35 +152,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Service / Discovery / (Eureka)
-2. API Gateway / (Gateway)
-3. Config Server / (Config)
-4. Circuit / Breaker / (Resilience4j)
-5. Distributed / Tracing / (Sleuth)
-6. Load / Balancing / (LoadBalancer)
-7. Message / Broker / (Stream)
-
-```mermaid
-flowchart TD
-    N1["Service / Discovery / (Eureka)"]
-    N2["API Gateway / (Gateway)"]
-    N3["Config Server / (Config)"]
-    N4["Circuit / Breaker / (Resilience4j)"]
-    N5["Distributed / Tracing / (Sleuth)"]
-    N6["Load / Balancing / (LoadBalancer)"]
-    N7["Message / Broker / (Stream)"]
-    N8["Security / (Security)"]
-    N9["Monitoring / (Actuator)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-    N8 --> N9
-```
 
 ---
 
@@ -271,16 +188,6 @@ With Service Discovery:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Service A needs to call Service B / ❌ Hard-coded URLs:
-2. Service A calls 'order-service' (logical name) / ✅ Serv
-
-```mermaid
-flowchart TD
-    N1["Service A needs to call Service B / ❌ Hard-coded URLs: "]
-    N2["Service A calls 'order-service' (logical name) / ✅ Serv"]
-    N1 --> N2
-```
 
 ### Eureka Server Setup
 
@@ -572,20 +479,6 @@ With API Gateway:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Client
-2. User Service (port 8081) / Client
-3. Order Serv
-4. Client
-5. API Gateway (port 8080) / Gateway
-6. User/Order
-
-```mermaid
-flowchart TD
-    N1["Client → User Service (port 8081) / Client → Order Serv"]
-    N2["Client → API Gateway (port 8080) / Gateway → User/Order"]
-    N1 --> N2
-```
 
 ### Spring Cloud Gateway Setup
 
@@ -978,19 +871,6 @@ With Circuit Breaker:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CLOSED / (Requests / pass through)
-2. OPEN / (Requests / fail fast)
-3. HALF-OPEN / (Limited / requests)
-
-```mermaid
-flowchart TD
-    N3["CLOSED / (Requests / pass through)"]
-    N4["OPEN / (Requests / fail fast)"]
-    N5["HALF-OPEN / (Limited / requests)"]
-    N3 --> N4
-    N4 --> N5
-```
 
 ### Resilience4j Setup
 

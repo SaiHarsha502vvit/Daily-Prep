@@ -1,4 +1,4 @@
-# 🌐 API Design & REST — Complete Guide
+﻿# 🌐 API Design & REST — Complete Guide
 
 **Navigation**: [< Testing](06_Testing_Fundamentals.md) | [Index](00_INDEX.md) | [Next: Security >](08_Security_Fundamentals.md)
 
@@ -27,23 +27,6 @@
 └─────────────┘     HTTP Response     └──────────────┘
 
 Your API = a CONTRACT. Once published, breaking changes = TRUST broken.
-```
-
-**Flow:**
-1. Frontend / (React/ / Angular) --(HTTP Request)--> Backend / (Spring / Boot)
-2. Mobile / App --(HTTP Request)--> Your API
-3. Partner / Company --(HTTP Request)--> Your API
-
-```mermaid
-flowchart TD
-    N1["Frontend / (React/ / Angular)"]
-    N2["Backend / (Spring / Boot)"]
-    N3["Mobile / App"]
-    N4["Your API"]
-    N5["Partner / Company"]
-    N1 -->|"HTTP Request"| N2
-    N3 -->|"HTTP Request"| N4
-    N5 -->|"HTTP Request"| N4
 ```
 
 ---
@@ -82,29 +65,6 @@ Example:
   POST /users         → Creates new user (calling twice = TWO users!)
 ```
 
-**Flow:**
-1. GET /users/42
-2. Returns user 42 (no change)
-3. DELETE /users/42
-4. Deletes user 42 (calling again = same state)
-5. POST /users
-6. Creates new user (calling twice = TWO users!)
-
-```mermaid
-flowchart LR
-    N1["GET /users/42"]
-    N2["Returns user 42 (no change)"]
-    N3["DELETE /users/42"]
-    N4["Deletes user 42 (calling again = same state)"]
-    N5["POST /users"]
-    N6["Creates new user (calling twice = TWO users!)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
-
-
-
 🔬 **Section Challenge — HTTP Methods (Verbs)**
 
 **Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
@@ -112,7 +72,6 @@ flowchart LR
 
 HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
 </details>
-
 
 ## HTTP Status Codes
 
@@ -141,70 +100,7 @@ HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still hea
   503 Service Unavailable → Server overloaded, try later
 ```
 
-**Flow:**
-1. 200 OK
-2. GET/PUT/PATCH succeeded 201 Created
-3. POST succeeded, new resource created
-4. 204 No Content
-5. DELETE succeeded, nothing to return
-6. 301 Moved Permanently
-7. Resource has new URL forever 304 Not Modified
-8. Cached version is still valid
-9. 400 Bad Request
-10. Malformed JSON, missing required field
-
-```mermaid
-flowchart TD
-    N1["200 OK"]
-    N2["GET/PUT/PATCH succeeded"]
-    N3["201 Created"]
-    N4["POST succeeded, new resource created"]
-    N5["204 No Content"]
-    N6["DELETE succeeded, nothing to return"]
-    N7["301 Moved Permanently"]
-    N8["Resource has new URL forever"]
-    N9["304 Not Modified"]
-    N10["Cached version is still valid"]
-    N11["400 Bad Request"]
-    N12["Malformed JSON, missing required field"]
-    N13["401 Unauthorized"]
-    N14["Not authenticated (who are you?)"]
-    N15["403 Forbidden"]
-    N16["Authenticated but not authorized (you can't do thi"]
-    N17["404 Not Found"]
-    N18["Resource doesn't exist"]
-    N19["409 Conflict"]
-    N20["Duplicate key, version conflict"]
-    N21["422 Unprocessable"]
-    N22["Valid JSON, but business logic rejects it"]
-    N23["429 Too Many Requests"]
-    N24["Rate limited"]
-    N25["500 Internal Error"]
-    N26["Bug in your code"]
-    N27["502 Bad Gateway"]
-    N28["Upstream service down"]
-    N29["503 Service Unavailable"]
-    N30["Server overloaded, try later"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-    N17 --> N18
-    N19 --> N20
-    N21 --> N22
-    N23 --> N24
-    N25 --> N26
-    N27 --> N28
-    N29 --> N30
-```
-
 ---
-
-
 
 🔬 **Section Challenge — HTTP Status Codes**
 
@@ -213,7 +109,6 @@ flowchart TD
 
 HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
 </details>
-
 
 # HOW: Designing Good APIs
 
@@ -245,48 +140,6 @@ PATH rules:
   - Use PLURAL: /api/users (NOT /api/user)
   - Max 3 levels deep: /api/users/42/orders (NOT /api/a/b/c/d/e)
   - Version in URL: /api/v1/users
-```
-
-**Flow:**
-1. GET /api/users
-2. List all users
-3. GET /api/users/42
-4. Get user 42
-5. POST /api/users
-6. Create user
-7. PUT /api/users/42
-8. Update user 42
-9. DELETE /api/users/42
-10. Delete user 42
-11. GET /api/users/42/orders
-12. All orders for user 42
-
-```mermaid
-flowchart TD
-    N1["GET /api/users"]
-    N2["List all users"]
-    N3["GET /api/users/42"]
-    N4["Get user 42"]
-    N5["POST /api/users"]
-    N6["Create user"]
-    N7["PUT /api/users/42"]
-    N8["Update user 42"]
-    N9["DELETE /api/users/42"]
-    N10["Delete user 42"]
-    N11["GET /api/users/42/orders"]
-    N12["All orders for user 42"]
-    N13["GET /api/users/42/orders/7"]
-    N14["Order 7 of user 42"]
-    N15["POST /api/users/42/orders"]
-    N16["Create order for user 42"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
 ```
 
 ## Level 2 — Request & Response Design
@@ -410,34 +263,6 @@ CHANGING types    → BREAKING change (string → int)
 CHANGING URL      → BREAKING change (new version)
 ```
 
-**Flow:**
-1. ADDING fields
-2. NOT a breaking change (backward compatible)
-3. REMOVING fields
-4. BREAKING change (must version)
-5. CHANGING types
-6. BREAKING change (string int)
-7. CHANGING URL
-8. BREAKING change (new version)
-
-```mermaid
-flowchart TD
-    N1["ADDING fields"]
-    N2["NOT a breaking change (backward compatible)"]
-    N3["REMOVING fields"]
-    N4["BREAKING change (must version)"]
-    N5["CHANGING types"]
-    N6["BREAKING change (string"]
-    N7["int)"]
-    N8["CHANGING URL"]
-    N9["BREAKING change (new version)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N6 --> N7
-    N8 --> N9
-```
-
 ## Level 6 — Filtering, Sorting, Field Selection
 
 ```
@@ -456,8 +281,6 @@ SEARCH:
 
 ---
 
-
-
 🔬 **Section Challenge — Level 6 — Filtering, Sorting, Field Selection**
 
 **Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
@@ -465,7 +288,6 @@ SEARCH:
 
 Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
 </details>
-
 
 # WHERE: Real-World Patterns
 
@@ -508,8 +330,6 @@ public record CreateUserRequest(
 ) {}
 ```
 
-
-
 ## Rate Limiting
 
 ```
@@ -528,16 +348,7 @@ Common limits:
 
 ---
 
-
-
 🔬 **Section Challenge — Rate Limiting**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 # 🧭 API Design Cheat Sheet
 
@@ -556,6 +367,7 @@ Versioning:  /api/v1/ in URL path
 # 🏋️ Practice
 
 ## Exercise 1: Design an API
+
 ```
 Design RESTful endpoints for an E-Commerce system:
   - Products (CRUD + search + filter by category)
@@ -565,9 +377,8 @@ Design RESTful endpoints for an E-Commerce system:
 Write the URL, method, request body, response body, and status codes.
 ```
 
-
-
 ## Exercise 2: Build It
+
 ```
 Using Spring Boot, implement a REST API for a TODO app:
   - POST /api/todos (create)
@@ -581,5 +392,3 @@ Using Spring Boot, implement a REST API for a TODO app:
 ---
 
 **Next Chapter**: [Security Fundamentals →](08_Security_Fundamentals.md)
-
-

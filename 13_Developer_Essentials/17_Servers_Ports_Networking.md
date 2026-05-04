@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](16_IaC_Terraform.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Backend_Cloud_Integration.md)
+﻿**Navigation**: [< Previous](16_IaC_Terraform.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Backend_Cloud_Integration.md)
 
 **Developer Essentials Chapter 17** | [← IaC Terraform](16_IaC_Terraform.md) | [Index](../00_MASTER_INDEX.md) | [Next → Backend + Cloud](18_Backend_Cloud_Integration.md)
 
@@ -56,33 +56,6 @@ TECHNICALLY:
 • "Server" = the software (Tomcat, Nginx), not the hardware.
 ```
 
-**Flow:**
-1. ANALOGY: A Server is a RESTAURANT
-2. RESTAURANT (= Server)
-3. Has an ADDRESS (IP address = 192.168.1.100)
-4. Is OPEN at certain hours (server process running)
-5. Has a MENU (API endpoints)
-6. Takes ORDERS (HTTP requests)
-7. Cooks FOOD (processes request, queries DB)
-
-```mermaid
-flowchart TD
-    N1["ANALOGY: A Server is a RESTAURANT"]
-    N2["RESTAURANT (= Server)"]
-    N3["Has an ADDRESS (IP address = 192.168.1.100)"]
-    N4["Is OPEN at certain hours (server process running)"]
-    N5["Has a MENU (API endpoints)"]
-    N6["Takes ORDERS (HTTP requests)"]
-    N7["Cooks FOOD (processes request, queries DB)"]
-    N8["Serves DISHES (HTTP response with data)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -112,33 +85,6 @@ ANALOGY:
 • Public IP = "full postal address reachable by anyone"
 ```
 
-**Flow:**
-1. IP ADDRESS = The mailing address of a computer on a net
-2. IPv4: 192.168.1.100 (4 numbers, 0-255 each)
-3. IPv6: 2001:0db8:85a3:0000:0000:8a2e:0370:7334 (longer)
-4. SPECIAL ADDRESSES:
-5. 127.0.0.1 localhost — YOUR machine (loopback)
-6. 0.0.0.0 'All interfaces' — listen on every
-7. network adapter the machine has
-
-```mermaid
-flowchart TD
-    N1["IP ADDRESS = The mailing address of a computer on a net"]
-    N2["IPv4: 192.168.1.100 (4 numbers, 0-255 each)"]
-    N3["IPv6: 2001:0db8:85a3:0000:0000:8a2e:0370:7334 (longer)"]
-    N4["SPECIAL ADDRESSES:"]
-    N5["127.0.0.1 localhost — YOUR machine (loopback)"]
-    N6["0.0.0.0 'All interfaces' — listen on every"]
-    N7["network adapter the machine has"]
-    N8["192.168.x.x Private network (your home WiFi)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -187,16 +133,6 @@ WHY "Port already in use"?
 → Spring Boot: server.port=8081 in application.properties
 ```
 
-**Flow:**
-1. Port Service What It Does / 20 FTP (data) File transfer
-2. 3000 React dev server (Vite), Express.js / 3306 MySQL /
-
-```mermaid
-flowchart TD
-    N1["Port Service What It Does / 20 FTP (data) File transfer"]
-    N2["3000 React dev server (Vite), Express.js / 3306 MySQL /"]
-    N1 --> N2
-```
 
 ---
 
@@ -241,33 +177,6 @@ TCP vs UDP:
 └─────────────┴───────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PROTOCOL = Agreed-upon language/rules for communication
-2. ANALOGY: Like languages — if you speak English and the
-3. other person speaks French, communication fails.
-4. Both sides must agree on the same protocol.
-5. THE NETWORK LAYER CAKE:
-6. APPLICATION LAYER (what you code with)
-7. HTTP, HTTPS, WebSocket, gRPC, SMTP, FTP
-
-```mermaid
-flowchart TD
-    N1["PROTOCOL = Agreed-upon language/rules for communication"]
-    N2["ANALOGY: Like languages — if you speak English and the"]
-    N3["other person speaks French, communication fails."]
-    N4["Both sides must agree on the same protocol."]
-    N5["THE NETWORK LAYER CAKE:"]
-    N6["APPLICATION LAYER (what you code with)"]
-    N7["HTTP, HTTPS, WebSocket, gRPC, SMTP, FTP"]
-    N8["'I want to GET /api/users'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -318,31 +227,6 @@ HTTPS = HTTP + TLS/SSL encryption
 → MANDATORY for any production site
 ```
 
-**Flow:**
-1. HTTP REQUEST ANATOMY:
-2. Host: api.example.com ← Which server
-3. Authorization: Bearer eyJhbGc... ← Auth token
-4. Accept: application/json ← 'I want JSON back'
-5. Content-Type: application/json ← 'I'm sending JSON' {'name': 'Alice'} ← Body (POST/PUT only) HTTP RESPONSE:
-
-```mermaid
-flowchart TD
-    N1["HTTP REQUEST ANATOMY:"]
-    N2["Host: api.example.com ← Which server"]
-    N3["Authorization: Bearer eyJhbGc... ← Auth token"]
-    N4["Accept: application/json ← 'I want JSON back'"]
-    N5["Content-Type: application/json ← 'I'm sending JSON'"]
-    N6["{'name': 'Alice'} ← Body (POST/PUT only)"]
-    N7["HTTP RESPONSE:"]
-    N8["HTTP/1.1 200 OK ← Status code"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -397,33 +281,6 @@ Low TTL (60s) = changes propagate fast but more DNS queries.
 High TTL (86400s) = fewer queries but changes are slow.
 ```
 
-**Flow:**
-1. DNS = Domain Name System
-2. ANALOGY: DNS is the phone book of the internet.
-3. WHAT HAPPENS when you type google.com:
-4. Browser checks its cache
-5. (Have I looked this up recently?)
-6. OS checks its cache
-7. (Has any app on this machine looked it up?)
-
-```mermaid
-flowchart TD
-    N1["DNS = Domain Name System"]
-    N2["ANALOGY: DNS is the phone book of the internet."]
-    N3["WHAT HAPPENS when you type google.com:"]
-    N4["1. Browser checks its cache"]
-    N5["(Have I looked this up recently?)"]
-    N6["2. OS checks its cache"]
-    N7["(Has any app on this machine looked it up?)"]
-    N8["3. Router / ISP DNS cache"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -495,22 +352,6 @@ Each layer can ONLY talk to the layer it needs.
 Database is NEVER directly accessible from the internet.
 ```
 
-**Flow:**
-1. Port Protocol Source Action / 22 TCP My IP only ALLOW /
-2. Allow port 80, 443 from ANYWHERE (public internet) / Al
-3. Allow port 8080 from Web Server SG ONLY / No public acc
-4. Allow port 3306 from App Server SG ONLY / No public acc
-
-```mermaid
-flowchart TD
-    N1["Port Protocol Source Action / 22 TCP My IP only ALLOW /"]
-    N2["Allow port 80, 443 from ANYWHERE (public internet) / Al"]
-    N3["Allow port 8080 from Web Server SG ONLY / No public acc"]
-    N4["Allow port 3306 from App Server SG ONLY / No public acc"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -563,18 +404,6 @@ Sits in front of your app server. Handles:
 • Compression (gzip/brotli)
 ```
 
-**Flow:**
-1. LOAD BALANCER = Traffic cop that distributes requests /
-2. LOAD BALANCER (Nginx, AWS ALB, Azure LB) / (Single entr [App 1][App 2][App 3] ← Same application, 3 copies / ST
-
-```mermaid
-flowchart TD
-    N1["LOAD BALANCER = Traffic cop that distributes requests /"]
-    N2["LOAD BALANCER (Nginx, AWS ALB, Azure LB) / (Single entr"]
-    N3["[App 1][App 2][App 3] ← Same application, 3 copies / ST"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -622,30 +451,6 @@ What happens when you type "https://myapp.com/api/users":
 Total time: 100-500ms for a typical API call.
 ```
 
-**Flow:**
-1. BROWSER
-2. PORT 443 at 54.23.100.50
-3. Spring Boot
-4. Nginx
-5. Load Balancer
-6. Internet
-7. Browser
-
-```mermaid
-flowchart TD
-    N1["2. BROWSER"]
-    N2["PORT 443 at 54.23.100.50"]
-    N3["Spring Boot"]
-    N4["Nginx"]
-    N5["Load Balancer"]
-    N6["Internet"]
-    N7["Browser"]
-    N1 --> N2
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 
@@ -685,12 +490,6 @@ SSL handshake failed           │ Certificate expired or invalid.
 
 🔬 **Section Challenge — 10. Common Networking Errors (What They Mean)**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## Interview Quick-Fire
 
@@ -721,36 +520,6 @@ Q: Explain what happens when I visit a URL.
   back through entire chain → Browser renders HTML/JSON.
 ```
 
-**Flow:**
-1. DNS lookup
-2. TCP connection
-3. TLS handshake
-4. HTTP request
-5. Load balancer
-6. App server
-7. Database query
-8. Response
-
-```mermaid
-flowchart TD
-    N1["DNS lookup"]
-    N2["TCP connection"]
-    N3["TLS handshake"]
-    N4["HTTP request"]
-    N5["Load balancer"]
-    N6["App server"]
-    N7["Database query"]
-    N8["Response"]
-    N9["back through entire chain"]
-    N10["Browser renders HTML/JSON."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-    N9 --> N10
-```
 
 ---
 

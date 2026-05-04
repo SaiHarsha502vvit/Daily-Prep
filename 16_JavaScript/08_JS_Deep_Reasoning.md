@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](07_JS_Error_Handling_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous](07_JS_Error_Handling_Debugging.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 8 — JavaScript Deep Reasoning: The Questions That Freeze People
 
@@ -87,41 +87,6 @@ console.log('4');
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE EVENT LOOP — Like a Restaurant Kitchen
-2. 🧑‍🍳 Chef (Call Stack) = Synchronous code
-3. RULE: Chef finishes CURRENT dish
-4. checks ALL VIP order
-5. RULE: Chef finishes CURRENT dish
-6. checks ALL VIP order then takes ONE regular order
-7. repeat then takes ONE regular order
-8. repeat
-9. Step 1: console.log('1')
-10. Stack: execute prints '1'
-11. Step 2: setTimeout(fn, 0)
-12. Web API
-13. Macrotask Queue
-14. Step 3: Promise.then(fn)
-15. Microtask Queue
-
-```mermaid
-flowchart TD
-    N1["THE EVENT LOOP — Like a Restaurant Kitchen"]
-    N2["🧑‍🍳 Chef (Call Stack) = Synchronous code"]
-    N3["RULE: Chef finishes CURRENT dish → checks ALL VIP order"]
-    N4["→ then takes ONE regular order → repeat"]
-    N5["Step 1: console.log('1') → Stack: execute → prints '1'"]
-    N6["Step 2: setTimeout(fn, 0) → Web API → Macrotask Queue"]
-    N7["Step 3: Promise.then(fn) → Microtask Queue"]
-    N8["Step 4: console.log('4') → Stack: execute → prints '4'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Why `setTimeout(fn, 0)` doesn't mean "run immediately":**
 - `0ms` means "run after the current execution context AND all microtasks are done"
@@ -197,26 +162,6 @@ for (var i = 0; i < 5; i++) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. WHY 5,5,5,5,5 — The Shared Whiteboard Analogy
-2. var i = shared whiteboard in the function
-3. NOT a snapshot of what was written when it was created
-4. Loop ends: whiteboard now says 5
-5. 1 second later: all 5 callbacks read whiteboard
-6. all s
-
-```mermaid
-flowchart TD
-    N1["WHY 5,5,5,5,5 — The Shared Whiteboard Analogy"]
-    N2["var i = shared whiteboard in the function"]
-    N3["NOT a snapshot of what was written when it was created"]
-    N4["Loop ends: whiteboard now says 5"]
-    N5["1 second later: all 5 callbacks read whiteboard → all s"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Why `var` causes this:**
 - `var` is **function-scoped**, not block-scoped
@@ -326,28 +271,6 @@ fn();               // ?
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. `this` BINDING RULES — Like 'Whose Name Tag Am I Wearin Priority (highest lowest): Priority (highest lowest): new Binding new Person() this = new object new Binding new Person() this = new object 'Creating a new person — they get their own name tag' Explicit Binding fn.call(obj) this = obj Explicit Binding fn.call(obj) this = obj 'I'm TELLING you whose name tag to wear'
-2. Also: fn.apply(obj), fn.bind(obj)
-
-```mermaid
-flowchart TD
-    N1["`this` BINDING RULES — Like 'Whose Name Tag Am I Wearin"]
-    N2["Priority (highest → lowest):"]
-    N3["1. new Binding → new Person() → this = new object"]
-    N4["'Creating a new person — they get their own name tag'"]
-    N5["2. Explicit Binding → fn.call(obj) → this = obj"]
-    N6["'I'm TELLING you whose name tag to wear'"]
-    N7["Also: fn.apply(obj), fn.bind(obj)"]
-    N8["3. Implicit Binding → obj.greet() → this = obj"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Answering the question:**
 
@@ -408,24 +331,6 @@ class Button {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Abstract Equality Algorithm (== ) — Step by Step
-2. Boolean vs anything?
-3. Convert boolean to number fir
-4. true 1, false 0, then re-apply algorithm
-5. Otherwise?
-6. false
-
-```mermaid
-flowchart TD
-    N1["Abstract Equality Algorithm (== ) — Step by Step"]
-    N2["4. Boolean vs anything? → Convert boolean to number fir"]
-    N3["true → 1, false → 0, then re-apply algorithm"]
-    N4["6. Otherwise? → false"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Walking through tricky cases:**
 
@@ -496,36 +401,6 @@ const c = 3;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. HOISTING IS NOT 'MOVING CODE TO THE TOP'
-2. What ACTUALLY happens:
-3. JavaScript has TWO phases for each scope:
-4. Phase 1: CREATION (scanning)
-5. - var a
-6. allocate memory, initialize to undefined
-7. - let b
-8. allocate memory, DO NOT initialize (TDZ)
-9. - const c
-10. allocate memory, DO NOT initialize (TDZ)
-
-```mermaid
-flowchart TD
-    N1["HOISTING IS NOT 'MOVING CODE TO THE TOP'"]
-    N2["What ACTUALLY happens:"]
-    N3["JavaScript has TWO phases for each scope:"]
-    N4["Phase 1: CREATION (scanning)"]
-    N5["- var a → allocate memory, initialize to undefined"]
-    N6["- let b → allocate memory, DO NOT initialize (TDZ)"]
-    N7["- const c → allocate memory, DO NOT initialize (TDZ)"]
-    N8["- function → allocate memory, STORE the entire function"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Analogy:** Think of `var` like a hotel reservation — when you arrive (execution), your room exists but it's empty (undefined). `let`/`const` are like a VIP reservation — the room exists on paper but you're NOT allowed in until check-in time (your declaration line). Trying to enter early gets you thrown out (ReferenceError).
 
@@ -621,33 +496,6 @@ console.log('E');
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. TASK QUEUE HIERARCHY
-2. Priority (runs first last):
-3. 🔴 Call Stack (synchronous) — console.log('E')
-4. 🟡 Microtask Queue — Promise.then, queueMicrotask,
-5. MutationObserver
-6. 🔵 Macrotask Queue — setTimeout, setInterval, I/O
-7. OUTPUT: E, B, C, D, A
-
-```mermaid
-flowchart TD
-    N1["TASK QUEUE HIERARCHY"]
-    N2["Priority (runs first → last):"]
-    N3["1. 🔴 Call Stack (synchronous) — console.log('E')"]
-    N4["2. 🟡 Microtask Queue — Promise.then, queueMicrotask,"]
-    N5["MutationObserver"]
-    N6["4. 🔵 Macrotask Queue — setTimeout, setInterval, I/O"]
-    N7["OUTPUT: E, B, C, D, A"]
-    N8["(sync first → all microtasks → rAF → macrotask)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Why Microtasks Before Macrotasks?**
 - The spec says: after EACH macrotask, drain ALL microtasks
@@ -713,27 +561,6 @@ Once the first promise settles, the outer promise is settled. Other promises con
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE MAILBOX ANALOGY
-2. Primitives = Passing a piece of paper
-3. You get a COPY. Changing yours doesn't affect mine. Objects = Passing a piece of paper with a MAILBOX ADDRE You get a copy of the ADDRESS. But if you write a NEW address on your paper, my paper still has the old address (reassignment).
-
-```mermaid
-flowchart TD
-    N1["THE MAILBOX ANALOGY"]
-    N2["Primitives = Passing a piece of paper"]
-    N3["→ You get a COPY. Changing yours doesn't affect mine."]
-    N4["Objects = Passing a piece of paper with a MAILBOX ADDRE"]
-    N5["→ You get a copy of the ADDRESS."]
-    N6["→ But if you write a NEW address on your paper,"]
-    N7["my paper still has the old address (reassignment)."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```javascript
 // Primitives: true pass-by-value
@@ -796,29 +623,6 @@ These use COMPLETELY DIFFERENT algorithms:
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. TWO DIFFERENT CHECKS
-2. [] == false
-3. Uses Abstract Equality (coercion algorith [] == false Uses Abstract Equality (coercion algorith Step 1: false 0 Step 1: false 0 Step 2: [].toString() '' Step 2: [].toString() '' Step 3: '' 0 Step 3: '' 0 Step 4: 0 == 0 TRUE Step 4: 0 == 0 TRUE [] ? ... Uses ToBoolean (truthiness check)
-
-```mermaid
-flowchart TD
-    N1["TWO DIFFERENT CHECKS"]
-    N2["[] == false → Uses Abstract Equality (coercion algorith"]
-    N3["Step 1: false → 0"]
-    N4["Step 2: [].toString() → ''"]
-    N5["Step 3: '' → 0"]
-    N6["Step 4: 0 == 0 → TRUE"]
-    N7["[] ? ... → Uses ToBoolean (truthiness check)"]
-    N8["Rule: ALL objects are truthy (no conversion, just check"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **The Falsy List (MEMORIZE — only 8 values):**
 ```javascript
@@ -865,34 +669,6 @@ It IS syntactic sugar, but saying "just syntactic sugar" dismisses crucial diffe
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. async/await IS sugar, BUT:
-2. ERROR HANDLING
-3. Promise: .catch() is easy to forget
-4. silent failures
-5. await: try/catch works naturally, like synchronous code
-6. DEBUGGING
-7. Promise chains: stack traces are meaningless
-8. await: stack traces show the ACTUAL line that failed
-
-```mermaid
-flowchart TD
-    N1["async/await IS sugar, BUT:"]
-    N2["1. ERROR HANDLING"]
-    N3["Promise: .catch() is easy to forget → silent failures"]
-    N4["await: try/catch works naturally, like synchronous code"]
-    N5["2. DEBUGGING"]
-    N6["Promise chains: stack traces are meaningless"]
-    N7["await: stack traces show the ACTUAL line that failed"]
-    N8["3. CONDITIONAL LOGIC"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```javascript
 // Promise chain — hard to read with conditions
@@ -983,27 +759,6 @@ Yes — `await` unwraps the rejected promise and throws the rejection value as a
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Map vs WeakMap — The Library Analogy
-2. Map = Library catalog
-3. Every book you register stays cataloged FOREVER
-4. WeakMap = Library with automatic book retirement
-5. The catalog doesn't prevent retirement (weak referenc You can't browse the catalog (not iterable) — by desi
-
-```mermaid
-flowchart TD
-    N1["Map vs WeakMap — The Library Analogy"]
-    N2["Map = Library catalog"]
-    N3["→ Every book you register stays cataloged FOREVER"]
-    N4["WeakMap = Library with automatic book retirement"]
-    N5["→ The catalog doesn't prevent retirement (weak referenc"]
-    N6["→ You can't browse the catalog (not iterable) — by desi"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```javascript
 // MEMORY LEAK WITH MAP
@@ -1061,33 +816,6 @@ function processElement(element) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. GENERATORS vs ASYNC/AWAIT
-2. Generator: Pauses and resumes at yield points
-3. Control stays with the CALLER
-4. Can yield multiple values
-5. Used for: iteration, lazy sequences, state machines
-6. Async: Pauses at await points
-7. Control goes to the EVENT LOOP
-
-```mermaid
-flowchart TD
-    N1["GENERATORS vs ASYNC/AWAIT"]
-    N2["Generator: Pauses and resumes at yield points"]
-    N3["Control stays with the CALLER"]
-    N4["Can yield multiple values"]
-    N5["Used for: iteration, lazy sequences, state machines"]
-    N6["Async: Pauses at await points"]
-    N7["Control goes to the EVENT LOOP"]
-    N8["Returns ONE final value (Promise)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```javascript
 // Generator: Infinite Fibonacci (lazy — only computes when asked)
@@ -1147,29 +875,6 @@ Generator: O(1) — stores only the current execution state (stack frame: local 
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE RULER ANALOGY
-2. (powers of 2). Now try to measure 1/10 (0.1).
-3. You can't land exactly on it — you get close but not ex Binary representation: 0.1 = 0.0001100110011001100110011... (repeating forever Stored as: 0.100000000000000005551115123125782702118158 0.2 = 0.001100110011001100110011... (repeating forever)
-
-```mermaid
-flowchart TD
-    N1["THE RULER ANALOGY"]
-    N2["(powers of 2). Now try to measure 1/10 (0.1)."]
-    N3["You can't land exactly on it — you get close but not ex"]
-    N4["Binary representation:"]
-    N5["0.1 = 0.0001100110011001100110011... (repeating forever"]
-    N6["Stored as: 0.100000000000000005551115123125782702118158"]
-    N7["0.2 = 0.001100110011001100110011... (repeating forever)"]
-    N8["Stored as: 0.200000000000000011102230246251565404236316"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```javascript
 0.1 + 0.2 === 0.3        // false
@@ -1219,33 +924,6 @@ Math.abs(0.1 + 0.2 - 0.3) < Number.EPSILON  // true
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE TDZ IS A TIME ZONE, NOT A CODE ZONE
-2. console.log(x); // ReferenceError: x is in TDZ
-3. let x = 10; // ← TDZ ENDS here (initialization)
-4. console.log(x); // 10 ✅
-5. The variable EXISTS in memory (hoisted), but accessing
-6. before initialization is FORBIDDEN by the spec. This is
-7. DESIGN — to catch bugs early.
-
-```mermaid
-flowchart TD
-    N1["THE TDZ IS A TIME ZONE, NOT A CODE ZONE"]
-    N2["console.log(x); // ReferenceError: x is in TDZ"]
-    N3["let x = 10; // ← TDZ ENDS here (initialization)"]
-    N4["console.log(x); // 10 ✅"]
-    N5["The variable EXISTS in memory (hoisted), but accessing"]
-    N6["before initialization is FORBIDDEN by the spec. This is"]
-    N7["DESIGN — to catch bugs early."]
-    N8["var: 'Here's undefined until you initialize' = silent b"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Why TDZ exists (the design reasoning):**
 - var's behavior of silently returning `undefined` caused countless bugs
@@ -1282,33 +960,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE RECEPTION DESK ANALOGY
-2. WITHOUT delegation (1000 buttons = 1000 handlers):
-3. Like hiring a personal receptionist for each room
-4. Adding 1000 rooms? Hire 1000 more people.
-5. Expensive, slow to set up, wasteful.
-6. WITH delegation (1 handler on parent):
-7. Like having ONE receptionist at the front desk
-
-```mermaid
-flowchart TD
-    N1["THE RECEPTION DESK ANALOGY"]
-    N2["WITHOUT delegation (1000 buttons = 1000 handlers):"]
-    N3["→ Like hiring a personal receptionist for each room"]
-    N4["→ Adding 1000 rooms? Hire 1000 more people."]
-    N5["→ Expensive, slow to set up, wasteful."]
-    N6["WITH delegation (1 handler on parent):"]
-    N7["→ Like having ONE receptionist at the front desk"]
-    N8["→ Desk checks which room the request is for (event.targ"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```javascript
 // BAD: 1000 handlers (memory heavy, breaks for dynamic elements)

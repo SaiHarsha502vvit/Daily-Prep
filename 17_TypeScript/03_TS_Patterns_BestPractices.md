@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](02_TS_Advanced_Types.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_TS_Deep_Reasoning.md)
+﻿**Navigation**: [< Previous](02_TS_Advanced_Types.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_TS_Deep_Reasoning.md)
 
 **TypeScript Chapter 3/3** | [← Advanced Types](02_TS_Advanced_Types.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → CSS Foundations](../18_CSS_Complete/01_CSS_Foundations.md)
 
@@ -543,18 +543,6 @@ RULE: Never stop at Phase 1. Phase 1 TS is worse than JS
 because it gives FALSE confidence. Reach Phase 3.
 ```
 
-**Flow:**
-1. npm install -D typescript / 2. npx tsc --init / 3. S
-2. Start with leaf files (utils, helpers — no dependenc Enable strict flags ONE AT A TIME: / noImplicitAny
-
-```mermaid
-flowchart TD
-    N1["1. npm install -D typescript / 2. npx tsc --init / 3. S"]
-    N2["1. Start with leaf files (utils, helpers — no dependenc"]
-    N3["1. Enable strict flags ONE AT A TIME: / noImplicitAny →"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -615,16 +603,6 @@ Library/Package:
 └── strict: true
 ```
 
-**Flow:**
-1. PROJECT TYPE
-2. KEY TSCONFIG OPTIONS:
-
-```mermaid
-flowchart LR
-    N1["PROJECT TYPE"]
-    N2["KEY TSCONFIG OPTIONS:"]
-    N1 --> N2
-```
 
 ---
 
@@ -664,33 +642,6 @@ Q: How do you type a function that accepts any object with a specific key?
   Or: function get<T, K extends keyof T>(obj: T, key: K): T[K]
 ```
 
-**Flow:**
-1. based on a variant?
-2. Discriminated union of prop types:
-3. Then narrow on props.variant.
-4. Q: How do you handle API response types?
-5. Q: How would you migrate a large JS project to TS?
-6. Phase 1: Install TS, allowJs, rename files gradually.
-7. Phase 2: Add types starting from leaf files.
-
-```mermaid
-flowchart TD
-    N1["based on a variant?"]
-    N2["→ Discriminated union of prop types:"]
-    N3["Then narrow on props.variant."]
-    N4["Q: How do you handle API response types?"]
-    N5["Q: How would you migrate a large JS project to TS?"]
-    N6["→ Phase 1: Install TS, allowJs, rename files gradually."]
-    N7["Phase 2: Add types starting from leaf files."]
-    N8["Q: What are branded types?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

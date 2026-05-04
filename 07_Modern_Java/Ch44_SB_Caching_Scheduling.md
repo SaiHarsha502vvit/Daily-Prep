@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch45_SB_Actuator_Metrics.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch45_SB_Actuator_Metrics.md)
 
 ---
 
@@ -51,22 +51,6 @@ _"The gaps that separate amateurs from professionals"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why These 'Essential Missing' Topics? / • Producti
-2. HOW: How to Implement Each Feature? / • @Cacheable: Ann
-3. WHEN: When to Use Each Feature? / • Caching: Expensive
-4. WHICH: Which Topics to Prioritize? / ESSENTIAL: Caching
-
-```mermaid
-flowchart TD
-    N1["WHY: Why These 'Essential Missing' Topics? / • Producti"]
-    N2["HOW: How to Implement Each Feature? / • @Cacheable: Ann"]
-    N3["WHEN: When to Use Each Feature? / • Caching: Expensive "]
-    N4["WHICH: Which Topics to Prioritize? / ESSENTIAL: Caching"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -93,33 +77,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHAT THIS PART COVERS
-2. 1. Caching (@Cacheable, @CacheEvict, Redis)
-3. 2. Async Processing (@Async, @EnableAsync)
-4. 3. Scheduling (@Scheduled, @EnableScheduling)
-5. 4. Spring Boot Actuator (Health, Metrics, Info)
-6. 5. API Documentation (Swagger/OpenAPI)
-7. 6. File Upload/Download (Multipart)
-
-```mermaid
-flowchart TD
-    N1["WHAT THIS PART COVERS"]
-    N2["1. Caching (@Cacheable, @CacheEvict, Redis)"]
-    N3["2. Async Processing (@Async, @EnableAsync)"]
-    N4["3. Scheduling (@Scheduled, @EnableScheduling)"]
-    N5["4. Spring Boot Actuator (Health, Metrics, Info)"]
-    N6["5. API Documentation (Swagger/OpenAPI)"]
-    N7["6. File Upload/Download (Multipart)"]
-    N8["7. Email Sending (JavaMailSender)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -459,42 +416,6 @@ Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ASYNC PROCESSING FLOW
-2. SYNCHRONOUS (Default):
-3. Request
-4. processA()
-5. processB()
-6. sendEmail()
-7. Respo
-8. Request
-9. processA()
-10. processB()
-11. sendEmail()
-12. Respo
-13. Total time: 100ms + 50ms + 2000ms = 2150ms
-14. ASYNCHRONOUS (With @Async):
-15. Total time: 100ms + 50ms = 150ms (email sends in parall
-16. USE CASES:
-
-```mermaid
-flowchart TD
-    N1["ASYNC PROCESSING FLOW"]
-    N2["SYNCHRONOUS (Default):"]
-    N3["Request → processA() → processB() → sendEmail() → Respo"]
-    N4["Total time: 100ms + 50ms + 2000ms = 2150ms"]
-    N5["ASYNCHRONOUS (With @Async):"]
-    N6["Total time: 100ms + 50ms = 150ms (email sends in parall"]
-    N7["USE CASES:"]
-    N8["• Sending emails/notifications"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Enable and Configure
 
@@ -882,33 +803,6 @@ public class ScheduledTasks {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ACTUATOR - PRODUCTION MONITORING
-2. WHAT ACTUATOR PROVIDES:
-3. • /actuator/health - Is app healthy?
-4. • /actuator/info - App version, git info
-5. • /actuator/metrics - CPU, memory, requests
-6. • /actuator/env - Environment properties
-7. • /actuator/loggers - View/change log levels
-
-```mermaid
-flowchart TD
-    N1["ACTUATOR - PRODUCTION MONITORING"]
-    N2["WHAT ACTUATOR PROVIDES:"]
-    N3["• /actuator/health - Is app healthy?"]
-    N4["• /actuator/info - App version, git info"]
-    N5["• /actuator/metrics - CPU, memory, requests"]
-    N6["• /actuator/env - Environment properties"]
-    N7["• /actuator/loggers - View/change log levels"]
-    N8["• /actuator/beans - All Spring beans"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```xml
 <!-- pom.xml -->

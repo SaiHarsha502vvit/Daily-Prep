@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_010_Mar12_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_012_Mar14_Fri.md)
+﻿> **Navigation**: [< Previous](Day_010_Mar12_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_012_Mar14_Fri.md)
 
 # Day 011 - Thursday, March 13, 2026
 
@@ -70,33 +70,6 @@ Java:
   Deque methods:  offerFirst(x), offerLast(x), pollFirst(), pollLast()
 ```
 
-**Flow:**
-1. QUEUE (FIFO): DEQUE (Double-Ended):
-2. enqueue(x)
-3. addFirst(x)
-4. ← addLast(x)
-5. A B C removeFirst()← A B C removeLast()
-6. dequeue() ←
-7. (returns A) (can add/remove from BOTH ends)
-8. Java:
-9. Queue methods: offer(x), poll(), peek()
-
-```mermaid
-flowchart TD
-    N1["QUEUE (FIFO): DEQUE (Double-Ended):"]
-    N2["enqueue(x) → addFirst(x) → ← addLast(x)"]
-    N3["A B C removeFirst()← A B C → removeLast()"]
-    N4["dequeue() ←"]
-    N5["(returns A) (can add/remove from BOTH ends)"]
-    N6["Java:"]
-    N7["Queue methods: offer(x), poll(), peek()"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 #### IMPLEMENT: Circular Queue (Array-based)
 
@@ -154,21 +127,6 @@ HashMap converts ANY key into an array index using a hash function.
 RESULT: O(1) average for get/put/contains
 ```
 
-**Flow:**
-1. 'apple'
-2. price? Can't use 'apple' as array index! hash('apple') 42 store at bucket[42]
-
-```mermaid
-flowchart LR
-    N1["'apple'"]
-    N2["price? Can't use 'apple' as array index!"]
-    N3["hash('apple')"]
-    N4["42"]
-    N5["store at bucket[42]"]
-    N1 --> N2
-    N3 --> N4
-    N4 --> N5
-```
 
 #### HOW: Internal Mechanism
 
@@ -201,39 +159,6 @@ flowchart LR
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. HashMap INTERNALS (Java 8+)
-2. Key hashCode()
-3. index = hash % capacity
-4. Array of buckets:
-5. [0] null
-6. [1]
-7. ('apple',5)
-8. ('kiwi',3)
-9. null ← COLLISION!
-10. [2]
-11. ('banana',7)
-12. null
-13. [3] null
-
-```mermaid
-flowchart TD
-    N1["HashMap INTERNALS (Java 8+)"]
-    N2["1. Key → hashCode() → index = hash % capacity"]
-    N3["2. Array of buckets:"]
-    N4["[0] → null"]
-    N5["[1] → ('apple',5) → ('kiwi',3) → null ← COLLISION!"]
-    N6["[2] → ('banana',7) → null"]
-    N7["[3] → null"]
-    N8["3. COLLISION HANDLING:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### Common HashMap Patterns
 
@@ -277,21 +202,6 @@ Input:  "loveleetcode" → Output: 2 (first unique = 'v')
 APPROACH: HashMap for frequency + scan for first with count==1
 ```
 
-**Flow:**
-1. Input: 'leetcode'
-2. Output: 0 (first unique = 'l')
-3. Input: 'loveleetcode'
-4. Output: 2 (first unique = 'v')
-
-```mermaid
-flowchart LR
-    N1["Input: 'leetcode'"]
-    N2["Output: 0 (first unique = 'l')"]
-    N3["Input: 'loveleetcode'"]
-    N4["Output: 2 (first unique = 'v')"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ```java
 public int firstUniqChar(String s) {
@@ -333,26 +243,6 @@ WHY Queue? Oldest timestamps naturally at front → easy to clean up.
 WHY HashMap? O(1) lookup of each user's queue.
 ```
 
-**Flow:**
-1. [T-55, T-40, T-30, T-20, T-10, T] ← 6 requests in
-2. OK
-3. HashMap<String, Queue<Long>> : userId
-4. request timestamps
-5. WHY Queue? Oldest timestamps naturally at front
-6. easy to clean up.
-
-```mermaid
-flowchart LR
-    N1["[T-55, T-40, T-30, T-20, T-10, T] ← 6 requests in"]
-    N2["OK"]
-    N3["HashMap&lt;String, Queue&lt;Long&gt;&gt; : userId"]
-    N4["request timestamps"]
-    N5["WHY Queue? Oldest timestamps naturally at front"]
-    N6["easy to clean up."]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
@@ -378,16 +268,6 @@ departments: dept_id | dept_name
 To see "Alice works in Engineering" → you need a JOIN.
 ```
 
-**Flow:**
-1. To see 'Alice works in Engineering'
-2. you need a JOIN.
-
-```mermaid
-flowchart LR
-    N1["To see 'Alice works in Engineering'"]
-    N2["you need a JOIN."]
-    N1 --> N2
-```
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════
@@ -495,25 +375,6 @@ pop() → returns 1
   outStack: [3, 2]
 ```
 
-**Flow:**
-1. peek()
-2. need to return 1 (first in)
-3. Transfer: inStack outStack: [3, 2, 1]
-4. pop()
-5. returns 1
-
-```mermaid
-flowchart LR
-    N1["peek()"]
-    N2["need to return 1 (first in)"]
-    N3["Transfer: inStack"]
-    N4["outStack: [3, 2, 1]"]
-    N5["pop()"]
-    N6["returns 1"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ```java
 class MyQueue {

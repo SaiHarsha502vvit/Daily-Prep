@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Database_Internals.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Database_Internals.md)
 
 # SQL Interview — Top 50 Problems & Patterns
 
@@ -278,28 +278,6 @@ FROM employees;
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. ROW_NUMBER vs RANK vs DENSE_RANK
-2. Salary: 100, 100, 90, 80
-3. ROW_NUMBER: 1, 2, 3, 4 (unique, arbitrary for ties)
-4. RANK: 1, 1, 3, 4 (ties get same rank, gaps after)
-5. DENSE_RANK: 1, 1, 2, 3 (ties get same rank, NO gaps)
-6. Use ROW_NUMBER for pagination, DENSE_RANK for 'Nth high
-
-```mermaid
-flowchart TD
-    N1["ROW_NUMBER vs RANK vs DENSE_RANK"]
-    N2["Salary: 100, 100, 90, 80"]
-    N3["ROW_NUMBER: 1, 2, 3, 4 (unique, arbitrary for ties)"]
-    N4["RANK: 1, 1, 3, 4 (ties get same rank, gaps after)"]
-    N5["DENSE_RANK: 1, 1, 2, 3 (ties get same rank, NO gaps)"]
-    N6["Use ROW_NUMBER for pagination, DENSE_RANK for 'Nth high"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ---
 
@@ -716,25 +694,6 @@ COMMIT;
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Isolation Level Dirty Read Non-Repeatable Phantom
-2. READ UNCOMMITTED Yes Yes Yes
-3. READ COMMITTED No Yes Yes
-4. REPEATABLE READ No No Yes
-5. SERIALIZABLE No No No
-
-```mermaid
-flowchart TD
-    N1["Isolation Level Dirty Read Non-Repeatable Phantom"]
-    N2["READ UNCOMMITTED Yes Yes Yes"]
-    N3["READ COMMITTED No Yes Yes"]
-    N4["REPEATABLE READ No No Yes"]
-    N5["SERIALIZABLE No No No"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ---
 
@@ -813,45 +772,6 @@ EXPLAIN SELECT * FROM orders WHERE customer_id = 42 AND status = 'SHIPPED';
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. EXPLAIN type (best
-2. worst):
-3. const
-4. eq_ref
-5. ref
-6. range
-7. index
-8. ALL
-9. const
-10. eq_ref
-11. ref
-12. range
-13. index
-14. ALL
-15. const: WHERE primary_key = 42
-16. eq_ref: JOIN on primary key (unique match)
-17. ref: JOIN on non-unique index
-18. range: WHERE price BETWEEN 10 AND 50
-19. index: Full index scan (better than ALL but still slow)
-
-```mermaid
-flowchart TD
-    N1["EXPLAIN type (best → worst):"]
-    N2["const → eq_ref → ref → range → index → ALL"]
-    N3["const: WHERE primary_key = 42"]
-    N4["eq_ref: JOIN on primary key (unique match)"]
-    N5["ref: JOIN on non-unique index"]
-    N6["range: WHERE price BETWEEN 10 AND 50"]
-    N7["index: Full index scan (better than ALL but still slow)"]
-    N8["ALL: Full table scan (RED FLAG 🚩)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -979,33 +899,6 @@ CREATE TABLE orders (
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Query is slow? Follow this checklist:
-2. 1. Run EXPLAIN — is it ALL (full table scan)?
-3. 2. Is there an index on the WHERE/JOIN columns?
-4. 3. Is a function breaking index usage?
-5. 4. Is the query returning too many rows? (add LIMIT)
-6. 5. Is SELECT * fetching unnecessary columns?
-7. 6. Is there an N+1 query problem in the app code?
-
-```mermaid
-flowchart TD
-    N1["Query is slow? Follow this checklist:"]
-    N2["1. Run EXPLAIN — is it ALL (full table scan)?"]
-    N3["2. Is there an index on the WHERE/JOIN columns?"]
-    N4["3. Is a function breaking index usage?"]
-    N5["4. Is the query returning too many rows? (add LIMIT)"]
-    N6["5. Is SELECT * fetching unnecessary columns?"]
-    N7["6. Is there an N+1 query problem in the app code?"]
-    N8["7. Is the table very large? Consider partitioning."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1162,33 +1055,6 @@ JOIN logs l3 ON l3.id = l1.id + 2 AND l3.value = l1.value;
 ╚════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. PATTERN SQL TOOL
-2. Nth highest/lowest DENSE_RANK() or LIMIT OFFSET
-3. Top N per group RANK() PARTITION BY
-4. Running total SUM() OVER (ORDER BY ...)
-5. Moving average AVG() OVER (ROWS BETWEEN)
-6. Previous/Next row LAG() / LEAD()
-7. Compare with previous period LAG() with date grouping
-
-```mermaid
-flowchart TD
-    N1["PATTERN SQL TOOL"]
-    N2["Nth highest/lowest DENSE_RANK() or LIMIT OFFSET"]
-    N3["Top N per group RANK() PARTITION BY"]
-    N4["Running total SUM() OVER (ORDER BY ...)"]
-    N5["Moving average AVG() OVER (ROWS BETWEEN)"]
-    N6["Previous/Next row LAG() / LEAD()"]
-    N7["Compare with previous period LAG() with date grouping"]
-    N8["Find duplicates GROUP BY + HAVING COUNT &gt; 1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

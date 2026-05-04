@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02_ERP_Advanced.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02_ERP_Advanced.md)
 
 ---
 
@@ -49,16 +49,6 @@
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. THE REALITY OF SOFTWARE INDUSTRY / 70% of enterprise so
-2. WHAT YOU'LL LEARN / 1. How to convert BUSINESS RULES in
-
-```mermaid
-flowchart TD
-    N1["THE REALITY OF SOFTWARE INDUSTRY / 70% of enterprise so"]
-    N2["WHAT YOU'LL LEARN / 1. How to convert BUSINESS RULES in"]
-    N1 --> N2
-```
 
 ---
 
@@ -263,19 +253,6 @@ NOUNS in the scenario → CLASSES
 └─────────────────┘
 ```
 
-**Flow:**
-1. Employee / - id / - name / - email / - designation / -
-2. Department / - id / - name / - head_id / - budget
-3. Designation / - id / - title / - level / - min_salary /
-
-```mermaid
-flowchart TD
-    N1["Employee / - id / - name / - email / - designation / - "]
-    N2["Department / - id / - name / - head_id / - budget"]
-    N3["Designation / - id / - title / - level / - min_salary /"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### Step 3: Convert to Java Code
 
@@ -716,33 +693,6 @@ SCENARIO (Amazon):
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. THE TRACKING ID / ORDER NUMBER PROBLEM
-2. SCENARIO (Amazon):
-3. You order a phone on Amazon
-4. Order ID: 402-1234567-8901234
-5. Tracking ID: AMZN1234567890
-6. QUESTIONS:
-7. 1. How do they generate UNIQUE IDs?
-
-```mermaid
-flowchart TD
-    N1["THE TRACKING ID / ORDER NUMBER PROBLEM"]
-    N2["SCENARIO (Amazon):"]
-    N3["You order a phone on Amazon"]
-    N4["Order ID: 402-1234567-8901234"]
-    N5["Tracking ID: AMZN1234567890"]
-    N6["QUESTIONS:"]
-    N7["1. How do they generate UNIQUE IDs?"]
-    N8["2. What if millions of orders come at same millisecond?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## 📊 Different ID Generation Strategies
 
@@ -1249,16 +1199,6 @@ Explanation:
 - Both sides equal → Books are balanced!
 ```
 
-**Flow:**
-1. For every DEBIT, there must be an equal CREDIT / Assets
-2. JOURNAL ENTRY: / Account Type Debit (₹) Credit (₹) / Eq
-
-```mermaid
-flowchart TD
-    N1["For every DEBIT, there must be an equal CREDIT / Assets"]
-    N2["JOURNAL ENTRY: / Account Type Debit (₹) Credit (₹) / Eq"]
-    N1 --> N2
-```
 
 
 

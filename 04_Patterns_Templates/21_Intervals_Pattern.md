@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)
+﻿**Navigation**: [< Previous](20_BitManipulation_Plus_Tricks.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Cyclic_Sort_Pattern.md)
 
 **Pattern 21** | [Prev](20_BitManipulation_Plus_Tricks.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Cyclic_Sort_Pattern.md)
 
@@ -58,33 +58,6 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. INTERVALS FUNDAMENTALS
-2. AN INTERVAL = [start, end] representing a continuous ra
-3. WHY A DEDICATED PATTERN?
-4. Intervals appear in scheduling, calendars, bandwidth,
-5. resource allocation, genomics ... ~15 LC problems form
-6. tight family where ONE core technique solves them all.
-7. THE 6 INTERVAL RELATIONSHIPS between [a,b] and [c,d]:
-
-```mermaid
-flowchart TD
-    N1["INTERVALS FUNDAMENTALS"]
-    N2["AN INTERVAL = [start, end] representing a continuous ra"]
-    N3["WHY A DEDICATED PATTERN?"]
-    N4["Intervals appear in scheduling, calendars, bandwidth,"]
-    N5["resource allocation, genomics ... ~15 LC problems form"]
-    N6["tight family where ONE core technique solves them all."]
-    N7["THE 6 INTERVAL RELATIONSHIPS between [a,b] and [c,d]:"]
-    N8["1. No overlap (a before c): a b c d"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -188,36 +161,6 @@ VISUAL:
 SOLUTION:
 ```
 
-**Flow:**
-1. [1,3] + [2,6]: 2 ≤ 3
-2. overlap
-3. merge
-4. [1, max(3,6)] = [1,6]
-5. [1,6] + [8,10]: 8 > 6
-6. no overlap
-7. add [8,10]
-8. [8,10] + [15,18]: 15 > 10
-9. no overlap
-
-```mermaid
-flowchart TD
-    N1["[1,3] + [2,6]: 2 ≤ 3"]
-    N2["overlap"]
-    N3["merge"]
-    N4["[1, max(3,6)] = [1,6]"]
-    N5["[1,6] + [8,10]: 8 &gt; 6"]
-    N6["no overlap"]
-    N7["add [8,10]"]
-    N8["[8,10] + [15,18]: 15 &gt; 10"]
-    N9["add [15,18]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-    N6 --> N7
-    N8 --> N6
-    N6 --> N9
-```
 
 ```java
 public int[][] merge(int[][] intervals) {
@@ -360,35 +303,6 @@ APPROACH 2: Sweep Line
 SOLUTION (Min-Heap):
 ```
 
-**Flow:**
-1. For each meeting: if start >= heap.peek(), a room
-2. pop.
-3. [5,10]: 5 < 30
-4. can't reuse
-5. heap = [10, 30], rooms = 2
-6. [15,20]: 15 >= 10
-7. reuse room
-8. pop 10, push 20
-9. heap = [20, 30], rooms = 2
-
-```mermaid
-flowchart TD
-    N1["For each meeting: if start &gt;= heap.peek(), a room"]
-    N2["pop."]
-    N3["[5,10]: 5 &lt; 30"]
-    N4["can't reuse"]
-    N5["heap = [10, 30], rooms = 2"]
-    N6["[15,20]: 15 &gt;= 10"]
-    N7["reuse room"]
-    N8["pop 10, push 20"]
-    N9["heap = [20, 30], rooms = 2"]
-    N1 --> N2
-    N3 --> N4
-    N4 --> N5
-    N6 --> N7
-    N7 --> N8
-    N8 --> N9
-```
 
 ```java
 public int minMeetingRooms(int[][] intervals) {
@@ -464,27 +378,6 @@ GREEDY INSIGHT:
 SOLUTION:
 ```
 
-**Flow:**
-1. Keep [1,2]. [2,3]: 2 >= 2
-2. keep. [1,3]: 1 < 3
-3. OVERLAP
-4. remove!
-5. [3,4]: 3 >= 3
-6. keep. Removed 1.
-
-```mermaid
-flowchart LR
-    N1["Keep [1,2]. [2,3]: 2 &gt;= 2"]
-    N2["keep. [1,3]: 1 &lt; 3"]
-    N3["OVERLAP"]
-    N4["remove!"]
-    N5["[3,4]: 3 &gt;= 3"]
-    N6["keep. Removed 1."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-```
 
 ```java
 public int eraseOverlapIntervals(int[][] intervals) {
@@ -627,33 +520,6 @@ COMPLEXITY: Time O(n log n) | Space O(1)
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. INTERVAL PROBLEMS CHEATSHEET
-2. PROBLEM TYPE SORT BY TECHNIQUE LC#
-3. Merge overlapping START Linear scan 56
-4. Insert + merge (sorted) 3-phase scan 57
-5. Can attend all? START Adjacent check 252
-6. Min rooms needed START Min-Heap / Sweep 253
-7. Min removals END Greedy keep early 435
-
-```mermaid
-flowchart TD
-    N1["INTERVAL PROBLEMS CHEATSHEET"]
-    N2["PROBLEM TYPE SORT BY TECHNIQUE LC#"]
-    N3["Merge overlapping START Linear scan 56"]
-    N4["Insert + merge (sorted) 3-phase scan 57"]
-    N5["Can attend all? START Adjacent check 252"]
-    N6["Min rooms needed START Min-Heap / Sweep 253"]
-    N7["Min removals END Greedy keep early 435"]
-    N8["List intersections (sorted) Two pointers 986"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

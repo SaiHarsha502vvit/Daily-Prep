@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](03_TS_Patterns_BestPractices.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous](03_TS_Patterns_BestPractices.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 4 — TypeScript Deep Reasoning: The Questions That Freeze People
 
@@ -112,27 +112,6 @@ function isUser(obj: unknown): obj is User {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. The REAL differences (not 'they're basically the same') interface: DECLARATION MERGING (can be extended across files) extends keyword for inheritance Better error messages (shows interface name) Best for: object shapes, public APIs, library types type:
-
-```mermaid
-flowchart TD
-    N1["The REAL differences (not 'they're basically the same')"]
-    N2["interface:"]
-    N3["→ DECLARATION MERGING (can be extended across files)"]
-    N4["→ extends keyword for inheritance"]
-    N5["→ Better error messages (shows interface name)"]
-    N6["→ Best for: object shapes, public APIs, library types"]
-    N7["type:"]
-    N8["→ UNIONS & INTERSECTIONS (type A = B | C)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```typescript
 // Declaration merging — ONLY interface can do this
@@ -198,28 +177,6 @@ interface Employee extends Person { employeeId: string }
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE SECURITY CLEARANCE ANALOGY
-2. any = NO security (VIP badge — go anywhere, do anything Disables ALL type checking. Defeats purpose of TS. Use: legacy code migration, truly dynamic values Can hold any value, but MUST narrow before using. Use: API responses, user input, unknown JSON never = IMPOSSIBLE (the locked room nobody can enter)
-
-```mermaid
-flowchart TD
-    N1["THE SECURITY CLEARANCE ANALOGY"]
-    N2["any = NO security (VIP badge — go anywhere, do anything"]
-    N3["Disables ALL type checking. Defeats purpose of TS."]
-    N4["Use: legacy code migration, truly dynamic values"]
-    N5["Can hold any value, but MUST narrow before using."]
-    N6["Use: API responses, user input, unknown JSON"]
-    N7["never = IMPOSSIBLE (the locked room nobody can enter)"]
-    N8["No value can ever be this type."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```typescript
 // any: Compiler trusts you blindly (DANGEROUS)
@@ -293,32 +250,6 @@ const dog: Dog = cat; // No error?!
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. STRUCTURAL vs NOMINAL TYPING
-2. Java/C# (Nominal): 'Are you wearing the RIGHT uniform?'
-3. Cat and Dog must explicitly implement the same interf
-4. Same shape ≠ same type
-5. TypeScript (Structural): 'Can you do the JOB?'
-6. If it has name:string and meow():void, it's compatibl This is WHY:
-
-```mermaid
-flowchart TD
-    N1["STRUCTURAL vs NOMINAL TYPING"]
-    N2["Java/C# (Nominal): 'Are you wearing the RIGHT uniform?'"]
-    N3["→ Cat and Dog must explicitly implement the same interf"]
-    N4["→ Same shape ≠ same type"]
-    N5["TypeScript (Structural): 'Can you do the JOB?'"]
-    N6["→ If it has name:string and meow():void, it's compatibl"]
-    N7["This is WHY:"]
-    N8["- An object literal with extra props can be assigned"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```typescript
 // This is valid TS — no explicit relationship needed:
@@ -378,35 +309,6 @@ const eur: Euros = usd; // ❌ Error! Different brands.
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. strict: true = Seatbelt + Airbag + ABS + Lane Assist
-2. It enables 8 individual flags:
-3. strictNullChecks
-4. null/undefined aren't assignable to strictNullChecks null/undefined aren't assignable to
-5. other types. MOST IMPORTANT. Catches
-6. 'Cannot read property of null' at
-7. compile time instead of runtime.
-8. noImplicitAny
-9. Must explicitly type when TS can't infe
-
-```mermaid
-flowchart TD
-    N1["strict: true = Seatbelt + Airbag + ABS + Lane Assist"]
-    N2["It enables 8 individual flags:"]
-    N3["strictNullChecks → null/undefined aren't assignable to"]
-    N4["other types. MOST IMPORTANT. Catches"]
-    N5["'Cannot read property of null' at"]
-    N6["compile time instead of runtime."]
-    N7["noImplicitAny → Must explicitly type when TS can't infe"]
-    N8["strictFunctionTypes → Function parameter types checked"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -433,33 +335,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. GENERICS = A Function for Types
-2. Regular function: takes VALUE, returns VALUE
-3. function double(n: number): number { return n * 2; }
-4. Generic: takes TYPE, returns TYPE
-5. type Wrapper<T> = { value: T; timestamp: Date };
-6. Wrapper<string>
-7. { value: string; timestamp: Dat Wrapper<string> { value: string; timestamp: Dat Wrapper<number> { value: number; timestamp: Dat
-
-```mermaid
-flowchart TD
-    N1["GENERICS = A Function for Types"]
-    N2["Regular function: takes VALUE, returns VALUE"]
-    N3["function double(n: number): number { return n * 2; }"]
-    N4["Generic: takes TYPE, returns TYPE"]
-    N5["type Wrapper&lt;T&gt; = { value: T; timestamp: Date };"]
-    N6["Wrapper&lt;string&gt; → { value: string; timestamp: Dat"]
-    N7["Wrapper&lt;number&gt; → { value: number; timestamp: Dat"]
-    N8["Analogy: A gift box. The box is generic — it doesn't ca"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```typescript
 // Constraint: "T must have a length property"
@@ -514,31 +389,6 @@ type B = IsString<number>;  // "no"
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. ENUM PROBLEMS
-2. They generate RUNTIME code (unlike most TS features)
-3. enum Color { Red, Green, Blue }
-4. compiles to:
-5. var Color; (function(Color) { Color[Color['Red'] = 0] = 'Red'; ... })(Color (Color = {}));
-
-```mermaid
-flowchart TD
-    N1["ENUM PROBLEMS"]
-    N2["1. They generate RUNTIME code (unlike most TS features)"]
-    N3["enum Color { Red, Green, Blue }"]
-    N4["compiles to:"]
-    N5["var Color; (function(Color) {"]
-    N6["Color[Color['Red'] = 0] = 'Red'; ..."]
-    N7["})(Color || (Color = {}));"]
-    N8["→ More JS shipped to browser. Defeats tree shaking."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

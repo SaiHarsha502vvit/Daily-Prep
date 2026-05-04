@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](Ch61_SB_Microservices_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](Ch61_SB_Microservices_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -666,23 +666,6 @@ public class OrderAggregate {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Command / Handler
-2. Write DB / (PostgreSQL) / Normalized
-3. Query / Handler
-4. Read DB / (MongoDB) / Denormalized
-5. Write DB / (PostgreSQL) / Normalized --(events)--> Read DB / (MongoDB) / Denormalized
-
-```mermaid
-flowchart TD
-    N2["Command / Handler"]
-    N3["Query / Handler"]
-    N4["Write DB / (PostgreSQL) / Normalized"]
-    N5["Read DB / (MongoDB) / Denormalized"]
-    N2 --> N4
-    N3 --> N5
-    N4 -->|"events"| N5
-```
 
 ### CQRS Implementation
 
@@ -889,20 +872,6 @@ public class OrderReadModelUpdater {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Service A
-2. Sidecar / Proxy
-3. Service B
-4. Sidecar / Proxy
-
-```mermaid
-flowchart TD
-    N1["Service A"]
-    N2["Service B"]
-    N3["Sidecar / Proxy"]
-    N1 --> N3
-    N2 --> N3
-```
 
 ### Istio Configuration Example
 
@@ -989,22 +958,6 @@ spec:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Client
-2. Auth / Server
-3. Gateway
-4. Service
-
-```mermaid
-flowchart LR
-    N1["Client"]
-    N2["Auth / Server"]
-    N3["Gateway"]
-    N4["Service"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### Gateway Security Configuration
 
@@ -1089,19 +1042,6 @@ public class GatewaySecurityConfig {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. METRICS / What? / Quantitative / measurements / Tools:
-2. LOGGING / What? / Event data / & context / Tools: / ELK
-3. TRACING / What? / Request / journey / Tools: / Jaeger /
-
-```mermaid
-flowchart TD
-    N1["METRICS / What? / Quantitative / measurements / Tools: "]
-    N2["LOGGING / What? / Event data / & context / Tools: / ELK"]
-    N3["TRACING / What? / Request / journey / Tools: / Jaeger /"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### Metrics with Micrometer
 
@@ -1178,33 +1118,6 @@ public class OrderService {
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BLUE-GREEN DEPLOYMENT
-2. Before:
-3. Load Balancer Blue (v1.0) ✅ Active
-4. Green (v1.1) 🔳 Staged
-5. After:
-6. Load Balancer Blue (v1.0) 🔳 Standby
-7. Green (v1.1) ✅ Active
-
-```mermaid
-flowchart TD
-    N1["BLUE-GREEN DEPLOYMENT"]
-    N2["Before:"]
-    N3["Load Balancer Blue (v1.0) ✅ Active"]
-    N4["Green (v1.1) 🔳 Staged"]
-    N5["After:"]
-    N6["Load Balancer Blue (v1.0) 🔳 Standby"]
-    N7["Green (v1.1) ✅ Active"]
-    N8["✅ Zero downtime"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Canary Deployment
 
@@ -1238,19 +1151,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. v1.0: ██████████████████████████████████████ 95% / v1.1
-2. v1.0: ████████████████████████████████ 75% / v1.1: ████
-3. v1.0: 0% / v1.1: ██████████████████████████████████████
-
-```mermaid
-flowchart TD
-    N1["v1.0: ██████████████████████████████████████ 95% / v1.1"]
-    N2["v1.0: ████████████████████████████████ 75% / v1.1: ████"]
-    N3["v1.0: 0% / v1.1: ██████████████████████████████████████"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -1381,33 +1281,6 @@ Best practices:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MICROSERVICES PATTERNS CHEAT SHEET
-2. COMMUNICATION PATTERNS
-3. Synchronous REST, gRPC, GraphQL
-4. Asynchronous Message queues (Kafka, RabbitMQ)
-5. Event-driven Events/Event Sourcing
-6. RESILIENCE PATTERNS
-7. Circuit Breaker Fail fast when service down
-
-```mermaid
-flowchart TD
-    N1["MICROSERVICES PATTERNS CHEAT SHEET"]
-    N2["COMMUNICATION PATTERNS"]
-    N3["Synchronous REST, gRPC, GraphQL"]
-    N4["Asynchronous Message queues (Kafka, RabbitMQ)"]
-    N5["Event-driven Events/Event Sourcing"]
-    N6["RESILIENCE PATTERNS"]
-    N7["Circuit Breaker Fail fast when service down"]
-    N8["Retry Automatic retry with backoff"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch50_SB_DSA_Applications.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch44_SB_Caching_Scheduling.md)
+﻿**Navigation**: [< Previous](Ch50_SB_DSA_Applications.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch44_SB_Caching_Scheduling.md)
 
 # 🏭 SPRING BOOT MASTERY - Part 13: Industry-Level Real Projects
 
@@ -48,22 +48,6 @@ _"Not another TODO app - build what enterprises use"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Build Real-World Projects? / • Portfolio: TODO
-2. HOW: How Top Companies Structure Spring Boot Apps? / •
-3. WHEN: When to Build Which Type of Project? / • Beginner
-4. WHICH: Which Projects Stand Out in Interviews? / IMPRES
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Build Real-World Projects? / • Portfolio: TODO"]
-    N2["HOW: How Top Companies Structure Spring Boot Apps? / • "]
-    N3["WHEN: When to Build Which Type of Project? / • Beginner"]
-    N4["WHICH: Which Projects Stand Out in Interviews? / IMPRES"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -187,35 +171,6 @@ Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff a
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Client / Services
-2. Notification / API
-3. Client / Services
-4. Email Worker / (SMTP/SES)
-5. Notification / API
-6. Message / Queue
-7. Notification / API
-8. Email Worker / (SMTP/SES)
-9. Message / Queue
-10. SMS Worker / (Twilio)
-11. Message / Queue
-12. Push / Worker
-
-```mermaid
-flowchart TD
-    N1["Client / Services"]
-    N2["Notification / API"]
-    N3["Message / Queue"]
-    N4["Email Worker / (SMTP/SES)"]
-    N5["SMS Worker / (Twilio)"]
-    N6["Push / Worker"]
-    N1 --> N2
-    N1 --> N4
-    N2 --> N3
-    N2 --> N4
-    N3 --> N5
-    N3 --> N6
-```
 
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -442,33 +397,6 @@ Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff a
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PROJECT: FEATURE FLAG MANAGEMENT SYSTEM
-2. WHAT IT IS:
-3. and gradually roll out new features to users.
-4. REAL-WORLD USAGE:
-5. • Netflix: Testing new UI features on % of users
-6. • Facebook: Gradual feature rollouts
-7. • Amazon: A/B testing checkout flows
-
-```mermaid
-flowchart TD
-    N1["PROJECT: FEATURE FLAG MANAGEMENT SYSTEM"]
-    N2["WHAT IT IS:"]
-    N3["and gradually roll out new features to users."]
-    N4["REAL-WORLD USAGE:"]
-    N5["• Netflix: Testing new UI features on % of users"]
-    N6["• Facebook: Gradual feature rollouts"]
-    N7["• Amazon: A/B testing checkout flows"]
-    N8["• Microsoft: Feature gating in Windows/Office"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -757,33 +685,6 @@ Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff a
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PROJECT: REAL-TIME ANALYTICS & METRICS PLATFORM
-2. WHAT IT IS:
-3. Every enterprise needs this for monitoring.
-4. REAL-WORLD USAGE:
-5. • All companies: Application performance monitoring
-6. • E-commerce: Real-time sales dashboards
-7. • Social media: Engagement metrics
-
-```mermaid
-flowchart TD
-    N1["PROJECT: REAL-TIME ANALYTICS & METRICS PLATFORM"]
-    N2["WHAT IT IS:"]
-    N3["Every enterprise needs this for monitoring."]
-    N4["REAL-WORLD USAGE:"]
-    N5["• All companies: Application performance monitoring"]
-    N6["• E-commerce: Real-time sales dashboards"]
-    N7["• Social media: Engagement metrics"]
-    N8["• DevOps: System health monitoring"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1082,33 +983,6 @@ public class AnalyticsController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PROJECT: WORKFLOW/APPROVAL ENGINE
-2. WHAT IT IS:
-3. conditions, and automated actions.
-4. REAL-WORLD USAGE:
-5. • HR: Leave approval, onboarding workflows
-6. • Finance: Expense approval, purchase orders
-7. • IT: Change management, access requests
-
-```mermaid
-flowchart TD
-    N1["PROJECT: WORKFLOW/APPROVAL ENGINE"]
-    N2["WHAT IT IS:"]
-    N3["conditions, and automated actions."]
-    N4["REAL-WORLD USAGE:"]
-    N5["• HR: Leave approval, onboarding workflows"]
-    N6["• Finance: Expense approval, purchase orders"]
-    N7["• IT: Change management, access requests"]
-    N8["• Sales: Quote approvals, contract workflows"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1480,33 +1354,6 @@ Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff a
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PROJECT: RESOURCE BOOKING & SCHEDULING SYSTEM
-2. WHAT IT IS:
-3. vehicles, employees' time, etc.
-4. REAL-WORLD USAGE:
-5. • Google/Microsoft: Meeting room booking
-6. • Hospitals: Doctor appointments, equipment scheduling
-7. • Car rentals: Vehicle availability
-
-```mermaid
-flowchart TD
-    N1["PROJECT: RESOURCE BOOKING & SCHEDULING SYSTEM"]
-    N2["WHAT IT IS:"]
-    N3["vehicles, employees' time, etc."]
-    N4["REAL-WORLD USAGE:"]
-    N5["• Google/Microsoft: Meeting room booking"]
-    N6["• Hospitals: Doctor appointments, equipment scheduling"]
-    N7["• Car rentals: Vehicle availability"]
-    N8["• Consulting firms: Employee allocation"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1837,33 +1684,6 @@ Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff a
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MORE INDUSTRY-LEVEL PROJECT IDEAS
-2. 6. 📝 AUDIT LOG & COMPLIANCE SYSTEM
-3. Track all changes to data, who changed what, when
-4. DSA: Append-only log, Merkle trees for integrity
-5. Used by: Every regulated industry (finance, healthcare)
-6. 7. 🔍 FULL-TEXT SEARCH SERVICE
-7. Build your own search with inverted index
-
-```mermaid
-flowchart TD
-    N1["MORE INDUSTRY-LEVEL PROJECT IDEAS"]
-    N2["6. 📝 AUDIT LOG & COMPLIANCE SYSTEM"]
-    N3["Track all changes to data, who changed what, when"]
-    N4["DSA: Append-only log, Merkle trees for integrity"]
-    N5["Used by: Every regulated industry (finance, healthcare)"]
-    N6["7. 🔍 FULL-TEXT SEARCH SERVICE"]
-    N7["Build your own search with inverted index"]
-    N8["DSA: Inverted Index, TF-IDF, BM25 ranking"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1914,33 +1734,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PORTFOLIO STRATEGY FOR JOB INTERVIEWS
-2. BUILD 2-3 OF THESE PROJECTS TO STAND OUT:
-3. BEGINNER LEVEL (Start Here):
-4. • Feature Flag System - Shows architectural thinking
-5. INTERMEDIATE LEVEL:
-6. • Booking System - Shows conflict handling, business lo
-7. ADVANCED LEVEL:
-
-```mermaid
-flowchart TD
-    N1["PORTFOLIO STRATEGY FOR JOB INTERVIEWS"]
-    N2["BUILD 2-3 OF THESE PROJECTS TO STAND OUT:"]
-    N3["BEGINNER LEVEL (Start Here):"]
-    N4["• Feature Flag System - Shows architectural thinking"]
-    N5["INTERMEDIATE LEVEL:"]
-    N6["• Booking System - Shows conflict handling, business lo"]
-    N7["ADVANCED LEVEL:"]
-    N8["• Workflow Engine - Shows state machines, graph travers"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

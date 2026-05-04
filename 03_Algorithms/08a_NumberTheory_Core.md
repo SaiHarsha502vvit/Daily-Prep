@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](08b_NumberTheory_Advanced.md)
+﻿> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](08b_NumberTheory_Advanced.md)
 
 ---
 
@@ -47,30 +47,6 @@ Each group must have equal number of shards
 Maximum groups possible? GCD helps!
 ```
 
-**Flow:**
-1. REAL LIFE:
-2. You have 12 chocolates and 18 toffees.
-3. You want to distribute equally in boxes with NO leftove
-4. What's the LARGEST number of boxes you can make? GCD(12, 18) = 6 boxes Each box: 2 chocolates + 3 toffees PRODUCTION SYSTEM:
-
-```mermaid
-flowchart TD
-    N1["REAL LIFE:"]
-    N2["You have 12 chocolates and 18 toffees."]
-    N3["You want to distribute equally in boxes with NO leftove"]
-    N4["What's the LARGEST number of boxes you can make?"]
-    N5["GCD(12, 18) = 6 boxes"]
-    N6["Each box: 2 chocolates + 3 toffees"]
-    N7["PRODUCTION SYSTEM:"]
-    N8["Each group must have equal number of shards"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -710,15 +686,6 @@ WHY MODULAR ARITHMETIC?
 5. Clock arithmetic (14:00 → 2:00 PM = 14 % 12)
 ```
 
-**Flow:**
-1. Clock arithmetic (14:00 2:00 PM = 14 % 12)
-
-```mermaid
-flowchart LR
-    N1["5. Clock arithmetic (14:00"]
-    N2["2:00 PM = 14 % 12)"]
-    N1 --> N2
-```
 
 ```java
 /**
@@ -828,27 +795,6 @@ public class ModularArithmetic {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. WHY PATTERN PROGRAMS?
-2. They teach:
-3. Nested loop thinking
-4. Essential for 2D arrays, matr
-5. Space management
-6. Teaches precision with boundaries
-7. How to convert visual output to code logic
-
-```mermaid
-flowchart TD
-    N1["WHY PATTERN PROGRAMS?"]
-    N2["They teach:"]
-    N3["1. Nested loop thinking → Essential for 2D arrays, matr"]
-    N4["3. Space management → Teaches precision with boundaries"]
-    N5["4. How to convert visual output to code logic"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ### Pattern 1: Right Triangle
 

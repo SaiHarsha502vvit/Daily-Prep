@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_013_Mar15_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
+﻿> **Navigation**: [< Previous](Day_013_Mar15_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
 
 # Day 014 - Sunday, March 16, 2026
 
@@ -142,16 +142,6 @@ WHAT'S COMING:
   You'll build on everything from Week 1-2!
 ```
 
-**Flow:**
-1. Difficulty ramp: MEDIUM
-2. MEDIUM-HARD
-
-```mermaid
-flowchart LR
-    N1["Difficulty ramp: MEDIUM"]
-    N2["MEDIUM-HARD"]
-    N1 --> N2
-```
 
 ---
 

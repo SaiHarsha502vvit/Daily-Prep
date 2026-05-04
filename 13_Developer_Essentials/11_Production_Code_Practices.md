@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Monitoring](12_Monitoring_Observability.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Monitoring](12_Monitoring_Observability.md)
 🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md)
 
 ---
@@ -10,7 +10,6 @@ What separates hobby code from production-ready software
 ---
 
 ## Part 1: The 12-Factor App
-
 
 12 principles for building cloud-native, production-ready applications
 
@@ -26,7 +25,6 @@ What separates hobby code from production-ready software
 10. Dev/Prod Par.│ Keep dev, staging, prod as similar as possible
 11. Logs         │ Treat logs as event streams (stdout, not files)
 12. Admin Procs. │ Run admin tasks as one-off processes (migrations, scripts)
-
 
 ---
 
@@ -89,6 +87,7 @@ public class RequestFilter implements Filter {
 ```
 
 ### Log Levels Guide
+
 ```
 ┌───────────┬──────────────────────────────────────────────────────────────────┐
 │ Level     │ When to Use                                                      │
@@ -106,46 +105,9 @@ public class RequestFilter implements Filter {
 └───────────┴──────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Level When to Use
-2. ERROR Something failed that needs human attention NOW
-3. e.g., payment gateway down, data corruption
-4. WARN Something unexpected but handled. Monitor trends.
-5. e.g., retry succeeded, cache miss, deprecated API call
-6. INFO Business-significant events. 'What happened?'
-7. e.g., order placed, user registered, deployment started
-
-```mermaid
-flowchart TD
-    N1["Level When to Use"]
-    N2["ERROR Something failed that needs human attention NOW"]
-    N3["e.g., payment gateway down, data corruption"]
-    N4["WARN Something unexpected but handled. Monitor trends."]
-    N5["e.g., retry succeeded, cache miss, deprecated API call"]
-    N6["INFO Business-significant events. 'What happened?'"]
-    N7["e.g., order placed, user registered, deployment started"]
-    N8["DEBUG Detailed flow for troubleshooting. Off in prod."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
-
-
 🔬 **Section Challenge — Part 3: Structured Logging**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## Part 4: Error Handling
 
@@ -195,16 +157,7 @@ public class GlobalExceptionHandler {
 
 ---
 
-
-
 🔬 **Section Challenge — Part 4: Error Handling**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## Part 5: Health Checks & Graceful Shutdown
 
@@ -308,30 +261,5 @@ public PaymentResult processPayment(PaymentRequest req) {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. REST API Checklist:
-2. ✅ Consistent error response format
-3. ✅ Pagination (page/size or cursor-based for large datas ✅ Rate limiting (return 429 + Retry-After header) ✅ CORS configuration for frontend ✅ Request/response logging with sensitive data masking Pagination Example:
-
-```mermaid
-flowchart TD
-    N1["REST API Checklist:"]
-    N2["✅ Consistent error response format"]
-    N3["✅ Pagination (page/size or cursor-based for large datas"]
-    N4["✅ Rate limiting (return 429 + Retry-After header)"]
-    N5["✅ CORS configuration for frontend"]
-    N6["✅ Request/response logging with sensitive data masking"]
-    N7["Pagination Example:"]
-    N8["Idempotency Example:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
-> **Navigation**: [< Previous](10_Dev_Tools_Productivity.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Monitoring_Observability.md)

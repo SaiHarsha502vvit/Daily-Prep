@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)
+﻿**Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)
 
 # 🎨 COMPLETE CODE TEMPLATES WITH VISUAL EXPLANATIONS
 
@@ -65,20 +65,6 @@ Array1: [1, 3, 5, 7]     Array2: [2, 3, 6, 8]
  Compare arr1[i] vs arr2[j], move smaller pointer
 ```
 
-**Flow:**
-1. left right
-2. ←
-3. slow fast
-
-```mermaid
-flowchart TD
-    N1["left right"]
-    N2["→ ←"]
-    N3["slow fast"]
-    N4["→ → → →"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Template: Two Sum (Sorted Array)
 
@@ -227,22 +213,6 @@ Step 4: Continue
 Answer: Maximum sum = 9
 ```
 
-**Flow:**
-1. 2 1 5 1 3 2
-2. 1 5 1 3
-3. 5 1 3 2
-4. 1 3 2
-
-```mermaid
-flowchart TD
-    N1["2 1 5 1 3 2"]
-    N2["1 5 1 3"]
-    N3["5 1 3 2"]
-    N4["1 3 2"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### Template: Max Sum of Size K Subarray
 
@@ -364,25 +334,6 @@ Step 5: SHRINK from left until valid
 Answer: Maximum length = 3 ("ece")
 ```
 
-**Flow:**
-1. e c
-2. e c e
-3. e c e b
-4. c e b
-5. e b
-
-```mermaid
-flowchart TD
-    N1["e c"]
-    N2["e c e"]
-    N3["e c e b"]
-    N4["c e b"]
-    N5["e b"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ### Template: Longest Substring with At Most K Distinct
 
@@ -550,40 +501,6 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 └───────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BINARY SEARCH VISUALIZATION
-2. Find 7 in sorted array:
-3. low mid high
-4. arr[4]=5 < 7
-5. search right half
-6. arr[4]=5 < 7
-7. search right half
-8. arr[7]=8 > 7
-9. search left half
-10. arr[7]=8 > 7
-11. search left half
-12. low,mid high
-13. arr[5]=6 < 7
-14. search right half
-
-```mermaid
-flowchart TD
-    N1["BINARY SEARCH VISUALIZATION"]
-    N2["Find 7 in sorted array:"]
-    N3["low mid high"]
-    N4["arr[4]=5 &lt; 7 → search right half"]
-    N5["arr[7]=8 &gt; 7 → search left half"]
-    N6["low,mid high"]
-    N7["arr[5]=6 &lt; 7 → search right half"]
-    N8["low,mid,high"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Template: Standard Binary Search
 
@@ -736,18 +653,6 @@ Example: Sum of arr[2..4] = sum(3,4,5) = 12
           sum = 3+4+5 = 12
 ```
 
-**Flow:**
-1. 1 2 3 4 5 6
-2. 0 1 3 6 10 15 21
-3. 1 2 3 4 5 6
-
-```mermaid
-flowchart TD
-    N1["1 2 3 4 5 6"]
-    N2["0 1 3 6 10 15 21"]
-    N1 --> N2
-    N2 --> N1
-```
 
 ### Template: Build Prefix Sum
 
@@ -874,16 +779,6 @@ for (char c : str.toCharArray()) {
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 0 0 0 0 1 0 0 1 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0
-2. Key Value / 'h' 1 / 'e' 1 / 'l' 2 / 'o' 1
-
-```mermaid
-flowchart TD
-    N1["0 0 0 0 1 0 0 1 0 0 0 2 0 0 1 0 0 0 0 0 0 0 0 0 0 0"]
-    N2["Key Value / 'h' 1 / 'e' 1 / 'l' 2 / 'o' 1"]
-    N1 --> N2
-```
 
 ### Template: Check Anagram
 
@@ -1005,33 +900,6 @@ public int firstUniqChar(String s) {
 └───────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. STACK PATTERNS
-2. PATTERN 1: Matching/Balancing
-3. Input: '({[]})'
-4. Process '(': Stack: [(]
-5. Process '{': Stack: [(, {]
-6. Process '[': Stack: [(, {, []
-7. Process ']': Matches '[', Stack: [(, {]
-
-```mermaid
-flowchart TD
-    N1["STACK PATTERNS"]
-    N2["PATTERN 1: Matching/Balancing"]
-    N3["Input: '({[]})'"]
-    N4["Process '(': Stack: [(]"]
-    N5["Process '{': Stack: [(, {]"]
-    N6["Process '[': Stack: [(, {, []"]
-    N7["Process ']': Matches '[', Stack: [(, {]"]
-    N8["Process '}': Matches '{', Stack: [(]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Template: Valid Parentheses
 
@@ -1148,39 +1016,6 @@ WHEN TO USE WHAT:
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BFS vs DFS VISUALIZATION
-2. Graph: 1
-3. BFS (Level by Level) - Use QUEUE
-4. Level 0: [1]
-5. Level 1: [2, 3, 4]
-6. Level 2: [5, 6, 7]
-7. Visit order: 1
-8. 2
-9. 3
-10. 4
-11. 5
-12. 6
-13. 7
-
-```mermaid
-flowchart TD
-    N1["BFS vs DFS VISUALIZATION"]
-    N2["Graph: 1"]
-    N3["BFS (Level by Level) - Use QUEUE"]
-    N4["Level 0: [1]"]
-    N5["Level 1: [2, 3, 4]"]
-    N6["Level 2: [5, 6, 7]"]
-    N7["Visit order: 1 → 2 → 3 → 4 → 5 → 6 → 7"]
-    N8["Best for: Shortest path, Level order traversal"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Template: BFS Level Order Traversal
 
@@ -1315,33 +1150,6 @@ BACKTRACKING PATTERN:
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BACKTRACKING VISUALIZATION
-2. Problem: Generate all subsets of [1, 2, 3]
-3. Decision tree (include or exclude each element):
-4. include 1 exclude 1
-5. Leaf nodes = all 8 subsets!
-6. BACKTRACKING PATTERN:
-7. 1. CHOOSE: Make a choice (add element to current path)
-
-```mermaid
-flowchart TD
-    N1["BACKTRACKING VISUALIZATION"]
-    N2["Problem: Generate all subsets of [1, 2, 3]"]
-    N3["Decision tree (include or exclude each element):"]
-    N4["include 1 exclude 1"]
-    N5["Leaf nodes = all 8 subsets!"]
-    N6["BACKTRACKING PATTERN:"]
-    N7["1. CHOOSE: Make a choice (add element to current path)"]
-    N8["2. EXPLORE: Recurse with this choice"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Template: Generate All Subsets
 
@@ -1484,33 +1292,6 @@ Base:    dp[0] = 1, dp[1] = 1
 Answer: dp[5] = 8 ways to climb 5 stairs
 ```
 
-**Flow:**
-1. DYNAMIC PROGRAMMING
-2. STEP 1: Identify if DP applies
-3. STEP 2: Define state
-4. dp[i] = 'answer for first i elements' or
-5. dp[i][j] = 'answer for range [i, j]' or
-6. dp[i][w] = 'answer considering i items with capacity w'
-7. STEP 3: Find recurrence (transition)
-
-```mermaid
-flowchart TD
-    N1["DYNAMIC PROGRAMMING"]
-    N2["STEP 1: Identify if DP applies"]
-    N3["STEP 2: Define state"]
-    N4["dp[i] = 'answer for first i elements' or"]
-    N5["dp[i][j] = 'answer for range [i, j]' or"]
-    N6["dp[i][w] = 'answer considering i items with capacity w'"]
-    N7["STEP 3: Find recurrence (transition)"]
-    N8["STEP 4: Identify base cases"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Template: 1D DP (Climbing Stairs)
 

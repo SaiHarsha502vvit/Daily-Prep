@@ -1,4 +1,4 @@
-> **SQL Chapter 15/20** | [← Previous](14_Query_Optimization.md) | [Index](../00_MASTER_INDEX.md) | [Next →](16_RealWorld_CaseStudies.md)
+﻿> **SQL Chapter 15/20** | [← Previous](14_Query_Optimization.md) | [Index](../00_MASTER_INDEX.md) | [Next →](16_RealWorld_CaseStudies.md)
 
 ---
 
@@ -356,27 +356,6 @@ ORDER BY MIN(total);
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. dim_product / (Dimension)
-2. dim_customer / (Dimension)
-3. dim_product / (Dimension)
-4. dim_date / (Dimension)
-5. dim_customer / (Dimension)
-6. fact_sales / (Fact)
-7. dim_date / (Dimension)
-8. fact_sales / (Fact)
-
-```mermaid
-flowchart TD
-    N1["dim_product / (Dimension)"]
-    N2["dim_customer / (Dimension)"]
-    N3["dim_date / (Dimension)"]
-    N4["fact_sales / (Fact)"]
-    N1 --> N2
-    N1 --> N3
-    N2 --> N4
-    N3 --> N4
-```
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════

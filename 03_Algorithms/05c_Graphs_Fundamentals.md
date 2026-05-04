@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05d_Graphs_Advanced_Algos.md)
+﻿**Navigation**: [< Previous Chapter](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05d_Graphs_Advanced_Algos.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — BFS/DFS decision framework and cycle detection
 
 ---
@@ -334,16 +334,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BFS (Breadth-First Search) / STRATEGY: Visit all neighb
-2. Problem Type Use / Shortest path (unweighted) BFS / Sho
-
-```mermaid
-flowchart TD
-    N1["BFS (Breadth-First Search) / STRATEGY: Visit all neighb"]
-    N2["Problem Type Use / Shortest path (unweighted) BFS / Sho"]
-    N1 --> N2
-```
 
 ## DFS (Depth-First Search)
 
@@ -366,28 +356,6 @@ USES:
 - Connected components
 ```
 
-**Flow:**
-1. GO DEEP first, then backtrack!
-2. Start at node, visit neighbor, visit neighbor's neighbo Until dead end, then backtrack. DFS from 0: 0 1 2 3 (one possible order) DFS from 0: 0 1 2 3 (one possible order) USES: - Path finding - Cycle detection
-
-```mermaid
-flowchart TD
-    N1["GO DEEP first, then backtrack!"]
-    N2["Start at node, visit neighbor, visit neighbor's neighbo"]
-    N3["Until dead end, then backtrack."]
-    N4["DFS from 0: 0 → 1 → 2 → 3 (one possible order)"]
-    N5["USES:"]
-    N6["- Path finding"]
-    N7["- Cycle detection"]
-    N8["- Topological sort"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // RECURSIVE DFS
@@ -466,33 +434,6 @@ USES:
 - Finding nearest neighbor
 ```
 
-**Flow:**
-1. GO WIDE first! Visit all neighbors before going deeper.
-2. BFS from 0:
-3. Level 0: 0
-4. Level 1: 1, 3
-5. Level 2: 2
-6. BFS order: 0 1 3 2
-7. USES:
-
-```mermaid
-flowchart TD
-    N1["GO WIDE first! Visit all neighbors before going deeper."]
-    N2["BFS from 0:"]
-    N3["Level 0: 0"]
-    N4["Level 1: 1, 3"]
-    N5["Level 2: 2"]
-    N6["BFS order: 0 → 1 → 3 → 2"]
-    N7["USES:"]
-    N8["- Shortest path (unweighted)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public void bfs(int start, List<List<Integer>> graph) {
@@ -677,19 +618,6 @@ Course 1 → Course 2 → Course 3
 Valid orders: [1, 2, 4, 3] or [1, 4, 2, 3]
 ```
 
-**Flow:**
-1. Course 1
-2. Course 2
-3. Course 3
-
-```mermaid
-flowchart LR
-    N1["Course 1"]
-    N2["Course 2"]
-    N3["Course 3"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 // Kahn's Algorithm (BFS approach)

@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](03_Graph_Tree_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Universal_Problem_Framework.md)
+﻿**Navigation**: [< Previous](03_Graph_Tree_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Universal_Problem_Framework.md)
 
 # 🔍 Array & String Problem Thinking — Mental Model
 
@@ -65,39 +65,6 @@ Q6: Limitation says O(n) and array has range [0, n-1]?
 └── NO → Brute force, then optimize
 ```
 
-**Flow:**
-1. Read the problem
-2. Ask these questions IN ORDER:
-3. YES
-4. TWO POINTERS (from both ends or same direction)
-5. YES
-6. SLIDING WINDOW or PREFIX SUM
-7. YES
-8. HASHMAP (frequency map)
-9. YES
-10. STACK (monotonic stack for Next Greater/Smaller)
-11. YES
-12. Dynamic Programming or Greedy
-
-```mermaid
-flowchart TD
-    N1["Read the problem"]
-    N2["Ask these questions IN ORDER:"]
-    N3["YES"]
-    N4["TWO POINTERS (from both ends or same direction)"]
-    N5["SLIDING WINDOW or PREFIX SUM"]
-    N6["HASHMAP (frequency map)"]
-    N7["STACK (monotonic stack for Next Greater/Smaller)"]
-    N8["Dynamic Programming or Greedy"]
-    N9["IN-PLACE MARKING (use indices as hash)"]
-    N1 --> N2
-    N3 --> N4
-    N3 --> N5
-    N3 --> N6
-    N3 --> N7
-    N3 --> N8
-    N3 --> N9
-```
 
 ---
 
@@ -126,18 +93,6 @@ Result: [1, 2, 3, 4, 5, 6]
 When: Merge two sorted arrays/lists, intersection of sorted arrays
 ```
 
-**Flow:**
-1. L
-2. ←R
-3. S
-4. F
-
-```mermaid
-flowchart TD
-    N1["L→ ←R"]
-    N2["S→ F→"]
-    N1 --> N2
-```
 
 ### Template: Two Sum on Sorted Array
 ```java
@@ -177,31 +132,6 @@ When: "Smallest subarray with sum ≥ target", "Longest substring without repeat
 Template: Expand right always, shrink left while condition met
 ```
 
-**Flow:**
-1. [a b c] d e f compute for window
-2. a [b c d] e f slide right, update
-3. a b [c d e] f slide right, update
-4. [a b c d] e f expand right until valid
-5. a [b c d e] f
-6. shrink left while still valid
-
-```mermaid
-flowchart TD
-    N1["[a b c] d e f"]
-    N2["compute for window"]
-    N3["a [b c d] e f"]
-    N4["slide right, update"]
-    N5["a b [c d e] f"]
-    N6["[a b c d] e f"]
-    N7["expand right until valid"]
-    N8["a [b c d e] f"]
-    N9["shrink left while still valid"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N4
-    N6 --> N7
-    N8 --> N9
-```
 
 ### Variable Window Template
 ```java
@@ -262,22 +192,6 @@ Sum of subarray [i..j] = prefix[j+1] - prefix[i]
 Sum of [1..3] = prefix[4] - prefix[1] = 9 - 3 = 6  ✓ (1+4+1=6)
 ```
 
-**Flow:**
-1. Array: [3, 1, 4, 1, 5, 9]
-2. Prefix Sum: [0, 3, 4, 8, 9, 14, 23]
-3. ↑ sentinel
-4. Sum of subarray [i..j] = prefix[j+1] - prefix[i]
-
-```mermaid
-flowchart TD
-    N1["Array: [3, 1, 4, 1, 5, 9]"]
-    N2["Prefix Sum: [0, 3, 4, 8, 9, 14, 23]"]
-    N3["↑ sentinel"]
-    N4["Sum of subarray [i..j] = prefix[j+1] - prefix[i]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### Prefix Sum + HashMap Pattern
 ```
@@ -289,16 +203,6 @@ Key insight: If prefix[j] - prefix[i] = k, then subarray [i+1..j] sums to k
 → Use HashMap to store frequency of prefix sums seen so far!
 ```
 
-**Flow:**
-1. Problem: 'How many subarrays have sum equal to k?'
-2. Equivalent to: prefix[j] - k = prefix[i]
-
-```mermaid
-flowchart TD
-    N1["Problem: 'How many subarrays have sum equal to k?'"]
-    N2["→ Equivalent to: prefix[j] - k = prefix[i]"]
-    N1 --> N2
-```
 
 ```java
 int count = 0, sum = 0;
@@ -336,56 +240,6 @@ Problem Type:                         → Technique:
 "Reverse words in string"             → Split → reverse array → join (or two passes)
 ```
 
-**Flow:**
-1. Problem Type:
-2. Technique:
-3. 'Are two strings anagrams?'
-4. Sort both OR frequency count (int[26])
-5. 'Find all anagrams in string'
-6. Sliding window + frequency match
-7. 'Longest palindromic substring'
-8. Expand around center (O(n²)) or Manacher
-9. 'Pattern matching'
-10. KMP for exact, Rabin-Karp for rolling hash
-11. 'All permutations of string'
-12. Backtracking with frequency tracking
-
-```mermaid
-flowchart TD
-    N1["Problem Type:"]
-    N2["Technique:"]
-    N3["'Are two strings anagrams?'"]
-    N4["Sort both OR frequency count (int[26])"]
-    N5["'Find all anagrams in string'"]
-    N6["Sliding window + frequency match"]
-    N7["'Longest palindromic substring'"]
-    N8["Expand around center (O(n²)) or Manacher"]
-    N9["'Pattern matching'"]
-    N10["KMP for exact, Rabin-Karp for rolling hash"]
-    N11["'All permutations of string'"]
-    N12["Backtracking with frequency tracking"]
-    N13["'Edit distance between strings'"]
-    N14["DP (2D table)"]
-    N15["'Longest common subsequence'"]
-    N16["'String to integer / parse'"]
-    N17["Manual parsing with edge cases"]
-    N18["'Reverse words in string'"]
-    N19["Split"]
-    N20["reverse array"]
-    N21["join (or two passes)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N14
-    N16 --> N17
-    N18 --> N19
-    N19 --> N20
-    N20 --> N21
-```
 
 ### Character Frequency Trick (int[26])
 ```java
@@ -434,24 +288,6 @@ for (int num : nums) {
 }
 ```
 
-**Flow:**
-1. 'Find missing number'
-2. XOR all values with all indices
-3. 'Find duplicate'
-4. Floyd's cycle detection on index chain 'First missing positive' Mark presence by negating at index
-
-```mermaid
-flowchart LR
-    N1["'Find missing number'"]
-    N2["XOR all values with all indices"]
-    N3["'Find duplicate'"]
-    N4["Floyd's cycle detection on index chain"]
-    N5["'First missing positive'"]
-    N6["Mark presence by negating at index"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ### Partition / Dutch National Flag
 ```
@@ -465,28 +301,6 @@ Three pointers: low, mid, high
 - If arr[mid] == 2: swap with high, move high left (don't move mid!)
 ```
 
-**Flow:**
-1. When: Separate elements into groups (0s, 1s, 2s)
-2. Three pointers: low, mid, high
-3. [0s 1s unsorted 2s]
-4. ↑low ↑mid ↑high
-5. - If arr[mid] == 0: swap with low, move both right
-6. - If arr[mid] == 1: just move mid right
-
-```mermaid
-flowchart TD
-    N1["When: Separate elements into groups (0s, 1s, 2s)"]
-    N2["Three pointers: low, mid, high"]
-    N3["[0s | 1s | unsorted | 2s]"]
-    N4["↑low ↑mid ↑high"]
-    N5["- If arr[mid] == 0: swap with low, move both right"]
-    N6["- If arr[mid] == 1: just move mid right"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ---
 
@@ -508,31 +322,6 @@ flowchart TD
 □ Character encoding: 'a' to 'z' = 26 letters, '0' to '9' = 10 digits
 ```
 
-**Flow:**
-1. □ Off-by-one: Is my loop bound < n or <= n?
-2. □ Empty array/string: Does my code handle length 0?
-3. □ Single element: Does it work for length 1?
-4. □ All same elements: [5,5,5,5] — does my logic handle t
-5. □ Integer overflow: Am I using long for sums?
-6. □ Negative numbers: Does two-pointer still work?
-7. □ Prefix sum: Did I include the sentinel prefix[0] = 0?
-
-```mermaid
-flowchart TD
-    N1["□ Off-by-one: Is my loop bound &lt; n or &lt;= n?"]
-    N2["□ Empty array/string: Does my code handle length 0?"]
-    N3["□ Single element: Does it work for length 1?"]
-    N4["□ All same elements: [5,5,5,5] — does my logic handle t"]
-    N5["□ Integer overflow: Am I using long for sums?"]
-    N6["□ Negative numbers: Does two-pointer still work?"]
-    N7["□ Prefix sum: Did I include the sentinel prefix[0] = 0?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 

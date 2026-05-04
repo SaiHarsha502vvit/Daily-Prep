@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](01b_Arrays.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01d_Stack_Queue.md)
+﻿> **Navigation**: [< Previous Chapter](01b_Arrays.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01d_Stack_Queue.md)
 
 ---
 
@@ -108,31 +108,6 @@ CIRCULAR LINKED LIST:
   - Used in: Round-robin scheduling, multiplayer game turns
 ```
 
-**Flow:**
-1. [10 ●]
-2. [20 ●]
-3. [30 null] null←[● 10 ●]↔[● 20 ●]↔[● 30 ●]
-4. null
-5. [10 ●]
-6. [20 ●]
-7. [30 ●]
-8. (back to 10)
-
-```mermaid
-flowchart TD
-    N1["[10|●]"]
-    N2["[20|●]"]
-    N3["[30|null]"]
-    N4["null←[●|10|●]↔[●|20|●]↔[●|30|●]"]
-    N5["null"]
-    N6["[30|●]"]
-    N7["(back to 10)"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N2 --> N6
-    N6 --> N7
-```
 
 ### Mental Model: Train Cars
 
@@ -182,33 +157,6 @@ WHY NON-CONTIGUOUS IS USEFUL:
 - Size can grow infinitely (until memory full)
 ```
 
-**Flow:**
-1. PHYSICAL REALITY:
-2. Nodes scattered across memory, connected by refs
-3. 10 ● 20 ● 30 null 10 ● 20 ● 30 null
-4. addr: 5000 addr: 2000 addr: 8000
-5. NOT CONTIGUOUS = Scattered in memory
-6. WHY NON-CONTIGUOUS IS USEFUL:
-7. - No need for big continuous memory block
-
-```mermaid
-flowchart TD
-    N1["PHYSICAL REALITY:"]
-    N2["Nodes scattered across memory, connected by refs"]
-    N3["10 ● → 20 ● → 30 null"]
-    N4["addr: 5000 addr: 2000 addr: 8000"]
-    N5["NOT CONTIGUOUS = Scattered in memory"]
-    N6["WHY NON-CONTIGUOUS IS USEFUL:"]
-    N7["- No need for big continuous memory block"]
-    N8["- Insert/Delete = just change pointers"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Linked List vs Array
 
@@ -524,34 +472,6 @@ while (curr != null) {
   After 2 steps: slow=3, fast=5 → fast at end → slow IS the middle!
 ```
 
-**Flow:**
-1. [1]
-2. [2]
-3. [3]
-4. [4]
-5. [5] null
-6. After 2 steps: slow=3, fast=5
-7. fast at end
-
-```mermaid
-flowchart TD
-    N1["[1]"]
-    N2["[2]"]
-    N3["[3]"]
-    N4["[4]"]
-    N5["[5]"]
-    N6["null"]
-    N7["After 2 steps: slow=3, fast=5"]
-    N8["fast at end"]
-    N9["slow IS the middle!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N7 --> N8
-    N8 --> N9
-```
 
 ```java
 // Find Nth node from end (one-pass, O(1) space)
@@ -584,18 +504,6 @@ ListNode nthFromEnd(ListNode head, int n) {
   AFTER:  null ← 1 ← 2 ← 3  →  head = 3
 ```
 
-**Flow:**
-1. Step 2: null ← 1 ← 2 3 null (reverse 2's pointer) AFTER: null ← 1 ← 2 ← 3 head = 3
-
-```mermaid
-flowchart LR
-    N1["Step 2: null ← 1 ← 2 3"]
-    N2["null (reverse 2's pointer)"]
-    N3["AFTER: null ← 1 ← 2 ← 3"]
-    N4["head = 3"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Pattern 3: Merge Two Sorted Lists
 
@@ -612,23 +520,6 @@ flowchart LR
      Result: 1 → 2 → 3 → 4 → 5 → 6
 ```
 
-**Flow:**
-1. Compare heads: 1 < 2 take 1
-2. Compare: 3 > 2 take 2
-3. Compare: 3 < 4 take 3
-
-```mermaid
-flowchart LR
-    N1["Compare heads: 1 &lt; 2"]
-    N2["take 1"]
-    N3["Compare: 3 &gt; 2"]
-    N4["take 2"]
-    N5["Compare: 3 &lt; 4"]
-    N6["take 3"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ### Pattern 4: Dummy Head Node
 

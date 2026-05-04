@@ -1,4 +1,4 @@
-**SQL Chapter 13/20** | [← Previous](12_Views_StoredProcs_Triggers.md) | [Index](../00_MASTER_INDEX.md) | [Next →](14_Query_Optimization.md)
+﻿**SQL Chapter 13/20** | [← Previous](12_Views_StoredProcs_Triggers.md) | [Index](../00_MASTER_INDEX.md) | [Next →](14_Query_Optimization.md)
 
 ---
 
@@ -97,22 +97,6 @@ When you start a transaction, you get a "snapshot" of the database as of that mo
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 'All or Nothing' - Transaction either completes fully o
-2. Database moves from one valid state to another valid st
-3. Concurrent transactions don't interfere with each other
-4. Once committed, changes are permanent / Data survives s
-
-```mermaid
-flowchart TD
-    N1["'All or Nothing' - Transaction either completes fully o"]
-    N2["Database moves from one valid state to another valid st"]
-    N3["Concurrent transactions don't interfere with each other"]
-    N4["Once committed, changes are permanent / Data survives s"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════

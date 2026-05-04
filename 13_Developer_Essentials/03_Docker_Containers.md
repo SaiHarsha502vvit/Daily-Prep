@@ -1,4 +1,4 @@
-# 🐳 Docker & Containers — Complete Guide
+﻿# 🐳 Docker & Containers — Complete Guide
 
 **Navigation**: [< Linux CLI](02_Linux_CLI_Shell.md) | [Index](00_INDEX.md) | [Next: CI/CD >](04_CICD_Pipelines.md)
 
@@ -47,33 +47,6 @@ This container runs IDENTICALLY on:
   ✅ Kubernetes cluster
 ```
 
-**Flow:**
-1. Container = Your application + ALL its dependencies
-2. packaged into ONE portable unit
-3. Container
-4. Your Java MySQL
-5. App 17 8.0
-6. Ubuntu 22.04 (base)
-7. This container runs IDENTICALLY on:
-
-```mermaid
-flowchart TD
-    N1["Container = Your application + ALL its dependencies"]
-    N2["packaged into ONE portable unit"]
-    N3["Container"]
-    N4["Your Java MySQL"]
-    N5["App 17 8.0"]
-    N6["Ubuntu 22.04 (base)"]
-    N7["This container runs IDENTICALLY on:"]
-    N8["✅ Your laptop"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 
 
@@ -109,16 +82,6 @@ Analogy:
   Container = APARTMENTS (shared building, private units)
 ```
 
-**Flow:**
-1. App A App B App C / Bins/Libs Bins/Libs B/L / Guest OS
-2. App A App B App C / Bins/Libs Bins/Libs B/L / Docker En
-
-```mermaid
-flowchart TD
-    N1["App A App B App C / Bins/Libs Bins/Libs B/L / Guest OS "]
-    N2["App A App B App C / Bins/Libs Bins/Libs B/L / Docker En"]
-    N1 --> N2
-```
 
 
 
@@ -142,16 +105,6 @@ Based on: Linux cgroups + namespaces (existed since 2008)
 Docker's genius = Made containers EASY to use
 ```
 
-**Flow:**
-1. Open-sourced it
-2. Revolutionized deployment
-
-```mermaid
-flowchart LR
-    N1["Open-sourced it"]
-    N2["Revolutionized deployment"]
-    N1 --> N2
-```
 
 ---
 
@@ -188,16 +141,6 @@ One image → Many containers:
     → Container 3 (port 8082)
 ```
 
-**Flow:**
-1. One image
-2. Many containers:
-
-```mermaid
-flowchart LR
-    N1["One image"]
-    N2["Many containers:"]
-    N1 --> N2
-```
 
 
 
@@ -224,37 +167,6 @@ Key insight: Layers are CACHED and SHARED
   - Change only your code? → Only Layer 3 rebuilds
 ```
 
-**Flow:**
-1. Dockerfile: Image Layers:
-2. FROM ubuntu:22.04
-3. Layer 1: Ubuntu (shared!)
-4. RUN apt install java
-5. Layer 2: Java
-6. COPY app.jar /app/
-7. Layer 3: Your JAR
-8. CMD ['java','-jar']
-9. Key insight: Layers are CACHED and SHARED
-10. - 10 apps using Java 17?
-11. Java layer downloaded ONCE
-
-```mermaid
-flowchart TD
-    N1["Dockerfile: Image Layers:"]
-    N2["FROM ubuntu:22.04 → Layer 1: Ubuntu (shared!)"]
-    N3["RUN apt install java → Layer 2: Java"]
-    N4["COPY app.jar /app/ → Layer 3: Your JAR"]
-    N5["CMD ['java','-jar'] →"]
-    N6["Key insight: Layers are CACHED and SHARED"]
-    N7["- 10 apps using Java 17? → Java layer downloaded ONCE"]
-    N8["- Change only your code? → Only Layer 3 rebuilds"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -490,25 +402,6 @@ This is WHY your Spring Boot connects to "db:5432"
 instead of "localhost:5432" inside Docker
 ```
 
-**Flow:**
-1. app ←
-2. db ← communicate by SERVICE NAME
-3. app ←
-4. cache ← no need for IP addresses!
-5. nginx ←
-6. internet ← only nginx exposed to outside
-
-```mermaid
-flowchart LR
-    N1["app ←"]
-    N2["db ← communicate by SERVICE NAME"]
-    N3["cache ← no need for IP addresses!"]
-    N4["nginx ←"]
-    N5["internet ← only nginx exposed to outside"]
-    N1 --> N2
-    N1 --> N3
-    N4 --> N5
-```
 
 ---
 

@@ -1,4 +1,4 @@
-# 🧪 Testing Fundamentals — Complete Guide
+﻿# 🧪 Testing Fundamentals — Complete Guide
 
 **Navigation**: [< Clean Code](05_Clean_Code.md) | [Index](00_INDEX.md) | [Next: API Design >](07_API_Design_REST.md)
 
@@ -19,34 +19,6 @@ In production (customer) │ $1,000+
 After compliance audit   │ $10,000+
 
 Testing = Finding bugs when they're CHEAP to fix
-```
-
-**Flow:**
-1. When bug is found Cost to fix
-2. During coding $1
-3. During code review $5
-4. During testing $15
-5. After deployment $100
-6. In production (customer) $1,000+
-7. After compliance audit $10,000+
-
-```mermaid
-flowchart TD
-    N1["When bug is found Cost to fix"]
-    N2["During coding $1"]
-    N3["During code review $5"]
-    N4["During testing $15"]
-    N5["After deployment $100"]
-    N6["In production (customer) $1,000+"]
-    N7["After compliance audit $10,000+"]
-    N8["Testing = Finding bugs when they're CHEAP to fix"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
 ```
 
 ## The Testing Pyramid
@@ -72,32 +44,9 @@ Integration Tests: 20% of all tests (test components working together)
 E2E Tests:         10% of all tests (test full user workflows)
 ```
 
-**Flow:**
-1. E2E
-2. Integ / ration
-3. UNIT / TESTS
-
-```mermaid
-flowchart TD
-    N1["E2E"]
-    N2["Integ / ration"]
-    N3["UNIT / TESTS"]
-    N1 --> N2
-    N2 --> N3
-```
-
 ---
 
-
-
 🔬 **Section Challenge — The Testing Pyramid**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 # WHAT: Types of Testing
 
@@ -141,16 +90,7 @@ void shouldRejectNegativePercentage() {
 }
 ```
 
-
-
 🔬 **Section Challenge — Unit Testing**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## Integration Testing
 
@@ -186,16 +126,7 @@ class OrderControllerIntegrationTest {
 }
 ```
 
-
-
 🔬 **Section Challenge — Integration Testing**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## E2E / Acceptance Testing
 
@@ -219,22 +150,8 @@ void userCanLoginAndViewDashboard() {
 
 ---
 
-
-
 🔬 **Section Challenge — E2E / Acceptance Testing**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
-# HOW: Writing Good Tests
-
-## The AAA Pattern
-
-```java
 @Test
 void shouldCalculateTotalWithTax() {
     // ARRANGE — Setup test data and dependencies
@@ -243,7 +160,7 @@ void shouldCalculateTotalWithTax() {
         new Item("Book", 50.00),
         new Item("Pen", 10.00)
     ));
-    
+
     // ACT — Call the method under test
     BigDecimal total = service.calculateTotal(order);
     
@@ -282,11 +199,10 @@ void shouldCalculateDiscount() {
 }
 ```
 
-### Why it matters:
+### Why it matters
+
 1. **Readability**: It highlights *only* the data relevant to the specific test scenario. The irrelevant fields are filled with sensible defaults by the builder.
 2. **Resilience**: If you add a new mandatory field to `Order`, you only update the `OrderBuilder` class with a default value. You don't have to fix 500 broken tests that were calling the `Order` constructor directly.
-
-
 
 ## Test Naming Convention
 
@@ -299,16 +215,7 @@ void shouldCalculateDiscount() {
 @Test void shouldNotChargeShipping_whenOrderExceedsFreeThreshold() {}
 ```
 
-
-
 🔬 **Section Challenge — Test Naming Convention**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## Edge Cases to ALWAYS Test
 
@@ -376,16 +283,7 @@ class OrderServiceTest {
 }
 ```
 
-
-
 🔬 **Section Challenge — Mocking with Mockito**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## TDD (Test-Driven Development)
 
@@ -407,24 +305,6 @@ WHY TDD?
   - Refactoring is SAFE (tests catch regressions)
 ```
 
-**Flow:**
-1. Step 1 (RED): Write test
-2. shouldCalculateAreaOfCircle(radius=5)
-3. 78.54
-4. Step 2 (GREEN): Write method return Math.PI * r * r;
-
-```mermaid
-flowchart LR
-    N1["Step 1 (RED): Write test"]
-    N2["shouldCalculateAreaOfCircle(radius=5)"]
-    N3["78.54"]
-    N4["Step 2 (GREEN): Write method"]
-    N5["return Math.PI * r * r;"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-```
-
 ---
 
 # WHERE: Testing in Real Projects
@@ -441,34 +321,6 @@ src/
     ├── controller/      ← Integration tests (MockMvc)
     ├── service/         ← Unit tests (Mockito)
     └── repository/      ← Integration tests (H2 DB)
-```
-
-**Flow:**
-1. src/ main/java/com/myapp/ src/
-2. controller/ src/ service/ src/
-3. repository/ src/ test/java/com/myapp/
-4. src/
-5. controller/ ← Integration tests (MockMvc)
-
-```mermaid
-flowchart TD
-    N1["src/"]
-    N2["main/java/com/myapp/"]
-    N3["controller/"]
-    N4["service/"]
-    N5["repository/"]
-    N6["test/java/com/myapp/"]
-    N7["controller/ ← Integration tests (MockMvc)"]
-    N8["service/ ← Unit tests (Mockito)"]
-    N9["repository/ ← Integration tests (H2 DB)"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N1 --> N9
 ```
 
 ## What to Test (Priority)
@@ -502,26 +354,6 @@ IMPORTANT: High coverage ≠ good tests!
   Focus on testing BEHAVIOR, not just executing lines.
 ```
 
-**Flow:**
-1. 80%+
-2. Good for most projects 90%+
-3. Critical systems (banking, healthcare)
-4. 100%
-5. Diminishing returns, not practical
-
-```mermaid
-flowchart LR
-    N1["80%+"]
-    N2["Good for most projects"]
-    N3["90%+"]
-    N4["Critical systems (banking, healthcare)"]
-    N5["100%"]
-    N6["Diminishing returns, not practical"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
-
 ---
 
 # 🧭 Testing Cheat Sheet
@@ -536,25 +368,12 @@ PATTERN:       Arrange → Act → Assert (AAA)
 NAMING:        should_[behavior]_when_[condition]
 ```
 
-**Flow:**
-1. PATTERN: Arrange
-2. Act
-3. Assert (AAA)
-
-```mermaid
-flowchart LR
-    N1["PATTERN: Arrange"]
-    N2["Act"]
-    N3["Assert (AAA)"]
-    N1 --> N2
-    N2 --> N3
-```
-
 ---
 
 # 🏋️ Practice
 
 ## Exercise 1: Unit Test
+
 ```
 Write a StringUtils class with methods:
   - reverse(String)
@@ -564,6 +383,7 @@ Write tests for each with 5+ edge cases.
 ```
 
 ## Exercise 2: TDD
+
 ```
 Using TDD (write test FIRST):
 Build a BankAccount class with:
@@ -578,7 +398,5 @@ Handle: negative amounts, insufficient funds, null account
 
 **Next Chapter**: [API Design & REST →](07_API_Design_REST.md)
 
-
 ---
 
-> **Navigation**: [< Previous](05_Clean_Code.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_API_Design_REST.md)

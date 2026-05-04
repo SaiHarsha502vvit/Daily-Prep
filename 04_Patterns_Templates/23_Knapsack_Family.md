@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](22_Cyclic_Sort_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Kadanes_Subarray_Patterns.md)
+﻿**Navigation**: [< Previous](22_Cyclic_Sort_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Kadanes_Subarray_Patterns.md)
 
 **Pattern 23** | [Index](../00_MASTER_INDEX.md) | [Next](24_Kadanes_Subarray_Patterns.md)
 
@@ -193,16 +193,6 @@ VISUAL (3 items, W=4):
   Correction: dp[3][4] = max(dp[2][4], dp[2][1]+12) = max(16, 18) = 18
 ```
 
-**Flow:**
-1. Answer: dp[3][4] = 22 (take items 2 and 3: weight=
-2. items 1+3: 1+3=4, 6+12=18?
-
-```mermaid
-flowchart LR
-    N1["Answer: dp[3][4] = 22 (take items 2 and 3: weight="]
-    N2["items 1+3: 1+3=4, 6+12=18?"]
-    N1 --> N2
-```
 
 ```java
 // 2D solution
@@ -256,16 +246,6 @@ TRANSFORMATION:
 SOLUTION:
 ```
 
-**Flow:**
-1. PATTERN: 0/1 Knapsack
-2. Subset Sum with target = totalSum/2
-
-```mermaid
-flowchart LR
-    N1["PATTERN: 0/1 Knapsack"]
-    N2["Subset Sum with target = totalSum/2"]
-    N1 --> N2
-```
 
 ```java
 public boolean canPartition(int[] nums) {
@@ -320,16 +300,6 @@ TRANSFORMATION (the clever part):
 SOLUTION:
 ```
 
-**Flow:**
-1. PATTERN: 0/1 Knapsack
-2. count ways
-
-```mermaid
-flowchart LR
-    N1["PATTERN: 0/1 Knapsack"]
-    N2["count ways"]
-    N1 --> N2
-```
 
 ```java
 public int findTargetSumWays(int[] nums, int target) {
@@ -381,21 +351,6 @@ PROBLEM: Coins of given denominations, find min coins to make amount.
 SOLUTION:
 ```
 
-**Flow:**
-1. PATTERN: Unbounded Knapsack
-2. minimize count
-3. Input: coins = [1,5,11], amount = 15
-4. Output: 3 (5+5+5)
-
-```mermaid
-flowchart LR
-    N1["PATTERN: Unbounded Knapsack"]
-    N2["minimize count"]
-    N3["Input: coins = [1,5,11], amount = 15"]
-    N4["Output: 3 (5+5+5)"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ```java
 public int coinChange(int[] coins, int amount) {
@@ -440,26 +395,6 @@ CRITICAL DISTINCTION:
 SOLUTION:
 ```
 
-**Flow:**
-1. PATTERN: Unbounded Knapsack
-2. count combinations
-3. Input: coins = [1,2,5], amount = 5
-4. Output: 4
-5. This problem asks COMBINATIONS
-6. coins as outer loop.
-
-```mermaid
-flowchart LR
-    N1["PATTERN: Unbounded Knapsack"]
-    N2["count combinations"]
-    N3["Input: coins = [1,2,5], amount = 5"]
-    N4["Output: 4"]
-    N5["This problem asks COMBINATIONS"]
-    N6["coins as outer loop."]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ```java
 public int change(int amount, int[] coins) {
@@ -577,23 +512,6 @@ COMPLEXITY: Time O(strs × m × n) | Space O(m × n)
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY LOOP DIRECTION MATTERS
-2. 0/1 KNAPSACK (RIGHT
-3. LEFT):
-4. 0/1 KNAPSACK (RIGHT
-5. LEFT):
-6. UNBOUNDED KNAPSACK (LEFT
-7. RIGHT):
-
-```mermaid
-flowchart TD
-    N1["WHY LOOP DIRECTION MATTERS"]
-    N2["0/1 KNAPSACK (RIGHT → LEFT):"]
-    N3["UNBOUNDED KNAPSACK (LEFT → RIGHT):"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 

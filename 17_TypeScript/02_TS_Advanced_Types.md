@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](01_TS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_TS_Patterns_BestPractices.md)
+﻿**Navigation**: [< Previous](01_TS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_TS_Patterns_BestPractices.md)
 
 **TypeScript Chapter 2/3** | [← Foundations](01_TS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Patterns](03_TS_Patterns_BestPractices.md)
 
@@ -206,22 +206,6 @@ class QueryBuilder<T> {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. TS provides 15+ built-in utility types. These transform
-2. existing types into new ones WITHOUT rewriting.
-3. WHY: Avoid duplicating type definitions. If User change
-4. all derived types (PartialUser, UserSummary) update too
-
-```mermaid
-flowchart TD
-    N1["TS provides 15+ built-in utility types. These transform"]
-    N2["existing types into new ones WITHOUT rewriting."]
-    N3["WHY: Avoid duplicating type definitions. If User change"]
-    N4["all derived types (PartialUser, UserSummary) update too"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```typescript
 interface User {
@@ -344,34 +328,6 @@ type CreateUserParams = Parameters<typeof createUser>;
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Utility Type What It Does Use Case
-2. Partial<T> All props optional Update/patch APIs
-3. Required<T> All props required Config defaults
-4. Readonly<T> All props readonly Immutable data
-5. Pick<T, K> Keep only K props API responses
-6. Omit<T, K> Remove K props Create DTOs
-7. Record<K, V> Object K
-8. V mapping Dictionaries
-
-```mermaid
-flowchart TD
-    N1["Utility Type What It Does Use Case"]
-    N2["Partial&lt;T&gt; All props optional Update/patch APIs"]
-    N3["Required&lt;T&gt; All props required Config defaults"]
-    N4["Readonly&lt;T&gt; All props readonly Immutable data"]
-    N5["Pick&lt;T, K&gt; Keep only K props API responses"]
-    N6["Omit&lt;T, K&gt; Remove K props Create DTOs"]
-    N7["Record&lt;K, V&gt; Object K→V mapping Dictionaries"]
-    N8["Extract&lt;T, U&gt; Keep matching types Filter unions"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -699,37 +655,6 @@ Q: Explain conditional types distribution?
   over each member. string | number → IsString<string> | IsString<number>.
 ```
 
-**Flow:**
-1. Pick<User, 'name'
-2. 'email'>
-3. {name, email}
-4. Omit<User, 'id'> everything except id.
-5. 'sm'
-6. 'md' + 'red'
-7. 'blue'
-8. 'sm-red'
-9. 'sm-blue'
-10. 'md-red'
-11. 'md-blue' over each member. string
-12. number
-13. IsString<string>
-14. IsString<number>.
-
-```mermaid
-flowchart LR
-    N1["Pick&lt;User, 'name'|'email'&gt;"]
-    N2["{name, email}"]
-    N3["Omit&lt;User, 'id'&gt;"]
-    N4["everything except id."]
-    N5["'sm' | 'md' + 'red' | 'blue'"]
-    N6["'sm-red' | 'sm-blue' | 'md-red' | 'md-blue'"]
-    N7["over each member. string | number"]
-    N8["IsString&lt;string&gt; | IsString&lt;number&gt;."]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
 
 ---
 

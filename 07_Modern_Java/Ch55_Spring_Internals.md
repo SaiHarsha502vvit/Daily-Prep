@@ -808,7 +808,27 @@ The application fails to start with a `BeanCurrentlyInCreationException`. Spring
   
   But WHO starts the transaction? WHO commits/rolls back?
   YOUR CODE doesn't have any transaction management!
-  
+```
+
+```mermaid
+sequenceDiagram
+    %% The Proxy Illusion
+    participant Caller as Caller Thread
+    participant Proxy as CGLIB Proxy Object
+    participant Real as Real Target Bean
+    participant DB as Database Connection
+
+    Caller->>Proxy: transferMoney()
+    Note over Proxy: Intercepts Method Call
+    Proxy->>DB: Begin Transaction (Set AutoCommit=False)
+    Proxy->>Real: Invoke ACTUAL transferMoney()
+    Note over Real: Executes Business Logic
+    Real-->>Proxy: Returns normally
+    Proxy->>DB: COMMIT Transaction
+    Proxy-->>Caller: Return Result
+```
+
+```text
   ANSWER: A PROXY wraps your bean and adds transaction logic:
   
   What you think happens:          What ACTUALLY happens:
@@ -921,7 +941,32 @@ The application fails to start with a `BeanCurrentlyInCreationException`. Spring
   
   WHY: When you call this.placeOrder(), you're calling the REAL object's
   method directly. The proxy only intercepts EXTERNAL calls.
-  
+```
+
+```mermaid
+flowchart TD
+    %% Proxy Self-Invocation Failure Physics
+    subgraph SUCCESS ["External Call (SUCCESS)"]
+        EXT["External Class"]
+        PROXY1["CGLIB Proxy<br/>(Starts Transaction)"]
+        REAL1["Real Target Bean<br/>placeOrder()"]
+        
+        EXT -->|proxy.placeOrder()| PROXY1
+        PROXY1 -->|super.placeOrder()| REAL1
+
+    subgraph FAILURE ["Self-Invocation (FAILURE)"]
+        EXT2["External Class"]
+        PROXY2["CGLIB Proxy<br/>(No TX on batchProcess)"]
+        REAL2["Real Target Bean<br/>batchProcess()"]
+        REAL3["Real Target Bean<br/>placeOrder()"]
+        
+        EXT2 -->|proxy.batchProcess()| PROXY2
+        PROXY2 -->|super.batchProcess()| REAL2
+        REAL2 -->|this.placeOrder()<br/>BYPASSES PROXY| REAL3
+    
+```
+
+```text
   The proxy wraps the outside. Self-calls go through the INSIDE:
   
   ┌─── Proxy ──────────────────────────────────────────────┐
@@ -1046,7 +1091,38 @@ The application fails to start with a `BeanCurrentlyInCreationException`. Spring
 
   THREAD-LOCAL BINDING (how repo methods share the transaction):
   ═══════════════════════════════════════════════════════════════
+```
 
+```mermaid
+flowchart TD
+    %% ThreadLocal Transaction Physics
+    subgraph T1_GROUP ["OS Thread 1 (Handling Request A)"]
+        T1["ThreadLocal Map"]
+        CONN_A["Connection-A<br/>(AutoCommit=false)"]
+        
+        T1 -->|Binds| CONN_A
+        
+        SERV_A["OrderService.placeOrder()"]
+        REPO_A1["UserRepository.save()"]
+        REPO_A2["OrderRepository.save()"]
+        
+        SERV_A -.->|Retrieves| CONN_A
+        REPO_A1 -.->|Retrieves| CONN_A
+        REPO_A2 -.->|Retrieves| CONN_A
+
+    subgraph T2_GROUP ["OS Thread 2 (Handling Request B)"]
+        T2["ThreadLocal Map"]
+        CONN_B["Connection-B<br/>(AutoCommit=false)"]
+        
+        T2 -->|Binds| CONN_B
+        
+        SERV_B["OrderService.placeOrder()"]
+        
+        SERV_B -.->|Retrieves| CONN_B
+    
+```
+
+```text
   TransactionSynchronizationManager uses ThreadLocal:
   
   Thread-1:  [Connection-A] ← bound to this thread
@@ -1060,7 +1136,7 @@ The application fails to start with a `BeanCurrentlyInCreationException`. Spring
   Thread-2:  [Connection-B] ← different thread, different connection
       │
       └── orderService.placeOrder()     → uses Connection-B
-  
+
   THIS is why @Transactional works — the Connection is stored in ThreadLocal,
   and all repository calls on the same thread use the SAME connection.
 ```

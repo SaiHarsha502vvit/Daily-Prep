@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_003_Mar05_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_005_Mar07_Fri.md)
+﻿> **Navigation**: [< Previous](Day_003_Mar05_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_005_Mar07_Fri.md)
 
 # Day 004 - Thursday, March 6, 2026
 
@@ -78,15 +78,6 @@ BRUTE FORCE: Try all subarrays, compute sum
 OPTIMAL: Kadane's Algorithm → O(n)  (next block!)
 ```
 
-**Flow:**
-1. OPTIMAL: Kadane's Algorithm O(n) (next block!)
-
-```mermaid
-flowchart LR
-    N1["OPTIMAL: Kadane's Algorithm"]
-    N2["O(n) (next block!)"]
-    N1 --> N2
-```
 
 ---
 
@@ -114,28 +105,6 @@ KEY IDEA: At each position, decide:
     → Extending is beneficial (or at least not harmful)
 ```
 
-**Flow:**
-1. KEY IDEA: At each position, decide:
-2. currentMax = max(arr[i], currentMax + arr[i])
-3. If currentMax + arr[i] < arr[i]
-4. Previous subarray has negative sum, better to start f
-5. If currentMax + arr[i] >= arr[i]
-6. Extending is beneficial (or at least not harmful)
-
-```mermaid
-flowchart TD
-    N1["KEY IDEA: At each position, decide:"]
-    N2["currentMax = max(arr[i], currentMax + arr[i])"]
-    N3["If currentMax + arr[i] &lt; arr[i]"]
-    N4["→ Previous subarray has negative sum, better to start f"]
-    N5["If currentMax + arr[i] &gt;= arr[i]"]
-    N6["→ Extending is beneficial (or at least not harmful)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 #### Step-by-step trace
 
@@ -307,21 +276,6 @@ DDL (yesterday) → changes schema (tables, columns)
 DML (today)     → changes data within tables
 ```
 
-**Flow:**
-1. DDL (yesterday)
-2. changes schema (tables, columns)
-3. DML (today)
-4. changes data within tables
-
-```mermaid
-flowchart LR
-    N1["DDL (yesterday)"]
-    N2["changes schema (tables, columns)"]
-    N3["DML (today)"]
-    N4["changes data within tables"]
-    N1 --> N2
-    N3 --> N4
-```
 
 #### UPDATE — the command you must FEAR and RESPECT
 

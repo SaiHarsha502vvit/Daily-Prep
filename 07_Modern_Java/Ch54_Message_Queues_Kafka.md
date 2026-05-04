@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Production Practices](../13_Developer_Essentials/11_Production_Code_Practices.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Production Practices](../13_Developer_Essentials/11_Production_Code_Practices.md)
 🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md)
 
 ---
@@ -66,32 +66,6 @@ PUB/SUB (Publish-Subscribe):
   Examples: Kafka topics, SNS, Redis Pub/Sub
 ```
 
-**Flow:**
-1. Producer
-2. [Queue]
-3. Consumer A (only ONE consumer gets each message)
-4. Publisher
-5. [Topic]
-6. Subscriber A (ALL subscribers get each message)
-7. Use case: Event broadcasting (order placed
-8. notify warehouse, email, analytics)
-
-```mermaid
-flowchart TD
-    N1["Producer"]
-    N2["[Queue]"]
-    N3["Consumer A (only ONE consumer gets each message)"]
-    N4["Publisher"]
-    N5["[Topic]"]
-    N6["Subscriber A (ALL subscribers get each message)"]
-    N7["Use case: Event broadcasting (order placed"]
-    N8["notify warehouse, email, analytics)"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-    N7 --> N8
-```
 
 ---
 
@@ -132,19 +106,6 @@ This is usually caused by a failure in acknowledging the message. The Email Work
                   Topic: "orders"
 ```
 
-**Flow:**
-1. Producer A / (app 1)
-2. Producer B / (app 2)
-3. KAFKA CLUSTER / (Broker Servers)
-
-```mermaid
-flowchart TD
-    N1["Producer A / (app 1)"]
-    N2["Producer B / (app 2)"]
-    N3["KAFKA CLUSTER / (Broker Servers)"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Topic** = A named feed of messages — think of it like a **database table** you write records into.
 
@@ -160,19 +121,6 @@ flowchart TD
     └──────────────┘  └──────────────┘  └──────────────┘
 ```
 
-**Flow:**
-1. Partition 0 / [0] [1] [2] / ← offset
-2. Partition 1 / [0][1][2][3] / ← offset
-3. Partition 2 / [0] [1] / ← offset
-
-```mermaid
-flowchart TD
-    N1["Partition 0 / [0] [1] [2] / ← offset →"]
-    N2["Partition 1 / [0][1][2][3] / ← offset →"]
-    N3["Partition 2 / [0] [1] / ← offset →"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Partition** = An ordered, immutable log. Messages append to the end.
 Each message gets an **offset** (like an array index).
@@ -192,19 +140,6 @@ Kafka achieves massive throughput because partitions process **in parallel**.
               Each partition → exactly ONE consumer
 ```
 
-**Flow:**
-1. Consumer A
-2. Consumer B
-3. Consumer
-
-```mermaid
-flowchart TD
-    N1["Consumer A"]
-    N2["Consumer B"]
-    N3["Consumer"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Consumer Group** = Consumers that share the work. Add more consumers = more parallelism!
 
@@ -358,22 +293,6 @@ Don't store current state — **store all events as the source of truth**.
   Current balance = replay events = $100 - $30 + $50 = $120
 ```
 
-**Flow:**
-1. AccountCreated
-2. Deposited($100)
-3. Withdrawn($30)
-4. Deposited($50)
-
-```mermaid
-flowchart LR
-    N1["AccountCreated"]
-    N2["Deposited($100)"]
-    N3["Withdrawn($30)"]
-    N4["Deposited($50)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 → Complete **audit trail** — rebuild state at any point in time.
 → Complex: need snapshots for performance, eventual consistency.
@@ -397,31 +316,6 @@ flowchart LR
   └─────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. OUTBOX PATTERN — 3 Steps
-2. 1. In SAME DB transaction:
-3. UPDATE orders SET status = 'paid'
-4. INSERT INTO outbox (event_type, payload, ...)
-5. 2. Separate process polls the outbox table
-6. publishes pending events to Kafka
-7. 3. Mark outbox row as published
-
-```mermaid
-flowchart TD
-    N1["OUTBOX PATTERN — 3 Steps"]
-    N2["1. In SAME DB transaction:"]
-    N3["UPDATE orders SET status = 'paid'"]
-    N4["INSERT INTO outbox (event_type, payload, ...)"]
-    N5["2. Separate process polls the outbox table"]
-    N6["→ publishes pending events to Kafka"]
-    N7["3. Mark outbox row as published"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 → **Guarantee**: If the DB is updated, the event **WILL** be published (eventually).
 

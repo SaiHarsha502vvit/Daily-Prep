@@ -1,4 +1,4 @@
-**JavaScript Chapter 6/7** | [← Previous: DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md) | [Index](../00_MASTER_INDEX.md) | [Next → Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
+﻿**JavaScript Chapter 6/7** | [← Previous: DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md) | [Index](../00_MASTER_INDEX.md) | [Next → Error Handling & Debugging](07_JS_Error_Handling_Debugging.md)
 
 # Modern ES6+ Features — The Complete Guide
 
@@ -116,33 +116,6 @@ const merged = { ...defaults, ...prefs };
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. WHAT: ES Modules let you split code into separate files
-2. import/export between them.
-3. WHY: Before modules, all JS shared one global scope.
-4. Variable collisions, dependency chaos, huge files.
-5. Modules give each file its own scope + explicit deps.
-6. HOW: Two module systems exist:
-7. • ES Modules (ESM): import/export — standard, browser+N
-
-```mermaid
-flowchart TD
-    N1["WHAT: ES Modules let you split code into separate files"]
-    N2["import/export between them."]
-    N3["WHY: Before modules, all JS shared one global scope."]
-    N4["→ Variable collisions, dependency chaos, huge files."]
-    N5["Modules give each file its own scope + explicit deps."]
-    N6["HOW: Two module systems exist:"]
-    N7["• ES Modules (ESM): import/export — standard, browser+N"]
-    N8["• CommonJS (CJS): require/module.exports — Node legacy"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```javascript
 // ──── math.js (exporting) ────
@@ -210,33 +183,6 @@ Bundlers (Webpack/Vite) can remove unused exports (dead code).
 CommonJS is dynamic — bundler can't know what's used.
 ```
 
-**Flow:**
-1. ESM vs CommonJS:
-2. Feature ESM CommonJS
-3. Syntax import/export require/module.
-4. exports
-5. Loading Async (parallel) Sync (blocking)
-6. Tree-shaking Yes (static) No (dynamic)
-7. Top-level await Yes No
-
-```mermaid
-flowchart TD
-    N1["ESM vs CommonJS:"]
-    N2["Feature ESM CommonJS"]
-    N3["Syntax import/export require/module."]
-    N4["exports"]
-    N5["Loading Async (parallel) Sync (blocking)"]
-    N6["Tree-shaking Yes (static) No (dynamic)"]
-    N7["Top-level await Yes No"]
-    N8["Browser support Yes No (needs bundler)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -780,33 +726,6 @@ ES15  │ Map.groupBy, Promise.withResolvers, well-formed
 2024  │ Unicode strings, Atomics.waitAsync, RegExp v flag
 ```
 
-**Flow:**
-1. YEAR KEY FEATURES
-2. ES6 let/const, arrow fn, class, template lit, destructu
-3. 2015 modules, Promise, Map/Set, Symbol, generators, for
-4. ES7 Array.includes(), ** (exponent)
-5. ES8 async/await, Object.entries/values, string padding
-6. ES9 rest/spread for objects, for await...of, finally
-7. ES10 flat/flatMap, Object.fromEntries, trimStart/End
-
-```mermaid
-flowchart TD
-    N1["YEAR KEY FEATURES"]
-    N2["ES6 let/const, arrow fn, class, template lit, destructu"]
-    N3["2015 modules, Promise, Map/Set, Symbol, generators, for"]
-    N4["ES7 Array.includes(), ** (exponent)"]
-    N5["ES8 async/await, Object.entries/values, string padding"]
-    N6["ES9 rest/spread for objects, for await...of, finally"]
-    N7["ES10 flat/flatMap, Object.fromEntries, trimStart/End"]
-    N8["2019 optional catch, Array.sort stability"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -839,33 +758,6 @@ Q: What is the Proxy object?
   Used for validation, reactivity (Vue), logging, dynamic APIs.
 ```
 
-**Flow:**
-1. Q: What is tree-shaking?
-2. imports are static and can be analyzed at build time.
-3. Q: Difference between Map and Object?
-4. Q: What is a Symbol?
-5. Used for non-colliding property keys and internal proto
-6. (Symbol.iterator, Symbol.toPrimitive).
-7. Q: Explain ES6 modules.
-
-```mermaid
-flowchart TD
-    N1["Q: What is tree-shaking?"]
-    N2["imports are static and can be analyzed at build time."]
-    N3["Q: Difference between Map and Object?"]
-    N4["Q: What is a Symbol?"]
-    N5["Used for non-colliding property keys and internal proto"]
-    N6["(Symbol.iterator, Symbol.toPrimitive)."]
-    N7["Q: Explain ES6 modules."]
-    N8["and default exports. Static analysis enables tree-shaki"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

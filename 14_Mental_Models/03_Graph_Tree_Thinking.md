@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](02_DP_State_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Array_String_Thinking.md)
+﻿**Navigation**: [< Previous](02_DP_State_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Array_String_Thinking.md)
 
 # 🗺️ Graph & Tree Problem Thinking — Mental Model
 
@@ -23,55 +23,6 @@ Problem says:                          → Model as:
 "Maze from start to end"             → Grid graph (BFS = shortest)
 ```
 
-**Flow:**
-1. Problem says:
-2. Model as:
-3. 'Dependencies between tasks'
-4. Directed graph (topological sort)
-5. 'Can person A reach person B?'
-6. Undirected graph (BFS/DFS)
-7. 'Convert word A to word B'
-8. Graph where words are nodes
-9. '2D grid with obstacles'
-10. Grid graph (4-directional)
-11. 'Network of computers'
-12. Undirected graph
-
-```mermaid
-flowchart TD
-    N1["Problem says:"]
-    N2["Model as:"]
-    N3["'Dependencies between tasks'"]
-    N4["Directed graph (topological sort)"]
-    N5["'Can person A reach person B?'"]
-    N6["Undirected graph (BFS/DFS)"]
-    N7["'Convert word A to word B'"]
-    N8["Graph where words are nodes"]
-    N9["'2D grid with obstacles'"]
-    N10["Grid graph (4-directional)"]
-    N11["'Network of computers'"]
-    N12["Undirected graph"]
-    N13["'Course prerequisites'"]
-    N14["DAG (directed acyclic)"]
-    N15["'Binary/N-ary tree'"]
-    N16["Special case of graph (no cycles)"]
-    N17["'Social network friends'"]
-    N18["'State machine transitions'"]
-    N19["Directed graph"]
-    N20["'Maze from start to end'"]
-    N21["Grid graph (BFS = shortest)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-    N17 --> N12
-    N18 --> N19
-    N20 --> N21
-```
 
 ---
 
@@ -94,18 +45,6 @@ Mental model: BFS = "Ripple in a pond"
 Drop a stone → it expands in CIRCLES → nearest first
 ```
 
-**Flow:**
-1. Drop a stone it expands in CIRCLES
-2. nearest first
-
-```mermaid
-flowchart LR
-    N1["Drop a stone"]
-    N2["it expands in CIRCLES"]
-    N3["nearest first"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### When to use DFS (Stack/Recursion):
 ```
@@ -120,20 +59,6 @@ Mental model: DFS = "Exploring a maze"
 Go as DEEP as possible → hit dead end → BACKTRACK → try next path
 ```
 
-**Flow:**
-1. Go as DEEP as possible hit dead end
-2. BACKTRACK try next path
-
-```mermaid
-flowchart LR
-    N1["Go as DEEP as possible"]
-    N2["hit dead end"]
-    N3["BACKTRACK"]
-    N4["try next path"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### When to use Dijkstra (Priority Queue):
 ```
@@ -155,20 +80,6 @@ Mental model: Union-Find = "Clubs merging"
 Each person belongs to a club → when two people connect, their clubs merge
 ```
 
-**Flow:**
-1. ✅ Cycle detection in undirected graph (if union re cycle)
-2. Each person belongs to a club
-3. when two people connect, their clubs merge
-
-```mermaid
-flowchart LR
-    N1["✅ Cycle detection in undirected graph (if union re"]
-    N2["cycle)"]
-    N3["Each person belongs to a club"]
-    N4["when two people connect, their clubs merge"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Decision Tree
 ```
@@ -195,21 +106,6 @@ Graph problem?
     └── LCA? → DFS with parent tracking
 ```
 
-**Flow:**
-1. Root-to-leaf?
-2. DFS
-3. Level-order?
-4. BFS
-
-```mermaid
-flowchart LR
-    N1["Root-to-leaf?"]
-    N2["DFS"]
-    N3["Level-order?"]
-    N4["BFS"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 
@@ -252,33 +148,6 @@ Category 4: "FIND something in the tree"
 → Example: LCA = if both sides return non-null, current is LCA
 ```
 
-**Flow:**
-1. Category 1: 'RETURN something about the tree'
-2. DFS that returns a value (height, sum, boolean)
-3. Example: max depth = 1 + max(leftDepth, rightDepth)
-4. Category 2: 'UPDATE a global answer during traversal'
-5. DFS with a class variable
-6. Category 3: 'BUILD or TRANSFORM the tree'
-7. DFS that returns new nodes
-
-```mermaid
-flowchart TD
-    N1["Category 1: 'RETURN something about the tree'"]
-    N2["→ DFS that returns a value (height, sum, boolean)"]
-    N3["→ Example: max depth = 1 + max(leftDepth, rightDepth)"]
-    N4["Category 2: 'UPDATE a global answer during traversal'"]
-    N5["→ DFS with a class variable"]
-    N6["Category 3: 'BUILD or TRANSFORM the tree'"]
-    N7["→ DFS that returns new nodes"]
-    N8["→ Example: invert tree = swap left and right, recurse b"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### BST-Specific Thinking
 ```
@@ -291,42 +160,6 @@ BST = sorted structure → INORDER traversal gives sorted array
 "Delete?" → Three cases: leaf, one child, two children (find successor)
 ```
 
-**Flow:**
-1. BST = sorted structure
-2. INORDER traversal gives sorted array
-3. 'Kth smallest?'
-4. Inorder, count to k
-5. 'Validate BST?'
-6. Every node has a valid range [min, max]
-7. 'Search?'
-8. Go left if smaller, right if larger
-9. O(log n)
-10. 'Insert?'
-11. Find the right spot like binary search
-
-```mermaid
-flowchart TD
-    N1["BST = sorted structure"]
-    N2["INORDER traversal gives sorted array"]
-    N3["'Kth smallest?'"]
-    N4["Inorder, count to k"]
-    N5["'Validate BST?'"]
-    N6["Every node has a valid range [min, max]"]
-    N7["'Search?'"]
-    N8["Go left if smaller, right if larger"]
-    N9["O(log n)"]
-    N10["'Insert?'"]
-    N11["Find the right spot like binary search"]
-    N12["'Delete?'"]
-    N13["Three cases: leaf, one child, two children (find s"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N8 --> N9
-    N10 --> N11
-    N12 --> N13
-```
 
 ---
 
@@ -372,41 +205,6 @@ boolean[][] visited;  // When you can't mutate the grid
 "Rotting oranges?" → Multi-source BFS with time tracking
 ```
 
-**Flow:**
-1. 'How many islands?'
-2. Count DFS/BFS starts on unvisited land
-3. 'Shortest path to exit?'
-4. BFS from start
-5. 'Distance from all 1s?'
-6. MULTI-SOURCE BFS (enqueue ALL 1s first)
-7. 'Can we escape?'
-8. DFS/BFS to check connectivity
-9. 'Surrounded regions?'
-10. DFS from BORDERS first, then fill rest
-11. 'Rotting oranges?'
-12. Multi-source BFS with time tracking
-
-```mermaid
-flowchart TD
-    N1["'How many islands?'"]
-    N2["Count DFS/BFS starts on unvisited land"]
-    N3["'Shortest path to exit?'"]
-    N4["BFS from start"]
-    N5["'Distance from all 1s?'"]
-    N6["MULTI-SOURCE BFS (enqueue ALL 1s first)"]
-    N7["'Can we escape?'"]
-    N8["DFS/BFS to check connectivity"]
-    N9["'Surrounded regions?'"]
-    N10["DFS from BORDERS first, then fill rest"]
-    N11["'Rotting oranges?'"]
-    N12["Multi-source BFS with time tracking"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-```
 
 ---
 
@@ -435,15 +233,6 @@ If conflict found → not bipartite
 Mental model: "Color neighbors with opposite color. Contradiction = not bipartite."
 ```
 
-**Flow:**
-1. If conflict found not bipartite
-
-```mermaid
-flowchart LR
-    N1["If conflict found"]
-    N2["not bipartite"]
-    N1 --> N2
-```
 
 ### Tarjan's / Bridges — "What if this edge is removed?"
 ```
@@ -454,15 +243,6 @@ If low[child] > disc[parent] → bridge edge
 Mental model: "Can child reach higher than parent without this edge?"
 ```
 
-**Flow:**
-1. If low[child] > disc[parent] bridge edge
-
-```mermaid
-flowchart LR
-    N1["If low[child] &gt; disc[parent]"]
-    N2["bridge edge"]
-    N1 --> N2
-```
 
 ---
 
@@ -485,19 +265,6 @@ flowchart LR
 □ Weighted graph: Am I using PQ correctly? (skip outdated entries in Dijkstra)
 ```
 
-**Flow:**
-1. Wrong: mark when poll may enqueue duplicates
-2. Right: mark when offer each node enqueued once
-
-```mermaid
-flowchart LR
-    N1["Wrong: mark when poll"]
-    N2["may enqueue duplicates"]
-    N3["Right: mark when offer"]
-    N4["each node enqueued once"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 

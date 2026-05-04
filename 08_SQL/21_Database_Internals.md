@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [SQL Guide](01_Foundations_Database_Basics.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [SQL Guide](01_Foundations_Database_Basics.md)
 🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md)
 
 ---
@@ -51,41 +51,6 @@ Know what happens beneath your SQL queries — B-Trees, WAL, MVCC, Buffer Pool, 
      → If parent is full → split again (cascades up)
 ```
 
-**Flow:**
-1. Root: 55 > 30, 55 < 70
-2. go middle child
-3. Internal: 55 > 50, 55 < 60
-4. go third child
-5. Leaf: Found 55!
-6. return row data
-7. 2. If page has space
-8. insert in sorted order
-9. 3. If page is full
-10. SPLIT into two half-full pages
-11. If parent is full
-12. split again (cascades up)
-
-```mermaid
-flowchart TD
-    N1["Root: 55 &gt; 30, 55 &lt; 70"]
-    N2["go middle child"]
-    N3["Internal: 55 &gt; 50, 55 &lt; 60"]
-    N4["go third child"]
-    N5["Leaf: Found 55!"]
-    N6["return row data"]
-    N7["2. If page has space"]
-    N8["insert in sorted order"]
-    N9["3. If page is full"]
-    N10["SPLIT into two half-full pages"]
-    N11["If parent is full"]
-    N12["split again (cascades up)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-```
 
 ### Clustered vs Non-Clustered Index
 
@@ -137,34 +102,6 @@ COVERING INDEX:
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. THE PROBLEM: Crash during write
-2. data corruption
-3. THE SOLUTION: Write-Ahead Logging
-4. UPDATE accounts SET balance = 500 WHERE id = 1;
-5. Step 2: Modify page in memory (buffer pool)
-6. Step 3: Acknowledge to client: 'COMMIT OK'
-7. Step 4: Eventually flush dirty pages to disk (checkpoin
-8. If crash after step 1, before step 4:
-
-```mermaid
-flowchart TD
-    N1["THE PROBLEM: Crash during write → data corruption"]
-    N2["THE SOLUTION: Write-Ahead Logging"]
-    N3["UPDATE accounts SET balance = 500 WHERE id = 1;"]
-    N4["Step 2: Modify page in memory (buffer pool)"]
-    N5["Step 3: Acknowledge to client: 'COMMIT OK'"]
-    N6["Step 4: Eventually flush dirty pages to disk (checkpoin"]
-    N7["If crash after step 1, before step 4:"]
-    N8["→ On restart, REPLAY WAL to reconstruct lost changes"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -208,16 +145,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Page 1 Page 5 Page 12 Page 3 ... / (clean) (dirty) (cle
-2. Data files / (tables, / indexes)
-
-```mermaid
-flowchart TD
-    N1["Page 1 Page 5 Page 12 Page 3 ... / (clean) (dirty) (cle"]
-    N2["Data files / (tables, / indexes)"]
-    N1 --> N2
-```
 
 ---
 
@@ -384,34 +311,4 @@ A: Run EXPLAIN ANALYZE. Common causes:
    5. Lock contention → check for long-running transactions
 ```
 
-**Flow:**
-1. 1. Missing index
-2. sequential scan on large table
-3. 2. Bad join order
-4. optimizer chose wrong plan
-5. 3. Outdated statistics
-6. ANALYZE/UPDATE STATISTICS
-7. 4. Too many rows returned
-8. check WHERE predicates
-9. 5. Lock contention
-10. check for long-running transactions
-
-```mermaid
-flowchart TD
-    N1["1. Missing index"]
-    N2["sequential scan on large table"]
-    N3["2. Bad join order"]
-    N4["optimizer chose wrong plan"]
-    N5["3. Outdated statistics"]
-    N6["ANALYZE/UPDATE STATISTICS"]
-    N7["4. Too many rows returned"]
-    N8["check WHERE predicates"]
-    N9["5. Lock contention"]
-    N10["check for long-running transactions"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-```
 

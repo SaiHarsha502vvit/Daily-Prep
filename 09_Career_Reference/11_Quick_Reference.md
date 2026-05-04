@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](10_Ultimate_DSA_JVM.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Brain_Psychology.md)
+﻿> **Navigation**: [< Previous](10_Ultimate_DSA_JVM.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Brain_Psychology.md)
 
 # 🚀 NETCRACKER EXAM - QUICK REFERENCE CHEAT SHEET
 
@@ -48,26 +48,6 @@ STEP 5: EDGE CASES (At the very end)
 └───────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 'This is _______ pattern' / (Sliding Window / Two Point
-2. public static void solve(int[] arr) { / for (int j = 0;
-3. // window size = j - i + 1 / // OR: sum of window = cur
-4. First: Add the core operation / Then: Add the condition
-5. if (arr == null
-6. arr.length == 0) return; / if (n &lt
-
-```mermaid
-flowchart TD
-    N1["'This is _______ pattern' / (Sliding Window / Two Point"]
-    N2["public static void solve(int[] arr) { / for (int j = 0;"]
-    N3["// window size = j - i + 1 / // OR: sum of window = cur"]
-    N4["First: Add the core operation / Then: Add the condition"]
-    N5["if (arr == null || arr.length == 0) return; / if (n &lt"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **See:** [07_DSA_Guide_Foundations.md](07_DSA_Guide_Foundations.md) for details
 
@@ -107,42 +87,6 @@ flowchart TD
 └─ "GCD/prime/bits"? ─────→ MATH / BIT MANIPULATION
 ```
 
-**Flow:**
-1. WHICH PATTERN DO I USE? (Decision Tree)
-2. Does problem involve ARRAY/STRING?
-3. ▼ YES ▼ NO
-4. 'window of size K'?
-5. SLIDING WINDOW
-6. 'window of size K'?
-7. SLIDING WINDOW
-8. 'tree structure'?
-9. 'two elements sum'?
-10. TWO POINTERS
-11. BFS/DFS
-12. 'two elements sum'?
-13. TWO POINTERS
-14. BFS/DFS
-15. 'count frequency'?
-16. HASHMAP 'graph/nodes'?
-
-```mermaid
-flowchart TD
-    N1["WHICH PATTERN DO I USE? (Decision Tree)"]
-    N2["Does problem involve ARRAY/STRING?"]
-    N3["▼ YES ▼ NO"]
-    N4["'window of size K'? → SLIDING WINDOW"]
-    N5["'tree structure'?"]
-    N6["'two elements sum'? → TWO POINTERS → BFS/DFS"]
-    N7["'count frequency'? → HASHMAP 'graph/nodes'?"]
-    N8["→ BFS/DFS"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -173,16 +117,6 @@ User Input: n = ?
 
 ```
 
-**Flow:**
-1. n == 0 ?
-2. n < 0 ?
-
-```mermaid
-flowchart TD
-    N1["n == 0 ?"]
-    N2["n &lt; 0 ?"]
-    N1 --> N2
-```
 
 ```java
 Scanner sc = new Scanner(System.in);
@@ -274,16 +208,6 @@ slow fast
   └───────── moves only when condition met
 ```
 
-**Flow:**
-1. r a c e c a r
-2. 1 1 2 2 2 3 4
-
-```mermaid
-flowchart TD
-    N1["r a c e c a r"]
-    N2["1 1 2 2 2 3 4"]
-    N1 --> N2
-```
 
 ```java
 // OPPOSITE DIRECTION
@@ -328,28 +252,6 @@ If arr[mid] < target:  lo = mid + 1  (search right)
 If arr[mid] > target:  hi = mid - 1  (search left)
 ```
 
-**Flow:**
-1. BINARY SEARCH VISUALIZATION
-2. Array: [1, 3, 5, 7, 9, 11, 13, 15] Target: 7
-3. Iteration 1:
-4. lo mid hi
-5. If arr[mid] < target: lo = mid + 1 (search right)
-6. If arr[mid] > target: hi = mid - 1 (search left)
-
-```mermaid
-flowchart TD
-    N1["BINARY SEARCH VISUALIZATION"]
-    N2["Array: [1, 3, 5, 7, 9, 11, 13, 15] Target: 7"]
-    N3["Iteration 1:"]
-    N4["lo mid hi"]
-    N5["If arr[mid] &lt; target: lo = mid + 1 (search right)"]
-    N6["If arr[mid] &gt; target: hi = mid - 1 (search left)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```java
 int lo = 0, hi = arr.length - 1;
@@ -394,18 +296,6 @@ Step 5: ']' → pop        Step 6: ')' → pop
 Final: Stack empty → BALANCED ✓
 ```
 
-**Flow:**
-1. [ / (
-2. { / [ / (
-3. [ / (
-
-```mermaid
-flowchart TD
-    N1["[ / ("]
-    N2["{ / [ / ("]
-    N1 --> N2
-    N2 --> N1
-```
 
 ```java
 public static boolean isBalanced(String s) {
@@ -470,33 +360,6 @@ public static boolean isBalanced(String s) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMMON MISTAKES VISUAL GUIDE
-2. MISTAKE #1: Sliding Window Index Confusion
-3. ❌ WRONG: for (j = i; j < i + k) ← 'Is it < or &lt
-4. MISTAKE #2: Off-by-One in Range
-5. Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers)
-6. ❌ WRONG: for (i = 3; i < 7) ← misses 7!
-7. ✅ RIGHT: for (i = 3; i <= 7) ← includes 7 ✓
-
-```mermaid
-flowchart TD
-    N1["COMMON MISTAKES VISUAL GUIDE"]
-    N2["MISTAKE #1: Sliding Window Index Confusion"]
-    N3["❌ WRONG: for (j = i; j &lt; i + k) ← 'Is it &lt; or &lt"]
-    N4["MISTAKE #2: Off-by-One in Range"]
-    N5["Range [3, 7] means: 3, 4, 5, 6, 7 (5 numbers)"]
-    N6["❌ WRONG: for (i = 3; i &lt; 7) ← misses 7!"]
-    N7["✅ RIGHT: for (i = 3; i &lt;= 7) ← includes 7 ✓"]
-    N8["MISTAKE #3: Prime Number Check"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 | Mistake                        | Wrong Code                      | Correct Code                      |
 | ------------------------------ | ------------------------------- | --------------------------------- |

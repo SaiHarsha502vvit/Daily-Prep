@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch52_SB_WebSocket_GraphQL_gRPC.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch15_Concurrency_Core.md)
+﻿**Navigation**: [< Previous](Ch52_SB_WebSocket_GraphQL_gRPC.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch15_Concurrency_Core.md)
 
 # 🚀 SPRING BOOT COMPLETE CURRICULUM — Separate Study Plan
 
@@ -17,26 +17,6 @@ Phase 2: PRODUCTION (Week 4-6)       → Security, Testing, Performance
 Phase 3: EXPERT/CLOUD (Week 7-10)    → Microservices, Cloud, Advanced
 ```
 
-**Flow:**
-1. Phase 1: FOUNDATIONS (Week 1-3)
-2. Build your first REST API
-3. Phase 2: PRODUCTION (Week 4-6)
-4. Security, Testing, Performance
-5. Phase 3: EXPERT/CLOUD (Week 7-10)
-6. Microservices, Cloud, Advanced
-
-```mermaid
-flowchart LR
-    N1["Phase 1: FOUNDATIONS (Week 1-3)"]
-    N2["Build your first REST API"]
-    N3["Phase 2: PRODUCTION (Week 4-6)"]
-    N4["Security, Testing, Performance"]
-    N5["Phase 3: EXPERT/CLOUD (Week 7-10)"]
-    N6["Microservices, Cloud, Advanced"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 

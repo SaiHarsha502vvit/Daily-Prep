@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02b_DS_Variants_Advanced.md)
+﻿> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02b_DS_Variants_Advanced.md)
 
 ---
 
@@ -91,33 +91,6 @@ SPECIALIZED:
 └── Bloom Filter
 ```
 
-**Flow:**
-
-# DATA STRUCTURE VARIANT HIERARCHY
-
-1. Start with the complete data structure hierarchy.
-2. Split into major families: linear, non-linear, hash-based, specialized, and probabilistic.
-3. Drill into linear structures.
-4. Focus on arrays: static array -> dynamic array (`ArrayList`) -> circular array.
-
-```mermaid
-flowchart TD
-    N1["COMPLETE DATA STRUCTURE VARIANT HIERARCHY"]
-    N2["DATA STRUCTURES"]
-    N3["LINEAR NON-LINEAR HASH-BASED SPECIALIZED PROBABILISTIC"]
-    N4["LINEAR DATA STRUCTURES:"]
-    N5["ARRAYS"]
-    N6["Static Array"]
-    N7["Dynamic Array (ArrayList)"]
-    N8["Circular Array"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -180,19 +153,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Understand the model: a singly linked list stores data with a pointer to the next node.
-2. Review operation costs: sequential access is `O(n)`, while head insertion/deletion is `O(1)`.
-3. Use it when frequent insertions/deletions matter more than random index access.
-
-```mermaid
-flowchart TD
-    N1["WHAT IS IT? / A linear data structure where each elemen"]
-    N2["TIME COMPLEXITY / Operation Time Explanation / Access b"]
-    N3["WHEN TO USE? / ✅ Frequent insertions/deletions at begin"]
-    N1 --> N2
-    N2 --> N3
-```
 
 :::
 
@@ -222,42 +182,6 @@ REAL-WORLD APPLICATIONS:
    └── Each car connects to next
 ```
 
-**Flow:**
-1. Model a forward-only chain ending in `null`.
-2. Apply the same pattern to undo steps: `Action1 -> Action2 -> Action3 -> null`.
-3. Apply it to forward history: `Page1 -> Page2 -> Page3 -> null`.
-4. Reuse this traversal style for playlists and train-car style linking.
-
-```mermaid
-flowchart TD
-    N1["Action1"]
-    N2["Action2"]
-    N3["Action3"]
-    N4["null"]
-    N5["Page1"]
-    N6["Page2"]
-    N7["Page3"]
-    N8["Song1"]
-    N9["Song2"]
-    N10["Song3"]
-    N11["Engine"]
-    N12["Car1"]
-    N13["Car2"]
-    N14["Caboose"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-    N6 --> N7
-    N7 --> N4
-    N8 --> N9
-    N9 --> N10
-    N10 --> N4
-    N11 --> N12
-    N12 --> N13
-    N13 --> N14
-    N14 --> N4
-```
 
 :::
 
@@ -594,16 +518,6 @@ public class SinglyLinkedList<T> {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Each node keeps both `prev` and `next` links.
-2. Backward links enable reverse traversal and efficient pointer updates.
-
-```mermaid
-flowchart TD
-    N1["prev 10 next"]
-    N2["prev 20 nex"]
-    N2 --> N1
-```
 
 :::
 
@@ -638,26 +552,6 @@ REAL-WORLD APPLICATIONS:
    null ← Img1 ↔ Img2 ↔ Img3 → null
 ```
 
-**Flow:**
-1. Use a doubly linked chain for bidirectional movement (`prev` and `next`).
-2. Common patterns: browser back/forward, music previous/next, and undo/redo timelines.
-3. The same structure powers `LRU` cache ordering (`head ... tail`) and image viewers.
-
-```mermaid
-flowchart TD
-    N1["null ← Page1 ↔ Page2 ↔ Page3"]
-    N2["null"]
-    N3["null ← Song1 ↔ Song2 ↔ Song3"]
-    N4["null ← Edit1 ↔ Edit2 ↔ Edit3"]
-    N5["head ↔ Recent1 ↔ Recent2 ↔ LeastRecent"]
-    N6["tail"]
-    N7["null ← Img1 ↔ Img2 ↔ Img3"]
-    N1 --> N2
-    N3 --> N2
-    N4 --> N2
-    N5 --> N6
-    N7 --> N2
-```
 
 :::
 
@@ -1014,32 +908,6 @@ public class DoublyLinkedList<T> {
    → Handle edge cases (head/tail)
 ```
 
-**Flow:**
-
-# INTERVIEW KEY POINTS - DOUBLY LINKED LIST
-
-1. Why choose doubly over singly: tail deletion is `O(1)`, traversal is bidirectional, and deleting a known node is `O(1)`.
-2. Main tradeoff: extra memory for `prev` and more complex pointer updates.
-3. Typical interview examples: `LRU` cache, browser history, and undo/redo.
-
-```mermaid
-flowchart TD
-    N1["🧠 INTERVIEW KEY POINTS - DOUBLY LINKED LIST:"]
-    N2["1. 'Why use doubly over singly?'"]
-    N3["→ Delete at tail: O(1) vs O(n)"]
-    N4["→ Bidirectional traversal"]
-    N5["→ Delete given node: O(1) vs O(n)"]
-    N6["2. 'What's the main disadvantage?'"]
-    N7["→ Extra memory for prev pointer"]
-    N8["→ More complex code"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -1109,29 +977,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Circular list links the last node back to the first node.
-2. Traversal wraps around instead of stopping at `null`.
-3. This structure fits repeating cycles such as scheduling, turn rotation, and looping buffers.
-
-```mermaid
-flowchart TD
-    N1["10 ●"]
-    N2["20 ●"]
-    N3["30 ●"]
-    N4["40 ●"]
-    N5["● 10 ●"]
-    N6["● 20 ●"]
-    N7["● 30 ●"]
-    N1 --> N2
-    N1 --> N5
-    N2 --> N3
-    N2 --> N5
-    N3 --> N4
-    N4 --> N7
-    N5 --> N6
-    N6 --> N7
-```
 
 :::
 
@@ -1172,19 +1017,6 @@ REAL-WORLD APPLICATIONS:
    Who survives? (Famous interview problem!)
 ```
 
-**Flow:**
-1. Arrange participants/items in a cycle.
-2. Move to the next node repeatedly, then wrap from the last node to the first.
-3. The same cycle applies to CPU round-robin, multiplayer turns, and repeat playlists.
-
-```mermaid
-flowchart TD
-    N1["Process1 → Process2 → Process3 / ▲"]
-    N2["Alice → Bob → Charlie → Diana / ▲"]
-    N3["Song1 → Song2 → Song3 / ▲"]
-    N1 --> N2
-    N2 --> N3
-```
 
 :::
 
@@ -1394,17 +1226,6 @@ public class CircularLinkedList<T> {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Circular doubly linked list keeps both `next` and `prev` while looping continuously.
-2. It supports `O(1)` updates at both ends with bidirectional movement.
-3. Use it when deque-like operations and wrap-around traversal are both required.
-
-```mermaid
-flowchart TD
-    N1["▼ ▼ / ev A next prev B next prev C next / ▲"]
-    N2["prev A next"]
-    N1 --> N2
-```
 
 :::
 
@@ -1630,33 +1451,6 @@ public class CircularDoublyLinkedList<T> {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-
-# SKIP LIST - COMPLETE GUIDE
-
-1. Start with a base sorted linked list, then add higher-level express lanes.
-2. Higher levels skip many nodes, giving `O(log n)` average search/insert/delete.
-3. Search moves top-down and left-to-right until it reaches the target level and key.
-4. This design is popular in systems like Redis sorted sets.
-
-```mermaid
-flowchart TD
-    N1["SKIP LIST - COMPLETE GUIDE"]
-    N2["WHAT IS IT?"]
-    N3["INVENTED: 1989 by William Pugh"]
-    N4["VISUAL - MULTIPLE LAYERS OF LINKED LISTS:"]
-    N5["Level 3: HEAD &gt; 50 &gt; NIL"]
-    N6["Level 2: HEAD &gt; 25 &gt; 50 &gt; NIL"]
-    N7["Level 1: HEAD &gt; 10 &gt; 25 &gt; 35 &gt; 50 &gt; NIL"]
-    N8["SEARCH FOR 35:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 

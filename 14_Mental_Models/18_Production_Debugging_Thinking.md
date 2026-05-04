@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](17_Frontend_Architecture_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿> **Navigation**: [< Previous](17_Frontend_Architecture_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Mental Models — Production Debugging Thinking
 
@@ -67,25 +67,6 @@ KEY RULE: MITIGATE first, DIAGNOSE second.
 Users don't care about root cause — they want the service BACK.
 ```
 
-**Flow:**
-1. DETECT (0-5 min) / Alert fires. PagerDuty/Slack noti
-2. MITIGATE (5-15 min) / STOP THE BLEEDING before findi
-3. DIAGNOSE (15 min - hours) / NOW find the root cause.
-4. FIX (hours - days) / Implement proper fix. Write tes
-5. POSTMORTEM (next day) / Blameless analysis. What hap
-
-```mermaid
-flowchart TD
-    N1["1. DETECT (0-5 min) / Alert fires. PagerDuty/Slack noti"]
-    N2["2. MITIGATE (5-15 min) / STOP THE BLEEDING before findi"]
-    N3["3. DIAGNOSE (15 min - hours) / NOW find the root cause."]
-    N4["4. FIX (hours - days) / Implement proper fix. Write tes"]
-    N5["5. POSTMORTEM (next day) / Blameless analysis. What hap"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ---
 
@@ -172,20 +153,6 @@ Traces → "The error happens when calling Inventory Service"
 Fix → Inventory Service returns null for new products
 ```
 
-**Flow:**
-1. METRICS — The 'Vital Signs' /
-2. Answer: 'IS something w LOGS — The 'Medical Records' / Answer: 'WHAT went wro
-3. LOGS — The 'Medical Records' /
-4. Answer: 'WHAT went wro TRACES — The 'CT Scan' / Answer: 'WHERE is it slow/br
-
-```mermaid
-flowchart TD
-    N1["METRICS — The 'Vital Signs' / → Answer: 'IS something w"]
-    N2["LOGS — The 'Medical Records' / → Answer: 'WHAT went wro"]
-    N3["TRACES — The 'CT Scan' / → Answer: 'WHERE is it slow/br"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -350,29 +317,6 @@ POSTMORTEM TEMPLATE:
 The goal: LEARN from incidents, don't just survive them.
 ```
 
-**Flow:**
-1. AFTER EVERY INCIDENT — Write a Postmortem
-2. ❌ 'John deployed without testing'
-3. ✅ 'Our deploy process doesn't require testing sign-off' POSTMORTEM TEMPLATE: Title: [Service] outage on [date] Summary: What happened in 2-3 sentences. Impact:
-
-```mermaid
-flowchart TD
-    N1["AFTER EVERY INCIDENT — Write a Postmortem"]
-    N2["❌ 'John deployed without testing'"]
-    N3["✅ 'Our deploy process doesn't require testing sign-off'"]
-    N4["POSTMORTEM TEMPLATE:"]
-    N5["Title: [Service] outage on [date]"]
-    N6["Summary: What happened in 2-3 sentences."]
-    N7["Impact:"]
-    N8["• Duration: 2 hours 15 minutes"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -409,33 +353,6 @@ STRUCTURED LOGGING — search-friendly:
 → Now you can query: event=order_placed AND amount>100
 ```
 
-**Flow:**
-1. LOGGING BEST PRACTICES FOR PRODUCTION DEBUGGING
-2. WHAT TO LOG:
-3. ✅ Request start + end (with duration)
-4. ✅ External calls (before + after + status)
-5. ✅ Errors with FULL context (input, state, stack trace)
-6. ✅ Business events ('Order #456 placed, total: $99.50')
-7. WHAT NOT TO LOG:
-
-```mermaid
-flowchart TD
-    N1["LOGGING BEST PRACTICES FOR PRODUCTION DEBUGGING"]
-    N2["WHAT TO LOG:"]
-    N3["✅ Request start + end (with duration)"]
-    N4["✅ External calls (before + after + status)"]
-    N5["✅ Errors with FULL context (input, state, stack trace)"]
-    N6["✅ Business events ('Order #456 placed, total: $99.50')"]
-    N7["WHAT NOT TO LOG:"]
-    N8["❌ Passwords, tokens, credit card numbers (PII/security)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -471,25 +388,6 @@ REMEMBER:
 • Document everything as you go (timeline for postmortem)
 ```
 
-**Flow:**
-1. ALERT FIRES
-2. What do I do?
-3. YES
-4. Can we rollback?
-5. YES
-6. Treat as 'affecting users'
-
-```mermaid
-flowchart LR
-    N1["ALERT FIRES"]
-    N2["What do I do?"]
-    N3["YES"]
-    N4["Can we rollback?"]
-    N5["Treat as 'affecting users'"]
-    N1 --> N2
-    N3 --> N4
-    N3 --> N5
-```
 
 ---
 
@@ -520,17 +418,6 @@ Q: "How would you design a system to be observable?"
   Plus: correlation IDs, health checks, dashboards, alerts
 ```
 
-**Flow:**
-1. (metrics logs traces), the root cause, and how you
-
-```mermaid
-flowchart LR
-    N1["(metrics"]
-    N2["logs"]
-    N3["traces), the root cause, and how you"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 

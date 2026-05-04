@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_JS_Functions_Closures.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_JS_Functions_Closures.md)
 
 **JavaScript Chapter 1/7** | [Index](../00_MASTER_INDEX.md) | [Next → Functions & Closures](02_JS_Functions_Closures.md)
 
@@ -80,27 +80,6 @@ It interprets first (fast startup) then optimizes hot paths
 (fast execution). Best of both worlds.
 ```
 
-**Flow:**
-1. Your JS code
-2. Engine (V8 in Chrome/Node)
-3. Machine cod
-4. PARSER
-5. Abstract Syntax Tree (AST)
-6. INTERPRETER (Ignition)
-7. Bytecode (runs immediately)
-8. JIT COMPILER (TurboFan)
-9. Optimized machine code / This
-
-```mermaid
-flowchart TD
-    N1["Your JS code → Engine (V8 in Chrome/Node) → Machine cod"]
-    N2["PARSER → Abstract Syntax Tree (AST)"]
-    N3["INTERPRETER (Ignition) → Bytecode (runs immediately)"]
-    N4["JIT COMPILER (TurboFan) → Optimized machine code / This"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -136,15 +115,6 @@ NON-PRIMITIVE (mutable, stored by REFERENCE):
    number type. Use Number.isNaN() to check.
 ```
 
-**Flow:**
-1. Type Example typeof / number 42, 3.14, NaN, Infinity 'n object {}, [], function, Date, RegExp, Map, / Set, Weak
-
-```mermaid
-flowchart TD
-    N1["Type Example typeof / number 42, 3.14, NaN, Infinity 'n"]
-    N2["object {}, [], function, Date, RegExp, Map, / Set, Weak"]
-    N1 --> N2
-```
 
 ### Value vs Reference — The #1 Source of Bugs
 
@@ -186,16 +156,6 @@ Objects can be large → stored on heap, stack holds a pointer.
 Assignment copies what's on the stack (value OR pointer).
 ```
 
-**Flow:**
-1. a: 10 / b: 20 / obj1: 0x1A / obj2: 0x1A
-2. { name: 'Harsha' }
-
-```mermaid
-flowchart TD
-    N1["a: 10 / b: 20 / obj1: 0x1A / obj2: 0x1A"]
-    N2["{ name: 'Harsha' }"]
-    N1 --> N2
-```
 
 ---
 
@@ -218,19 +178,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. WHY: Brendan Eich designed JS in 10 days for beginners.
-2. He wanted '5' + 3 to 'just work' instead of crashing.
-3. HOW: Internal algorithms: ToPrimitive, ToNumber, ToStri
-
-```mermaid
-flowchart TD
-    N1["WHY: Brendan Eich designed JS in 10 days for beginners."]
-    N2["He wanted '5' + 3 to 'just work' instead of crashing."]
-    N3["HOW: Internal algorithms: ToPrimitive, ToNumber, ToStri"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```javascript
 // STRING + anything = STRING (concatenation wins)
@@ -282,22 +229,6 @@ if ([]) console.log("truthy!");  // PRINTS! empty array is truthy
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. == (loose equality): Converts types THEN compares
-2. REASONING: == has 22 type conversion rules in the spec.
-3. Predictable code > clever code.
-4. The ONLY acceptable == use:
-
-```mermaid
-flowchart TD
-    N1["== (loose equality): Converts types THEN compares"]
-    N2["REASONING: == has 22 type conversion rules in the spec."]
-    N3["Predictable code &gt; clever code."]
-    N4["The ONLY acceptable == use:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -323,31 +254,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. WHAT: var (1995), let (2015/ES6), const (2015/ES6)
-2. were added to FIX those bugs while keeping var for back
-3. compatibility.
-4. WHEN to use each:
-5. • const: DEFAULT choice. ~90% of variables.
-6. • let: When you NEED to reassign (loops, accumulators).
-7. • var: NEVER in modern code. Legacy only.
-
-```mermaid
-flowchart TD
-    N1["WHAT: var (1995), let (2015/ES6), const (2015/ES6)"]
-    N2["were added to FIX those bugs while keeping var for back"]
-    N3["compatibility."]
-    N4["WHEN to use each:"]
-    N5["• const: DEFAULT choice. ~90% of variables."]
-    N6["• let: When you NEED to reassign (loops, accumulators)."]
-    N7["• var: NEVER in modern code. Legacy only."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```javascript
 // SCOPE comparison:
@@ -396,33 +302,6 @@ TDZ = Temporal Dead Zone (the time between hoisting and
 declaration where accessing the variable throws an error)
 ```
 
-**Flow:**
-1. COMPARISON TABLE:
-2. Feature var let const
-3. Scope function block block
-4. Hoisting yes(undef) yes(TDZ) yes(TDZ)
-5. Reassign yes yes NO
-6. Redeclare yes no no
-7. Use in never ~10% ~90%
-
-```mermaid
-flowchart TD
-    N1["COMPARISON TABLE:"]
-    N2["Feature var let const"]
-    N3["Scope function block block"]
-    N4["Hoisting yes(undef) yes(TDZ) yes(TDZ)"]
-    N5["Reassign yes yes NO"]
-    N6["Redeclare yes no no"]
-    N7["Use in never ~10% ~90%"]
-    N8["TDZ = Temporal Dead Zone (the time between hoisting and"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -439,23 +318,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. WHAT: Scope determines WHERE a variable is accessible.
-2. WHY: Without scope, all variables would be global
-3. cha
-4. HOW: JS uses LEXICAL (static) scoping — scope is determ
-5. by WHERE you WRITE the code, not where you call it.
-
-```mermaid
-flowchart TD
-    N1["WHAT: Scope determines WHERE a variable is accessible."]
-    N2["WHY: Without scope, all variables would be global → cha"]
-    N3["HOW: JS uses LEXICAL (static) scoping — scope is determ"]
-    N4["by WHERE you WRITE the code, not where you call it."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```
 THREE TYPES OF SCOPE:
@@ -488,30 +350,6 @@ Outer scopes CANNOT access inner scopes.
 This is the foundation of CLOSURES (next chapter).
 ```
 
-**Flow:**
-1. THREE TYPES OF SCOPE:
-2. GLOBAL SCOPE
-3. const API_URL = 'https://api.example.com';
-4. FUNCTION SCOPE function greet(name) { const msg = 'Hello ' + name; BLOCK SCOPE
-
-```mermaid
-flowchart TD
-    N1["THREE TYPES OF SCOPE:"]
-    N2["GLOBAL SCOPE"]
-    N3["const API_URL = 'https://api.example.com';"]
-    N4["FUNCTION SCOPE"]
-    N5["function greet(name) {"]
-    N6["const msg = 'Hello ' + name;"]
-    N7["BLOCK SCOPE"]
-    N8["const upper = name.toUpperCase();"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The Scope Chain (Lookup Mechanism)
 
@@ -564,23 +402,6 @@ function outer() {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. executing any code. (Technically, it's about creation phase vs execution phase — nothing physically moves.) WHY: The JS engine makes TWO passes: Pass 1 (Creation): Find all declarations, allocate memo Pass 2 (Execution): Run code line by line. But BEHAVIOR differs between them.
-
-```mermaid
-flowchart TD
-    N1["executing any code. (Technically, it's about creation"]
-    N2["phase vs execution phase — nothing physically moves.)"]
-    N3["WHY: The JS engine makes TWO passes:"]
-    N4["Pass 1 (Creation): Find all declarations, allocate memo"]
-    N5["Pass 2 (Execution): Run code line by line."]
-    N6["But BEHAVIOR differs between them."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```javascript
 // WHAT JS SEES vs WHAT ACTUALLY HAPPENS:
@@ -634,33 +455,6 @@ before declaring it, that's almost certainly a mistake.
 let/const throw immediately instead of silently being undefined.
 ```
 
-**Flow:**
-1. HOISTING SUMMARY:
-2. Declaration Hoisted? Value before line?
-3. var x = 5 Yes undefined
-4. let x = 5 Yes (TDZ) ReferenceError
-5. const x = 5 Yes (TDZ) ReferenceError
-6. function f() {} Yes (full) The function itself
-7. var f = () => {} Yes undefined
-
-```mermaid
-flowchart TD
-    N1["HOISTING SUMMARY:"]
-    N2["Declaration Hoisted? Value before line?"]
-    N3["var x = 5 Yes undefined"]
-    N4["let x = 5 Yes (TDZ) ReferenceError"]
-    N5["const x = 5 Yes (TDZ) ReferenceError"]
-    N6["function f() {} Yes (full) The function itself"]
-    N7["var f = () =&gt; {} Yes undefined"]
-    N8["class C {} Yes (TDZ) ReferenceError"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -750,15 +544,6 @@ Functions are PUSHED when called, POPPED when they return.
 Stack Overflow = too many pushes without pops (infinite recursion)
 ```
 
-**Flow:**
-1. EXECUTION CONTEXT contains: / 1. Variable Environment ( inner() / outer() / Global
-
-```mermaid
-flowchart TD
-    N1["EXECUTION CONTEXT contains: / 1. Variable Environment ("]
-    N2["inner() / outer() / Global"]
-    N1 --> N2
-```
 
 ---
 
@@ -828,23 +613,6 @@ Q: "5" + 3 vs "5" - 3?
   2 (- only does math, converts "5" to 5)
 ```
 
-**Flow:**
-1. var
-2. hoisted as undefined. let/const
-3. hoisted but in TDZ.
-4. function declarations fully hoisted.
-
-```mermaid
-flowchart LR
-    N1["var"]
-    N2["hoisted as undefined. let/const"]
-    N3["hoisted but in TDZ."]
-    N4["function declarations"]
-    N5["fully hoisted."]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-```
 
 ---
 

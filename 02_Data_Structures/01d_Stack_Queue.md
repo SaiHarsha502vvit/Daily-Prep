@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](01c_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01e_HashTable.md)
+﻿**Navigation**: [< Previous Chapter](01c_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01e_HashTable.md)
 
 ---
 
@@ -72,28 +72,6 @@ PHYSICAL REALITY - Like a stack of plates:
 └────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PHYSICAL REALITY - Like a stack of plates:
-2. TOP
-3. 5 ← Last In, First Out (LIFO)
-4. PUSH: Add to top
-5. POP: Remove from top
-6. PEEK: Look at top without removing
-
-```mermaid
-flowchart TD
-    N1["PHYSICAL REALITY - Like a stack of plates:"]
-    N2["TOP →"]
-    N3["5 ← Last In, First Out (LIFO)"]
-    N4["PUSH: Add to top"]
-    N5["POP: Remove from top"]
-    N6["PEEK: Look at top without removing"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ### Stack Operations
 
@@ -128,21 +106,6 @@ flowchart TD
 └─────────────┘
 ```
 
-**Flow:**
-1. C() addr ← Top (current)
-2. B() addr
-3. A() addr main() addr
-
-```mermaid
-flowchart TD
-    N1["C() addr ← Top (current)"]
-    N2["B() addr"]
-    N3["A() addr"]
-    N4["main() addr"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 When `C()` returns → pop → go to `B()`. When `B()` returns → pop → go to `A()`.
 
@@ -273,23 +236,6 @@ NOW USED IN:
 - JSON parsers
 ```
 
-**Flow:**
-1. - See '(' push ')'
-2. - See '{' push '}'
-3. - See ')' pop, check if matches
-
-```mermaid
-flowchart LR
-    N1["- See '('"]
-    N2["push ')'"]
-    N3["- See '{'"]
-    N4["push '}'"]
-    N5["- See ')'"]
-    N6["pop, check if matches"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
@@ -379,28 +325,6 @@ PHYSICAL REALITY - Like a line at a store:
 └────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PHYSICAL REALITY - Like a line at a store:
-2. FRONT BACK
-3. Dequeue Enqueue
-4. (Remove) (Add)
-5. FIFO = First In, First Out
-6. 'First come, first served'
-
-```mermaid
-flowchart TD
-    N1["PHYSICAL REALITY - Like a line at a store:"]
-    N2["FRONT BACK"]
-    N3["Dequeue Enqueue"]
-    N4["(Remove) (Add)"]
-    N5["FIFO = First In, First Out"]
-    N6["'First come, first served'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ### Queue Operations
 
@@ -429,25 +353,6 @@ PRINT QUEUE:
 └────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PRINT QUEUE:
-2. Front Back
-3. [Job1]
-4. [Job2]
-5. [Job3]
-6. [Job4]
-7. Printing New jobs
-
-```mermaid
-flowchart TD
-    N1["PRINT QUEUE:"]
-    N2["Front Back"]
-    N3["[Job1] → [Job2] → [Job3] → [Job4]"]
-    N4["Printing New jobs"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ✅ **Now used in:** OS task scheduling, web server request handling, message queues (Kafka, RabbitMQ), BFS algorithm
 

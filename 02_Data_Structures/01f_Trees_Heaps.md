@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](01e_HashTable.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01g_DS_Internals.md)
+﻿> **Navigation**: [< Previous Chapter](01e_HashTable.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01g_DS_Internals.md)
 
 ---
 
@@ -74,19 +74,6 @@ HIERARCHICAL STRUCTURE:
 └────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ▼ ▼ / C / ▼ ▼ / E F
-2. ▼ ▼ / D E
-3. ▼ ▼ / F G
-
-```mermaid
-flowchart TD
-    N1["▼ ▼ / C / ▼ ▼ / E F"]
-    N2["▼ ▼ / D E"]
-    N3["▼ ▼ / F G"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### Binary Search Tree (BST)
 
@@ -117,20 +104,6 @@ Search for 6:
 Time: O(log n) for balanced tree
 ```
 
-**Flow:**
-1. ▼ ▼ / 10 / ▼ / 6 14 10
-2. ▼ ▼ / 1 6 14
-
-```mermaid
-flowchart TD
-    N1["▼ ▼ / 10 / ▼ / 6 14"]
-    N2["10"]
-    N3["▼ ▼ / 1 6"]
-    N4["14"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### 🔴 Real-World Origin: File Systems (1965)
 
@@ -150,36 +123,6 @@ flowchart TD
 └── etc/
 ```
 
-**Flow:**
-1. Root home/
-2. Root alice/
-3. Root documents/
-4. Root photos/
-5. Root bob/
-6. Root usr/
-
-```mermaid
-flowchart TD
-    N1["Root"]
-    N2["home/"]
-    N3["alice/"]
-    N4["documents/"]
-    N5["photos/"]
-    N6["bob/"]
-    N7["usr/"]
-    N8["bin/"]
-    N9["lib/"]
-    N10["etc/"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N1 --> N9
-    N1 --> N10
-```
 
 **Why Tree?** Natural hierarchy (parent-child), path from root to any file, easy to navigate (`cd`, `ls` commands).
 
@@ -366,29 +309,6 @@ Left child of i: 2*i + 1
 Right child of i: 2*i + 2
 ```
 
-**Flow:**
-1. 100
-2. ▼ ▼ / 90 8 90 80
-3. ▼ ▼ / 0 60 70 60
-
-```mermaid
-flowchart TD
-    N1["100"]
-    N2["▼ ▼ / 90 8"]
-    N3["90"]
-    N4["80"]
-    N5["▼ ▼ / 0 60"]
-    N6["70"]
-    N7["60"]
-    N8["50"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### 🔴 Real-World Origin: Emergency Room Triage (1970s)
 

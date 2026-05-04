@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](13_Greedy.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_LinkedList.md)
+﻿**Navigation**: [< Previous](13_Greedy.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_LinkedList.md)
 
 **Problems 14/14** | [Prev](13_Greedy.md) | [Index](../00_MASTER_INDEX.md) | 
 
@@ -26,33 +26,6 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COMPETITIVE PROGRAMMING PATTERNS
-2. WHY PRACTICE THESE PLATFORMS?
-3. - Different problem styles than LeetCode
-4. - Focus on mathematical thinking
-5. - Time complexity matters more
-6. - Better at handling edge cases
-7. COMMON TOPICS:
-
-```mermaid
-flowchart TD
-    N1["COMPETITIVE PROGRAMMING PATTERNS"]
-    N2["WHY PRACTICE THESE PLATFORMS?"]
-    N3["- Different problem styles than LeetCode"]
-    N4["- Focus on mathematical thinking"]
-    N5["- Time complexity matters more"]
-    N6["- Better at handling edge cases"]
-    N7["COMMON TOPICS:"]
-    N8["• Number Theory (primes, GCD, modular arithmetic)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -78,31 +51,6 @@ flowchart TD
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SIEVE OF ERATOSTHENES - Find all primes up to N
-2. Initial: 2 3 4 5 6 7 8 9 10 11 12 ... 30
-3. Mark multiples of 2: ✗4 ✗6 ✗8 ✗10 ✗12...
-4. Mark multiples of 3: ✗9 ✗15 ✗21 ✗27...
-5. Mark multiples of 5: ✗25...
-6. Primes: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29
-7. Time: O(n log log n), Space: O(n)
-
-```mermaid
-flowchart TD
-    N1["SIEVE OF ERATOSTHENES - Find all primes up to N"]
-    N2["Initial: 2 3 4 5 6 7 8 9 10 11 12 ... 30"]
-    N3["Mark multiples of 2: ✗4 ✗6 ✗8 ✗10 ✗12..."]
-    N4["Mark multiples of 3: ✗9 ✗15 ✗21 ✗27..."]
-    N5["Mark multiples of 5: ✗25..."]
-    N6["Primes: 2, 3, 5, 7, 11, 13, 17, 19, 23, 29"]
-    N7["Time: O(n log log n), Space: O(n)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 **Solution:**
 
@@ -149,16 +97,6 @@ public List<Integer> sieveOfEratosthenes(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PRIME FACTORIZATION - Find all prime factors
-2. Output: {2: 2, 3: 1, 7: 1}
-
-```mermaid
-flowchart TD
-    N1["PRIME FACTORIZATION - Find all prime factors"]
-    N2["Output: {2: 2, 3: 1, 7: 1}"]
-    N1 --> N2
-```
 
 **Solution:**
 
@@ -214,39 +152,6 @@ public Map<Integer, Integer> primeFactors(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MODULAR EXPONENTIATION - Calculate (base^exp) % mod
-2. Naive: 2^10 = 1024
-3. 1024 % 1000 = 24
-4. Naive: 2^10 = 1024
-5. 1024 % 1000 = 24
-6. Fast (Binary Exponentiation):
-7. 10 in binary = 1010
-8. 2^1 = 2 (bit 1: skip)
-9. 2^2 = 4 (bit 2: use)
-10. result = 4
-11. 2^2 = 4 (bit 2: use)
-12. result = 4
-13. 2^4 = 16 (bit 3: skip)
-
-```mermaid
-flowchart TD
-    N1["MODULAR EXPONENTIATION - Calculate (base^exp) % mod"]
-    N2["Naive: 2^10 = 1024 → 1024 % 1000 = 24"]
-    N3["Fast (Binary Exponentiation):"]
-    N4["10 in binary = 1010"]
-    N5["2^1 = 2 (bit 1: skip)"]
-    N6["2^2 = 4 (bit 2: use) → result = 4"]
-    N7["2^4 = 16 (bit 3: skip)"]
-    N8["Time: O(log exp)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -291,22 +196,6 @@ public long modPow(long base, long exp, long mod) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. GCD (Greatest Common Divisor) using Euclidean Algorithm
-2. GCD(48, 18) = 6
-3. LCM(a, b) = (a × b) / GCD(a, b)
-4. LCM(48, 18) = 864 / 6 = 144
-
-```mermaid
-flowchart TD
-    N1["GCD (Greatest Common Divisor) using Euclidean Algorithm"]
-    N2["GCD(48, 18) = 6"]
-    N3["LCM(a, b) = (a × b) / GCD(a, b)"]
-    N4["LCM(48, 18) = 864 / 6 = 144"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -359,37 +248,6 @@ public int gcdOfArray(int[] arr) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COUNT SET BITS - Number of 1s in binary representation
-2. Binary: 1101
-3. Set bits: 3
-4. Brian Kernighan's Algorithm:
-5. n & (n-1) removes rightmost set bit
-6. 13 & 12 = 1100 (12)
-7. count = 1
-8. 13 & 12 = 1100 (12)
-9. count = 1
-10. 12 & 11 = 1000 (8)
-11. count = 2
-
-```mermaid
-flowchart TD
-    N1["COUNT SET BITS - Number of 1s in binary representation"]
-    N2["Binary: 1101"]
-    N3["Set bits: 3"]
-    N4["Brian Kernighan's Algorithm:"]
-    N5["n & (n-1) removes rightmost set bit"]
-    N6["13 & 12 = 1100 (12) → count = 1"]
-    N7["12 & 11 = 1000 (8) → count = 2"]
-    N8["8 & 7 = 0 → count = 3"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -438,29 +296,6 @@ public int countSetBitsRange(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. POWER OF TWO - Check if n is power of 2
-2. Powers of 2 have exactly ONE set bit:
-3. Trick: n & (n-1) == 0 for powers of 2
-4. 8 & 7 = 0000
-5. True
-6. 8 & 7 = 0000
-7. True
-8. 6 & 5 = 0100
-9. False
-
-```mermaid
-flowchart TD
-    N1["POWER OF TWO - Check if n is power of 2"]
-    N2["Powers of 2 have exactly ONE set bit:"]
-    N3["Trick: n & (n-1) == 0 for powers of 2"]
-    N4["8 & 7 = 0000 → True"]
-    N5["6 & 5 = 0100 → False"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -504,31 +339,6 @@ public int highestPowerOf2(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. XOR QUERIES - XOR of range [L, R]
-2. arr = [1, 3, 4, 8], queries = [[0,1], [1,2], [0,3]]
-3. XOR properties:
-4. - Associative and commutative
-5. Prefix XOR: [1, 1⊕3, 1⊕3⊕4, 1⊕3⊕4⊕8]
-6. XOR[L,R] = prefix[R] ⊕ prefix[L-1]
-7. Check: 3 ⊕ 4 = 7 ✓
-
-```mermaid
-flowchart TD
-    N1["XOR QUERIES - XOR of range [L, R]"]
-    N2["arr = [1, 3, 4, 8], queries = [[0,1], [1,2], [0,3]]"]
-    N3["XOR properties:"]
-    N4["- Associative and commutative"]
-    N5["Prefix XOR: [1, 1⊕3, 1⊕3⊕4, 1⊕3⊕4⊕8]"]
-    N6["XOR[L,R] = prefix[R] ⊕ prefix[L-1]"]
-    N7["Check: 3 ⊕ 4 = 7 ✓"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 **Solution:**
 
@@ -579,19 +389,6 @@ public int[] xorQueries(int[] arr, int[][] queries) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SPIRAL MATRIX - Print matrix in spiral order
-2. matrix = [[1,2,3],
-3. Output: [1,2,3,6,9,8,7,4,5]
-
-```mermaid
-flowchart TD
-    N1["SPIRAL MATRIX - Print matrix in spiral order"]
-    N2["matrix = [[1,2,3],"]
-    N3["Output: [1,2,3,6,9,8,7,4,5]"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution:**
 
@@ -658,33 +455,6 @@ public List<Integer> spiralOrder(int[][] matrix) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ROTATE ARRAY - Rotate by k positions
-2. nums = [1,2,3,4,5,6,7], k = 3
-3. Method: Reverse three times
-4. Original: [1,2,3,4,5,6,7]
-5. Reverse all: [7,6,5,4,3,2,1]
-6. Reverse 0..k-1:[5,6,7,4,3,2,1]
-7. Reverse k..n-1:[5,6,7,1,2,3,4]
-
-```mermaid
-flowchart TD
-    N1["ROTATE ARRAY - Rotate by k positions"]
-    N2["nums = [1,2,3,4,5,6,7], k = 3"]
-    N3["Method: Reverse three times"]
-    N4["Original: [1,2,3,4,5,6,7]"]
-    N5["Reverse all: [7,6,5,4,3,2,1]"]
-    N6["Reverse 0..k-1:[5,6,7,4,3,2,1]"]
-    N7["Reverse k..n-1:[5,6,7,1,2,3,4]"]
-    N8["Output: [5,6,7,1,2,3,4]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -734,42 +504,6 @@ private void reverse(int[] nums, int start, int end) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. NEXT PERMUTATION - Next lexicographically greater
-2. nums = [1,2,3]
-3. [1,3,2]
-4. nums = [1,2,3]
-5. [1,3,2]
-6. nums = [3,2,1]
-7. [1,2,3] (wrap around)
-8. nums = [3,2,1]
-9. [1,2,3] (wrap around)
-10. nums = [1,1,5]
-11. [1,5,1]
-12. nums = [1,1,5]
-13. [1,5,1]
-14. Algorithm:
-15. 1. Find largest i where nums[i] < nums[i+1]
-16. 2. Find largest j where nums[j] > nums[i]
-
-```mermaid
-flowchart TD
-    N1["NEXT PERMUTATION - Next lexicographically greater"]
-    N2["nums = [1,2,3] → [1,3,2]"]
-    N3["nums = [3,2,1] → [1,2,3] (wrap around)"]
-    N4["nums = [1,1,5] → [1,5,1]"]
-    N5["Algorithm:"]
-    N6["1. Find largest i where nums[i] &lt; nums[i+1]"]
-    N7["2. Find largest j where nums[j] &gt; nums[i]"]
-    N8["3. Swap nums[i] and nums[j]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -833,28 +567,6 @@ private void reverse(int[] nums, int start, int end) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COUNT INVERSIONS - Pairs where i < j but arr[i] >
-2. arr = [2, 4, 1, 3, 5]
-3. Inversions:
-4. Total: 3 inversions
-5. Approach: Modified Merge Sort
-6. During merge, count inversions when right element chose
-
-```mermaid
-flowchart TD
-    N1["COUNT INVERSIONS - Pairs where i &lt; j but arr[i] &gt;"]
-    N2["arr = [2, 4, 1, 3, 5]"]
-    N3["Inversions:"]
-    N4["Total: 3 inversions"]
-    N5["Approach: Modified Merge Sort"]
-    N6["During merge, count inversions when right element chose"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -919,33 +631,6 @@ private void merge(int[] arr, int left, int mid, int right) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. AGGRESSIVE COWS - Max minimum distance between cows
-2. stalls = [1, 2, 4, 8, 9], cows = 3
-3. Place 3 cows to maximize minimum distance
-4. Try placing at 1, 4, 9: min distance = 3
-5. Try placing at 1, 4, 8: min distance = 3
-6. Try placing at 1, 8, 9: min distance = 1
-7. Binary search on answer:
-
-```mermaid
-flowchart TD
-    N1["AGGRESSIVE COWS - Max minimum distance between cows"]
-    N2["stalls = [1, 2, 4, 8, 9], cows = 3"]
-    N3["Place 3 cows to maximize minimum distance"]
-    N4["Try placing at 1, 4, 9: min distance = 3"]
-    N5["Try placing at 1, 4, 8: min distance = 3"]
-    N6["Try placing at 1, 8, 9: min distance = 1"]
-    N7["Binary search on answer:"]
-    N8["- Can we place cows with min distance = mid?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -1020,28 +705,6 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LONGEST CONSECUTIVE SEQUENCE
-2. nums = [100, 4, 200, 1, 3, 2]
-3. Sequences: [1,2,3,4], [100], [200]
-4. Longest: [1,2,3,4]
-5. length 4
-6. Longest: [1,2,3,4]
-7. length 4
-8. Approach: Use HashSet
-
-```mermaid
-flowchart TD
-    N1["LONGEST CONSECUTIVE SEQUENCE"]
-    N2["nums = [100, 4, 200, 1, 3, 2]"]
-    N3["Sequences: [1,2,3,4], [100], [200]"]
-    N4["Longest: [1,2,3,4] → length 4"]
-    N5["Approach: Use HashSet"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -1093,33 +756,6 @@ public int longestConsecutive(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SUBARRAY SUM EQUALS K - Count subarrays with sum k
-2. nums = [1, 1, 1], k = 2
-3. Subarrays with sum 2:
-4. [1,1] at index 0-1
-5. [1,1] at index 1-2
-6. Output: 2
-7. Prefix sum trick:
-
-```mermaid
-flowchart TD
-    N1["SUBARRAY SUM EQUALS K - Count subarrays with sum k"]
-    N2["nums = [1, 1, 1], k = 2"]
-    N3["Subarrays with sum 2:"]
-    N4["[1,1] at index 0-1"]
-    N5["[1,1] at index 1-2"]
-    N6["Output: 2"]
-    N7["Prefix sum trick:"]
-    N8["If prefix[j] - prefix[i] = k, subarray [i+1, j] has sum"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -1182,33 +818,6 @@ public int subarraySum(int[] nums, int k) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 📊 PRACTICE PROBLEMS SUMMARY
-2. SECTION 1-3: Basic Math, Strings, Arrays (~30 problems)
-3. SECTION 4: Sliding Window Patterns (12 problems)
-4. SECTION 5: Two Pointers Advanced (17 problems)
-5. SECTION 6: Binary Search Patterns (13 problems)
-6. SECTION 7: Stack & Queue Problems (26 problems)
-7. SECTION 8: Tree Problems (BFS/DFS) (32 problems)
-
-```mermaid
-flowchart TD
-    N1["📊 PRACTICE PROBLEMS SUMMARY"]
-    N2["SECTION 1-3: Basic Math, Strings, Arrays (~30 problems)"]
-    N3["SECTION 4: Sliding Window Patterns (12 problems)"]
-    N4["SECTION 5: Two Pointers Advanced (17 problems)"]
-    N5["SECTION 6: Binary Search Patterns (13 problems)"]
-    N6["SECTION 7: Stack & Queue Problems (26 problems)"]
-    N7["SECTION 8: Tree Problems (BFS/DFS) (32 problems)"]
-    N8["SECTION 9: Graph Algorithms (23 problems)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

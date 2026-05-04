@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04b_DP_Fundamentals.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04b_DP_Fundamentals.md)
 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
 
 ---
@@ -251,19 +251,6 @@ return dp[n];
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MEMORY SAVINGS:
-2. Array Size Full 2D Two Rows Single Row
-3. Savings baseline 500x less 1000x less
-
-```mermaid
-flowchart TD
-    N1["MEMORY SAVINGS:"]
-    N2["Array Size Full 2D Two Rows Single Row"]
-    N3["Savings baseline 500x less 1000x less"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ## 🖥️ Memoization vs Tabulation — CPU Perspective
 
@@ -335,28 +322,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. TOP-DOWN VS BOTTOM-UP: HARDWARE DIFFERENCES
-2. TOP-DOWN (MEMOIZATION): int fib(int n, int[] memo) { memo[n] = fib(n-1, memo) + fib(n-2, memo); return memo[n]; CPU Operations per call: • Function call overhead: ~15-30 cycles
-
-```mermaid
-flowchart TD
-    N1["TOP-DOWN VS BOTTOM-UP: HARDWARE DIFFERENCES"]
-    N2["TOP-DOWN (MEMOIZATION):"]
-    N3["int fib(int n, int[] memo) {"]
-    N4["memo[n] = fib(n-1, memo) + fib(n-2, memo);"]
-    N5["return memo[n];"]
-    N6["CPU Operations per call:"]
-    N7["• Function call overhead: ~15-30 cycles"]
-    N8["• Condition check (n &lt;= 1): ~1-3 cycles"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## 🧠 State Representation — Memory Efficiency
 
@@ -395,31 +360,6 @@ flowchart TD
 │                                                                                 │
 ```
 
-**Flow:**
-1. STATE REPRESENTATION TECHNIQUES
-2. TECHNIQUE 1: BITMASK DP
-3. Instead of boolean[] visited use int bitmask
-4. Example: Traveling Salesman (n ≤ 20 cities)
-5. int[][] dp = new int[1 << n][n]; // dp[mask][last Memory for n=20: • Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!)
-
-```mermaid
-flowchart TD
-    N1["STATE REPRESENTATION TECHNIQUES"]
-    N2["TECHNIQUE 1: BITMASK DP"]
-    N3["Instead of boolean[] visited → use int bitmask"]
-    N4["Example: Traveling Salesman (n ≤ 20 cities)"]
-    N5["int[][] dp = new int[1 &lt;&lt; n][n]; // dp[mask][last"]
-    N6["Memory for n=20:"]
-    N7["• Array: 2^20 × 20 × 4 = 80 MB (fits in RAM!)"]
-    N8["• Operations on mask:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // Compress coordinates
@@ -448,28 +388,6 @@ for (int i = 0; i < sorted.length; i++) {
 │ │
 ```
 
-**Flow:**
-1. TECHNIQUE 3: STATE ENCODING
-2. Combine multiple small states into one integer
-3. Example: Track (position, direction, speed) where:
-4. • position: 0-999
-5. • direction: 0-3
-6. • speed: 0-9
-
-```mermaid
-flowchart TD
-    N1["TECHNIQUE 3: STATE ENCODING"]
-    N2["Combine multiple small states into one integer"]
-    N3["Example: Track (position, direction, speed) where:"]
-    N4["• position: 0-999"]
-    N5["• direction: 0-3"]
-    N6["• speed: 0-9"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```java
 // Instead of: int[][][] dp = new int[1000][4][10];
@@ -526,33 +444,6 @@ int decodeSpd(int state) { return state % 10; }
 │                                                                                 │
 ```
 
-**Flow:**
-1. TRANSITION OPERATION COSTS
-2. COMMON DP TRANSITION OPERATIONS AND THEIR COSTS:
-3. Operation CPU Cycles Notes
-4. dp[i] = dp[i-1] + 1 3-5 Cache hit likely
-5. dp[i][j] = dp[i-1][j-1] 5-10 Depends on cache
-6. dp[i] = max(dp[i], dp[j] + val) 4-6 Comparison + maybe
-7. dp[i] = min(dp[i], dp[j] + val) 4-6 Same as max
-
-```mermaid
-flowchart TD
-    N1["TRANSITION OPERATION COSTS"]
-    N2["COMMON DP TRANSITION OPERATIONS AND THEIR COSTS:"]
-    N3["Operation CPU Cycles Notes"]
-    N4["dp[i] = dp[i-1] + 1 3-5 Cache hit likely"]
-    N5["dp[i][j] = dp[i-1][j-1] 5-10 Depends on cache"]
-    N6["dp[i] = max(dp[i], dp[j] + val) 4-6 Comparison + maybe"]
-    N7["dp[i] = min(dp[i], dp[j] + val) 4-6 Same as max"]
-    N8["dp[mask | (1&lt;&lt;i)] = ... 4-8 Bit operations fast"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // SLOW: Modulo on every operation
@@ -585,22 +476,6 @@ for (int i = 2; i <= n; i++) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BENCHMARK (n=10^7 Fibonacci mod 10^9+7):
-2. • With % every iter: 180 ms
-3. • With conditional: 65 ms
-4. • ~2.8x speedup!
-
-```mermaid
-flowchart TD
-    N1["BENCHMARK (n=10^7 Fibonacci mod 10^9+7):"]
-    N2["• With % every iter: 180 ms"]
-    N3["• With conditional: 65 ms"]
-    N4["• ~2.8x speedup!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ## 🧠 Memory Allocation Patterns
 
@@ -613,16 +488,6 @@ flowchart TD
 │ ────────────────────────────────────────────────────                            │
 ```
 
-**Flow:**
-1. DP ARRAY ALLOCATION STRATEGIES
-2. STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)
-
-```mermaid
-flowchart TD
-    N1["DP ARRAY ALLOCATION STRATEGIES"]
-    N2["STRATEGY 1: PREALLOCATE ARRAYS (Best for fixed size)"]
-    N1 --> N2
-```
 
 ```java
 // GOOD: Single allocation
@@ -656,22 +521,6 @@ for (int i = 0; i < tests; i++) {
 │ ───────────────────────────────────────────── │
 ```
 
-**Flow:**
-1. ALLOCATION COSTS:
-2. • new int[1000]: ~50-100 ns
-3. • new int[1000000]: ~500-2000 ns
-4. STRATEGY 2: LAZY INITIALIZATION (When sparse)
-
-```mermaid
-flowchart TD
-    N1["ALLOCATION COSTS:"]
-    N2["• new int[1000]: ~50-100 ns"]
-    N3["• new int[1000000]: ~500-2000 ns"]
-    N4["STRATEGY 2: LAZY INITIALIZATION (When sparse)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```java
 // When most values stay at default, don't fill!
@@ -768,29 +617,4 @@ while (i > 0 && w > 0) {
 
 **Rule of Thumb:** Always use Implicit Tracking unless the transition logic is extremely complex or depends on non-deterministic ties where you must remember the exact tie-breaker you chose.
 
-**Flow:**
-1. STRATEGY 3: USE PRIMITIVES, NOT OBJECTS
-2. Storage Memory per element Access time
-3. int[] 4 bytes ~3-4 cycles
-4. Integer[] 16+ bytes ~10-15 cycles
-5. ArrayList<Integer> 20+ bytes ~15-20 cycles
-6. HashMap<Integer,Integer> 48+ bytes ~50-200 cycles
-7. Rule: Use primitive arrays for DP whenever possible!
-
-```mermaid
-flowchart TD
-    N1["STRATEGY 3: USE PRIMITIVES, NOT OBJECTS"]
-    N2["Storage Memory per element Access time"]
-    N3["int[] 4 bytes ~3-4 cycles"]
-    N4["Integer[] 16+ bytes ~10-15 cycles"]
-    N5["ArrayList&lt;Integer&gt; 20+ bytes ~15-20 cycles"]
-    N6["HashMap&lt;Integer,Integer&gt; 48+ bytes ~50-200 cycles"]
-    N7["Rule: Use primitive arrays for DP whenever possible!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 

@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](01d_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01f_Trees_Heaps.md)
+﻿**Navigation**: [< Previous Chapter](01d_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01f_Trees_Heaps.md)
 
 ---
 
@@ -135,34 +135,6 @@ EXAMPLE: Phone Book
 └────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CONCEPT:
-2. - Transform key into array index using hash function
-3. - Store value at that index
-4. - Retrieve in O(1) average time
-5. EXAMPLE: Phone Book
-6. Name 'Alice' hash('Alice')
-7. 3
-8. Index: 0 1 2 3 4 5
-
-```mermaid
-flowchart TD
-    N1["CONCEPT:"]
-    N2["- Transform key into array index using hash function"]
-    N3["- Store value at that index"]
-    N4["- Retrieve in O(1) average time"]
-    N5["EXAMPLE: Phone Book"]
-    N6["Name 'Alice' → hash('Alice') → 3"]
-    N7["Index: 0 1 2 3 4 5"]
-    N8["Bob Alice Carol"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Collision Handling
 
@@ -193,19 +165,6 @@ variables = [
 lookup("x") → search all 10,000 → O(n)
 ```
 
-**Flow:**
-1. lookup('x')
-2. search all 10,000
-3. O(n)
-
-```mermaid
-flowchart LR
-    N1["lookup('x')"]
-    N2["search all 10,000"]
-    N3["O(n)"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution by H.P. Luhn (1953):** "What if we could *calculate* the position directly?"
 ```
@@ -214,20 +173,6 @@ variables[42] = {name: "x", type: "int"}
 lookup("x") → O(1)!
 ```
 
-**Flow:**
-1. hash('x') = some_formula('x')
-2. index 42 lookup('x')
-3. O(1)!
-
-```mermaid
-flowchart LR
-    N1["hash('x') = some_formula('x')"]
-    N2["index 42"]
-    N3["lookup('x')"]
-    N4["O(1)!"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ✅ **Impact:** Compilers became **100x faster**, databases became possible, every modern language has HashMap.
 
@@ -385,33 +330,6 @@ IMPACT:
 - Redis, Memcached are based on this
 ```
 
-**Flow:**
-1. REAL-WORLD ORIGIN: Web Browser Cache (1990s)
-2. PROBLEM AT NETSCAPE (1994):
-3. - Browser loads images from internet
-4. - Loading same image again = slow
-5. - Store recently viewed images in memory
-6. - Memory is limited (16MB in 1994!)
-7. QUESTIONS:
-
-```mermaid
-flowchart TD
-    N1["REAL-WORLD ORIGIN: Web Browser Cache (1990s)"]
-    N2["PROBLEM AT NETSCAPE (1994):"]
-    N3["- Browser loads images from internet"]
-    N4["- Loading same image again = slow"]
-    N5["- Store recently viewed images in memory"]
-    N6["- Memory is limited (16MB in 1994!)"]
-    N7["QUESTIONS:"]
-    N8["1. How to quickly check if image is cached? → HashMap"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

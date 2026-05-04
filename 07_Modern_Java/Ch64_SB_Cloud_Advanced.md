@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](Ch63_SB_Cloud_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](Ch63_SB_Cloud_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -690,56 +690,6 @@ infrastructure/
     └── gcp/
 ```
 
-**Flow:**
-1. infrastructure/
-2. modules/
-3. infrastructure/
-4. kubernetes/
-5. infrastructure/
-6. main.tf
-7. infrastructure/
-8. variables.tf
-9. infrastructure/
-10. outputs.tf
-11. infrastructure/
-12. database/
-
-```mermaid
-flowchart TD
-    N1["infrastructure/"]
-    N2["modules/"]
-    N3["kubernetes/"]
-    N4["main.tf"]
-    N5["variables.tf"]
-    N6["outputs.tf"]
-    N7["database/"]
-    N8["storage/"]
-    N9["environments/"]
-    N10["dev/"]
-    N11["terraform.tfvars"]
-    N12["staging/"]
-    N13["production/"]
-    N14["providers/"]
-    N15["aws/"]
-    N16["azure/"]
-    N17["gcp/"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N1 --> N9
-    N1 --> N10
-    N1 --> N11
-    N1 --> N12
-    N1 --> N13
-    N1 --> N14
-    N1 --> N15
-    N1 --> N16
-    N1 --> N17
-```
 
 ### Terraform Kubernetes Module
 
@@ -1000,33 +950,6 @@ management:
 └──────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COST OPTIMIZATION STRATEGIES
-2. COMPUTE
-3. ✅ Right-size instances based on actual usage
-4. ✅ Use Spot/Preemptible instances for non-critical workl
-5. ✅ Implement auto-scaling with proper thresholds
-6. ✅ Schedule non-prod environments to shut down
-7. STORAGE
-
-```mermaid
-flowchart TD
-    N1["COST OPTIMIZATION STRATEGIES"]
-    N2["COMPUTE"]
-    N3["✅ Right-size instances based on actual usage"]
-    N4["✅ Use Spot/Preemptible instances for non-critical workl"]
-    N5["✅ Implement auto-scaling with proper thresholds"]
-    N6["✅ Schedule non-prod environments to shut down"]
-    N7["STORAGE"]
-    N8["✅ Use appropriate storage tiers (hot/cold/archive)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Kubernetes Cost Optimization
 
@@ -1237,33 +1160,6 @@ Strategies:
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CLOUD DEPLOYMENT CHEAT SHEET
-2. DOCKER COMMANDS
-3. docker build -t app . Build image
-4. docker run -p 8080:8080 app Run container
-5. docker push registry/app Push to registry
-6. docker-compose up -d Start services
-7. KUBECTL COMMANDS
-
-```mermaid
-flowchart TD
-    N1["CLOUD DEPLOYMENT CHEAT SHEET"]
-    N2["DOCKER COMMANDS"]
-    N3["docker build -t app . Build image"]
-    N4["docker run -p 8080:8080 app Run container"]
-    N5["docker push registry/app Push to registry"]
-    N6["docker-compose up -d Start services"]
-    N7["KUBECTL COMMANDS"]
-    N8["kubectl apply -f manifest.yaml Apply configuration"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

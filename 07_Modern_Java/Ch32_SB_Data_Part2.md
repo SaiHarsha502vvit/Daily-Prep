@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch31_SB_Core_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch33_SB_Web_Part3.md)
+﻿**Navigation**: [< Previous](Ch31_SB_Core_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch33_SB_Web_Part3.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 2: Spring Core (IoC & DI)
 
@@ -49,22 +49,6 @@ _"Once you understand IoC, everything in Spring makes sense"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why IoC & DI are Foundation of Spring? / • IoC IS
-2. HOW: How DI Works in Spring? / • IoC Container: Applica
-3. WHEN: When to Use Each Bean Scope? / • Singleton (defau
-4. WHICH: Which DI Concepts to Master? / ESSENTIAL: Constr
-
-```mermaid
-flowchart TD
-    N1["WHY: Why IoC & DI are Foundation of Spring? / • IoC IS "]
-    N2["HOW: How DI Works in Spring? / • IoC Container: Applica"]
-    N3["WHEN: When to Use Each Bean Scope? / • Singleton (defau"]
-    N4["WHICH: Which DI Concepts to Master? / ESSENTIAL: Constr"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -171,18 +155,6 @@ this.payment = payment;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. OrderService
-2. SPRING IoC CONTAINER / 1. Creates OrderService / 2. Cre
-3. OrderService
-
-```mermaid
-flowchart TD
-    N1["OrderService"]
-    N2["SPRING IoC CONTAINER / 1. Creates OrderService / 2. Cre"]
-    N1 --> N2
-    N2 --> N1
-```
 
 ### IoC Container Resolution — Step-by-Step Flow
 
@@ -249,25 +221,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. IoC CONTAINER BEAN RESOLUTION PROCESS / PHASE 1: COMPON
-2. PHASE 2: BeanDefinition CREATION / Each class
-3. BeanDef
-4. PHASE 2: BeanDefinition CREATION / Each class
-5. BeanDef
-6. OrderRepo NotificationService
-7. DataSource EmailClient / PHASE 4: CREATION ORDER (Topol
-
-```mermaid
-flowchart TD
-    N1["IoC CONTAINER BEAN RESOLUTION PROCESS / PHASE 1: COMPON"]
-    N2["PHASE 2: BeanDefinition CREATION / Each class → BeanDef"]
-    N3["OrderRepo NotificationService"]
-    N4["DataSource EmailClient / PHASE 4: CREATION ORDER (Topol"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -430,25 +383,6 @@ Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE ema
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DEPENDENCY INJECTION TYPES COMPARISON
-2. Type Recommended? Use Case
-3. Constructor ✅ YES (Default) Required dependencies
-4. Setter ⚠️ Sometimes Optional dependencies
-5. Field ❌ NO Tests only (convenient but bad)
-
-```mermaid
-flowchart TD
-    N1["DEPENDENCY INJECTION TYPES COMPARISON"]
-    N2["Type Recommended? Use Case"]
-    N3["Constructor ✅ YES (Default) Required dependencies"]
-    N4["Setter ⚠️ Sometimes Optional dependencies"]
-    N5["Field ❌ NO Tests only (convenient but bad)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ### 1. Constructor Injection (RECOMMENDED)
 
@@ -743,33 +677,6 @@ Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE ema
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BEAN SCOPE COMPARISON
-2. Scope Description
-3. singleton One instance per container (DEFAULT)
-4. prototype New instance every time bean is requested
-5. request One instance per HTTP request (Web only)
-6. session One instance per HTTP session (Web only)
-7. application One instance per ServletContext (Web only)
-
-```mermaid
-flowchart TD
-    N1["BEAN SCOPE COMPARISON"]
-    N2["Scope Description"]
-    N3["singleton One instance per container (DEFAULT)"]
-    N4["prototype New instance every time bean is requested"]
-    N5["request One instance per HTTP request (Web only)"]
-    N6["session One instance per HTTP session (Web only)"]
-    N7["application One instance per ServletContext (Web only)"]
-    N8["websocket One instance per WebSocket session"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Singleton Scope (Default)
 
@@ -959,37 +866,6 @@ public class OrderService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COMPLETE BEAN LIFECYCLE / 1. INSTANTIATE: Bean instance
-2. 2. POPULATE PROPERTIES: Dependencies injected
-3. 3. BEAN NAME AWARE: setBeanName() called if implements
-4. 4. BEAN FACTORY AWARE: setBeanFactory() if implements B
-5. 5. APPLICATION CONTEXT AWARE: setApplicationContext() i
-6. 6. PRE-INITIALIZATION: BeanPostProcessor.postProcessBef
-7. 7. INITIALIZATION: @PostConstruct or InitializingBean.a
-
-```mermaid
-flowchart TD
-    N1["COMPLETE BEAN LIFECYCLE / 1. INSTANTIATE: Bean instance"]
-    N2["2. POPULATE PROPERTIES: Dependencies injected"]
-    N3["3. BEAN NAME AWARE: setBeanName() called if implements"]
-    N4["4. BEAN FACTORY AWARE: setBeanFactory() if implements B"]
-    N5["5. APPLICATION CONTEXT AWARE: setApplicationContext() i"]
-    N6["6. PRE-INITIALIZATION: BeanPostProcessor.postProcessBef"]
-    N7["7. INITIALIZATION: @PostConstruct or InitializingBean.a"]
-    N8["8. POST-INITIALIZATION: BeanPostProcessor.postProcessAf"]
-    N9["BEAN IS READY FOR USE"]
-    N10["9. DESTRUCTION: @PreDestroy or DisposableBean.destroy()"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-    N8 --> N9
-    N9 --> N10
-```
 
 ### Lifecycle Callbacks in Code
 
@@ -1714,33 +1590,6 @@ EVENTS:
 □ Understand when to use events vs direct calls
 ```
 
-**Flow:**
-1. IoC & DI CONCEPTS:
-2. □ Can explain Inversion of Control vs traditional contr
-3. □ Know the difference: BeanFactory vs ApplicationContex
-4. □ Understand the Hollywood Principle
-5. BEAN DEFINITION:
-6. □ Understand @Component stereotype hierarchy
-7. □ Can configure third-party classes as beans
-
-```mermaid
-flowchart TD
-    N1["IoC & DI CONCEPTS:"]
-    N2["□ Can explain Inversion of Control vs traditional contr"]
-    N3["□ Know the difference: BeanFactory vs ApplicationContex"]
-    N4["□ Understand the Hollywood Principle"]
-    N5["BEAN DEFINITION:"]
-    N6["□ Understand @Component stereotype hierarchy"]
-    N7["□ Can configure third-party classes as beans"]
-    N8["DEPENDENCY INJECTION:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

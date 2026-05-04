@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch34_SB_Security_Part4.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch36_SB_Service_Repository.md)
+﻿**Navigation**: [< Previous](Ch34_SB_Security_Part4.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch36_SB_Service_Repository.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 5: Lombok & DTO Patterns
 
@@ -49,22 +49,6 @@ _"Write less code, express more intent"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Lombok & DTOs? / • Java verbosity: 80 lines of
-2. HOW: How Does Lombok Work? / • Annotation processing: G
-3. WHEN: When to Use DTOs? / • ALWAYS for APIs: Never expo
-4. WHICH: Which Lombok Annotations to Use? / ENTITIES: @Ge
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Lombok & DTOs? / • Java verbosity: 80 lines of"]
-    N2["HOW: How Does Lombok Work? / • Annotation processing: G"]
-    N3["WHEN: When to Use DTOs? / • ALWAYS for APIs: Never expo"]
-    N4["WHICH: Which Lombok Annotations to Use? / ENTITIES: @Ge"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -232,16 +216,6 @@ public class User {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. User.java / @Data / class User { / String name; / }
-2. User.class / getName() / setName() / equals() / hashCod
-
-```mermaid
-flowchart TD
-    N1["User.java / @Data / class User { / String name; / }"]
-    N3["User.class / getName() / setName() / equals() / hashCod"]
-    N1 --> N3
-```
 
 ---
 
@@ -809,33 +783,6 @@ public class Counter {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LOMBOK BEST PRACTICES
-2. • Use @RequiredArgsConstructor for Spring DI
-3. • Use @Builder for complex object creation
-4. • Use @Value for immutable DTOs
-5. • Use @Slf4j for logging
-6. • Exclude sensitive fields from @ToString
-7. • Use onlyExplicitlyIncluded for @EqualsAndHashCode in
-
-```mermaid
-flowchart TD
-    N1["LOMBOK BEST PRACTICES"]
-    N2["• Use @RequiredArgsConstructor for Spring DI"]
-    N3["• Use @Builder for complex object creation"]
-    N4["• Use @Value for immutable DTOs"]
-    N5["• Use @Slf4j for logging"]
-    N6["• Exclude sensitive fields from @ToString"]
-    N7["• Use onlyExplicitlyIncluded for @EqualsAndHashCode in"]
-    N8["❌ DON'T:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Lombok Configuration File
 
@@ -917,33 +864,6 @@ lombok.experimental.flagUsage = warning
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. THE DTO PROBLEM
-2. WITHOUT DTOs (Exposing Entity Directly):
-3. @Entity
-4. public class User {
-5. private Long id;
-6. private String email;
-7. private String passwordHash; // 🔴 EXPOSED TO CLIENT!
-
-```mermaid
-flowchart TD
-    N1["THE DTO PROBLEM"]
-    N2["WITHOUT DTOs (Exposing Entity Directly):"]
-    N3["@Entity"]
-    N4["public class User {"]
-    N5["private Long id;"]
-    N6["private String email;"]
-    N7["private String passwordHash; // 🔴 EXPOSED TO CLIENT!"]
-    N8["private String ssn; // 🔴 EXPOSED TO CLIENT!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1318,33 +1238,6 @@ public class UserService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DTO ARCHITECTURE
-2. PACKAGE STRUCTURE:
-3. com.example.myapp/
-4. controller/
-5. UserController.java
-6. service/
-7. UserService.java
-
-```mermaid
-flowchart TD
-    N1["DTO ARCHITECTURE"]
-    N2["PACKAGE STRUCTURE:"]
-    N3["com.example.myapp/"]
-    N4["controller/"]
-    N5["UserController.java"]
-    N6["service/"]
-    N7["UserService.java"]
-    N8["repository/"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Complete Example: User Management
 
@@ -1595,33 +1488,6 @@ DTOs:
 □ Understand API response wrapper pattern
 ```
 
-**Flow:**
-1. LOMBOK:
-2. □ Know all core annotations (@Data, @Value, @Builder, e
-3. □ Understand @RequiredArgsConstructor for Spring DI
-4. □ Can configure Lombok for JPA entities properly
-5. □ Know when to use @Value vs @Data
-6. □ Can use @Builder with defaults and toBuilder
-7. DTOs:
-
-```mermaid
-flowchart TD
-    N1["LOMBOK:"]
-    N2["□ Know all core annotations (@Data, @Value, @Builder, e"]
-    N3["□ Understand @RequiredArgsConstructor for Spring DI"]
-    N4["□ Can configure Lombok for JPA entities properly"]
-    N5["□ Know when to use @Value vs @Data"]
-    N6["□ Can use @Builder with defaults and toBuilder"]
-    N7["DTOs:"]
-    N8["□ Understand why DTOs are essential (security, decoupli"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_016_Mar18_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_018_Mar20_Thu.md)
+﻿> **Navigation**: [< Previous](Day_016_Mar18_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_018_Mar20_Thu.md)
 
 # Day 017 — Wednesday, March 19, 2026
 
@@ -148,25 +148,6 @@ Step 2: Sift up — 2 < 3? Yes, swap
 Step 3: Sift up — 2 < 1? No, stop. Done!
 ```
 
-**Flow:**
-1. Insert 2 into min-heap [1, 3, 5, 7]:
-2. Step 1: Add at end
-3. [7] [2] ← new
-4. Step 2: Sift up — 2 < 3? Yes, swap
-5. Step 3: Sift up — 2 < 1? No, stop. Done!
-
-```mermaid
-flowchart TD
-    N1["Insert 2 into min-heap [1, 3, 5, 7]:"]
-    N2["Step 1: Add at end"]
-    N3["[7] [2] ← new"]
-    N4["Step 2: Sift up — 2 &lt; 3? Yes, swap"]
-    N5["Step 3: Sift up — 2 &lt; 1? No, stop. Done!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ### Java PriorityQueue Usage
 
@@ -220,52 +201,6 @@ EXTRACT PHASE:
   Result: [1, 3, 4, 5, 10] ← SORTED!
 ```
 
-**Flow:**
-1. [4, 10, 3, 5, 1]
-2. sift 10: no change (children 5,1 are smaller)
-3. [4, 10, 3, 5, 1] sift 4: swap with 10
-4. [10, 5, 3, 4, 1]
-5. Max-heap built!
-6. Step 1: Swap 10↔1
-7. [1, 5, 3, 4, 10]
-8. [1, 5, 3, 4, 10] sift down 1
-9. [5, 4, 3, 1, 10]
-
-```mermaid
-flowchart TD
-    N1["[4, 10, 3, 5, 1]"]
-    N2["sift 10: no change (children 5,1 are smaller)"]
-    N3["sift 4: swap with 10"]
-    N4["[10, 5, 3, 4, 1]"]
-    N5["Max-heap built!"]
-    N6["Step 1: Swap 10↔1"]
-    N7["[1, 5, 3, 4, | 10]"]
-    N8["sift down 1"]
-    N9["[5, 4, 3, 1, | 10]"]
-    N10["Step 2: Swap 5↔1"]
-    N11["[1, 4, 3, | 5, 10]"]
-    N12["[4, 1, 3, | 5, 10]"]
-    N13["Step 3: Swap 4↔3"]
-    N14["[3, 1, | 4, 5, 10]"]
-    N15["sift down 3"]
-    N16["Step 4: Swap 3↔1"]
-    N17["[1, | 3, 4, 5, 10]"]
-    N18["done!"]
-    N1 --> N2
-    N1 --> N3
-    N4 --> N5
-    N6 --> N7
-    N7 --> N8
-    N8 --> N9
-    N10 --> N11
-    N11 --> N8
-    N8 --> N12
-    N13 --> N14
-    N14 --> N15
-    N15 --> N14
-    N16 --> N17
-    N17 --> N18
-```
 
 ```java
 void heapSort(int[] arr) {
@@ -345,29 +280,6 @@ order_date | amount | prev | change | next
                        ↑ LAG              ↑ LEAD
 ```
 
-**Flow:**
-1. LAG(column, N) = value from N rows BEFORE current
-2. LEAD(column, N) = value from N rows AFTER current
-3. order_date amount prev change
-4. next order_date amount prev change
-5. next 2025-01-01 100 NULL NULL 250
-6. 2025-01-04 300 75 +225 NULL
-7. ↑ LAG ↑ LEAD
-
-```mermaid
-flowchart TD
-    N1["LAG(column, N) = value from N rows BEFORE current"]
-    N2["LEAD(column, N) = value from N rows AFTER current"]
-    N3["order_date | amount | prev | change | next"]
-    N4["2025-01-01 100 NULL NULL 250"]
-    N5["2025-01-04 300 75 +225 NULL"]
-    N6["↑ LAG ↑ LEAD"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ### Moving Average
 
@@ -432,24 +344,6 @@ Process:  3 → heap=[3]        (size < k, just add)
 Answer: peek() = 5  ← 2nd largest!
 ```
 
-**Flow:**
-1. Process: 3
-2. heap=[3] (size < k, just add)
-3. 5 > peek(2)? poll 2, add 5 heap=[3,5]
-4. 6 > peek(3)? poll 3, add 6 heap=[5,6]
-
-```mermaid
-flowchart LR
-    N1["Process: 3"]
-    N2["heap=[3] (size &lt; k, just add)"]
-    N3["5 &gt; peek(2)? poll 2, add 5"]
-    N4["heap=[3,5]"]
-    N5["6 &gt; peek(3)? poll 3, add 6"]
-    N6["heap=[5,6]"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ### Solution
 
@@ -516,21 +410,6 @@ Step 2: Min-heap by frequency, size ≤ k
 Step 3: Extract from heap → [1, 2]
 ```
 
-**Flow:**
-1. Step 1: Count frequencies
-2. {1:3, 2:2, 3:1}
-3. Step 3: Extract from heap
-4. [1, 2]
-
-```mermaid
-flowchart LR
-    N1["Step 1: Count frequencies"]
-    N2["{1:3, 2:2, 3:1}"]
-    N3["Step 3: Extract from heap"]
-    N4["[1, 2]"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Solution
 
@@ -570,16 +449,6 @@ HEAP IN THE REAL WORLD:
   5. Event Queue: Process earliest event first (min-heap by timestamp)
 ```
 
-**Flow:**
-1. Merge K Sorted Lists: Min-heap of K heads
-2. always extract smallest
-
-```mermaid
-flowchart LR
-    N1["4. Merge K Sorted Lists: Min-heap of K heads"]
-    N2["always extract smallest"]
-    N1 --> N2
-```
 
 
 ---

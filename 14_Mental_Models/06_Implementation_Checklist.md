@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](05_Universal_Problem_Framework.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_SQL_Mental_Pipeline.md)
+﻿> **Navigation**: [< Previous](05_Universal_Problem_Framework.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_SQL_Mental_Pipeline.md)
 
 # ✅ Implementation Checklist — Things to Remember While Writing Code
 
@@ -19,25 +19,6 @@
   □ Very large input (will my approach TLE?)
 ```
 
-**Flow:**
-1. □ What data structures am I using? (Declared them menta □ What are my key variables? (Named them meaningfully) □ Did I handle the edge cases in my head? □ Empty input (null, length 0) □ Single element □ All same values □ Very large input (will my approach TLE?)
-
-```mermaid
-flowchart TD
-    N1["□ What data structures am I using? (Declared them menta"]
-    N2["□ What are my key variables? (Named them meaningfully)"]
-    N3["□ Did I handle the edge cases in my head?"]
-    N4["□ Empty input (null, length 0)"]
-    N5["□ Single element"]
-    N6["□ All same values"]
-    N7["□ Very large input (will my approach TLE?)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 
@@ -259,29 +240,6 @@ After writing code, verify:
   → Should I convert to iterative?
 ```
 
-**Flow:**
-1. □ What's my time complexity? _____ □ What's my space complexity? _____ Am I using unnecessary extra space?
-2. □ Am I creating objects in a loop? Can I reuse them? (StringBuilder, arrays)
-3. □ Am I using recursion? Max stack depth? (Java default ~10,000 frames)
-
-```mermaid
-flowchart TD
-    N1["□ What's my time complexity? _____"]
-    N2["□ What's my space complexity? _____"]
-    N3["→ Am I using unnecessary extra space?"]
-    N4["□ Am I creating objects in a loop?"]
-    N5["→ Can I reuse them? (StringBuilder, arrays)"]
-    N6["□ Am I using recursion?"]
-    N7["→ Max stack depth? (Java default ~10,000 frames)"]
-    N8["→ Should I convert to iterative?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -300,27 +258,6 @@ flowchart TD
 □ Binary search: used left + (right - left) / 2
 ```
 
-**Flow:**
-1. □ Variable names won't confuse me □ No leftover debug print statements □ Edge cases handled (empty, null, single, negative) □ Correct loop bounds (< vs <=) □ Used long where overflow is possible □ HashMap: used getOrDefault □ ArrayList: added copies in backtracking
-
-```mermaid
-flowchart TD
-    N1["□ Variable names won't confuse me"]
-    N2["□ No leftover debug print statements"]
-    N3["□ Edge cases handled (empty, null, single, negative)"]
-    N4["□ Correct loop bounds (&lt; vs &lt;=)"]
-    N5["□ Used long where overflow is possible"]
-    N6["□ HashMap: used getOrDefault"]
-    N7["□ ArrayList: added copies in backtracking"]
-    N8["□ BFS: marked visited on enqueue"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

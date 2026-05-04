@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02a_Sorting_Fundamentals.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02a_Sorting_Fundamentals.md)
 
 # 🧠 Algorithm Thinking: How to Approach Any Problem
 
@@ -241,19 +241,6 @@ Translate logic to code
                                          HashMap
 ```
 
-**Flow:**
-1. Is data SORTED?
-2. Need OPTIMAL / substructure?
-3. Searching/ / Traversing?
-
-```mermaid
-flowchart TD
-    N1["Is data SORTED?"]
-    N2["Need OPTIMAL / substructure?"]
-    N3["Searching/ / Traversing?"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### Keyword → Pattern Mapping
 
@@ -301,33 +288,6 @@ MENTAL MODEL:
 └─────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SIGNAL PHRASES:
-2. - 'Find two elements that...'
-3. - 'Sorted array'
-4. - 'Remove duplicates'
-5. - 'Reverse'
-6. - 'Palindrome'
-7. MENTAL MODEL:
-
-```mermaid
-flowchart TD
-    N1["SIGNAL PHRASES:"]
-    N2["- 'Find two elements that...'"]
-    N3["- 'Sorted array'"]
-    N4["- 'Remove duplicates'"]
-    N5["- 'Reverse'"]
-    N6["- 'Palindrome'"]
-    N7["MENTAL MODEL:"]
-    N8["Instead of checking ALL pairs O(n²)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Thinking Example: Container With Most Water
 
@@ -403,33 +363,6 @@ MENTAL MODEL:
 └─────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SIGNAL PHRASES:
-2. - 'Subarray/substring of size K'
-3. - 'Longest/shortest subarray with condition'
-4. - 'Consecutive elements'
-5. - 'Sum of K elements'
-6. MENTAL MODEL:
-7. Instead of recalculating for each
-
-```mermaid
-flowchart TD
-    N1["SIGNAL PHRASES:"]
-    N2["- 'Subarray/substring of size K'"]
-    N3["- 'Longest/shortest subarray with condition'"]
-    N4["- 'Consecutive elements'"]
-    N5["- 'Sum of K elements'"]
-    N6["MENTAL MODEL:"]
-    N7["Instead of recalculating for each"]
-    N8["starting position..."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Fixed vs Variable Window
 
@@ -497,17 +430,6 @@ for right in range(n):
 Time: O(n) ✓
 ```
 
-**Flow:**
-1. Window: 'abc' add 'a' repeat found!
-
-```mermaid
-flowchart LR
-    N1["Window: 'abc'"]
-    N2["add 'a'"]
-    N3["repeat found!"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -554,33 +476,6 @@ MENTAL MODEL:
 └─────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SIGNAL PHRASES:
-2. - 'Sorted array'
-3. - 'Find target'
-4. - 'Search in O(log n)'
-5. - 'Find first/last occurrence'
-6. - 'Find minimum/maximum that satisfies condition'
-7. MENTAL MODEL:
-
-```mermaid
-flowchart TD
-    N1["SIGNAL PHRASES:"]
-    N2["- 'Sorted array'"]
-    N3["- 'Find target'"]
-    N4["- 'Search in O(log n)'"]
-    N5["- 'Find first/last occurrence'"]
-    N6["- 'Find minimum/maximum that satisfies condition'"]
-    N7["MENTAL MODEL:"]
-    N8["Can I eliminate HALF the search space"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Binary Search Variants
 
@@ -602,32 +497,6 @@ VARIANT 4: Search on Answer
 → Binary search on K values, not array!
 ```
 
-**Flow:**
-1. VARIANT 1: Exact Match
-2. 'Find element equal to target'
-3. Standard binary search
-4. VARIANT 2: First Occurrence
-5. 'Find first element >= target'
-6. When found, DON'T STOP! Search left for earlier VARIANT 3: Last Occurrence
-
-```mermaid
-flowchart TD
-    N1["VARIANT 1: Exact Match"]
-    N2["'Find element equal to target'"]
-    N3["→ Standard binary search"]
-    N4["VARIANT 2: First Occurrence"]
-    N5["'Find first element &gt;= target'"]
-    N6["→ When found, DON'T STOP! Search left for earlier"]
-    N7["VARIANT 3: Last Occurrence"]
-    N8["'Find last element &lt;= target'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Thinking Example: Find Peak Element
 
@@ -666,32 +535,6 @@ return left  # left == right, found peak
 Time: O(log n) ✓
 ```
 
-**Flow:**
-1. PROBLEM: nums = [1, 2, 3, 1]
-2. Find any peak element (greater than neighbors).
-3. LINEAR THINKING:
-4. 'Check each element against neighbors'
-5. return i
-6. Time: O(n) - but can we do better?
-
-```mermaid
-flowchart TD
-    N1["PROBLEM:"]
-    N2["nums = [1, 2, 3, 1]"]
-    N3["Find any peak element (greater than neighbors)."]
-    N4["LINEAR THINKING:"]
-    N5["'Check each element against neighbors'"]
-    N6["return i"]
-    N7["Time: O(n) - but can we do better?"]
-    N8["BINARY SEARCH THINKING:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -731,16 +574,6 @@ DP DETECTION:
 If BOTH yes → DP!
 ```
 
-**Flow:**
-1. If BOTH yes
-2. DP!
-
-```mermaid
-flowchart LR
-    N1["If BOTH yes"]
-    N2["DP!"]
-    N1 --> N2
-```
 
 ### DP Recipe
 
@@ -808,16 +641,6 @@ dp[4] = max(11, 11+1) = 12
 ANSWER: dp[4] = 12 ✓
 ```
 
-**Flow:**
-1. 2^n combinations
-2. O(2ⁿ) ❌
-
-```mermaid
-flowchart LR
-    N1["2^n combinations"]
-    N2["O(2ⁿ) ❌"]
-    N1 --> N2
-```
 
 ---
 
@@ -936,32 +759,6 @@ See problem → Understand → Examples → Brute force → Optimize → Code
 "10 minutes of planning saves 1 hour of debugging"
 ```
 
-**Flow:**
-1. See problem
-2. Start typing code
-3. See problem
-4. Understand
-5. Examples
-6. Brute force
-7. Optimize
-8. Code
-
-```mermaid
-flowchart TD
-    N1["See problem"]
-    N2["Start typing code"]
-    N3["Understand"]
-    N4["Examples"]
-    N5["Brute force"]
-    N6["Optimize"]
-    N7["Code"]
-    N1 --> N2
-    N1 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ## Mistake 2: Not Considering Edge Cases
 
@@ -1108,33 +905,6 @@ That looks correct. Time is O(n), space is O(n).
 Let me code this up..."
 ```
 
-**Flow:**
-1. PROBLEM: Two Sum
-2. that would be O(n²). Not great for large inputs.
-3. So my plan is:
-4. Create an empty HashMap
-5. If yes, return the indices
-6. If no, add current number to map
-7. Let me trace through [2, 7, 11, 15] with target 9:
-
-```mermaid
-flowchart TD
-    N1["PROBLEM: Two Sum"]
-    N2["that would be O(n²). Not great for large inputs."]
-    N3["So my plan is:"]
-    N4["1. Create an empty HashMap"]
-    N5["3. If yes, return the indices"]
-    N6["4. If no, add current number to map"]
-    N7["Let me trace through [2, 7, 11, 15] with target 9:"]
-    N8["- i=0: complement is 7, not in map, add 2→0"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

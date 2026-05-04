@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch21_AlgoEng_Advanced.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch21_AlgoEng_Advanced.md)
 
 ---
 
@@ -378,28 +378,6 @@ CPU Cache Locality and Hash Computation. A primitive array occupies a single, co
 3. SYSTEMS THINKING: Understand interactions and trade-offs
 ```
 
-**Flow:**
-1. FIRST PRINCIPLES
-2. PATTERN SYSTEMS
-3. RECOGNITION THINKING
-4. 1. FIRST PRINCIPLES: Break problem to fundamental truth
-5. 2. PATTERN RECOGNITION: See structures across domains
-6. 3. SYSTEMS THINKING: Understand interactions and trade-
-
-```mermaid
-flowchart TD
-    N1["FIRST PRINCIPLES"]
-    N2["PATTERN SYSTEMS"]
-    N3["RECOGNITION THINKING"]
-    N4["1. FIRST PRINCIPLES: Break problem to fundamental truth"]
-    N5["2. PATTERN RECOGNITION: See structures across domains"]
-    N6["3. SYSTEMS THINKING: Understand interactions and trade-"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ---
 
@@ -440,33 +418,6 @@ AHA! The REAL problem is inventory tracking, not duplicate finding!
 LESSON: Solve the ROOT problem, not the SYMPTOM.
 ```
 
-**Flow:**
-1. PROBLEM: 'I need to find if array has duplicates'
-2. WHY do I need to find duplicates?
-3. To ensure data integrity
-4. WHY does data need integrity?
-5. Because duplicates cause incorrect calculations
-6. WHY are calculations incorrect?
-7. Because we're counting unique items
-
-```mermaid
-flowchart TD
-    N1["PROBLEM: 'I need to find if array has duplicates'"]
-    N2["WHY do I need to find duplicates?"]
-    N3["→ To ensure data integrity"]
-    N4["WHY does data need integrity?"]
-    N5["→ Because duplicates cause incorrect calculations"]
-    N6["WHY are calculations incorrect?"]
-    N7["→ Because we're counting unique items"]
-    N8["WHY are we counting unique items?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## Decomposition Framework
 
@@ -489,33 +440,6 @@ Then ask:
 4. CAN I trade space for time? (or vice versa)
 ```
 
-**Flow:**
-1. ANY PROBLEM can be broken into:
-2. THE PROBLEM
-3. INPUT What data do I have? What's its structure?
-4. OUTPUT What do I need to produce? Exact format?
-5. CONSTRAINTS Size limits? Time limits? Space limits?
-6. EDGE CASES Empty? Single? Max? Negative? Duplicates?
-7. Then ask:
-
-```mermaid
-flowchart TD
-    N1["ANY PROBLEM can be broken into:"]
-    N2["THE PROBLEM"]
-    N3["INPUT What data do I have? What's its structure?"]
-    N4["OUTPUT What do I need to produce? Exact format?"]
-    N5["CONSTRAINTS Size limits? Time limits? Space limits?"]
-    N6["EDGE CASES Empty? Single? Max? Negative? Duplicates?"]
-    N7["Then ask:"]
-    N8["1. What's the SIMPLEST way to solve this? (Brute force)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -544,33 +468,6 @@ COMMON COMBINATIONS:
 └───────────────────┴────────────────────┴──────────────────────────────┘
 ```
 
-**Flow:**
-1. SINGLE PATTERNS are Level 1.
-2. COMBINED PATTERNS are Level 2-3.
-3. CREATED PATTERNS are Level 4.
-4. COMMON COMBINATIONS:
-5. Pattern 1 Pattern 2 Creates
-6. Binary Search Greedy Optimization problems
-7. Two Pointers Sorting 3Sum, Container problems
-
-```mermaid
-flowchart TD
-    N1["SINGLE PATTERNS are Level 1."]
-    N2["COMBINED PATTERNS are Level 2-3."]
-    N3["CREATED PATTERNS are Level 4."]
-    N4["COMMON COMBINATIONS:"]
-    N5["Pattern 1 Pattern 2 Creates"]
-    N6["Binary Search Greedy Optimization problems"]
-    N7["Two Pointers Sorting 3Sum, Container problems"]
-    N8["BFS/DFS Memoization Graph DP"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 
 
@@ -601,29 +498,6 @@ STEP 2: COMBINE
 STEP 3: IMPLEMENT COMBINATION
 ```
 
-**Flow:**
-1. - 'Substring'
-2. Sliding Window
-3. - 'At most k'
-4. Counting
-5. HashMap
-6. - 'Longest'
-7. Track maximum
-
-```mermaid
-flowchart LR
-    N1["- 'Substring'"]
-    N2["Sliding Window"]
-    N3["- 'At most k'"]
-    N4["Counting"]
-    N5["HashMap"]
-    N6["- 'Longest'"]
-    N7["Track maximum"]
-    N1 --> N2
-    N3 --> N4
-    N4 --> N5
-    N6 --> N7
-```
 
 ```java
 public int lengthOfLongestSubstringKDistinct(String s, int k) {
@@ -695,19 +569,6 @@ PATTERN: Interval Merging
 YOUR JOB: Make observations → Extract insights → Create patterns
 ```
 
-**Flow:**
-1. YOUR JOB: Make observations
-2. Extract insights
-3. Create patterns
-
-```mermaid
-flowchart LR
-    N1["YOUR JOB: Make observations"]
-    N2["Extract insights"]
-    N3["Create patterns"]
-    N1 --> N2
-    N2 --> N3
-```
 
 
 
@@ -819,47 +680,6 @@ Is it about ORDERING?
 └── Need k-th element? → Heap / Quick Select
 ```
 
-**Flow:**
-1. Sorted data?
-2. Binary Search
-3. Graph/Tree?
-4. BFS/DFS
-5. Can build solution greedily?
-6. Greedy
-7. Overlapping subproblems?
-8. DP
-9. Fixed window?
-10. Array/Map
-11. Variable window?
-12. Sliding Window + Map
-
-```mermaid
-flowchart TD
-    N1["Sorted data?"]
-    N2["Binary Search"]
-    N3["Graph/Tree?"]
-    N4["BFS/DFS"]
-    N5["Can build solution greedily?"]
-    N6["Greedy"]
-    N7["Overlapping subproblems?"]
-    N8["DP"]
-    N9["Fixed window?"]
-    N10["Array/Map"]
-    N11["Variable window?"]
-    N12["Sliding Window + Map"]
-    N13["Partial order matters?"]
-    N14["Topological Sort"]
-    N15["Need sorted output?"]
-    N16["Sort + Process"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-```
 
 ---
 
@@ -1073,16 +893,6 @@ A: DFS is O(4^(m*n)) worst case, but with pruning much better
 L: Use DFS with visited marking and backtracking
 ```
 
-**Flow:**
-1. I: This is a 'find all paths' problem
-2. likely DFS/backtracking
-
-```mermaid
-flowchart LR
-    N1["I: This is a 'find all paths' problem"]
-    N2["likely DFS/backtracking"]
-    N1 --> N2
-```
 
 ## The Constraint Analysis Method
 
@@ -1100,44 +910,6 @@ n ≤ 10^8:      O(log n) or O(1) required → Math formula, Binary search
 USE THIS TO ELIMINATE APPROACHES QUICKLY!
 ```
 
-**Flow:**
-1. n ≤ 10: O(n!), O(2^n) ok
-2. Brute force, backtracking
-3. n ≤ 20: O(2^n) ok
-4. Bitmask DP, backtracking with pruning
-5. n ≤ 100: O(n³) ok
-6. Floyd-Warshall, 3D DP
-7. n ≤ 1000: O(n²) ok
-8. Simple DP, nested loops
-9. n ≤ 10^5: O(n log n) ok
-10. Sorting, Binary search, Heap
-11. n ≤ 10^6: O(n) required
-12. Linear scan, Two pointers
-
-```mermaid
-flowchart TD
-    N1["n ≤ 10: O(n!), O(2^n) ok"]
-    N2["Brute force, backtracking"]
-    N3["n ≤ 20: O(2^n) ok"]
-    N4["Bitmask DP, backtracking with pruning"]
-    N5["n ≤ 100: O(n³) ok"]
-    N6["Floyd-Warshall, 3D DP"]
-    N7["n ≤ 1000: O(n²) ok"]
-    N8["Simple DP, nested loops"]
-    N9["n ≤ 10^5: O(n log n) ok"]
-    N10["Sorting, Binary search, Heap"]
-    N11["n ≤ 10^6: O(n) required"]
-    N12["Linear scan, Two pointers"]
-    N13["n ≤ 10^8: O(log n) or O(1) required"]
-    N14["Math formula, Binary search"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-```
 
 
 
@@ -1171,26 +943,6 @@ EXAMPLE: Recursion problems
 - RESULT: Termination condition clear
 ```
 
-**Flow:**
-1. - Window moves
-2. Add new element, remove old element
-3. - State changes
-4. Track what's different
-5. - Subproblem changes
-6. What's reduced?
-
-```mermaid
-flowchart LR
-    N1["- Window moves"]
-    N2["Add new element, remove old element"]
-    N3["- State changes"]
-    N4["Track what's different"]
-    N5["- Subproblem changes"]
-    N6["What's reduced?"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
@@ -1265,29 +1017,6 @@ STEP 5: REFINE
 - Only need dp[i-1] and dp[i-2] → O(1) space!
 ```
 
-**Flow:**
-1. - Edge: Empty array
-2. 0, single element
-3. that element
-4. - Negative numbers
-5. handled by max operation
-6. - Only need dp[i-1] and dp[i-2]
-7. O(1) space!
-
-```mermaid
-flowchart LR
-    N1["- Edge: Empty array"]
-    N2["0, single element"]
-    N3["that element"]
-    N4["- Negative numbers"]
-    N5["handled by max operation"]
-    N6["- Only need dp[i-1] and dp[i-2]"]
-    N7["O(1) space!"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N6 --> N7
-```
 
 ```java
 public int maxNonAdjacentSum(int[] arr) {
@@ -1345,33 +1074,6 @@ AFTER CODING:
 □ Can I explain this to someone?
 ```
 
-**Flow:**
-1. BEFORE CODING:
-2. □ Do I truly understand the problem?
-3. □ What are the constraints?
-4. □ What patterns might apply?
-5. □ What data structure fits best?
-6. □ What's my approach in plain English?
-7. WHILE CODING:
-
-```mermaid
-flowchart TD
-    N1["BEFORE CODING:"]
-    N2["□ Do I truly understand the problem?"]
-    N3["□ What are the constraints?"]
-    N4["□ What patterns might apply?"]
-    N5["□ What data structure fits best?"]
-    N6["□ What's my approach in plain English?"]
-    N7["WHILE CODING:"]
-    N8["□ Am I handling edge cases?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## The "Rubber Duck" Method
 
@@ -1482,37 +1184,6 @@ Solve → Process events, track max height at each point
 THE SKILL: See the UNDERLYING structure
 ```
 
-**Flow:**
-1. Transform
-2. 'Maximum overlapping intervals at any point'
-3. Transform
-4. 'Start = +1, End = -1, find max running sum'
-5. Transform
-6. Graph problem! Words are nodes, edge if differ by
-7. Solve
-8. BFS for shortest path
-9. Transform
-10. Events: building start = +height, end = -height
-11. Solve
-12. Process events, track max height at each point
-
-```mermaid
-flowchart TD
-    N1["Transform"]
-    N2["'Maximum overlapping intervals at any point'"]
-    N3["'Start = +1, End = -1, find max running sum'"]
-    N4["Graph problem! Words are nodes, edge if differ by"]
-    N5["Solve"]
-    N6["BFS for shortest path"]
-    N7["Events: building start = +height, end = -height"]
-    N8["Process events, track max height at each point"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N5 --> N6
-    N1 --> N7
-    N5 --> N8
-```
 
 ---
 

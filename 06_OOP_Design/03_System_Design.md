@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](02_Design_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_User_System_Flows.md)
+﻿**Navigation**: [< Previous](02_Design_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_User_System_Flows.md)
 
 # 🏗️ System Design & Feature Creation Guide
 
@@ -384,32 +384,6 @@ USER FLOW SYMBOLS:
                 └─────────┘
 ```
 
-**Flow:**
-1. Login Page
-2. Email + Password
-3. Login Page
-4. Social Login
-5. Email + Password
-6. Dashboard
-7. Social Login
-8. Dashboard
-9. Error / Message
-10. Forgot / Password
-
-```mermaid
-flowchart TD
-    N1["Login Page"]
-    N2["Email + Password"]
-    N3["Social Login"]
-    N4["Dashboard"]
-    N5["Error / Message"]
-    N6["Forgot / Password"]
-    N1 --> N2
-    N1 --> N3
-    N2 --> N4
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
@@ -851,21 +825,6 @@ KEY DECISIONS:
 4. Async analytics logging
 ```
 
-**Flow:**
-1. URL Service / - Generate ID / - Store mapping
-2. Database / (Cassandra)
-3. Redirect Svc / - Lookup URL / - Log analytics
-4. Cache / (Redis)
-
-```mermaid
-flowchart TD
-    N1["URL Service / - Generate ID / - Store mapping"]
-    N2["Database / (Cassandra)"]
-    N3["Redirect Svc / - Lookup URL / - Log analytics"]
-    N4["Cache / (Redis)"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ## Example 2: Chat System (Like WhatsApp)
 
@@ -921,41 +880,6 @@ MESSAGE FLOW:
 9. Delivery receipt sent back to A
 ```
 
-**Flow:**
-1. Load Balancer
-2. ocket WebSocket WebSo / ver 1 Server 2 Serv
-3. Message Broker / (Kafka)
-4. WebSocket / Server 1
-5. Message / Service
-6. WebSocket / Server N
-7. Push / Service
-8. Message Broker / (Kafka)
-9. Presence / Service
-10. Message / Service
-11. Cassandra / (Messages)
-
-```mermaid
-flowchart TD
-    N1["Load Balancer"]
-    N2["ocket WebSocket WebSo / ver 1 Server 2 Serv"]
-    N3["WebSocket / Server 1"]
-    N4["WebSocket / Server N"]
-    N5["Message Broker / (Kafka)"]
-    N6["Message / Service"]
-    N7["Presence / Service"]
-    N8["Push / Service"]
-    N9["Cassandra / (Messages)"]
-    N10["Redis / (Online)"]
-    N11["FCM / /APNs"]
-    N1 --> N2
-    N2 --> N5
-    N3 --> N6
-    N4 --> N8
-    N5 --> N7
-    N6 --> N9
-    N7 --> N10
-    N8 --> N11
-```
 
 ---
 

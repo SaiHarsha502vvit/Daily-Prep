@@ -1,4 +1,4 @@
-# JVM Internals Deep Dive
+﻿# JVM Internals Deep Dive
 
 **Part 3 of Ultimate DSA Guide**
 **Navigation**: [Part 1: Data Structures](07_DSA_Guide_Foundations.md) | [Part 2: Advanced](09_Ultimate_DSA_Advanced.md) | [Part 3: JVM Internals]
@@ -183,16 +183,6 @@
 
 ```
 
-**Flow:**
-1. CLASS LOADING MECHANISM / THE THREE PHASES OF CLASS LOA
-2. • Execute static initializers and static blocks / • Ass
-
-```mermaid
-flowchart TD
-    N1["CLASS LOADING MECHANISM / THE THREE PHASES OF CLASS LOA"]
-    N2["• Execute static initializers and static blocks / • Ass"]
-    N1 --> N2
-```
 
 ```java
 // How loadClass() works (simplified)
@@ -430,16 +420,6 @@ Always chain the original cause. Include domain-relevant context (errorCode, tra
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. YOUNG GENERATION (-Xmn) / EDEN Survivor 0 Survivor 1 /
-2. OLD GENERATION (Tenured) / Long-lived objects / Major G
-
-```mermaid
-flowchart TD
-    N1["YOUNG GENERATION (-Xmn) / EDEN Survivor 0 Survivor 1 / "]
-    N2["OLD GENERATION (Tenured) / Long-lived objects / Major G"]
-    N1 --> N2
-```
 
 ---
 
@@ -492,16 +472,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Slot 0: this (for instance methods) / Slot 1: param1 /
-2. Used for: arithmetic, method params, return values / Ex
-
-```mermaid
-flowchart TD
-    N1["Slot 0: this (for instance methods) / Slot 1: param1 / "]
-    N2["Used for: arithmetic, method params, return values / Ex"]
-    N1 --> N2
-```
 
 ```java
 // EXAMPLE: How this code maps to stack frame
@@ -584,19 +554,6 @@ public int calculate(int a, int b) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. GARBAGE COLLECTION FUNDAMENTALS / REACHABILITY ANALYSIS
-2. A B ← REACHABLE (will NOT be collected)
-3. C D E ← REACHABLE / X Y ← UNREACHABLE (will be collecte
-
-```mermaid
-flowchart TD
-    N1["GARBAGE COLLECTION FUNDAMENTALS / REACHABILITY ANALYSIS"]
-    N2["A B ← REACHABLE (will NOT be collected)"]
-    N3["C D E ← REACHABLE / X Y ← UNREACHABLE (will be collecte"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ## ⚖️ Gc Algorithms Comparison
 
@@ -664,19 +621,6 @@ public static void memoryInfo() {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. JUST-IN-TIME (JIT) COMPILATION / TIERED COMPILATION (De
-2. Level 1-3: C1 Compiler (Client) / • Quick compilation /
-3. Level 4: C2 Compiler (Server) / • Aggressive optimizati
-
-```mermaid
-flowchart TD
-    N1["JUST-IN-TIME (JIT) COMPILATION / TIERED COMPILATION (De"]
-    N2["Level 1-3: C1 Compiler (Client) / • Quick compilation /"]
-    N3["Level 4: C2 Compiler (Server) / • Aggressive optimizati"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **JIT OPTIMIZATIONS:**
 
@@ -1012,33 +956,6 @@ User user = service.getUser(123);
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. JVM TUNING QUICK REFERENCE
-2. MEMORY SETTINGS:
-3. -Xms<size> Initial heap size -Xms2g
-4. -Xmx<size> Maximum heap size -Xmx8g
-5. -Xmn<size> Young generation size -Xmn2g
-6. -Xss<size> Thread stack size -Xss512k
-7. -XX:MetaspaceSize=<size> -XX:MetaspaceSize=256m
-
-```mermaid
-flowchart TD
-    N1["JVM TUNING QUICK REFERENCE"]
-    N2["MEMORY SETTINGS:"]
-    N3["-Xms&lt;size&gt; Initial heap size -Xms2g"]
-    N4["-Xmx&lt;size&gt; Maximum heap size -Xmx8g"]
-    N5["-Xmn&lt;size&gt; Young generation size -Xmn2g"]
-    N6["-Xss&lt;size&gt; Thread stack size -Xss512k"]
-    N7["-XX:MetaspaceSize=&lt;size&gt; -XX:MetaspaceSize=256m"]
-    N8["-XX:MaxMetaspaceSize=&lt;size&gt; -XX:MaxMetaspaceSize="]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1095,38 +1012,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. JVM INTERNALS MASTERY CHECKLIST
-2. CLASS LOADING:
-3. □ Know parent delegation model and why it exists
-4. □ Can implement custom ClassLoader for hot-reload/plugi
-5. □ Understand Loading
-6. Linking
-7. Initialization phases
-8. □ Understand Loading
-9. Linking
-10. Initialization phases
-11. MEMORY MODEL:
-12. □ Know Heap structure: Eden, Survivor, Old Generation
-
-```mermaid
-flowchart TD
-    N1["JVM INTERNALS MASTERY CHECKLIST"]
-    N2["CLASS LOADING:"]
-    N3["□ Know parent delegation model and why it exists"]
-    N4["□ Can implement custom ClassLoader for hot-reload/plugi"]
-    N5["□ Understand Loading → Linking → Initialization phases"]
-    N6["MEMORY MODEL:"]
-    N7["□ Know Heap structure: Eden, Survivor, Old Generation"]
-    N8["□ Understand Metaspace (replaced PermGen in Java 8)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch33_SB_Web_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch35_SB_Lombok_DTOs.md)
+﻿**Navigation**: [< Previous](Ch33_SB_Web_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch35_SB_Lombok_DTOs.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 4: Data Access, Web, Security & Testing
 
@@ -49,22 +49,6 @@ _"JPA, REST APIs, Security, and Testing - the tools you use daily"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why JPA/Hibernate is Essential? / • ORM magic: Map
-2. HOW: How JPA Maps Objects to Database? / • @Entity: Cla
-3. WHEN: When to Use Different Query Strategies? / • findB
-4. WHICH: Which JPA Concepts to Master? / ESSENTIAL: @Enti
-
-```mermaid
-flowchart TD
-    N1["WHY: Why JPA/Hibernate is Essential? / • ORM magic: Map"]
-    N2["HOW: How JPA Maps Objects to Database? / • @Entity: Cla"]
-    N3["WHEN: When to Use Different Query Strategies? / • findB"]
-    N4["WHICH: Which JPA Concepts to Master? / ESSENTIAL: @Enti"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -162,29 +146,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. YOUR APPLICATION CODE / UserService
-2. UserRepository
-3. SPRING DATA JPA / Query derivation, automatic repositor
-4. JPA (API/Specification) / EntityManager, @Entity, JPQL,
-5. HIBERNATE (JPA Implementation) / Session, 1st/2nd level
-6. JDBC / DataSource / Connection pooling (HikariCP), actu
-7. DATABASE / MySQL, PostgreSQL, Oracle, etc.
-
-```mermaid
-flowchart TD
-    N1["YOUR APPLICATION CODE / UserService → UserRepository → "]
-    N2["SPRING DATA JPA / Query derivation, automatic repositor"]
-    N3["JPA (API/Specification) / EntityManager, @Entity, JPQL,"]
-    N4["HIBERNATE (JPA Implementation) / Session, 1st/2nd level"]
-    N5["JDBC / DataSource / Connection pooling (HikariCP), actu"]
-    N6["DATABASE / MySQL, PostgreSQL, Oracle, etc."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ---
 
@@ -921,33 +882,6 @@ Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method tha
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. AUTHENTICATION vs AUTHORIZATION
-2. AUTHENTICATION = 'WHO are you?'
-3. • Username/password login
-4. • OAuth2/Social login
-5. • JWT token validation
-6. • Certificate verification
-7. AUTHORIZATION = 'WHAT can you do?'
-
-```mermaid
-flowchart TD
-    N1["AUTHENTICATION vs AUTHORIZATION"]
-    N2["AUTHENTICATION = 'WHO are you?'"]
-    N3["• Username/password login"]
-    N4["• OAuth2/Social login"]
-    N5["• JWT token validation"]
-    N6["• Certificate verification"]
-    N7["AUTHORIZATION = 'WHAT can you do?'"]
-    N8["• Role-based: ADMIN can delete, USER can only read"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### 🟢 HOW: Security Configuration
 
@@ -1082,19 +1016,6 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. E2E / Tests
-2. Integration / Tests
-3. Unit Tests / @Mock, no Spring context
-
-```mermaid
-flowchart TD
-    N1["E2E / Tests"]
-    N2["Integration / Tests"]
-    N3["Unit Tests / @Mock, no Spring context"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### Unit Tests (No Spring Context)
 
@@ -1333,33 +1254,6 @@ TESTING:
 □ Know when to use @MockBean vs @Mock
 ```
 
-**Flow:**
-1. JPA & DATA ACCESS:
-2. □ Can map entities with all relationship types
-3. □ Understand LAZY vs EAGER and N+1 problem
-4. □ Can write derived queries and @Query methods
-5. □ Can use projections and pagination
-6. WEB & REST:
-7. □ Can build complete REST API with all HTTP methods
-
-```mermaid
-flowchart TD
-    N1["JPA & DATA ACCESS:"]
-    N2["□ Can map entities with all relationship types"]
-    N3["□ Understand LAZY vs EAGER and N+1 problem"]
-    N4["□ Can write derived queries and @Query methods"]
-    N5["□ Can use projections and pagination"]
-    N6["WEB & REST:"]
-    N7["□ Can build complete REST API with all HTTP methods"]
-    N8["□ Know request validation with JSR-380"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1404,33 +1298,6 @@ flowchart TD
 └────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SPRING BOOT MASTERY ROADMAP
-2. TIER 1: Java Foundations
-3. Memory, ClassLoading, Threading, Functional Programming
-4. TIER 2: Spring Core
-5. IoC, DI, Beans, Lifecycle, Events
-6. TIER 3: AOP
-7. Aspects, Pointcuts, Proxies
-
-```mermaid
-flowchart TD
-    N1["SPRING BOOT MASTERY ROADMAP"]
-    N2["TIER 1: Java Foundations"]
-    N3["Memory, ClassLoading, Threading, Functional Programming"]
-    N4["TIER 2: Spring Core"]
-    N5["IoC, DI, Beans, Lifecycle, Events"]
-    N6["TIER 3: AOP"]
-    N7["Aspects, Pointcuts, Proxies"]
-    N8["TIER 4: Spring Boot"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

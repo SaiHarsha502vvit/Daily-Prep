@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](16_Heap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_BitManipulation.md)
+﻿**Navigation**: [< Previous](16_Heap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_BitManipulation.md)
 
 **Problems 17/22** | [Prev](16_Heap.md) | [Index](../00_MASTER_INDEX.md) | [Next](18_BitManipulation.md)
 
@@ -227,42 +227,6 @@ PROOF OF COMPLEXITY:
 JAVA CODE:
 ```
 
-**Flow:**
-1. Brute force checks all j ≠ i
-2. O(n²).
-3. HashMap stores {value
-4. index} so complement lookup is O(1)
-5. total O(n).
-6. 1. Create HashMap<Integer, Integer> map (value
-7. index)
-8. Invariant: at iteration i, map contains {nums[0]
-9. 0, nums[1]
-10. 1, ..., nums[i-1]
-
-```mermaid
-flowchart TD
-    N1["Brute force checks all j ≠ i"]
-    N2["O(n²)."]
-    N3["HashMap stores {value"]
-    N4["index} so complement lookup is O(1)"]
-    N5["total O(n)."]
-    N6["1. Create HashMap&lt;Integer, Integer&gt; map (value"]
-    N7["index)"]
-    N8["Invariant: at iteration i, map contains {nums[0]"]
-    N9["0, nums[1]"]
-    N10["1, ..., nums[i-1]"]
-    N11["i-1}."]
-    N12["• map.containsKey(nums[p]) = true"]
-    N13["returns [p, q] ✓"]
-    N1 --> N2
-    N3 --> N4
-    N4 --> N5
-    N6 --> N7
-    N8 --> N9
-    N9 --> N10
-    N10 --> N11
-    N12 --> N13
-```
 
 ```java
 class Solution {
@@ -332,16 +296,6 @@ PROOF:
 JAVA CODE:
 ```
 
-**Flow:**
-1. 3. Use this as HashMap key
-2. groups anagrams without O(K log K) sort
-
-```mermaid
-flowchart LR
-    N1["3. Use this as HashMap key"]
-    N2["groups anagrams without O(K log K) sort"]
-    N1 --> N2
-```
 
 ```java
 class Solution {
@@ -431,37 +385,6 @@ PROOF OF CORRECTNESS:
 JAVA CODE:
 ```
 
-**Flow:**
-1. If the element at that index is already negative
-2. we've seen this value before
-3. duplicate!
-4. b. If nums[idx] < 0: // already visited
-5. duplicate
-6. • If nums[v-1] < 0: v was seen before (by invarian
-7. v is a duplicate ✓
-8. • If nums[v-1] > 0: v not seen before
-9. negate to mark
-10. invariant maintained ✓
-
-```mermaid
-flowchart TD
-    N1["If the element at that index is already negative"]
-    N2["we've seen this value before"]
-    N3["duplicate!"]
-    N4["b. If nums[idx] &lt; 0: // already visited"]
-    N5["duplicate"]
-    N6["• If nums[v-1] &lt; 0: v was seen before (by invarian"]
-    N7["v is a duplicate ✓"]
-    N8["• If nums[v-1] &gt; 0: v not seen before"]
-    N9["negate to mark"]
-    N10["invariant maintained ✓"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N6 --> N7
-    N8 --> N9
-    N9 --> N10
-```
 
 ```java
 class Solution {
@@ -531,16 +454,6 @@ APPROACH 3: HashSet
   Add all elements, check which in [0..n] is absent. O(n) time, O(n) space.
 ```
 
-**Flow:**
-1. XOR all indices [0..n] with all array values. Pair
-2. result is missing.
-
-```mermaid
-flowchart LR
-    N1["XOR all indices [0..n] with all array values. Pair"]
-    N2["result is missing."]
-    N1 --> N2
-```
 
 ---
 
@@ -559,27 +472,6 @@ APPROACH: Cycle detection with HashSet
   Time: O(log n) per step, finite steps. Space: O(log n) with HashSet.
 ```
 
-**Flow:**
-1. 2. If result = 1
-2. happy. If result seen before
-3. cycle
-4. not happy.
-5. The cycle always includes 4
-6. can also check for 4.
-
-```mermaid
-flowchart LR
-    N1["2. If result = 1"]
-    N2["happy. If result seen before"]
-    N3["cycle"]
-    N4["not happy."]
-    N5["The cycle always includes 4"]
-    N6["can also check for 4."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
@@ -875,16 +767,6 @@ VARIANTS:
   • Longest Subarray with Sum K (GFG) — first occurrence of prefixSum - K
 ```
 
-**Flow:**
-1. • Largest subarray with equal 0s and 1s (replace 0
-2. -1, find longest 0-sum)
-
-```mermaid
-flowchart LR
-    N1["• Largest subarray with equal 0s and 1s (replace 0"]
-    N2["-1, find longest 0-sum)"]
-    N1 --> N2
-```
 
 ---
 
@@ -1043,41 +925,6 @@ PROOF ALL OPERATIONS O(1):
 JAVA CODE:
 ```
 
-**Flow:**
-1. if val in map
-2. return false
-3. list.add(val), map.put(val, list.size()-1)
-4. return true
-5. if val not in map
-6. return false
-7. • insert: HashMap.put O(1), ArrayList.add O(1) amo
-8. O(1)
-9. HashMap.remove O(1), HashMap.put O(1)
-10. O(1)
-11. • getRandom: ArrayList.get O(1), Random.nextInt O(
-12. O(1)
-
-```mermaid
-flowchart TD
-    N1["if val in map"]
-    N2["return false"]
-    N3["list.add(val), map.put(val, list.size()-1)"]
-    N4["return true"]
-    N5["if val not in map"]
-    N6["• insert: HashMap.put O(1), ArrayList.add O(1) amo"]
-    N7["O(1)"]
-    N8["HashMap.remove O(1), HashMap.put O(1)"]
-    N9["• getRandom: ArrayList.get O(1), Random.nextInt O("]
-    N10["uniform random index"]
-    N11["each element equally likely. ∎"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N2
-    N6 --> N7
-    N8 --> N7
-    N9 --> N7
-    N10 --> N11
-```
 
 ```java
 class RandomizedSet {
@@ -1125,16 +972,6 @@ VARIANTS:
   • Design a Leaderboard (LC 1244)
 ```
 
-**Flow:**
-1. • Insert Delete GetRandom O(1) - Duplicates (LC 38
-2. Set<Integer> of indices
-
-```mermaid
-flowchart LR
-    N1["• Insert Delete GetRandom O(1) - Duplicates (LC 38"]
-    N2["Set&lt;Integer&gt; of indices"]
-    N1 --> N2
-```
 
 ---
 
@@ -1193,40 +1030,6 @@ PROOF O(1) FOR ALL OPERATIONS:
 JAVA CODE:
 ```
 
-**Flow:**
-1. Need O(1) lookup
-2. HashMap.
-3. Need O(1) insertion/removal at both ends + O(1) mo
-4. Doubly Linked List.
-5. if key not in map
-6. return -1
-7. • get: HashMap lookup O(1) + DLL move O(1)
-8. O(1)
-9. • put: HashMap lookup/insert O(1) + DLL add/remove
-10. O(1)
-11. Every access moves node to head
-12. ordering is always correct. ∎
-
-```mermaid
-flowchart TD
-    N1["Need O(1) lookup"]
-    N2["HashMap."]
-    N3["Need O(1) insertion/removal at both ends + O(1) mo"]
-    N4["Doubly Linked List."]
-    N5["if key not in map"]
-    N6["return -1"]
-    N7["• get: HashMap lookup O(1) + DLL move O(1)"]
-    N8["O(1)"]
-    N9["• put: HashMap lookup/insert O(1) + DLL add/remove"]
-    N10["Every access moves node to head"]
-    N11["ordering is always correct. ∎"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N8
-    N10 --> N11
-```
 
 ```java
 class LRUCache {
@@ -1334,21 +1137,6 @@ APPROACH: In-place hashing (cyclic sort variant)
   Time: O(n) — each element swapped at most once. Space: O(1).
 ```
 
-**Flow:**
-1. 2. Scan array: first index i where arr[i] ≠ i+1
-2. answer is i+1
-3. 3. If all correct
-4. answer is n+1
-
-```mermaid
-flowchart LR
-    N1["2. Scan array: first index i where arr[i] ≠ i+1"]
-    N2["answer is i+1"]
-    N3["3. If all correct"]
-    N4["answer is n+1"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 
@@ -1385,30 +1173,6 @@ APPROACH: Stack + HashMap for bracket matching
   Time: O(n), Space: O(n).
 ```
 
-**Flow:**
-1. 1. map = { ')'
-2. '(', '}'
-3. '{', ']'
-4. '[' }
-5. 2. For each char: if opening
-6. push. If closing
-7. pop and check match.
-
-```mermaid
-flowchart TD
-    N1["1. map = { ')'"]
-    N2["'(', '}'"]
-    N3["'{', ']'"]
-    N4["'[' }"]
-    N5["2. For each char: if opening"]
-    N6["push. If closing"]
-    N7["pop and check match."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 
@@ -1426,43 +1190,6 @@ APPROACH: Two HashMaps for bijection
   Time: O(n), Space: O(|alphabet|).
 ```
 
-**Flow:**
-1. 1. map1: s[i]
-2. t[i] (forward mapping)
-3. 2. map2: t[i]
-4. s[i] (reverse mapping)
-5. 4. If any conflict
-6. not isomorphic.
-7. Why TWO maps? 'ab'
-8. 'aa' should be false.
-9. map1 alone would accept it (a
-10. a, b
-11. a), but map2 catches it (a
-
-```mermaid
-flowchart TD
-    N1["1. map1: s[i]"]
-    N2["t[i] (forward mapping)"]
-    N3["2. map2: t[i]"]
-    N4["s[i] (reverse mapping)"]
-    N5["4. If any conflict"]
-    N6["not isomorphic."]
-    N7["Why TWO maps? 'ab'"]
-    N8["'aa' should be false."]
-    N9["map1 alone would accept it (a"]
-    N10["a, b"]
-    N11["a), but map2 catches it (a"]
-    N12["a, a"]
-    N13["b conflict)."]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N10 --> N11
-    N11 --> N12
-    N12 --> N13
-```
 
 ---
 
@@ -1524,33 +1251,6 @@ APPROACH: DLL + HashMap
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. HASHMAP COMPLEXITY REFERENCE
-2. Operation Average Worst Notes
-3. HashMap.get(key) O(1) O(log n) Tree buckets in Java8
-4. HashMap.remove(key) O(1) O(log n) Tree buckets
-5. HashMap.containsKey(key) O(1) O(log n)
-6. HashMap.containsValue(val) O(n) O(n) Full scan!
-7. HashSet.add/remove/contains O(1) O(log n) Same as HashM
-
-```mermaid
-flowchart TD
-    N1["HASHMAP COMPLEXITY REFERENCE"]
-    N2["Operation Average Worst Notes"]
-    N3["HashMap.get(key) O(1) O(log n) Tree buckets in Java8"]
-    N4["HashMap.remove(key) O(1) O(log n) Tree buckets"]
-    N5["HashMap.containsKey(key) O(1) O(log n)"]
-    N6["HashMap.containsValue(val) O(n) O(n) Full scan!"]
-    N7["HashSet.add/remove/contains O(1) O(log n) Same as HashM"]
-    N8["TreeMap.get/put/remove O(log n) O(log n) Red-Black Tree"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1620,33 +1320,6 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. HASHMAP MASTERY CHECKLIST
-2. FUNDAMENTALS:
-3. □ Can derive O(1) expected time under SUHA
-4. □ Know Java HashMap internals (buckets, treeify, rehash
-5. □ Understand hashCode/equals contract
-6. FREQUENCY COUNTING:
-7. □ Two Sum — one-pass complement lookup
-
-```mermaid
-flowchart TD
-    N1["HASHMAP MASTERY CHECKLIST"]
-    N2["FUNDAMENTALS:"]
-    N3["□ Can derive O(1) expected time under SUHA"]
-    N4["□ Know Java HashMap internals (buckets, treeify, rehash"]
-    N5["□ Understand hashCode/equals contract"]
-    N6["FREQUENCY COUNTING:"]
-    N7["□ Two Sum — one-pass complement lookup"]
-    N8["□ Group Anagrams — sort-key and count-key approaches"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

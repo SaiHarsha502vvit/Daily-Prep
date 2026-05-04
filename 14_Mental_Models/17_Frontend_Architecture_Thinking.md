@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](16_Distributed_Systems_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Production_Debugging_Thinking.md)
+﻿> **Navigation**: [< Previous](16_Distributed_Systems_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Production_Debugging_Thinking.md)
 
 # Mental Models — Frontend Architecture Thinking
 
@@ -68,19 +68,6 @@ DECISION: Ask "Where does this data COME FROM?"
 → Should be in the URL? Use router state.
 ```
 
-**Flow:**
-1. SERVER STATE / (lives on the server, Frontend has a COP GLOBAL CLIENT STATE / (shared across many components) / LOCAL COMPONENT STATE / (belongs to ONE component or a URL STATE / (encoded in the URL — shareable, bookmarkab
-
-```mermaid
-flowchart TD
-    N1["SERVER STATE / (lives on the server, Frontend has a COP"]
-    N2["GLOBAL CLIENT STATE / (shared across many components) /"]
-    N3["LOCAL COMPONENT STATE / (belongs to ONE component or a "]
-    N4["URL STATE / (encoded in the URL — shareable, bookmarkab"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -122,16 +109,6 @@ DON'T optimize until you MEASURE a problem.
 Premature optimization = the root of all evil (Knuth)
 ```
 
-**Flow:**
-1. Header
-2. Content / List / Item 1 / Item 2 / Item 3
-
-```mermaid
-flowchart TD
-    N1["Header"]
-    N2["Content / List / Item 1 / Item 2 / Item 3"]
-    N1 --> N2
-```
 
 ---
 
@@ -240,19 +217,6 @@ SKELETON SCREENS (perceived performance):
 └────────────────────────────────┘
 ```
 
-**Flow:**
-1. IDLE / (initial)
-2. LOADING / (pending)
-3. SUCCESS / (data!)
-
-```mermaid
-flowchart TD
-    N1["IDLE / (initial)"]
-    N2["LOADING / (pending)"]
-    N3["SUCCESS / (data!)"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 

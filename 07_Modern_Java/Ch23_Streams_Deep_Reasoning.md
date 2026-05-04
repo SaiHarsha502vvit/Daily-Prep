@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch58_SB_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch19_JVM_Object_Model.md)
+﻿**Navigation**: [< Previous](Ch58_SB_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch19_JVM_Object_Model.md)
 
 # Chapter 33 — Java Streams Deep Reasoning: WHY They Work the Way They Do
 
@@ -116,33 +116,6 @@ List<String> result = names.stream()
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SHORT-CIRCUITING OPERATIONS:
-2. Terminal: findFirst(), findAny(), anyMatch(),
-3. allMatch(), noneMatch()
-4. Intermediate: limit(), takeWhile() (Java 9+)
-5. These can STOP the entire pipeline early:
-6. users.stream()
-7. .filter(u -> u.getAge() > 65)
-
-```mermaid
-flowchart TD
-    N1["SHORT-CIRCUITING OPERATIONS:"]
-    N2["Terminal: findFirst(), findAny(), anyMatch(),"]
-    N3["allMatch(), noneMatch()"]
-    N4["Intermediate: limit(), takeWhile() (Java 9+)"]
-    N5["These can STOP the entire pipeline early:"]
-    N6["users.stream()"]
-    N7[".filter(u -&gt; u.getAge() &gt; 65)"]
-    N8[".findFirst(); // Might check only 100 users"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Follow-Up Trap
 "If streams are lazy, what happens if you never call a terminal operation?"
@@ -210,33 +183,6 @@ Not until `collect()` (or any terminal operation). `filter()` and `map()` are LA
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE DVD vs NETFLIX ANALOGY
-2. Collection = DVD collection on your shelf
-3. All data IN MEMORY right now
-4. You can pick any DVD (random access)
-5. You can count them (size)
-6. You can add/remove DVDs (mutable)
-7. Same DVDs, watch as many times as you want (reusable)
-
-```mermaid
-flowchart TD
-    N1["THE DVD vs NETFLIX ANALOGY"]
-    N2["Collection = DVD collection on your shelf"]
-    N3["→ All data IN MEMORY right now"]
-    N4["→ You can pick any DVD (random access)"]
-    N5["→ You can count them (size)"]
-    N6["→ You can add/remove DVDs (mutable)"]
-    N7["→ Same DVDs, watch as many times as you want (reusable)"]
-    N8["Stream = Netflix"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The "Used Once" Rule — Code Proof
 
@@ -272,33 +218,6 @@ stream.forEach(System.out::println);
 └────────────────────┴───────────────────────┴──────────────────────┘
 ```
 
-**Flow:**
-1. Feature Collection Stream
-2. When computed Eagerly (all at once) Lazily (on demand)
-3. Reusable ✅ Yes ❌ Once only
-4. Mutable ✅ add/remove ❌ Immutable pipe
-5. Size Known (.size()) May be infinite
-6. Random access ✅ list.get(i) ❌ Sequential only
-7. Can store data ✅ Primary purpose ❌ Passes through
-
-```mermaid
-flowchart TD
-    N1["Feature Collection Stream"]
-    N2["When computed Eagerly (all at once) Lazily (on demand)"]
-    N3["Reusable ✅ Yes ❌ Once only"]
-    N4["Mutable ✅ add/remove ❌ Immutable pipe"]
-    N5["Size Known (.size()) May be infinite"]
-    N6["Random access ✅ list.get(i) ❌ Sequential only"]
-    N7["Can store data ✅ Primary purpose ❌ Passes through"]
-    N8["External iteration ✅ for-each ❌ Internal only"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -344,33 +263,6 @@ Not until `collect()` (or any terminal operation). `filter()` and `map()` are LA
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE RESTAURANT ORDER ANALOGY
-2. Intermediate Operations = Adding items to your order
-3. 'I'd like the salad...' (filter)
-4. '...with dressing on the side...' (map)
-5. '...and only the first 3...' (limit)
-6. Nothing is being prepared yet!
-7. Terminal Operation = Saying 'That's my order' (submit)
-
-```mermaid
-flowchart TD
-    N1["THE RESTAURANT ORDER ANALOGY"]
-    N2["Intermediate Operations = Adding items to your order"]
-    N3["→ 'I'd like the salad...' (filter)"]
-    N4["→ '...with dressing on the side...' (map)"]
-    N5["→ '...and only the first 3...' (limit)"]
-    N6["→ Nothing is being prepared yet!"]
-    N7["Terminal Operation = Saying 'That's my order' (submit)"]
-    N8["→ collect() = 'Bring it all on one plate'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Classification
 
@@ -396,33 +288,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. INTERMEDIATE (returns Stream — lazy, chainable):
-2. Stateless (no memory between elements):
-3. Stateful (must see all/some elements first):
-4. sorted() ← must see ALL elements to sort
-5. distinct() ← must remember what it's seen (HashSet)
-6. skip(n) ← must count n elements to skip
-7. limit(n) ← must count (but short-circuits)
-
-```mermaid
-flowchart TD
-    N1["INTERMEDIATE (returns Stream — lazy, chainable):"]
-    N2["Stateless (no memory between elements):"]
-    N3["Stateful (must see all/some elements first):"]
-    N4["sorted() ← must see ALL elements to sort"]
-    N5["distinct() ← must remember what it's seen (HashSet)"]
-    N6["skip(n) ← must count n elements to skip"]
-    N7["limit(n) ← must count (but short-circuits)"]
-    N8["TERMINAL (returns result — triggers execution):"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The sorted() Trap
 
@@ -481,42 +346,6 @@ Streams are intrinsically Lazy. Intermediate operations like `map()`, `filter()`
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE GIFT BOX ANALOGY
-2. You have 3 gift boxes, each containing smaller boxes:
-3. Box1
-4. [candy, toy]
-5. Box1
-6. [candy, toy]
-7. Box2
-8. [book]
-9. Box2
-10. [book]
-11. Box3
-12. [pen, eraser, ruler]
-13. Box3
-14. [pen, eraser, ruler]
-15. map() = 'Open each box and look inside'
-16. Result: [ [candy,toy], [book], [pen,eraser,ruler] ]
-
-```mermaid
-flowchart TD
-    N1["THE GIFT BOX ANALOGY"]
-    N2["You have 3 gift boxes, each containing smaller boxes:"]
-    N3["Box1 → [candy, toy]"]
-    N4["Box2 → [book]"]
-    N5["Box3 → [pen, eraser, ruler]"]
-    N6["map() = 'Open each box and look inside'"]
-    N7["Result: [ [candy,toy], [book], [pen,eraser,ruler] ]"]
-    N8["→ You get a Stream&lt;List&lt;Item&gt;&gt; — boxes with"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Code Proof
 
@@ -569,56 +398,6 @@ customers.stream()
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DECISION:
-2. Your function returns ONE thing?
-3. map()
-4. Your function returns ONE thing?
-5. map()
-6. name
-7. name.toUpperCase() (String
-8. String)
-9. name
-10. name.toUpperCase() (String
-11. String)
-12. user
-13. user.getAge() (User
-14. Integer)
-15. user
-16. user.getAge() (User
-17. Integer)
-18. Your function returns a COLLECTION?
-19. flatMap()
-20. Your function returns a COLLECTION?
-21. flatMap()
-22. user
-23. user.getOrders() (User
-24. List<Order>)
-25. user
-26. user.getOrders() (User
-27. List<Order>)
-28. line
-29. Arrays.asList(line.split(' ')) (String
-30. List)
-
-```mermaid
-flowchart TD
-    N1["DECISION:"]
-    N2["Your function returns ONE thing? → map()"]
-    N3["name → name.toUpperCase() (String → String)"]
-    N4["user → user.getAge() (User → Integer)"]
-    N5["Your function returns a COLLECTION? → flatMap()"]
-    N6["user → user.getOrders() (User → List&lt;Order&gt;)"]
-    N7["line → Arrays.asList(line.split(' ')) (String → List)"]
-    N8["optional → optional.stream() (Optional → Stream)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -665,40 +444,6 @@ Streams are intrinsically Lazy. Intermediate operations like `map()`, `filter()`
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE SNOWBALL ROLLING DOWNHILL ANALOGY
-2. reduce() is like rolling a snowball downhill:
-3. identity (starting snowball) = 0
-4. Elements: [3, 7, 2, 5]
-5. Step 1: snowball=0, pick up 3
-6. snowball=3
-7. Step 1: snowball=0, pick up 3
-8. snowball=3
-9. Step 2: snowball=3, pick up 7
-10. snowball=10
-11. Step 2: snowball=3, pick up 7
-12. snowball=10
-13. Step 3: snowball=10, pick up 2
-14. snowball=12
-
-```mermaid
-flowchart TD
-    N1["THE SNOWBALL ROLLING DOWNHILL ANALOGY"]
-    N2["reduce() is like rolling a snowball downhill:"]
-    N3["identity (starting snowball) = 0"]
-    N4["Elements: [3, 7, 2, 5]"]
-    N5["Step 1: snowball=0, pick up 3 → snowball=3"]
-    N6["Step 2: snowball=3, pick up 7 → snowball=10"]
-    N7["Step 3: snowball=10, pick up 2 → snowball=12"]
-    N8["Step 4: snowball=12, pick up 5 → snowball=17"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The Three-Argument reduce() — WHY It Exists
 
@@ -752,33 +497,6 @@ int totalLength = words.stream()
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. reduce() = combine all into ONE value
-2. Sum, product, min, max, concatenation
-3. Creates NEW object each step (immutable accumulation)
-4. collect() = pour all into a MUTABLE CONTAINER
-5. List, Map, Set, StringBuilder, custom object
-6. MUTATES the container (mutable accumulation)
-7. WHY THE DISTINCTION?
-
-```mermaid
-flowchart TD
-    N1["reduce() = combine all into ONE value"]
-    N2["Sum, product, min, max, concatenation"]
-    N3["→ Creates NEW object each step (immutable accumulation)"]
-    N4["collect() = pour all into a MUTABLE CONTAINER"]
-    N5["List, Map, Set, StringBuilder, custom object"]
-    N6["→ MUTATES the container (mutable accumulation)"]
-    N7["WHY THE DISTINCTION?"]
-    N8["→ Creates N new String objects = O(n²) for strings!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -822,40 +540,6 @@ Streams are intrinsically Lazy. Intermediate operations like `map()`, `filter()`
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE ASSEMBLY LINE WORKER ANALOGY
-2. A Collector has 4 jobs (like 4 assembly line workers):
-3. 1. supplier()
-4. 'Bring an empty box'
-5. 1. supplier()
-6. 'Bring an empty box'
-7. () -> new ArrayList<>()
-8. 2. accumulator()
-9. 'Put each item in the box'
-10. 2. accumulator()
-11. 'Put each item in the box'
-12. (list, item) -> list.add(item)
-13. 3. combiner()
-14. 'Merge two boxes into one' (for paralle
-
-```mermaid
-flowchart TD
-    N1["THE ASSEMBLY LINE WORKER ANALOGY"]
-    N2["A Collector has 4 jobs (like 4 assembly line workers):"]
-    N3["1. supplier() → 'Bring an empty box'"]
-    N4["() -&gt; new ArrayList&lt;&gt;()"]
-    N5["2. accumulator() → 'Put each item in the box'"]
-    N6["(list, item) -&gt; list.add(item)"]
-    N7["3. combiner() → 'Merge two boxes into one' (for paralle"]
-    N8["(list1, list2) -&gt; { list1.addAll(list2); }"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Writing a Custom Collector
 
@@ -960,33 +644,6 @@ Streams are intrinsically Lazy. Intermediate operations like `map()`, `filter()`
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE COOKING ANALOGY — When More Chefs HURT
-2. Sequential: 1 chef makes 100 dishes — predictable, orde
-3. Parallel: 10 chefs share 1 kitchen — CHAOS potential!
-4. WHEN 10 CHEFS HELP:
-5. Independent tasks (each chef has own station)
-6. CPU-heavy work (chopping, mixing — not waiting)
-7. Large dataset (100+ dishes, not 5)
-
-```mermaid
-flowchart TD
-    N1["THE COOKING ANALOGY — When More Chefs HURT"]
-    N2["Sequential: 1 chef makes 100 dishes — predictable, orde"]
-    N3["Parallel: 10 chefs share 1 kitchen — CHAOS potential!"]
-    N4["WHEN 10 CHEFS HELP:"]
-    N5["→ Independent tasks (each chef has own station)"]
-    N6["→ CPU-heavy work (chopping, mixing — not waiting)"]
-    N7["→ Large dataset (100+ dishes, not 5)"]
-    N8["WHEN 10 CHEFS HURT:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The 5 Traps of parallelStream()
 
@@ -1053,33 +710,6 @@ list.parallelStream()
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. USE parallelStream() WHEN ALL ARE TRUE:
-2. ✅ Dataset > 10,000 elements (overhead worth it)
-3. ✅ CPU-intensive computation per element
-4. ✅ Data source splits cheaply (ArrayList, array, IntStre
-5. ✅ No shared mutable state
-6. ✅ Order doesn't matter (or you accept ordering overhead
-7. ✅ No blocking IO
-
-```mermaid
-flowchart TD
-    N1["USE parallelStream() WHEN ALL ARE TRUE:"]
-    N2["✅ Dataset &gt; 10,000 elements (overhead worth it)"]
-    N3["✅ CPU-intensive computation per element"]
-    N4["✅ Data source splits cheaply (ArrayList, array, IntStre"]
-    N5["✅ No shared mutable state"]
-    N6["✅ Order doesn't matter (or you accept ordering overhead"]
-    N7["✅ No blocking IO"]
-    N8["NEVER USE WHEN:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1134,42 +764,6 @@ Not until `collect()` (or any terminal operation). `filter()` and `map()` are LA
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. HOW THE JVM FUSES OPERATIONS
-2. Your code:
-3. Naive execution (3 loops):
-4. Loop 1: filter all
-5. temp list
-6. Loop 1: filter all
-7. temp list
-8. Loop 2: map all
-9. temp list
-10. Loop 2: map all
-11. temp list
-12. Loop 3: collect
-13. result
-14. Loop 3: collect
-15. result
-16. Actual execution (FUSED into 1 loop):
-
-```mermaid
-flowchart TD
-    N1["HOW THE JVM FUSES OPERATIONS"]
-    N2["Your code:"]
-    N3["Naive execution (3 loops):"]
-    N4["Loop 1: filter all → temp list"]
-    N5["Loop 2: map all → temp list"]
-    N6["Loop 3: collect → result"]
-    N7["Actual execution (FUSED into 1 loop):"]
-    N8["result.add(x * 2); // map + collect inline"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1215,36 +809,6 @@ Not until `collect()` (or any terminal operation). `filter()` and `map()` are LA
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE GIFT BOX vs EMPTY BOX ANALOGY
-2. null = Someone handed you NOTHING and said 'here's a th
-3. You reach for the thing
-4. NPE (you grabbed air)
-5. You reach for the thing
-6. NPE (you grabbed air)
-7. Optional = Someone hands you a box.
-8. Box might contain a value (Optional.of(value))
-9. Box might be empty (Optional.empty())
-10. The BOX ITSELF is never null
-
-```mermaid
-flowchart TD
-    N1["THE GIFT BOX vs EMPTY BOX ANALOGY"]
-    N2["null = Someone handed you NOTHING and said 'here's a th"]
-    N3["You reach for the thing → NPE (you grabbed air)"]
-    N4["Optional = Someone hands you a box."]
-    N5["→ Box might contain a value (Optional.of(value))"]
-    N6["→ Box might be empty (Optional.empty())"]
-    N7["→ The BOX ITSELF is never null"]
-    N8["→ You MUST check before reaching in"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Good Uses vs Anti-Patterns
 
@@ -1328,33 +892,6 @@ return optional.map(transform).orElseThrow();
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE 4 TYPES — And Why Each Exists
-2. 1. Static method: ClassName::staticMethod
-3. Lambda: x -> Math.abs(x)
-4. Reference: Math::abs
-5. Think: 'Call this class's static function'
-6. 2. Instance method (bound): instance::method
-7. Lambda: x -> System.out.println(x)
-
-```mermaid
-flowchart TD
-    N1["THE 4 TYPES — And Why Each Exists"]
-    N2["1. Static method: ClassName::staticMethod"]
-    N3["Lambda: x -&gt; Math.abs(x)"]
-    N4["Reference: Math::abs"]
-    N5["Think: 'Call this class's static function'"]
-    N6["2. Instance method (bound): instance::method"]
-    N7["Lambda: x -&gt; System.out.println(x)"]
-    N8["Reference: System.out::println"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The "Unbound" Trap — Code Proof
 

@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](01_Intro_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Math_Numbers.md)
+﻿**Navigation**: [< Previous](01_Intro_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Math_Numbers.md)
 
 # ⚡ Edge Cases Master Guide
 
@@ -766,33 +766,6 @@ DURING INTERVIEW:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. EDGE CASE QUICK CHECK
-2. Arrays:
-3. □ Empty array □ Single element □ Two elements
-4. □ All same □ Sorted □ Reverse sorted
-5. □ Negatives □ Zeros □ Large values
-6. Strings:
-7. □ Empty '' □ Single char □ All spaces
-
-```mermaid
-flowchart TD
-    N1["EDGE CASE QUICK CHECK"]
-    N2["Arrays:"]
-    N3["□ Empty array □ Single element □ Two elements"]
-    N4["□ All same □ Sorted □ Reverse sorted"]
-    N5["□ Negatives □ Zeros □ Large values"]
-    N6["Strings:"]
-    N7["□ Empty '' □ Single char □ All spaces"]
-    N8["□ Mixed case □ Special chars □ Unicode"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

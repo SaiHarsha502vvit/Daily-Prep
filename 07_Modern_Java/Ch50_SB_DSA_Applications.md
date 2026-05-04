@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch43_SB_Auth_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch51_SB_Industry_Projects.md)
+﻿**Navigation**: [< Previous](Ch43_SB_Auth_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch51_SB_Industry_Projects.md)
 
 # 🧮 SPRING BOOT MASTERY - Part 12: DSA in Spring Boot Applications
 
@@ -49,22 +49,6 @@ _"The algorithm you choose determines your application's success"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why DSA Knowledge in Spring Boot? / • Performance:
-2. HOW: How DSA Applies in Real Applications? / • Caching:
-3. WHEN: When to Apply DSA in Spring Boot? / • Custom cach
-4. WHICH: Which DSA Topics are Most Relevant? / ESSENTIAL:
-
-```mermaid
-flowchart TD
-    N1["WHY: Why DSA Knowledge in Spring Boot? / • Performance:"]
-    N2["HOW: How DSA Applies in Real Applications? / • Caching:"]
-    N3["WHEN: When to Apply DSA in Spring Boot? / • Custom cach"]
-    N4["WHICH: Which DSA Topics are Most Relevant? / ESSENTIAL:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -1376,33 +1360,6 @@ public class OrganizationController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DSA IN SPRING BOOT - QUICK REFERENCE
-2. FEATURE DATA STRUCTURE ALGORITHM
-3. Rate Limiting Queue + HashMap Sliding Window
-4. Auto-Complete Trie DFS Traversal
-5. Caching LinkedHashMap LRU Eviction
-6. Route Planning Graph Dijkstra's/A*
-7. Task Scheduling PriorityQueue Heap Operations
-
-```mermaid
-flowchart TD
-    N1["DSA IN SPRING BOOT - QUICK REFERENCE"]
-    N2["FEATURE DATA STRUCTURE ALGORITHM"]
-    N3["Rate Limiting Queue + HashMap Sliding Window"]
-    N4["Auto-Complete Trie DFS Traversal"]
-    N5["Caching LinkedHashMap LRU Eviction"]
-    N6["Route Planning Graph Dijkstra's/A*"]
-    N7["Task Scheduling PriorityQueue Heap Operations"]
-    N8["Leaderboard TreeMap + HashMap Red-Black Tree Ops"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

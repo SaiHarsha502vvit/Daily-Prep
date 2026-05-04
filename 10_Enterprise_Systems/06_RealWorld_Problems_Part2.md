@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)
+﻿**Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)
 
 # 🌍 Real-World Problems Solved with DSA - Part 2
 
@@ -171,19 +171,6 @@ public class WatchHistoryService {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: Netflix / YouTube
-2. SYSTEM: Recommendation Engine
-3. FEATURE: 'Because you watched X, you might like Y'
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Netflix / YouTube"]
-    N2["SYSTEM: Recommendation Engine"]
-    N3["FEATURE: 'Because you watched X, you might like Y'"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 /**
@@ -291,19 +278,6 @@ public class VideoRecommender {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: YouTube / Netflix
-2. SYSTEM: Video Player
-3. CHALLENGE: Adjust video quality based on network speed
-
-```mermaid
-flowchart TD
-    N1["COMPANY: YouTube / Netflix"]
-    N2["SYSTEM: Video Player"]
-    N3["CHALLENGE: Adjust video quality based on network speed"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 /**
@@ -410,19 +384,6 @@ public class AdaptiveBitrateController {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: Practo / Apollo247
-2. SYSTEM: Appointment Booking
-3. CHALLENGE: Find available slots, prevent double booking
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Practo / Apollo247"]
-    N2["SYSTEM: Appointment Booking"]
-    N3["CHALLENGE: Find available slots, prevent double booking"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 /**
@@ -565,16 +526,6 @@ public class AppointmentScheduler {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: Any Healthcare App
-2. SYSTEM: Prescription Safety
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Any Healthcare App"]
-    N2["SYSTEM: Prescription Safety"]
-    N1 --> N2
-```
 
 ```java
 /**
@@ -685,19 +636,6 @@ public class MedicineInteractionChecker {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: MakeMyTrip / Cleartrip
-2. SYSTEM: Flight Search
-3. FEATURE: Find cheapest flight route (with connections)
-
-```mermaid
-flowchart TD
-    N1["COMPANY: MakeMyTrip / Cleartrip"]
-    N2["SYSTEM: Flight Search"]
-    N3["FEATURE: Find cheapest flight route (with connections)"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 /**
@@ -834,16 +772,6 @@ public class FlightSearchEngine {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: OYO / Booking.com
-2. SYSTEM: Inventory Management
-
-```mermaid
-flowchart TD
-    N1["COMPANY: OYO / Booking.com"]
-    N2["SYSTEM: Inventory Management"]
-    N1 --> N2
-```
 
 ```java
 /**
@@ -982,16 +910,6 @@ public class HotelRoomInventory {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: Delhivery / Amazon Logistics
-2. SYSTEM: Route Planning
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Delhivery / Amazon Logistics"]
-    N2["SYSTEM: Route Planning"]
-    N1 --> N2
-```
 
 ```java
 /**
@@ -1133,16 +1051,6 @@ public class DeliveryRouteOptimizer {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: Any Logistics
-2. SYSTEM: Shipment Tracking
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Any Logistics"]
-    N2["SYSTEM: Shipment Tracking"]
-    N1 --> N2
-```
 
 ```java
 /**
@@ -1292,33 +1200,6 @@ Network latency causes:
 Without proper ordering, conversation looks wrong!
 ```
 
-**Flow:**
-1. COMPANY: WhatsApp / Slack
-2. SYSTEM: Messaging
-3. THE PROBLEM:
-4. User A sends 'Hi' at 10:00:00.001
-5. User B sends 'Hello' at 10:00:00.002
-6. Network latency causes:
-7. - Server receives 'Hello' first
-
-```mermaid
-flowchart TD
-    N1["COMPANY: WhatsApp / Slack"]
-    N2["SYSTEM: Messaging"]
-    N3["THE PROBLEM:"]
-    N4["User A sends 'Hi' at 10:00:00.001"]
-    N5["User B sends 'Hello' at 10:00:00.002"]
-    N6["Network latency causes:"]
-    N7["- Server receives 'Hello' first"]
-    N8["- Then receives 'Hi'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 /**

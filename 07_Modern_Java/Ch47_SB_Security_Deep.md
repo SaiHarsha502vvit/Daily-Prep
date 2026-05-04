@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](Ch46_SB_Database_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](Ch46_SB_Database_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -1067,33 +1067,6 @@ public class CredentialRotationService {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DATABASE SECURITY CHECKLIST
-2. AUTHENTICATION & AUTHORIZATION
-3. □ Implement RBAC (Role-Based Access Control)
-4. □ Use fine-grained permissions
-5. □ Implement method-level security (@PreAuthorize)
-6. □ Apply row-level security where needed
-7. PASSWORD SECURITY
-
-```mermaid
-flowchart TD
-    N1["DATABASE SECURITY CHECKLIST"]
-    N2["AUTHENTICATION & AUTHORIZATION"]
-    N3["□ Implement RBAC (Role-Based Access Control)"]
-    N4["□ Use fine-grained permissions"]
-    N5["□ Implement method-level security (@PreAuthorize)"]
-    N6["□ Apply row-level security where needed"]
-    N7["PASSWORD SECURITY"]
-    N8["□ Use BCrypt or Argon2 for hashing"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

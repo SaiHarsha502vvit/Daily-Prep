@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](23_SQL_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous](23_SQL_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 24 — SQL for Data Analysts: Real-World Patterns That Get You Hired
 
@@ -119,33 +119,6 @@ CREATE TABLE experiments (
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. WHAT IS COHORT ANALYSIS?
-2. A 'cohort' = a group of users who share a common trait
-3. Usually: 'signed up in the same month'
-4. You track each cohort OVER TIME:
-5. Cohort Month 0 Month 1 Month 2 Month 3
-6. Jan signup 1000 400 (40%) 250 (25%) 200 (20%)
-7. Feb signup 1200 540 (45%) 360 (30%)
-
-```mermaid
-flowchart TD
-    N1["WHAT IS COHORT ANALYSIS?"]
-    N2["A 'cohort' = a group of users who share a common trait"]
-    N3["Usually: 'signed up in the same month'"]
-    N4["You track each cohort OVER TIME:"]
-    N5["Cohort Month 0 Month 1 Month 2 Month 3"]
-    N6["Jan signup 1000 400 (40%) 250 (25%) 200 (20%)"]
-    N7["Feb signup 1200 540 (45%) 360 (30%)"]
-    N8["Mar signup 800 400 (50%)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The SQL
 
@@ -241,33 +214,6 @@ The biggest drop happens Homepage→Product (40% lost).
 Fix THAT step for maximum impact!
 ```
 
-**Flow:**
-1. WHAT IS A FUNNEL?
-2. Users flow through a sequence of steps:
-3. Visit Homepage (10,000) 100%
-4. View Product (6,000) 60% (40% dropped off!)
-5. Add to Cart (2,000) 33% of viewers
-6. Purchase(800) 40% of add-to-cart
-7. 8% overall conversion!
-
-```mermaid
-flowchart TD
-    N1["WHAT IS A FUNNEL?"]
-    N2["Users flow through a sequence of steps:"]
-    N3["Visit Homepage (10,000) 100%"]
-    N4["View Product (6,000) 60% (40% dropped off!)"]
-    N5["Add to Cart (2,000) 33% of viewers"]
-    N6["Purchase(800) 40% of add-to-cart"]
-    N7["8% overall conversion!"]
-    N8["The biggest drop happens Homepage→Product (40% lost)."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The SQL
 
@@ -415,39 +361,6 @@ GROUP BY c.cohort_month, cs.cohort_size;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. A/B TESTING WITH SQL
-2. Goal: 'Did changing the button color increase purchases
-3. Control (A): Old blue button
-4. 10,000 users
-5. Control (A): Old blue button
-6. 10,000 users
-7. Treatment (B): New green button
-8. 10,000 users
-9. Treatment (B): New green button
-10. 10,000 users
-11. Metrics to compare:
-12. Conversion rate (% who purchased)
-13. Revenue per user
-
-```mermaid
-flowchart TD
-    N1["A/B TESTING WITH SQL"]
-    N2["Goal: 'Did changing the button color increase purchases"]
-    N3["Control (A): Old blue button → 10,000 users"]
-    N4["Treatment (B): New green button → 10,000 users"]
-    N5["Metrics to compare:"]
-    N6["→ Conversion rate (% who purchased)"]
-    N7["→ Revenue per user"]
-    N8["→ Average order value"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The SQL
 
@@ -542,33 +455,6 @@ ORDER BY u.plan_type, e.variant;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. RFM = Recency, Frequency, Monetary
-2. Score each customer on 3 dimensions (1-5 each):
-3. Recency: How RECENTLY did they purchase?
-4. (5 = this week, 1 = 6+ months ago)
-5. Frequency: How OFTEN do they purchase?
-6. (5 = 50+ orders, 1 = 1 order)
-7. Monetary: How much do they SPEND?
-
-```mermaid
-flowchart TD
-    N1["RFM = Recency, Frequency, Monetary"]
-    N2["Score each customer on 3 dimensions (1-5 each):"]
-    N3["Recency: How RECENTLY did they purchase?"]
-    N4["(5 = this week, 1 = 6+ months ago)"]
-    N5["Frequency: How OFTEN do they purchase?"]
-    N6["(5 = 50+ orders, 1 = 1 order)"]
-    N7["Monetary: How much do they SPEND?"]
-    N8["(5 = top 20%, 1 = bottom 20%)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The SQL
 
@@ -825,33 +711,6 @@ ORDER BY order_date;
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. FUNCTION PURPOSE EXAMPLE
-2. ROW_NUMBER() Sequential rank (no ties) Top N
-3. RANK() Rank with gaps (1,2,2,4) Leaderboard
-4. DENSE_RANK() Rank no gaps (1,2,2,3) Percentile
-5. NTILE(n) Divide into n equal groups Quartiles
-6. LAG(col, n) Previous row value Change
-7. LEAD(col, n) Next row value Forecast
-
-```mermaid
-flowchart TD
-    N1["FUNCTION PURPOSE EXAMPLE"]
-    N2["ROW_NUMBER() Sequential rank (no ties) Top N"]
-    N3["RANK() Rank with gaps (1,2,2,4) Leaderboard"]
-    N4["DENSE_RANK() Rank no gaps (1,2,2,3) Percentile"]
-    N5["NTILE(n) Divide into n equal groups Quartiles"]
-    N6["LAG(col, n) Previous row value Change"]
-    N7["LEAD(col, n) Next row value Forecast"]
-    N8["FIRST_VALUE(col) First in window Baseline"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Top N Per Group (Analyst's Best Friend)
 

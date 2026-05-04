@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
+﻿**Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
 
 # 🔬 Debugging & Dry Run — How to Find Bugs Systematically
 
@@ -43,23 +43,6 @@ Iteration | left | right | mid | arr[mid] | Action
   3       |  5   |   5   |  5  |   23     | 23 == 23 → return 5 ✅
 ```
 
-**Flow:**
-1. 1 0 8 4 16 16 < 23 left = 5 2
-2. 5 8 6 38 38 > 23 right = 5 3 5
-3. 23 23 == 23 return 5 ✅
-
-```mermaid
-flowchart LR
-    N1["1 | 0 | 8 | 4 | 16 | 16 &lt; 23"]
-    N2["left = 5"]
-    N3["2 | 5 | 8 | 6 | 38 | 38 &gt; 23"]
-    N4["right = 5"]
-    N5["3 | 5 | 5 | 5 | 23 | 23 == 23"]
-    N6["return 5 ✅"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ### Dry Run for Recursion — Use Call Stack Notation
 ```
@@ -78,16 +61,6 @@ fibonacci(4)
 return 2 + 1 = 3 ✅
 ```
 
-**Flow:**
-1. fibonacci(1)
-2. return 1
-
-```mermaid
-flowchart LR
-    N1["fibonacci(1)"]
-    N2["return 1"]
-    N1 --> N2
-```
 
 ---
 
@@ -106,25 +79,6 @@ Example: "My sorting fails for [3, 1, 2, 1]"
 The smaller the failing input, the easier to trace.
 ```
 
-**Flow:**
-1. □ What input causes the bug?
-2. □ What output do I get vs what I expect?
-3. □ Can I create the SMALLEST input that still bugs? Example: 'My sorting fails for [3, 1, 2, 1]' Try: [2, 1] — does it fail? If yes, even simpler! The smaller the failing input, the easier to trace.
-
-```mermaid
-flowchart TD
-    N1["□ What input causes the bug?"]
-    N2["□ What output do I get vs what I expect?"]
-    N3["□ Can I create the SMALLEST input that still bugs?"]
-    N4["Example: 'My sorting fails for [3, 1, 2, 1]'"]
-    N5["→ Try: [2, 1] — does it fail? If yes, even simpler!"]
-    N6["The smaller the failing input, the easier to trace."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ### Step 2: ISOLATE Where the Bug Is
 ```
@@ -144,21 +98,6 @@ Strategy C: "Simplest failing case"
   → The last input that bugs = exact trigger
 ```
 
-**Flow:**
-1. YES
-2. Bug is in second half
-3. NO
-4. Bug is in first half
-
-```mermaid
-flowchart LR
-    N1["YES"]
-    N2["Bug is in second half"]
-    N3["NO"]
-    N4["Bug is in first half"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Step 3: IDENTIFY the Root Cause
 ```
@@ -183,22 +122,6 @@ Rules for fixing:
 □ Understand WHY the fix works (not just that it works)
 ```
 
-**Flow:**
-1. Rules for fixing:
-2. □ Fix ONLY the identified root cause
-3. □ Don't change other things 'while you're at it'
-4. □ Understand WHY the fix works (not just that it works)
-
-```mermaid
-flowchart TD
-    N1["Rules for fixing:"]
-    N2["□ Fix ONLY the identified root cause"]
-    N3["□ Don't change other things 'while you're at it'"]
-    N4["□ Understand WHY the fix works (not just that it works)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### Step 5: VERIFY the Fix
 ```
@@ -208,22 +131,6 @@ flowchart TD
 □ No new bugs introduced
 ```
 
-**Flow:**
-1. □ Original failing input now passes
-2. □ All previously passing inputs still pass
-3. □ Edge cases still work
-4. □ No new bugs introduced
-
-```mermaid
-flowchart TD
-    N1["□ Original failing input now passes"]
-    N2["□ All previously passing inputs still pass"]
-    N3["□ Edge cases still work"]
-    N4["□ No new bugs introduced"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -267,19 +174,6 @@ Fix: Use long for large sums/products
      Check if n * n > Integer.MAX_VALUE
 ```
 
-**Flow:**
-1. - Integer overflow (int long)
-2. - Algorithm complexity too high (TLE wrong approach, not bug)
-
-```mermaid
-flowchart LR
-    N1["- Integer overflow (int"]
-    N2["long)"]
-    N3["- Algorithm complexity too high (TLE"]
-    N4["wrong approach, not bug)"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Pattern 4: "Works sometimes, fails randomly"
 ```
@@ -385,33 +279,6 @@ Bug 4: Wrong answer extraction
 → Check what dp[i] REPRESENTS
 ```
 
-**Flow:**
-1. Bug 1: Wrong base case
-2. Print dp[0], dp[1] — do they match expected base valu
-3. Bug 2: Wrong recurrence
-4. Bug 3: Wrong fill order
-5. Bottom-up: fill smaller indices first
-6. Bug 4: Wrong answer extraction
-7. Is the answer dp[n]? dp[n-1]? max of all dp[i]?
-
-```mermaid
-flowchart TD
-    N1["Bug 1: Wrong base case"]
-    N2["→ Print dp[0], dp[1] — do they match expected base valu"]
-    N3["Bug 2: Wrong recurrence"]
-    N4["Bug 3: Wrong fill order"]
-    N5["→ Bottom-up: fill smaller indices first"]
-    N6["Bug 4: Wrong answer extraction"]
-    N7["→ Is the answer dp[n]? dp[n-1]? max of all dp[i]?"]
-    N8["→ Check what dp[i] REPRESENTS"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### DP Table Visualization
 ```
@@ -451,30 +318,6 @@ Bug 4: Directed vs undirected confusion
 → Directed: add edge ONE way only
 ```
 
-**Flow:**
-1. Bug 1: Not marking visited infinite loop
-2. Bug 2: Marking visited too late (BFS)
-3. duplicates in queue
-4. Bug 3: Wrong adjacency list missing or extra edges
-5. Undirected: add edge BOTH ways (a b AND b a)
-
-```mermaid
-flowchart TD
-    N1["Bug 1: Not marking visited"]
-    N2["infinite loop"]
-    N3["Bug 2: Marking visited too late (BFS)"]
-    N4["duplicates in queue"]
-    N5["Bug 3: Wrong adjacency list"]
-    N6["missing or extra edges"]
-    N7["Undirected: add edge BOTH ways (a"]
-    N8["b AND b"]
-    N9["a)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N8 --> N9
-```
 
 ### Tree Debugging: Print Traversals
 ```java
@@ -524,30 +367,6 @@ When your code fails:
 □ Remove debug prints before submitting
 ```
 
-**Flow:**
-1. When your code fails:
-2. □ Create the smallest failing test case
-3. □ Dry run with that test case on paper
-4. □ Check the Big 10 bugs (off-by-one, null, overflow, et □ Add strategic prints at decision points □ Compare your trace with expected behavior □ Fix ONE thing at a time
-
-```mermaid
-flowchart TD
-    N1["When your code fails:"]
-    N2["□ Create the smallest failing test case"]
-    N3["□ Dry run with that test case on paper"]
-    N4["□ Check the Big 10 bugs (off-by-one, null, overflow, et"]
-    N5["□ Add strategic prints at decision points"]
-    N6["□ Compare your trace with expected behavior"]
-    N7["□ Fix ONE thing at a time"]
-    N8["□ Verify fix with original + edge cases"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

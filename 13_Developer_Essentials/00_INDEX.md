@@ -1,4 +1,4 @@
-# 🛠️ Developer Essentials — Master Index
+﻿# 🛠️ Developer Essentials — Master Index
 
 > **Purpose**: Skills every developer needs at EVERY career phase, from junior to principal engineer.
 > **Teaching Style**: MIT/KTH — WHY before WHAT, theory before tools, diagrams before commands.
@@ -52,41 +52,6 @@ WHO   → Who invented it? Historical context
 HOW   → Step-by-step implementation with diagrams
 ```
 
-**Flow:**
-1. WHY
-2. Why does this exist? What problem does it solve?
-3. WHAT
-4. Core concepts, mental models, theory
-5. WHERE
-6. Where is this used in real companies?
-7. WHEN
-8. When to use vs not use
-9. WHO
-10. Who invented it? Historical context
-11. HOW
-12. Step-by-step implementation with diagrams
-
-```mermaid
-flowchart TD
-    N1["WHY"]
-    N2["Why does this exist? What problem does it solve?"]
-    N3["WHAT"]
-    N4["Core concepts, mental models, theory"]
-    N5["WHERE"]
-    N6["Where is this used in real companies?"]
-    N7["WHEN"]
-    N8["When to use vs not use"]
-    N9["WHO"]
-    N10["Who invented it? Historical context"]
-    N11["HOW"]
-    N12["Step-by-step implementation with diagrams"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-```
 
 ---
 

@@ -1,4 +1,4 @@
-> **SQL Chapter 11/20** | [← Previous](10_Normalization.md) | [Index](../00_MASTER_INDEX.md) | [Next →](12_Views_StoredProcs_Triggers.md)
+﻿> **SQL Chapter 11/20** | [← Previous](10_Normalization.md) | [Index](../00_MASTER_INDEX.md) | [Next →](12_Views_StoredProcs_Triggers.md)
 
 ---
 
@@ -105,19 +105,6 @@ This is called the **leftmost prefix rule** and is one of the most commonly misu
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SELECT * FROM employees WHERE last_name = 'Kumar'; / 1
-2. [K-P] ← Root: Is 'Kumar' < 'K' or > 'P'? / ▼ ▼ ▼
-3. Type Description Use Case / B-Tree Balanced tree, defau
-
-```mermaid
-flowchart TD
-    N1["SELECT * FROM employees WHERE last_name = 'Kumar'; / 1 "]
-    N2["[K-P] ← Root: Is 'Kumar' &lt; 'K' or &gt; 'P'? / ▼ ▼ ▼ "]
-    N3["Type Description Use Case / B-Tree Balanced tree, defau"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════

@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](20_Sorting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Recursion_Subsets.md)
+﻿**Navigation**: [< Previous](20_Sorting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Recursion_Subsets.md)
 
 **Problems 21** | [Prev](20_Sorting.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Recursion_Subsets.md)
 
@@ -35,33 +35,6 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DESIGN PROBLEMS FUNDAMENTALS
-2. WHAT 'DESIGN' MEANS IN INTERVIEWS:
-3. Not system design (that's a separate round).
-4. These are DATA STRUCTURE DESIGN problems:
-5. 'Implement class X with operations A, B, C in O(?) time
-6. THE 5 CATEGORIES:
-7. Cache Design LRU, LFU, TTL Cache
-
-```mermaid
-flowchart TD
-    N1["DESIGN PROBLEMS FUNDAMENTALS"]
-    N2["WHAT 'DESIGN' MEANS IN INTERVIEWS:"]
-    N3["Not system design (that's a separate round)."]
-    N4["These are DATA STRUCTURE DESIGN problems:"]
-    N5["'Implement class X with operations A, B, C in O(?) time"]
-    N6["THE 5 CATEGORIES:"]
-    N7["Cache Design LRU, LFU, TTL Cache"]
-    N8["Stack/Queue Min Stack, Max Queue, Stack using Queues"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -136,16 +109,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Need Combine / O(1) access + O(1) order HashMap + Doubl
-2. COMMON MISTAKES / 1. Starting to code before listing AL
-
-```mermaid
-flowchart TD
-    N1["Need Combine / O(1) access + O(1) order HashMap + Doubl"]
-    N2["COMMON MISTAKES / 1. Starting to code before listing AL"]
-    N1 --> N2
-```
 
 ---
 
@@ -189,36 +152,6 @@ THE KEY INSIGHT:
 SOLUTION:
 ```
 
-**Flow:**
-1. DIFFICULTY: Medium (but Hard to get right in interview)
-2. PATTERN: HashMap + Doubly Linked List
-3. PROBLEM: Design LRU cache with:
-4. get(key)
-5. return value if exists, else -1. Mark as use
-6. get(key)
-7. return value if exists, else -1. Mark as use
-8. Both operations must be O(1).
-9. WHY THIS IS #1 INTERVIEW PROBLEM:
-10. THE KEY INSIGHT:
-
-```mermaid
-flowchart TD
-    N1["DIFFICULTY: Medium (but Hard to get right in interview)"]
-    N2["PATTERN: HashMap + Doubly Linked List"]
-    N3["PROBLEM: Design LRU cache with:"]
-    N4["get(key) → return value if exists, else -1. Mark as use"]
-    N5["Both operations must be O(1)."]
-    N6["WHY THIS IS #1 INTERVIEW PROBLEM:"]
-    N7["THE KEY INSIGHT:"]
-    N8["HashMap alone → O(1) get, but can't track access order"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 class LRUCache {
@@ -285,16 +218,6 @@ SENTINEL TRICK: Head and Tail dummies avoid null checks — cleaner code.
 FOLLOW-UP: "Make it thread-safe" → Use ReentrantReadWriteLock.
 ```
 
-**Flow:**
-1. FOLLOW-UP: 'Make it thread-safe'
-2. Use ReentrantReadWriteLock.
-
-```mermaid
-flowchart LR
-    N1["FOLLOW-UP: 'Make it thread-safe'"]
-    N2["Use ReentrantReadWriteLock."]
-    N1 --> N2
-```
 
 ---
 
@@ -322,33 +245,6 @@ KEY INSIGHT:
 SOLUTION:
 ```
 
-**Flow:**
-1. DIFFICULTY: Medium
-2. COMPANIES: Amazon, Google, Bloomberg, Microsoft
-3. PATTERN: Auxiliary Stack
-4. KEY INSIGHT:
-5. When you push 5, 3, 7:
-6. Main: [5, 3, 7] ← top = 7
-7. MinSt: [5, 3, 3] ← top = 3 (current min)
-
-```mermaid
-flowchart TD
-    N1["DIFFICULTY: Medium"]
-    N2["COMPANIES: Amazon, Google, Bloomberg, Microsoft"]
-    N3["PATTERN: Auxiliary Stack"]
-    N4["KEY INSIGHT:"]
-    N5["When you push 5, 3, 7:"]
-    N6["Main: [5, 3, 7] ← top = 7"]
-    N7["MinSt: [5, 3, 3] ← top = 3 (current min)"]
-    N8["Pop 7:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 class MinStack {
@@ -420,33 +316,6 @@ WHY TRIE?
 SOLUTION:
 ```
 
-**Flow:**
-1. DIFFICULTY: Medium
-2. COMPANIES: Google, Amazon, Facebook, Microsoft
-3. PATTERN: Trie
-4. PROBLEM: Implement Trie with insert, search, startsWith
-5. WHY TRIE?
-6. Searching 'apple' in a HashSet: O(L) hash computation
-7. Searching 'app*' prefix in HashSet: O(N·L) check every
-
-```mermaid
-flowchart TD
-    N1["DIFFICULTY: Medium"]
-    N2["COMPANIES: Google, Amazon, Facebook, Microsoft"]
-    N3["PATTERN: Trie"]
-    N4["PROBLEM: Implement Trie with insert, search, startsWith"]
-    N5["WHY TRIE?"]
-    N6["Searching 'apple' in a HashSet: O(L) hash computation"]
-    N7["Searching 'app*' prefix in HashSet: O(N·L) check every"]
-    N8["Searching 'app*' in Trie: O(L) just walk 3 nodes"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 class Trie {
@@ -514,19 +383,6 @@ INSIGHT: Regular Trie for addWord. DFS with branching for '.'.
 SOLUTION:
 ```
 
-**Flow:**
-1. addWord('bad'); search('b.d')
-2. true; search('b..')
-3. true
-
-```mermaid
-flowchart LR
-    N1["addWord('bad'); search('b.d')"]
-    N2["true; search('b..')"]
-    N3["true"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 class WordDictionary {
@@ -608,41 +464,6 @@ THE ARCHITECTURE:
 SOLUTION:
 ```
 
-**Flow:**
-1. get(key)
-2. return value, increase frequency
-3. put(key, value)
-4. insert/update. At capacity, evict LEAST frequent.
-5. keyMap: key
-6. Node(key, val, freq)
-7. freqMap: freq
-8. DoublyLinkedList of nodes with that frequency
-9. If exists
-10. update value + same as GET
-11. If capacity full
-12. evict tail of freqMap[minFreq]
-
-```mermaid
-flowchart TD
-    N1["get(key)"]
-    N2["return value, increase frequency"]
-    N3["put(key, value)"]
-    N4["insert/update. At capacity, evict LEAST frequent."]
-    N5["keyMap: key"]
-    N6["Node(key, val, freq)"]
-    N7["freqMap: freq"]
-    N8["DoublyLinkedList of nodes with that frequency"]
-    N9["If exists"]
-    N10["update value + same as GET"]
-    N11["If capacity full"]
-    N12["evict tail of freqMap[minFreq]"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-```
 
 ```java
 class LFUCache {
@@ -827,26 +648,6 @@ KEY INSIGHT:
 SOLUTION:
 ```
 
-**Flow:**
-1. ArrayList
-2. O(1) random access by index
-3. Swap target with LAST element, then remove last
-4. O(1)!
-5. HashMap: val
-6. index in ArrayList
-
-```mermaid
-flowchart LR
-    N1["ArrayList"]
-    N2["O(1) random access by index"]
-    N3["Swap target with LAST element, then remove last"]
-    N4["O(1)!"]
-    N5["HashMap: val"]
-    N6["index in ArrayList"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ```java
 class RandomizedSet {
@@ -958,16 +759,6 @@ INSIGHT: getNewsFeed = Merge K sorted lists (each user's tweets sorted by time)
 SOLUTION:
 ```
 
-**Flow:**
-1. getNewsFeed(userId)
-2. 10 most recent tweets from user + followees
-
-```mermaid
-flowchart LR
-    N1["getNewsFeed(userId)"]
-    N2["10 most recent tweets from user + followees"]
-    N1 --> N2
-```
 
 ```java
 class Twitter {
@@ -1087,17 +878,6 @@ KEY: Using "null" markers preserves the tree structure uniquely.
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FLATTEN NESTED LIST ITERATOR (LeetCode 341 - Medium)
-2. Example: [[1,1],2,[1,1]]
-3. 1, 1, 2, 1, 1
-
-```mermaid
-flowchart TD
-    N1["FLATTEN NESTED LIST ITERATOR (LeetCode 341 - Medium)"]
-    N2["Example: [[1,1],2,[1,1]] → 1, 1, 2, 1, 1"]
-    N1 --> N2
-```
 
 ```java
 public class NestedIterator implements Iterator<Integer> {
@@ -1143,22 +923,6 @@ public class NestedIterator implements Iterator<Integer> {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. DESIGN CIRCULAR QUEUE (LeetCode 622 - Medium)
-2. isEmpty, isFull.
-3. KEY: Array with head/tail pointers, modular arithmetic.
-4. All operations O(1)
-
-```mermaid
-flowchart TD
-    N1["DESIGN CIRCULAR QUEUE (LeetCode 622 - Medium)"]
-    N2["isEmpty, isFull."]
-    N3["KEY: Array with head/tail pointers, modular arithmetic."]
-    N4["All operations O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```java
 class MyCircularQueue {
@@ -1214,19 +978,6 @@ class MyCircularQueue {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SNAPSHOT ARRAY (LeetCode 1146 - Medium)
-2. Example:
-3. set/snap O(1), get O(log S) where S = number of snaps
-
-```mermaid
-flowchart TD
-    N1["SNAPSHOT ARRAY (LeetCode 1146 - Medium)"]
-    N2["Example:"]
-    N3["set/snap O(1), get O(log S) where S = number of snaps"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 class SnapshotArray {
@@ -1288,19 +1039,6 @@ class SnapshotArray {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. STOCK PRICE FLUCTUATION (LeetCode 2034 - Medium)
-2. update can CORRECT previous timestamp's price.
-3. update O(log n), current/max/min O(1)
-
-```mermaid
-flowchart TD
-    N1["STOCK PRICE FLUCTUATION (LeetCode 2034 - Medium)"]
-    N2["update can CORRECT previous timestamp's price."]
-    N3["update O(log n), current/max/min O(1)"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 class StockPrice {
@@ -1355,41 +1093,6 @@ class StockPrice {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIND MEDIAN FROM DATA STREAM (LeetCode 295 - Hard)
-2. addNum(int num) — add integer from data stream
-3. findMedian() — return median of all elements so far
-4. Example:
-5. add(1), add(2)
-6. median=1.5, add(3)
-7. median=2.0
-8. add(1), add(2)
-9. median=1.5, add(3)
-10. median=2.0
-11. Keep balanced:
-12. maxHeap.size - minHeap.size
-13. <= 1
-14. Keep balanced:
-15. maxHeap.size - minHeap.size
-16. <= 1
-17. addNum O(log n), findMedian O(1)
-
-```mermaid
-flowchart TD
-    N1["FIND MEDIAN FROM DATA STREAM (LeetCode 295 - Hard)"]
-    N2["addNum(int num) — add integer from data stream"]
-    N3["findMedian() — return median of all elements so far"]
-    N4["Example:"]
-    N5["add(1), add(2) → median=1.5, add(3) → median=2.0"]
-    N6["Keep balanced: |maxHeap.size - minHeap.size| &lt;= 1"]
-    N7["addNum O(log n), findMedian O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```java
 class MedianFinder {

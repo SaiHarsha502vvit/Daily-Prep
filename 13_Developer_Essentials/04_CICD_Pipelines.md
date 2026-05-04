@@ -1,4 +1,4 @@
-# 🔄 CI/CD Pipelines — Complete Guide
+﻿# 🔄 CI/CD Pipelines — Complete Guide
 
 **Navigation**: [< Docker](03_Docker_Containers.md) | [Index](00_INDEX.md) | [Next: Clean Code >](05_Clean_Code.md)
 
@@ -27,26 +27,6 @@ Companies like Google, Netflix, Amazon deploy 100+ TIMES PER DAY.
 How? → CI/CD
 ```
 
-**Flow:**
-1. If it breaks
-2. rollback by replacing old ZIP
-3. - Friday 5 PM deployments weekend debugging
-4. How?
-5. CI/CD
-
-```mermaid
-flowchart LR
-    N1["6. If it breaks"]
-    N2["rollback by replacing old ZIP"]
-    N3["- Friday 5 PM deployments"]
-    N4["weekend debugging"]
-    N5["How?"]
-    N6["CI/CD"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
-
 ## WHAT: CI vs CD vs CD
 
 ```
@@ -67,34 +47,6 @@ CD = Continuous Deployment
    ├── Continuous Deployment ──────────────────────┤ (auto deploy)
 ```
 
-**Flow:**
-1. 'Every code push automatically build + test'
-2. 'Every successful build automatically deploys to production'
-3. Code Push
-4. Build
-5. Test
-6. Package
-7. Deploy
-
-```mermaid
-flowchart TD
-    N1["'Every code push"]
-    N2["automatically build + test'"]
-    N3["'Every successful build"]
-    N4["automatically deploys to production'"]
-    N5["Code Push"]
-    N6["Build"]
-    N7["Test"]
-    N8["Package"]
-    N9["Deploy"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-    N8 --> N9
-```
-
 ---
 
 # HOW: GitHub Actions (The Standard)
@@ -105,12 +57,6 @@ flowchart TD
 
 
 🔬 **Section Challenge — Basic Pipeline: Build + Test**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
 
 
 # .github/workflows/ci.yml
@@ -268,20 +214,6 @@ Code Push to main
   🎉 Live in Production
 ```
 
-**Flow:**
-1. Build & Test
-2. Docker Build / & Push
-3. Deploy to / Production
-
-```mermaid
-flowchart TD
-    N1["Build & Test"]
-    N2["Docker Build / & Push"]
-    N3["Deploy to / Production"]
-    N1 --> N2
-    N2 --> N3
-```
-
 ---
 
 # WHAT: Key CI/CD Concepts
@@ -292,12 +224,6 @@ flowchart TD
 
 
 🔬 **Section Challenge — Pipeline Triggers**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
 
 
 # When to run the pipeline:
@@ -358,19 +284,6 @@ Settings → Branches → main:
 Result: NOBODY can push broken code to main
 ```
 
-**Flow:**
-1. Settings
-2. Branches main:
-
-```mermaid
-flowchart LR
-    N1["Settings"]
-    N2["Branches"]
-    N3["main:"]
-    N1 --> N2
-    N2 --> N3
-```
-
 ---
 
 # WHERE: CI/CD Tools Comparison
@@ -384,47 +297,12 @@ AWS CodePipeline→ Best for AWS deployments
 Azure DevOps    → Best for Microsoft ecosystem
 ```
 
-**Flow:**
-1. GitHub Actions
-2. Best for GitHub repos (free tier: 2000 min/month)
-3. GitLab CI/CD
-4. Best for GitLab repos (built-in)
-5. Jenkins
-6. Enterprise standard (self-hosted, complex)
-7. CircleCI
-8. Cloud-based, fast
-9. AWS CodePipeline
-10. Best for AWS deployments
-11. Azure DevOps
-12. Best for Microsoft ecosystem
-
-```mermaid
-flowchart TD
-    N1["GitHub Actions"]
-    N2["Best for GitHub repos (free tier: 2000 min/month)"]
-    N3["GitLab CI/CD"]
-    N4["Best for GitLab repos (built-in)"]
-    N5["Jenkins"]
-    N6["Enterprise standard (self-hosted, complex)"]
-    N7["CircleCI"]
-    N8["Cloud-based, fast"]
-    N9["AWS CodePipeline"]
-    N10["Best for AWS deployments"]
-    N11["Azure DevOps"]
-    N12["Best for Microsoft ecosystem"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-```
-
 ---
 
 # 🏋️ Practice Exercises
 
 ## Exercise 1: Basic CI
+
 ```
 1. Create a Spring Boot project on GitHub
 2. Add a GitHub Actions CI workflow
@@ -432,21 +310,8 @@ flowchart TD
 4. Intentionally break a test → verify build fails
 ```
 
-**Flow:**
-1. Push code verify build runs
-2. Intentionally break a test verify build fails
-
-```mermaid
-flowchart LR
-    N1["3. Push code"]
-    N2["verify build runs"]
-    N3["4. Intentionally break a test"]
-    N4["verify build fails"]
-    N1 --> N2
-    N3 --> N4
-```
-
 ## Exercise 2: Docker + Deploy
+
 ```
 1. Add Dockerfile to your project
 2. Create workflow that builds Docker image
@@ -458,13 +323,9 @@ flowchart LR
 
 **Next Chapter**: [Clean Code Principles →](05_Clean_Code.md)
 
-
 ---
 
-
 ---
-
-
 
 🔬 **Section Challenge — Exercise 2: Docker + Deploy**
 
@@ -479,5 +340,3 @@ In the overlay filesystem, modifying a file in a lower layer creates a COPY in t
 
 `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
 </details>
-
-

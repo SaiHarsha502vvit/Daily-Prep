@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← Fundamentals](01_React_Fundamentals.md) | [Next: Hooks →](03_Hooks_Deep_Dive.md)
+﻿> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← Fundamentals](01_React_Fundamentals.md) | [Next: Hooks →](03_Hooks_Deep_Dive.md)
 > 🧠 **Mental Model**: See [Frontend Architecture Thinking](../14_Mental_Models/17_Frontend_Architecture_Thinking.md)
 
 ---
@@ -86,8 +86,6 @@ Tabs.Panel = ({ id, children }) => {
 
 ---
 
-
-
 ## Pattern 3: Render Props & Higher-Order Components
 
 ```jsx
@@ -123,8 +121,6 @@ const ProtectedDashboard = withAuth(Dashboard);
 
 ---
 
-
-
 ## Pattern 4: Styling Approaches
 
 ```
@@ -143,31 +139,6 @@ Inline styles     │ Simple, dynamic          │ No pseudo-classes, media quer
 (style={{}})      │ No tooling               │ Not recommended for production
 ```
 
-**Flow:**
-1. APPROACH PROS CONS
-2. CSS Modules Scoped, no conflicts Still CSS files
-3. Tailwind CSS Utility-first, fast Long class strings
-4. No naming, consistent Learning curve
-5. styled-components CSS-in-JS, dynamic props Runtime over
-6. Full JS power Bundle size
-7. (style={{}}) No tooling Not recommended for production
-
-```mermaid
-flowchart TD
-    N1["APPROACH PROS CONS"]
-    N2["CSS Modules Scoped, no conflicts Still CSS files"]
-    N3["Tailwind CSS Utility-first, fast Long class strings"]
-    N4["No naming, consistent Learning curve"]
-    N5["styled-components CSS-in-JS, dynamic props Runtime over"]
-    N6["Full JS power Bundle size"]
-    N7["(style={{}}) No tooling Not recommended for production"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```jsx
 // CSS MODULES:
@@ -198,9 +169,6 @@ const StyledButton = styled.button`
 ```
 
 ---
-
-
-
 
 ## Pattern 5: Error Boundaries
 
@@ -240,8 +208,6 @@ class ErrorBoundary extends React.Component {
 
 ---
 
-
-
 ## Pattern 6: Polymorphic Components
 
 ```tsx
@@ -268,8 +234,6 @@ function Box<T extends React.ElementType = 'div'>({
 ```
 
 ---
-
-
 
 ## Pattern 7: Controlled vs Uncontrolled
 
@@ -307,8 +271,6 @@ function ControlledSearch({ onSearch }) {
 ```
 
 ---
-
-
 
 ## Pattern 8: Provider + Composition
 
@@ -355,7 +317,57 @@ function App() {
 
 ---
 
+## 🎓 MIT/KTH SYSTEMS DEEP DIVE: The Mount/Unmount Memory Trap
 
+Junior engineers think in terms of "props and JSX." Systems engineers think in terms of **DOM Node Lifecycles and React Fiber Instances**.
+
+### Trap 1: The Remount Annihilation (Dynamic Component Keys)
+
+If you dynamically change the type of a wrapper or assign dynamic numbers (like `Math.random()`) to a key on every render, React will destroy the actual DOM nodes and rebuild them from scratch.
+- **The Symptoms:** Inputs lose focus immediately after you type a letter, animations restart endlessly, IFrames flash white, and network requests re-fire.
+- **The Fix:** Never declare components *inside* other components, and use deterministic `key` props tied to database IDs, not array indexes.
+
+### Trap 2: The "Over-Containerized" DOM (V8 Memory Bloat)
+
+Using `<div className="wrapper">` around everything balloons the DOM tree depth. Browsers like Chrome (V8) allocate layout constraints per node. Deeply nested DIVs cause **expensive Reflow/Layout thrashing**.
+**The Fix:** Use `<React.Fragment>` or `<>` for logical wrapping without physical DOM manifestation.
+
+### 💻 System Challenge (VSCode): Fix the Component Remount Trap
+
+*VSCode Pro-Tip: Hovering over the nested component in VSCode will often reveal ESLint warnings about `react/no-unstable-nested-components`. Always heed this warning.*
+
+```jsx
+// ❌ THE BUG: The user loses focus on the <input> after typing exactly 1 character.
+
+function UserForm({ id }) {
+  // BUG: Declaring a component INSIDE a render function.
+  // Every time UserForm renders, `InputField` gets a NEW memory address.
+  // React sees <InputField> -> <InputField (new address)>, destroys the 
+  // old DOM input, and creates a brand new one. Goodbye focus!
+
+  const InputField = ({ value, onChange }) => (
+    <input className="blue-border" value={value} onChange={onChange} />
+  );
+
+  const [text, setText] = useState('');
+  
+  return <InputField value={text} onChange={(e) => setText(e.target.value)} />;
+}
+```
+
+```jsx
+// ✅ THE FIX: Extract components to stable top-level memory addresses.
+const InputField = ({ value, onChange }) => (
+  <input className="blue-border" value={value} onChange={onChange} />
+);
+
+function UserForm({ id }) {
+  const [text, setText] = useState('');
+  return <InputField value={text} onChange={(e) => setText(e.target.value)} />;
+}
+```
+
+---
 
 ## 🔗 Cross-References
 
@@ -367,4 +379,3 @@ function App() {
 | **React Performance** | [Performance](08_React_Performance.md) — memoization, lazy loading |
 | **CSS styling** | [CSS Architecture](../18_CSS_Complete/04_CSS_Modern_Architecture.md) |
 | **TypeScript (generic components)** | [React TypeScript](05_React_TypeScript.md) |
-

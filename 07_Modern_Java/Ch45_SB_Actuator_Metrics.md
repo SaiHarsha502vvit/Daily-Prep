@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](Ch44_SB_Caching_Scheduling.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](Ch44_SB_Caching_Scheduling.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -1100,33 +1100,6 @@ public class RabbitConsumer {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PART 14 QUICK REFERENCE
-2. CACHING:
-3. @Cacheable - Read from cache
-4. @CacheEvict - Remove from cache
-5. @CachePut - Always update cache
-6. ASYNC:
-7. @EnableAsync + @Async
-
-```mermaid
-flowchart TD
-    N1["PART 14 QUICK REFERENCE"]
-    N2["CACHING:"]
-    N3["@Cacheable - Read from cache"]
-    N4["@CacheEvict - Remove from cache"]
-    N5["@CachePut - Always update cache"]
-    N6["ASYNC:"]
-    N7["@EnableAsync + @Async"]
-    N8["Return CompletableFuture&lt;T&gt; for result"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

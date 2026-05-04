@@ -1,4 +1,4 @@
-﻿**JavaScript Chapter 2/7** | [â† Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next â†’ Objects & Prototypes](03_JS_Objects_Prototypes.md)
+**JavaScript Chapter 2/7** | [â† Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next â†’ Objects & Prototypes](03_JS_Objects_Prototypes.md)
 
 # Functions & Closures â€” The Heart of JavaScript
 
@@ -65,45 +65,21 @@ constructors and don't have their own `this`. Declarations are
 hoisted, which some teams consider cleaner for readability.
 ```
 
-**Flow:**
-1. WHEN TO USE WHICH:
-2. Type Best For
-3. Declaration Main functions, utility functions
-4. Arrow (const) Callbacks, array methods, short fns
-5. Expression Conditional function assignment
-6. REASONING: Arrow functions are shorter but can't be use hoisted, which some teams consider cleaner for readabil
-
-```mermaid
-flowchart TD
-    N1["WHEN TO USE WHICH:"]
-    N2["Type Best For"]
-    N3["Declaration Main functions, utility functions"]
-    N4["Arrow (const) Callbacks, array methods, short fns"]
-    N5["Expression Conditional function assignment"]
-    N6["REASONING: Arrow functions are shorter but can't be use"]
-    N7["hoisted, which some teams consider cleaner for readabil"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 
 
 
-ðŸ”¬ **Section Challenge â€” 1. Function Declarations vs Expressions**
->
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` â€” show with an example where they produce different results.
+🧪 **Section Challenge – 1. Function Declarations vs Expressions**
+
+**Challenge 1 (Reasoning):** `function greet() {}` vs `const greet = () => {}` — name 3 behavioral differences beyond syntax.
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+1. **Hoisting**: Declarations are fully hoisted (callable before definition). Arrow/expression variables are hoisted but uninitialized (TDZ with `const`). 2. **`this` binding**: Declarations have dynamic `this` (depends on call site). Arrows capture lexical `this` (from enclosing scope). 3. **`arguments` object**: Declarations have their own `arguments`. Arrows inherit `arguments` from enclosing scope (or it's undefined). Bonus: Declarations can be used as constructors (`new greet()`). Arrows cannot — they throw TypeError.
 </details>
 
 
-## 2. Parameters â€” Default, Rest, Destructuring
+## 2. Parameters — Default, Rest, Destructuring
 
 ```javascript
 // DEFAULT PARAMETERS (ES6)
@@ -130,9 +106,9 @@ createComponent({ tag: "h1", className: "title", children: ["Hello"] });
 // <h1 class="title">Hello</h1>
 
 // WHY destructured params?
-// 1. Named parameters â†’ order doesn't matter
-// 2. Self-documenting â†’ you see what the function expects
-// 3. Defaults built in â†’ clean fallback behavior
+// 1. Named parameters → order doesn't matter
+// 2. Self-documenting → you see what the function expects
+// 3. Defaults built in → clean fallback behavior
 ```
 
 ---
@@ -140,39 +116,25 @@ createComponent({ tag: "h1", className: "title", children: ["Hello"] });
 
 
 
-## 3. `this` Keyword â€” The Most Confusing Part of JS
+## 3. `this` Keyword — The Most Confusing Part of JS
 
 ### 5W1H: WHY is `this` confusing?
 
 ```
-â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
-â•‘  WHAT: `this` refers to the OBJECT that is executing the current     â•‘
-â•‘        function. But WHICH object depends on HOW the function is     â•‘
-â•‘        called, not where it's written.                               â•‘
-â•‘                                                                      â•‘
-â•‘  WHY confusing: In Java, `this` always refers to the instance.       â•‘
-â•‘  In JS, `this` changes based on CALL SITE â€” 4 rules + arrow.         â•‘
-â•‘                                                                      â•‘
-â•‘  ANALOGY: `this` is like the word "I" in English. When YOU say       â•‘
-â•‘  "I", it refers to you. When I say "I", it refers to me.             â•‘
-â•‘  The meaning depends on WHO IS SPEAKING (who called the function).   â•‘
-â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+╔══════════════════════════════════════════════════════════════════╗
+║  WHAT: `this` refers to the OBJECT that is executing the current     ║
+║        function. But WHICH object depends on HOW the function is     ║
+║        called, not where it's written.                               ║
+║                                                                      ║
+║  WHY confusing: In Java, `this` always refers to the instance.       ║
+║  In JS, `this` changes based on CALL SITE — 4 rules + arrow.         ║
+║                                                                      ║
+║  ANALOGY: `this` is like the word "I" in English. When YOU say       ║
+║  "I", it refers to you. When I say "I", it refers to me.             ║
+║  The meaning depends on WHO IS SPEAKING (who called the function).   ║
+╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. function. But WHICH object depends on HOW the function
-2. called, not where it's written. In JS, `this` changes based on CALL SITE â€” 4 rules + ar 'I', it refers to you. When I say 'I', it refers to me.
-
-```mermaid
-flowchart TD
-    N1["function. But WHICH object depends on HOW the function"]
-    N2["called, not where it's written."]
-    N3["In JS, `this` changes based on CALL SITE â€” 4 rules + ar"]
-    N4["'I', it refers to you. When I say 'I', it refers to me."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### The 5 Rules of `this` (in priority order)
 
@@ -181,14 +143,14 @@ flowchart TD
 function Person(name) {
     this.name = name; // `this` = newly created object
 }
-const p = new Person("Harsha"); // this â†’ {}
+const p = new Person("Harsha"); // this → {}
 
 // RULE 2: explicit binding (call, apply, bind)
 function greet() {
     console.log(`Hello, ${this.name}`);
 }
 const user = { name: "Harsha" };
-greet.call(user);   // "Hello, Harsha" â€” this = user
+greet.call(user);   // "Hello, Harsha" — this = user
 greet.apply(user);  // Same, but args as array: greet.apply(user, [arg1, arg2])
 const bound = greet.bind(user); // Returns NEW function with this locked to user
 bound(); // "Hello, Harsha"
@@ -202,9 +164,9 @@ const obj = {
 };
 obj.greet(); // "Harsha"
 
-// âš ï¸ BUT: Method extraction LOSES binding!
+// ⚠️ BUT: Method extraction LOSES binding!
 const fn = obj.greet;
-fn(); // undefined â€” `this` is now global/undefined (no dot!)
+fn(); // undefined — `this` is now global/undefined (no dot!)
 
 // RULE 4: default binding (lowest priority)
 function standalone() {
@@ -212,16 +174,16 @@ function standalone() {
 }
 standalone(); // In strict mode: undefined
 
-// RULE 5: Arrow functions â€” NO own `this`
+// RULE 5: Arrow functions — NO own `this`
 const obj2 = {
     name: "Harsha",
     greet: () => {
-        console.log(this.name); // âŒ `this` is NOT obj2!
+        console.log(this.name); // ❌ `this` is NOT obj2!
         // Arrow inherits `this` from enclosing LEXICAL scope.
     },
     greetCorrect() {
         const inner = () => {
-            console.log(this.name); // âœ… "Harsha" â€” inherits from greetCorrect
+            console.log(this.name); // ✅ "Harsha" — inherits from greetCorrect
         };
         inner();
     }
@@ -232,92 +194,54 @@ const obj2 = {
 `this` DETERMINATION FLOWCHART:
 
 Is it an ARROW function?
-â”œâ”€â”€ YES â†’ `this` = enclosing lexical scope's `this`
-â””â”€â”€ NO â†“
+├── YES → `this` = enclosing lexical scope's `this`
+└── NO ↓
 
 Called with NEW keyword?
-â”œâ”€â”€ YES â†’ `this` = newly created object
-â””â”€â”€ NO â†“
+├── YES → `this` = newly created object
+└── NO ↓
 
 Called with call/apply/bind?
-â”œâ”€â”€ YES â†’ `this` = specified object
-â””â”€â”€ NO â†“
+├── YES → `this` = specified object
+└── NO ↓
 
 Called as object.method()?
-â”œâ”€â”€ YES â†’ `this` = object before the dot
-â””â”€â”€ NO â†“
+├── YES → `this` = object before the dot
+└── NO ↓
 
 Default: `this` = window (or undefined in strict mode)
 ```
 
-**Flow:**
-1. YES
-2. `this` = enclosing lexical scope's `this` YES `this` = newly created object YES `this` = specified object YES `this` = object before the dot
-
-```mermaid
-flowchart LR
-    N1["YES"]
-    N2["`this` = enclosing lexical scope's `this`"]
-    N3["`this` = newly created object"]
-    N4["`this` = specified object"]
-    N5["`this` = object before the dot"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-```
 
 ---
 
 
 
 
-## 4. Closures â€” The Most Important Concept
+## 4. Closures — The Most Important Concept
 
 ### 5W1H: WHAT is a Closure?
 
 ```
-â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
-â•‘  WHAT: A closure is a function that REMEMBERS the variables from     â•‘
-â•‘        its outer (enclosing) scope even AFTER the outer function     â•‘
-â•‘        has returned.                                                 â•‘
-â•‘                                                                      â•‘
-â•‘  WHY:  Closures enable data privacy, factory functions, partial      â•‘
-â•‘        application, memoization, and React hooks (useState).         â•‘
-â•‘                                                                      â•‘
-â•‘  HOW:  When a function is created, it captures a reference to its    â•‘
-â•‘        surrounding scope (not a copy). This reference persists       â•‘
-â•‘        even after the outer function finishes executing.             â•‘
-â•‘                                                                      â•‘
-â•‘  ANALOGY: A closure is like a backpack. When a function is born      â•‘
-â•‘  inside another function, it packs the outer function's variables    â•‘
-â•‘  into its backpack. Even after leaving the outer function (the       â•‘
-â•‘  house), the inner function still carries those variables.           â•‘
-â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+╔══════════════════════════════════════════════════════════════════╗
+║  WHAT: A closure is a function that REMEMBERS the variables from     ║
+║        its outer (enclosing) scope even AFTER the outer function     ║
+║        has returned.                                                 ║
+║                                                                      ║
+║  WHY:  Closures enable data privacy, factory functions, partial      ║
+║        application, memoization, and React hooks (useState).         ║
+║                                                                      ║
+║  HOW:  When a function is created, it captures a reference to its    ║
+║        surrounding scope (not a copy). This reference persists       ║
+║        even after the outer function finishes executing.             ║
+║                                                                      ║
+║  ANALOGY: A closure is like a backpack. When a function is born      ║
+║  inside another function, it packs the outer function's variables    ║
+║  into its backpack. Even after leaving the outer function (the       ║
+║  house), the inner function still carries those variables.           ║
+╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. its outer (enclosing) scope even AFTER the outer functi
-2. has returned.
-3. application, memoization, and React hooks (useState).
-4. surrounding scope (not a copy). This reference persists
-5. even after the outer function finishes executing.
-6. house), the inner function still carries those variable
-
-```mermaid
-flowchart TD
-    N1["its outer (enclosing) scope even AFTER the outer functi"]
-    N2["has returned."]
-    N3["application, memoization, and React hooks (useState)."]
-    N4["surrounding scope (not a copy). This reference persists"]
-    N5["even after the outer function finishes executing."]
-    N6["house), the inner function still carries those variable"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```javascript
 // SIMPLEST CLOSURE EXAMPLE:
@@ -333,14 +257,14 @@ function outer() {
 }
 
 const counter = outer();     // outer() finishes executing
-counter(); // 1 â€” BUT count is still alive!
-counter(); // 2 â€” count persists between calls!
+counter(); // 1 — BUT count is still alive!
+counter(); // 2 — count persists between calls!
 counter(); // 3
 
 // WHY does count persist?
 // When inner was created, it captured a REFERENCE to count.
 // Even though outer() finished, inner still holds that reference.
-// JS garbage collector sees it's still referenced â†’ keeps it alive.
+// JS garbage collector sees it's still referenced → keeps it alive.
 ```
 
 ```
@@ -348,50 +272,25 @@ CLOSURE MEMORY VISUALIZATION:
 
 After outer() returns:
 
-â”Œâ”€ counter variable â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚  Points to inner function                              â”‚
-â”‚  inner function carries a "backpack":                  â”‚
-â”‚  â”Œâ”€â”€â”€ Closure Scope â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”                â”‚
-â”‚  â”‚  count: 0 â†’ 1 â†’ 2 â†’ 3 (persists!) â”‚                 â”‚
-â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌ counter variable ──────────────────────────────────────────┐
+│  Points to inner function                              │
+│  inner function carries a "backpack":                  │
+│  ┌─ Closure Scope ──────────────────                 │
+│  │  count: 0 → 1 → 2 → 3 (persists!) │                 │
+│  └───────────────────────────────────                │
+└────────────────────────────────────────────────────────┘
 
 outer()'s execution context is gone, but the closure keeps
 count alive because inner still references it.
 ```
 
-**Flow:**
-1. CLOSURE MEMORY VISUALIZATION:
-2. After outer() returns: counter variable
-3. Points to inner function
-4. inner function carries a 'backpack':
-5. Closure Scope count: 0 1 2 3 (persists!)
-
-```mermaid
-flowchart TD
-    N1["CLOSURE MEMORY VISUALIZATION:"]
-    N2["After outer() returns:"]
-    N3["counter variable"]
-    N4["Points to inner function"]
-    N5["inner function carries a 'backpack':"]
-    N6["Closure Scope"]
-    N7["count: 0 â†’ 1 â†’ 2 â†’ 3 (persists!)"]
-    N8["outer()'s execution context is gone, but the closure ke"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Closure Use Cases
 
 ```javascript
 // USE CASE 1: DATA PRIVACY (Module Pattern)
 function createBankAccount(initialBalance) {
-    let balance = initialBalance; // PRIVATE â€” no outside access
+    let balance = initialBalance; // PRIVATE — no outside access
 
     return {
         deposit(amount) {
@@ -413,7 +312,7 @@ const account = createBankAccount(1000);
 account.deposit(500);    // 1500
 account.withdraw(200);   // 1300
 account.getBalance();    // 1300
-// account.balance â†’ undefined! It's private.
+// account.balance → undefined! It's private.
 
 // REASONING: balance is in the closure scope.
 // Only the returned methods can access it.
@@ -454,8 +353,8 @@ const expensiveAdd = memoize((a, b) => {
     console.log("Computing...");
     return a + b;
 });
-expensiveAdd(1, 2); // "Computing..." â†’ 3
-expensiveAdd(1, 2); // "Cache hit!" â†’ 3 (no recomputation)
+expensiveAdd(1, 2); // "Computing..." → 3
+expensiveAdd(1, 2); // "Cache hit!" → 3 (no recomputation)
 
 
 // USE CASE 4: REACT'S useState (simplified)
@@ -487,7 +386,7 @@ getName();          // "Updated"
 for (var i = 0; i < 3; i++) {
     setTimeout(() => console.log(i), 100);
 }
-// Output: 3, 3, 3 â€” NOT 0, 1, 2!
+// Output: 3, 3, 3 — NOT 0, 1, 2!
 
 // WHY? var is function-scoped, so there's ONE `i` variable.
 // By the time setTimeout fires (100ms later), the loop has finished.
@@ -497,27 +396,27 @@ for (var i = 0; i < 3; i++) {
 for (let i = 0; i < 3; i++) {
     setTimeout(() => console.log(i), 100);
 }
-// Output: 0, 1, 2 âœ… â€” let creates a new `i` for each iteration
+// Output: 0, 1, 2 ✅ — let creates a new `i` for each iteration
 
 // FIX 2: IIFE (old way, before let existed)
 for (var i = 0; i < 3; i++) {
     (function(j) {
         setTimeout(() => console.log(j), 100);
-    })(i); // Pass current i into IIFE as j â†’ each closure has its own j
+    })(i); // Pass current i into IIFE as j → each closure has its own j
 }
-// Output: 0, 1, 2 âœ…
+// Output: 0, 1, 2 ✅
 ```
 
 ---
 
 
 
-ðŸ”¬ **Section Challenge â€” 4. Closures â€” The Most Important Concept**
+ðŸ”¬ **Section Challenge — 4. Closures — The Most Important Concept**
 
 **Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
 <details><summary>Answer</summary>
 
-A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference â€” GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener â†’ data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
+A closure is a function that retains a reference to its lexical environment (the scope where it was created). Variables closed over are kept alive by the closure reference — GC can't collect them because there's still a reference (the closure's internal scope). Memory leak scenario: large data object captured in a closure, closure stored in a long-lived event listener — data stays in memory for the page's lifetime. Fix: explicitly null the large variable after use, or use a WeakRef.
 </details>
 
 
@@ -526,39 +425,26 @@ A closure is a function that retains a reference to its lexical environment (the
 ### 5W1H: WHAT are Higher-Order Functions?
 
 ```
-â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
-â•‘  WHAT: A function that takes another function as argument OR         â•‘
-â•‘        returns a function.                                           â•‘
-â•‘  WHY:  Enables composition, abstraction, and declarative code.       â•‘
-â•‘  WHO:  Used everywhere: Array methods, event handlers, Express       â•‘
-â•‘        middleware, React components.                                 â•‘
-â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+╔══════════════════════════════════════════════════════════════════╗
+║  WHAT: A function that takes another function as argument OR         ║
+║        returns a function.                                           ║
+║  WHY:  Enables composition, abstraction, and declarative code.       ║
+║  WHO:  Used everywhere: Array methods, event handlers, Express       ║
+║        middleware, React components.                                 ║
+╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. WHAT: A function that takes another function as argumen
-2. returns a function.
-3. middleware, React components.
-
-```mermaid
-flowchart TD
-    N1["WHAT: A function that takes another function as argumen"]
-    N2["returns a function."]
-    N3["middleware, React components."]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```javascript
 // Array higher-order methods (the most important ones):
 
 const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
-// map: Transform each element â†’ new array
+// map: Transform each element → new array
 const doubled = numbers.map(n => n * 2);
 // [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
 
-// filter: Keep elements that pass a test â†’ new array
+// filter: Keep elements that pass a test → new array
 const evens = numbers.filter(n => n % 2 === 0);
 // [2, 4, 6, 8, 10]
 
@@ -579,7 +465,7 @@ numbers.every(n => n > 0); // true
 // forEach: Side effects only (no return value)
 numbers.forEach(n => console.log(n));
 
-// CHAINING â€” the power of functional style:
+// CHAINING — the power of functional style:
 const result = numbers
     .filter(n => n % 2 === 0)    // [2, 4, 6, 8, 10]
     .map(n => n * 3)             // [6, 12, 18, 24, 30]
@@ -595,16 +481,26 @@ const result = numbers
 
 
 
-ðŸ”¬ **Section Challenge â€” 5. Higher-Order Functions**
->
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` â€” show with an example where they produce different results.
+🧪🔬 **Section Challenge – 5. Higher-Order Functions**
+
+**Challenge 1 (Reasoning):** Implement `Array.prototype.reduce` from scratch. What makes it more powerful than `map` or `filter`?
 <details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+```javascript
+Array.prototype.myReduce = function(callback, initialValue) {
+    let acc = initialValue !== undefined ? initialValue : this[0];
+    let startIndex = initialValue !== undefined ? 0 : 1;
+    for (let i = startIndex; i < this.length; i++) {
+        acc = callback(acc, this[i], i, this);
+    }
+    return acc;
+};
+```
+`reduce` is more powerful because it can produce ANY output type (number, string, object, array) — not just a transformed array. You can implement `map`, `filter`, `flat`, `groupBy`, and any other array method using `reduce` alone. It's the universal accumulator.
 </details>
 
 
-## 6. IIFE â€” Immediately Invoked Function Expression
+## 6. IIFE — Immediately Invoked Function Expression
 
 ```javascript
 // WHAT: A function that runs immediately after creation.
@@ -752,16 +648,20 @@ function deepClone(obj) {
 
 
 
-ðŸ”¬ **Section Challenge â€” 9. Recursion (JS-Specific Notes)**
->
-**Challenge 2 (Bug Hunt):** ```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
+🧪🔬 **Section Challenge – 9. Recursion (JS-Specific Notes)**
+
+**Challenge 1 (Bug Hunt):** This recursive flatten fails on deeply nested arrays in Node.js. Why?
+```javascript
+function flatten(arr) {
+    return arr.reduce((acc, item) =>
+        acc.concat(Array.isArray(item) ? flatten(item) : item), []
+    );
+}
+flatten(deeplyNestedArray); // RangeError: Maximum call stack size exceeded
 ```
-Why and what are the 3 fixes?
 <details><summary>Answer</summary>
 
-Exponential time O(2^N) â€” `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization â€” `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP â€” array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space â€” just track last two values with two variables. O(N) time, O(1) space.
+JavaScript has no tail-call optimization in practice (only Safari implements it). Each recursive call adds a frame to the call stack (~10,000 frame limit in V8). Deeply nested arrays (1000+ levels) blow the stack. Fix 1: Use iterative approach with an explicit stack (array). Fix 2: Use built-in `arr.flat(Infinity)` which is implemented natively in C++ and doesn't use JS call stack. Fix 3: For custom logic, use a while loop with a stack array to simulate recursion.
 </details>
 
 
@@ -798,32 +698,6 @@ Q: What is a higher-order function?
   Examples: map, filter, reduce, addEventListener.
 ```
 
-**Flow:**
-1. Q: What is a closure?
-2. after the outer function has returned.
-3. Q: Give a practical use of closures.
-4. React hooks (useState), factory functions.
-5. Q: What does `this` refer to in an arrow function?
-6. don't have their own `this`. Q: What's the difference between call, apply, and bind?
-
-```mermaid
-flowchart TD
-    N1["Q: What is a closure?"]
-    N2["after the outer function has returned."]
-    N3["Q: Give a practical use of closures."]
-    N4["React hooks (useState), factory functions."]
-    N5["Q: What does `this` refer to in an arrow function?"]
-    N6["don't have their own `this`."]
-    N7["Q: What's the difference between call, apply, and bind?"]
-    N8["â†’ call: invokes with `this` + individual args."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

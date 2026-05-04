@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](Ch20_AlgoEng_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](Ch20_AlgoEng_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -24,33 +24,6 @@ YOUR THINKING CHAIN:
 Data → Behavior → Scale → Failure → Human Experience → Cost → Time → Evolution
 ```
 
-**Flow:**
-1. THE CORE SKILL OF ENGINEERING:
-2. YOU ARE NOT JUST A CODER. YOU ARE:
-3. 🔬 A Computer Scientist - Understanding computation limi
-4. 🏗️ A System Architect - Designing scalable structures
-5. 🎨 A Product Engineer - Building what users truly need
-6. 🧠 A UX Thinker - Feeling the user's pain
-7. ⚙️ A DevOps Pragmatist - Keeping systems alive
-
-```mermaid
-flowchart TD
-    N1["THE CORE SKILL OF ENGINEERING:"]
-    N2["YOU ARE NOT JUST A CODER. YOU ARE:"]
-    N3["🔬 A Computer Scientist - Understanding computation limi"]
-    N4["🏗️ A System Architect - Designing scalable structures"]
-    N5["🎨 A Product Engineer - Building what users truly need"]
-    N6["🧠 A UX Thinker - Feeling the user's pain"]
-    N7["⚙️ A DevOps Pragmatist - Keeping systems alive"]
-    N8["💭 A Philosophy Engineer - Asking WHY before HOW"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 
 
@@ -120,29 +93,6 @@ STEP 6 — FAILURE DESIGN
 └─────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. What does the user EMOTIONALLY want? / 'I want to find
-2. What must exist DIGITALLY? / • Data to store / • Operat
-3. What are the ENTITIES and RELATIONSHIPS? / • Users have
-4. What BREAKS at scale? / • 10x users: Database queries s
-5. Which DATA STRUCTURES power each part? / • User search
-6. What happens when things BREAK? / • Server dies
-7. Failo
-
-```mermaid
-flowchart TD
-    N1["What does the user EMOTIONALLY want? / 'I want to find "]
-    N2["What must exist DIGITALLY? / • Data to store / • Operat"]
-    N3["What are the ENTITIES and RELATIONSHIPS? / • Users have"]
-    N4["What BREAKS at scale? / • 10x users: Database queries s"]
-    N5["Which DATA STRUCTURES power each part? / • User search "]
-    N6["What happens when things BREAK? / • Server dies → Failo"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ---
 
@@ -172,44 +122,6 @@ DON'T THINK:                    THINK:
 "Heap gives min/max"       →    "Heap models PRIORITY and importance"
 ```
 
-**Flow:**
-1. 'Array stores data'
-2. 'Array models SEQUENCE in time/space'
-3. 'HashMap is fast lookup'
-4. 'HashMap models ASSOCIATION between things'
-5. 'Tree has nodes'
-6. 'Tree models HIERARCHY and relationships'
-7. 'Graph has edges'
-8. 'Graph models CONNECTIONS in complex systems'
-9. 'Queue is FIFO'
-10. 'Queue models FAIRNESS and ordering'
-11. 'Stack is LIFO'
-12. 'Stack models CONTEXT and undoing'
-
-```mermaid
-flowchart TD
-    N1["'Array stores data'"]
-    N2["'Array models SEQUENCE in time/space'"]
-    N3["'HashMap is fast lookup'"]
-    N4["'HashMap models ASSOCIATION between things'"]
-    N5["'Tree has nodes'"]
-    N6["'Tree models HIERARCHY and relationships'"]
-    N7["'Graph has edges'"]
-    N8["'Graph models CONNECTIONS in complex systems'"]
-    N9["'Queue is FIFO'"]
-    N10["'Queue models FAIRNESS and ordering'"]
-    N11["'Stack is LIFO'"]
-    N12["'Stack models CONTEXT and undoing'"]
-    N13["'Heap gives min/max'"]
-    N14["'Heap models PRIORITY and importance'"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-```
 
 
 
@@ -249,33 +161,6 @@ Ring Buffer             Circular log               Streaming systems
 QuadTree/KD-Tree        Spatial partitioning       Maps, Game collision
 ```
 
-**Flow:**
-1. DATA STRUCTURE REAL-WORLD MODEL PRODUCTION SYSTEM
-2. Array Timeline, Sequence Time-series DB
-3. Dynamic Array Growing history Event logs
-4. Linked List Chain of events Blockchain
-5. HashMap Dictionary, Index Cache, Session store
-6. Stack Undo history Call stack, Parsers
-7. Queue Waiting line Message queue, BFS
-
-```mermaid
-flowchart TD
-    N1["DATA STRUCTURE REAL-WORLD MODEL PRODUCTION SYSTEM"]
-    N2["Array Timeline, Sequence Time-series DB"]
-    N3["Dynamic Array Growing history Event logs"]
-    N4["Linked List Chain of events Blockchain"]
-    N5["HashMap Dictionary, Index Cache, Session store"]
-    N6["Stack Undo history Call stack, Parsers"]
-    N7["Queue Waiting line Message queue, BFS"]
-    N8["Priority Queue Emergency room Task scheduler"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## For Each DS, Always Know:
 
@@ -307,33 +192,6 @@ flowchart TD
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 1. MEMORY BEHAVIOR
-2. - Contiguous or scattered?
-3. - Cache-friendly?
-4. - Memory overhead per element?
-5. 2. TIME TRADEOFFS
-6. - Best/Worst/Average case?
-7. - Amortized analysis?
-
-```mermaid
-flowchart TD
-    N1["1. MEMORY BEHAVIOR"]
-    N2["- Contiguous or scattered?"]
-    N3["- Cache-friendly?"]
-    N4["- Memory overhead per element?"]
-    N5["2. TIME TRADEOFFS"]
-    N6["- Best/Worst/Average case?"]
-    N7["- Amortized analysis?"]
-    N8["3. CONCURRENCY IMPLICATIONS"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -355,19 +213,6 @@ Streaming Algorithms    Real-time stats   Live updates    Data reduction  Memory
 Probabilistic           Deduplication     Personalization Quick checks    Accuracy vs cost
 ```
 
-**Flow:**
-1. ALGORITHM BACKEND UI NETWORK COST
-2. BFS/DFS Crawlers Navigation Routing Bandwidth
-3. Dynamic Programming Optimization Prediction Caching Sto
-
-```mermaid
-flowchart TD
-    N1["ALGORITHM BACKEND UI NETWORK COST"]
-    N2["BFS/DFS Crawlers Navigation Routing Bandwidth"]
-    N3["Dynamic Programming Optimization Prediction Caching Sto"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -390,28 +235,6 @@ Autocomplete               Trie + Heap                Prefix match + top results
 Fraud Detection            Graph + Streaming Algo     Pattern detection in flow
 ```
 
-**Flow:**
-1. SYSTEM DSA FUSION WHY IT WORKS
-2. Rate Limiter HashMap + Queue Track requests in window
-3. Recommendation Engine Graph + Heap Find top-k similar i
-4. High-Scale API Cache + Bloom Filter Fast negative looku
-5. LRU Cache HashMap + Doubly LL O(1) access + ordering
-6. Autocomplete Trie + Heap Prefix match + top results
-
-```mermaid
-flowchart TD
-    N1["SYSTEM DSA FUSION WHY IT WORKS"]
-    N2["Rate Limiter HashMap + Queue Track requests in window"]
-    N3["Recommendation Engine Graph + Heap Find top-k similar i"]
-    N4["High-Scale API Cache + Bloom Filter Fast negative looku"]
-    N5["LRU Cache HashMap + Doubly LL O(1) access + ordering"]
-    N6["Autocomplete Trie + Heap Prefix match + top results"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 
 
@@ -452,36 +275,6 @@ FUSION DESIGN:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PROBLEM: Limit user to 100 requests per minute
-2. HUMAN INTENT: Prevent abuse, ensure fair usage
-3. DSA ANALYSIS:
-4. - Need to track: User ID
-5. Request timestamps
-6. - Need to track: User ID
-7. Request timestamps
-8. - Need to count: Requests in last 60 seconds
-9. - Need to expire: Old requests
-10. FUSION DESIGN:
-
-```mermaid
-flowchart TD
-    N1["PROBLEM: Limit user to 100 requests per minute"]
-    N2["HUMAN INTENT: Prevent abuse, ensure fair usage"]
-    N3["DSA ANALYSIS:"]
-    N4["- Need to track: User ID → Request timestamps"]
-    N5["- Need to count: Requests in last 60 seconds"]
-    N6["- Need to expire: Old requests"]
-    N7["FUSION DESIGN:"]
-    N8["RATE LIMITER"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 class RateLimiter {
@@ -573,33 +366,6 @@ MEMORIZE THESE. ASK THEM ALWAYS.
     → Financial data, inventory, user state
 ```
 
-**Flow:**
-1. MEMORIZE THESE. ASK THEM ALWAYS.
-2. 1. What grows UNBOUNDED?
-3. Memory leaks, infinite loops, data accumulation
-4. 2. What must be INSTANT?
-5. User interactions, health checks, critical paths
-6. 3. What can be EVENTUALLY correct?
-7. Analytics, recommendations, logs
-
-```mermaid
-flowchart TD
-    N1["MEMORIZE THESE. ASK THEM ALWAYS."]
-    N2["1. What grows UNBOUNDED?"]
-    N3["→ Memory leaks, infinite loops, data accumulation"]
-    N4["2. What must be INSTANT?"]
-    N5["→ User interactions, health checks, critical paths"]
-    N6["3. What can be EVENTUALLY correct?"]
-    N7["→ Analytics, recommendations, logs"]
-    N8["4. What costs MONEY at scale?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -667,27 +433,6 @@ ELITE ENGINEER EXTRACTS:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LATENCY SOURCES / • Frontend rendering time / • API res
-2. DATA FLOW ANALYSIS / User Click
-3. Frontend
-4. API Gatewa
-5. DATA FLOW ANALYSIS / User Click
-6. Frontend
-7. API Gatewa
-8. DSA BOTTLENECKS / • Linear search where binary search p
-9. UX BOTTLENECKS / • Blocking UI during computation? / •
-
-```mermaid
-flowchart TD
-    N1["LATENCY SOURCES / • Frontend rendering time / • API res"]
-    N2["DATA FLOW ANALYSIS / User Click → Frontend → API Gatewa"]
-    N3["DSA BOTTLENECKS / • Linear search where binary search p"]
-    N4["UX BOTTLENECKS / • Blocking UI during computation? / • "]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -748,33 +493,6 @@ DSA Lesson: Use WeakHashMap or explicit cleanup
 Fix: TTL-based eviction policy
 ```
 
-**Flow:**
-1. STORY 1: THE UNBOUNDED QUEUE
-2. System: E-commerce checkout
-3. Problem: Queue grew unbounded during flash sale
-4. Root Cause: Producer faster than consumer, no backpress
-5. Fix: Ring buffer with overflow handling
-6. STORY 2: THE MISSING INDEX
-7. System: Social media feed
-
-```mermaid
-flowchart TD
-    N1["STORY 1: THE UNBOUNDED QUEUE"]
-    N2["System: E-commerce checkout"]
-    N3["Problem: Queue grew unbounded during flash sale"]
-    N4["Root Cause: Producer faster than consumer, no backpress"]
-    N5["Fix: Ring buffer with overflow handling"]
-    N6["STORY 2: THE MISSING INDEX"]
-    N7["System: Social media feed"]
-    N8["Problem: Page load went from 200ms to 30 seconds"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -834,22 +552,6 @@ PROJECT 3: ANALYTICS PIPELINE
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Components: / • Message Queue (Ring Buffer) / • User Se
-2. Components: / • Inverted Index (HashMap of word
-3. docum
-4. Components: / • Inverted Index (HashMap of word
-5. docum
-6. Components: / • Event Stream (Ring Buffer) / • Aggregat
-
-```mermaid
-flowchart TD
-    N1["Components: / • Message Queue (Ring Buffer) / • User Se"]
-    N2["Components: / • Inverted Index (HashMap of word → docum"]
-    N3["Components: / • Event Stream (Ring Buffer) / • Aggregat"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -879,33 +581,6 @@ WEEKLY:
 □ Connect one algorithm to a real system
 ```
 
-**Flow:**
-1. MORNING (Before Coding):
-2. □ What system am I building/improving today?
-3. □ What data structures are involved?
-4. □ What could break?
-5. DURING CODING:
-6. □ Am I creating unbounded growth?
-7. □ Is this O(n²) hidden somewhere?
-
-```mermaid
-flowchart TD
-    N1["MORNING (Before Coding):"]
-    N2["□ What system am I building/improving today?"]
-    N3["□ What data structures are involved?"]
-    N4["□ What could break?"]
-    N5["DURING CODING:"]
-    N6["□ Am I creating unbounded growth?"]
-    N7["□ Is this O(n²) hidden somewhere?"]
-    N8["□ What happens at 10x load?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -931,33 +606,6 @@ flowchart TD
 ╚═══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. YOU ARE NOT PREPARING FOR INTERVIEWS.
-2. YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY.
-3. Every algorithm is a tool for CONTROLLING CHAOS.
-4. Every data structure is a SHAPE OF THOUGHT.
-5. Every system you build is a TRANSLATION OF HUMAN NEED.
-6. The goal is not to memorize patterns.
-7. The goal is to SEE THE INVISIBLE ALGORITHMS
-
-```mermaid
-flowchart TD
-    N1["YOU ARE NOT PREPARING FOR INTERVIEWS."]
-    N2["YOU ARE PREPARING FOR SYSTEMS THAT CANNOT FAIL QUIETLY."]
-    N3["Every algorithm is a tool for CONTROLLING CHAOS."]
-    N4["Every data structure is a SHAPE OF THOUGHT."]
-    N5["Every system you build is a TRANSLATION OF HUMAN NEED."]
-    N6["The goal is not to memorize patterns."]
-    N7["The goal is to SEE THE INVISIBLE ALGORITHMS"]
-    N8["running inside the world itself."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1173,33 +821,6 @@ DSA ANALYSIS:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. USER STORY: 'Show top 100 players in real-time for my g
-2. REQUIREMENTS:
-3. • 10M players total
-4. • 1000 score updates/second
-5. • Get top K players: O(K)
-6. • Get player rank: O(log N)
-7. • Handle ties correctly
-
-```mermaid
-flowchart TD
-    N1["USER STORY: 'Show top 100 players in real-time for my g"]
-    N2["REQUIREMENTS:"]
-    N3["• 10M players total"]
-    N4["• 1000 score updates/second"]
-    N5["• Get top K players: O(K)"]
-    N6["• Get player rank: O(log N)"]
-    N7["• Handle ties correctly"]
-    N8["DSA ANALYSIS:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // Leaderboard using Skip List concept (Redis ZSET style)
@@ -1341,33 +962,6 @@ DSA MAPPING:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. USER STORY: 'Show suggestions as user types in search b
-2. REQUIREMENTS:
-3. • 1M unique search terms
-4. • Return top 5 suggestions
-5. • < 50ms response time
-6. • Handle prefix matching
-7. • Rank by popularity
-
-```mermaid
-flowchart TD
-    N1["USER STORY: 'Show suggestions as user types in search b"]
-    N2["REQUIREMENTS:"]
-    N3["• 1M unique search terms"]
-    N4["• Return top 5 suggestions"]
-    N5["• &lt; 50ms response time"]
-    N6["• Handle prefix matching"]
-    N7["• Rank by popularity"]
-    N8["DSA MAPPING:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 class AutocompleteSystem {
@@ -1504,33 +1098,6 @@ LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:
-2. LC Problem Real System Application
-3. Two Sum Finding matching orders in trading systems
-4. LRU Cache Caching layer in any web service
-5. Merge Intervals Calendar scheduling, resource allocatio
-6. Word Search II Search engine indexing, plagiarism detec
-7. Design Twitter Social media feed generation
-
-```mermaid
-flowchart TD
-    N1["LEETCODE PROBLEMS AND THEIR PRODUCTION COUNTERPARTS:"]
-    N2["LC Problem Real System Application"]
-    N3["Two Sum Finding matching orders in trading systems"]
-    N4["LRU Cache Caching layer in any web service"]
-    N5["Merge Intervals Calendar scheduling, resource allocatio"]
-    N6["Word Search II Search engine indexing, plagiarism detec"]
-    N7["Design Twitter Social media feed generation"]
-    N8["Meeting Rooms II Resource scheduling, server allocation"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1619,25 +1186,6 @@ DSA-RELATED PERFORMANCE ISSUES:
    FIX: Sort once, maintain sorted structure
 ```
 
-**Flow:**
-1. WHEN SYSTEM IS SLOW: / 1. MEASURE FIRST / 'Where is tim
-2. Check latency / percentiles
-3. P99 high P50 high
-4. Edge cases Everything / are slow is slow
-5. Check for: Check for: / - Large data - Database / - Bad
-
-```mermaid
-flowchart TD
-    N1["WHEN SYSTEM IS SLOW: / 1. MEASURE FIRST / 'Where is tim"]
-    N2["Check latency / percentiles"]
-    N3["P99 high P50 high"]
-    N4["Edge cases Everything / are slow is slow"]
-    N5["Check for: Check for: / - Large data - Database / - Bad"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ---
 
@@ -1700,43 +1248,6 @@ COMPLEXITY RED FLAGS:
 🚩 database query in loop → N+1 problem
 ```
 
-**Flow:**
-1. 🚩 nested loops
-2. O(n²) or worse
-3. 🚩 recursion without memoization
-4. exponential
-5. 🚩 .contains() in a loop on List
-6. O(n²)
-7. 🚩 string concatenation in loop
-8. O(n²)
-9. 🚩 sorting in a loop
-10. O(n² log n)
-11. 🚩 regex compilation in loop
-12. O(n × regex)
-
-```mermaid
-flowchart TD
-    N1["🚩 nested loops"]
-    N2["O(n²) or worse"]
-    N3["🚩 recursion without memoization"]
-    N4["exponential"]
-    N5["🚩 .contains() in a loop on List"]
-    N6["O(n²)"]
-    N7["🚩 string concatenation in loop"]
-    N8["🚩 sorting in a loop"]
-    N9["O(n² log n)"]
-    N10["🚩 regex compilation in loop"]
-    N11["O(n × regex)"]
-    N12["🚩 database query in loop"]
-    N13["N+1 problem"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N6
-    N8 --> N9
-    N10 --> N11
-    N12 --> N13
-```
 
 ---
 
@@ -1812,36 +1323,6 @@ FOR EACH ALGORITHM, KNOW:
 └── Real-world applications
 ```
 
-**Flow:**
-1. FOR EACH ALGORITHM, KNOW:
-2. When to use it
-3. FOR EACH ALGORITHM, KNOW:
-4. Time complexity
-5. FOR EACH ALGORITHM, KNOW:
-6. Space complexity
-7. FOR EACH ALGORITHM, KNOW:
-8. Implementation
-9. FOR EACH ALGORITHM, KNOW:
-10. Common variations
-11. FOR EACH ALGORITHM, KNOW:
-12. Real-world applications
-
-```mermaid
-flowchart TD
-    N1["FOR EACH ALGORITHM, KNOW:"]
-    N2["When to use it"]
-    N3["Time complexity"]
-    N4["Space complexity"]
-    N5["Implementation"]
-    N6["Common variations"]
-    N7["Real-world applications"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-```
 
 ---
 
@@ -1909,113 +1390,6 @@ WEEK 10: SYSTEM DESIGN
 └── Study: Trade-offs in system design
 ```
 
-**Flow:**
-1. WEEK 1: ARRAYS & HASHING
-2. Implement HashMap from scratch
-3. WEEK 1: ARRAYS & HASHING
-4. Solve: Two Sum, Contains Duplicate, Group Anagrams
-5. WEEK 1: ARRAYS & HASHING
-6. Build: In-memory key-value store
-7. WEEK 1: ARRAYS & HASHING
-8. Study: Hash collision resolution strategies
-9. WEEK 2: TWO POINTERS & SLIDING WINDOW
-10. Implement: Sliding window template
-11. WEEK 2: TWO POINTERS & SLIDING WINDOW
-12. Solve: 3Sum, Container With Most Water, Minimum Window
-
-```mermaid
-flowchart TD
-    N1["WEEK 1: ARRAYS & HASHING"]
-    N2["Implement HashMap from scratch"]
-    N3["Solve: Two Sum, Contains Duplicate, Group Anagrams"]
-    N4["Build: In-memory key-value store"]
-    N5["Study: Hash collision resolution strategies"]
-    N6["WEEK 2: TWO POINTERS & SLIDING WINDOW"]
-    N7["Implement: Sliding window template"]
-    N8["Solve: 3Sum, Container With Most Water, Minimum Window"]
-    N9["Build: Real-time moving average calculator"]
-    N10["Study: When to use which pointer technique"]
-    N11["WEEK 3: STACKS & QUEUES"]
-    N12["Implement: Min Stack, Monotonic Stack"]
-    N13["Solve: Valid Parentheses, Daily Temperatures, Largest R"]
-    N14["Build: Expression evaluator (calculator)"]
-    N15["Study: When monotonic stack helps"]
-    N16["WEEK 4: BINARY SEARCH"]
-    N17["Implement: All binary search variants"]
-    N18["Solve: Search Rotated Array, Find Peak, Median of Two S"]
-    N19["Build: Rate limiter with binary search"]
-    N20["Study: Binary search on answer space"]
-    N21["WEEK 5: TREES"]
-    N22["Implement: BST, AVL tree"]
-    N23["Solve: Validate BST, LCA, Serialize/Deserialize"]
-    N24["Build: Simple database index"]
-    N25["Study: Tree balancing techniques"]
-    N26["WEEK 6: GRAPHS"]
-    N27["Implement: Graph representations, BFS, DFS"]
-    N28["Solve: Number of Islands, Clone Graph, Course Schedule"]
-    N29["Build: Social network friend suggestion"]
-    N30["Study: When BFS vs DFS"]
-    N31["WEEK 7: HEAPS & PRIORITY QUEUES"]
-    N32["Implement: Min/Max heap from scratch"]
-    N33["Solve: Merge K Lists, Top K, Find Median"]
-    N34["Build: Task scheduler with priorities"]
-    N35["Study: Heap applications in system design"]
-    N36["WEEK 8: DYNAMIC PROGRAMMING"]
-    N37["Master: 1D DP, 2D DP patterns"]
-    N38["Solve: Climbing Stairs, Coin Change, LCS, Edit Distance"]
-    N39["Build: Spell checker with edit distance"]
-    N40["Study: DP state design"]
-    N41["WEEK 9: TRIES & ADVANCED DS"]
-    N42["Implement: Trie, Segment Tree"]
-    N43["Solve: Word Search II, Autocomplete, Range Sum Query"]
-    N44["Build: Search autocomplete system"]
-    N45["Study: When to use advanced DS"]
-    N46["WEEK 10: SYSTEM DESIGN"]
-    N47["Study: URL Shortener, Twitter, Chat System"]
-    N48["Practice: Design discussions"]
-    N49["Build: Simple distributed cache"]
-    N50["Study: Trade-offs in system design"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N6 --> N7
-    N6 --> N8
-    N6 --> N9
-    N6 --> N10
-    N11 --> N12
-    N11 --> N13
-    N11 --> N14
-    N11 --> N15
-    N16 --> N17
-    N16 --> N18
-    N16 --> N19
-    N16 --> N20
-    N21 --> N22
-    N21 --> N23
-    N21 --> N24
-    N21 --> N25
-    N26 --> N27
-    N26 --> N28
-    N26 --> N29
-    N26 --> N30
-    N31 --> N32
-    N31 --> N33
-    N31 --> N34
-    N31 --> N35
-    N36 --> N37
-    N36 --> N38
-    N36 --> N39
-    N36 --> N40
-    N41 --> N42
-    N41 --> N43
-    N41 --> N44
-    N41 --> N45
-    N46 --> N47
-    N46 --> N48
-    N46 --> N49
-    N46 --> N50
-```
 
 ---
 

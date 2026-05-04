@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](09_Complexity_Intuition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Greedy_vs_DP_Decision.md)
+﻿> **Navigation**: [< Previous](09_Complexity_Intuition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Greedy_vs_DP_Decision.md)
 
 # 🎯 Interview Thinking — Solve Problems Under Pressure
 
@@ -37,20 +37,6 @@ The constraints are [CONSTRAINTS]. Is that correct?"
 → Buys you thinking time
 ```
 
-**Flow:**
-1. The constraints are [CONSTRAINTS]. Is that correct?' This catches misunderstandings early Shows the interviewer you're systematic
-2. Buys you thinking time
-
-```mermaid
-flowchart TD
-    N1["The constraints are [CONSTRAINTS]. Is that correct?'"]
-    N2["→ This catches misunderstandings early"]
-    N3["→ Shows the interviewer you're systematic"]
-    N4["→ Buys you thinking time"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 #### Stage 2: Working Through Examples
 ```
@@ -63,23 +49,6 @@ So the answer is [0, 1]."
 → This often reveals the algorithm naturally
 ```
 
-**Flow:**
-1. 'Let me trace through the example: Input: [2, 7, 11, 15], target = 9 So the answer is [0, 1].'
-2. Walk through the example MANUALLY
-3. This often reveals the algorithm naturally
-
-```mermaid
-flowchart TD
-    N1["'Let me trace through the example:"]
-    N2["Input: [2, 7, 11, 15], target = 9"]
-    N3["So the answer is [0, 1].'"]
-    N4["→ Walk through the example MANUALLY"]
-    N5["→ This often reveals the algorithm naturally"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 #### Stage 3: Proposing an Approach
 ```
@@ -96,20 +65,6 @@ Shall I code this up?"
 → Ask for confirmation before coding
 ```
 
-**Flow:**
-1. Brute force: Check all pairs
-2. O(n²)
-3. Better: Use a HashMap to store values we've see O(n)
-
-```mermaid
-flowchart LR
-    N1["1. Brute force: Check all pairs"]
-    N2["O(n²)"]
-    N3["2. Better: Use a HashMap to store values we've see"]
-    N4["O(n)"]
-    N1 --> N2
-    N3 --> N4
-```
 
 #### Stage 4: While Coding
 ```
@@ -122,16 +77,6 @@ flowchart LR
 → If you go quiet for > 30 seconds, say something
 ```
 
-**Flow:**
-1. 'I'm initializing a HashMap to store value
-2. index...'
-
-```mermaid
-flowchart LR
-    N1["'I'm initializing a HashMap to store value"]
-    N2["index...'"]
-    N1 --> N2
-```
 
 #### Stage 5: After Coding
 ```
@@ -143,21 +88,6 @@ i=1: num=7, complement=2, found in map at index 0 → return [0, 1] ✅"
 → Then mention edge cases you thought about
 ```
 
-**Flow:**
-1. i=0: num=2, complement=7, not in map
-2. add {2:0}
-3. i=1: num=7, complement=2, found in map at index 0
-4. return [0, 1] ✅'
-
-```mermaid
-flowchart LR
-    N1["i=0: num=2, complement=7, not in map"]
-    N2["add {2:0}"]
-    N3["i=1: num=7, complement=2, found in map at index 0"]
-    N4["return [0, 1] ✅'"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 
@@ -179,19 +109,6 @@ flowchart LR
 → Ask yourself: "What am I doing naturally, as a human?"
 ```
 
-**Flow:**
-1. Use a different, maybe larger example
-2. Trace manually — the pattern often emerges
-3. Ask yourself: 'What am I doing naturally, as a human?
-
-```mermaid
-flowchart TD
-    N1["→ Use a different, maybe larger example"]
-    N2["→ Trace manually — the pattern often emerges"]
-    N3["→ Ask yourself: 'What am I doing naturally, as a human?"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### Strategy 2: Think About What Data Structure Helps
 ```
@@ -203,30 +120,6 @@ I need min/max quickly → Heap
 I need range queries → Segment Tree"
 ```
 
-**Flow:**
-1. 'I need fast lookup HashMap I need sorted order TreeMap or sorted array I need LIFO Stack I need FIFO Queue I need min/max quickly Heap I need range queries Segment Tree'
-
-```mermaid
-flowchart TD
-    N1["'I need fast lookup"]
-    N2["HashMap"]
-    N3["I need sorted order"]
-    N4["TreeMap or sorted array"]
-    N5["I need LIFO"]
-    N6["Stack"]
-    N7["I need FIFO"]
-    N8["Queue"]
-    N9["I need min/max quickly"]
-    N10["Heap"]
-    N11["I need range queries"]
-    N12["Segment Tree'"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-```
 
 ### Strategy 3: Simplify the Problem
 ```
@@ -238,15 +131,6 @@ flowchart TD
 → Solve the simpler version → extend to the real problem
 ```
 
-**Flow:**
-1. Solve the simpler version extend to the real problem
-
-```mermaid
-flowchart LR
-    N1["Solve the simpler version"]
-    N2["extend to the real problem"]
-    N1 --> N2
-```
 
 ### Strategy 4: Ask the Interviewer (It's OK!)
 ```
@@ -373,19 +257,6 @@ private int findMostFrequent(Map<Integer, Integer> freq) { ... }
    boundary values, performance test with large input."
 ```
 
-**Flow:**
-1. For read-heavy
-2. ReadWriteLock. For write-heavy
-3. ConcurrentHashMap.'
-
-```mermaid
-flowchart LR
-    N1["For read-heavy"]
-    N2["ReadWriteLock. For write-heavy"]
-    N3["ConcurrentHashMap.'"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -422,32 +293,6 @@ MINDSET RESET (30 min before):
 □ Open IDE/scratch pad, have it ready
 ```
 
-**Flow:**
-1. LOGISTICS (Night Before):
-2. □ Test camera, mic, screen sharing
-3. □ Have backup plan (phone hotspot, alternate device)
-4. □ Prepare water, pen+paper, quiet room
-5. □ Set two alarms (phone + system) TECHNICAL WARM-UP (Morning of):
-6. □ Review your top 20 solved problems — patterns not cod
-
-```mermaid
-flowchart TD
-    N1["LOGISTICS (Night Before):"]
-    N2["□ Test camera, mic, screen sharing"]
-    N3["□ Have backup plan (phone hotspot, alternate device)"]
-    N4["□ Prepare water, pen+paper, quiet room"]
-    N5["□ Set two alarms (phone + system)"]
-    N6["TECHNICAL WARM-UP (Morning of):"]
-    N7["□ Review your top 20 solved problems — patterns not cod"]
-    N8["□ Do 1-2 easy warm-up problems (10 min max each)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### During the Interview
 ```
@@ -459,22 +304,6 @@ flowchart TD
 □ Remember: the interviewer WANTS you to succeed
 ```
 
-**Flow:**
-1. □ Take a deep breath when you first read the problem
-2. □ Read the problem TWICE before starting
-3. □ If you're stuck, talk about what you're considering
-4. □ Remember: the interviewer WANTS you to succeed
-
-```mermaid
-flowchart TD
-    N1["□ Take a deep breath when you first read the problem"]
-    N2["□ Read the problem TWICE before starting"]
-    N3["□ If you're stuck, talk about what you're considering"]
-    N4["□ Remember: the interviewer WANTS you to succeed"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### The Growth Mindset
 ```
@@ -523,32 +352,6 @@ After coding:
 □ Ask "Would you like me to optimize further?"
 ```
 
-**Flow:**
-1. Before coding:
-2. □ Restate the problem in my own words
-3. □ Clarify edge cases and constraints
-4. □ Propose brute force first
-5. □ Propose optimized approach
-6. □ Get interviewer's OK to start coding While coding:
-
-```mermaid
-flowchart TD
-    N1["Before coding:"]
-    N2["□ Restate the problem in my own words"]
-    N3["□ Clarify edge cases and constraints"]
-    N4["□ Propose brute force first"]
-    N5["□ Propose optimized approach"]
-    N6["□ Get interviewer's OK to start coding"]
-    N7["While coding:"]
-    N8["□ Handle edge cases first"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -609,19 +412,6 @@ DIFFICULTY DISTRIBUTION (typical onsite):
 
 ```
 
-**Flow:**
-1. • Two Sum variants (HashMap) / • Valid Parentheses (Sta • Design LRU Cache (HashMap + DLL) / • Serialize/Deseri • DP problems (Coin Change, LCS, Knapsack variants) / • Amazon: Arrays, Hash Maps, Trees, BFS/DFS, Design / Goo
-
-```mermaid
-flowchart TD
-    N1["• Two Sum variants (HashMap) / • Valid Parentheses (Sta"]
-    N2["• Design LRU Cache (HashMap + DLL) / • Serialize/Deseri"]
-    N3["• DP problems (Coin Change, LCS, Knapsack variants) / •"]
-    N4["Amazon: Arrays, Hash Maps, Trees, BFS/DFS, Design / Goo"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### Post-Interview Debrief Checklist
 ```
@@ -642,31 +432,6 @@ WEEKLY REVIEW:
 □ Update your "top 20" with problems similar to what you were asked
 ```
 
-**Flow:**
-1. WITHIN 1 HOUR OF THE INTERVIEW:
-2. □ Record your approach — what you said, what you coded
-3. □ Note where you struggled or got hints SAME DAY:
-4. □ Look up the problems on LeetCode — solve them cleanly
-5. □ Identify: 'What pattern should I have recognized fast □ Add any new patterns to your study list
-
-```mermaid
-flowchart TD
-    N1["WITHIN 1 HOUR OF THE INTERVIEW:"]
-    N2["□ Record your approach — what you said, what you coded"]
-    N3["□ Note where you struggled or got hints"]
-    N4["SAME DAY:"]
-    N5["□ Look up the problems on LeetCode — solve them cleanly"]
-    N6["□ Identify: 'What pattern should I have recognized fast"]
-    N7["□ Add any new patterns to your study list"]
-    N8["WEEKLY REVIEW:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

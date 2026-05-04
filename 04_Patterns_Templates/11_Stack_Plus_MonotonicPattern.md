@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](10_HashMap_Plus_Counting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_LinkedList_Plus_TwoPointers.md)
+﻿**Navigation**: [< Previous](10_HashMap_Plus_Counting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_LinkedList_Plus_TwoPointers.md)
 
 # Stack + Monotonic Pattern — Combined Pattern Guide
 
@@ -50,16 +50,6 @@ IF the problem says:
 THEN → Stack (often Monotonic)
 ```
 
-**Flow:**
-1. THEN
-2. Stack (often Monotonic)
-
-```mermaid
-flowchart LR
-    N1["THEN"]
-    N2["Stack (often Monotonic)"]
-    N1 --> N2
-```
 
 ### Monotonic Stack Types
 ```
@@ -72,37 +62,6 @@ Stack: [1, 3, 5, 7]            Stack: [9, 7, 4, 2]
 Push 4 → pop 7,5 → [1,3,4]    Push 6 → pop 2,4 → [9,7,6]
 ```
 
-**Flow:**
-1. Bottom
-2. Top: small
-3. big Bottom
-4. Top: big
-5. small
-6. Push 4
-7. pop 7,5
-8. [1,3,4] Push 6
-
-```mermaid
-flowchart TD
-    N1["Bottom"]
-    N2["Top: small"]
-    N3["big Bottom"]
-    N4["Top: big"]
-    N5["small"]
-    N6["Push 4"]
-    N7["pop 7,5"]
-    N8["[1,3,4] Push 6"]
-    N9["pop 2,4"]
-    N10["[9,7,6]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N6 --> N7
-    N7 --> N8
-    N8 --> N9
-    N9 --> N10
-```
 
 ---
 
@@ -178,47 +137,6 @@ Remaining: ans[2]=-1, ans[4]=-1, ans[5]=-1
 Result: [8, 8, -1, 5, -1, -1]
 ```
 
-**Flow:**
-1. i=0: arr[0]=4 stack=[]
-2. push 0 stack=[0] (4)
-3. i=1: arr[1]=2 2<4
-4. push 1 stack=[0,1] (4,2)
-5. i=2: arr[2]=8 8>2
-6. pop 1, ans[1]=8 stack=[0] (4)
-7. 8>4
-8. pop 0, ans[0]=8 stack=[]
-9. i=3: arr[3]=1 1<8
-10. push 3 stack=[2,3] (8,1)
-11. i=4: arr[4]=5 5>1
-12. pop 3, ans[3]=5 stack=[2] (8)
-
-```mermaid
-flowchart TD
-    N1["i=0: arr[0]=4 stack=[]"]
-    N2["push 0 stack=[0] (4)"]
-    N3["i=1: arr[1]=2 2&lt;4"]
-    N4["push 1 stack=[0,1] (4,2)"]
-    N5["i=2: arr[2]=8 8&gt;2"]
-    N6["pop 1, ans[1]=8 stack=[0] (4)"]
-    N7["8&gt;4"]
-    N8["pop 0, ans[0]=8 stack=[]"]
-    N9["i=3: arr[3]=1 1&lt;8"]
-    N10["push 3 stack=[2,3] (8,1)"]
-    N11["i=4: arr[4]=5 5&gt;1"]
-    N12["pop 3, ans[3]=5 stack=[2] (8)"]
-    N13["5&lt;8"]
-    N14["push 4 stack=[2,4] (8,5)"]
-    N15["i=5: arr[5]=3 3&lt;5"]
-    N16["push 5 stack=[2,4,5] (8,5,3)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-```
 
 ---
 
@@ -267,26 +185,6 @@ Time: O(n) | Space: O(n)
 Trick: Add sentinel 0 at end to auto-trigger final cleanup.
 ```
 
-**Flow:**
-1. i=1, h=1: h < stack top(2)
-2. pop 0
-3. i=4, h=2: h < stack top(6)
-4. pop 3
-5. h < stack top(5)
-6. pop 2
-
-```mermaid
-flowchart LR
-    N1["i=1, h=1: h &lt; stack top(2)"]
-    N2["pop 0"]
-    N3["i=4, h=2: h &lt; stack top(6)"]
-    N4["pop 3"]
-    N5["h &lt; stack top(5)"]
-    N6["pop 2"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
@@ -323,43 +221,6 @@ KEY: Stack stores elements waiting for their NGE.
      When a larger element arrives, it's the answer for all smaller ones on stack.
 ```
 
-**Flow:**
-1. i=1, num=3: 3 > stack top(1)
-2. pop 1, map[1]=3
-3. i=2, num=4: 4 > stack top(3)
-4. pop 3, map[3]=4
-5. i=3, num=2: 2 < stack top(4)
-6. push
-7. Remaining: 4
-8. -1, 2
-9. -1
-10. Answer for nums1: [4
-11. -1, 1
-
-```mermaid
-flowchart TD
-    N1["i=1, num=3: 3 &gt; stack top(1)"]
-    N2["pop 1, map[1]=3"]
-    N3["i=2, num=4: 4 &gt; stack top(3)"]
-    N4["pop 3, map[3]=4"]
-    N5["i=3, num=2: 2 &lt; stack top(4)"]
-    N6["push"]
-    N7["Remaining: 4"]
-    N8["-1, 2"]
-    N9["-1"]
-    N10["Answer for nums1: [4"]
-    N11["-1, 1"]
-    N12["3, 2"]
-    N13["-1] = [-1, 3, -1] ✅"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N8 --> N9
-    N10 --> N11
-    N11 --> N12
-    N12 --> N13
-```
 
 ---
 
@@ -390,40 +251,6 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 └────────────────────────────────┴─────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Edge Case Handling
-2. All decreasing [5,4,3,2,1] No element has NGE
-3. all -1
-4. All decreasing [5,4,3,2,1] No element has NGE
-5. all -1
-6. All same values [3,3,3] No strictly greater
-7. all -1
-8. All same values [3,3,3] No strictly greater
-9. all -1
-10. Single element [7] No NGE
-11. -1
-12. Single element [7] No NGE
-13. -1
-14. Circular array (NGE II) Loop 2×n, use index % n
-15. Histogram: all same height Area = height × n
-16. Histogram: sorted ascending Stack never pops until clea
-
-```mermaid
-flowchart TD
-    N1["Edge Case Handling"]
-    N2["All decreasing [5,4,3,2,1] No element has NGE → all -1"]
-    N3["All same values [3,3,3] No strictly greater → all -1"]
-    N4["Single element [7] No NGE → -1"]
-    N5["Circular array (NGE II) Loop 2×n, use index % n"]
-    N6["Histogram: all same height Area = height × n"]
-    N7["Histogram: sorted ascending Stack never pops until clea"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 

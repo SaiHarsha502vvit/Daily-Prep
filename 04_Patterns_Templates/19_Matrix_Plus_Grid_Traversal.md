@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](18_String_Plus_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_BitManipulation_Plus_Tricks.md)
+﻿**Navigation**: [< Previous](18_String_Plus_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_BitManipulation_Plus_Tricks.md)
 
 # Matrix + Grid Traversal — Combined Pattern Guide
 
@@ -50,16 +50,6 @@ IF the problem has:
 THEN → Matrix + BFS/DFS/Math
 ```
 
-**Flow:**
-1. THEN
-2. Matrix + BFS/DFS/Math
-
-```mermaid
-flowchart LR
-    N1["THEN"]
-    N2["Matrix + BFS/DFS/Math"]
-    N1 --> N2
-```
 
 ---
 
@@ -175,36 +165,6 @@ Each boundary shrinks inward after processing that side.
 Time: O(R×C) | Space: O(1) extra (output doesn't count)
 ```
 
-**Flow:**
-1. Round 1:
-2. top row: 1,2,3 (top++
-3. 1)
-4. ↓ right col: 6,9 (right--
-5. 1)
-6. ← bottom row: 8,7 (bottom--
-7. 1)
-8. ↑ left col: 4 (left++
-9. 1)
-10. Round 2:
-11. top row: 5 (top=1, left=1, right=1)
-
-```mermaid
-flowchart TD
-    N1["Round 1:"]
-    N2["top row: 1,2,3 (top++"]
-    N3["1)"]
-    N4["↓ right col: 6,9 (right--"]
-    N5["← bottom row: 8,7 (bottom--"]
-    N6["↑ left col: 4 (left++"]
-    N7["Round 2:"]
-    N8["top row: 5 (top=1, left=1, right=1)"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N3
-    N5 --> N3
-    N6 --> N3
-    N7 --> N8
-```
 
 ---
 
@@ -245,16 +205,6 @@ KEY: BFS guarantees shortest path in unweighted grids.
 Time: O(R×C) | Space: O(R×C)
 ```
 
-**Flow:**
-1. Neighbors: (2,2)✅
-2. TARGET REACHED!
-
-```mermaid
-flowchart LR
-    N1["Neighbors: (2,2)✅"]
-    N2["TARGET REACHED!"]
-    N1 --> N2
-```
 
 ---
 
@@ -289,33 +239,6 @@ COMMON MISTAKES:
    Mark first, then zero in a second pass!
 ```
 
-**Flow:**
-1. EDGE CASES:
-2. Edge Case Handling
-3. 1×1 matrix Spiral = [matrix[0][0]], path = 0 steps
-4. Single row [1,2,3] Spiral = [1,2,3], no up/down movemen
-5. Start/end blocked Return -1 (no path exists)
-6. All walls Return -1
-7. 8-directional movement Use 8-dir array instead of 4
-
-```mermaid
-flowchart TD
-    N1["EDGE CASES:"]
-    N2["Edge Case Handling"]
-    N3["1×1 matrix Spiral = [matrix[0][0]], path = 0 steps"]
-    N4["Single row [1,2,3] Spiral = [1,2,3], no up/down movemen"]
-    N5["Start/end blocked Return -1 (no path exists)"]
-    N6["All walls Return -1"]
-    N7["8-directional movement Use 8-dir array instead of 4"]
-    N8["COMMON MISTAKES:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

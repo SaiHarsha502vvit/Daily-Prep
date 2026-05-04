@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_009_Mar11_Tue.md)
+﻿> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_009_Mar11_Tue.md)
 
 # Day 008 - Monday, March 10, 2026
 
@@ -70,17 +70,6 @@ KEY DIFFERENCE FROM ARRAY:
   List:   10→20→30      ← scattered memory, sequential access O(n)
 ```
 
-**Flow:**
-1. data / 10 data / 20 data null / 30
-
-```mermaid
-flowchart LR
-    N1["data / 10"]
-    N2["data / 20"]
-    N3["data null / 30"]
-    N1 --> N2
-    N2 --> N3
-```
 
 #### HOW does it work internally?
 
@@ -96,33 +85,6 @@ Delete at head          O(1)      Just move head forward
 Delete by value         O(n)      Must find it first
 ```
 
-**Flow:**
-1. OPERATION TIME WHY?
-2. Access by index O(n) Must traverse from head
-3. Search O(n) Must traverse sequentially
-4. Insert at head O(1) Just update head pointer
-5. Insert at tail O(1)* *If you maintain tail pointer
-6. Insert at position k O(k) Traverse to k, then O(1) link
-7. Delete at head O(1) Just move head forward
-
-```mermaid
-flowchart TD
-    N1["OPERATION TIME WHY?"]
-    N2["Access by index O(n) Must traverse from head"]
-    N3["Search O(n) Must traverse sequentially"]
-    N4["Insert at head O(1) Just update head pointer"]
-    N5["Insert at tail O(1)* *If you maintain tail pointer"]
-    N6["Insert at position k O(k) Traverse to k, then O(1) link"]
-    N7["Delete at head O(1) Just move head forward"]
-    N8["Delete by value O(n) Must find it first"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### IMPLEMENT: Build a LinkedList from scratch
 
@@ -239,30 +201,6 @@ public class SinglyLinkedList {
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY MERGE SORT MATTERS:
-2. • GUARANTEED O(n log n) — no worst case degradation
-3. • STABLE sort (equal elements stay in original order)
-4. • Tim Sort (Java's Arrays.sort for objects) is based on • Teaches the Divide & Conquer paradigm perfectly vs Quick Sort: • Quick Sort: avg O(n log n), worst O(n²), in-place
-
-```mermaid
-flowchart TD
-    N1["WHY MERGE SORT MATTERS:"]
-    N2["• GUARANTEED O(n log n) — no worst case degradation"]
-    N3["• STABLE sort (equal elements stay in original order)"]
-    N4["• Tim Sort (Java's Arrays.sort for objects) is based on"]
-    N5["• Teaches the Divide & Conquer paradigm perfectly"]
-    N6["vs Quick Sort:"]
-    N7["• Quick Sort: avg O(n log n), worst O(n²), in-place"]
-    N8["• Merge Sort: always O(n log n), uses O(n) extra space"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### HOW it works — Visual
 
@@ -293,34 +231,6 @@ MERGE STEP DETAIL (merging [27,38] and [3,43]):
   Right remaining   → take 43 → result: [3, 27, 38, 43] ✓
 ```
 
-**Flow:**
-1. Compare 27 vs 3 take 3 result: [3]
-2. Compare 27 vs 43 take 27 result: [3, 27]
-3. Compare 38 vs 43 take 38 result: [3, 27, 38]
-
-```mermaid
-flowchart TD
-    N1["Compare 27 vs 3"]
-    N2["take 3"]
-    N3["result: [3]"]
-    N4["Compare 27 vs 43"]
-    N5["take 27"]
-    N6["result: [3, 27]"]
-    N7["Compare 38 vs 43"]
-    N8["take 38"]
-    N9["result: [3, 27, 38]"]
-    N10["Right remaining"]
-    N11["take 43"]
-    N12["result: [3, 27, 38, 43] ✓"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-    N7 --> N8
-    N8 --> N9
-    N10 --> N11
-    N11 --> N12
-```
 
 #### IMPLEMENT: Merge Sort
 
@@ -402,30 +312,6 @@ VISUAL:
   Remaining: l2's 4            → result: 1→1→2→3→4→4 ✓
 ```
 
-**Flow:**
-1. Compare 1 vs 1: take l1's 1 result: 1 Compare 2 vs 1: take l2's 1
-2. result: 1
-3. Compare 2 vs 3: take l1's 2 result: 1 Compare 4 vs 3: take l2's 3
-4. result: 1
-5. Compare 4 vs 4: take l1's 4 result: 1 Remaining: l2's 4
-6. result: 1
-
-```mermaid
-flowchart TD
-    N1["Compare 1 vs 1: take l1's 1"]
-    N2["result: 1"]
-    N3["Compare 2 vs 1: take l2's 1"]
-    N4["Compare 2 vs 3: take l1's 2"]
-    N5["Compare 4 vs 3: take l2's 3"]
-    N6["Compare 4 vs 4: take l1's 4"]
-    N7["Remaining: l2's 4"]
-    N1 --> N2
-    N3 --> N2
-    N4 --> N2
-    N5 --> N2
-    N6 --> N2
-    N7 --> N2
-```
 
 ```java
 public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
@@ -474,27 +360,6 @@ Notice: Order(3,"Mouse") comes before Order(3,"Case") — STABILITY matters!
 If sort is unstable, Warehouse A's order might get pushed behind B's.
 ```
 
-**Flow:**
-1. Order(1,'Laptop')
-2. Order(2,'Phone')
-3. Order(3,'Mouse')
-4. Order(3,'Case')
-5. Order(5,'Cable')
-6. Order(7,'Charger')
-
-```mermaid
-flowchart LR
-    N1["Order(1,'Laptop')"]
-    N2["Order(2,'Phone')"]
-    N3["Order(3,'Mouse')"]
-    N4["Order(3,'Case')"]
-    N5["Order(5,'Cable')"]
-    N6["Order(7,'Charger')"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-```
 
 **Think about:** Why does Java use Merge Sort (TimSort) for object sorting?
 Answer: Because stability preserves the relative order of equal elements — critical in business applications.
@@ -599,19 +464,6 @@ Step 4: prev=4→3→2→1, curr=5       (4 now points to 3)
 Step 5: prev=5→4→3→2→1, curr=null  (5 now points to 4) DONE!
 ```
 
-**Flow:**
-1. Step 2: prev=2 1, curr=3 1, curr=4
-2. 5 (3 now points to 2)
-
-```mermaid
-flowchart LR
-    N1["Step 2: prev=2"]
-    N2["1, curr=3"]
-    N3["1, curr=4"]
-    N4["5 (3 now points to 2)"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ```java
 // ITERATIVE: O(n) time, O(1) space
@@ -648,20 +500,6 @@ Step 1: slow=2, fast=3
 Step 2: slow=3, fast=5  → fast.next=null → STOP → slow=3 ✓
 ```
 
-**Flow:**
-1. Step 2: slow=3, fast=5 fast.next=null
-2. STOP slow=3 ✓
-
-```mermaid
-flowchart LR
-    N1["Step 2: slow=3, fast=5"]
-    N2["fast.next=null"]
-    N3["STOP"]
-    N4["slow=3 ✓"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```java
 public ListNode middleNode(ListNode head) {

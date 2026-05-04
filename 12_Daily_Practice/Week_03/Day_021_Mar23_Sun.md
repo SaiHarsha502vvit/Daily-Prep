@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_020_Mar22_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
+﻿> **Navigation**: [< Previous](Day_020_Mar22_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
 
 # Day 021 — Sunday, March 23, 2026
 
@@ -132,17 +132,6 @@ WHAT'S COMING:
   Building on trees (→ tries) and BFS (→ Dijkstra)!
 ```
 
-**Flow:**
-1. Building on trees ( tries) and BFS ( Dijkstra)!
-
-```mermaid
-flowchart LR
-    N1["Building on trees ("]
-    N2["tries) and BFS ("]
-    N3["Dijkstra)!"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -234,20 +223,6 @@ PROBLEMS SOLVED:
 NEXT MILESTONE: 50 problems by end of Week 4!
 ```
 
-**Flow:**
-1. Binary Search, Two Pointers, SQL WHERE
-2. Subqueries, Spring DI
-3. Week 2: 13 problems (Easy Medium)
-
-```mermaid
-flowchart LR
-    N1["Binary Search, Two Pointers, SQL WHERE"]
-    N2["Subqueries, Spring DI"]
-    N3["Week 2: 13 problems (Easy"]
-    N4["Medium)"]
-    N1 --> N2
-    N3 --> N4
-```
 
 
 ---

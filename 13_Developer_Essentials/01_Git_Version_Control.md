@@ -1,4 +1,4 @@
-# 🔀 Git & Version Control — Complete Guide
+﻿# 🔀 Git & Version Control — Complete Guide
 
 **Navigation**: [Index](00_INDEX.md) | [Next: Linux CLI >](02_Linux_CLI_Shell.md)
 
@@ -41,16 +41,7 @@ The name "Git" comes from British slang for "unpleasant person." Linus: *"I name
 
 ---
 
-
-
 🔬 **Section Challenge — WHO: The Origin Story**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 # WHAT: Core Mental Models
 
@@ -62,16 +53,7 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 💡 **Why snapshots?** Any version can be reconstructed instantly — no need to replay 500 deltas.
 
-
-
 🔬 **Section Challenge — Mental Model 1: Git is a SNAPSHOT Timeline**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## Mental Model 2: Three Areas
 
@@ -103,16 +85,7 @@ flowchart RL
 
 ---
 
-
-
 🔬 **Section Challenge — Mental Model 3: Commits are a Linked List**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 # HOW: Essential Commands (Progressive)
 
@@ -346,29 +319,6 @@ AFTER git rebase main (from feature branch):
 Result: Linear, clean history
 ```
 
-**Flow:**
-1. BEFORE rebase: main: A B C D feature: E F G
-2. AFTER git rebase main (from feature branch):
-3. feature: E' F' G' (E', F', G' are COPIES with new parent = D)
-4. Result: Linear, clean history
-
-```mermaid
-flowchart TD
-    N1["BEFORE rebase:"]
-    N2["main: A B C D"]
-    N3["feature: E F G"]
-    N4["AFTER git rebase main (from feature branch):"]
-    N5["feature: E' F' G'"]
-    N6["(E', F', G' are COPIES with new parent = D)"]
-    N7["Result: Linear, clean history"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
-
 ```bash
 git checkout feature/login
 git rebase main                 # Replay your commits on top of main
@@ -525,6 +475,7 @@ node_modules/
 # 🏋️ Practice Exercises
 
 ## Exercise 1: Basic Workflow
+
 ```
 1. Create a new repo
 2. Add 3 files, commit each separately
@@ -533,6 +484,7 @@ node_modules/
 ```
 
 ## Exercise 2: Branching
+
 ```
 1. Create feature/login branch
 2. Make 3 commits on it
@@ -541,18 +493,10 @@ node_modules/
 5. Delete the branch
 ```
 
-
-
 🔬 **Section Challenge — Exercise 2: Branching**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
 ## Exercise 3: Conflict Resolution
+
 ```
 1. Create two branches from main
 2. Edit the SAME line in both
@@ -560,17 +504,8 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 4. Try to merge the second → resolve conflict
 ```
 
-**Flow:**
-1. Try to merge the second resolve conflict
-
-```mermaid
-flowchart LR
-    N1["4. Try to merge the second"]
-    N2["resolve conflict"]
-    N1 --> N2
-```
-
 ## Exercise 4: Rebase
+
 ```
 1. Create a branch with 3 commits
 2. Make 2 commits on main
@@ -582,7 +517,5 @@ flowchart LR
 
 **Next Chapter**: [Linux CLI & Shell →](02_Linux_CLI_Shell.md)
 
-
 ---
 
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Linux_CLI_Shell.md)

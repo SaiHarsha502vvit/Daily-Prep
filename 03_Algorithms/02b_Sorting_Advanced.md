@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
 🧠 **Mental Model**: See [Complexity Intuition](../14_Mental_Models/09_Complexity_Intuition.md) — heap sort, counting sort, and non-comparison bounds
 
 ---
@@ -49,15 +49,6 @@ STEP 2: Extract max and heapify
         Done!            [1, 3, 4, 5, 10] ✓
 ```
 
-**Flow:**
-1. 10 3 5 3
-
-```mermaid
-flowchart LR
-    N1["10 3"]
-    N2["5 3"]
-    N1 --> N2
-```
 
 ## Code
 
@@ -1038,33 +1029,6 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. TIMSORT - USED BY JAVA, PYTHON, ANDROID
-2. Created by Tim Peters for Python in 2002
-3. KEY INSIGHT: Real-world data is often partially sorted!
-4. Examples of 'natural runs':
-5. • Log files (sorted by timestamp, new entries appended)
-6. • Database results (often sorted by ID)
-7. • User actions (recent activity lists)
-
-```mermaid
-flowchart TD
-    N1["TIMSORT - USED BY JAVA, PYTHON, ANDROID"]
-    N2["Created by Tim Peters for Python in 2002"]
-    N3["KEY INSIGHT: Real-world data is often partially sorted!"]
-    N4["Examples of 'natural runs':"]
-    N5["• Log files (sorted by timestamp, new entries appended)"]
-    N6["• Database results (often sorted by ID)"]
-    N7["• User actions (recent activity lists)"]
-    N8["ALGORITHM OVERVIEW:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## 🧠 External Sorting — When Data Doesn't Fit in Memory
 
@@ -1126,33 +1090,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. EXTERNAL MERGE SORT - SORTING 1TB OF DATA
-2. PROBLEM: Need to sort 1 TB of data, but only have 8 GB
-3. SOLUTION: External Merge Sort
-4. PHASE 1: CREATE SORTED RUNS
-5. Read 8 GB chunk from disk
-6. Sort in memory (QuickSort)
-7. Write sorted chunk to temp file
-
-```mermaid
-flowchart TD
-    N1["EXTERNAL MERGE SORT - SORTING 1TB OF DATA"]
-    N2["PROBLEM: Need to sort 1 TB of data, but only have 8 GB"]
-    N3["SOLUTION: External Merge Sort"]
-    N4["PHASE 1: CREATE SORTED RUNS"]
-    N5["1. Read 8 GB chunk from disk"]
-    N6["2. Sort in memory (QuickSort)"]
-    N7["3. Write sorted chunk to temp file"]
-    N8["4. Repeat until all data processed"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 🔬 **Section Challenge — 🧠 External Sorting — When Data Doesn't Fit in Memory**
 
@@ -1223,16 +1160,6 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Original Array: [##############################] / Spli
-2. Method Time Speedup / Arrays.sort() 950 ms 1x (baseline
-
-```mermaid
-flowchart TD
-    N1["Original Array: [##############################] / Spli"]
-    N2["Method Time Speedup / Arrays.sort() 950 ms 1x (baseline"]
-    N1 --> N2
-```
 
 🔬 **Section Challenge — 🔄 Parallel Sorting — Using Multiple CPU Cores**
 
@@ -1310,33 +1237,6 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. STABILITY - WHY IT MATTERS IN REAL APPLICATIONS
-2. EXAMPLE:
-3. Input: [(Alice, 25), (Bob, 30), (Charlie, 25)]
-4. Sort by age:
-5. STABLE: [(Alice, 25), (Charlie, 25), (Bob, 30)]
-6. Alice still before Charlie (original order preserved)
-7. UNSTABLE: [(Charlie, 25), (Alice, 25), (Bob, 30)]
-
-```mermaid
-flowchart TD
-    N1["STABILITY - WHY IT MATTERS IN REAL APPLICATIONS"]
-    N2["EXAMPLE:"]
-    N3["Input: [(Alice, 25), (Bob, 30), (Charlie, 25)]"]
-    N4["Sort by age:"]
-    N5["STABLE: [(Alice, 25), (Charlie, 25), (Bob, 30)]"]
-    N6["Alice still before Charlie (original order preserved)"]
-    N7["UNSTABLE: [(Charlie, 25), (Alice, 25), (Bob, 30)]"]
-    N8["Order of Alice and Charlie might change"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 🔬 **Section Challenge — 🔄 Sorting Stability — Deep Explanation**
 
@@ -1432,33 +1332,6 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COMPETITIVE PROGRAMMING SORTING TRICKS
-2. TRICK 1: COORDINATE COMPRESSION
-3. Solution: Map values to 0 to n-1
-4. int[] arr = {1000000000, 1, 50000};
-5. int[][] sorted = new int[n][2];
-6. sorted[i] = new int[]{arr[i], i};
-7. Arrays.sort(sorted, (a, b) -> a[0] - b[0]);
-
-```mermaid
-flowchart TD
-    N1["COMPETITIVE PROGRAMMING SORTING TRICKS"]
-    N2["TRICK 1: COORDINATE COMPRESSION"]
-    N3["Solution: Map values to 0 to n-1"]
-    N4["int[] arr = {1000000000, 1, 50000};"]
-    N5["int[][] sorted = new int[n][2];"]
-    N6["sorted[i] = new int[]{arr[i], i};"]
-    N7["Arrays.sort(sorted, (a, b) -&gt; a[0] - b[0]);"]
-    N8["int[] compressed = new int[n];"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

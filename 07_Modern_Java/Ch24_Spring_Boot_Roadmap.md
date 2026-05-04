@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch06_Functional_Programming.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch06_Functional_Programming.md)
 
 # 🗺️ SPRING BOOT MASTERY ROADMAP
 
@@ -193,22 +193,6 @@ Batch, HATEOAS, i18n, GraalVM
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LEARNING PHILOSOPHY
-2. EACH PHASE BUILDS ON THE PREVIOUS ONE
-3. Don't skip phases unless you're already proficient!
-4. ⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)
-
-```mermaid
-flowchart TD
-    N1["LEARNING PHILOSOPHY"]
-    N2["EACH PHASE BUILDS ON THE PREVIOUS ONE"]
-    N3["Don't skip phases unless you're already proficient!"]
-    N4["⏱️ ESTIMATED TOTAL TIME: 10-14 weeks (2-3 hours/day)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -252,33 +236,6 @@ _"You cannot learn Spring Boot without modern Java"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 📄 FUNCTIONAL PROGRAMMING IN JAVA
-2. File: Ch06_Functional_Programming.md
-3. TOPICS COVERED:
-4. C. Stream API filter, map, reduce, collect
-5. D. Method References Class::method shorthand
-6. E. Optional Null-safe value handling
-7. G. Java Records Immutable data carriers: record User(..
-
-```mermaid
-flowchart TD
-    N1["📄 FUNCTIONAL PROGRAMMING IN JAVA"]
-    N2["File: Ch06_Functional_Programming.md"]
-    N3["TOPICS COVERED:"]
-    N4["C. Stream API filter, map, reduce, collect"]
-    N5["D. Method References Class::method shorthand"]
-    N6["E. Optional Null-safe value handling"]
-    N7["G. Java Records Immutable data carriers: record User(.."]
-    N8["⏱️ TIME: 2-3 days"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -313,33 +270,6 @@ _"The invisible knowledge that tutorials never teach"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 📄 PART 0: THE HIDDEN FOUNDATIONS
-2. File: Ch26_Pre_Spring_Part1.md
-3. TOPICS COVERED:
-4. A. Java Reflection How Spring reads @Autowired, @Compon
-5. D. Servlet API What Spring Boot hides from you
-6. E. Jackson Serialization How JSON ↔ Java conversion wor
-7. F. Connection Pooling Why HikariCP matters
-
-```mermaid
-flowchart TD
-    N1["📄 PART 0: THE HIDDEN FOUNDATIONS"]
-    N2["File: Ch26_Pre_Spring_Part1.md"]
-    N3["TOPICS COVERED:"]
-    N4["A. Java Reflection How Spring reads @Autowired, @Compon"]
-    N5["D. Servlet API What Spring Boot hides from you"]
-    N6["E. Jackson Serialization How JSON ↔ Java conversion wor"]
-    N7["F. Connection Pooling Why HikariCP matters"]
-    N8["G. Classloading How Spring DevTools hot-reload works"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Why Part 0 Exists
 
@@ -375,33 +305,6 @@ _"You cannot understand Spring without understanding Java internals"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PART 1
-2. PART 2
-3. PART 3
-4. 📄 PART 1 📄 PART 2 📄 PART 3
-5. Java Spring Core AOP &
-6. Foundations (IoC & DI) Auto-Config
-7. File: Ch31_SB_Core_Part1.md
-8. File: Ch32_SB_Data_Part2.md
-9. File: Ch33_SB_Web_Part3.md
-
-```mermaid
-flowchart TD
-    N1["PART 1 → PART 2 → PART 3"]
-    N2["📄 PART 1 📄 PART 2 📄 PART 3"]
-    N3["Java Spring Core AOP &"]
-    N4["Foundations (IoC & DI) Auto-Config"]
-    N5["File: Ch31_SB_Core_Part1.md"]
-    N6["File: Ch32_SB_Data_Part2.md"]
-    N7["File: Ch33_SB_Web_Part3.md"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### Part 1: Java Foundations (PREREQUISITE)
 
@@ -486,33 +389,6 @@ _"Learn HTTP before building REST APIs"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PART 5
-2. PART 10
-3. PART 4 (Overview)
-4. 📄 PART 5 📄 PART 10 📄 PART 4
-5. Lombok & HTTP Deep Quick Overview
-6. DTOs Dive (Optional)
-7. File: Ch35_SB_Lombok_DTOs.md
-8. File: Ch42_SB_HTTP_Deep_Dive.md
-9. File: Ch34_SB_Security_Part4.md (Optional overvi
-
-```mermaid
-flowchart TD
-    N1["PART 5 → PART 10 → PART 4 (Overview)"]
-    N2["📄 PART 5 📄 PART 10 📄 PART 4"]
-    N3["Lombok & HTTP Deep Quick Overview"]
-    N4["DTOs Dive (Optional)"]
-    N5["File: Ch35_SB_Lombok_DTOs.md"]
-    N6["File: Ch42_SB_HTTP_Deep_Dive.md"]
-    N7["File: Ch34_SB_Security_Part4.md (Optional overvi"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### Part 5: Lombok & DTOs
 
@@ -583,33 +459,6 @@ _"Controller → Service → Repository - The layered architecture"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PART 7
-2. PART 6
-3. PART 8
-4. 📄 PART 7 📄 PART 6 📄 PART 8
-5. Controllers Service & JPA Deep
-6. & REST API Repository Dive
-7. File: Ch37_SB_Controllers_REST.md
-8. File: Ch36_SB_Service_Repository.md
-9. File: Ch40_SB_JPA_Deep_Dive.md
-
-```mermaid
-flowchart TD
-    N1["PART 7 → PART 6 → PART 8"]
-    N2["📄 PART 7 📄 PART 6 📄 PART 8"]
-    N3["Controllers Service & JPA Deep"]
-    N4["& REST API Repository Dive"]
-    N5["File: Ch37_SB_Controllers_REST.md"]
-    N6["File: Ch36_SB_Service_Repository.md"]
-    N7["File: Ch40_SB_JPA_Deep_Dive.md"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### Part 7: Controllers & REST API
 
@@ -684,29 +533,6 @@ _"Features that make your app production-ready"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PART 14
-2. PART 11
-3. 📄 PART 14 📄 PART 11
-4. Essential Authentication
-5. Topics & Security
-6. File: Ch44_SB_Caching_Scheduling.md
-7. File: Ch43_SB_Auth_Security.md
-
-```mermaid
-flowchart TD
-    N1["PART 14 → PART 11"]
-    N2["📄 PART 14 📄 PART 11"]
-    N3["Essential Authentication"]
-    N4["Topics & Security"]
-    N5["File: Ch44_SB_Caching_Scheduling.md"]
-    N6["File: Ch43_SB_Auth_Security.md"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ### Part 14: Essential Production Topics
 
@@ -764,33 +590,6 @@ _"From developer to architect"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PART 9
-2. PART 12
-3. PART 13
-4. 📄 PART 9 📄 PART 12 📄 PART 13
-5. Clean DSA in Industry
-6. Architecture Spring Boot Projects
-7. File: Ch41_SB_Architecture_Quality.md
-8. File: Ch50_SB_DSA_Applications.md
-9. File: Ch51_SB_Industry_Projects.md
-
-```mermaid
-flowchart TD
-    N1["PART 9 → PART 12 → PART 13"]
-    N2["📄 PART 9 📄 PART 12 📄 PART 13"]
-    N3["Clean DSA in Industry"]
-    N4["Architecture Spring Boot Projects"]
-    N5["File: Ch41_SB_Architecture_Quality.md"]
-    N6["File: Ch50_SB_DSA_Applications.md"]
-    N7["File: Ch51_SB_Industry_Projects.md"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### Part 9: Clean Architecture & Quality
 
@@ -869,35 +668,6 @@ _"From monolith to microservices, from local to cloud"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PART 15 / WebFlux / Reactive
-2. PART 16 / SOLID / Principles
-3. PART 17 / Database / Security
-4. PART 16 / SOLID / Principles
-5. PART 20 PART 21 / Microservices Cloud / Patterns Deploy
-6. PART 17 / Database / Security
-7. PART 18 / Distrib. / Tracing
-8. PART 17 / Database / Security
-9. PART 20 PART 21 / Microservices Cloud / Patterns Deploy
-10. PART 18 / Distrib. / Tracing
-11. PART 19 / Testing / Complete
-
-```mermaid
-flowchart TD
-    N1["PART 15 / WebFlux / Reactive"]
-    N2["PART 16 / SOLID / Principles"]
-    N3["PART 17 / Database / Security"]
-    N4["PART 18 / Distrib. / Tracing"]
-    N5["PART 19 / Testing / Complete"]
-    N6["PART 20 PART 21 / Microservices Cloud / Patterns Deploy"]
-    N1 --> N2
-    N2 --> N3
-    N2 --> N6
-    N3 --> N4
-    N3 --> N6
-    N4 --> N5
-    N4 --> N6
-```
 
 ### Part 15: WebFlux & Reactive Programming
 
@@ -1045,33 +815,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PART 22: ANNOTATIONS COMPLETE REFERENCE
-2. • Security: @PreAuthorize, @PostAuthorize, @Secured
-3. • Caching: @Cacheable, @CacheEvict, @CachePut
-4. • Async: @Async, @Scheduled
-5. • Testing: @SpringBootTest, @MockBean, @DataJpaTest
-6. • Lombok: @Data, @Builder, @Slf4j, @Value
-7. • Hibernate: @Formula, @Where, @BatchSize, @DynamicUpda
-
-```mermaid
-flowchart TD
-    N1["PART 22: ANNOTATIONS COMPLETE REFERENCE"]
-    N2["• Security: @PreAuthorize, @PostAuthorize, @Secured"]
-    N3["• Caching: @Cacheable, @CacheEvict, @CachePut"]
-    N4["• Async: @Async, @Scheduled"]
-    N5["• Testing: @SpringBootTest, @MockBean, @DataJpaTest"]
-    N6["• Lombok: @Data, @Builder, @Slf4j, @Value"]
-    N7["• Hibernate: @Formula, @Where, @BatchSize, @DynamicUpda"]
-    N8["⭐ USE AS QUICK REFERENCE - Bookmark this file!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1128,42 +871,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COMPLETE FILE LIST (IN LEARNING ORDER)
-2. PHASE 0: HIDDEN FOUNDATIONS (Read First!)
-3. PHASE 1: FOUNDATIONS
-4. 📄 Ch31_SB_Core_Part1.md
-5. Java Foundations
-6. 📄 Ch31_SB_Core_Part1.md
-7. Java Foundations
-8. 📄 Ch32_SB_Data_Part2.md
-9. IoC & DI
-10. 📄 Ch32_SB_Data_Part2.md
-11. IoC & DI
-12. 📄 Ch33_SB_Web_Part3.md
-13. AOP & Auto-Config
-14. 📄 Ch33_SB_Web_Part3.md
-15. AOP & Auto-Config
-16. PHASE 2: TOOLING & WEB BASICS
-
-```mermaid
-flowchart TD
-    N1["COMPLETE FILE LIST (IN LEARNING ORDER)"]
-    N2["PHASE 0: HIDDEN FOUNDATIONS (Read First!)"]
-    N3["PHASE 1: FOUNDATIONS"]
-    N4["📄 Ch31_SB_Core_Part1.md → Java Foundations"]
-    N5["📄 Ch32_SB_Data_Part2.md → IoC & DI"]
-    N6["📄 Ch33_SB_Web_Part3.md → AOP & Auto-Config"]
-    N7["PHASE 2: TOOLING & WEB BASICS"]
-    N8["📄 Ch35_SB_Lombok_DTOs.md → Lombok & DTOs"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

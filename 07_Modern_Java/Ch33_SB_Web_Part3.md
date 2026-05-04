@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch32_SB_Data_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch34_SB_Security_Part4.md)
+﻿**Navigation**: [< Previous](Ch32_SB_Data_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch34_SB_Security_Part4.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 3: AOP & Spring Boot Magic
 
@@ -49,22 +49,6 @@ _"Understanding how @Transactional and auto-configuration actually work"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why AOP & Auto-Configuration? / • @Transactional m
-2. HOW: How AOP Creates Magic? / • Proxy wrapping: Spring
-3. WHEN: When to Use AOP? / • Logging: Log all service met
-4. WHICH: Which AOP Concepts to Master? / ESSENTIAL: Proxy
-
-```mermaid
-flowchart TD
-    N1["WHY: Why AOP & Auto-Configuration? / • @Transactional m"]
-    N2["HOW: How AOP Creates Magic? / • Proxy wrapping: Spring "]
-    N3["WHEN: When to Use AOP? / • Logging: Log all service met"]
-    N4["WHICH: Which AOP Concepts to Master? / ESSENTIAL: Proxy"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -180,33 +164,6 @@ public Object logMethod(ProceedingJoinPoint pjp) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. AOP VOCABULARY
-2. Term Definition
-3. Advice Action taken (before, after, around a method)
-4. Pointcut Expression selecting join points (which method
-5. Target Object being advised (original bean)
-6. Proxy Wrapper object created by Spring (contains advice
-7. Weaving Process of applying aspects to targets
-
-```mermaid
-flowchart TD
-    N1["AOP VOCABULARY"]
-    N2["Term Definition"]
-    N3["Advice Action taken (before, after, around a method)"]
-    N4["Pointcut Expression selecting join points (which method"]
-    N5["Target Object being advised (original bean)"]
-    N6["Proxy Wrapper object created by Spring (contains advice"]
-    N7["Weaving Process of applying aspects to targets"]
-    N8["VISUAL METAPHOR:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -396,28 +353,6 @@ public class ComprehensiveAspect {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ADVICE EXECUTION ORDER / METHOD CALL: userService.findB
-2. @Before
-3. ACTUAL METHOD EXECUTION
-4. @AfterReturning @AfterThrowing
-5. @After
-6. @Around (after proceed)
-
-```mermaid
-flowchart TD
-    N1["ADVICE EXECUTION ORDER / METHOD CALL: userService.findB"]
-    N2["@Before"]
-    N3["ACTUAL METHOD EXECUTION"]
-    N4["@AfterReturning @AfterThrowing"]
-    N5["@After"]
-    N6["@Around (after proceed)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ---
 
@@ -627,18 +562,6 @@ Separation of Concerns. Controllers should only focus on mapping requests and de
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. findById(Long id) /
-2. Execute @Before advice /
-3. Execut
-4. REAL BEAN / UserService
-
-```mermaid
-flowchart TD
-    N2["findById(Long id) / → Execute @Before advice / → Execut"]
-    N3["REAL BEAN / UserService"]
-    N2 --> N3
-```
 
 ### Proxy Types: JDK Dynamic Proxy vs CGLIB
 
@@ -1197,48 +1120,6 @@ public class EmailService {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PROFILE-BASED CONFIGURATION
-2. application.yml
-3. Default (always loaded)
-4. application.yml
-5. Default (always loaded)
-6. application-dev.yml
-7. Development (local)
-8. application-dev.yml
-9. Development (local)
-10. application-test.yml
-11. Testing (CI/CD)
-12. application-test.yml
-13. Testing (CI/CD)
-14. application-staging.yml
-15. Staging (pre-prod)
-16. application-staging.yml
-17. Staging (pre-prod)
-18. application-prod.yml
-19. Production
-20. application-prod.yml
-21. Production
-22. LOADING ORDER (later overrides earlier):
-
-```mermaid
-flowchart TD
-    N1["PROFILE-BASED CONFIGURATION"]
-    N2["application.yml → Default (always loaded)"]
-    N3["application-dev.yml → Development (local)"]
-    N4["application-test.yml → Testing (CI/CD)"]
-    N5["application-staging.yml → Staging (pre-prod)"]
-    N6["application-prod.yml → Production"]
-    N7["LOADING ORDER (later overrides earlier):"]
-    N8["1. application.yml"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```yaml
 
@@ -1343,33 +1224,6 @@ CONFIGURATION:
 □ Understand externalized configuration
 ```
 
-**Flow:**
-1. AOP CONCEPTS:
-2. □ Can explain cross-cutting concerns
-3. □ Know all 5 advice types and when to use each
-4. □ Understand proxy types (JDK vs CGLIB)
-5. □ Know the self-invocation problem and solutions
-6. SPRING BOOT:
-7. □ Know what @SpringBootApplication does (3 annotations)
-
-```mermaid
-flowchart TD
-    N1["AOP CONCEPTS:"]
-    N2["□ Can explain cross-cutting concerns"]
-    N3["□ Know all 5 advice types and when to use each"]
-    N4["□ Understand proxy types (JDK vs CGLIB)"]
-    N5["□ Know the self-invocation problem and solutions"]
-    N6["SPRING BOOT:"]
-    N7["□ Know what @SpringBootApplication does (3 annotations)"]
-    N8["□ Understand auto-configuration conditions"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

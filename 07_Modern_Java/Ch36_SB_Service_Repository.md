@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch35_SB_Lombok_DTOs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch37_SB_Controllers_REST.md)
+﻿**Navigation**: [< Previous](Ch35_SB_Lombok_DTOs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch37_SB_Controllers_REST.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 6: Service Layer & Repository Patterns
 
@@ -49,22 +49,6 @@ _"Services orchestrate, Repositories persist"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Service Layer Pattern? / • Fat controller anti
-2. HOW: How to Structure Service Layer? / • Interface + Im
-3. WHEN: When to Use Service vs Repository? / SERVICE: Bus
-4. WHICH: Which Patterns to Use? / ESSENTIAL: @Service, @R
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Service Layer Pattern? / • Fat controller anti"]
-    N2["HOW: How to Structure Service Layer? / • Interface + Im"]
-    N3["WHEN: When to Use Service vs Repository? / SERVICE: Bus"]
-    N4["WHICH: Which Patterns to Use? / ESSENTIAL: @Service, @R"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -141,33 +125,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. THE SERVICE LAYER PURPOSE
-2. WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern):
-3. @RestController
-4. public class OrderController {
-5. @PostMapping('/orders')
-6. public Order createOrder(@RequestBody OrderRequest req)
-7. double total = 0;
-
-```mermaid
-flowchart TD
-    N1["THE SERVICE LAYER PURPOSE"]
-    N2["WITHOUT SERVICE LAYER (Fat Controller Anti-Pattern):"]
-    N3["@RestController"]
-    N4["public class OrderController {"]
-    N5["@PostMapping('/orders')"]
-    N6["public Order createOrder(@RequestBody OrderRequest req)"]
-    N7["double total = 0;"]
-    N8["Product p = productRepo.findById(item.productId);"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -732,28 +689,6 @@ Spring AOP Proxy limitations. `@Transactional` works by wrapping the class in a 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SPRING DATA JPA REPOSITORY HIERARCHY / Repository<T,
-2. CrudRepository<T, ID> ← Basic CRUD operations / •
-3. ListCrudRepository<T, ID> ← Returns List instead
-4. PagingAndSortingRepository<T, ID> ← + Pagination
-5. JpaRepository<T, ID> ← + JPA specific features /
-6. JpaSpecificationExecutor<T> ← + Dynamic queries /
-
-```mermaid
-flowchart TD
-    N1["SPRING DATA JPA REPOSITORY HIERARCHY / Repository&lt;T,"]
-    N2["CrudRepository&lt;T, ID&gt; ← Basic CRUD operations / •"]
-    N3["ListCrudRepository&lt;T, ID&gt; ← Returns List instead "]
-    N4["PagingAndSortingRepository&lt;T, ID&gt; ← + Pagination "]
-    N5["JpaRepository&lt;T, ID&gt; ← + JPA specific features / "]
-    N6["JpaSpecificationExecutor&lt;T&gt; ← + Dynamic queries /"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ### Basic Repository
 
@@ -1020,46 +955,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
 └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. QUERY METHOD KEYWORDS
-2. SUBJECT KEYWORDS (Start of method name):
-3. find...By
-4. Query returning result(s)
-5. find...By
-6. Query returning result(s)
-7. read...By
-8. Same as find
-9. read...By
-10. Same as find
-11. query...By
-12. Same as find
-13. query...By
-14. Same as find
-15. get...By
-16. Same as find
-17. get...By
-18. Same as find
-19. search...By
-20. Same as find
-
-```mermaid
-flowchart TD
-    N1["QUERY METHOD KEYWORDS"]
-    N2["SUBJECT KEYWORDS (Start of method name):"]
-    N3["find...By → Query returning result(s)"]
-    N4["read...By → Same as find"]
-    N5["query...By → Same as find"]
-    N6["get...By → Same as find"]
-    N7["search...By → Same as find"]
-    N8["stream...By → Returns Stream&lt;T&gt;"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1438,33 +1333,6 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. REPOSITORY BEST PRACTICES
-2. 1. USE OPTIONAL FOR SINGLE RESULTS
-3. ✅ Optional<User> findByEmail(String email);
-4. 2. PREFER DERIVED QUERIES FOR SIMPLE CASES
-5. ✅ List<User> findByActiveTrue(); // Clear, type-s
-6. 3. USE @Query FOR COMPLEX QUERIES
-7. ✅ @Query('SELECT u FROM User u WHERE u.active = true '
-
-```mermaid
-flowchart TD
-    N1["REPOSITORY BEST PRACTICES"]
-    N2["1. USE OPTIONAL FOR SINGLE RESULTS"]
-    N3["✅ Optional&lt;User&gt; findByEmail(String email);"]
-    N4["2. PREFER DERIVED QUERIES FOR SIMPLE CASES"]
-    N5["✅ List&lt;User&gt; findByActiveTrue(); // Clear, type-s"]
-    N6["3. USE @Query FOR COMPLEX QUERIES"]
-    N7["✅ @Query('SELECT u FROM User u WHERE u.active = true '"]
-    N8["'AND u.role IN :roles AND u.createdAt &gt; :date')"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Custom Repository Implementation
 
@@ -1559,33 +1427,6 @@ REPOSITORY LAYER:
 □ Consider custom repository for complex logic
 ```
 
-**Flow:**
-1. SERVICE LAYER:
-2. □ @Service + @RequiredArgsConstructor + @Slf4j
-3. □ All dependencies are final (immutable)
-4. □ Return DTOs, not entities
-5. □ Log important operations
-6. □ Throw meaningful exceptions (not generic Exception)
-7. □ Private helper methods for complex logic
-
-```mermaid
-flowchart TD
-    N1["SERVICE LAYER:"]
-    N2["□ @Service + @RequiredArgsConstructor + @Slf4j"]
-    N3["□ All dependencies are final (immutable)"]
-    N4["□ Return DTOs, not entities"]
-    N5["□ Log important operations"]
-    N6["□ Throw meaningful exceptions (not generic Exception)"]
-    N7["□ Private helper methods for complex logic"]
-    N8["REPOSITORY LAYER:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

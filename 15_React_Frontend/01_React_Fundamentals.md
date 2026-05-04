@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next: Hooks Deep Dive →](03_Hooks_Deep_Dive.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next: Hooks Deep Dive →](03_Hooks_Deep_Dive.md)
 🧠 **Mental Model**: See [Frontend Architecture Thinking](../14_Mental_Models/17_Frontend_Architecture_Thinking.md)
 
 [!IMPORTANT]
@@ -45,6 +45,7 @@ Everything you need to understand before writing production React — Components
 ```
 
 ### Where It's Used in Real World
+
 - **Facebook/Instagram**: The original use case — React powers the dynamic newsfeeds, stories, and messaging UIs for billions of users.
 - **Netflix**: Uses React for its TV interface and browsing experience, optimized for low-powered smart TV hardware.
 - **Airbnb**: Entire booking flow and search interface built with React, with server-side rendering via Next.js for SEO.
@@ -128,7 +129,6 @@ REASONING: React only does ONE thing — render UI from data.
 Everything else (routing, state, forms) is your choice.
 This is why React has such a large ecosystem (Next.js, Redux, etc.)
 ```
-
 
 ---
 
@@ -264,8 +264,6 @@ function App() {
 
 ---
 
-
-
 🔬 **Section Challenge — Part 3: Components — Function Components**
 
 **Challenge 1 (Reasoning):** React says "component render must be a pure function". What does PURE mean and what breaks if it's impure?
@@ -279,7 +277,6 @@ Pure = same inputs (props + state) always return same output (JSX). No side effe
 
 YES — by default, when a parent re-renders, ALL children re-render too, even if their props didn't change. React re-calls the child function. This is why `React.memo()` exists: it wraps a component to skip re-render if props are shallowly equal. Key insight: re-rendering ≠ DOM update. React re-renders (calls the function), then reconciles — only changed DOM nodes are actually updated. Unnecessary re-renders waste CPU time but don't always cause visible issues.
 </details>
-
 
 ## Part 4: Props — Data Flows Down
 
@@ -435,11 +432,29 @@ function Counter() {
 // 3. Use functional update when new state depends on old: prev => prev + 1
 // 4. useState with objects: ALWAYS spread + create new object
 
+// 🎓 MIT/KTH SYSTEMS DEEP DIVE: Stack vs. Heap Memory
+// Why does mutating an object directly (e.g., `form.name = 'Bob'`) fail to trigger a re-render?
+// JavaScript stores objects on the HEAP and their memory address (pointer) on the STACK.
+// React's Fiber engine uses `Object.is(oldState, newState)` to decide whether to re-render.
+// If you mutate the object, the Heap data changes, but the Stack pointer remains EXACTLY THE SAME.
+// Object.is(0x123, 0x123) === true, so React assumes nothing changed!
+// The spread operator (`...prev`) creates a shallow copy with a BRAND NEW Heap address,
+// which forces React to recognize the change and trigger a render.
+
+// ❌ THE BUG (Pointer Copy)
+// const oldForm = form; 
+// oldForm.name = 'Bob'; 
+// setForm(oldForm); // React does nothing!
+
+// ✅ THE SYSTEMS FIX (Brand New Memory Address)
 function Form() {
   const [form, setForm] = useState({ name: '', email: '' });
   
   const handleChange = (field, value) => {
-    setForm(prev => ({ ...prev, [field]: value })); // create NEW object
+    // The spread operator creates a new object in the Heap.
+    // WARNING: Spread is a SHALLOW copy. For deeply nested objects, 
+    // you must use structuredClone() or nested spreads.
+    setForm(prev => ({ ...prev, [field]: value })); 
   };
   
   return (
@@ -452,8 +467,6 @@ function Form() {
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — Part 5: State — useState Hook**
 
@@ -468,7 +481,6 @@ Both calls use the SAME `state` closure value captured at render time. Both comp
 
 `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
 </details>
-
 
 ## Part 6: Event Handling
 
@@ -514,10 +526,17 @@ function EventExamples() {
     console.log('Clicked!');
   };
   
+  // 🎓 MIT/KTH SYSTEMS DEEP DIVE: The C++ Browser Reality
+  // Why is `e.preventDefault()` necessary? 
+  // Browsers (1993) natively submit `<form>` data via HTTP `GET`/`POST` 
+  // which PHYSICALLY destroys the current HTML document and fetches a new one.
+  // JavaScript loses control of the Heap and single-page execution is annihilated.
+  // We use `e.preventDefault()` to violently hijack the 1993 C++ behavior.
+  
   // Form submit
   const handleSubmit = (e) => {
-    e.preventDefault();       // ALWAYS for forms!
-    // process form data
+    e.preventDefault();       // Hijack network destruction & retain JS control
+    // process form data safely in JS Memory
   };
   
   return (
@@ -536,9 +555,6 @@ function EventExamples() {
 ```
 
 ---
-
-
-
 
 ## Part 7: Conditional Rendering & Lists
 
@@ -596,9 +612,6 @@ function Dashboard({ user, notifications }) {
 ```
 
 ---
-
-
-
 
 ## Part 8: Virtual DOM & Reconciliation — How React Actually Updates the Screen
 
@@ -712,35 +725,6 @@ THE FIBER ARCHITECTURE (React 16+):
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. FUNCTION COMPONENT LIFECYCLE (via Hooks)
-2. Mount (component appears):
-3. Function called
-4. JSX returned
-5. DOM updated
-6. Update (state/props change):
-7. useEffect(() => { ... }, [dep]) runs if dep chang
-8. Unmount (component removed):
-9. Cleanup function from useEffect runs
-
-```mermaid
-flowchart TD
-    N1["FUNCTION COMPONENT LIFECYCLE (via Hooks)"]
-    N2["Mount (component appears):"]
-    N3["1. Function called → JSX returned → DOM updated"]
-    N4["Update (state/props change):"]
-    N5["2. useEffect(() =&gt; { ... }, [dep]) runs if dep chang"]
-    N6["Unmount (component removed):"]
-    N7["1. Cleanup function from useEffect runs"]
-    N8["useEffect(() =&gt; {"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -795,3 +779,55 @@ TIMELINE:
   User perception: INSTANT. 16ms = 60fps.
 ```
 
+---
+
+## 🎓 MIT/KTH SYSTEMS DEEP DIVE: The Asynchronous Batching Illusion
+
+A fundamental flaw in junior mental models is treating React `setState` like a synchronous `x = x + 1` assignment. State changes in React are **requests, not mutations**.
+
+### Trap 1: The Stolen State Update (State Batching)
+
+React groups multiple state updates into a single render pass to prevent micro-render thrashing. If you try to read state immediately after setting it, you will get the old value.
+
+### Trap 2: The Double-Invocation Trap (React 18 Strict Mode)
+
+In development, React 18 mounts, unmounts, and remounts your components instantly to shake out hidden bugs. If your API calls or logic aren't idempotent (meaning they can run twice safely), your application will break in Strict Mode.
+
+### 💻 System Challenge (VSCode / Real World): The Batching Disaster
+
+*VSCode Pro-Tip: Drop a `console.log("Rendered!")` in your component body. Watch how many times it logs during multiple sequential `setCount` calls. React batches them to only log once!*
+
+```jsx
+// ❌ THE BUG: User clicks the "+3" button, but the counter only goes up by 1!
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  const handleAddThree = () => {
+    setCount(count + 1); // React says: "Queue an update to turn 0 into 1"
+    setCount(count + 1); // React says: "Queue an update to turn 0 into 1"
+    setCount(count + 1); // React says: "Queue an update to turn 0 into 1"
+    // Result: Render Phase triggers -> `count` becomes 1. 2 clicks were LOST.
+  };
+
+  return <button onClick={handleAddThree}>+3 (Count: {count})</button>;
+}
+```
+
+```jsx
+// ✅ THE FIX: The Updater Function (Functional State Updates)
+function Counter() {
+  const [count, setCount] = useState(0);
+
+  const handleAddThree = () => {
+    // When next state depends on previous state, you MUST use a callback.
+    // React passes the "most recently queued" state to the callback.
+    setCount(prev => prev + 1); // turns 0 into 1
+    setCount(prev => prev + 1); // turns 1 into 2
+    setCount(prev => prev + 1); // turns 2 into 3
+  };
+
+  return <button onClick={handleAddThree}>+3 (Count: {count})</button>;
+}
+```
+
+---

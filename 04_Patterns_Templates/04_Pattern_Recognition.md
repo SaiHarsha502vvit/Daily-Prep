@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)
+﻿**Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)
 
 ---
 
@@ -170,33 +170,6 @@ Step-by-step:
 Maximum Subarray Sum = 6 (subarray [4, -1, 2, 1])
 ```
 
-**Flow:**
-1. Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-2. Step-by-step:
-3. i arr[i] currentMax = max(arr[i], curr+arr[i]) maxSum
-4. 0 -2 max(-2, 0+(-2)) = -2 -2
-5. 1 1 max(1, -2+1) = max(1, -1) = 1 1
-6. 2 -3 max(-3, 1+(-3)) = max(-3, -2) = -2 1
-7. 3 4 max(4, -2+4) = max(4, 2) = 4 4
-
-```mermaid
-flowchart TD
-    N1["Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]"]
-    N2["Step-by-step:"]
-    N3["i arr[i] currentMax = max(arr[i], curr+arr[i]) maxSum"]
-    N4["0 -2 max(-2, 0+(-2)) = -2 -2"]
-    N5["1 1 max(1, -2+1) = max(1, -1) = 1 1"]
-    N6["2 -3 max(-3, 1+(-3)) = max(-3, -2) = -2 1"]
-    N7["3 4 max(4, -2+4) = max(4, 2) = 4 4"]
-    N8["4 -1 max(-1, 4+(-1)) = max(-1, 3) = 3 4"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## Template
 
@@ -357,22 +330,6 @@ With Path Compression on find(3):
 Now find(3) = 0 directly!
 ```
 
-**Flow:**
-1. Initial: Each element is its own parent
-2. After union(0, 1):
-3. After union(2, 3):
-4. After union(0, 2): / With Path Compression on find(3):
-
-```mermaid
-flowchart TD
-    N1["Initial: Each element is its own parent"]
-    N2["After union(0, 1):"]
-    N3["After union(2, 3):"]
-    N4["After union(0, 2): / With Path Compression on find(3):"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ## Template
 
@@ -532,16 +489,6 @@ such that for every edge u→v, u comes before v
 Use Case: Task scheduling, course prerequisites, build systems
 ```
 
-**Flow:**
-1. such that for every edge u
-2. v, u comes before v
-
-```mermaid
-flowchart LR
-    N1["such that for every edge u"]
-    N2["v, u comes before v"]
-    N1 --> N2
-```
 
 ## Visual
 
@@ -559,19 +506,6 @@ Valid Topological Orders:
 Not valid: 3, 2, ... (2 must come before 3)
 ```
 
-**Flow:**
-1. Graph:
-2. Valid Topological Orders:
-3. Not valid: 3, 2, ... (2 must come before 3)
-
-```mermaid
-flowchart TD
-    N1["Graph:"]
-    N2["Valid Topological Orders:"]
-    N3["Not valid: 3, 2, ... (2 must come before 3)"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ## Template: Kahn's Algorithm (BFS)
 
@@ -1114,42 +1048,6 @@ public List<List<Integer>> subsets(int[] nums) {
 └────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DECISION TREE
-2. Is array SORTED?
-3. YES
-4. Binary Search / Two Pointers
-5. YES
-6. Binary Search / Two Pointers
-7. NO
-8. Continue...
-9. NO
-10. Continue...
-11. Need CONTIGUOUS subarray?
-12. YES
-13. Sliding Window / Prefix Sum
-14. YES
-15. Sliding Window / Prefix Sum
-16. Need to find PAIRS/COMPLEMENTS?
-
-```mermaid
-flowchart TD
-    N1["DECISION TREE"]
-    N2["Is array SORTED?"]
-    N3["YES → Binary Search / Two Pointers"]
-    N4["NO → Continue..."]
-    N5["Need CONTIGUOUS subarray?"]
-    N6["YES → Sliding Window / Prefix Sum"]
-    N7["Need to find PAIRS/COMPLEMENTS?"]
-    N8["YES → HashMap / Two Pointers (if sorted)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

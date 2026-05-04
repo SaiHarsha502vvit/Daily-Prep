@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_027_Mar29_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
+﻿> **Navigation**: [< Previous](Day_027_Mar29_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
 
 # DAY 028 — Sunday, March 30, 2026
 ## WEEK 04 REVIEW — Trie + Graphs + SQL Performance + Spring JPA
@@ -195,31 +195,6 @@ Sat: Spring Boot Security (Authentication, JWT)
 Sun: Week Review
 ```
 
-**Flow:**
-1. Mon: 1D DP (Climbing Stairs, House Robber, Coin Change)
-2. Tue: 2D DP (Unique Paths, Longest Common Subsequence)
-3. Wed: Knapsack DP (0/1, Unbounded, Coin Change II)
-4. Thu: Greedy Algorithms (Jump Game, Intervals)
-5. Fri: DP + Greedy Combo + SQL Advanced JOINs
-6. Sat: Spring Boot Security (Authentication, JWT)
-7. Sun: Week Review
-
-```mermaid
-flowchart TD
-    N1["Mon: 1D DP (Climbing Stairs, House Robber, Coin Change)"]
-    N2["Tue: 2D DP (Unique Paths, Longest Common Subsequence)"]
-    N3["Wed: Knapsack DP (0/1, Unbounded, Coin Change II)"]
-    N4["Thu: Greedy Algorithms (Jump Game, Intervals)"]
-    N5["Fri: DP + Greedy Combo + SQL Advanced JOINs"]
-    N6["Sat: Spring Boot Security (Authentication, JWT)"]
-    N7["Sun: Week Review"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 

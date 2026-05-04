@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Database Internals](../08_SQL/21_Database_Internals.md)
+﻿> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Database Internals](../08_SQL/21_Database_Internals.md)
 > 🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md)
 
 ---
@@ -28,16 +28,6 @@ Graph Database    │ Neo4j, Amazon     │ Nodes + edges  │ Social networks,
                   │                   │                │ fraud detection
 ```
 
-**Flow:**
-1. Key-Value Store Redis, DynamoDB key
-2. blob Caching, sessions,
-
-```mermaid
-flowchart LR
-    N1["Key-Value Store Redis, DynamoDB key"]
-    N2["blob Caching, sessions,"]
-    N1 --> N2
-```
 
 ---
 
@@ -66,33 +56,6 @@ flowchart LR
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CHOOSE SQL WHEN: CHOOSE NoSQL WHEN:
-2. ✅ Complex queries with JOINs ✅ Flexible/evolving schema
-3. ✅ ACID transactions required ✅ Massive write throughput
-4. ✅ Strong consistency needed ✅ Horizontal scaling needed
-5. ✅ Complex reporting/analytics ✅ Low latency at any scal
-6. EXAMPLES: EXAMPLES:
-7. • Banking, financial systems • Product catalogs (MongoD
-
-```mermaid
-flowchart TD
-    N1["CHOOSE SQL WHEN: CHOOSE NoSQL WHEN:"]
-    N2["✅ Complex queries with JOINs ✅ Flexible/evolving schema"]
-    N3["✅ ACID transactions required ✅ Massive write throughput"]
-    N4["✅ Strong consistency needed ✅ Horizontal scaling needed"]
-    N5["✅ Complex reporting/analytics ✅ Low latency at any scal"]
-    N6["EXAMPLES: EXAMPLES:"]
-    N7["• Banking, financial systems • Product catalogs (MongoD"]
-    N8["• Order management • Session storage (Redis)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -141,33 +104,6 @@ db.users.createIndex({ name: "text", bio: "text" })            // text search in
 db.events.createIndex({ createdAt: 1 }, { expireAfterSeconds: 86400 }) // TTL index
 ```
 
-**Flow:**
-1. name: 'John Doe',
-2. email: 'john@example.com',
-3. address: { // embedded document (denormalized)
-4. street: '123 Main St',
-5. city: 'Springfield',
-6. state: 'IL'
-7. orders: [ // embedded array
-
-```mermaid
-flowchart TD
-    N1["name: 'John Doe',"]
-    N2["email: 'john@example.com',"]
-    N3["address: { // embedded document (denormalized)"]
-    N4["street: '123 Main St',"]
-    N5["city: 'Springfield',"]
-    N6["state: 'IL'"]
-    N7["orders: [ // embedded array"]
-    N8["tags: ['premium', 'active']"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Data Modeling: Embed vs Reference
 
@@ -228,31 +164,6 @@ SET lock:order:456 "owner-id" NX EX 30  // acquire lock for 30s
 // NX = only if not exists (atomic)
 ```
 
-**Flow:**
-1. GET user:1:name //
-2. 'John'
-3. HGETALL user:1 //
-4. name: John, age: 30
-5. RPOP queue:orders //
-6. 'order123'
-7. SISMEMBER user:1:tags 'premium' //
-8. true
-
-```mermaid
-flowchart LR
-    N1["GET user:1:name //"]
-    N2["'John'"]
-    N3["HGETALL user:1 //"]
-    N4["name: John, age: 30"]
-    N5["RPOP queue:orders //"]
-    N6["'order123'"]
-    N7["SISMEMBER user:1:tags 'premium' //"]
-    N8["true"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
 
 ---
 

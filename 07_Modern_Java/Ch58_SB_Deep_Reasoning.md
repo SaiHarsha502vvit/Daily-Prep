@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch22_Java_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch23_Streams_Deep_Reasoning.md)
+﻿**Navigation**: [< Previous](Ch22_Java_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch23_Streams_Deep_Reasoning.md)
 
 # Chapter 32 — Spring Boot Deep Reasoning: The Questions That Freeze People
 
@@ -67,44 +67,6 @@ DISPATCHER SERVLET = The receptionist inside the building
 → Handles: URL mapping, argument binding, exception handling
 ```
 
-**Flow:**
-1. THE OFFICE BUILDING ANALOGY
-2. HTTP Request arrives at your Spring Boot application:
-3. SERVLET CONTAINER (Tomcat)
-4. [Request]
-5. FILTER 1
-6. FILTER 2
-7. FILTER 3
-8. [Request]
-9. FILTER 1
-10. FILTER 2
-11. FILTER 3
-12. DISPATCHER SERVLET
-13. HandlerMapping
-14. 'Which controller?'
-15. HandlerMapping
-16. 'Which controller?'
-17. HandlerAdapter
-18. 'Call the method'
-
-```mermaid
-flowchart TD
-    N1["THE OFFICE BUILDING ANALOGY"]
-    N2["HTTP Request arrives at your Spring Boot application:"]
-    N3["SERVLET CONTAINER (Tomcat)"]
-    N4["[Request] → FILTER 1 → FILTER 2 → FILTER 3 →"]
-    N5["DISPATCHER SERVLET"]
-    N6["HandlerMapping → 'Which controller?'"]
-    N7["HandlerAdapter → 'Call the method'"]
-    N8["ViewResolver → 'Render the response'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // FILTER: Runs at Servlet container level, wraps the entire request
@@ -158,31 +120,6 @@ Client → Tomcat → Filter1 → Filter2 → Filter3
   → Filter3 → Filter2 → Filter1 → Tomcat → Client
 ```
 
-**Flow:**
-1. Client
-2. Tomcat
-3. Filter1
-4. Filter2
-5. Filter3
-6. Filter2
-7. Filter1
-
-```mermaid
-flowchart TD
-    N1["Client"]
-    N2["Tomcat"]
-    N3["Filter1"]
-    N4["Filter2"]
-    N5["Filter3"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N4
-    N4 --> N3
-    N3 --> N2
-    N2 --> N1
-```
 
 ### When To Use What:
 | Use Case | Use |
@@ -237,34 +174,6 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. @SpringBootApplication = THREE annotations in one:
-2. @Configuration
-3. Makes main class a source of bean definitions
-4. @EnableAutoConfiguration
-5. 'Scan classpath and auto-configure beans based on wha
-6. on the classpath'
-7. Found spring-boot-starter-web?
-8. Configure Tomcat,
-
-```mermaid
-flowchart TD
-    N1["@SpringBootApplication = THREE annotations in one:"]
-    N2["@Configuration"]
-    N3["→ Makes main class a source of bean definitions"]
-    N4["@EnableAutoConfiguration"]
-    N5["→ 'Scan classpath and auto-configure beans based on wha"]
-    N6["on the classpath'"]
-    N7["→ Found spring-boot-starter-web? → Configure Tomcat,"]
-    N8["DispatcherServlet, Jackson, error handling..."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // These two are IDENTICAL:
@@ -333,33 +242,6 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE SMART HOME ANALOGY
-2. 2. Smart home detects it (classpath scanning)
-3. 3. It auto-configures: connects to HVAC, sets default t
-4. 4. You CAN override: set your own temperature (properti
-5. HOW IT ACTUALLY WORKS:
-6. spring-boot-autoconfigure.jar contains:
-7. META-INF/spring/org.springframework.boot.autoconfigure.
-
-```mermaid
-flowchart TD
-    N1["THE SMART HOME ANALOGY"]
-    N2["2. Smart home detects it (classpath scanning)"]
-    N3["3. It auto-configures: connects to HVAC, sets default t"]
-    N4["4. You CAN override: set your own temperature (properti"]
-    N5["HOW IT ACTUALLY WORKS:"]
-    N6["spring-boot-autoconfigure.jar contains:"]
-    N7["META-INF/spring/org.springframework.boot.autoconfigure."]
-    N8["AutoConfiguration.imports (list of auto-config classes)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // Simplified auto-config class:
@@ -432,36 +314,6 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE BODYGUARD ANALOGY
-2. Spring creates a PROXY (bodyguard) around your bean.
-3. All calls from OUTSIDE go through the proxy.
-4. The proxy adds behavior (transaction, security, caching
-5. BUT! If your bean calls ITS OWN method:
-6. [Your Bean]
-7. this.internalMethod()
-8. [Your Bean]
-9. this.internalMethod()
-10. Bypasses the proxy! No transaction started!
-
-```mermaid
-flowchart TD
-    N1["THE BODYGUARD ANALOGY"]
-    N2["Spring creates a PROXY (bodyguard) around your bean."]
-    N3["All calls from OUTSIDE go through the proxy."]
-    N4["The proxy adds behavior (transaction, security, caching"]
-    N5["BUT! If your bean calls ITS OWN method:"]
-    N6["[Your Bean] → this.internalMethod()"]
-    N7["→ Bypasses the proxy! No transaction started!"]
-    N8["It's like the bodyguard stands at the door."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 @Service
@@ -547,33 +399,6 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE EMPLOYEE ONBOARDING ANALOGY
-2. 1. INSTANTIATION: Hire the employee (new MyBean())
-3. 3. AWARE INTERFACES: Tell them company name, their ID
-4. (BeanNameAware, ApplicationContextAware)
-5. 4. @PostConstruct: Employee orientation (run custom ini
-6. 5. InitializingBean.afterPropertiesSet(): Second init h
-7. 6. Custom init-method: Third init hook
-
-```mermaid
-flowchart TD
-    N1["THE EMPLOYEE ONBOARDING ANALOGY"]
-    N2["1. INSTANTIATION: Hire the employee (new MyBean())"]
-    N3["3. AWARE INTERFACES: Tell them company name, their ID"]
-    N4["(BeanNameAware, ApplicationContextAware)"]
-    N5["4. @PostConstruct: Employee orientation (run custom ini"]
-    N6["5. InitializingBean.afterPropertiesSet(): Second init h"]
-    N7["6. Custom init-method: Third init hook"]
-    N8["7. BEAN IS READY — now serving requests"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 @Service
@@ -630,33 +455,6 @@ public class CacheService {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COOKING AT HOME vs RESTAURANT — The Inversion
-2. WITHOUT IoC (cooking at home):
-3. YOU control everything:
-4. You decide what to buy
-5. You buy ingredients (create dependencies)
-6. You cook (main logic)
-7. You clean up
-
-```mermaid
-flowchart TD
-    N1["COOKING AT HOME vs RESTAURANT — The Inversion"]
-    N2["WITHOUT IoC (cooking at home):"]
-    N3["YOU control everything:"]
-    N4["→ You decide what to buy"]
-    N5["→ You buy ingredients (create dependencies)"]
-    N6["→ You cook (main logic)"]
-    N7["→ You clean up"]
-    N8["YOU have the control."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // WITHOUT IoC: You create everything (tightly coupled)
@@ -726,33 +524,6 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THREE INJECTION STYLES:
-2. FIELD INJECTION (the lazy way):
-3. @Autowired private UserRepository repo;
-4. ❌ Can't make fields final (no immutability)
-5. ❌ Hidden dependencies (not visible in constructor)
-6. ❌ Can't use without Spring (can't new + inject in tests
-7. ❌ Allows too many dependencies (no visible bloat signal
-
-```mermaid
-flowchart TD
-    N1["THREE INJECTION STYLES:"]
-    N2["FIELD INJECTION (the lazy way):"]
-    N3["@Autowired private UserRepository repo;"]
-    N4["❌ Can't make fields final (no immutability)"]
-    N5["❌ Hidden dependencies (not visible in constructor)"]
-    N6["❌ Can't use without Spring (can't new + inject in tests"]
-    N7["❌ Allows too many dependencies (no visible bloat signal"]
-    N8["SETTER INJECTION (for optional deps):"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // ❌ Field injection — tests need reflection or Spring context
@@ -819,33 +590,6 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE COFFEE MACHINE ANALOGY
-2. Singleton scope: One coffee machine in the office. Ever
-3. shares it. Created once at startup.
-4. it's requested.
-5. THE PROBLEM:
-6. Singleton OrderService is created ONCE at startup.
-7. During creation, Spring injects Prototype ShoppingCart.
-
-```mermaid
-flowchart TD
-    N1["THE COFFEE MACHINE ANALOGY"]
-    N2["Singleton scope: One coffee machine in the office. Ever"]
-    N3["shares it. Created once at startup."]
-    N4["it's requested."]
-    N5["THE PROBLEM:"]
-    N6["Singleton OrderService is created ONCE at startup."]
-    N7["During creation, Spring injects Prototype ShoppingCart."]
-    N8["Result: ALL users share the SAME cart!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // ❌ BROKEN: Prototype injected into Singleton
@@ -924,40 +668,6 @@ public class ShoppingCart { ... }
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. @Controller = View Returns (traditional MVC web apps)
-2. Return value is a VIEW NAME (JSP, Thymeleaf template)
-3. DispatcherServlet passes to ViewResolver to render HT
-4. THE DEEPER UNDERSTANDING:
-5. @Controller + return 'users'
-6. ViewResolver looks for
-7. @Controller + return 'users'
-8. ViewResolver looks for
-9. templates/users.html
-10. renders HTML
-11. templates/users.html
-12. renders HTML
-13. @RestController + return userList
-14. HttpMessageConverte
-
-```mermaid
-flowchart TD
-    N1["@Controller = View Returns (traditional MVC web apps)"]
-    N2["→ Return value is a VIEW NAME (JSP, Thymeleaf template)"]
-    N3["→ DispatcherServlet passes to ViewResolver to render HT"]
-    N4["THE DEEPER UNDERSTANDING:"]
-    N5["@Controller + return 'users' → ViewResolver looks for"]
-    N6["templates/users.html → renders HTML"]
-    N7["@RestController + return userList → HttpMessageConverte"]
-    N8["(Jackson) serializes to JSON → {'users': [...]}"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -998,36 +708,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Spring Security = A CHAIN of Servlet Filters
-2. Request
-3. SecurityFilterChain:
-4. Request
-5. SecurityFilterChain:
-6. 1. SecurityContextPersistenceFilter
-7. Load existing security context (from session/token)
-8. 2. UsernamePasswordAuthenticationFilter
-9. If login request: extract credentials, authenticate
-10. Delegates to AuthenticationManager
-
-```mermaid
-flowchart TD
-    N1["Spring Security = A CHAIN of Servlet Filters"]
-    N2["Request → SecurityFilterChain:"]
-    N3["1. SecurityContextPersistenceFilter"]
-    N4["→ Load existing security context (from session/token)"]
-    N5["2. UsernamePasswordAuthenticationFilter"]
-    N6["→ If login request: extract credentials, authenticate"]
-    N7["→ Delegates to AuthenticationManager"]
-    N8["→ Which uses AuthenticationProvider"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1123,33 +803,6 @@ Proxy Bypass. Spring implements `@Async` (and `@Transactional`) by wrapping the 
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Same proxy problem as @Transactional (Section 4):
-2. @Async tells Spring: 'Run this in a different thread.'
-3. But Spring needs to create a PROXY to intercept the cal
-4. and redirect it to a thread pool.
-5. @EnableAsync tells Spring: 'Create those proxies.'
-6. Without it, @Async is just an annotation — no behavior.
-7. SAME GOTCHAS:
-
-```mermaid
-flowchart TD
-    N1["Same proxy problem as @Transactional (Section 4):"]
-    N2["@Async tells Spring: 'Run this in a different thread.'"]
-    N3["But Spring needs to create a PROXY to intercept the cal"]
-    N4["and redirect it to a thread pool."]
-    N5["@EnableAsync tells Spring: 'Create those proxies.'"]
-    N6["Without it, @Async is just an annotation — no behavior."]
-    N7["SAME GOTCHAS:"]
-    N8["1. Self-call bypasses proxy → runs synchronously"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 @Configuration

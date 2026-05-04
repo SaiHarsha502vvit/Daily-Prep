@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
+﻿**Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
 
 # 🌍 Real-World Problem Origins: Where DSA Concepts Were Born
 
@@ -157,20 +157,6 @@ FORMALIZATION:
 - Used in every search engine
 ```
 
-**Flow:**
-1. 2. 'W' comes after 'M'
-2. go to second half
-3. 4. 'W' comes after 'T'
-4. go to second half
-
-```mermaid
-flowchart LR
-    N1["2. 'W' comes after 'M'"]
-    N2["go to second half"]
-    N3["4. 'W' comes after 'T'"]
-    N1 --> N2
-    N3 --> N2
-```
 
 ### 🖥️ LeetCode Application
 
@@ -262,26 +248,6 @@ A: [1, 3, 5]    B: [2, 4, 6]    Result: [1, 2]
 Time: O(n + m) - Much better!
 ```
 
-**Flow:**
-1. 1 < 2
-2. take 1, move i
-3. 3 > 2
-4. take 2, move j
-5. 3 < 4
-6. take 3, move i
-
-```mermaid
-flowchart LR
-    N1["1 &lt; 2"]
-    N2["take 1, move i"]
-    N3["3 &gt; 2"]
-    N4["take 2, move j"]
-    N5["3 &lt; 4"]
-    N6["take 3, move i"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ### 🖥️ LeetCode Application
 
@@ -368,33 +334,6 @@ IMPACT:
 - THIS IS LITERALLY HOW INTERNET WORKS
 ```
 
-**Flow:**
-1. SETTING: ARPANET (Precursor to Internet)
-2. PROBLEM:
-3. - Computer A sending data to Computer B
-4. - Network is unreliable
-5. - Some packets get lost
-6. - Need to resend lost packets
-7. NAIVE APPROACH:
-
-```mermaid
-flowchart TD
-    N1["SETTING: ARPANET (Precursor to Internet)"]
-    N2["PROBLEM:"]
-    N3["- Computer A sending data to Computer B"]
-    N4["- Network is unreliable"]
-    N5["- Some packets get lost"]
-    N6["- Need to resend lost packets"]
-    N7["NAIVE APPROACH:"]
-    N8["Send packet 1 → Wait for ACK → Send packet 2 → Wait for"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### 🖥️ LeetCode Application
 
@@ -493,19 +432,6 @@ WHY IT WORKS:
 - MUCH better than O(n²) bubble sort!
 ```
 
-**Flow:**
-1. SETTING: EDVAC Computer Project / PROBLEM: / - Need to
-2. [3, 8] [1, 5] [2, 9] [4, 7] ← Merge (sorted)
-3. WHY IT WORKS: / - Each level: n comparisons / - Number
-
-```mermaid
-flowchart TD
-    N1["SETTING: EDVAC Computer Project / PROBLEM: / - Need to"]
-    N2["[3, 8] [1, 5] [2, 9] [4, 7] ← Merge (sorted)"]
-    N3["WHY IT WORKS: / - Each level: n comparisons / - Number"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### 💡 The Real Incident
 
@@ -565,33 +491,6 @@ WHY IT CAN BE SLOW:
 - Solution: Random pivot selection
 ```
 
-**Flow:**
-1. SETTING: Machine translation project, Moscow
-2. PROBLEM:
-3. - Sorting Russian words for dictionary
-4. - Merge sort needs extra memory
-5. - Can we sort 'in place'?
-6. THE INSIGHT:
-7. 'Pick a word. Put all words < it on left, > it on
-
-```mermaid
-flowchart TD
-    N1["SETTING: Machine translation project, Moscow"]
-    N2["PROBLEM:"]
-    N3["- Sorting Russian words for dictionary"]
-    N4["- Merge sort needs extra memory"]
-    N5["- Can we sort 'in place'?"]
-    N6["THE INSIGHT:"]
-    N7["'Pick a word. Put all words &lt; it on left, &gt; it on"]
-    N8["QUICK SORT CONCEPT:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### 💡 The Real Incident
 
@@ -661,38 +560,6 @@ Bellman chose the name to hide his research from politicians!
 "Dynamic" sounded impressive but vague.
 ```
 
-**Flow:**
-1. fib(5)
-2. fib(4)
-3. fib(3)
-4. fib(2)
-5. return 1
-6. fib(1)
-7. return 1
-8. fib(2)
-9. CACHED! return 1
-
-```mermaid
-flowchart TD
-    N1["fib(5)"]
-    N2["fib(4)"]
-    N3["fib(3)"]
-    N4["fib(2)"]
-    N5["return 1"]
-    N6["fib(1)"]
-    N7["CACHED! return 1"]
-    N8["CACHED!"]
-    N9["Time: O(2ⁿ)"]
-    N10["O(n) !!!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N6 --> N5
-    N4 --> N7
-    N3 --> N8
-    N9 --> N10
-```
 
 ### 🖥️ LeetCode Application
 
@@ -876,34 +743,6 @@ THIS IS HOW:
 - Web scrapers work
 ```
 
-**Flow:**
-1. Page A
-2. follows link
-3. Page B
-4. follows link
-5. Page C
-6. no new links
-7. backtrack
-
-```mermaid
-flowchart TD
-    N1["Page A"]
-    N2["follows link"]
-    N3["Page B"]
-    N4["Page C"]
-    N5["no new links"]
-    N6["backtrack"]
-    N7["try another link"]
-    N8["Page D"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N2
-    N2 --> N4
-    N4 --> N5
-    N5 --> N6
-    N3 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -960,21 +799,6 @@ Starting from A:
 Result: Shortest paths from A to all nodes
 ```
 
-**Flow:**
-1. A ----
-2. B ----
-3. C ----
-4. E -----
-
-```mermaid
-flowchart LR
-    N1["A ----"]
-    N2["B ----"]
-    N3["C ----"]
-    N4["E -----"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### 💡 The Real Incident
 
@@ -1111,19 +935,6 @@ Chaining: Simpler, uses extra memory
 Open Addressing: Cache-friendly, more complex
 ```
 
-**Flow:**
-1. Index 5: alice
-2. bob
-3. null
-
-```mermaid
-flowchart LR
-    N1["Index 5: alice"]
-    N2["bob"]
-    N3["null"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### 💡 The Real Incident
 
@@ -1266,24 +1077,6 @@ THIS IS NOW:
 - In your browser!
 ```
 
-**Flow:**
-1. HashMap: key
-2. Node in LinkedList
-3. LinkedList: Most Recent ←
-4. ... ←
-5. Least Recent
-
-```mermaid
-flowchart LR
-    N1["HashMap: key"]
-    N2["Node in LinkedList"]
-    N3["LinkedList: Most Recent ←"]
-    N4["... ←"]
-    N5["Least Recent"]
-    N1 --> N2
-    N3 --> N4
-    N4 --> N5
-```
 
 ---
 
@@ -1323,21 +1116,6 @@ THIS IS:
 - How JSON parsers work
 ```
 
-**Flow:**
-1. - See '('
-2. expect ')' later
-3. - See '{'
-4. expect '}' later
-
-```mermaid
-flowchart LR
-    N1["- See '('"]
-    N2["expect ')' later"]
-    N3["- See '{'"]
-    N4["expect '}' later"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 

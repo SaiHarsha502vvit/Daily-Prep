@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](10_Graphs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Backtracking.md)
+﻿**Navigation**: [< Previous](10_Graphs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Backtracking.md)
 
 **Problems 11/14** | [Prev](10_Graphs.md) | [Index](../00_MASTER_INDEX.md) | [Next](12_Backtracking.md)
 
@@ -71,33 +71,6 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DP FUNDAMENTALS
-2. KEY PATTERNS:
-3. 1. 1D DP: Single array/sequence
-4. 2. 2D DP: Two sequences or grid
-5. 3. Interval DP: Subarray/substring problems
-6. 4. State Machine DP: Multiple states
-7. 5. Knapsack: Selection problems
-
-```mermaid
-flowchart TD
-    N1["DP FUNDAMENTALS"]
-    N2["KEY PATTERNS:"]
-    N3["1. 1D DP: Single array/sequence"]
-    N4["2. 2D DP: Two sequences or grid"]
-    N5["3. Interval DP: Subarray/substring problems"]
-    N6["4. State Machine DP: Multiple states"]
-    N7["5. Knapsack: Selection problems"]
-    N8["APPROACH:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -420,31 +393,6 @@ int coinChangeBottomUp(int[] coins, int amount) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CLIMBING STAIRS - Ways to reach top (1 or 2 steps)
-2. n = 4 stairs
-3. Ways:
-4. 1+1+1+1 4 ← Goal
-5. 0 ← Start
-6. dp[i] = dp[i-1] + dp[i-2] (Fibonacci!)
-7. Output: 5 ways
-
-```mermaid
-flowchart TD
-    N1["CLIMBING STAIRS - Ways to reach top (1 or 2 steps)"]
-    N2["n = 4 stairs"]
-    N3["Ways:"]
-    N4["1+1+1+1 4 ← Goal"]
-    N5["0 ← Start"]
-    N6["dp[i] = dp[i-1] + dp[i-2] (Fibonacci!)"]
-    N7["Output: 5 ways"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 **Solution:**
 
@@ -488,31 +436,6 @@ public int climbStairs(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. HOUSE ROBBER - Max money without robbing adjacent house
-2. nums = [2, 7, 9, 3, 1]
-3. Houses: [2] [7] [9] [3] [1]
-4. Rob house 0, 2, 4: 2 + 9 + 1 = 12 ✓
-5. Rob house 1, 3: 7 + 3 = 10
-6. dp[i] = max(dp[i-1], dp[i-2] + nums[i])
-7. 'Skip current' or 'Rob current + skip previous'
-
-```mermaid
-flowchart TD
-    N1["HOUSE ROBBER - Max money without robbing adjacent house"]
-    N2["nums = [2, 7, 9, 3, 1]"]
-    N3["Houses: [2] [7] [9] [3] [1]"]
-    N4["Rob house 0, 2, 4: 2 + 9 + 1 = 12 ✓"]
-    N5["Rob house 1, 3: 7 + 3 = 10"]
-    N6["dp[i] = max(dp[i-1], dp[i-2] + nums[i])"]
-    N7["'Skip current' or 'Rob current + skip previous'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 **Solution:**
 
@@ -557,28 +480,6 @@ public int rob(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. HOUSE ROBBER II - Houses in circle
-2. nums = [2, 3, 2]
-3. 2 ○ 3 First and last are adjacent!
-4. Can't rob both first and last house.
-5. Solution: max(rob[0..n-2], rob[1..n-1])
-6. Output: 3 (rob house 1 only)
-
-```mermaid
-flowchart TD
-    N1["HOUSE ROBBER II - Houses in circle"]
-    N2["nums = [2, 3, 2]"]
-    N3["2 ○ 3 First and last are adjacent!"]
-    N4["Can't rob both first and last house."]
-    N5["Solution: max(rob[0..n-2], rob[1..n-1])"]
-    N6["Output: 3 (rob house 1 only)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -631,33 +532,6 @@ private int robRange(int[] nums, int start, int end) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MAXIMUM SUBARRAY - Kadane's Algorithm
-2. nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]
-3. At each position, decide:
-4. - Start new subarray here?
-5. - Or extend previous subarray?
-6. dp[i] = max(nums[i], dp[i-1] + nums[i])
-7. Index: 0 1 2 3 4 5 6 7 8
-
-```mermaid
-flowchart TD
-    N1["MAXIMUM SUBARRAY - Kadane's Algorithm"]
-    N2["nums = [-2, 1, -3, 4, -1, 2, 1, -5, 4]"]
-    N3["At each position, decide:"]
-    N4["- Start new subarray here?"]
-    N5["- Or extend previous subarray?"]
-    N6["dp[i] = max(nums[i], dp[i-1] + nums[i])"]
-    N7["Index: 0 1 2 3 4 5 6 7 8"]
-    N8["nums: -2 1 -3 4 -1 2 1 -5 4"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -706,33 +580,6 @@ For each coin, check: `dp[i] = min(dp[i], dp[i - coin] + 1)`.
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COIN CHANGE - Minimum coins to make amount
-2. coins = [1, 2, 5], amount = 11
-3. dp[i] = min coins to make amount i
-4. Amount: 0 1 2 3 4 5 6 7 8 9 10 11
-5. For amount 11:
-6. - Use coin 5: dp[11-5] + 1 = dp[6] + 1 = 3
-7. - Use coin 2: dp[11-2] + 1 = dp[9] + 1 = 4
-
-```mermaid
-flowchart TD
-    N1["COIN CHANGE - Minimum coins to make amount"]
-    N2["coins = [1, 2, 5], amount = 11"]
-    N3["dp[i] = min coins to make amount i"]
-    N4["Amount: 0 1 2 3 4 5 6 7 8 9 10 11"]
-    N5["For amount 11:"]
-    N6["- Use coin 5: dp[11-5] + 1 = dp[6] + 1 = 3"]
-    N7["- Use coin 2: dp[11-2] + 1 = dp[9] + 1 = 4"]
-    N8["- Use coin 1: dp[11-1] + 1 = dp[10] + 1 = 3"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -802,19 +649,6 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. UNIQUE PATHS - Count paths from top-left to bottom-righ
-2. m = 3, n = 7 (3 rows, 7 cols)
-3. Output: 28 paths
-
-```mermaid
-flowchart TD
-    N1["UNIQUE PATHS - Count paths from top-left to bottom-righ"]
-    N2["m = 3, n = 7 (3 rows, 7 cols)"]
-    N3["Output: 28 paths"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution:**
 
@@ -859,25 +693,6 @@ public int uniquePaths(int m, int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. UNIQUE PATHS II - Grid with obstacles
-2. grid = [[0,0,0],
-3. [0,1,0], 1 = obstacle
-4. 1 X 1 X = blocked
-5. Output: 2 paths
-
-```mermaid
-flowchart TD
-    N1["UNIQUE PATHS II - Grid with obstacles"]
-    N2["grid = [[0,0,0],"]
-    N3["[0,1,0], 1 = obstacle"]
-    N4["1 X 1 X = blocked"]
-    N5["Output: 2 paths"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -930,16 +745,6 @@ public int uniquePathsWithObstacles(int[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 1 3 1 / 1 5 1 / 4 2 1
-2. 1 4 5 / 2 7 6 / 6 8 7
-
-```mermaid
-flowchart LR
-    N1["1 3 1 / 1 5 1 / 4 2 1"]
-    N2["1 4 5 / 2 7 6 / 6 8 7"]
-    N1 --> N2
-```
 
 **Solution:**
 
@@ -984,25 +789,6 @@ public int minPathSum(int[][] grid) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LONGEST COMMON SUBSEQUENCE
-2. text1 = 'abcde', text2 = 'ace'
-3. a 0 1 1 1 If match: dp[i][j] = dp[i-1][j-1] + 1
-4. b 0 1 1 1 Else: dp[i][j] = max(dp[i-1][j],
-5. LCS = 'ace', length = 3
-
-```mermaid
-flowchart TD
-    N1["LONGEST COMMON SUBSEQUENCE"]
-    N2["text1 = 'abcde', text2 = 'ace'"]
-    N3["a 0 1 1 1 If match: dp[i][j] = dp[i-1][j-1] + 1"]
-    N4["b 0 1 1 1 Else: dp[i][j] = max(dp[i-1][j],"]
-    N5["LCS = 'ace', length = 3"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -1056,33 +842,6 @@ If characters match: `dp[i][j] = dp[i-1][j-1]` (no operation needed).
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. EDIT DISTANCE - Min operations to convert word1 to word
-2. word1 = 'horse', word2 = 'ros'
-3. Operations: Insert, Delete, Replace
-4. h 1 1 2 3 If match: dp[i][j] = dp[i-1][j-1]
-5. o 2 2 1 2 Else: 1 + min(dp[i-1][j], // delete
-6. r 3 2 2 2 dp[i][j-1], // insert
-7. s 4 3 3 2 dp[i-1][j-1]) // replace
-
-```mermaid
-flowchart TD
-    N1["EDIT DISTANCE - Min operations to convert word1 to word"]
-    N2["word1 = 'horse', word2 = 'ros'"]
-    N3["Operations: Insert, Delete, Replace"]
-    N4["h 1 1 2 3 If match: dp[i][j] = dp[i-1][j-1]"]
-    N5["o 2 2 1 2 Else: 1 + min(dp[i-1][j], // delete"]
-    N6["r 3 2 2 2 dp[i][j-1], // insert"]
-    N7["s 4 3 3 2 dp[i-1][j-1]) // replace"]
-    N8["Output: 3 (horse → rorse → rose → ros)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -1159,33 +918,6 @@ State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + 
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 0/1 KNAPSACK - Max value with weight limit
-2. Item 0: weight=1, value=6
-3. Item 1: weight=2, value=10
-4. Item 2: weight=3, value=12
-5. Take items 1 and 2: weight=5, value=22 ✓
-6. Cap: 0 1 2 3 4 5
-7. Item 0: 0 6 6 6 6 6
-
-```mermaid
-flowchart TD
-    N1["0/1 KNAPSACK - Max value with weight limit"]
-    N2["Item 0: weight=1, value=6"]
-    N3["Item 1: weight=2, value=10"]
-    N4["Item 2: weight=3, value=12"]
-    N5["Take items 1 and 2: weight=5, value=22 ✓"]
-    N6["Cap: 0 1 2 3 4 5"]
-    N7["Item 0: 0 6 6 6 6 6"]
-    N8["Item 1: 0 6 10 16 16 16"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -1227,31 +959,6 @@ public int knapsack(int[] weights, int[] values, int capacity) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PARTITION EQUAL SUBSET SUM
-2. nums = [1, 5, 11, 5]
-3. Total = 22, Target = 11
-4. Can we find subset with sum = 11?
-5. Yes! [1, 5, 5] and [11]
-6. This is 0/1 Knapsack with target = sum/2
-7. dp[i] = true if sum i is achievable
-
-```mermaid
-flowchart TD
-    N1["PARTITION EQUAL SUBSET SUM"]
-    N2["nums = [1, 5, 11, 5]"]
-    N3["Total = 22, Target = 11"]
-    N4["Can we find subset with sum = 11?"]
-    N5["Yes! [1, 5, 5] and [11]"]
-    N6["This is 0/1 Knapsack with target = sum/2"]
-    N7["dp[i] = true if sum i is achievable"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 **Solution:**
 
@@ -1304,33 +1011,6 @@ public boolean canPartition(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. TARGET SUM - Assign + or - to reach target
-2. nums = [1, 1, 1, 1, 1], target = 3
-3. Ways to get 3:
-4. Output: 5 ways
-5. Let P = sum of positives, N = sum of negatives
-6. P - N = target, P + N = sum
-7. P = (target + sum) / 2
-
-```mermaid
-flowchart TD
-    N1["TARGET SUM - Assign + or - to reach target"]
-    N2["nums = [1, 1, 1, 1, 1], target = 3"]
-    N3["Ways to get 3:"]
-    N4["Output: 5 ways"]
-    N5["Let P = sum of positives, N = sum of negatives"]
-    N6["P - N = target, P + N = sum"]
-    N7["P = (target + sum) / 2"]
-    N8["→ Find subsets with sum P"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -1386,33 +1066,6 @@ public int findTargetSumWays(int[] nums, int target) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LONGEST INCREASING SUBSEQUENCE
-2. nums = [10, 9, 2, 5, 3, 7, 101, 18]
-3. LIS: [2, 3, 7, 101] or [2, 5, 7, 101]
-4. Length = 4
-5. O(n²) DP: dp[i] = max length ending at i
-6. Index: 0 1 2 3 4 5 6 7
-7. nums: 10 9 2 5 3 7 101 18
-
-```mermaid
-flowchart TD
-    N1["LONGEST INCREASING SUBSEQUENCE"]
-    N2["nums = [10, 9, 2, 5, 3, 7, 101, 18]"]
-    N3["LIS: [2, 3, 7, 101] or [2, 5, 7, 101]"]
-    N4["Length = 4"]
-    N5["O(n²) DP: dp[i] = max length ending at i"]
-    N6["Index: 0 1 2 3 4 5 6 7"]
-    N7["nums: 10 9 2 5 3 7 101 18"]
-    N8["O(n log n): Binary search on patience sorting"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution (O(n log n)):**
 
@@ -1469,28 +1122,6 @@ private int binarySearch(List<Integer> tails, int target) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WORD BREAK - Can string be segmented into dictionary wo
-2. s = 'leetcode', wordDict = ['leet', 'code']
-3. 'leetcode' = 'leet' + 'code' ✓
-4. dp[i] = true if s[0..i) can be segmented
-5. Index: 0 1 2 3 4 5 6 7 8
-6. 'leet'↗ 'code'↗
-
-```mermaid
-flowchart TD
-    N1["WORD BREAK - Can string be segmented into dictionary wo"]
-    N2["s = 'leetcode', wordDict = ['leet', 'code']"]
-    N3["'leetcode' = 'leet' + 'code' ✓"]
-    N4["dp[i] = true if s[0..i) can be segmented"]
-    N5["Index: 0 1 2 3 4 5 6 7 8"]
-    N6["'leet'↗ 'code'↗"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -1541,25 +1172,6 @@ public boolean wordBreak(String s, List<String> wordDict) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LONGEST PALINDROMIC SUBSEQUENCE
-2. s = 'bbbab'
-3. LPS = 'bbbb', length = 4
-4. dp[i][j] = LPS length in s[i..j]
-5. Else: dp[i][j] = max(dp[i+1][j], dp[i][j-1])
-
-```mermaid
-flowchart TD
-    N1["LONGEST PALINDROMIC SUBSEQUENCE"]
-    N2["s = 'bbbab'"]
-    N3["LPS = 'bbbb', length = 4"]
-    N4["dp[i][j] = LPS length in s[i..j]"]
-    N5["Else: dp[i][j] = max(dp[i+1][j], dp[i][j-1])"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -1624,22 +1236,6 @@ public int longestPalindromeSubseq(String s) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. REST --(buy)--> HOLD
-2. REST
-3. COOLDOWN
-4. HOLD
-5. COOLDOWN
-
-```mermaid
-flowchart TD
-    N1["REST"]
-    N2["HOLD"]
-    N3["COOLDOWN"]
-    N1 -->|"buy"| N2
-    N1 --> N3
-    N2 --> N3
-```
 
 **Solution:**
 

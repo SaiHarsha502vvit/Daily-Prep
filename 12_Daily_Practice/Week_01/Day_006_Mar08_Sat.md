@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_005_Mar07_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_007_Mar09_Sun.md)
+﻿> **Navigation**: [< Previous](Day_005_Mar07_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_007_Mar09_Sun.md)
 
 # Day 006 - Saturday, March 8, 2026
 
@@ -38,33 +38,6 @@ AFTER Spring Boot:
   → "Hello World" in 5 MINUTES
 ```
 
-**Flow:**
-1. BEFORE Spring Boot (traditional Java web dev):
-2. Write 200+ lines of XML configuration
-3. Set up a Tomcat server manually
-4. Add 30+ library dependencies with exact versions
-5. Configure database connection pools
-6. Write boilerplate code for every endpoint
-7. 2-3 DAYS just to get 'Hello World' running
-
-```mermaid
-flowchart TD
-    N1["BEFORE Spring Boot (traditional Java web dev):"]
-    N2["1. Write 200+ lines of XML configuration"]
-    N3["2. Set up a Tomcat server manually"]
-    N4["3. Add 30+ library dependencies with exact versions"]
-    N5["4. Configure database connection pools"]
-    N6["5. Write boilerplate code for every endpoint"]
-    N7["→ 2-3 DAYS just to get 'Hello World' running"]
-    N8["AFTER Spring Boot:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### WHO uses Spring Boot?
 
@@ -109,35 +82,6 @@ WHY layers?
   - Maintainability (change database without touching controller)
 ```
 
-**Flow:**
-1. Spring Boot Architecture:
-2. YOUR APPLICATION
-3. Controller Service Repository
-4. (REST API)
-5. (Business)
-6. (Database)
-7. SPRING BOOT AUTO-CONFIG
-8. (Tomcat, Jackson, DataSource, Security)
-9. SPRING FRAMEWORK
-
-```mermaid
-flowchart TD
-    N1["Spring Boot Architecture:"]
-    N2["YOUR APPLICATION"]
-    N3["Controller Service Repository"]
-    N4["(REST API) → (Business) → (Database)"]
-    N5["SPRING BOOT AUTO-CONFIG"]
-    N6["(Tomcat, Jackson, DataSource, Security)"]
-    N7["SPRING FRAMEWORK"]
-    N8["(IoC Container, DI, AOP, MVC)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Part 2: Core Concepts (30 min)
 
@@ -172,16 +116,6 @@ IoC CONTAINER:
     ORDER (injection) = @Autowired, constructor injection
 ```
 
-**Flow:**
-1. // Switch MySQL
-2. PostgreSQL by changing ONE config line
-
-```mermaid
-flowchart LR
-    N1["// Switch MySQL"]
-    N2["PostgreSQL by changing ONE config line"]
-    N1 --> N2
-```
 
 #### Annotations you must know
 
@@ -252,33 +186,6 @@ STEP 2: Project structure generated:
         templates/                  ← HTML templates
 ```
 
-**Flow:**
-1. STEP 1: Go to https://start.spring.io
-2. - Project: Maven
-3. - Language: Java
-4. - Spring Boot: 3.x
-5. - Dependencies: Spring Web, Spring Data JPA, H2 Databas
-6. STEP 2: Project structure generated:
-7. src/
-
-```mermaid
-flowchart TD
-    N1["STEP 1: Go to https://start.spring.io"]
-    N2["- Project: Maven"]
-    N3["- Language: Java"]
-    N4["- Spring Boot: 3.x"]
-    N5["- Dependencies: Spring Web, Spring Data JPA, H2 Databas"]
-    N6["STEP 2: Project structure generated:"]
-    N7["src/"]
-    N8["main/"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### Complete Hello World API
 
@@ -379,33 +286,6 @@ GET http://localhost:8080/api/products/1
   → Returns: {"id": 1, "name": "Laptop", "price": 999.99}
 ```
 
-**Flow:**
-1. START: mvn spring-boot:run
-2. Tomcat starts on port 8080
-3. GET http://localhost:8080/api/products
-4. Returns: []
-5. POST http://localhost:8080/api/products
-6. Body: {'name': 'Laptop', 'price': 999.99}
-7. Returns: {'id': 1, 'name': 'Laptop', 'price': 999.99}
-
-```mermaid
-flowchart TD
-    N1["START: mvn spring-boot:run"]
-    N2["→ Tomcat starts on port 8080"]
-    N3["GET http://localhost:8080/api/products"]
-    N4["→ Returns: []"]
-    N5["POST http://localhost:8080/api/products"]
-    N6["Body: {'name': 'Laptop', 'price': 999.99}"]
-    N7["→ Returns: {'id': 1, 'name': 'Laptop', 'price': 999.99}"]
-    N8["→ Returns: [{'id': 1, 'name': 'Laptop', 'price': 999.99"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

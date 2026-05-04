@@ -486,14 +486,6 @@ void backtrack(List<List<String>> result, int[] queens, int row, int n,
 
 🔬 **Section Challenge — 2. The Master Constraint Table — With 50+ Algorithms**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
-## 3. Deep Dive: Each Complexity Class
 
 ### O(n) Algorithms — The Art of Single Pass
 
@@ -594,14 +586,6 @@ INPUT IS A MATRIX (n × m):
 
 🔬 **Section Challenge — 4. Constraint Combinations — Multi-Variable Analysis**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
-## 5. SQL Constraint Analysis
 
 ### How to Think About SQL Performance
 
@@ -674,14 +658,6 @@ Step 4: Can we pre-compute?
 
 🔬 **Section Challenge — 5. SQL Constraint Analysis**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
-## 6. System Design Constraint Analysis
 
 ### The Numbers Every Engineer Should Know
 
@@ -784,14 +760,6 @@ CONSTRAINT SEEN → COMPONENT CHOSEN
 
 🔬 **Section Challenge — 6. System Design Constraint Analysis**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
-## 7. Practice Problems — Decode the Constraints
 
 ### Exercise: Read constraints and predict the algorithm
 

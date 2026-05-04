@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](03_System_Design.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_SD_Interview_Problems.md)
+﻿**Navigation**: [< Previous](03_System_Design.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_SD_Interview_Problems.md)
 
 # 🔄 Understanding User Flows & System Flows
 
@@ -216,34 +216,6 @@ SIMPLE USER FLOW EXAMPLE - LOGIN:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Visit / Website
-2. Login Page
-3. Enter / Credentials
-4. Login Page
-5. Invalid / Credentials
-6. Enter / Credentials
-7. Submit
-8. Success! / Dashboard
-9. Invalid / Credentials
-10. Show Error / Try Again
-
-```mermaid
-flowchart TD
-    N1["Visit / Website"]
-    N2["Login Page"]
-    N3["Enter / Credentials"]
-    N4["Submit"]
-    N5["Invalid / Credentials"]
-    N6["Success! / Dashboard"]
-    N7["Show Error / Try Again"]
-    N1 --> N2
-    N2 --> N3
-    N2 --> N5
-    N3 --> N4
-    N4 --> N6
-    N5 --> N7
-```
 
 ## Flow Notation Symbols
 
@@ -281,33 +253,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. STANDARD FLOW SYMBOLS
-2. SYMBOL MEANING
-3. RECTANGLE: Screen/Page/State
-4. A UI screen or application state
-5. ◇ DIAMOND: Decision Point
-6. / \ User makes a choice or system checks condition
-7. ARROW: Flow Direction
-
-```mermaid
-flowchart TD
-    N1["STANDARD FLOW SYMBOLS"]
-    N2["SYMBOL MEANING"]
-    N3["RECTANGLE: Screen/Page/State"]
-    N4["A UI screen or application state"]
-    N5["◇ DIAMOND: Decision Point"]
-    N6["/ \ User makes a choice or system checks condition"]
-    N7["ARROW: Flow Direction"]
-    N8["Shows the path of movement"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## Complete User Flow Example: E-commerce Checkout
 
@@ -382,34 +327,6 @@ flowchart TD
     (End: Order Placed)    Back to Payment
 ```
 
-**Flow:**
-1. Cart Summary Page / - View items / - Update quantities
-2. Use saved / address
-3. Shipping Method / - Standard (5 days) / - Express (2 da
-4. Enter shipping / address
-5. Error Message / Retry or change / payment method
-6. Shipping Method / - Standard (5 days) / - Express (2 da
-7. Payment Method / - Credit Card / - PayPal / - Apple Pay
-8. Order Review / - Items summary / - Total with tax / - S
-9. Confirmation / Page / - Order # / - ETA / - Email sent
-
-```mermaid
-flowchart TD
-    N1["Cart Summary Page / - View items / - Update quantities "]
-    N2["Use saved / address"]
-    N3["Enter shipping / address"]
-    N4["Shipping Method / - Standard (5 days) / - Express (2 da"]
-    N5["Payment Method / - Credit Card / - PayPal / - Apple Pay"]
-    N6["Order Review / - Items summary / - Total with tax / - S"]
-    N7["Confirmation / Page / - Order # / - ETA / - Email sent"]
-    N8["Error Message / Retry or change / payment method"]
-    N1 --> N2
-    N2 --> N4
-    N3 --> N8
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 
@@ -521,20 +438,6 @@ DATA TRANSFORMATIONS:
 └────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. FRONTEND / (Validation)
-2. STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel
-3. BACKEND / (Process)
-4. STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel
-
-```mermaid
-flowchart TD
-    N2["FRONTEND / (Validation)"]
-    N3["BACKEND / (Process)"]
-    N5["STAGE DATA FORMAT TRANSFORMATION / User Input Form fiel"]
-    N2 --> N5
-    N3 --> N5
-```
 
 ---
 
@@ -623,49 +526,6 @@ USER REQUEST: GET /api/products/123
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. USER / Browser
-2. DNS
-3. CDN
-4. LOAD BALANCER
-5. Server 2
-6. LOAD BALANCER
-7. Server 3
-8. Server 1
-9. API GATEWAY / - Auth check / - Rate limit / - Logging
-
-```mermaid
-flowchart TD
-    N1["USER / Browser"]
-    N2["DNS"]
-    N3["CDN"]
-    N4["LOAD BALANCER"]
-    N5["Server 1"]
-    N6["Server 2"]
-    N7["Server 3"]
-    N8["API GATEWAY / - Auth check / - Rate limit / - Logging"]
-    N9["PRODUCT / SERVICE / - Business / logic"]
-    N10["▼ ▼ / HE DATAB / is) (Postg / Cache Hit"]
-    N11["CACHE / (Redis)"]
-    N12["DATABASE / (Postgres)"]
-    N13["RESPONSE / { / id: 123, / name: ... / }"]
-    N14["USER"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N6
-    N4 --> N7
-    N5 --> N8
-    N6 --> N8
-    N8 --> N9
-    N9 --> N10
-    N9 --> N11
-    N9 --> N12
-    N10 --> N13
-    N11 --> N13
-    N12 --> N13
-    N13 --> N14
-```
 
 ---
 
@@ -733,22 +593,6 @@ STEP 4: IDENTIFY ERROR CASES
 STEP 5: DRAW THE COMPLETE FLOW
 ```
 
-**Flow:**
-1. Ask: 'What is the user trying to achieve?' / Example: '
-2. Ask: 'Who/What is involved in this flow?' / Example: /
-3. Ask: 'What happens when everything works perfectly?' /
-4. Ask: 'What could go wrong?' / Example Error Cases: / •
-
-```mermaid
-flowchart TD
-    N1["Ask: 'What is the user trying to achieve?' / Example: '"]
-    N2["Ask: 'Who/What is involved in this flow?' / Example: / "]
-    N3["Ask: 'What happens when everything works perfectly?' / "]
-    N4["Ask: 'What could go wrong?' / Example Error Cases: / • "]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ## Complete Feature Flow Example: Social Share
 
@@ -995,33 +839,6 @@ For each exercise:
 6. Consider edge cases
 ```
 
-**Flow:**
-1. FLOW DESIGN EXERCISES
-2. EXERCISE 1: Password Reset Flow
-3. EXERCISE 2: File Upload Flow
-4. EXERCISE 3: Real-time Chat Flow
-5. EXERCISE 4: Shopping Cart Sync Flow
-6. Include: Local storage, server sync, conflict resolutio
-7. EXERCISE 5: Two-Factor Authentication Flow
-
-```mermaid
-flowchart TD
-    N1["FLOW DESIGN EXERCISES"]
-    N2["EXERCISE 1: Password Reset Flow"]
-    N3["EXERCISE 2: File Upload Flow"]
-    N4["EXERCISE 3: Real-time Chat Flow"]
-    N5["EXERCISE 4: Shopping Cart Sync Flow"]
-    N6["Include: Local storage, server sync, conflict resolutio"]
-    N7["EXERCISE 5: Two-Factor Authentication Flow"]
-    N8["Design the complete flow for enabling and using 2FA."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1046,33 +863,6 @@ flowchart TD
 □ Logging/monitoring points
 ```
 
-**Flow:**
-1. FLOW DESIGN CHECKLIST
-2. □ Clear START and END points
-3. □ All decision points marked (diamonds)
-4. □ Happy path clearly visible
-5. □ Error paths included
-6. □ All actors/systems identified
-7. □ Data formats at each stage
-
-```mermaid
-flowchart TD
-    N1["FLOW DESIGN CHECKLIST"]
-    N2["□ Clear START and END points"]
-    N3["□ All decision points marked (diamonds)"]
-    N4["□ Happy path clearly visible"]
-    N5["□ Error paths included"]
-    N6["□ All actors/systems identified"]
-    N7["□ Data formats at each stage"]
-    N8["□ Async operations marked"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 
 ---

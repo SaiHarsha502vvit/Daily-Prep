@@ -1,4 +1,4 @@
-# 🛠️ Dev Tools & Productivity — Complete Guide
+﻿# 🛠️ Dev Tools & Productivity — Complete Guide
 
 **Navigation**: [< System Design](09_System_Design.md) | [Index](00_INDEX.md) | [Chapter 1: Git >](01_Git_Version_Control.md)
 
@@ -13,26 +13,6 @@ Senior Dev:   Writes code → keyboard shortcuts → debugs with debugger + prof
 The difference is NOT intelligence. It's TOOLING knowledge.
 A developer who masters their tools finishes in 2 hours
 what another takes 2 days to do.
-```
-
-**Flow:**
-1. Junior Dev: Writes code clicks buttons
-2. debugs with println
-3. Senior Dev: Writes code keyboard shortcuts
-4. debugs with debugger + profiler
-
-```mermaid
-flowchart LR
-    N1["Junior Dev: Writes code"]
-    N2["clicks buttons"]
-    N3["debugs with println"]
-    N4["Senior Dev: Writes code"]
-    N5["keyboard shortcuts"]
-    N6["debugs with debugger + profiler"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
 ```
 
 ---
@@ -52,34 +32,6 @@ Containerization  │ Docker                │ Consistent environments
 Debugging         │ IDE Debugger          │ Step through code
 Profiling         │ VisualVM / JProfiler  │ Find performance bottlenecks
 Monitoring        │ Prometheus + Grafana  │ Watch production metrics
-```
-
-**Flow:**
-1. Category Tool Why
-2. IDE/Editor IntelliJ / VS Code Where you live 8 hours/da
-3. Version Control Git + GitHub Track every change
-4. Terminal Bash/PowerShell Automation, scripts
-5. Build Tool Maven / Gradle Compile, test, package
-6. API Testing Postman / curl Test HTTP endpoints
-7. Containerization Docker Consistent environments
-
-```mermaid
-flowchart TD
-    N1["Category Tool Why"]
-    N2["IDE/Editor IntelliJ / VS Code Where you live 8 hours/da"]
-    N3["Version Control Git + GitHub Track every change"]
-    N4["Terminal Bash/PowerShell Automation, scripts"]
-    N5["Build Tool Maven / Gradle Compile, test, package"]
-    N6["API Testing Postman / curl Test HTTP endpoints"]
-    N7["Containerization Docker Consistent environments"]
-    N8["Debugging IDE Debugger Step through code"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
 ```
 
 ---
@@ -104,17 +56,6 @@ File Structure (methods)    │ Ctrl+F12           │ Cmd+F12
 Navigate Back/Forward       │ Ctrl+Alt+←/→       │ Cmd+Opt+←/→
 ```
 
-**Flow:**
-1. Navigate Back/Forward Ctrl+Alt+←/
-2. Cmd+Opt+←/
-
-```mermaid
-flowchart LR
-    N1["Navigate Back/Forward Ctrl+Alt+←/"]
-    N2["Cmd+Opt+←/"]
-    N1 --> N2
-```
-
 ### Editing Shortcuts
 
 ```
@@ -132,34 +73,6 @@ Auto-format Code            │ Ctrl+Alt+L         │ Cmd+Opt+L
 Quick Fix (suggestions)     │ Alt+Enter          │ Opt+Enter
 Generate (constructor etc)  │ Alt+Insert         │ Cmd+N
 Surround With (try/if)      │ Ctrl+Alt+T         │ Cmd+Opt+T
-```
-
-**Flow:**
-1. ACTION Windows/Linux Mac
-2. Rename (refactor) Shift+F6 Shift+F6
-3. Extract Variable Ctrl+Alt+V Cmd+Opt+V
-4. Extract Method Ctrl+Alt+M Cmd+Opt+M
-5. Inline Ctrl+Alt+N Cmd+Opt+N
-6. Comment Line Ctrl+/ Cmd+/
-7. Duplicate Line Ctrl+D Cmd+D
-
-```mermaid
-flowchart TD
-    N1["ACTION Windows/Linux Mac"]
-    N2["Rename (refactor) Shift+F6 Shift+F6"]
-    N3["Extract Variable Ctrl+Alt+V Cmd+Opt+V"]
-    N4["Extract Method Ctrl+Alt+M Cmd+Opt+M"]
-    N5["Inline Ctrl+Alt+N Cmd+Opt+N"]
-    N6["Comment Line Ctrl+/ Cmd+/"]
-    N7["Duplicate Line Ctrl+D Cmd+D"]
-    N8["Delete Line Ctrl+Y Cmd+Backspace"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
 ```
 
 ### IntelliJ Power Features
@@ -185,64 +98,6 @@ MULTI-CURSOR:
   Ctrl+G           → Select next occurrence
 ```
 
-**Flow:**
-1. LIVE TEMPLATES: Type abbreviation
-2. Tab expands code sout
-3. System.out.println(); psvm
-4. public static void main(String[] args) {}
-5. fori
-6. for (int i = 0; i < ; i++) {}
-7. iter
-8. for (Type item : collection) {}
-
-```mermaid
-flowchart TD
-    N1["LIVE TEMPLATES: Type abbreviation"]
-    N2["Tab"]
-    N3["expands code"]
-    N4["sout"]
-    N5["System.out.println();"]
-    N6["psvm"]
-    N7["public static void main(String[] args) {}"]
-    N8["fori"]
-    N9["for (int i = 0; i &lt; ; i++) {}"]
-    N10["iter"]
-    N11["for (Type item : collection) {}"]
-    N12["myList.for"]
-    N13["for (Object o : myList) {}"]
-    N14["myVar.null"]
-    N15["if (myVar == null) {}"]
-    N16["myVar.nn"]
-    N17["if (myVar != null) {}"]
-    N18["myBool.if"]
-    N19["if (myBool) {}"]
-    N20["value.return"]
-    N21["return value;"]
-    N22["text.sout"]
-    N23["System.out.println(text);"]
-    N24["Alt+Click"]
-    N25["Add cursor at click position"]
-    N26["Ctrl+Shift+Alt+J"]
-    N27["Select all occurrences"]
-    N28["Ctrl+G"]
-    N29["Select next occurrence"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N6 --> N7
-    N8 --> N9
-    N10 --> N11
-    N12 --> N13
-    N14 --> N15
-    N16 --> N17
-    N18 --> N19
-    N20 --> N21
-    N22 --> N23
-    N24 --> N25
-    N26 --> N27
-    N28 --> N29
-```
-
 ## Level 2 — VS Code Essentials
 
 ```
@@ -265,34 +120,6 @@ MUST-HAVE Extensions:
   - REST Client (test APIs in editor)
   - Docker (manage containers)
   - Live Share (pair programming)
-```
-
-**Flow:**
-1. ACTION Shortcut
-2. Command Palette Ctrl+Shift+P
-3. Quick Open File Ctrl+P
-4. Toggle Terminal Ctrl+`
-5. Search in Files Ctrl+Shift+F
-6. Multi-cursor (same word) Ctrl+D (repeat)
-7. Go to Line Ctrl+G
-
-```mermaid
-flowchart TD
-    N1["ACTION Shortcut"]
-    N2["Command Palette Ctrl+Shift+P"]
-    N3["Quick Open File Ctrl+P"]
-    N4["Toggle Terminal Ctrl+`"]
-    N5["Search in Files Ctrl+Shift+F"]
-    N6["Multi-cursor (same word) Ctrl+D (repeat)"]
-    N7["Go to Line Ctrl+G"]
-    N8["Toggle Sidebar Ctrl+B"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
 ```
 
 ## Level 3 — Debugging Like a Pro
@@ -428,32 +255,6 @@ TOOLS:
 QUICK PROFILING with Spring Boot:
 ```
 
-**Flow:**
-1. - /actuator/health
-2. Is app running?
-3. - /actuator/metrics
-4. JVM stats
-5. - /actuator/info
-6. App info
-7. - /actuator/loggers
-8. Change log level at runtime
-
-```mermaid
-flowchart LR
-    N1["- /actuator/health"]
-    N2["Is app running?"]
-    N3["- /actuator/metrics"]
-    N4["JVM stats"]
-    N5["- /actuator/info"]
-    N6["App info"]
-    N7["- /actuator/loggers"]
-    N8["Change log level at runtime"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
-
 ```java
 // Measure method execution time
 @Aspect
@@ -478,16 +279,7 @@ public class PerformanceAspect {
 
 ---
 
-
-
 🔬 **Section Challenge — Level 6 — Performance Profiling**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 # WHERE: Daily Workflow Optimization
 
@@ -523,29 +315,6 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
    git push origin feature/add-user-api
 
 10. REVIEW feedback → fix → merge
-```
-
-**Flow:**
-1. Write failing test implement test passes
-2. Ctrl+Alt+L (IntelliJ)
-3. consistent style
-4. REVIEW feedback fix merge
-
-```mermaid
-flowchart TD
-    N1["Write failing test"]
-    N2["implement"]
-    N3["test passes"]
-    N4["Ctrl+Alt+L (IntelliJ)"]
-    N5["consistent style"]
-    N6["10. REVIEW feedback"]
-    N7["fix"]
-    N8["merge"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N6 --> N7
-    N7 --> N8
 ```
 
 ## Useful Aliases
@@ -597,6 +366,7 @@ API TEST:   Postman or curl
 # 🏋️ Practice
 
 ## Exercise 1: Speed Challenge
+
 ```
 Without using mouse, perform these in IntelliJ:
 1. Open a file by name
@@ -609,6 +379,7 @@ Time yourself. Repeat until under 60 seconds.
 ```
 
 ## Exercise 2: Full Workflow
+
 ```
 Practice the complete development workflow:
 1. Clone a Spring Boot starter project

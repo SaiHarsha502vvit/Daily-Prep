@@ -55,6 +55,36 @@ B-TREE VISUAL (simplified, 3 keys per node for illustration):
    [1..9][11..19]...[71..79][81..89][91..100]  ← Leaf pages (level 2)
             ↕          ↕          ↕
    Leaf pages are doubly-linked for range scans →
+
+```
+
+```mermaid
+flowchart TD
+    %% B-Tree Hardware Page Physics
+    subgraph RAM ["Memory (Shared Buffers)"]
+        ROOT["Root Page<br/>(8KB = 583 Pointers)"]
+        L1A["Internal Page<br/>(8KB)"]
+        L1B["Internal Page<br/>(8KB)"]
+        L1C["Internal Page<br/>(8KB)"]
+        
+        ROOT -->|Pointer 1| L1A
+        ROOT -->|Pointer 2| L1B
+        ROOT -->|Pointer 583| L1C
+    end
+
+    subgraph DISK ["SSD / HDD (Physical Disk)"]
+        L2A["Leaf Page<br/>(8KB = 400 Rows)"]
+        L2B["Leaf Page<br/>(8KB)"]
+        L2C["Leaf Page<br/>(8KB)"]
+        
+        L1A -->|1 Disk I/O| L2A
+        L1A -->|1 Disk I/O| L2B
+        L1C -->|1 Disk I/O| L2C
+        
+        L2A <-->|Doubly-Linked| L2B
+        L2B <-->|Doubly-Linked| L2C
+    end
+
 ```
 
 ### Why Sequential IDs Are Faster Than Random UUIDs
@@ -360,6 +390,33 @@ If crash happens between step 2 and 4:
 → On restart: replay WAL from last checkpoint → data pages restored
 → ZERO data loss (for committed transactions)
 
+
+```
+
+```mermaid
+sequenceDiagram
+    %% Write-Ahead Log (WAL) Physics
+    participant APP as Application
+    participant BUF as RAM (shared_buffers)
+    participant WAL as RAM (wal_buffers)
+    participant DISK as SSD (pg_wal)
+    participant DATA as SSD (base/ data)
+
+    APP->>BUF: UPDATE users SET name='Bob'
+    Note over BUF: Page marked "Dirty"
+    APP->>WAL: Write WAL Record (Txn 200)
+    
+    APP->>DISK: COMMIT (fsync WAL to disk)
+    DISK-->>APP: "COMMIT OK" (Durability Guaranteed)
+    
+    Note over APP, DATA: --- SERVER CRASH ---
+    
+    Note over WAL, DATA: Restart Recovery
+    DISK->>BUF: Read WAL from Checkpoint
+    BUF->>DATA: Replay Changes (Flush Dirty Pages)
+```
+
+```text
 WHY WAL IS FAST:
 - WAL = sequential writes (append-only log file)
 - Data pages = random writes (scattered across disk)
@@ -398,13 +455,14 @@ Replication lag = time between primary commit and replica apply
 ```
 The buffer pool is shared memory where the database caches disk pages.
 
+
 DATABASE MEMORY ARCHITECTURE:
 ┌──────────────────────────────────────────┐
 │            SHARED BUFFERS (RAM)          │
-│  ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐   │
-│  │Pg 1│ │Pg 5│ │Pg 12│ │Pg 8│ │... │   │
-│  │hot │ │warm│ │cold │ │warm│ │    │   │
-│  └────┘ └────┘ └────┘ └────┘ └────┘   │
+│  ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐      │
+│  │Pg 1│ │Pg 5│ │Pg 12│ │Pg 8│ │... │     │
+│  │hot │ │warm│ │cold │ │warm│ │    │     │
+│  └────┘ └────┘ └────┘ └────┘ └────┘      │
 │                                          │
 │  buffer_hit = page found in memory ✅    │
 │  buffer_miss = must read from disk ❌    │
@@ -418,6 +476,39 @@ DATABASE MEMORY ARCHITECTURE:
 │             SSD / HDD                     │
 └──────────────────────────────────────────┘
 
+
+```
+
+```mermaid
+flowchart TD
+    %% Database Memory Architecture
+    subgraph APP ["Application"]
+        Q["Query Execution"]
+    end
+    
+    subgraph RAM ["Memory (Shared Buffers)"]
+        HOT["Pg 1 (Hot)"]
+        WARM["Pg 5 (Warm)"]
+        COLD["Pg 12 (Cold)"]
+        
+        Q -->|Buffer Hit: 0.001ms| HOT
+    end
+    
+    subgraph OS_CACHE ["OS Page Cache"]
+        OC["Cached Disk Pages"]
+        Q -->|OS Cache Hit: 0.01ms| OC
+        COLD -.->|Evicted via Clock-Sweep| OC
+    end
+    
+    subgraph DISK ["Physical Storage (SSD/HDD)"]
+        DATA["Base Data Pages"]
+        Q -->|Buffer Miss: 0.1ms - 5ms| DATA
+        OC -.->|Flush| DATA
+    end
+
+```
+
+```text
 PERFORMANCE DIFFERENCE:
 - Buffer hit (RAM):     ~0.001ms (1 microsecond)
 - OS cache hit:         ~0.01ms

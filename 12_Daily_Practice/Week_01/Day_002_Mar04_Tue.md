@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_001_Mar03_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_003_Mar05_Wed.md)
+﻿> **Navigation**: [< Previous](Day_001_Mar03_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_003_Mar05_Wed.md)
 
 # Day 002 - Tuesday, March 4, 2026
 
@@ -46,20 +46,6 @@ RIGHT ROTATE by 2:
     Step 3: Reverse remaining elements: [4, 5, 1, 2, 3]
 ```
 
-**Flow:**
-1. [1, 2, 3, 4, 5]
-2. [3, 4, 5, 1, 2]
-3. [1, 2, 3, 4, 5]
-4. [4, 5, 1, 2, 3]
-
-```mermaid
-flowchart LR
-    N1["[1, 2, 3, 4, 5]"]
-    N2["[3, 4, 5, 1, 2]"]
-    N3["[4, 5, 1, 2, 3]"]
-    N1 --> N2
-    N1 --> N3
-```
 
 **2. Prefix Sum**
 ```
@@ -166,32 +152,6 @@ WHY THIS MATTERS:
   - Real example: Excel multi-column sort depends on stability
 ```
 
-**Flow:**
-1. STABLE SORT: Equal elements maintain their original ord
-2. Example: Sort students by grade (ignore name):
-3. STABLE sort by grade:
-4. ↑ A's keep original order: Bob before Diana ↑ B's keep original order: Alice before Charlie
-5. UNSTABLE sort by grade (could produce):
-6. ↑ Order among equals is NOT guaranteed
-
-```mermaid
-flowchart TD
-    N1["STABLE SORT: Equal elements maintain their original ord"]
-    N2["Example: Sort students by grade (ignore name):"]
-    N3["STABLE sort by grade:"]
-    N4["↑ A's keep original order: Bob before Diana"]
-    N5["↑ B's keep original order: Alice before Charlie"]
-    N6["UNSTABLE sort by grade (could produce):"]
-    N7["↑ Order among equals is NOT guaranteed"]
-    N8["WHY THIS MATTERS:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### Insertion Sort — trace through carefully
 
@@ -233,29 +193,6 @@ SURPRISE: Insertion Sort is OPTIMAL for:
   4. Stable sorting needed with O(1) space
 ```
 
-**Flow:**
-1. SURPRISE: Insertion Sort is OPTIMAL for:
-2. Small arrays (n < 10-15): Less overhead than quic
-3. Java's Arrays.sort() uses insertion sort for n < 4 Nearly sorted arrays: O(n) best case If only 1-2 elements are out of place, it's LINEAR
-4. Online sorting: Can sort as data arrives (streaming)
-5. Stable sorting needed with O(1) space
-
-```mermaid
-flowchart TD
-    N1["SURPRISE: Insertion Sort is OPTIMAL for:"]
-    N2["1. Small arrays (n &lt; 10-15): Less overhead than quic"]
-    N3["→ Java's Arrays.sort() uses insertion sort for n &lt; 4"]
-    N4["2. Nearly sorted arrays: O(n) best case"]
-    N5["→ If only 1-2 elements are out of place, it's LINEAR"]
-    N6["3. Online sorting: Can sort as data arrives (streaming)"]
-    N7["4. Stable sorting needed with O(1) space"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 
@@ -281,33 +218,6 @@ KEY INSIGHT: Merge from the END to avoid overwriting!
   Result: [1, 2, 2, 3, 5, 6] ✓
 ```
 
-**Flow:**
-1. i=2( 3), j=2( 6), k=5
-2. Compare 3 vs 6: 6 is bigger nums1[5]=6, j--, k--
-3. Compare 3 vs 5: 5 is bigger nums1[4]=5, j--, k--
-4. Compare 3 vs 2: 3 is bigger nums1[3]=3, i--, k--
-5. Compare 2 vs 2: equal nums1[2]=2, j--, k--
-
-```mermaid
-flowchart TD
-    N1["i=2("]
-    N2["3), j=2("]
-    N3["6), k=5"]
-    N4["Compare 3 vs 6: 6 is bigger"]
-    N5["nums1[5]=6, j--, k--"]
-    N6["Compare 3 vs 5: 5 is bigger"]
-    N7["nums1[4]=5, j--, k--"]
-    N8["Compare 3 vs 2: 3 is bigger"]
-    N9["nums1[3]=3, i--, k--"]
-    N10["Compare 2 vs 2: equal"]
-    N11["nums1[2]=2, j--, k--"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N6 --> N7
-    N8 --> N9
-    N10 --> N11
-```
 
 <details>
 <summary>Solution</summary>
@@ -398,41 +308,6 @@ CHOOSING THE RIGHT TYPE:
   Storing true/false?  → BOOLEAN — stored as TINYINT(1)
 ```
 
-**Flow:**
-1. Storing ages?
-2. TINYINT (0-255, 1 byte) — NOT INT (wastes 3 bytes)
-3. Storing money?
-4. DECIMAL(10,2) — NEVER FLOAT (precision errors!)
-5. Storing a name?
-6. VARCHAR(100) — NOT CHAR (wastes space on short nam Storing a password? CHAR(60) — bcrypt hash is always 60 chars Storing a country? CHAR(2) — ISO codes are always 2 chars (IN, US, UK Storing created_at? TIMESTAMP — auto timezone conversion, 4 bytes
-
-```mermaid
-flowchart TD
-    N1["Storing ages?"]
-    N2["TINYINT (0-255, 1 byte) — NOT INT (wastes 3 bytes)"]
-    N3["Storing money?"]
-    N4["DECIMAL(10,2) — NEVER FLOAT (precision errors!)"]
-    N5["Storing a name?"]
-    N6["VARCHAR(100) — NOT CHAR (wastes space on short nam"]
-    N7["Storing a password?"]
-    N8["CHAR(60) — bcrypt hash is always 60 chars"]
-    N9["Storing a country?"]
-    N10["CHAR(2) — ISO codes are always 2 chars (IN, US, UK"]
-    N11["Storing created_at?"]
-    N12["TIMESTAMP — auto timezone conversion, 4 bytes"]
-    N13["Storing birthday?"]
-    N14["DATE — no time component needed"]
-    N15["Storing true/false?"]
-    N16["BOOLEAN — stored as TINYINT(1)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-```
 
 #### Practice: CREATE with constraints
 

@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_015_Mar17_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_017_Mar19_Wed.md)
+﻿> **Navigation**: [< Previous](Day_015_Mar17_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_017_Mar19_Wed.md)
 
 # Day 016 — Tuesday, March 18, 2026
 
@@ -56,15 +56,6 @@ BST INVARIANT: For every node N:
   ALWAYS SORTED! That's the magic.
 ```
 
-**Flow:**
-1. Inorder traversal 1, 3, 4, 6, 7, 8, 10, 13, 14
-
-```mermaid
-flowchart LR
-    N1["Inorder traversal"]
-    N2["1, 3, 4, 6, 7, 8, 10, 13, 14"]
-    N1 --> N2
-```
 
 ### HOW — Operations
 
@@ -135,18 +126,6 @@ Step 2: Copy 4's value to 3's position
 Step 3: Delete 4 from right subtree (it's a leaf, easy)
 ```
 
-**Flow:**
-1. / \
-2. Step 1: Find inorder successor of 3
-3. smallest in right subtree
-
-```mermaid
-flowchart LR
-    N1["/ \"]
-    N2["Step 1: Find inorder successor of 3"]
-    N3["smallest in right subtree"]
-    N2 --> N3
-```
 
 ---
 
@@ -177,36 +156,6 @@ Queue trace:
 Output: [[3], [9, 20], [15, 7]]
 ```
 
-**Flow:**
-1. Step 1: Dequeue 3, enqueue 9,20
-2. Q = [9, 20]
-3. Step 2: Dequeue 9, no children
-4. Q = [20]
-5. Step 3: Dequeue 20, enqueue 15,7
-6. Q = [15, 7]
-7. Step 4: Dequeue 15, no children
-8. Q = [7]
-9. Step 5: Dequeue 7, no children
-10. Q = []
-
-```mermaid
-flowchart TD
-    N1["Step 1: Dequeue 3, enqueue 9,20"]
-    N2["Q = [9, 20]"]
-    N3["Step 2: Dequeue 9, no children"]
-    N4["Q = [20]"]
-    N5["Step 3: Dequeue 20, enqueue 15,7"]
-    N6["Q = [15, 7]"]
-    N7["Step 4: Dequeue 15, no children"]
-    N8["Q = [7]"]
-    N9["Step 5: Dequeue 7, no children"]
-    N10["Q = []"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-```
 
 ### Implementation — Level-by-Level BFS
 
@@ -257,33 +206,6 @@ CRITICAL PATTERN:
 └──────────────┴────────────────┴────────────────┘
 ```
 
-**Flow:**
-1. DFS BFS
-2. Data Struct Stack/Recursion Queue
-3. Memory O(h) height O(w) width
-4. Deep tree Uses less mem Uses more mem
-5. Wide tree Uses more mem Uses less mem
-6. Shortest path Not guaranteed YES (unweight)
-7. Use case Path finding, Level-order,
-
-```mermaid
-flowchart TD
-    N1["DFS BFS"]
-    N2["Data Struct Stack/Recursion Queue"]
-    N3["Memory O(h) height O(w) width"]
-    N4["Deep tree Uses less mem Uses more mem"]
-    N5["Wide tree Uses more mem Uses less mem"]
-    N6["Shortest path Not guaranteed YES (unweight)"]
-    N7["Use case Path finding, Level-order,"]
-    N8["backtracking shortest path"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -308,16 +230,6 @@ GROUP BY collapses rows:         Window functions KEEP rows:
                                   (kept all rows + added rank!)
 ```
 
-**Flow:**
-1. dept COUNT(*) avg / IT 3 80k / HR 2 60k
-2. name salary dept rank / Alice 90k IT 1 / Bob 80k IT 2 /
-
-```mermaid
-flowchart TD
-    N1["dept COUNT(*) avg / IT 3 80k / HR 2 60k"]
-    N2["name salary dept rank / Alice 90k IT 1 / Bob 80k IT 2 /"]
-    N1 --> N2
-```
 
 ### Syntax
 
@@ -354,27 +266,6 @@ DIFFERENCE:
   70k    │     4      │  4   │    3    ← RANK skips 3, DENSE doesn't
 ```
 
-**Flow:**
-1. DIFFERENCE:
-2. If two people tie at position 2:
-3. ROW_NUMBER: 1, 2, 3, 4 (always unique, arbitrary tie-br RANK: 1, 2, 2, 4 (skip next rank after tie) DENSE_RANK: 1, 2, 2, 3 (no gap after tie) salary ROW_NUMBER RANK DENSE_RANK salary ROW_NUMBER RANK DENSE_RANK 70k 4 4 3 ← RANK skips 3, DENSE doesn't
-
-```mermaid
-flowchart TD
-    N1["DIFFERENCE:"]
-    N2["If two people tie at position 2:"]
-    N3["ROW_NUMBER: 1, 2, 3, 4 (always unique, arbitrary tie-br"]
-    N4["RANK: 1, 2, 2, 4 (skip next rank after tie)"]
-    N5["DENSE_RANK: 1, 2, 2, 3 (no gap after tie)"]
-    N6["salary | ROW_NUMBER | RANK | DENSE_RANK"]
-    N7["70k 4 4 3 ← RANK skips 3, DENSE doesn't"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### Practice Exercises
 
@@ -463,24 +354,6 @@ Level 2: queue=[15,7]  → process 15, 7
 Output: [[3], [9,20], [15,7]]
 ```
 
-**Flow:**
-1. Level 0: queue=[3] process 3, enqueue 9,20
-2. Level 1: queue=[9,20]
-3. process 9(no kids), 20(enqueue 15,7)
-4. Level 2: queue=[15,7] process 15, 7
-
-```mermaid
-flowchart LR
-    N1["Level 0: queue=[3]"]
-    N2["process 3, enqueue 9,20"]
-    N3["Level 1: queue=[9,20]"]
-    N4["process 9(no kids), 20(enqueue 15,7)"]
-    N5["Level 2: queue=[15,7]"]
-    N6["process 15, 7"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ### Solution
 
@@ -528,18 +401,3 @@ BFS POWERS:
   Network broadcast = BFS from source
 ```
 
-**Flow:**
-1. TreeMap<K,V> in Java = Red-Black BST
-2. O(log n) sorted map
-3. TreeSet<K> in Java = Red-Black BST
-4. O(log n) sorted set
-
-```mermaid
-flowchart LR
-    N1["TreeMap&lt;K,V&gt; in Java = Red-Black BST"]
-    N2["O(log n) sorted map"]
-    N3["TreeSet&lt;K&gt; in Java = Red-Black BST"]
-    N4["O(log n) sorted set"]
-    N1 --> N2
-    N3 --> N4
-```

@@ -1,11 +1,10 @@
-**Navigation**: [< Previous](17_Servers_Ports_Networking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Concurrency_Models_Coroutines.md)
+﻿**Navigation**: [< Previous](17_Servers_Ports_Networking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Concurrency_Models_Coroutines.md)
 
 **Developer Essentials Chapter 18** | [← Servers & Networking](17_Servers_Ports_Networking.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Spring Boot Deps Map](../07_Modern_Java/Ch30_Dependencies_Annotations_Map.md)
 
 # Backend + Cloud Integration — From Local to Production
 
 ## 5W1H — Why This Chapter?
-
 
 WHAT: How backend applications are deployed, scaled, and
 operated in cloud environments (AWS, Azure, GCP).
@@ -20,7 +19,6 @@ ANALOGY: Building a car (coding) vs driving it on highways
 WHO:  Backend and full-stack developers in 2024+.
 
 HOW:  Local → Container → Cloud Service → Production
-
 
 ---
 
@@ -55,22 +53,6 @@ ERA 4: SERVERLESS / PLATFORM (2020+)
  VM > Container > Platform > Serverless
 ```
 
-**Flow:**
-1. 'Works on my machine'
-2. 'Works everywhere.'
-3. More Control
-4. Less Maintenance
-
-```mermaid
-flowchart LR
-    N1["'Works on my machine'"]
-    N2["'Works everywhere.'"]
-    N3["More Control"]
-    N4["Less Maintenance"]
-    N1 --> N2
-    N3 --> N4
-```
-
 ---
 
 ## 2. Cloud Service Models
@@ -98,34 +80,6 @@ IaaS vs PaaS vs SaaS — The Pizza Analogy:
 │ Your rack  │ Azure VM   │ AWS EBS    │ Salesforce │
 │            │ GCP CE     │ Azure App  │ GitHub     │
 └────────────┴────────────┴────────────┴────────────┘
-```
-
-**Flow:**
-1. IaaS vs PaaS vs SaaS — The Pizza Analogy:
-2. ON-PREMISE IaaS PaaS SaaS
-3. You manage You manage You manage You manage
-4. EVERYTHING Apps Apps Nothing
-5. Hardware Data Data (just use)
-6. OS Runtime
-7. Middleware Middleware
-
-```mermaid
-flowchart TD
-    N1["IaaS vs PaaS vs SaaS — The Pizza Analogy:"]
-    N2["ON-PREMISE IaaS PaaS SaaS"]
-    N3["You manage You manage You manage You manage"]
-    N4["EVERYTHING Apps Apps Nothing"]
-    N5["Hardware Data Data (just use)"]
-    N6["OS Runtime"]
-    N7["Middleware Middleware"]
-    N8["Runtime"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
 ```
 
 ---
@@ -183,29 +137,6 @@ MONITORING:
 └───────────────────┴────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. EC2 Virtual server. Full control. / Like renting an emp
-2. RDS Managed SQL (MySQL, PostgreSQL). / Backups, replica
-3. S3 Object storage. Files, images, backups. / Like Googl
-4. VPC Virtual private network. Your servers / live in an
-5. SQS Message queue. Decouple services. / SNS Pub/sub not
-6. CloudWatch Metrics, logs, alarms. 'Is it healthy?'
-
-```mermaid
-flowchart TD
-    N1["EC2 Virtual server. Full control. / Like renting an emp"]
-    N2["RDS Managed SQL (MySQL, PostgreSQL). / Backups, replica"]
-    N3["S3 Object storage. Files, images, backups. / Like Googl"]
-    N4["VPC Virtual private network. Your servers / live in an "]
-    N5["SQS Message queue. Decouple services. / SNS Pub/sub not"]
-    N6["CloudWatch Metrics, logs, alarms. 'Is it healthy?'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
-
 ---
 
 ## 4. Typical Spring Boot Cloud Architecture
@@ -250,51 +181,9 @@ Also connected:
 └── CloudWatch: logs, metrics, alerts
 ```
 
-**Flow:**
-1. Route 53
-2. CloudFront
-3. ALB
-4. SB1
-5. ALB
-6. SB2
-7. ALB
-8. SB3
-9. SB1
-10. Database / (Primary)
-
-```mermaid
-flowchart TD
-    N1["Route 53"]
-    N2["CloudFront"]
-    N3["ALB"]
-    N4["SB1"]
-    N5["SB2"]
-    N6["SB3"]
-    N7["Database / (Primary)"]
-    N8["Redis"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N3 --> N5
-    N3 --> N6
-    N4 --> N7
-    N5 --> N7
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
-
-
 🔬 **Section Challenge — 4. Typical Spring Boot Cloud Architecture**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## 5. Environment Configuration
 
@@ -337,77 +226,6 @@ NEVER in code or properties files!
 ├── Azure Key Vault
 ├── Environment variables (passed at deploy time)
 └── Spring Cloud Config Server
-```
-
-**Flow:**
-1. LOCAL (developer laptop):
-2. Database: localhost:3306 / H2 in-memory
-3. LOCAL (developer laptop):
-4. Redis: localhost:6379
-5. LOCAL (developer laptop):
-6. API URL: http://localhost:8080
-7. LOCAL (developer laptop):
-8. Logs: DEBUG level
-9. DEV (shared development server):
-10. Database: dev-db.internal:3306
-11. DEV (shared development server):
-12. Redis: dev-redis.internal:6379
-
-```mermaid
-flowchart TD
-    N1["LOCAL (developer laptop):"]
-    N2["Database: localhost:3306 / H2 in-memory"]
-    N3["Redis: localhost:6379"]
-    N4["API URL: http://localhost:8080"]
-    N5["Logs: DEBUG level"]
-    N6["DEV (shared development server):"]
-    N7["Database: dev-db.internal:3306"]
-    N8["Redis: dev-redis.internal:6379"]
-    N9["API URL: https://dev-api.myapp.com"]
-    N10["STAGING (pre-production, mirrors prod):"]
-    N11["Database: staging-db.internal:3306"]
-    N12["Redis: staging-redis.internal:6379"]
-    N13["API URL: https://staging-api.myapp.com"]
-    N14["Logs: INFO level"]
-    N15["PRODUCTION:"]
-    N16["Database: prod-db.internal:3306 (RDS, encrypted)"]
-    N17["Redis: prod-cache.internal:6379 (ElastiCache)"]
-    N18["API URL: https://api.myapp.com"]
-    N19["Logs: WARN level"]
-    N20["Spring Boot: application-{profile}.properties"]
-    N21["application-local.properties"]
-    N22["application-dev.properties"]
-    N23["application-staging.properties"]
-    N24["application-prod.properties"]
-    N25["NEVER in code or properties files!"]
-    N26["AWS Secrets Manager"]
-    N27["Azure Key Vault"]
-    N28["Environment variables (passed at deploy time)"]
-    N29["Spring Cloud Config Server"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N6 --> N7
-    N6 --> N8
-    N6 --> N9
-    N6 --> N5
-    N10 --> N11
-    N10 --> N12
-    N10 --> N13
-    N10 --> N14
-    N15 --> N16
-    N15 --> N17
-    N15 --> N18
-    N15 --> N19
-    N20 --> N21
-    N20 --> N22
-    N20 --> N23
-    N20 --> N24
-    N25 --> N26
-    N25 --> N27
-    N25 --> N28
-    N25 --> N29
 ```
 
 ---
@@ -453,47 +271,9 @@ EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
-**Flow:**
-1. FULL PIPELINE: Code
-2. Production
-3. Developer pushes code to GitHub
-4. GitHub Actions / Jenkins
-5. STAGE 1: BUILD
-6. mvn clean package (compile + test)
-7. Run unit tests
-8. Run integration tests
-
-```mermaid
-flowchart TD
-    N1["FULL PIPELINE: Code → Production"]
-    N2["Developer pushes code to GitHub"]
-    N3["GitHub Actions / Jenkins"]
-    N4["STAGE 1: BUILD"]
-    N5["mvn clean package (compile + test)"]
-    N6["Run unit tests"]
-    N7["Run integration tests"]
-    N8["Static analysis (SonarQube)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
-
-
 🔬 **Section Challenge — 6. CI/CD Pipeline for Spring Boot**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## 7. Monitoring in Production
 
@@ -526,53 +306,9 @@ Spring Boot Actuator endpoints for monitoring:
 /actuator/prometheus → metrics in Prometheus format
 ```
 
-**Flow:**
-1. User
-2. API Gateway
-3. Service A
-4. Service B
-5. DB
-6. /actuator/health is the app healthy?
-7. /actuator/metrics
-8. JVM memory, thread count, HTTP stats
-
-```mermaid
-flowchart TD
-    N1["User"]
-    N2["API Gateway"]
-    N3["Service A"]
-    N4["Service B"]
-    N5["DB"]
-    N6["/actuator/health"]
-    N7["is the app healthy?"]
-    N8["/actuator/metrics"]
-    N9["JVM memory, thread count, HTTP stats"]
-    N10["/actuator/info"]
-    N11["app version, build time"]
-    N12["/actuator/prometheus"]
-    N13["metrics in Prometheus format"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N6 --> N7
-    N8 --> N9
-    N10 --> N11
-    N12 --> N13
-```
-
 ---
 
-
-
 🔬 **Section Challenge — 7. Monitoring in Production**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## Interview Quick-Fire
 
@@ -604,22 +340,6 @@ Q: How do you handle database migrations in production?
   a migration that's been deployed.
 ```
 
-**Flow:**
-1. Containerize with Docker
-2. Push to ECR
-3. Deploy on ECS Fargate
-
-```mermaid
-flowchart LR
-    N1["Containerize with Docker"]
-    N2["Push to ECR"]
-    N3["Deploy on ECS Fargate"]
-    N1 --> N2
-    N2 --> N3
-```
-
 ---
 
 [← Servers & Networking](17_Servers_Ports_Networking.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Spring Boot Deps Map](../07_Modern_Java/Ch30_Dependencies_Annotations_Map.md)
-
-

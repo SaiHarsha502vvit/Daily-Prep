@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](11_Quick_Reference.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Daily_Habits_Tracking.md)
+﻿> **Navigation**: [< Previous](11_Quick_Reference.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Daily_Habits_Tracking.md)
 
 # 🧠 Brain Retention & Deep Learning Techniques
 
@@ -142,33 +142,6 @@ WITH SPACED REPETITION + UNDERSTANDING:
 - You keep 90%+ forever
 ```
 
-**Flow:**
-1. THE FORGETTING CURVE (Ebbinghaus):
-2. Day1 Day2 Day7 Day30
-3. Without review:
-4. - After 1 day: 50-80% forgotten
-5. - After 1 week: 90% forgotten
-6. - After 1 month: Almost everything gone
-7. WITH SPACED REPETITION + UNDERSTANDING:
-
-```mermaid
-flowchart TD
-    N1["THE FORGETTING CURVE (Ebbinghaus):"]
-    N2["Day1 Day2 Day7 Day30"]
-    N3["Without review:"]
-    N4["- After 1 day: 50-80% forgotten"]
-    N5["- After 1 week: 90% forgotten"]
-    N6["- After 1 month: Almost everything gone"]
-    N7["WITH SPACED REPETITION + UNDERSTANDING:"]
-    N8["- You keep 90%+ forever"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## Why Rote Learning Fails
 
@@ -193,16 +166,6 @@ NOW YOU UNDERSTAND:
 - How to adapt it
 ```
 
-**Flow:**
-1. - No context
-2. No recall trigger
-
-```mermaid
-flowchart LR
-    N1["- No context"]
-    N2["No recall trigger"]
-    N1 --> N2
-```
 
 ---
 
@@ -260,33 +223,6 @@ When something goes wrong (collision, rehashing),
 you know WHY because you understand the mechanism.
 ```
 
-**Flow:**
-1. SURFACE: 'Use HashMap for O(1) lookup'
-2. WHY does HashMap give O(1)?
-3. Because it uses hash function to compute index direct
-4. WHY does that give O(1)?
-5. Because array access by index is O(1)
-6. WHY is array access O(1)?
-7. Because memory is contiguous, address = base + offset
-
-```mermaid
-flowchart TD
-    N1["SURFACE: 'Use HashMap for O(1) lookup'"]
-    N2["WHY does HashMap give O(1)?"]
-    N3["→ Because it uses hash function to compute index direct"]
-    N4["WHY does that give O(1)?"]
-    N5["→ Because array access by index is O(1)"]
-    N6["WHY is array access O(1)?"]
-    N7["→ Because memory is contiguous, address = base + offset"]
-    N8["NOW you understand the FOUNDATION!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## 3. Visualize Everything
 
@@ -379,33 +315,6 @@ STEP 3: ADAPT TO THIS PROBLEM
 so when I find target, I continue searching left"
 ```
 
-**Flow:**
-1. STEP 1: IDENTIFY THE CATEGORY
-2. 'This is about finding something in a sorted array'
-3. Probably Binary Search
-4. 'This involves making optimal choices'
-5. Probably Greedy or DP
-6. 'This needs to track frequency of elements'
-7. Probably HashMap
-
-```mermaid
-flowchart TD
-    N1["STEP 1: IDENTIFY THE CATEGORY"]
-    N2["'This is about finding something in a sorted array'"]
-    N3["→ Probably Binary Search"]
-    N4["'This involves making optimal choices'"]
-    N5["→ Probably Greedy or DP"]
-    N6["'This needs to track frequency of elements'"]
-    N7["→ Probably HashMap"]
-    N8["STEP 2: RECALL THE TEMPLATE"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 
 
@@ -553,37 +462,6 @@ Can't do it? You don't truly understand!
                 └────────────────┘
 ```
 
-**Flow:**
-1. PROBLEM
-2. STRUGGLE / (15-30 min)
-3. ▼ ▼ / ED! STUCK / ze & Study s / ariants UNDERST
-4. STRUGGLE / (15-30 min)
-5. SOLVED! / Optimize & / find variants
-6. STRUGGLE / (15-30 min)
-7. STUCK / Study soln / UNDERSTAND it
-8. ▼ ▼ / ED! STUCK / ze & Study s / ariants UNDERST
-9. REFLECTION / What pattern? / What learned? / Similar pr
-10. SOLVED! / Optimize & / find variants
-11. REFLECTION / What pattern? / What learned? / Similar pr
-
-```mermaid
-flowchart TD
-    N1["PROBLEM"]
-    N2["STRUGGLE / (15-30 min)"]
-    N3["▼ ▼ / ED! STUCK / ze & Study s / ariants UNDERST"]
-    N4["SOLVED! / Optimize & / find variants"]
-    N5["STUCK / Study soln / UNDERSTAND it"]
-    N6["REFLECTION / What pattern? / What learned? / Similar pr"]
-    N7["TEACH/EXPLAIN / in own words"]
-    N1 --> N2
-    N2 --> N3
-    N2 --> N4
-    N2 --> N5
-    N3 --> N6
-    N4 --> N6
-    N5 --> N6
-    N6 --> N7
-```
 
 ## The 3-Pass Method
 
@@ -637,16 +515,6 @@ Instead of linear notes, create concept maps:
                    • Range? → Two Binary Searches
 ```
 
-**Flow:**
-1. ARRAY SEARCH
-2. SORTED / 1D
-
-```mermaid
-flowchart TD
-    N1["ARRAY SEARCH"]
-    N3["SORTED / 1D"]
-    N1 --> N3
-```
 
 
 
@@ -677,33 +545,6 @@ flowchart TD
     └────────────────────────┴────────────────────────┘
 ```
 
-**Flow:**
-1. SLIDING WINDOW
-2. FIXED SIZE VARIABLE SIZE
-3. • Max sum of k • Longest substring
-4. • Max avg of k without repeating
-5. • Contains duplicate • Min window substring
-6. within k • Longest repeating
-7. char replacement
-
-```mermaid
-flowchart TD
-    N1["SLIDING WINDOW"]
-    N2["FIXED SIZE VARIABLE SIZE"]
-    N3["• Max sum of k • Longest substring"]
-    N4["• Max avg of k without repeating"]
-    N5["• Contains duplicate • Min window substring"]
-    N6["within k • Longest repeating"]
-    N7["char replacement"]
-    N8["Template: Template:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -810,32 +651,6 @@ Eventually solve without help
 Result: Actually retained!
 ```
 
-**Flow:**
-1. Watch solution video
-2. 'I understand!'
-3. Move to next problem
-4. Struggle with problem
-5. Watch video
-6. Close video
-7. Solve from scratch
-8. Struggle again next day
-
-```mermaid
-flowchart TD
-    N1["Watch solution video"]
-    N2["'I understand!'"]
-    N3["Move to next problem"]
-    N4["Struggle with problem"]
-    N5["Watch video"]
-    N6["Close video"]
-    N7["Solve from scratch"]
-    N8["Struggle again next day"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-    N7 --> N8
-```
 
 ## The Collection Fallacy
 
@@ -864,22 +679,6 @@ Return to medium →
 Success!
 ```
 
-**Flow:**
-1. Can't solve medium
-2. Jump to hard
-3. Frustrated
-4. Give up
-
-```mermaid
-flowchart LR
-    N1["Can't solve medium"]
-    N2["Jump to hard"]
-    N3["Frustrated"]
-    N4["Give up"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -1052,16 +851,6 @@ Keep your blurt papers - they become revision sheets!
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 'Spaced repetition BEATS last-minute cramming.' / Each
-2. Topic Day 1 Day 2 Day 3 Day 7 / Two Pointers ✓ Mon ✓ Tu
-
-```mermaid
-flowchart TD
-    N1["'Spaced repetition BEATS last-minute cramming.' / Each "]
-    N2["Topic Day 1 Day 2 Day 3 Day 7 / Two Pointers ✓ Mon ✓ Tu"]
-    N1 --> N2
-```
 
 ## 👶 Technique 5: FEYNMAN TECHNIQUE
 
@@ -1202,33 +991,6 @@ WEEKLY SCHEDULE (2-3-7 Rule):
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. THE ULTIMATE DAILY LEARNING WORKFLOW
-2. MORNING SESSION (45-15-45-15):
-3. [09:00-09:45] Deep Work Block 1:
-4. • Look at problems FIRST (Question First Approach)
-5. • Try to solve, note gaps
-6. [09:45-10:00] Break (walk, no phone!)
-7. [10:00-10:45] Deep Work Block 2:
-
-```mermaid
-flowchart TD
-    N1["THE ULTIMATE DAILY LEARNING WORKFLOW"]
-    N2["MORNING SESSION (45-15-45-15):"]
-    N3["[09:00-09:45] Deep Work Block 1:"]
-    N4["• Look at problems FIRST (Question First Approach)"]
-    N5["• Try to solve, note gaps"]
-    N6["[09:45-10:00] Break (walk, no phone!)"]
-    N7["[10:00-10:45] Deep Work Block 2:"]
-    N8["• Read theory with purpose"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

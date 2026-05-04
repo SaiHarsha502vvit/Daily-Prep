@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← TypeScript](05_React_TypeScript.md) | [Next: Testing →](07_React_Testing.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← TypeScript](05_React_TypeScript.md) | [Next: Testing →](07_React_Testing.md)
 
 ---
 
@@ -100,33 +100,8 @@ function UserDetail() {
 }
 ```
 
-**Flow:**
-1. useEffect + fetch (basic, no caching)
-2. React Router v6.4 Loader (fetch before component render const router = createBrowserRouter([ path: '/users/:id', element: <UserDetail />, loader: async ({ params }) => { const res = await fetch('/api/users/' + params.id);
-
-```mermaid
-flowchart TD
-    N1["1. useEffect + fetch (basic, no caching)"]
-    N2["React Router v6.4 Loader (fetch before component render"]
-    N3["const router = createBrowserRouter(["]
-    N4["path: '/users/:id',"]
-    N5["element: &lt;UserDetail /&gt;,"]
-    N6["loader: async ({ params }) =&gt; {"]
-    N7["const res = await fetch('/api/users/' + params.id);"]
-    N8["return res.json();"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
-
-
-
 
 ## API Layer Pattern (Production)
 
@@ -195,8 +170,6 @@ export function useCreateUser() {
 
 ---
 
-
-
 ## Form Handling (React Hook Form + Zod)
 
 ```tsx
@@ -251,9 +224,6 @@ function UserForm() {
 ```
 
 ---
-
-
-
 
 ## React Router v6.4+ Data APIs (Advanced)
 
@@ -366,8 +336,6 @@ function Dashboard() {
 
 ---
 
-
-
 🔬 **Section Challenge — Defer & Suspense (Streaming Data)**
 
 **Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
@@ -381,7 +349,6 @@ Not until `collect()` (or any terminal operation). `filter()` and `map()` are LA
 
 `IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
 </details>
-
 
 ## Advanced Authentication Flow
 
@@ -457,6 +424,62 @@ function LoginPage() {
 
 ---
 
+## 🎓 MIT/KTH SYSTEMS DEEP DIVE: The Race-Condition Router Trap
+
+Junior engineers think routing is just "showing a new component when the URL changes." Systems engineers understand routing is a **highly-concurrent asynchronous state machine**. The user can click multiple links before the first network request even finishes.
+
+### Trap 1: The `useEffect` Fetch Race (The Classic Router Bug)
+
+When navigating between identical routes that only change params (e.g., `/user/1` to `/user/2`), React does *not* unmount and remount the component. It simply updates the `userId` prop. Overlapping `useEffect` data-fetches create race conditions where the final data displayed does not match the URL.
+
+**The Broken Junior Code:**
+```jsx
+// URL jumps from /user/1 -> /user/2 quickly.
+function UserProfile() {
+  const { id } = useParams();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // BUG: If fetch(1) takes 500ms, but fetch(2) takes 100ms.
+    // fetch(2) finishes first and sets user to #2.
+    // fetch(1) finishes later and sets user to #1.
+    // Result: URL says /user/2, but screen shows User #1!
+    fetch(`/api/users/${id}`)
+      .then(res => res.json())
+      .then(data => setUser(data));
+  }, [id]);
+
+  return <div>{user?.name}</div>;
+}
+```
+
+**The Systems Fix: AbortControllers & Router Loaders**
+React Router v6.4+ solves this architecturally using **Loaders**. Loaders run BEFORE the component mounts, and React Router automatically cancels pending loader requests if the user navigates away.
+
+```jsx
+// 1. Define the loader outside the component
+const userLoader = async ({ params, request }) => {
+  // `request.signal` is an AbortSignal automatically wired to the router
+  const res = await fetch(`/api/users/${params.id}`, {
+    signal: request.signal // Cancels in-flight request if user clicks away!
+  });
+  return res.json();
+};
+
+// 2. The Component becomes purely declarative (No useEffect!)
+function UserProfile() {
+  const user = useLoaderData(); // 100% race-condition free
+  return <div>{user.name}</div>;
+}
+```
+
+### Trap 2: "History" vs The "Back Button"
+
+Single Page Applications (SPAs) intercept `history.pushState`. If you manage state entirely locally (like standard `useState` modal toggles or pagination), hitting the "Back" button skips your local state and pops the whole URL, which breaks user expectation.
+**The Systems Rule:** If the user could ever want to bookmark it, refresh the page, or click "Back" to undo it, **it must live in the URL State (`useSearchParams`)**, not purely in React `useState`.
+
+---
+
 ## 🔗 Cross-References
 
 | Topic | Related Content |
@@ -465,4 +488,3 @@ function LoginPage() {
 | **Component Patterns** | [Component Patterns](02_Component_Patterns.md) — Composition |
 | **Testing Routes** | [React Testing](07_React_Testing.md) — Mocking navigation |
 | **API Backend** | [Node.js Express](../13_Node_Backend/01_Express_Basics.md) |
-

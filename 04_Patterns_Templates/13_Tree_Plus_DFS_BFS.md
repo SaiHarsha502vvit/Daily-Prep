@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](12_LinkedList_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Graph_Plus_Traversal.md)
+﻿**Navigation**: [< Previous](12_LinkedList_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Graph_Plus_Traversal.md)
 
 # Tree + DFS/BFS — Combined Pattern Guide
 
@@ -135,66 +135,6 @@ DFS (Postorder): 4 → 5 → 2 → 6 → 7 → 3 → 1  (children first)
 BFS (Level):     1 | 2,3 | 4,5,6,7             (level by level)
 ```
 
-**Flow:**
-1. Tree: 1
-2. DFS (Preorder): 1
-3. 2
-4. 4
-5. 5
-6. 3
-7. 6
-8. 7 (go deep firs
-9. DFS (Preorder): 1
-10. 2
-11. 4
-12. 5
-13. 3
-14. 6
-15. 7 (go deep firs
-16. DFS (Inorder): 4
-17. 2
-18. 5
-19. 1
-20. 6
-21. 3
-22. 7 (left-root-rig
-23. DFS (Inorder): 4
-24. 2
-25. 5
-26. 1
-27. 6
-28. 3
-29. 7 (left-root-rig
-30. DFS (Postorder): 4
-31. 5
-32. 2
-33. 6
-34. 7
-35. 3
-36. 1 (children fi
-37. DFS (Postorder): 4
-38. 5
-39. 2
-40. 6
-41. 7
-42. 3
-43. 1 (children fi
-44. BFS (Level): 1
-45. 2,3
-46. 4,5,6,7 (level by level)
-
-```mermaid
-flowchart TD
-    N1["Tree: 1"]
-    N2["DFS (Preorder): 1 → 2 → 4 → 5 → 3 → 6 → 7 (go deep firs"]
-    N3["DFS (Inorder): 4 → 2 → 5 → 1 → 6 → 3 → 7 (left-root-rig"]
-    N4["DFS (Postorder): 4 → 5 → 2 → 6 → 7 → 3 → 1 (children fi"]
-    N5["BFS (Level): 1 | 2,3 | 4,5,6,7 (level by level)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ---
 
@@ -224,16 +164,6 @@ Step-by-step:
 Time: O(n) | Space: O(h)
 ```
 
-**Flow:**
-1. must be > 5. But 3 < 5
-2. INVALID.
-
-```mermaid
-flowchart LR
-    N1["must be &gt; 5. But 3 &lt; 5"]
-    N2["INVALID."]
-    N1 --> N2
-```
 
 ---
 
@@ -278,16 +208,6 @@ KEY: The "level snapshot" trick = process exactly queue.size() nodes per level.
 Time: O(n) | Space: O(w) where w = max width of tree
 ```
 
-**Flow:**
-1. queue = []
-2. done!
-
-```mermaid
-flowchart LR
-    N1["queue = []"]
-    N2["done!"]
-    N1 --> N2
-```
 
 ---
 
@@ -318,33 +238,6 @@ COMMON MISTAKES:
 5. Using == instead of .equals() for TreeNode values (rare but tricky)
 ```
 
-**Flow:**
-1. EDGE CASES:
-2. Edge Case Handling
-3. Null root Return empty list / false / 0
-4. Single node (leaf) Height=0, depth=0, is balanced
-5. Skewed tree (like linked list) Height = n, BFS space =
-6. Complete binary tree BFS space = O(n/2) for last level
-7. Duplicate values in BST Convention: left < root ≤ ri
-
-```mermaid
-flowchart TD
-    N1["EDGE CASES:"]
-    N2["Edge Case Handling"]
-    N3["Null root Return empty list / false / 0"]
-    N4["Single node (leaf) Height=0, depth=0, is balanced"]
-    N5["Skewed tree (like linked list) Height = n, BFS space ="]
-    N6["Complete binary tree BFS space = O(n/2) for last level"]
-    N7["Duplicate values in BST Convention: left &lt; root ≤ ri"]
-    N8["COMMON MISTAKES:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

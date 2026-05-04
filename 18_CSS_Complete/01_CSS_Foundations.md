@@ -1,5 +1,3 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_CSS_Layout_Systems.md)
-
 **CSS Chapter 1/4** | [Index](../00_MASTER_INDEX.md) | [Next → Layout Systems](02_CSS_Layout_Systems.md)
 
 # CSS Foundations — Selectors, Cascade, Box Model & Display
@@ -82,32 +80,6 @@ SELECTOR              │ WHAT IT TARGETS
 .parent ~ p           │ ALL <p> siblings after .parent
 ```
 
-**Flow:**
-1. <div class='parent'>
-2. <p>Direct child</p> ← child (>)
-3. <div class='parent'>
-4. <section>
-5. <div class='parent'>
-6. <p>Nested</p> ← descendant (space)
-7. <div class='parent'>
-8. <p>Another child</p> ← child (>)
-9. <div class='parent'>
-10. <p>Yet another</p> ← child (>)
-
-```mermaid
-flowchart TD
-    N1["&lt;div class='parent'&gt;"]
-    N2["&lt;p&gt;Direct child&lt;/p&gt; ← child (&gt;)"]
-    N3["&lt;section&gt;"]
-    N4["&lt;p&gt;Nested&lt;/p&gt; ← descendant (space)"]
-    N5["&lt;p&gt;Another child&lt;/p&gt; ← child (&gt;)"]
-    N6["&lt;p&gt;Yet another&lt;/p&gt; ← child (&gt;)"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-```
 
 ```css
 /* DESCENDANT (space) — any depth */
@@ -180,33 +152,6 @@ The CASCADE resolves in this ORDER (highest to lowest priority):
 If SPECIFICITY is EQUAL → LAST rule in source order wins.
 ```
 
-**Flow:**
-1. WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS?
-2. !important declarations (AVOID!)
-3. Inline styles (style='...') (RARE)
-4. ID selectors (#id) (HIGHEST specificity)
-5. Class/attribute/pseudo-class (.class, [attr])
-6. Element/pseudo-element (p, ::before)
-7. Universal (*) (LOWEST specificity)
-
-```mermaid
-flowchart TD
-    N1["WHEN MULTIPLE RULES TARGET THE SAME ELEMENT, WHO WINS?"]
-    N2["1. !important declarations (AVOID!)"]
-    N3["2. Inline styles (style='...') (RARE)"]
-    N4["3. ID selectors (#id) (HIGHEST specificity)"]
-    N5["4. Class/attribute/pseudo-class (.class, [attr])"]
-    N6["5. Element/pseudo-element (p, ::before)"]
-    N7["6. Universal (*) (LOWEST specificity)"]
-    N8["If SPECIFICITY is EQUAL → LAST rule in source order win"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Specificity Calculator
 
@@ -237,32 +182,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SPECIFICITY = (Inline, IDs, Classes, Elements)
-2. Selector Specificity Score p.intro (0,0,1,1) 11
-3. .nav .link (0,0,2,0) 20
-4. #header (0,1,0,0) 100
-5. #header .nav .link (0,1,2,0) 120
-6. #header .nav a:hover (0,1,2,1) 121
-
-```mermaid
-flowchart TD
-    N1["SPECIFICITY = (Inline, IDs, Classes, Elements)"]
-    N2["Selector Specificity Score"]
-    N3["p.intro (0,0,1,1) 11"]
-    N4[".nav .link (0,0,2,0) 20"]
-    N5["#header (0,1,0,0) 100"]
-    N6["#header .nav .link (0,1,2,0) 120"]
-    N7["#header .nav a:hover (0,1,2,1) 121"]
-    N8["style='color: red' (1,0,0,0) 1000"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Inheritance
 
@@ -318,33 +237,6 @@ BORDER-BOX (what you want):
   Content shrinks to fit. WHAT YOU SET IS WHAT YOU GET.
 ```
 
-**Flow:**
-1. THE CSS BOX MODEL (Every element is a box):
-2. MARGIN
-3. BORDER
-4. PADDING
-5. CONTENT
-6. (width × height)
-7. CONTENT-BOX (default):
-
-```mermaid
-flowchart TD
-    N1["THE CSS BOX MODEL (Every element is a box):"]
-    N2["MARGIN"]
-    N3["BORDER"]
-    N4["PADDING"]
-    N5["CONTENT"]
-    N6["(width × height)"]
-    N7["CONTENT-BOX (default):"]
-    N8["width: 300px = content is 300px"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```css
 /* ALWAYS USE THIS RESET: */
@@ -415,16 +307,6 @@ FIX/PREVENT:
 • Use overflow: hidden on parent
 ```
 
-**Flow:**
-1. Element A / margin-bottom: / 20px
-2. Element B / margin-top: / 30px
-
-```mermaid
-flowchart TD
-    N1["Element A / margin-bottom: / 20px"]
-    N2["Element B / margin-top: / 30px"]
-    N1 --> N2
-```
 
 ---
 
@@ -455,33 +337,6 @@ contents       │ Element box disappears, children act as if
                │ they're direct children of grandparent.
 ```
 
-**Flow:**
-1. display VALUE BEHAVIOR
-2. block Takes full width. New line before/after.
-3. Can set width/height. <div>, <p>, <h1&gt
-4. inline Only as wide as content. NO width/height.
-5. Same line as neighbors. <span>, <a>, <st
-6. inline-block Inline flow BUT allows width/height.
-7. Best of both worlds. <img>, <button>
-
-```mermaid
-flowchart TD
-    N1["display VALUE BEHAVIOR"]
-    N2["block Takes full width. New line before/after."]
-    N3["Can set width/height. &lt;div&gt;, &lt;p&gt;, &lt;h1&gt"]
-    N4["inline Only as wide as content. NO width/height."]
-    N5["Same line as neighbors. &lt;span&gt;, &lt;a&gt;, &lt;st"]
-    N6["inline-block Inline flow BUT allows width/height."]
-    N7["Best of both worlds. &lt;img&gt;, &lt;button&gt;"]
-    N8["none Element GONE from layout (not just invisible)."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```css
 /* VISUAL COMPARISON: */
@@ -567,28 +422,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. UNIT RELATIVE TO USE CASE
-2. px Absolute (1/96') Borders, shadows, fine details rem Root font-size Font sizes, spacing, MOST things em Parent font-size Relative to current text size % Parent element Widths, heights, layout vw Viewport width Full-width sections, fluid text vh Viewport height Full-height sections, hero banners
-
-```mermaid
-flowchart TD
-    N1["UNIT RELATIVE TO USE CASE"]
-    N2["px Absolute (1/96') Borders, shadows, fine details"]
-    N3["rem Root font-size Font sizes, spacing, MOST things"]
-    N4["em Parent font-size Relative to current text size"]
-    N5["% Parent element Widths, heights, layout"]
-    N6["vw Viewport width Full-width sections, fluid text"]
-    N7["vh Viewport height Full-height sections, hero banners"]
-    N8["dvh Dynamic viewport Mobile-safe vh (accounts for toolb"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Typography
 
@@ -645,7 +478,12 @@ flowchart TD
 
 
 🔬 **Section Challenge — 5. Colors, Typography & Units**
->>
+
+**Challenge 1 (Reasoning):** You write `.card .title { color: red; }` and also `#main .title { color: blue; }`. Both match the same element. Which wins and why? Now add `!important` to the first — what changes?
+<details><summary>Answer</summary>
+
+Without `!important`: `#main .title` wins because ID selectors (specificity `1-1-0`) outweigh class selectors (specificity `0-2-0`). Specificity is calculated as `(inline, ID, class, element)`. With `!important` on the first rule: the first rule wins because `!important` creates a separate priority tier that overrides ALL normal specificity. But if BOTH have `!important`, specificity decides again. This is why `!important` is dangerous — the only way to override `!important` is more `!important`, leading to specificity arms races.
+</details>
 
 ## 6. Backgrounds, Shadows & Borders
 
@@ -711,31 +549,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. POSITION RELATIVE TO IN FLOW? USE CASE
-2. static Normal document flow YES Default (no offset)
-3. relative Its normal position YES Offset + context
-4. absolute Nearest positioned NO Overlays, tooltips
-5. ancestor
-6. fixed Viewport NO Sticky nav, modals
-7. sticky Scroll threshold YES* Sticky headers
-
-```mermaid
-flowchart TD
-    N1["POSITION RELATIVE TO IN FLOW? USE CASE"]
-    N2["static Normal document flow YES Default (no offset)"]
-    N3["relative Its normal position YES Offset + context"]
-    N4["absolute Nearest positioned NO Overlays, tooltips"]
-    N5["ancestor"]
-    N6["fixed Viewport NO Sticky nav, modals"]
-    N7["sticky Scroll threshold YES* Sticky headers"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```css
 /* ABSOLUTE + RELATIVE pattern (most common): */
@@ -802,32 +615,6 @@ Children of z-index:5 can NEVER be above a sibling with z:10.
 This is why z-index "doesn't work" sometimes!
 ```
 
-**Flow:**
-1. Z-INDEX GUIDE:
-2. z-index only works on POSITIONED elements (not static).
-3. LAYER SYSTEM (use consistent values):
-4. z-index: 9999 MODAL OVERLAY ← On top of everything
-5. z-index: 1000 NAVIGATION z-index: 100 DROPDOWN/POPUP
-6. z-index: 50 STICKY ELEMENTS
-
-```mermaid
-flowchart TD
-    N1["Z-INDEX GUIDE:"]
-    N2["z-index only works on POSITIONED elements (not static)."]
-    N3["LAYER SYSTEM (use consistent values):"]
-    N4["z-index: 9999 MODAL OVERLAY ← On top of everything"]
-    N5["z-index: 1000 NAVIGATION"]
-    N6["z-index: 100 DROPDOWN/POPUP"]
-    N7["z-index: 50 STICKY ELEMENTS"]
-    N8["z-index: 10 FLOATING UI"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -921,32 +708,7 @@ Q: What is the cascade?
   these priority levels to determine final applied styles.
 ```
 
-**Flow:**
-1. Every element is a box: Content
-2. Padding
-3. Border
-4. Margin.
-5. CSS applies rules in order: importance (!important specificity
-
-```mermaid
-flowchart LR
-    N1["Every element is a box: Content"]
-    N2["Padding"]
-    N3["Border"]
-    N4["Margin."]
-    N5["CSS applies rules in order: importance (!important"]
-    N6["specificity"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
 [Index](../00_MASTER_INDEX.md) | [Next → Layout Systems (Flex, Grid)](02_CSS_Layout_Systems.md)
-
-
----
-
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_CSS_Layout_Systems.md)

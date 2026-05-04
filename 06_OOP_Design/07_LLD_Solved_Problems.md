@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Design Patterns](02_Design_Patterns.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Design Patterns](02_Design_Patterns.md)
 🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md)
 
 ---
@@ -132,31 +132,6 @@ Observer Pattern  → Notify display boards when spot count changes
 Singleton Pattern → ParkingLot instance (debatable, prefer DI)
 ```
 
-**Flow:**
-1. Strategy Pattern
-2. PricingStrategy (hourly, flat rate, weekend rates)
-3. Factory Pattern
-4. Could create vehicles from license plate scan
-5. Observer Pattern
-6. Notify display boards when spot count changes
-7. Singleton Pattern
-8. ParkingLot instance (debatable, prefer DI)
-
-```mermaid
-flowchart LR
-    N1["Strategy Pattern"]
-    N2["PricingStrategy (hourly, flat rate, weekend rates)"]
-    N3["Factory Pattern"]
-    N4["Could create vehicles from license plate scan"]
-    N5["Observer Pattern"]
-    N6["Notify display boards when spot count changes"]
-    N7["Singleton Pattern"]
-    N8["ParkingLot instance (debatable, prefer DI)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
 
 ---
 
@@ -270,27 +245,6 @@ class BookingService {
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. Timeline of concurrent booking:
-2. User A pays at t=3
-3. confirmBooking
-4. BOOKED
-5. User A pays at t=3
-6. confirmBooking
-7. BOOKED
-8. OR optimistic lock with version column:
-9. UPDATE seat_status SET status='LOCKED', version=version
-
-```mermaid
-flowchart TD
-    N1["Timeline of concurrent booking:"]
-    N2["User A pays at t=3 → confirmBooking → BOOKED"]
-    N3["OR optimistic lock with version column:"]
-    N4["UPDATE seat_status SET status='LOCKED', version=version"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 

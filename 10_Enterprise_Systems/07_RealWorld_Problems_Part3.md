@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](06_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_RealWorld_Incidents_DSA.md)
+﻿**Navigation**: [< Previous](06_RealWorld_Problems_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_RealWorld_Incidents_DSA.md)
 
 # 🎯 Real-World Problems - Part 3: Interview Favorites
 
@@ -162,33 +162,6 @@ ALGORITHMS:
 4. Token Bucket: Most flexible
 ```
 
-**Flow:**
-1. COMPANY: Every API-based company
-2. SYSTEM: API Gateway
-3. CHALLENGE: Limit requests to 100 per minute per user
-4. WHY NEEDED:
-5. - Prevent abuse
-6. - Fair usage
-7. - Protect servers
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Every API-based company"]
-    N2["SYSTEM: API Gateway"]
-    N3["CHALLENGE: Limit requests to 100 per minute per user"]
-    N4["WHY NEEDED:"]
-    N5["- Prevent abuse"]
-    N6["- Fair usage"]
-    N7["- Protect servers"]
-    N8["ALGORITHMS:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 /**
@@ -385,19 +358,6 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: Google / Amazon Search
-2. SYSTEM: Search Bar
-3. FEATURE: Show top 5 suggestions as user types
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Google / Amazon Search"]
-    N2["SYSTEM: Search Bar"]
-    N3["FEATURE: Show top 5 suggestions as user types"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 /**
@@ -561,16 +521,6 @@ public class SearchAutocomplete {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: Twitter / Reddit
-2. SYSTEM: Trending Topics
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Twitter / Reddit"]
-    N2["SYSTEM: Trending Topics"]
-    N1 --> N2
-```
 
 ```java
 /**
@@ -727,19 +677,6 @@ public class TrendingTopicsService {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: Any Data Company
-2. SYSTEM: ETL Pipeline
-3. CHALLENGE: Sort 100GB CSV file with only 4GB RAM
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Any Data Company"]
-    N2["SYSTEM: ETL Pipeline"]
-    N3["CHALLENGE: Sort 100GB CSV file with only 4GB RAM"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 /**
@@ -910,19 +847,6 @@ public class ExternalSort {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: Google Drive / Dropbox
-2. SYSTEM: Storage Optimization
-3. CHALLENGE: Find and remove duplicate files to save stor
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Google Drive / Dropbox"]
-    N2["SYSTEM: Storage Optimization"]
-    N3["CHALLENGE: Find and remove duplicate files to save stor"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 /**
@@ -1091,16 +1015,6 @@ public class DuplicateFileFinder {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: Ludo King / PUBG
-2. SYSTEM: Gaming Leaderboard
-
-```mermaid
-flowchart TD
-    N1["COMPANY: Ludo King / PUBG"]
-    N2["SYSTEM: Gaming Leaderboard"]
-    N1 --> N2
-```
 
 ```java
 /**
@@ -1266,19 +1180,6 @@ public class GameLeaderboard {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMPANY: PUBG / Valorant / Chess.com
-2. SYSTEM: Multiplayer Matchmaking
-3. CHALLENGE: Match players with similar skill for fair ga
-
-```mermaid
-flowchart TD
-    N1["COMPANY: PUBG / Valorant / Chess.com"]
-    N2["SYSTEM: Multiplayer Matchmaking"]
-    N3["CHALLENGE: Match players with similar skill for fair ga"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 /**

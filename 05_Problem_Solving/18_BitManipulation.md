@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](17_HashMap_Hashing.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix.md)
+﻿> **Navigation**: [< Previous](17_HashMap_Hashing.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix.md)
 
 > **Problems 18/22** | [Prev](17_HashMap_Hashing.md) | [Index](../00_MASTER_INDEX.md) | [Next](19_Matrix.md)
 
@@ -29,36 +29,6 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BIT MANIPULATION & MATH PATTERNS
-2. BITS ARE THE ATOMS OF COMPUTATION
-3. Every integer in memory is already a sequence of bits.
-4. Bit operations are single CPU instructions — O(1) each,
-5. the fastest operations possible on any processor.
-6. Decimal 13
-7. Binary 1101
-8. Decimal 13
-9. Binary 1101
-10. bit: 3210
-
-```mermaid
-flowchart TD
-    N1["BIT MANIPULATION & MATH PATTERNS"]
-    N2["BITS ARE THE ATOMS OF COMPUTATION"]
-    N3["Every integer in memory is already a sequence of bits."]
-    N4["Bit operations are single CPU instructions — O(1) each,"]
-    N5["the fastest operations possible on any processor."]
-    N6["Decimal 13 → Binary 1101"]
-    N7["bit: 3210"]
-    N8["INTERVIEW FREQUENCY: ~5-8% of coding problems"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -366,33 +336,6 @@ public int singleNumber(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MISSING NUMBER — Array of [0..n] with one number missin
-2. Input: [3, 0, 1] (n = 3, range [0..3])
-3. Output: 2
-4. APPROACH: XOR all indices [0..n] with all values.
-5. Paired index-value cancel, missing number remains.
-6. TRACE:
-7. Index: 0 1 2 (plus n=3)
-
-```mermaid
-flowchart TD
-    N1["MISSING NUMBER — Array of [0..n] with one number missin"]
-    N2["Input: [3, 0, 1] (n = 3, range [0..3])"]
-    N3["Output: 2"]
-    N4["APPROACH: XOR all indices [0..n] with all values."]
-    N5["Paired index-value cancel, missing number remains."]
-    N6["TRACE:"]
-    N7["Index: 0 1 2 (plus n=3)"]
-    N8["Value: 3 0 1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Solution:**
 
@@ -440,33 +383,6 @@ public int missingNumber(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SINGLE NUMBER II — Every element appears 3 times except
-2. Input: [2, 2, 3, 2]
-3. Output: 3
-4. XOR won't work (a^a^a = a, not 0)!
-5. APPROACH: Count bits mod 3
-6. For each bit position (0 to 31):
-7. Count how many numbers have that bit set.
-
-```mermaid
-flowchart TD
-    N1["SINGLE NUMBER II — Every element appears 3 times except"]
-    N2["Input: [2, 2, 3, 2]"]
-    N3["Output: 3"]
-    N4["XOR won't work (a^a^a = a, not 0)!"]
-    N5["APPROACH: Count bits mod 3"]
-    N6["For each bit position (0 to 31):"]
-    N7["Count how many numbers have that bit set."]
-    N8["If count % 3 ≠ 0, the unique number has that bit set."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Solution (Bit Counting):**
 
@@ -543,37 +459,6 @@ public int singleNumberStateMachine(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SINGLE NUMBER III — TWO elements appear once, rest twic
-2. Input: [1, 2, 1, 3, 2, 5]
-3. Output: [3, 5]
-4. STEP 1: XOR all
-5. get xorAll = 3 ^ 5 = 6 (110)
-6. STEP 1: XOR all
-7. get xorAll = 3 ^ 5 = 6 (110)
-8. This is XOR of the two unique numbers.
-9. STEP 2: Find rightmost set bit of xorAll.
-10. 6 = 110
-11. rightmost set bit = 010 (bit 1)
-
-```mermaid
-flowchart TD
-    N1["SINGLE NUMBER III — TWO elements appear once, rest twic"]
-    N2["Input: [1, 2, 1, 3, 2, 5]"]
-    N3["Output: [3, 5]"]
-    N4["STEP 1: XOR all → get xorAll = 3 ^ 5 = 6 (110)"]
-    N5["This is XOR of the two unique numbers."]
-    N6["STEP 2: Find rightmost set bit of xorAll."]
-    N7["6 = 110 → rightmost set bit = 010 (bit 1)"]
-    N8["This bit DIFFERS between the two unique numbers."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Solution:**
 
@@ -641,33 +526,6 @@ public int[] singleNumber(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. POWER OF TWO — Check if n is a power of 2
-2. Powers of 2 in binary:
-3. 8 = 1000 ← exactly ONE bit set!
-4. KEY INSIGHT: n & (n - 1) clears the lowest set bit.
-5. If n is a power of 2, it has exactly one bit set.
-6. Clearing it gives 0.
-7. 8 & 7 = 1000 & 0111 = 0000 ✓ (power of 2)
-
-```mermaid
-flowchart TD
-    N1["POWER OF TWO — Check if n is a power of 2"]
-    N2["Powers of 2 in binary:"]
-    N3["8 = 1000 ← exactly ONE bit set!"]
-    N4["KEY INSIGHT: n & (n - 1) clears the lowest set bit."]
-    N5["If n is a power of 2, it has exactly one bit set."]
-    N6["Clearing it gives 0."]
-    N7["8 & 7 = 1000 & 0111 = 0000 ✓ (power of 2)"]
-    N8["6 & 5 = 0110 & 0101 = 0100 ✗ (not power of 2)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Solution:**
 
@@ -710,33 +568,6 @@ public boolean isPowerOfTwo(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COUNTING BITS — For every i in [0..n], count set bits
-2. Input: n = 5
-3. Output: [0, 1, 1, 2, 1, 2]
-4. DP RECURRENCE: dp[i] = dp[i & (i - 1)] + 1
-5. WHY: i & (i-1) clears the lowest set bit of i.
-6. So dp[i] = (number of bits in i with lowest cleared) +
-7. = dp[parent] + 1
-
-```mermaid
-flowchart TD
-    N1["COUNTING BITS — For every i in [0..n], count set bits"]
-    N2["Input: n = 5"]
-    N3["Output: [0, 1, 1, 2, 1, 2]"]
-    N4["DP RECURRENCE: dp[i] = dp[i & (i - 1)] + 1"]
-    N5["WHY: i & (i-1) clears the lowest set bit of i."]
-    N6["So dp[i] = (number of bits in i with lowest cleared) +"]
-    N7["= dp[parent] + 1"]
-    N8["TRACE:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Solution:**
 
@@ -777,33 +608,6 @@ public int[] countBits(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. HAMMING WEIGHT — Count number of 1 bits in an integer
-2. Input: n = 11 (1011)
-3. Output: 3
-4. BRIAN KERNIGHAN'S ALGORITHM:
-5. Loop: n = n & (n-1) clears one set bit per iteration.
-6. Count iterations = number of set bits.
-7. TRACE:
-
-```mermaid
-flowchart TD
-    N1["HAMMING WEIGHT — Count number of 1 bits in an integer"]
-    N2["Input: n = 11 (1011)"]
-    N3["Output: 3"]
-    N4["BRIAN KERNIGHAN'S ALGORITHM:"]
-    N5["Loop: n = n & (n-1) clears one set bit per iteration."]
-    N6["Count iterations = number of set bits."]
-    N7["TRACE:"]
-    N8["n = 0 → STOP. Answer = 3 ✓"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Solution:**
 
@@ -843,34 +647,6 @@ public int hammingWeight(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. REVERSE BITS — Reverse all 32 bits of an unsigned integ
-2. Input: 0000...1011 (11)
-3. Output: 1101...0000 (3489660928 or 0xD0000000)
-4. APPROACH: Extract each bit from right, place into resul
-5. from left. Process all 32 bits.
-6. result <<= 1 (make room)
-7. result
-8. = (n & 1) (copy lowest bit of n)
-
-```mermaid
-flowchart TD
-    N1["REVERSE BITS — Reverse all 32 bits of an unsigned integ"]
-    N2["Input: 0000...1011 (11)"]
-    N3["Output: 1101...0000 (3489660928 or 0xD0000000)"]
-    N4["APPROACH: Extract each bit from right, place into resul"]
-    N5["from left. Process all 32 bits."]
-    N6["result &lt;&lt;= 1 (make room)"]
-    N7["result |= (n & 1) (copy lowest bit of n)"]
-    N8["n &gt;&gt;&gt;= 1 (move to next bit of n)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int reverseBits(int n) {
@@ -905,31 +681,6 @@ public int reverseBits(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. HAMMING DISTANCE — Count positions where bits differ
-2. Input: x = 1 (0001), y = 4 (0100)
-3. Output: 2
-4. APPROACH: XOR gives 1 at positions where bits differ.
-5. Count set bits in x ^ y
-6. that's the Hamming distance.
-7. Count set bits in x ^ y
-8. that's the Hamming distance.
-9. Time: O(1) Space: O(1)
-
-```mermaid
-flowchart TD
-    N1["HAMMING DISTANCE — Count positions where bits differ"]
-    N2["Input: x = 1 (0001), y = 4 (0100)"]
-    N3["Output: 2"]
-    N4["APPROACH: XOR gives 1 at positions where bits differ."]
-    N5["Count set bits in x ^ y → that's the Hamming distance."]
-    N6["Time: O(1) Space: O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```java
 public int hammingDistance(int x, int y) {
@@ -980,42 +731,6 @@ public int hammingDistance(int x, int y) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. REVERSE INTEGER — Reverse digits with overflow handling
-2. Input: 123
-3. 321
-4. Input: 123
-5. 321
-6. Input: -123
-7. -321
-8. Input: -123
-9. -321
-10. Input: 120
-11. 21
-12. Input: 120
-13. 21
-14. If overflow: return 0
-15. APPROACH: Build reversed number digit-by-digit.
-16. Extract last digit: digit = x % 10
-
-```mermaid
-flowchart TD
-    N1["REVERSE INTEGER — Reverse digits with overflow handling"]
-    N2["Input: 123 → 321"]
-    N3["Input: -123 → -321"]
-    N4["Input: 120 → 21"]
-    N5["If overflow: return 0"]
-    N6["APPROACH: Build reversed number digit-by-digit."]
-    N7["Extract last digit: digit = x % 10"]
-    N8["Build reverse: rev = rev * 10 + digit"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Solution:**
 
@@ -1071,42 +786,6 @@ public int reverse(int x) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PALINDROME NUMBER — Check without converting to string
-2. Input: 121
-3. true
-4. Input: 121
-5. true
-6. Input: -121
-7. false (leading '-')
-8. Input: -121
-9. false (leading '-')
-10. Input: 10
-11. false
-12. Input: 10
-13. false
-14. APPROACH: Reverse ONLY the second half, compare with fi
-15. This avoids overflow (we never build the full reverse).
-16. TRACE (x = 12321):
-
-```mermaid
-flowchart TD
-    N1["PALINDROME NUMBER — Check without converting to string"]
-    N2["Input: 121 → true"]
-    N3["Input: -121 → false (leading '-')"]
-    N4["Input: 10 → false"]
-    N5["APPROACH: Reverse ONLY the second half, compare with fi"]
-    N6["This avoids overflow (we never build the full reverse)."]
-    N7["TRACE (x = 12321):"]
-    N8["x = 12321, rev = 0"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Solution:**
 
@@ -1152,28 +831,6 @@ public boolean isPalindrome(int x) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ADD BINARY — Add two binary strings
-2. Input: a = '1010', b = '1011'
-3. Output: '10101'
-4. 1 0 1 0 1 (carry propagates)
-5. At each position: sum = digitA + digitB + carry
-6. Result digit = sum % 2. New carry = sum / 2.
-
-```mermaid
-flowchart TD
-    N1["ADD BINARY — Add two binary strings"]
-    N2["Input: a = '1010', b = '1011'"]
-    N3["Output: '10101'"]
-    N4["1 0 1 0 1 (carry propagates)"]
-    N5["At each position: sum = digitA + digitB + carry"]
-    N6["Result digit = sum % 2. New carry = sum / 2."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Full Solution:**
 
@@ -1216,22 +873,6 @@ public String addBinary(String a, String b) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. EXCEL COLUMN TITLE — Convert number to column title
-2. APPROACH: Like base-26 conversion, but 1-indexed.
-3. char = 'A' + (n % 26);
-4. Time: O(log₂₆(n)) Space: O(1)
-
-```mermaid
-flowchart TD
-    N1["EXCEL COLUMN TITLE — Convert number to column title"]
-    N2["APPROACH: Like base-26 conversion, but 1-indexed."]
-    N3["char = 'A' + (n % 26);"]
-    N4["Time: O(log₂₆(n)) Space: O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```java
 public String convertToTitle(int n) {
@@ -1268,39 +909,6 @@ public String convertToTitle(int n) {
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MAX PRODUCT OF THREE
-2. Input: [1, 2, 3, 4]
-3. Output: 24 (2×3×4)
-4. Input: [1, 2, 3, 4]
-5. Output: 24 (2×3×4)
-6. Input: [-4, -3, 1, 2, 3]
-7. Output: 36 ((-4)×(-3)×3)
-8. Input: [-4, -3, 1, 2, 3]
-9. Output: 36 ((-4)×(-3)×3)
-10. APPROACH: After sorting, answer is max of:
-11. 1. Three largest: nums[n-1] × nums[n-2] × nums[n-3]
-12. WHY? Two negatives multiply to positive, which × larges
-13. positive could exceed three positives.
-
-```mermaid
-flowchart TD
-    N1["MAX PRODUCT OF THREE"]
-    N2["Input: [1, 2, 3, 4] → Output: 24 (2×3×4)"]
-    N3["Input: [-4, -3, 1, 2, 3] → Output: 36 ((-4)×(-3)×3)"]
-    N4["APPROACH: After sorting, answer is max of:"]
-    N5["1. Three largest: nums[n-1] × nums[n-2] × nums[n-3]"]
-    N6["WHY? Two negatives multiply to positive, which × larges"]
-    N7["positive could exceed three positives."]
-    N8["Time: O(n log n) Space: O(1) or O(n) for sort"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int maximumProduct(int[] nums) {
@@ -1332,31 +940,6 @@ public int maximumProduct(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. KTH FACTOR OF N
-2. Input: n = 12, k = 3
-3. Output: 3 (factors: 1,2,3,4,6,12
-4. Input: n = 12, k = 3
-5. Output: 3 (factors: 1,2,3,4,6,12
-6. APPROACH: Iterate 1 to √n, collect smaller factors.
-7. If k-th not found, check larger factors (n/factor) in
-8. reverse order. Total factors come in pairs.
-9. Time: O(√n) Space: O(1)
-
-```mermaid
-flowchart TD
-    N1["KTH FACTOR OF N"]
-    N2["Input: n = 12, k = 3 → Output: 3 (factors: 1,2,3,4,6,12"]
-    N3["APPROACH: Iterate 1 to √n, collect smaller factors."]
-    N4["If k-th not found, check larger factors (n/factor) in"]
-    N5["reverse order. Total factors come in pairs."]
-    N6["Time: O(√n) Space: O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```java
 public int kthFactor(int n, int k) {
@@ -1393,43 +976,6 @@ public int kthFactor(int n, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. HAPPY NUMBER — Detect cycle in digit-square-sum sequenc
-2. Process: Replace n with sum of squares of its digits.
-3. If reaches 1
-4. happy. If cycles
-5. not happy.
-6. If reaches 1
-7. happy. If cycles
-8. not happy.
-9. APPROACH: Floyd's cycle detection (fast/slow pointers).
-10. slow = step(n), fast = step(step(n)).
-11. If fast reaches 1
-12. happy. If slow == fast
-13. cycle
-14. no
-15. If fast reaches 1
-16. happy. If slow == fast
-17. cycle
-18. no
-19. Time: O(log n) Space: O(1) with Floyd's
-
-```mermaid
-flowchart TD
-    N1["HAPPY NUMBER — Detect cycle in digit-square-sum sequenc"]
-    N2["Process: Replace n with sum of squares of its digits."]
-    N3["If reaches 1 → happy. If cycles → not happy."]
-    N4["APPROACH: Floyd's cycle detection (fast/slow pointers)."]
-    N5["slow = step(n), fast = step(step(n))."]
-    N6["If fast reaches 1 → happy. If slow == fast → cycle → no"]
-    N7["Time: O(log n) Space: O(1) with Floyd's"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```java
 public boolean isHappy(int n) {
@@ -1471,31 +1017,6 @@ private int step(int n) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. VALID SQUARE — Given 4 points, check if they form a squ
-2. APPROACH: Compute all 6 pairwise distances.
-3. A valid square has: 4 equal sides + 2 equal diagonals.
-4. Diagonals = √2 × side.
-5. So among 6 distances: 4 must be equal (sides) and
-6. 2 must be equal AND longer (diagonals). All > 0.
-7. Time: O(1) Space: O(1)
-
-```mermaid
-flowchart TD
-    N1["VALID SQUARE — Given 4 points, check if they form a squ"]
-    N2["APPROACH: Compute all 6 pairwise distances."]
-    N3["A valid square has: 4 equal sides + 2 equal diagonals."]
-    N4["Diagonals = √2 × side."]
-    N5["So among 6 distances: 4 must be equal (sides) and"]
-    N6["2 must be equal AND longer (diagonals). All &gt; 0."]
-    N7["Time: O(1) Space: O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```java
 public boolean validSquare(int[] p1, int[] p2, int[] p3, int[] p4) {
@@ -1542,37 +1063,6 @@ private int dist(int[] a, int[] b) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MAX POINTS ON A LINE — Find max collinear points
-2. Input: [[1,1],[2,2],[3,3],[1,2],[2,3]]
-3. Output: 3 (points [1,1],[2,2],[3,3] are collinear)
-4. APPROACH: For each point i, compute slope to every othe
-5. point j. Use HashMap<String, Integer> of slopes.
-6. Slope = dy/dx
-7. normalize with GCD to avoid floating po
-8. Slope = dy/dx
-9. normalize with GCD to avoid floating po
-10. Handle vertical lines: dx=0
-11. slope = 'INF'.
-
-```mermaid
-flowchart TD
-    N1["MAX POINTS ON A LINE — Find max collinear points"]
-    N2["Input: [[1,1],[2,2],[3,3],[1,2],[2,3]]"]
-    N3["Output: 3 (points [1,1],[2,2],[3,3] are collinear)"]
-    N4["APPROACH: For each point i, compute slope to every othe"]
-    N5["point j. Use HashMap&lt;String, Integer&gt; of slopes."]
-    N6["Slope = dy/dx → normalize with GCD to avoid floating po"]
-    N7["Handle vertical lines: dx=0 → slope = 'INF'."]
-    N8["Slope representation: 'dy/dx' where gcd(|dy|,|dx|) divi"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Solution:**
 
@@ -1659,40 +1149,6 @@ private int gcd(int a, int b) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. GENERATE ALL SUBSETS OF [1, 2, 3] USING BITMASK
-2. n = 3 elements
-3. 2³ = 8 subsets
-4. n = 3 elements
-5. 2³ = 8 subsets
-6. Iterate mask from 0 to 7 (binary 000 to 111):
-7. mask binary bits set for [1,2,3] subset
-8. 0 000 none {}
-9. 1 001 index 0
-10. 1 {1}
-11. 1 001 index 0
-12. 1 {1}
-13. 2 010 index 1
-14. 2 {2}
-
-```mermaid
-flowchart TD
-    N1["GENERATE ALL SUBSETS OF [1, 2, 3] USING BITMASK"]
-    N2["n = 3 elements → 2³ = 8 subsets"]
-    N3["Iterate mask from 0 to 7 (binary 000 to 111):"]
-    N4["mask binary bits set for [1,2,3] subset"]
-    N5["0 000 none {}"]
-    N6["1 001 index 0 → 1 {1}"]
-    N7["2 010 index 1 → 2 {2}"]
-    N8["3 011 index 0,1 → 1,2 {1, 2}"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Walkthrough Implementation:**
 
@@ -1747,36 +1203,6 @@ public List<List<Integer>> subsets(int[] nums) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COUNT SUBSETS WITH SUM = TARGET
-2. Input: nums = [1, 2, 3, 4, 5], target = 5
-3. Output: 3
-4. {5}, {2,3}, {1,4}
-5. Output: 3
-6. {5}, {2,3}, {1,4}
-7. METHOD 1: BITMASK BRUTE FORCE (for n ≤ 20)
-8. Enumerate all 2ⁿ subsets, compute sum, count matches.
-9. Time: O(n × 2ⁿ)
-10. METHOD 2: DP (0/1 Knapsack counting — for larger n)
-
-```mermaid
-flowchart TD
-    N1["COUNT SUBSETS WITH SUM = TARGET"]
-    N2["Input: nums = [1, 2, 3, 4, 5], target = 5"]
-    N3["Output: 3 → {5}, {2,3}, {1,4}"]
-    N4["METHOD 1: BITMASK BRUTE FORCE (for n ≤ 20)"]
-    N5["Enumerate all 2ⁿ subsets, compute sum, count matches."]
-    N6["Time: O(n × 2ⁿ)"]
-    N7["METHOD 2: DP (0/1 Knapsack counting — for larger n)"]
-    N8["dp[j] = number of subsets with sum j."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Full Solutions:**
 
@@ -1832,34 +1258,6 @@ public int countSubsetsWithSumDP(int[] nums, int target) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PARTITION EQUAL SUBSET SUM
-2. Can we partition array into two subsets with equal sum?
-3. Equivalent to: does a subset with sum = totalSum / 2 ex
-4. APPROACH: 0/1 knapsack boolean DP (see DP section).
-5. dp[j] = true if a subset with sum j exists.
-6. dp[0] = true
-7. For each num: dp[j]
-8. = dp[j - num] (reverse order)
-
-```mermaid
-flowchart TD
-    N1["PARTITION EQUAL SUBSET SUM"]
-    N2["Can we partition array into two subsets with equal sum?"]
-    N3["Equivalent to: does a subset with sum = totalSum / 2 ex"]
-    N4["APPROACH: 0/1 knapsack boolean DP (see DP section)."]
-    N5["dp[j] = true if a subset with sum j exists."]
-    N6["dp[0] = true"]
-    N7["For each num: dp[j] |= dp[j - num] (reverse order)"]
-    N8["Time: O(n × sum/2) Space: O(sum/2)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1884,33 +1282,6 @@ flowchart TD
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ONES AND ZEROES — Max strings fitting m zeros and n one
-2. Given binary strings, at most m 0s and n 1s, find max
-3. number of strings formable.
-4. APPROACH: 2D 0/1 knapsack DP.
-5. dp[i][j] = max strings using at most i zeros and j ones
-6. For each string with z zeros and o ones:
-7. dp[i][j] = max(dp[i][j], dp[i-z][j-o] + 1)
-
-```mermaid
-flowchart TD
-    N1["ONES AND ZEROES — Max strings fitting m zeros and n one"]
-    N2["Given binary strings, at most m 0s and n 1s, find max"]
-    N3["number of strings formable."]
-    N4["APPROACH: 2D 0/1 knapsack DP."]
-    N5["dp[i][j] = max strings using at most i zeros and j ones"]
-    N6["For each string with z zeros and o ones:"]
-    N7["dp[i][j] = max(dp[i][j], dp[i-z][j-o] + 1)"]
-    N8["Time: O(len × m × n) Space: O(m × n)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1951,33 +1322,6 @@ flowchart TD
 ╚════════════════════════════════════╩══════════════════════╩══════════════════╝
 ```
 
-**Flow:**
-1. COMPREHENSIVE BIT TRICKS REFERENCE
-2. Operation Code Complexity
-3. Check if n is even (n & 1) == 0 O(1)
-4. Check if n is odd (n & 1) == 1 O(1)
-5. Multiply by 2 n << 1 O(1)
-6. Divide by 2 n >> 1 O(1)
-7. Multiply by 2ᵏ n << k O(1)
-
-```mermaid
-flowchart TD
-    N1["COMPREHENSIVE BIT TRICKS REFERENCE"]
-    N2["Operation Code Complexity"]
-    N3["Check if n is even (n & 1) == 0 O(1)"]
-    N4["Check if n is odd (n & 1) == 1 O(1)"]
-    N5["Multiply by 2 n &lt;&lt; 1 O(1)"]
-    N6["Divide by 2 n &gt;&gt; 1 O(1)"]
-    N7["Multiply by 2ᵏ n &lt;&lt; k O(1)"]
-    N8["Divide by 2ᵏ n &gt;&gt; k O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -2017,21 +1361,6 @@ PROOFS:
   • C(n,k) identity: (1+1)ⁿ = Σ C(n,k) × 1ᵏ × 1ⁿ⁻ᵏ = Σ C(n,k) = 2ⁿ.
 ```
 
-**Flow:**
-1. • Subsets containing x: Fix x as IN. Remaining n-1
-2. 2ⁿ⁻¹.
-3. • Sum of subset sizes: Each element appears in 2ⁿ⁻
-4. n × 2ⁿ⁻¹.
-
-```mermaid
-flowchart LR
-    N1["• Subsets containing x: Fix x as IN. Remaining n-1"]
-    N2["2ⁿ⁻¹."]
-    N3["• Sum of subset sizes: Each element appears in 2ⁿ⁻"]
-    N4["n × 2ⁿ⁻¹."]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 
@@ -2095,33 +1424,6 @@ flowchart LR
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. BIT MANIPULATION MASTERY CHECKLIST
-2. FUNDAMENTALS (must be instant — no thinking required)
-3. [ ] I can explain AND, OR, XOR, NOT, <<, >>
-4. [ ] I understand two's complement: -x = ~x + 1
-5. [ ] I know operator precedence: ALWAYS parenthesize bit
-6. [ ] I know Java has no unsigned int — when to use long
-7. ESSENTIAL TRICKS (should take < 30 seconds each)
-
-```mermaid
-flowchart TD
-    N1["BIT MANIPULATION MASTERY CHECKLIST"]
-    N2["FUNDAMENTALS (must be instant — no thinking required)"]
-    N3["[ ] I can explain AND, OR, XOR, NOT, &lt;&lt;, &gt;&gt;"]
-    N4["[ ] I understand two's complement: -x = ~x + 1"]
-    N5["[ ] I know operator precedence: ALWAYS parenthesize bit"]
-    N6["[ ] I know Java has no unsigned int — when to use long"]
-    N7["ESSENTIAL TRICKS (should take &lt; 30 seconds each)"]
-    N8["[ ] Check/set/clear/toggle ith bit"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

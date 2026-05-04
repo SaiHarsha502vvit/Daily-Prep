@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Design_Patterns.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Design_Patterns.md)
 
 # 🏗️ OOPS & Design Principles: Complete Guide
 
@@ -56,24 +56,6 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
                   More functions ◄──────► Even more data
 ```
 
-**Flow:**
-1. Data here
-2. Functions there
-3. More data somewhere
-4. More functions
-5. Even more data
-
-```mermaid
-flowchart LR
-    N1["Data here"]
-    N2["Functions there"]
-    N3["More data somewhere"]
-    N4["More functions"]
-    N5["Even more data"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-```
 
 - Anyone can modify any data from anywhere
 - Change one function, break 10 others
@@ -93,16 +75,6 @@ flowchart LR
      └─────────────┘       └─────────────┘
 ```
 
-**Flow:**
-1. Object B / data / methods
-2. Object A / data / methods
-
-```mermaid
-flowchart LR
-    N1["Object A / data / methods"]
-    N2["Object B / data / methods"]
-    N2 --> N1
-```
 
 - Data + related functions **bundled together**
 - Clear boundaries — change inside without breaking outside

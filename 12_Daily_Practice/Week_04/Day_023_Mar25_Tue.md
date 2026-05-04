@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_022_Mar24_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_024_Mar26_Wed.md)
+﻿> **Navigation**: [< Previous](Day_022_Mar24_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_024_Mar26_Wed.md)
 
 # DAY 023 — Tuesday, March 25, 2026
 ## Graph DFS + Trie Applications + SQL EXPLAIN & Query Optimization
@@ -218,26 +218,6 @@ search(".ad") → true
 search("b..") → true
 ```
 
-**Flow:**
-1. search('pad')
-2. false search('bad')
-3. true search('.ad')
-4. true search('b..')
-5. true
-
-```mermaid
-flowchart LR
-    N1["search('pad')"]
-    N2["false"]
-    N3["search('bad')"]
-    N4["true"]
-    N5["search('.ad')"]
-    N6["search('b..')"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N4
-    N6 --> N4
-```
 
 ### Q2: Number of Provinces (LC 547) — Medium
 

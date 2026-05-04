@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch30_Dependencies_Annotations_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch58_SB_Deep_Reasoning.md)
+﻿**Navigation**: [< Previous](Ch30_Dependencies_Annotations_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch58_SB_Deep_Reasoning.md)
 
 # Chapter 31 — Java Deep Reasoning: The Questions That Freeze People
 
@@ -109,40 +109,6 @@ public class PassByValueDemo {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE PUBLIC LIBRARY ANALOGY
-2. String pool = A public library with ONE copy of each bo
-3. String a = 'hello';
-4. Library: 'We have 'hello'. Here's
-5. String a = 'hello';
-6. Library: 'We have 'hello'. Here's
-7. reference to the SAME copy.'
-8. String b = 'hello';
-9. Library: 'We already have 'hello'
-10. String b = 'hello';
-11. Library: 'We already have 'hello'
-12. Here's the SAME reference.'
-13. a == b
-14. true! Same physical book (same object in pool)
-
-```mermaid
-flowchart TD
-    N1["THE PUBLIC LIBRARY ANALOGY"]
-    N2["String pool = A public library with ONE copy of each bo"]
-    N3["String a = 'hello'; → Library: 'We have 'hello'. Here's"]
-    N4["reference to the SAME copy.'"]
-    N5["String b = 'hello'; → Library: 'We already have 'hello'"]
-    N6["Here's the SAME reference.'"]
-    N7["a == b → true! Same physical book (same object in pool)"]
-    N8["String c = new String('hello'); → 'I don't want the lib"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 String s1 = "hello";                    // Pool lookup → creates "hello" in pool
@@ -210,37 +176,6 @@ Security: strings are used as HashMap keys, class names, file paths. If mutable,
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. ==
-2. 'Are these the SAME object in memory?'
-3. (Compares references / addresses)
-4. .equals()
-5. 'Do these have the SAME content?'
-6. .equals()
-7. 'Do these have the SAME content?'
-8. (Compares values — but MUST be overridden!)
-9. For PRIMITIVES (int, char, boolean):
-10. Use == (there's no .equals() for primitives)
-11. 5 == 5 is true. Simple.
-
-```mermaid
-flowchart TD
-    N1["== → 'Are these the SAME object in memory?'"]
-    N2["(Compares references / addresses)"]
-    N3[".equals()→ 'Do these have the SAME content?'"]
-    N4["(Compares values — but MUST be overridden!)"]
-    N5["For PRIMITIVES (int, char, boolean):"]
-    N6["→ Use == (there's no .equals() for primitives)"]
-    N7["→ 5 == 5 is true. Simple."]
-    N8["For OBJECTS (String, Integer, custom classes):"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // Classic gotcha:
@@ -299,43 +234,6 @@ class Point {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE VIP LOUNGE ANALOGY
-2. Java has a VIP lounge for 'popular' integers: -128 to 1
-3. These 256 Integer objects are pre-created and CACHED.
-4. Integer a = 127
-5. '127 is a VIP. Here's the cached obje
-6. Integer a = 127
-7. '127 is a VIP. Here's the cached obje
-8. a == b
-9. true (same object from cache!)
-10. a == b
-11. true (same object from cache!)
-12. Integer c = 128
-13. '128 is NOT a VIP. Create a NEW objec
-14. Integer c = 128
-15. '128 is NOT a VIP. Create a NEW objec
-16. c == d
-17. false (different objects!)
-
-```mermaid
-flowchart TD
-    N1["THE VIP LOUNGE ANALOGY"]
-    N2["Java has a VIP lounge for 'popular' integers: -128 to 1"]
-    N3["These 256 Integer objects are pre-created and CACHED."]
-    N4["Integer a = 127 → '127 is a VIP. Here's the cached obje"]
-    N5["a == b → true (same object from cache!)"]
-    N6["Integer c = 128 → '128 is NOT a VIP. Create a NEW objec"]
-    N7["c == d → false (different objects!)"]
-    N8["LESSON: NEVER use == with wrapper types."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 Integer a = 127, b = 127;
@@ -394,39 +292,6 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. TYPE ERASURE = The Costume Party
-2. At compile time, everyone wears name tags (types).
-3. At runtime, all name tags are removed — everyone looks
-4. same (raw types).
-5. List<String> at compile time
-6. List at runtime
-7. List<String> at compile time
-8. List at runtime
-9. List<Integer> at compile time
-10. List at runtime
-11. List<Integer> at compile time
-12. List at runtime
-13. They're THE SAME class at runtime!
-
-```mermaid
-flowchart TD
-    N1["TYPE ERASURE = The Costume Party"]
-    N2["At compile time, everyone wears name tags (types)."]
-    N3["At runtime, all name tags are removed — everyone looks"]
-    N4["same (raw types)."]
-    N5["List&lt;String&gt; at compile time → List at runtime"]
-    N6["List&lt;Integer&gt; at compile time → List at runtime"]
-    N7["They're THE SAME class at runtime!"]
-    N8["WHY? Java added generics in Java 5. Old code used raw L"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // What you write:
@@ -508,34 +373,6 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE FILING CABINET ANALOGY
-2. 1. PUT('Alice', 25):
-3. hashCode('Alice') = 92668751
-4. Drawer index = 92668751 % 16 = 7
-5. Put entry in Drawer 7.
-6. 2. PUT('Bob', 30):
-7. hashCode('Bob') = 66965
-8. Drawer 5. No collision.
-
-```mermaid
-flowchart TD
-    N1["THE FILING CABINET ANALOGY"]
-    N2["1. PUT('Alice', 25):"]
-    N3["hashCode('Alice') = 92668751"]
-    N4["Drawer index = 92668751 % 16 = 7"]
-    N5["Put entry in Drawer 7."]
-    N6["2. PUT('Bob', 30):"]
-    N7["hashCode('Bob') = 66965 → Drawer 5. No collision."]
-    N8["3. COLLISION: PUT('Celia', 28) → also maps to Drawer 7!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // The contract: If a.equals(b), then a.hashCode() == b.hashCode()
@@ -598,36 +435,6 @@ Both objects land in DIFFERENT buckets (different hashCodes → different bucket
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. final List<String> list = new ArrayList<>()
-2. list.add('hello'); // ✅ Modifying contents is fine
-3. list = new ArrayList<>(); // ❌ Can't reassign the
-4. ↑ Like a permanent parking spot — the car in it can cha
-5. its color, but you can't move to a different spot.
-6. final METHOD
-7. can't be overridden by subclasses
-8. final METHOD
-9. can't be overridden by subclasses
-10. public final void doWork() { ... }
-
-```mermaid
-flowchart TD
-    N1["final List&lt;String&gt; list = new ArrayList&lt;&gt;()"]
-    N2["list.add('hello'); // ✅ Modifying contents is fine"]
-    N3["list = new ArrayList&lt;&gt;(); // ❌ Can't reassign the"]
-    N4["↑ Like a permanent parking spot — the car in it can cha"]
-    N5["its color, but you can't move to a different spot."]
-    N6["final METHOD → can't be overridden by subclasses"]
-    N7["public final void doWork() { ... }"]
-    N8["↑ 'This recipe is final. No one can modify it.'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -672,28 +479,6 @@ argue checked exceptions are too verbose. Spring uses unchecked
 exceptions extensively. The debate continues.
 ```
 
-**Flow:**
-1. Throwable
-2. Error (unchecked — JVM problems: OutOfMemoryError)
-3. Throwable
-4. Exception
-5. Throwable
-6. RuntimeException (unchecked — bugs)
-7. Throwable
-8. Everything else (checked — expected failures)
-
-```mermaid
-flowchart TD
-    N1["Throwable"]
-    N2["Error (unchecked — JVM problems: OutOfMemoryError)"]
-    N3["Exception"]
-    N4["RuntimeException (unchecked — bugs)"]
-    N5["Everything else (checked — expected failures)"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-```
 
 ---
 
@@ -790,33 +575,6 @@ for (String s : list) {
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE COUNTING CARDS ANALOGY
-2. You: *removes a card from the middle*
-3. Iterator: 'Wait — the deck changed! My count is wrong n
-4. Throws ConcurrentModificationException
-5. FAIL-FAST: Java collections track a modCount. The itera
-6. checks modCount each step. If it changed (someone modif
-7. the collection), it immediately fails rather than give
-
-```mermaid
-flowchart TD
-    N1["THE COUNTING CARDS ANALOGY"]
-    N2["You: *removes a card from the middle*"]
-    N3["Iterator: 'Wait — the deck changed! My count is wrong n"]
-    N4["→ Throws ConcurrentModificationException"]
-    N5["FAIL-FAST: Java collections track a modCount. The itera"]
-    N6["checks modCount each step. If it changed (someone modif"]
-    N7["the collection), it immediately fails rather than give"]
-    N8["corrupt results."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // SOLUTIONS:
@@ -883,33 +641,6 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. volatile = A shared whiteboard (visibility only)
-2. Ensures ALL threads see the LATEST value
-3. Does NOT prevent race conditions with compound action
-4. Use for: flags (boolean isRunning), simple reads/writ
-5. synchronized = A room with ONE key (mutual exclusion)
-6. Only ONE thread can enter at a time
-7. Provides both visibility AND atomicity
-
-```mermaid
-flowchart TD
-    N1["volatile = A shared whiteboard (visibility only)"]
-    N2["→ Ensures ALL threads see the LATEST value"]
-    N3["→ Does NOT prevent race conditions with compound action"]
-    N4["→ Use for: flags (boolean isRunning), simple reads/writ"]
-    N5["synchronized = A room with ONE key (mutual exclusion)"]
-    N6["→ Only ONE thread can enter at a time"]
-    N7["→ Provides both visibility AND atomicity"]
-    N8["write). Heavier — threads must wait."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // volatile: visibility but NOT atomic
@@ -962,33 +693,6 @@ counter.incrementAndGet(); // ✅ Atomic, no lock needed
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. PRE-JAVA 8: Clear distinction
-2. Abstract class = partial implementation + state
-3. Interface = pure contract (all abstract)
-4. POST-JAVA 8: Lines blurred (interfaces got default meth
-5. REMAINING DIFFERENCES:
-6. Abstract class:
-7. CAN have instance fields (state)
-
-```mermaid
-flowchart TD
-    N1["PRE-JAVA 8: Clear distinction"]
-    N2["Abstract class = partial implementation + state"]
-    N3["Interface = pure contract (all abstract)"]
-    N4["POST-JAVA 8: Lines blurred (interfaces got default meth"]
-    N5["REMAINING DIFFERENCES:"]
-    N6["Abstract class:"]
-    N7["→ CAN have instance fields (state)"]
-    N8["→ CAN have constructors"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1038,33 +742,6 @@ Memory Allocation. `"hello"` is a string literal that resides in the String Pool
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE OFFICE CLEANING SERVICE ANALOGY
-2. HEAP = An office building
-3. Objects = Desks
-4. References = Name plates on desks
-5. GC = Cleaning service
-6. GC asks: 'Which desks still have name plates? Keep thos
-7. Any desk with NO name plate? Clean it up.'
-
-```mermaid
-flowchart TD
-    N1["THE OFFICE CLEANING SERVICE ANALOGY"]
-    N2["HEAP = An office building"]
-    N3["Objects = Desks"]
-    N4["References = Name plates on desks"]
-    N5["GC = Cleaning service"]
-    N6["GC asks: 'Which desks still have name plates? Keep thos"]
-    N7["Any desk with NO name plate? Clean it up.'"]
-    N8["GENERATIONAL HYPOTHESIS:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

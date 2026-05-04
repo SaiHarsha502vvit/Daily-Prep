@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05c_Graphs_Fundamentals.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05c_Graphs_Fundamentals.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — traversal intuition and pattern recognition
 
 ---
@@ -109,19 +109,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. int[][] object (outer array): / Header (16 bytes) row[0 Header (16 bytes) [0,0]=0 [0,1]=1 [0,2]=0 [0,3]=1 ArrayList (outer): / Header Object[] elementData [lis ArrayList (outer): / Header Object[] elementData [lis Header Object[] [Integer(1), Integer(3), null, ...]
-
-```mermaid
-flowchart TD
-    N1["int[][] object (outer array): / Header (16 bytes) row[0"]
-    N2["Header (16 bytes) [0,0]=0 [0,1]=1 [0,2]=0 [0,3]=1"]
-    N3["ArrayList (outer): / Header Object[] elementData → [lis"]
-    N4["Header Object[] → [Integer(1), Integer(3), null, ...]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
 
@@ -187,32 +174,6 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. EDGE LIST - THE SIMPLEST GRAPH REPRESENTATION
-2. int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}};
-3. GRAPH: 5 3 7
-4. MEMORY: O(E) — just the edges, nothing more
-5. WHEN TO USE EDGE LIST:
-6. ✅ Kruskal's MST (sort edges by weight, process in order ✅ When you just need to store/sort edges
-
-```mermaid
-flowchart TD
-    N1["EDGE LIST - THE SIMPLEST GRAPH REPRESENTATION"]
-    N2["int[][] edges = {{0,1,5}, {0,2,3}, {1,2,1}, {2,3,7}};"]
-    N3["GRAPH: 5 3 7"]
-    N4["MEMORY: O(E) — just the edges, nothing more"]
-    N5["WHEN TO USE EDGE LIST:"]
-    N6["✅ Kruskal's MST (sort edges by weight, process in order"]
-    N7["✅ When you just need to store/sort edges"]
-    N8["✅ Problems that give input as edge list directly"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // EDGE LIST — Java Implementation
@@ -319,32 +280,6 @@ Arrays.sort(edges, (a, b) -> a[2] - b[2]);  // sort by weight
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BFS VS DFS - MEMORY AND CPU BEHAVIOR
-2. GRAPH: 0 1 2
-3. BFS USING QUEUE:
-4. Queue<Integer> queue = new LinkedList<>();
-5. queue.offer(0); visited[0] = true;
-6. QUEUE EVOLUTION:
-
-```mermaid
-flowchart TD
-    N1["BFS VS DFS - MEMORY AND CPU BEHAVIOR"]
-    N2["GRAPH: 0 1 2"]
-    N3["BFS USING QUEUE:"]
-    N4["Queue&lt;Integer&gt; queue = new LinkedList&lt;&gt;();"]
-    N5["queue.offer(0);"]
-    N6["visited[0] = true;"]
-    N7["QUEUE EVOLUTION:"]
-    N8["Step 1: queue = [0], visit 0, add neighbors"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## 🔬 Shortest Path Algorithms — Internal Comparison
 
@@ -425,28 +360,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DIJKSTRA VS BELLMAN-FORD VS FLOYD-WARSHALL
-2. DIJKSTRA'S ALGORITHM (Single source, non-negative weigh Time: O((V + E) log V) with binary heap Space: O(V) for distance array + O(V) for priority queu INTERNAL WORKING: • pq.offer(): O(log V) - bubble up in heap • pq.poll(): O(log V) - bubble down in heap
-
-```mermaid
-flowchart TD
-    N1["DIJKSTRA VS BELLMAN-FORD VS FLOYD-WARSHALL"]
-    N2["DIJKSTRA'S ALGORITHM (Single source, non-negative weigh"]
-    N3["Time: O((V + E) log V) with binary heap"]
-    N4["Space: O(V) for distance array + O(V) for priority queu"]
-    N5["INTERNAL WORKING:"]
-    N6["• pq.offer(): O(log V) - bubble up in heap"]
-    N7["• pq.poll(): O(log V) - bubble down in heap"]
-    N8["• Each edge relaxed once: E times"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_012_Mar14_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_014_Mar16_Sun.md)
+﻿> **Navigation**: [< Previous](Day_012_Mar14_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_014_Mar16_Sun.md)
 
 # Day 013 - Saturday, March 15, 2026
 
@@ -62,33 +62,6 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BEAN SCOPES — Controls object lifecycle
-2. SINGLETON (default):
-3. ONE instance per application context. Shared by all.
-4. @Scope('singleton') or just @Service / @Component
-5. USE: Stateless services, repositories, controllers
-6. PROTOTYPE:
-7. NEW instance every time it's requested.
-
-```mermaid
-flowchart TD
-    N1["BEAN SCOPES — Controls object lifecycle"]
-    N2["SINGLETON (default):"]
-    N3["ONE instance per application context. Shared by all."]
-    N4["@Scope('singleton') or just @Service / @Component"]
-    N5["USE: Stateless services, repositories, controllers"]
-    N6["PROTOTYPE:"]
-    N7["NEW instance every time it's requested."]
-    N8["@Scope('prototype')"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### Chapter 2: Dependency Injection — The 3 Ways
 
@@ -236,33 +209,6 @@ public class ProductController {
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SPRING DI RULES:
-2. Always use constructor injection
-3. Make fields final
-4. One constructor = @Autowired optional
-5. Never use new XxxService() — let Spring manage it
-6. @Service for business logic, @Repository for data ac
-7. @Component for generic beans
-
-```mermaid
-flowchart TD
-    N1["SPRING DI RULES:"]
-    N2["1. Always use constructor injection"]
-    N3["2. Make fields final"]
-    N4["3. One constructor = @Autowired optional"]
-    N5["4. Never use new XxxService() — let Spring manage it"]
-    N6["5. @Service for business logic, @Repository for data ac"]
-    N7["6. @Component for generic beans"]
-    N8["7. Singleton scope unless you have a reason for prototy"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -346,26 +292,6 @@ PATTERNS:
   • Merge logic (arrays, lists)
 ```
 
-**Flow:**
-1. Week 2: LinkedList (Singly + Doubly), Stack, Queue
-2. You now know 7/10 essential data structures!
-3. Week 2: Merge Sort, Quick Sort, Binary Search, Two
-4. You now have O(n²) AND O(n log n) sorts + O(log n) sear
-5. Week 2: WHERE, ORDER BY, LIMIT, JOINs, GROUP BY, H
-6. You can now write 80% of real-world SQL queries!
-
-```mermaid
-flowchart TD
-    N1["Week 2: LinkedList (Singly + Doubly), Stack, Queue"]
-    N2["You now know 7/10 essential data structures!"]
-    N3["Week 2: Merge Sort, Quick Sort, Binary Search, Two"]
-    N4["You now have O(n²) AND O(n log n) sorts + O(log n) sear"]
-    N5["Week 2: WHERE, ORDER BY, LIMIT, JOINs, GROUP BY, H"]
-    N6["You can now write 80% of real-world SQL queries!"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ### Self-Test (try without looking at notes)
 

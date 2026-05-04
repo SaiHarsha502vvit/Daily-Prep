@@ -408,8 +408,34 @@ Hibernate Proxies. By default, `@OneToMany` collections are loaded lazily. Hiber
   │ @DynamicUpdate on entity class                                     │
   │ → UPDATE users SET name='Sai Harsha' WHERE id=1                   │
   └────────────────────────────────────────────────────────────────────┘
+```
 
+```mermaid
+flowchart TD
+    %% Hibernate Dirty Checking Physics
+    subgraph FLUSH ["Transaction Commit (Flush Phase)"]
+        PC["Persistence Context (L1 Cache)"]
+        
+        ENTITY["Java Entity Reference<br/>name='Sai Harsha'"]
+        SNAPSHOT["Internal Snapshot[]<br/>name='Harsha'"]
+        
+        PC --> ENTITY
+        PC --> SNAPSHOT
+        
+        CHECK{"Dirty Check Algorithm<br/>for i=0 to properties.length<br/>if (entity[i] != snapshot[i])"}
+        
+        ENTITY --> CHECK
+        SNAPSHOT --> CHECK
+        
+        ACTION["ActionQueue.addAction(EntityUpdateAction)"]
+        CHECK -->|Difference Found!| ACTION
+        
+        JDBC["JDBC Batch Execution<br/>UPDATE users SET..."]
+        ACTION --> JDBC
+    
+```
 
+```text
   WHY THIS MATTERS:
   ═════════════════
   
@@ -744,6 +770,27 @@ for (Department dept : depts) {
 // TOTAL: 1 + 100 = 101 queries! (N+1 where N=100)
 // If each query takes 5ms → 505ms total
 // With proper loading: 1-2 queries → 10ms
+```
+
+```mermaid
+sequenceDiagram
+    %% The N+1 Database Context Switch Destruction
+    participant APP as Spring Boot JVM
+    participant NET as TCP/IP Network
+    participant DB_OS as Database Server OS
+    participant DB_CPU as Database CPU Core
+
+    APP->>NET: 1. SELECT * FROM departments
+    NET->>DB_OS: TCP Packet Arrives
+    DB_OS->>DB_CPU: Context Switch (Wake Postgres Process)
+    DB_CPU-->>APP: Return 100 Departments
+
+    loop 100 Times (The N+1 Cascade)
+        APP->>NET: SELECT * FROM employees WHERE dept_id=?
+        NET->>DB_OS: TCP Packet Arrives
+        Note over DB_OS: 100 Consecutive Context Switches!<br/>Kernel overhead destroys CPU cache!
+        DB_OS->>DB_CPU: Wake Process, Parse AST, Plan Query
+        DB_CPU-->>APP: Return Employee
 ```
 
 ### 4 Solutions

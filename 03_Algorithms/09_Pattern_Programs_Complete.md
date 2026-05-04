@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)
+﻿**Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)
 
 # ⭐ Complete Pattern Programs - From Zero to Hero
 
@@ -45,33 +45,6 @@ STEP 4: CODE THE LOOPS
   → Inner loop(s) for columns
 ```
 
-**Flow:**
-1. STEP 1: COUNT ROWS
-2. How many rows? = Outer loop count
-3. STEP 2: FOR EACH ROW, IDENTIFY:
-4. Spaces before content (leading spaces)
-5. Content (stars, numbers, characters)
-6. Spaces after content (sometimes needed)
-7. Relationship with row number (i)
-
-```mermaid
-flowchart TD
-    N1["STEP 1: COUNT ROWS"]
-    N2["→ How many rows? = Outer loop count"]
-    N3["STEP 2: FOR EACH ROW, IDENTIFY:"]
-    N4["→ Spaces before content (leading spaces)"]
-    N5["→ Content (stars, numbers, characters)"]
-    N6["→ Spaces after content (sometimes needed)"]
-    N7["→ Relationship with row number (i)"]
-    N8["STEP 3: FIND THE FORMULA"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1952,36 +1925,6 @@ public static void rotate90(int[][] matrix) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PATTERN SOLVING FORMULAS
-2. RIGHT TRIANGLE: Row i
-3. print (i+1) items, starting col
-4. LEFT TRIANGLE: Row i
-5. print (n-i) spaces, then (i+1) i
-6. PYRAMID: Row i
-7. print (n-i-1) spaces, then (2i+1) item
-8. INVERTED: Row i
-9. print i spaces, then (2(n-i)-1) items
-10. DIAMOND: Pyramid (0 to n-1) + Inverted Pyramid (n-2 to SANDGLASS: Inverted (0 to n-1) + Pyramid (1 to n-1)
-
-```mermaid
-flowchart TD
-    N1["PATTERN SOLVING FORMULAS"]
-    N2["RIGHT TRIANGLE: Row i → print (i+1) items, starting col"]
-    N3["LEFT TRIANGLE: Row i → print (n-i) spaces, then (i+1) i"]
-    N4["PYRAMID: Row i → print (n-i-1) spaces, then (2i+1) item"]
-    N5["INVERTED: Row i → print i spaces, then (2(n-i)-1) items"]
-    N6["DIAMOND: Pyramid (0 to n-1) + Inverted Pyramid (n-2 to"]
-    N7["SANDGLASS: Inverted (0 to n-1) + Pyramid (1 to n-1)"]
-    N8["HOLLOW: Print content only when:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

@@ -1,4 +1,4 @@
-> **SQL Chapter 14/20** | [← Previous](13_Transactions_ACID.md) | [Index](../00_MASTER_INDEX.md) | [Next →](15_Analytics_Warehousing_ETL.md)
+﻿> **SQL Chapter 14/20** | [← Previous](13_Transactions_ACID.md) | [Index](../00_MASTER_INDEX.md) | [Next →](15_Analytics_Warehousing_ETL.md)
 
 ---
 
@@ -61,28 +61,6 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BAD: SELECT * FROM large_table WHERE id = 1; / GOOD: SE
-2. • Index columns in WHERE, JOIN, ORDER BY / • Composite
-3. BAD: WHERE YEAR(created_at) = 2024 / GOOD: WHERE create
-4. BAD: WHERE id IN (SELECT id FROM other_table WHERE ...)
-5. • Use LIMIT to reduce result set / • Filter in subqueri
-6. • INSERT multiple rows in single statement / • DELETE/U
-
-```mermaid
-flowchart TD
-    N1["BAD: SELECT * FROM large_table WHERE id = 1; / GOOD: SE"]
-    N2["• Index columns in WHERE, JOIN, ORDER BY / • Composite "]
-    N3["BAD: WHERE YEAR(created_at) = 2024 / GOOD: WHERE create"]
-    N4["BAD: WHERE id IN (SELECT id FROM other_table WHERE ...)"]
-    N5["• Use LIMIT to reduce result set / • Filter in subqueri"]
-    N6["• INSERT multiple rows in single statement / • DELETE/U"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -231,3 +209,59 @@ EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
 SELECT * FROM employees WHERE dept_id = 1;
 ```
 
+### The Cost-Based Optimizer (CBO) Math
+
+```text
+The PostgreSQL optimizer doesn't guess; it calculates the exact mathematical COST of different execution paths based on disk I/O physics.
+
+DEFAULT COST CONSTANTS:
+- seq_page_cost = 1.0    (Cost of sequential disk read)
+- random_page_cost = 4.0 (Cost of random disk read/seek)
+- cpu_tuple_cost = 0.01  (Cost to process one row)
+
+SCENARIO: Table with 100,000 rows (1,000 pages, 100 rows per page).
+Query: SELECT * FROM users WHERE status = 'active'; (Returns 20,000 rows)
+
+PLAN A: Sequential Scan
+Cost = (1,000 pages × 1.0) + (100,000 rows × 0.01)
+     = 1,000 + 1,000
+     = Total Cost: 2,000
+
+PLAN B: Index Scan (Random I/O)
+Cost = (20,000 random reads × 4.0) + (20,000 rows × 0.01)
+     = 80,000 + 200
+     = Total Cost: 80,200
+
+DECISION: 2,000 < 80,200. The optimizer will IGNORE the index and do a Seq Scan, because reading the entire table sequentially is 40x cheaper than seeking the disk head 20,000 times!
+```
+
+### Index Scan vs. Bitmap Heap Scan Physics
+
+```mermaid
+flowchart TD
+    %% Disk Head Thrashing vs Bitmap Sorting
+    subgraph INDEX_SCAN ["Index Scan (Low Cardinality = Thrashing)"]
+        I1["Read Index: Row 1"] -->|Seek Disk| D1["Read Heap: Page 50"]
+        I2["Read Index: Row 2"] -->|Seek Disk| D2["Read Heap: Page 2"]
+        I3["Read Index: Row 3"] -->|Seek Disk| D3["Read Heap: Page 90"]
+        D1 -.->|Physical Arm Movement| D2
+        D2 -.->|Physical Arm Movement| D3
+    end
+
+    subgraph BITMAP_SCAN ["Bitmap Heap Scan (High Cardinality)"]
+        B1["1. Read All Matching Index Pointers"]
+        B2["2. Sort Pointers in Memory (Bitmap)"]
+        B3["3. Read Heap Pages Sequentially"]
+        
+        B1 --> B2
+        B2 --> B3
+        
+        B3 -->|Sequential I/O| H1["Page 2"]
+        H1 -->|Sequential I/O| H2["Page 50"]
+        H2 -->|Sequential I/O| H3["Page 90"]
+    end
+    
+```
+
+**Why Bitmap Heap Scans Exist:**
+If the optimizer realizes an Index Scan will jump around the disk too much (thrashing the physical arm or saturating random I/O IOPS on an SSD), it switches to a **Bitmap Heap Scan**. It reads the index first, builds a memory bitmap of all the heap pages it needs, **sorts them by physical disk location**, and then visits each page exactly once in a smooth, sequential sweep.

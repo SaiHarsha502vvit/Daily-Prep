@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)
+﻿**Navigation**: [< Previous](14_Graph_Plus_Traversal.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_DP_Pattern_Recognition.md)
 
 # Heap + Greedy Selection — Combined Pattern Guide
 
@@ -54,16 +54,6 @@ IF the problem says:
 THEN → Heap (Priority Queue) + Greedy
 ```
 
-**Flow:**
-1. THEN
-2. Heap (Priority Queue) + Greedy
-
-```mermaid
-flowchart LR
-    N1["THEN"]
-    N2["Heap (Priority Queue) + Greedy"]
-    N1 --> N2
-```
 
 ### Min-Heap vs Max-Heap
 ```
@@ -77,16 +67,6 @@ Use for: K largest              Use for: K smallest
  gets popped)                    gets popped)
 ```
 
-**Flow:**
-1. Top element: smallest
-2. Top element: largest
-
-```mermaid
-flowchart LR
-    N1["Top element: smallest"]
-    N2["Top element: largest"]
-    N1 --> N2
-```
 
 ---
 
@@ -172,31 +152,6 @@ Time: O(n log k) | Space: O(k)
 Why not sort? Sorting is O(n log n). Heap is O(n log k) — better when k << n.
 ```
 
-**Flow:**
-1. Process 1: 1 < heap.peek()=2
-2. skip (too small)
-3. Process 5: 5 > heap.peek()=2
-4. poll 2, add 5
-5. Process 6: 6 > heap.peek()=3
-6. poll 3, add 6
-7. Process 4: 4 < heap.peek()=5
-8. skip
-
-```mermaid
-flowchart LR
-    N1["Process 1: 1 &lt; heap.peek()=2"]
-    N2["skip (too small)"]
-    N3["Process 5: 5 &gt; heap.peek()=2"]
-    N4["poll 2, add 5"]
-    N5["Process 6: 6 &gt; heap.peek()=3"]
-    N6["poll 3, add 6"]
-    N7["Process 4: 4 &lt; heap.peek()=5"]
-    N8["skip"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
 
 ---
 
@@ -238,46 +193,6 @@ Step-by-step:
 Time: addNum O(log n), findMedian O(1) | Space: O(n)
 ```
 
-**Flow:**
-1. Stream: addNum(1), addNum(2), findMedian()
-2. 1.5, addNum(3), findMedian()
-3. Sizes: 1, 0
-4. OK (left can be 1 bigger)
-5. Sizes: 1, 1
-6. OK
-7. findMedian(): Both same size
-8. (maxHeap.peek() + minHeap.peek()) / 2
-9. 3 > minHeap.peek(2)
-10. move 3 to minHeap.
-11. maxHeap=[1], minHeap=[2,3]. Sizes: 1, 2
-12. rebalance!
-
-```mermaid
-flowchart TD
-    N1["Stream: addNum(1), addNum(2), findMedian()"]
-    N2["1.5, addNum(3), findMedian()"]
-    N3["Sizes: 1, 0"]
-    N4["OK (left can be 1 bigger)"]
-    N5["Sizes: 1, 1"]
-    N6["OK"]
-    N7["findMedian(): Both same size"]
-    N8["(maxHeap.peek() + minHeap.peek()) / 2"]
-    N9["3 &gt; minHeap.peek(2)"]
-    N10["move 3 to minHeap."]
-    N11["maxHeap=[1], minHeap=[2,3]. Sizes: 1, 2"]
-    N12["rebalance!"]
-    N13["Sizes: 2, 1"]
-    N14["findMedian(): maxHeap bigger"]
-    N15["maxHeap.peek() = 2 ✅"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N6
-    N14 --> N15
-```
 
 ---
 
@@ -324,36 +239,6 @@ COMMON MISTAKES:
    Deque = O(n) total. Heap = O(n log n). Big difference!
 ```
 
-**Flow:**
-1. EDGE CASES:
-2. Edge Case Handling
-3. k = 1 Heap of size 1 = max element
-4. k = n Heap of size n
-5. just min of all
-6. k = n Heap of size n
-7. just min of all
-8. All same values [3,3,3,3] Works correctly, peek always
-9. Negative numbers PQ handles naturally
-10. Single element stream Median = that element
-
-```mermaid
-flowchart TD
-    N1["EDGE CASES:"]
-    N2["Edge Case Handling"]
-    N3["k = 1 Heap of size 1 = max element"]
-    N4["k = n Heap of size n → just min of all"]
-    N5["All same values [3,3,3,3] Works correctly, peek always"]
-    N6["Negative numbers PQ handles naturally"]
-    N7["Single element stream Median = that element"]
-    N8["k &gt; n (invalid) Handle before processing"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

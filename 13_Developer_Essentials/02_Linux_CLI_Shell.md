@@ -1,4 +1,4 @@
-# 🐧 Linux CLI & Shell — Complete Guide
+﻿# 🐧 Linux CLI & Shell — Complete Guide
 
 **Navigation**: [< Git](01_Git_Version_Control.md) | [Index](00_INDEX.md) | [Next: Docker >](03_Docker_Containers.md)
 
@@ -19,16 +19,6 @@ If you can't use Linux CLI → you can't deploy, debug, or
 manage ANY production application.
 ```
 
-**Flow:**
-1. If you can't use Linux CLI you can't deploy, debug, or
-
-```mermaid
-flowchart LR
-    N1["If you can't use Linux CLI"]
-    N2["you can't deploy, debug, or"]
-    N1 --> N2
-```
-
 ## WHO: Origin Story
 
 ```
@@ -46,41 +36,9 @@ Linux = GNU tools + Linux kernel = FREE complete OS
 Today: Powers everything from your phone to Mars rovers
 ```
 
-**Flow:**
-1. 1991: Linus Torvalds (Finnish CS student, age 21)
-2. 'I'm doing a free operating system (just a hobby)' Inspired by: UNIX (1969, Bell Labs) Expensive, proprietary GNU Project (1983, Richard Stallman) Free tools but NO KERNEL Linux = GNU tools + Linux kernel = FREE complete OS
-
-```mermaid
-flowchart TD
-    N1["1991: Linus Torvalds (Finnish CS student, age 21)"]
-    N2["'I'm doing a free operating system (just a hobby)'"]
-    N3["Inspired by: UNIX (1969, Bell Labs)"]
-    N4["→ Expensive, proprietary"]
-    N5["GNU Project (1983, Richard Stallman)"]
-    N6["→ Free tools but NO KERNEL"]
-    N7["Linux = GNU tools + Linux kernel = FREE complete OS"]
-    N8["Today: Powers everything from your phone to Mars rovers"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
-
-
 🔬 **Section Challenge — WHO: Origin Story**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 # WHAT: Core Concepts
 
@@ -94,7 +52,7 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 │                  ▼                         │
 │         ┌──────────────┐                   │
 │         │    SHELL     │ ← Bash, Zsh       │
-│         │  (Interpreter)│                  │
+│         │ (Interpreter)│                   │
 │         │              │                   │
 │         │  Translates  │                   │
 │         │  commands to │                   │
@@ -117,17 +75,6 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 
 Shell = text-based interface to the operating system
         Your superpower for automation
-```
-
-**Flow:**
-1. SHELL / (Interpreter) / Translates / commands to / kern
-2. KERNEL / Controls: / - CPU / - Memory / - Disk / - Netw
-
-```mermaid
-flowchart TD
-    N1["SHELL / (Interpreter) / Translates / commands to / kern"]
-    N2["KERNEL / Controls: / - CPU / - Memory / - Disk / - Netw"]
-    N1 --> N2
 ```
 
 ## File System Hierarchy
@@ -161,67 +108,7 @@ KEY INSIGHT: Everything in Linux is a FILE
   - Network sockets → files
 ```
 
-**Flow:**
-1. /bin/
-2. Essential commands (ls, cp, cat)
-3. /sbin/
-4. System admin commands (iptables, mount)
-5. /etc/
-6. Configuration files (ALL config lives here)
-7. /home/
-8. User home directories
-9. /var/
-10. Variable data (logs, databases)
-11. /tmp/
-12. Temporary files (cleared on reboot)
-
-```mermaid
-flowchart TD
-    N1["/bin/"]
-    N2["Essential commands (ls, cp, cat)"]
-    N3["/sbin/"]
-    N4["System admin commands (iptables, mount)"]
-    N5["/etc/"]
-    N6["Configuration files (ALL config lives here)"]
-    N7["/home/"]
-    N8["User home directories"]
-    N9["/var/"]
-    N10["Variable data (logs, databases)"]
-    N11["/tmp/"]
-    N12["Temporary files (cleared on reboot)"]
-    N13["/opt/"]
-    N14["Optional/third-party software"]
-    N15["/usr/"]
-    N16["User programs"]
-    N17["/dev/"]
-    N18["Device files (disks, terminals)"]
-    N19["- Files"]
-    N20["files"]
-    N21["- Directories"]
-    N22["- Devices"]
-    N23["files (/dev/sda)"]
-    N24["- Processes"]
-    N25["files (/proc/1234)"]
-    N26["- Network sockets"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-    N17 --> N18
-    N19 --> N20
-    N21 --> N20
-    N22 --> N23
-    N24 --> N25
-    N26 --> N20
-```
-
 ---
-
-
 
 🔬 **Section Challenge — File System Hierarchy**
 
@@ -236,7 +123,6 @@ flowchart TD
 
 1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
 </details>
-
 
 # HOW: Essential Commands (Progressive)
 
@@ -517,12 +403,6 @@ deploy "production"
 
 🔬 **Section Challenge — Debugging a Production Issue**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 # 1. SSH into server
 ssh admin@prod-server-01
@@ -553,12 +433,6 @@ ss -tlnp | grep 8080
 
 
 🔬 **Section Challenge — Log Analysis One-Liners**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
 
 
 # Count errors per hour
@@ -595,6 +469,7 @@ PIPE/REDIR:   | (pipe) | > (write) | >> (append) | 2> (errors)
 # 🏋️ Practice Exercises
 
 ## Exercise 1: File Operations
+
 ```
 Create directory structure: project/src/main/java/
 Create 5 .java files with different content
@@ -603,6 +478,7 @@ Count total lines across all .java files
 ```
 
 ## Exercise 2: Text Processing Pipeline
+
 ```
 Download a log file (or create one with random entries)
 Find all ERROR lines
@@ -611,18 +487,10 @@ Count errors per hour
 Find the most common error message
 ```
 
-
-
 🔬 **Section Challenge — Exercise 2: Text Processing Pipeline**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
 ## Exercise 3: Write a Backup Script
+
 ```
 Script that:
 1. Takes a directory as argument
@@ -635,7 +503,5 @@ Script that:
 
 **Next Chapter**: [Docker & Containers →](03_Docker_Containers.md)
 
-
 ---
 
-> **Navigation**: [< Previous](01_Git_Version_Control.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Docker_Containers.md)

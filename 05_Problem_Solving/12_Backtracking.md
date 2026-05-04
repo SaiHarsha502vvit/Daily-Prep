@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](11_Dynamic_Programming.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Greedy.md)
+﻿> **Navigation**: [< Previous](11_Dynamic_Programming.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Greedy.md)
 
 > **Problems 12/14** | [Prev](11_Dynamic_Programming.md) | [Index](../00_MASTER_INDEX.md) | [Next](13_Greedy.md)
 
@@ -317,25 +317,6 @@ void backtrack(List<List<Integer>> result, List<Integer> current,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SUBSETS - All possible subsets (power set)
-2. nums = [1, 2, 3]
-3. Decision Tree:
-4. include 1 skip 1
-5. Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3
-
-```mermaid
-flowchart TD
-    N1["SUBSETS - All possible subsets (power set)"]
-    N2["nums = [1, 2, 3]"]
-    N3["Decision Tree:"]
-    N4["include 1 skip 1"]
-    N5["Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -377,25 +358,6 @@ private void backtrack(int[] nums, int start, List<Integer> path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SUBSETS II - Skip duplicates
-2. nums = [1, 2, 2]
-3. Without skip: [1,2], [1,2] would appear twice
-4. Key: Skip nums[i] if nums[i] == nums[i-1] at same level
-5. Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]
-
-```mermaid
-flowchart TD
-    N1["SUBSETS II - Skip duplicates"]
-    N2["nums = [1, 2, 2]"]
-    N3["Without skip: [1,2], [1,2] would appear twice"]
-    N4["Key: Skip nums[i] if nums[i] == nums[i-1] at same level"]
-    N5["Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -442,22 +404,6 @@ private void backtrack(int[] nums, int start, List<Integer> path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COMBINATION SUM - Unlimited use of each number
-2. candidates = [2, 3, 6, 7], target = 7
-3. Can reuse same number:
-4. Output: [[2,2,3], [7]]
-
-```mermaid
-flowchart TD
-    N1["COMBINATION SUM - Unlimited use of each number"]
-    N2["candidates = [2, 3, 6, 7], target = 7"]
-    N3["Can reuse same number:"]
-    N4["Output: [[2,2,3], [7]]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -503,22 +449,6 @@ private void backtrack(int[] candidates, int remain, int start,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COMBINATION SUM II - Each number used once
-2. candidates = [10,1,2,7,6,1,5], target = 8
-3. Output: [[1,1,6], [1,2,5], [1,7], [2,6]]
-4. Key: Sort + skip duplicates at same level
-
-```mermaid
-flowchart TD
-    N1["COMBINATION SUM II - Each number used once"]
-    N2["candidates = [10,1,2,7,6,1,5], target = 8"]
-    N3["Output: [[1,1,6], [1,2,5], [1,7], [2,6]]"]
-    N4["Key: Sort + skip duplicates at same level"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -565,19 +495,6 @@ private void backtrack(int[] candidates, int remain, int start,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COMBINATIONS - Choose k from n
-2. Choose 2 numbers from [1, 2, 3, 4]
-3. Output: [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]
-
-```mermaid
-flowchart TD
-    N1["COMBINATIONS - Choose k from n"]
-    N2["Choose 2 numbers from [1, 2, 3, 4]"]
-    N3["Output: [[1,2], [1,3], [1,4], [2,3], [2,4], [3,4]]"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution:**
 
@@ -646,22 +563,6 @@ With `i > 0`: for input `[1,1,6]` target 8, at the root level (start=0), i=1 see
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PERMUTATIONS - All arrangements
-2. nums = [1, 2, 3]
-3. Tree (swap approach):
-4. Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1
-
-```mermaid
-flowchart TD
-    N1["PERMUTATIONS - All arrangements"]
-    N2["nums = [1, 2, 3]"]
-    N3["Tree (swap approach):"]
-    N4["Output: [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -709,22 +610,6 @@ private void backtrack(int[] nums, List<Integer> path, boolean[] used,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PERMUTATIONS II - Unique permutations
-2. nums = [1, 1, 2]
-3. Output: [[1,1,2], [1,2,1], [2,1,1]]
-4. Key: Sort + skip if same as previous AND previous not u
-
-```mermaid
-flowchart TD
-    N1["PERMUTATIONS II - Unique permutations"]
-    N2["nums = [1, 1, 2]"]
-    N3["Output: [[1,1,2], [1,2,1], [2,1,1]]"]
-    N4["Key: Sort + skip if same as previous AND previous not u"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -783,22 +668,6 @@ private void backtrack(int[] nums, List<Integer> path, boolean[] used,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PALINDROME PARTITIONING
-2. s = 'aab'
-3. Partitions where each part is palindrome:
-4. Output: [['a','a','b'], ['aa','b']]
-
-```mermaid
-flowchart TD
-    N1["PALINDROME PARTITIONING"]
-    N2["s = 'aab'"]
-    N3["Partitions where each part is palindrome:"]
-    N4["Output: [['a','a','b'], ['aa','b']]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -857,33 +726,6 @@ private boolean isPalindrome(String s, int left, int right) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LETTER COMBINATIONS OF PHONE NUMBER
-2. digits = '23'
-3. 2
-4. 'abc', 3
-5. 'def'
-6. 2
-7. 'abc', 3
-8. 'def'
-9. a b c ← digit 2
-10. d,e,f d,e,f d,e,f ← digit 3
-11. Output: ['ad','ae','af','bd','be','bf','cd','ce','cf']
-
-```mermaid
-flowchart TD
-    N1["LETTER COMBINATIONS OF PHONE NUMBER"]
-    N2["digits = '23'"]
-    N3["2 → 'abc', 3 → 'def'"]
-    N4["a b c ← digit 2"]
-    N5["d,e,f d,e,f d,e,f ← digit 3"]
-    N6["Output: ['ad','ae','af','bd','be','bf','cd','ce','cf']"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -935,25 +777,6 @@ private void backtrack(String digits, int index, StringBuilder path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. GENERATE PARENTHESES
-2. n = 3 (3 pairs)
-3. Rules:
-4. - Can add '(' if open < n
-5. - Can add ')' if close < open
-
-```mermaid
-flowchart TD
-    N1["GENERATE PARENTHESES"]
-    N2["n = 3 (3 pairs)"]
-    N3["Rules:"]
-    N4["- Can add '(' if open &lt; n"]
-    N5["- Can add ')' if close &lt; open"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -1032,22 +855,6 @@ private void backtrack(int n, int open, int close, StringBuilder path,
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WORD SEARCH - Find word in grid
-2. board = [['A','B','C','E'],
-3. word = 'ABCCED'
-4. Output: true
-
-```mermaid
-flowchart TD
-    N1["WORD SEARCH - Find word in grid"]
-    N2["board = [['A','B','C','E'],"]
-    N3["word = 'ABCCED'"]
-    N4["Output: true"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -1114,16 +921,6 @@ private boolean backtrack(char[][] board, String word, int r, int c, int idx) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. . Q . . / . . . Q / Q . . . / . . Q .
-2. . . Q . / Q . . . / . . . Q / . Q . .
-
-```mermaid
-flowchart TD
-    N1[". Q . . / . . . Q / Q . . . / . . Q ."]
-    N2[". . Q . / Q . . . / . . . Q / . Q . ."]
-    N1 --> N2
-```
 
 **Solution:**
 
@@ -1205,19 +1002,6 @@ private List<String> construct(char[][] board) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SUDOKU SOLVER
-2. Fill 9x9 grid so each row, column, and 3x3 box
-3. contains digits 1-9 exactly once
-
-```mermaid
-flowchart TD
-    N1["SUDOKU SOLVER"]
-    N2["Fill 9x9 grid so each row, column, and 3x3 box"]
-    N3["contains digits 1-9 exactly once"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution:**
 

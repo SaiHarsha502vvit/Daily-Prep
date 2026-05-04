@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](12_Greedy_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Union_Find_DSU_Complete.md)
+﻿**Navigation**: [< Previous](12_Greedy_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Union_Find_DSU_Complete.md)
 🧠 **Mental Model**: See [Array & String Thinking](../14_Mental_Models/04_Array_String_Thinking.md) — pointer patterns and string manipulation mental models
 
 # 🔤 String Algorithms Complete Guide
@@ -39,33 +39,6 @@ KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHERE STRING ALGORITHMS ARE USED
-2. • Text Editors (Find & Replace)
-3. • Search Engines (Pattern matching)
-4. • DNA Sequencing (Substring search)
-5. • Plagiarism Detection (Similarity)
-6. • Antivirus (Signature matching)
-7. • Network Intrusion Detection
-
-```mermaid
-flowchart TD
-    N1["WHERE STRING ALGORITHMS ARE USED"]
-    N2["• Text Editors (Find & Replace)"]
-    N3["• Search Engines (Pattern matching)"]
-    N4["• DNA Sequencing (Substring search)"]
-    N5["• Plagiarism Detection (Similarity)"]
-    N6["• Antivirus (Signature matching)"]
-    N7["• Network Intrusion Detection"]
-    N8["• Spell Checkers"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The Pattern Matching Problem
 
@@ -125,24 +98,6 @@ We keep rechecking characters we've already seen!
 KMP/Z-algo avoid this redundant work.
 ```
 
-**Flow:**
-1. Attempt 1: A A A A A vs A A A A B
-2. Mismatch at position 4
-3. Attempt 2: A A A A A vs A A A A B
-4. Mismatch at position 4
-5. Attempt 3: A A A A A vs A A A A B
-6. Mismatch at position 4
-
-```mermaid
-flowchart LR
-    N1["Attempt 1: A A A A A vs A A A A B"]
-    N2["Mismatch at position 4"]
-    N3["Attempt 2: A A A A A vs A A A A B"]
-    N4["Attempt 3: A A A A A vs A A A A B"]
-    N1 --> N2
-    N3 --> N2
-    N4 --> N2
-```
 
 ---
 
@@ -183,67 +138,6 @@ i=8: "ABABCABAB"→ "ABAB" matches → LPS[8] = 4
 LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]
 ```
 
-**Flow:**
-1. i=0: 'A'
-2. No proper prefix/suffix
-3. LPS[0] = 0 i=1: 'AB'
-4. Prefixes: {A}, Suffixes: {B}
-5. None match
-6. LPS[1] = 0 i=2: 'ABA'
-7. Prefixes: {A, AB}, Suffixes: {A, BA}
-
-```mermaid
-flowchart TD
-    N1["i=0: 'A'"]
-    N2["No proper prefix/suffix"]
-    N3["LPS[0] = 0"]
-    N4["i=1: 'AB'"]
-    N5["Prefixes: {A}, Suffixes: {B}"]
-    N6["None match"]
-    N7["LPS[1] = 0"]
-    N8["i=2: 'ABA'"]
-    N9["Prefixes: {A, AB}, Suffixes: {A, BA}"]
-    N10["'A' matches"]
-    N11["LPS[2] = 1"]
-    N12["i=3: 'ABAB'"]
-    N13["Prefixes: {A, AB, ABA}, Suffixes: {B, AB, BAB}"]
-    N14["'AB' matches"]
-    N15["LPS[3] = 2"]
-    N16["i=4: 'ABABC'"]
-    N17["No match"]
-    N18["LPS[4] = 0"]
-    N19["i=5: 'ABABCA'"]
-    N20["LPS[5] = 1"]
-    N21["i=6: 'ABABCAB'"]
-    N22["LPS[6] = 2"]
-    N23["i=7: 'ABABCABA'"]
-    N24["'ABA' matches"]
-    N25["LPS[7] = 3"]
-    N26["i=8: 'ABABCABAB'"]
-    N27["'ABAB' matches"]
-    N28["LPS[8] = 4"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N8 --> N9
-    N9 --> N10
-    N10 --> N11
-    N12 --> N13
-    N13 --> N14
-    N14 --> N15
-    N16 --> N17
-    N17 --> N18
-    N19 --> N10
-    N10 --> N20
-    N21 --> N14
-    N14 --> N22
-    N23 --> N24
-    N24 --> N25
-    N26 --> N27
-    N27 --> N28
-```
 
 ### Complete KMP Implementation
 
@@ -339,33 +233,6 @@ Step 4: Full match found at index 5!
         A B A B D [A B A B C A B A B]
 ```
 
-**Flow:**
-1. TEXT: A B A B D A B A B C A B A B
-2. PATTERN: A B A B C A B A B
-3. LPS: 0 0 1 2 0 1 2 3 4
-4. Step 1: Compare from start
-5. ↑ Mismatch at index 4!
-6. j = 4, lps[3] = 2
-7. Skip: Instead of starting over, jump to j = 2
-
-```mermaid
-flowchart TD
-    N1["TEXT: A B A B D A B A B C A B A B"]
-    N2["PATTERN: A B A B C A B A B"]
-    N3["LPS: 0 0 1 2 0 1 2 3 4"]
-    N4["Step 1: Compare from start"]
-    N5["↑ Mismatch at index 4!"]
-    N6["j = 4, lps[3] = 2"]
-    N7["Skip: Instead of starting over, jump to j = 2"]
-    N8["Step 2: Continue with j = 2 (pattern already matched 'A"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Time Complexity Analysis
 
@@ -386,33 +253,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. KMP COMPLEXITY
-2. LPS Construction: O(m) where m = pattern length
-3. Search: O(n) where n = text length
-4. Total: O(n + m)
-5. Space: O(m) for LPS array
-6. Why O(n)?
-7. - i never decreases (always moves forward in text)
-
-```mermaid
-flowchart TD
-    N1["KMP COMPLEXITY"]
-    N2["LPS Construction: O(m) where m = pattern length"]
-    N3["Search: O(n) where n = text length"]
-    N4["Total: O(n + m)"]
-    N5["Space: O(m) for LPS array"]
-    N6["Why O(n)?"]
-    N7["- i never decreases (always moves forward in text)"]
-    N8["- j can decrease but total decreases ≤ total increases"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### KMP Applications
 
@@ -550,33 +390,6 @@ Continue...
 Final Z = [-, 1, 0, 3, 1, 0, 2, 2, 1]
 ```
 
-**Flow:**
-1. Match: 'a'
-2. Z[1] = 1
-3. 'b...' vs 'a...'
-4. No match
-5. Z[2] = 0
-6. Match: 'aab'
-7. Z[3] = 3 s[1] = 'a', s[5] = 'b'
-8. No extend
-
-```mermaid
-flowchart TD
-    N1["Match: 'a'"]
-    N2["Z[1] = 1"]
-    N3["'b...' vs 'a...'"]
-    N4["No match"]
-    N5["Z[2] = 0"]
-    N6["Match: 'aab'"]
-    N7["Z[3] = 3"]
-    N8["s[1] = 'a', s[5] = 'b'"]
-    N9["No extend"]
-    N1 --> N2
-    N3 --> N4
-    N4 --> N5
-    N6 --> N7
-    N8 --> N9
-```
 
 ### Z-Algorithm vs KMP
 
@@ -603,33 +416,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Z-ALGORITHM vs KMP
-2. Both: O(n + m) time, O(m) space
-3. Z-Algorithm:
-4. ✓ Conceptually simpler
-5. ✓ More intuitive (direct prefix matching)
-6. ✓ Useful for many string problems
-7. ✗ Requires concatenation (extra space for search)
-
-```mermaid
-flowchart TD
-    N1["Z-ALGORITHM vs KMP"]
-    N2["Both: O(n + m) time, O(m) space"]
-    N3["Z-Algorithm:"]
-    N4["✓ Conceptually simpler"]
-    N5["✓ More intuitive (direct prefix matching)"]
-    N6["✓ Useful for many string problems"]
-    N7["✗ Requires concatenation (extra space for search)"]
-    N8["KMP:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Z-Array Applications
 
@@ -778,33 +564,6 @@ Window 3: "BCD" (slide right)
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. RABIN-KARP USE CASES
-2. ✓ Multiple pattern search (efficient)
-3. Same text, many patterns compute text hashes once
-4. ✓ 2D pattern matching
-5. Find matrix in larger matrix
-6. ✓ Finding repeated substrings
-7. Hash all substrings of length k, find duplicates
-
-```mermaid
-flowchart TD
-    N1["RABIN-KARP USE CASES"]
-    N2["✓ Multiple pattern search (efficient)"]
-    N3["Same text, many patterns → compute text hashes once"]
-    N4["✓ 2D pattern matching"]
-    N5["Find matrix in larger matrix"]
-    N6["✓ Finding repeated substrings"]
-    N7["Hash all substrings of length k, find duplicates"]
-    N8["✓ Plagiarism detection"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Multiple Pattern Search
 
@@ -945,33 +704,6 @@ The trick: When we know P[center] and we're at position i,
            we can use P[mirror] to initialize P[i].
 ```
 
-**Flow:**
-1. Original: 'abaaba'
-2. Transformed: '#a#b#a#a#b#a#'
-3. Index: 0 1 2 3 4 5 6 7 8 9 10 11 12
-4. String: # a # b # a # a # b # a #
-5. 'aba' 'abaaba'
-6. P[6] = 6: Center at position 6 (#), radius 6
-7. In original string: 'abaaba' (length 6)
-
-```mermaid
-flowchart TD
-    N1["Original: 'abaaba'"]
-    N2["Transformed: '#a#b#a#a#b#a#'"]
-    N3["Index: 0 1 2 3 4 5 6 7 8 9 10 11 12"]
-    N4["String: # a # b # a # a # b # a #"]
-    N5["'aba' 'abaaba'"]
-    N6["P[6] = 6: Center at position 6 (#), radius 6"]
-    N7["In original string: 'abaaba' (length 6)"]
-    N8["The trick: When we know P[center] and we're at position"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1005,33 +737,6 @@ Each node = character
 ✓ = end of word marker
 ```
 
-**Flow:**
-1. Trie = Prefix Tree
-2. Stores strings efficiently for:
-3. - Prefix search
-4. - Autocomplete
-5. - Spell checking
-6. - Word games (Boggle, Scrabble)
-7. root
-
-```mermaid
-flowchart TD
-    N1["Trie = Prefix Tree"]
-    N2["Stores strings efficiently for:"]
-    N3["- Prefix search"]
-    N4["- Autocomplete"]
-    N5["- Spell checking"]
-    N6["- Word games (Boggle, Scrabble)"]
-    N7["root"]
-    N8["(ape) (to)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Trie Implementation
 
@@ -1452,33 +1157,6 @@ private String findDuplicateOfLength(String s, int len) {
 └──────────────┴────────────┴───────────┴─────────────────────────────┘
 ```
 
-**Flow:**
-1. Algorithm Time Space Best For
-2. Naive O(n*m) O(1) Very short patterns
-3. KMP O(n+m) O(m) Single pattern, streaming
-4. Z-Algorithm O(n+m) O(n+m) Single pattern, intuitive
-5. Rabin-Karp O(n+m) avg O(m) Multiple patterns
-6. Trie O(m) query O(total) Prefix search, autocomplete
-7. Suffix Array O(n log n) O(n) All substring queries
-
-```mermaid
-flowchart TD
-    N1["Algorithm Time Space Best For"]
-    N2["Naive O(n*m) O(1) Very short patterns"]
-    N3["KMP O(n+m) O(m) Single pattern, streaming"]
-    N4["Z-Algorithm O(n+m) O(n+m) Single pattern, intuitive"]
-    N5["Rabin-Karp O(n+m) avg O(m) Multiple patterns"]
-    N6["Trie O(m) query O(total) Prefix search, autocomplete"]
-    N7["Suffix Array O(n log n) O(n) All substring queries"]
-    N8["Manacher O(n) O(n) Palindrome problems"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### When to Use What
 
@@ -1508,33 +1186,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ALGORITHM SELECTION GUIDE
-2. 'Find pattern in text'
-3. KMP or Z-algorithm (single pattern)
-4. Rabin-Karp (multiple patterns)
-5. 'Check if prefix exists' / 'Autocomplete'
-6. Trie
-7. 'Longest palindrome'
-
-```mermaid
-flowchart TD
-    N1["ALGORITHM SELECTION GUIDE"]
-    N2["'Find pattern in text'"]
-    N3["→ KMP or Z-algorithm (single pattern)"]
-    N4["→ Rabin-Karp (multiple patterns)"]
-    N5["'Check if prefix exists' / 'Autocomplete'"]
-    N6["→ Trie"]
-    N7["'Longest palindrome'"]
-    N8["→ Manacher's (O(n))"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Common String Tricks
 
@@ -1606,33 +1257,6 @@ private int[] buildLPS(String pattern) {
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. STRING ALGORITHMS - MASTER THESE
-2. KMP - Pattern matching in O(n+m)
-3. Key: LPS array, never recheck matched characters
-4. RABIN-KARP - Rolling hash for multiple patterns
-5. Key: Hash comparison, verify on match
-6. Z-ALGORITHM - Alternative to KMP, more intuitive
-7. Key: Z[i] = prefix match length at position i
-
-```mermaid
-flowchart TD
-    N1["STRING ALGORITHMS - MASTER THESE"]
-    N2["1. KMP - Pattern matching in O(n+m)"]
-    N3["Key: LPS array, never recheck matched characters"]
-    N4["2. RABIN-KARP - Rolling hash for multiple patterns"]
-    N5["Key: Hash comparison, verify on match"]
-    N6["3. Z-ALGORITHM - Alternative to KMP, more intuitive"]
-    N7["Key: Z[i] = prefix match length at position i"]
-    N8["4. TRIE - Prefix search & autocomplete"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Pro Tip:** When explaining string algorithms in interviews, draw out the arrays (LPS, Z) step by step. Interviewers love to see you work through examples visually!
 

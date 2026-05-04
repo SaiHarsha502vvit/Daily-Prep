@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_023_Mar25_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_025_Mar27_Thu.md)
+﻿> **Navigation**: [< Previous](Day_023_Mar25_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_025_Mar27_Thu.md)
 
 # DAY 024 — Wednesday, March 26, 2026
 ## Dijkstra's Algorithm + Union-Find + SQL Transactions
@@ -159,15 +159,6 @@ I — Isolation:    Concurrent transactions don't interfere
 D — Durability:   Once committed, data survives crashes
 ```
 
-**Flow:**
-1. A — Atomicity: All or nothing (partial failure rollback ALL)
-
-```mermaid
-flowchart LR
-    N1["A — Atomicity: All or nothing (partial failure"]
-    N2["rollback ALL)"]
-    N1 --> N2
-```
 
 ### HOW: Transaction Syntax
 
@@ -207,31 +198,6 @@ SERIALIZABLE     → Full isolation (slowest, safest)
 SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 ```
 
-**Flow:**
-1. READ UNCOMMITTED
-2. Can see uncommitted data (dirty reads)
-3. READ COMMITTED
-4. Only see committed data (default in PostgreSQL)
-5. REPEATABLE READ
-6. Same query returns same results within transaction
-7. SERIALIZABLE
-8. Full isolation (slowest, safest)
-
-```mermaid
-flowchart LR
-    N1["READ UNCOMMITTED"]
-    N2["Can see uncommitted data (dirty reads)"]
-    N3["READ COMMITTED"]
-    N4["Only see committed data (default in PostgreSQL)"]
-    N5["REPEATABLE READ"]
-    N6["Same query returns same results within transaction"]
-    N7["SERIALIZABLE"]
-    N8["Full isolation (slowest, safest)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
 
 ---
 
@@ -247,19 +213,6 @@ Input: edges = [[1,2],[1,3],[2,3]]
 Output: [2,3]  ← removing this restores the tree
 ```
 
-**Flow:**
-1. Tree with n nodes has exactly n-1 edges.
-2. Input: edges = [[1,2],[1,3],[2,3]]
-3. Output: [2,3] ← removing this restores the tree
-
-```mermaid
-flowchart TD
-    N1["Tree with n nodes has exactly n-1 edges."]
-    N2["Input: edges = [[1,2],[1,3],[2,3]]"]
-    N3["Output: [2,3] ← removing this restores the tree"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Pattern**: Union-Find — when union returns false, that edge creates a cycle.
 

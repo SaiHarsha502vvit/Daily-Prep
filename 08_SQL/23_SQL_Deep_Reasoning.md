@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](22_NoSQL_MongoDB.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_SQL_Data_Analyst_RealWorld.md)
+﻿**Navigation**: [< Previous](22_NoSQL_MongoDB.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_SQL_Data_Analyst_RealWorld.md)
 
 # Chapter 23 — SQL Deep Reasoning: The Questions That Freeze People
 
@@ -104,33 +104,6 @@ SELECT COALESCE(phone, email, 'No contact') AS contact FROM users;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SQL EXECUTION ORDER (not the order you write it!):
-2. 1. FROM / JOIN ← Identify the tables
-3. 2. WHERE ← Filter INDIVIDUAL rows
-4. 3. GROUP BY ← Create groups
-5. 4. HAVING ← Filter GROUPS (after aggregation)
-6. 5. SELECT ← Choose columns, compute expressions
-7. 6. DISTINCT ← Remove duplicates
-
-```mermaid
-flowchart TD
-    N1["SQL EXECUTION ORDER (not the order you write it!):"]
-    N2["1. FROM / JOIN ← Identify the tables"]
-    N3["2. WHERE ← Filter INDIVIDUAL rows"]
-    N4["3. GROUP BY ← Create groups"]
-    N5["4. HAVING ← Filter GROUPS (after aggregation)"]
-    N6["5. SELECT ← Choose columns, compute expressions"]
-    N7["6. DISTINCT ← Remove duplicates"]
-    N8["7. ORDER BY ← Sort results"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```sql
 -- ❌ WRONG: WHERE can't use aggregate
@@ -189,38 +162,6 @@ HAVING COUNT(*) > 5;      -- Then filter groups
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE SCHOOL DANCE ANALOGY
-2. Students table (left) Lockers table (right)
-3. [Alice, Bob, Charlie] [Locker1
-4. Alice, Locker2
-5. Bob]
-6. [Alice, Bob, Charlie] [Locker1
-7. Alice, Locker2
-8. Bob]
-9. INNER JOIN: Only students WITH lockers dance.
-10. Result: [Alice+Locker1, Bob+Locker2] (Charlie excluded)
-11. Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL]
-12. RIGHT JOIN: ALL lockers shown. No student? NULL.
-
-```mermaid
-flowchart TD
-    N1["THE SCHOOL DANCE ANALOGY"]
-    N2["Students table (left) Lockers table (right)"]
-    N3["[Alice, Bob, Charlie] [Locker1→Alice, Locker2→Bob]"]
-    N4["INNER JOIN: Only students WITH lockers dance."]
-    N5["Result: [Alice+Locker1, Bob+Locker2] (Charlie excluded)"]
-    N6["Result: [Alice+Locker1, Bob+Locker2, Charlie+NULL]"]
-    N7["RIGHT JOIN: ALL lockers shown. No student? NULL."]
-    N8["Result: [Alice+Locker1, Bob+Locker2]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```sql
 -- THE TRAP: LEFT JOIN + WHERE on right table = INNER JOIN!
@@ -293,36 +234,6 @@ It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE BOOK INDEX ANALOGY (literally!)
-2. An index at the back of a textbook:
-3. 'binary search'
-4. pages 45, 67, 112
-5. 'binary search'
-6. pages 45, 67, 112
-7. Fast to FIND specific terms (O(log n) vs full scan)
-8. But the index itself takes SPACE (extra pages)
-9. And updating the index when content changes costs TIM
-10. WHEN INDEXES HELP:
-
-```mermaid
-flowchart TD
-    N1["THE BOOK INDEX ANALOGY (literally!)"]
-    N2["An index at the back of a textbook:"]
-    N3["'binary search' → pages 45, 67, 112"]
-    N4["→ Fast to FIND specific terms (O(log n) vs full scan)"]
-    N5["→ But the index itself takes SPACE (extra pages)"]
-    N6["→ And updating the index when content changes costs TIM"]
-    N7["WHEN INDEXES HELP:"]
-    N8["✅ WHERE column = value (equality lookup)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -367,33 +278,6 @@ Everyone takes the exam ONE AT A TIME.
 *MySQL InnoDB prevents phantoms at Repeatable Read (gap locks)
 ```
 
-**Flow:**
-1. THE EXAM ROOM ANALOGY
-2. READ UNCOMMITTED (no isolation):
-3. You can read someone's answer sheet WHILE they're writi
-4. READ COMMITTED (most common — Postgres default):
-5. You can only read SUBMITTED answer sheets.
-6. ✅ No dirty reads
-7. ❌ Non-repeatable read: You read Bob's score=80. Read ag
-
-```mermaid
-flowchart TD
-    N1["THE EXAM ROOM ANALOGY"]
-    N2["READ UNCOMMITTED (no isolation):"]
-    N3["You can read someone's answer sheet WHILE they're writi"]
-    N4["READ COMMITTED (most common — Postgres default):"]
-    N5["You can only read SUBMITTED answer sheets."]
-    N6["✅ No dirty reads"]
-    N7["❌ Non-repeatable read: You read Bob's score=80. Read ag"]
-    N8["→ score=90 (Bob submitted a correction between reads)."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -439,36 +323,6 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE NARROW DOORWAY ANALOGY
-2. Transaction A: Locks Row 1, needs Row 2.
-3. Transaction B: Locks Row 2, needs Row 1.
-4. A waits for B to release Row 2.
-5. B waits for A to release Row 1.
-6. Neither can proceed
-7. DEADLOCK!
-8. Neither can proceed
-9. DEADLOCK!
-10. Like two people in a narrow hallway, each waiting for t
-
-```mermaid
-flowchart TD
-    N1["THE NARROW DOORWAY ANALOGY"]
-    N2["Transaction A: Locks Row 1, needs Row 2."]
-    N3["Transaction B: Locks Row 2, needs Row 1."]
-    N4["A waits for B to release Row 2."]
-    N5["B waits for A to release Row 1."]
-    N6["Neither can proceed → DEADLOCK!"]
-    N7["Like two people in a narrow hallway, each waiting for t"]
-    N8["other to move. Neither can pass."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -502,35 +356,6 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE RESTAURANT ORDER ANALOGY
-2. BAD (N+1): Waiter asks kitchen once per customer.
-3. 'What did customer 1 order?'
-4. 1 trip
-5. 'What did customer 1 order?'
-6. 1 trip
-7. 'What did customer 2 order?'
-8. 1 trip
-9. 'What did customer 2 order?'
-10. 1 trip
-11. ... repeat N times.
-12. GOOD: 'Give me ALL orders at once.'
-13. 1 or 2 queries to
-
-```mermaid
-flowchart TD
-    N1["THE RESTAURANT ORDER ANALOGY"]
-    N2["BAD (N+1): Waiter asks kitchen once per customer."]
-    N3["'What did customer 1 order?' → 1 trip"]
-    N4["'What did customer 2 order?' → 1 trip"]
-    N5["... repeat N times."]
-    N6["GOOD: 'Give me ALL orders at once.' → 1 or 2 queries to"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```sql
 -- N+1 PROBLEM (in ORM):
@@ -587,33 +412,6 @@ private Set<Employee> employees;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. EXPLAIN shows the database's EXECUTION PLAN:
-2. RED FLAGS to look for:
-3. 🔴 'Seq Scan' / 'Full Table Scan'
-4. Reading EVERY row. Missing index?
-5. 🔴 'rows' is much larger than 'filtered'
-6. Scanning many rows but keeping few. Index would help.
-7. 🔴 'Using filesort'
-
-```mermaid
-flowchart TD
-    N1["EXPLAIN shows the database's EXECUTION PLAN:"]
-    N2["RED FLAGS to look for:"]
-    N3["🔴 'Seq Scan' / 'Full Table Scan'"]
-    N4["→ Reading EVERY row. Missing index?"]
-    N5["🔴 'rows' is much larger than 'filtered'"]
-    N6["→ Scanning many rows but keeping few. Index would help."]
-    N7["🔴 'Using filesort'"]
-    N8["→ Sorting in memory/disk, not using index. Add covering"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```sql
 -- MySQL
@@ -659,36 +457,6 @@ EXPLAIN ANALYZE SELECT * FROM orders WHERE customer_id = 42;
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. NORMALIZATION = Organizing data to eliminate redundancy
-2. 'Every piece of data lives in ONE place.'
-3. ✅ No update anomalies
-4. ✅ Less storage
-5. ❌ More JOINs needed
-6. slower reads for complex queries
-7. ❌ More JOINs needed
-8. slower reads for complex queries
-9. DENORMALIZATION = Intentionally adding redundancy
-10. 'Store computed/duplicate data for faster reads.'
-
-```mermaid
-flowchart TD
-    N1["NORMALIZATION = Organizing data to eliminate redundancy"]
-    N2["'Every piece of data lives in ONE place.'"]
-    N3["✅ No update anomalies"]
-    N4["✅ Less storage"]
-    N5["❌ More JOINs needed → slower reads for complex queries"]
-    N6["DENORMALIZATION = Intentionally adding redundancy"]
-    N7["'Store computed/duplicate data for faster reads.'"]
-    N8["✅ Faster reads (fewer JOINs)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -713,33 +481,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. GROUP BY: 'Summarize and COLLAPSE rows into groups.'
-2. 100 rows
-3. 5 groups
-4. 5 result rows.
-5. 100 rows
-6. 5 groups
-7. 5 result rows.
-8. You LOSE individual row details.
-9. You KEEP individual row details AND get aggregate info.
-10. Analogy: CLASS RANKING
-11. GROUP BY = 'What's the average score per class?'
-
-```mermaid
-flowchart TD
-    N1["GROUP BY: 'Summarize and COLLAPSE rows into groups.'"]
-    N2["100 rows → 5 groups → 5 result rows."]
-    N3["You LOSE individual row details."]
-    N4["You KEEP individual row details AND get aggregate info."]
-    N5["Analogy: CLASS RANKING"]
-    N6["GROUP BY = 'What's the average score per class?'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```sql
 -- GROUP BY: One row per department

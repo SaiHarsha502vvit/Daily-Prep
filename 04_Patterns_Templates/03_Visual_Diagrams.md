@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)
+﻿**Navigation**: [< Previous](02_Code_Templates.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Pattern_Recognition.md)
 
 # 🎨 VISUAL ALGORITHM DIAGRAMS - COMPLETE REFERENCE
 
@@ -124,30 +124,6 @@ Index 6: arr[6] = 1
 Continue... Final Answer: 6 (subarray [4, -1, 2, 1])
 ```
 
-**Flow:**
-1. Scan left to right and maintain two values: `current` and `maxSum`.
-2. At each index, choose between starting fresh at `arr[i]` or extending `current + arr[i]`.
-3. Update `maxSum` whenever `current` becomes larger.
-4. Final `maxSum` is the maximum subarray answer.
-
-```mermaid
-flowchart TD
-    N1["KADANE'S ALGORITHM"]
-    N2["Array: [-2, 1, -3, 4, -1, 2, 1, -5, 4]"]
-    N3["KEY IDEA: At each position, decide:"]
-    N4["'Should I start fresh here, or extend previous subarray"]
-    N5["Index 0: arr[0] = -2"]
-    N6["maxSum = -2"]
-    N7["Index 1: arr[1] = 1"]
-    N8["maxSum = 1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Dutch National Flag (Sort 0s, 1s, 2s)
 
@@ -207,19 +183,6 @@ mid > high → DONE! ✓
 Result: [0, 0, 1, 1, 2, 2]
 ```
 
-**Flow:**
-1. Start with `2 0 2 1 1 0`.
-2. Move 0s to the left zone and 2s to the right zone with low/mid/high pointers.
-3. End with `0 0 1 1 2 2`.
-
-```mermaid
-flowchart TD
-    N1["2 0 2 1 1 0"]
-    N2["0 0 2 1 1 2"]
-    N3["0 0 1 1 2 2"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -265,21 +228,6 @@ Process "silent": -1 for each char
 All zeros → ANAGRAM ✓
 ```
 
-**Flow:**
-1. Count character frequencies for the first word (`+1` per char).
-2. Subtract frequencies using the second word (`-1` per char).
-3. If every frequency returns to zero, the words are anagrams.
-
-```mermaid
-flowchart TD
-    N1["l 1 / i 1 / s 1 / t 1 / e 1 / n 1"]
-    N2["s 1 / i 1 / l 1 / e 1 / n 1 / t 1"]
-    N3["0 0 0 0 1 0 0 0 1 0 0 1 0 1 0 0 0 0 1 1 0 0 0 0 0 0"]
-    N4["0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### KMP String Matching (Pattern Search)
 
@@ -406,17 +354,6 @@ Time: O(N + K) where K = range of values
 Best when: K is small (like sorting ages 0-100)
 ```
 
-**Flow:**
-1. Build the frequency count array.
-2. Convert counts into prefix sums.
-3. Use prefix positions to place elements in sorted order (stable placement).
-
-```mermaid
-flowchart TD
-    N1["0 1 2 1 1 0 0 0 1 0"]
-    N2["0 1 3 4 5 5 5 5 6 6"]
-    N1 --> N2
-```
 
 ---
 
@@ -564,19 +501,6 @@ removeFirst    removeLast
 Use cases: Sliding window max, BFS variations
 ```
 
-**Flow:**
-1. Stack view: `3, 2, 1` (LIFO behavior).
-2. Queue view: `1, 2, 3` (FIFO behavior).
-3. Deque view: `A B C D E` with insertion/removal from both ends.
-
-```mermaid
-flowchart TD
-    N1["3 / 2 / 1"]
-    N2["1 2 3"]
-    N3["A B C D E"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -742,30 +666,6 @@ Answer: 5
 Time: O(N), Space: O(1) 🎉
 ```
 
-**Flow:**
-1. Naive recursion recomputes the same subproblems many times.
-2. Memoization stores results and reduces time to O(N).
-3. Bottom-up DP computes iteratively and avoids recursion overhead.
-4. Optimized tabulation uses two variables for O(1) extra space.
-
-```mermaid
-flowchart TD
-    N1["FIBONACCI - DP VISUALIZATION"]
-    N2["WITHOUT MEMOIZATION (Exponential time):"]
-    N3["fib(5)"]
-    N4["fib(4) fib(3)"]
-    N5["fib(2) fib(1)"]
-    N6["Notice: fib(3) calculated twice, fib(2) calculated 3 ti"]
-    N7["Time: O(2^N) 😱"]
-    N8["WITH MEMOIZATION (Linear time):"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Longest Common Subsequence (LCS)
 
@@ -802,30 +702,6 @@ Backtrack to find actual subsequence:
 Start at dp[6][6]=3, trace back through matches
 ```
 
-**Flow:**
-1. Define strings X and Y and create `dp[i][j]` for LCS length.
-2. If characters match, take diagonal + 1.
-3. If not, take the max of top and left.
-4. Backtrack through the table to reconstruct the subsequence.
-
-```mermaid
-flowchart TD
-    N1["LONGEST COMMON SUBSEQUENCE"]
-    N2["String X = 'ABCDGH'"]
-    N3["String Y = 'AEDFHR'"]
-    N4["DP Table: dp[i][j] = LCS length of X[0..i-1] and Y[0..j"]
-    N5["D 0 1 1 2 2 2 2 ← D matches!"]
-    N6["H 0 1 1 2 2 3 3 ← H matches!"]
-    N7["Recurrence:"]
-    N8["dp[i][j] = dp[i-1][j-1] + 1 (match, add 1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -954,24 +830,6 @@ int gcd(int a, int b) {
 Time Complexity: O(log(min(a, b)))
 ```
 
-**Flow:**
-1. Start with `gcd(48, 18)`.
-2. Repeatedly apply `gcd(a, b) = gcd(b, a % b)`.
-3. Sequence: `gcd(18,12) -> gcd(12,6) -> gcd(6,0)`.
-4. Stop when `b = 0`; return `a = 6`.
-
-```mermaid
-flowchart TD
-    N1["GCD - EUCLIDEAN ALGORITHM / Find GCD(48, 18): / Step 1:"]
-    N2["GCD(18, 48 % 18) = GCD(18, 12)"]
-    N3["GCD(12, 18 % 12) = GCD(12, 6)"]
-    N4["GCD(6, 12 % 6) = GCD(6, 0)"]
-    N5["return 6 ← When b becomes 0, a is the GCD / Code: / int"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ---
 
@@ -1011,19 +869,6 @@ flowchart TD
 | Heap | - | O(N) | O(logN) | O(logN) |
 | BST (balanced) | O(logN) | O(logN) | O(logN) | O(logN) |
 
-**Flow:**
-1. Review sorting algorithms by best/average/worst complexity and practical use.
-2. Review searching methods by time complexity and data preconditions.
-3. Review data-structure operation costs for access, search, insert, and delete.
-
-```mermaid
-flowchart TD
-    N1["Algorithm Best Average Worst When to Use / Quick Sort O"]
-    N2["Algorithm Time When to Use / Linear Search O(N) Unsorte"]
-    N3["Structure Access Search Insert Delete / Array O(1) O(N)"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 

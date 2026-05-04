@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_018_Mar20_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_020_Mar22_Sat.md)
+﻿> **Navigation**: [< Previous](Day_018_Mar20_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_020_Mar22_Sat.md)
 
 # Day 019 — Friday, March 21, 2026
 
@@ -63,15 +63,6 @@ TYPE 2: VARIABLE-SIZE WINDOW
                ├───┤    sum=7 ≥ 7 ← smallest! (len=2)
 ```
 
-**Flow:**
-1. Window size is given just slide it
-
-```mermaid
-flowchart LR
-    N1["Window size is given"]
-    N2["just slide it"]
-    N1 --> N2
-```
 
 ### TEMPLATE: Fixed-Size Window
 
@@ -205,28 +196,6 @@ TREE PROBLEM PATTERNS:
      Examples: isSameTree, isSymmetric, isValidBST
 ```
 
-**Flow:**
-1. 'Return a value'
-2. return something from recursion
-3. 'Modify the tree' return modified node
-4. 'Collect values' pass list as parameter
-5. 'Check a property' return boolean
-
-```mermaid
-flowchart LR
-    N1["1. 'Return a value'"]
-    N2["return something from recursion"]
-    N3["2. 'Modify the tree'"]
-    N4["return modified node"]
-    N5["3. 'Collect values'"]
-    N6["pass list as parameter"]
-    N7["4. 'Check a property'"]
-    N8["return boolean"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
 
 ---
 
@@ -443,25 +412,6 @@ WHICH TYPE:
   HashMap:  "...distinct/unique..." → track counts in map
 ```
 
-**Flow:**
-1. Fixed: '...of size K' one pointer, fixed distance
-2. Variable: 'smallest/longest that...'
-3. two pointers, expand+shrink
-4. HashMap: '...distinct/unique...'
-5. track counts in map
-
-```mermaid
-flowchart LR
-    N1["Fixed: '...of size K'"]
-    N2["one pointer, fixed distance"]
-    N3["Variable: 'smallest/longest that...'"]
-    N4["two pointers, expand+shrink"]
-    N5["HashMap: '...distinct/unique...'"]
-    N6["track counts in map"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 
 ---

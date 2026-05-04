@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch41_SB_Architecture_Quality.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch43_SB_Auth_Security.md)
+﻿**Navigation**: [< Previous](Ch41_SB_Architecture_Quality.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch43_SB_Auth_Security.md)
 
 # 🌐 SPRING BOOT MASTERY - Part 10: HTTP Deep Dive
 
@@ -49,22 +49,6 @@ _"Every API call is a journey through layers of protocols"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Understand HTTP Deeply? / • Debug network issu
-2. HOW: How HTTP Request/Response Cycle Works? / • DNS loo
-3. WHEN: When to Use Each HTTP Method? / • GET: Retrieve d
-4. WHICH: Which HTTP Concepts to Master? / ESSENTIAL: Stat
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Understand HTTP Deeply? / • Debug network issu"]
-    N2["HOW: How HTTP Request/Response Cycle Works? / • DNS loo"]
-    N3["WHEN: When to Use Each HTTP Method? / • GET: Retrieve d"]
-    N4["WHICH: Which HTTP Concepts to Master? / ESSENTIAL: Stat"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -369,33 +353,6 @@ HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still hea
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. URL STRUCTURE BREAKDOWN
-2. SCHEME HOST PORT PATH QUERY STRING
-3. BREAKING DOWN THE PATH:
-4. /api/v1/users/123/orders
-5. Resource: orders
-6. PATH VARIABLE: 123 (user ID)
-7. Resource: users
-
-```mermaid
-flowchart TD
-    N1["URL STRUCTURE BREAKDOWN"]
-    N2["SCHEME HOST PORT PATH QUERY STRING"]
-    N3["BREAKING DOWN THE PATH:"]
-    N4["/api/v1/users/123/orders"]
-    N5["Resource: orders"]
-    N6["PATH VARIABLE: 123 (user ID)"]
-    N7["Resource: users"]
-    N8["Version: v1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -840,33 +797,6 @@ public class RequestParamExamplesController {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. @PathVariable vs @RequestParam DECISION GUIDE
-2. @PathVariable @RequestParam
-3. /users/123 /users?name=John
-4. /orders/abc-def-123 /orders?status=pending
-5. /products/electronics/laptops /products?page=2&size=10
-6. IDENTIFIES a resource FILTERS or MODIFIES the request
-7. Required (part of URL) Usually optional
-
-```mermaid
-flowchart TD
-    N1["@PathVariable vs @RequestParam DECISION GUIDE"]
-    N2["@PathVariable @RequestParam"]
-    N3["/users/123 /users?name=John"]
-    N4["/orders/abc-def-123 /orders?status=pending"]
-    N5["/products/electronics/laptops /products?page=2&size=10"]
-    N6["IDENTIFIES a resource FILTERS or MODIFIES the request"]
-    N7["Required (part of URL) Usually optional"]
-    N8["'WHICH specific thing?' 'HOW do you want it?'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1050,33 +980,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. POSTMAN PRO TIPS
-2. ENVIRONMENT VARIABLES
-3. Create environments: Development, Staging, Production
-4. Variables:
-5. Variable Value
-6. baseUrl http://localhost:8080 ← Dev
-7. baseUrl https://api.staging.myapp.com ← Staging
-
-```mermaid
-flowchart TD
-    N1["POSTMAN PRO TIPS"]
-    N2["ENVIRONMENT VARIABLES"]
-    N3["Create environments: Development, Staging, Production"]
-    N4["Variables:"]
-    N5["Variable Value"]
-    N6["baseUrl http://localhost:8080 ← Dev"]
-    N7["baseUrl https://api.staging.myapp.com ← Staging"]
-    N8["baseUrl https://api.myapp.com ← Prod"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1145,33 +1048,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. NETWORK PROTOCOLS OVERVIEW
-2. OSI MODEL LAYERS:
-3. Layer 6: PRESENTATION SSL/TLS, JPEG, ASCII
-4. Layer 5: SESSION NetBIOS, PPTP
-5. Layer 4: TRANSPORT TCP, UDP
-6. Layer 3: NETWORK IP, ICMP
-7. Layer 2: DATA LINK Ethernet, WiFi
-
-```mermaid
-flowchart TD
-    N1["NETWORK PROTOCOLS OVERVIEW"]
-    N2["OSI MODEL LAYERS:"]
-    N3["Layer 6: PRESENTATION SSL/TLS, JPEG, ASCII"]
-    N4["Layer 5: SESSION NetBIOS, PPTP"]
-    N5["Layer 4: TRANSPORT TCP, UDP"]
-    N6["Layer 3: NETWORK IP, ICMP"]
-    N7["Layer 2: DATA LINK Ethernet, WiFi"]
-    N8["Layer 1: PHYSICAL Cables, Radio waves"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

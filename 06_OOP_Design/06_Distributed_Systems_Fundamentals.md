@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [System Design Problems](05_SD_Interview_Problems.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [System Design Problems](05_SD_Interview_Problems.md)
 🧠 **Mental Model**: See [Distributed Systems Thinking](../14_Mental_Models/16_Distributed_Systems_Thinking.md)
 
 ---
@@ -66,20 +66,6 @@ Kitchen team: High throughput, but needs communication protocols
     Use when: Social media feeds, product catalog, shopping cart
 ```
 
-**Flow:**
-1. When partition happens
-2. system blocks/errors rather than return stale data
-3. When partition happens
-4. system returns potentially stale data
-
-```mermaid
-flowchart LR
-    N1["When partition happens"]
-    N2["system blocks/errors rather than return stale data"]
-    N3["system returns potentially stale data"]
-    N1 --> N2
-    N1 --> N3
-```
 
 ### CAP in Plain English
 
@@ -139,34 +125,6 @@ You CANNOT have both during a partition. Period.
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SPECTRUM: Strong ←
-2. Weak
-3. 1. STRONG CONSISTENCY (Linearizability)
-4. Every read returns the most recent write
-5. As if there's only one copy of data
-6. Cost: High latency (must coordinate all replicas)
-7. Example: Single PostgreSQL instance, Google Spanner
-8. 2. SEQUENTIAL CONSISTENCY
-
-```mermaid
-flowchart TD
-    N1["SPECTRUM: Strong ← → Weak"]
-    N2["1. STRONG CONSISTENCY (Linearizability)"]
-    N3["→ Every read returns the most recent write"]
-    N4["→ As if there's only one copy of data"]
-    N5["→ Cost: High latency (must coordinate all replicas)"]
-    N6["→ Example: Single PostgreSQL instance, Google Spanner"]
-    N7["2. SEQUENTIAL CONSISTENCY"]
-    N8["→ All operations appear in SOME total order"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -207,16 +165,6 @@ flowchart TD
    Examples: Cassandra, DynamoDB, Riak
 ```
 
-**Flow:**
-1. Client --(writes)-->
-2. Leader
-
-```mermaid
-flowchart LR
-    N1["Client"]
-    N2["→ Leader"]
-    N1 -->|"writes"| N2
-```
 
 ---
 
@@ -262,33 +210,6 @@ flowchart LR
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. STRATEGY 1: Range-Based Partitioning
-2. Shard 1: Users A-F Shard 2: Users G-M Shard 3: Users N-
-3. STRATEGY 2: Hash-Based Partitioning
-4. shard = hash(userId) % num_shards
-5. ✅ Even distribution (no hot spots for simple partition
-6. ❌ Range queries require scatter-gather (hit all shards)
-7. ❌ Adding/removing shard requires massive data movement
-
-```mermaid
-flowchart TD
-    N1["STRATEGY 1: Range-Based Partitioning"]
-    N2["Shard 1: Users A-F Shard 2: Users G-M Shard 3: Users N-"]
-    N3["STRATEGY 2: Hash-Based Partitioning"]
-    N4["shard = hash(userId) % num_shards"]
-    N5["✅ Even distribution (no hot spots for simple partition"]
-    N6["❌ Range queries require scatter-gather (hit all shards)"]
-    N7["❌ Adding/removing shard requires massive data movement"]
-    N8["Nodes and keys mapped to a hash ring (0 to 2^32)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -359,38 +280,6 @@ USED BY: etcd (Kubernetes), CockroachDB, TiKV, Consul
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PATTERN WHAT USED IN
-2. to prevent cascade failures Resilience4J
-3. Bulkhead Isolate failures to one Thread pool per servic
-4. component, protect others
-5. Saga Distributed transaction as Order
-6. Pay
-7. Ship
-8. Saga Distributed transaction as Order
-9. Pay
-10. Ship
-11. sequence of local txns + with compensation
-12. compensations
-
-```mermaid
-flowchart TD
-    N1["PATTERN WHAT USED IN"]
-    N2["to prevent cascade failures Resilience4J"]
-    N3["Bulkhead Isolate failures to one Thread pool per servic"]
-    N4["component, protect others"]
-    N5["Saga Distributed transaction as Order → Pay → Ship"]
-    N6["sequence of local txns + with compensation"]
-    N7["compensations"]
-    N8["CQRS Separate read and write Event-sourced systems"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -436,21 +325,6 @@ A: Vertical: bigger machine (more CPU/RAM). Simple but has ceiling.
    Horizontal needs: load balancing, data partitioning, state management.
 ```
 
-**Flow:**
-1. Banking
-2. CP (refuse stale reads, accept downtime).
-3. Social media
-4. AP (serve stale data, stay available).
-
-```mermaid
-flowchart LR
-    N1["Banking"]
-    N2["CP (refuse stale reads, accept downtime)."]
-    N3["Social media"]
-    N4["AP (serve stale data, stay available)."]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 

@@ -420,7 +420,7 @@ Daily-Prep/
 │   ├── 21_Competitive_Coding_Deep_Thinking.md → Constraints, formulas, proof, timed-solving mindset
 │   └── 22_Brute_Force_To_Optimal_Playbook.md → Naive loop to DS/Algo rewrite map
 │
-├── 15_React_Frontend/                   (11 files — full React curriculum NEW!)
+├── 15_React_Frontend/                   (12 files — full React curriculum NEW!)
 │   ├── 01_React_Fundamentals.md         → 🆕 JSX, components, props, state, events
 │   ├── 02_Component_Patterns.md         → 🆕 Composition, render props, HOC, compound
 │   ├── 03_Hooks_Deep_Dive.md            → 🆕 useEffect, useRef, useMemo, custom hooks
@@ -431,6 +431,8 @@ Daily-Prep/
 │   ├── 08_React_Performance.md          → 🆕 React.memo, virtualization, bundle splitting
 │   ├── 09_React_Deep_Reasoning.md       → 🆕 13 React "freeze moments" — useState batching, re-renders, Fiber
 │   ├── 10_Custom_Hooks_Library.md       → 🆕 16 production hooks — useDebounce, useFetch, useIntersectionObserver, useAsync
+│   ├── 11_Complex_UI_Pages_Patterns.md  → 🆕 Dashboard, Data Table, Modal, Multi-Step Form
+│   ├── 12_Hands_On_React_Projects.md    → 🆕 MIT/KTH Edge-Case Challenges (Race conditions, Mutability, Context)
 │   └── 11_Complex_UI_Pages_Patterns.md  → 🆕 Dashboard, Data Table, Modal, Multi-Step Form, Infinite Scroll, DnD, Toast
 │
 ├── 16_JavaScript/                       (11 chapter files — complete JS coverage NEW!)
@@ -460,14 +462,20 @@ Daily-Prep/
 │   ├── 05_CSS_Deep_Reasoning.md         → 🆕 10 CSS "freeze moments" — z-index, BFC, margin collapse, reflow
 │   └── 06_CSS_UI_Design_Process.md      → 🆕 Design-to-code pipeline, layout strategy, component decomposition, responsive workflow
 │
-├── 19_Frontend_Integration/             (7 chapter files — full-stack UI building NEW!)
+├── 19_Frontend_Integration/             (7 chapters + 5 hands-on challenges — full-stack UI building NEW!)
 │   ├── 01_React_JS_CSS_Combined.md      → 🆕 Component architecture, dashboard build, state patterns
 │   ├── 02_Frontend_Debugging.md         → 🆕 Chrome DevTools, React DevTools, CORS, performance
 │   ├── 03_Build_Tools_Ecosystem.md      → 🆕 npm, Babel, Webpack vs Vite, tree shaking, code splitting
 │   ├── 04_Frontend_Mental_Models_UI.md  → 🆕 Component decomposition, data-first, complex UI patterns
 │   ├── 05_DevTools_Debugging_Mastery.md → 🆕 Elements, Console, Sources breakpoints, Network, Performance flamecharts, Memory leaks
 │   ├── 06_Web_Performance_CoreWebVitals.md → 🆕 LCP/INP/CLS, resource hints, image/font optimization, bundle splitting
-│   └── 07_Web_Accessibility_A11y.md     → 🆕 ARIA, semantic HTML, keyboard nav, focus management, color contrast, live regions
+│   ├── 07_Web_Accessibility_A11y.md     → 🆕 ARIA, semantic HTML, keyboard nav, focus management, color contrast, live regions
+│   └── frontend_challenges/             → 🆕 5 broken-code challenges with data flow + systems theory
+│       ├── challenge_1_vanilla_dom/     → Array→DOM sync, innerHTML vs createElement, XSS, optimistic updates
+│       ├── challenge_2_react_race/      → Race conditions, useEffect cleanup, AbortController, 10-hop data chain
+│       ├── challenge_3_css_stacking/    → Stacking contexts, GPU compositing, modal data flow block
+│       ├── challenge_4_stale_closure/   → V8 closure scope on heap, Fiber state queue, polling with stale params
+│       └── challenge_5_deep_immutability/ → Heap pointers, React.memo skip, nested spread, state→JSON→DTO→SQL
 │
 ├── 20_Interview_Mastery/                (10 files — cross-domain capstone 🏆 NEW!)
 │   ├── 00_INDEX.md                      → Reading order, connections map, 10-day study schedule
@@ -482,7 +490,6 @@ Daily-Prep/
 │   └── 09_Mock_Interview_Simulations.md → 🏆 6 mock interviews, rubric, 30-day schedule
 │
 ├── JavaSolutions/                       → Your Java code solutions
-├── practice/                            → Practice scratch files
 └── _archive/                            → Old/merged monolithic files (safe to ignore)
 ```
 
@@ -732,12 +739,13 @@ Daily-Prep/
 - **⚡** [CSS Deep Reasoning](18_CSS_Complete/05_CSS_Deep_Reasoning.md) — 10 CSS "freeze moments" (z-index stacking, BFC, margin collapse, reflow)
 - **🆕** [CSS UI Design Process](18_CSS_Complete/06_CSS_UI_Design_Process.md) — Design-to-code pipeline, layout strategy, component decomposition, responsive workflow
 
-### Frontend Integration (7 chapters)
+### Frontend Integration (7 chapters + 5 hands-on challenges)
 - [React + JS + CSS Combined](19_Frontend_Integration/01_React_JS_CSS_Combined.md) | [Frontend Debugging](19_Frontend_Integration/02_Frontend_Debugging.md)
 - [Build Tools (npm, Babel, Webpack, Vite)](19_Frontend_Integration/03_Build_Tools_Ecosystem.md) | [Frontend Mental Models](19_Frontend_Integration/04_Frontend_Mental_Models_UI.md)
 - **🆕** [DevTools Debugging Mastery](19_Frontend_Integration/05_DevTools_Debugging_Mastery.md) — Elements, Console, Sources breakpoints, Network waterfall, Performance flamecharts, Memory 3-snapshot technique
 - **🆕** [Web Performance & Core Web Vitals](19_Frontend_Integration/06_Web_Performance_CoreWebVitals.md) — LCP/INP/CLS optimization, resource hints, image/font optimization, bundle splitting
 - **🆕** [Web Accessibility (a11y)](19_Frontend_Integration/07_Web_Accessibility_A11y.md) — ARIA, semantic HTML, keyboard navigation, focus management, color contrast, live regions
+- **🆕** [Hands-On Challenges](19_Frontend_Integration/frontend_challenges/) — 5 broken-code challenges: DOM sync, race conditions, stacking contexts, stale closures, deep immutability
 
 ### Interview Mastery — Capstone (22 files — NEW!)
 - **🏆 Start Here**: [Index & Reading Order](20_Interview_Mastery/00_INDEX.md)
@@ -845,7 +853,7 @@ Open [07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md](07_Modern_Java/Ch25_Spring_
 | 16_JavaScript | 8 | Complete JS: Foundations, Closures, Async, DOM, ES6+, Debugging, Deep Reasoning |
 | 17_TypeScript | 4 | TS standalone: Foundations, Advanced Types, Patterns, Deep Reasoning |
 | 18_CSS_Complete | 5 | Visual CSS: Foundations, Layout, Animations, Architecture, Deep Reasoning |
-| 19_Frontend_Integration | 4 | React+JS+CSS combined, Debugging, Build Tools, Mental Models |
+| 19_Frontend_Integration | 7+5 | React+JS+CSS combined, Debugging, Build Tools, Mental Models, DevTools, Performance, a11y + 5 hands-on challenges |
 | 20_Interview_Mastery | 23 | Cross-domain capstone: Interview Brain, Patterns, SQL, System Design, Mock Interviews + 13 advanced modules/problem banks |
 | **TOTAL** | **~336** | |
 

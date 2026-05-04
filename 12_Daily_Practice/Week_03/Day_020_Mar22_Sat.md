@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_019_Mar21_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_021_Mar23_Sun.md)
+﻿> **Navigation**: [< Previous](Day_019_Mar21_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_021_Mar23_Sun.md)
 
 # Day 020 — Saturday, March 22, 2026
 
@@ -54,33 +54,6 @@ CLIENT (Browser/Mobile/Postman)
 └───────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CLIENT (Browser/Mobile/Postman)
-2. ↓ HTTP Request
-3. @RestController ← Handles HTTP, validates input
-4. ProductController Returns JSON responses
-5. @Service ← Business logic
-6. ProductService Validation rules, calculations
-7. @Repository ← Data access
-
-```mermaid
-flowchart TD
-    N1["CLIENT (Browser/Mobile/Postman)"]
-    N2["↓ HTTP Request"]
-    N3["@RestController ← Handles HTTP, validates input"]
-    N4["ProductController Returns JSON responses"]
-    N5["@Service ← Business logic"]
-    N6["ProductService Validation rules, calculations"]
-    N7["@Repository ← Data access"]
-    N8["ProductRepository (JPA) SQL queries, CRUD operations"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Complete CRUD REST Controller
 
@@ -162,31 +135,6 @@ public class ProductController {
 └─────────┴────────────┴──────────────┴──────────────────┘
 ```
 
-**Flow:**
-1. HTTP CRUD URL Response Code
-2. GET Read /products 200 OK
-3. GET Read one /products/1 200 or 404
-4. POST Create /products 201 Created
-5. PUT Full update /products/1 200 OK
-6. PATCH Partial /products/1 200 OK
-7. DELETE Delete /products/1 204 No Content
-
-```mermaid
-flowchart TD
-    N1["HTTP CRUD URL Response Code"]
-    N2["GET Read /products 200 OK"]
-    N3["GET Read one /products/1 200 or 404"]
-    N4["POST Create /products 201 Created"]
-    N5["PUT Full update /products/1 200 OK"]
-    N6["PATCH Partial /products/1 200 OK"]
-    N7["DELETE Delete /products/1 204 No Content"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### DTO Pattern (Don't Expose Entities!)
 
@@ -483,30 +431,6 @@ Spring Boot:
   @Valid + @RestControllerAdvice = clean error handling
 ```
 
-**Flow:**
-1. UNION/CASE
-2. Window Functions
-3. LAG/LEAD
-4. CTEs
-5. Controller
-6. Service
-7. Repository layers
-
-```mermaid
-flowchart TD
-    N1["UNION/CASE"]
-    N2["Window Functions"]
-    N3["LAG/LEAD"]
-    N4["CTEs"]
-    N5["Controller"]
-    N6["Service"]
-    N7["Repository layers"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 

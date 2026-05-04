@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Production Practices](11_Production_Code_Practices.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Production Practices](11_Production_Code_Practices.md)
 🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md)
 
 ---
@@ -10,7 +10,6 @@ The three pillars: Metrics, Logs, Traces — how to know what your system is doi
 ---
 
 ## The Three Pillars
-
 
 PILLAR 1: METRICS (What is happening?)
 → Numerical time-series data: CPU 85%, latency 120ms, errors 5/min
@@ -26,7 +25,6 @@ PILLAR 3: TRACES (Where did it happen?)
 → Follow a request across multiple services
 → Tools: Jaeger, Zipkin, AWS X-Ray, OpenTelemetry
 → Trace ID propagated through headers
-
 
 ---
 
@@ -80,19 +78,7 @@ Spring Boot + Micrometer (auto-exposes Prometheus metrics):
   }
 ```
 
-**Flow:**
-1. Prometheus / (stores / time-serie Alertmanager / (Slack/Page)
-
-```mermaid
-flowchart TD
-    N2["Prometheus / (stores / time-serie"]
-    N4["Alertmanager / (Slack/Page)"]
-    N2 --> N4
-```
-
 ---
-
-
 
 🔬 **Section Challenge — Prometheus + Grafana Stack**
 >
@@ -116,37 +102,9 @@ flowchart TD
 Modern alternative: Grafana Loki (lighter, labels-based, pairs with Grafana)
 ```
 
-**Flow:**
-1. App Logs / (JSON to / stdout)
-2. Filebeat/ / Fluentd / (ship logs)
-3. Logstash / (parse, / transform, / enrich)
-4. Elastic / search / (index, / search)
-5. Kibana / (search, / visualize)
-
-```mermaid
-flowchart TD
-    N1["App Logs / (JSON to / stdout)"]
-    N2["Filebeat/ / Fluentd / (ship logs)"]
-    N3["→ Logstash / (parse, / transform, / enrich)"]
-    N4["→ Elastic / search / (index, / search)"]
-    N5["Kibana / (search, / visualize)"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-```
-
 ---
 
-
-
 🔬 **Section Challenge — ELK Stack (Centralized Logging)**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## Distributed Tracing
 
@@ -171,38 +129,9 @@ Trace ID: abc-123 (same across ALL services for this request)
 OpenTelemetry (standard): auto-instruments Spring Boot, propagates trace IDs
 ```
 
-**Flow:**
-1. API Gateway (Span 1)
-2. Order Service (Span 2)
-3. DB Query (Span 3)
-4. Payment Service (Span 4)
-5. Stripe API (Span 5)
-
-```mermaid
-flowchart TD
-    N1["API Gateway (Span 1)"]
-    N2["Order Service (Span 2)"]
-    N3["DB Query (Span 3)"]
-    N4["Payment Service (Span 4)"]
-    N5["Stripe API (Span 5)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
-
 ---
 
-
-
 🔬 **Section Challenge — Distributed Tracing**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## Alerting Best Practices
 
@@ -228,38 +157,5 @@ It's silently swallowed. The exception is stored in the `Future` object. Without
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. GOOD ALERTS:
-2. ✅ Error rate > 5% for 5 minutes
-3. Page on-call
-4. ✅ P99 latency > 2s for 10 minutes
-5. Warn in Slack
-6. ✅ Disk usage > 85%
-7. Ticket
-8. ✅ Zero orders in last 30 min (business hours)
-9. Investi
-10. BAD ALERTS (alert fatigue):
-11. ❌ CPU > 80% (spikes are normal, care about sustained
-
-```mermaid
-flowchart TD
-    N1["GOOD ALERTS:"]
-    N2["✅ Error rate &gt; 5% for 5 minutes → Page on-call"]
-    N3["✅ P99 latency &gt; 2s for 10 minutes → Warn in Slack"]
-    N4["✅ Disk usage &gt; 85% → Ticket"]
-    N5["✅ Zero orders in last 30 min (business hours) → Investi"]
-    N6["BAD ALERTS (alert fatigue):"]
-    N7["❌ CPU &gt; 80% (spikes are normal, care about sustained"]
-    N8["❌ Any single 500 error (noise)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
-> **Navigation**: [< Previous](11_Production_Code_Practices.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_Agile_Scrum.md)

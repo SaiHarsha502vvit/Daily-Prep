@@ -1,4 +1,4 @@
-> **Navigation**: [← Pattern Composition](13_Pattern_Composition.md) | [Back to Index](00_INDEX.md)
+﻿> **Navigation**: [← Pattern Composition](13_Pattern_Composition.md) | [Back to Index](00_INDEX.md)
 
 ---
 
@@ -73,33 +73,6 @@
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. GOAL: A correct but possibly slow solution
-2. WHY START HERE?
-3. • Proves you understand the problem
-4. • Gives you a baseline to optimize FROM
-5. HOW:
-6. For each candidate, check if it satisfies the constr
-7. Track the best answer
-
-```mermaid
-flowchart TD
-    N1["GOAL: A correct but possibly slow solution"]
-    N2["WHY START HERE?"]
-    N3["• Proves you understand the problem"]
-    N4["• Gives you a baseline to optimize FROM"]
-    N5["HOW:"]
-    N6["2. For each candidate, check if it satisfies the constr"]
-    N7["3. Track the best answer"]
-    N8["COMMON BRUTE FORCE PATTERNS:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -398,33 +371,6 @@ Topological order?     → TOPOLOGICAL SORT     O(V²) → O(V+E)
 └──────────────────────┴──────────────────────┴───────────────────────────────┘
 ```
 
-**Flow:**
-1. OPTIMIZATION CHEAT SHEET
-2. Brute Force Optimization Technique
-3. O(n²) pairs O(n) HashMap
-4. O(n²) pairs O(n) or O(n log n) Sort + Two Pointers
-5. O(n²) subarrays O(n) Sliding Window
-6. O(n²) subarrays O(n) Prefix Sum + HashMap
-7. O(n³) substrings O(n) Sliding Window + HashSet
-
-```mermaid
-flowchart TD
-    N1["OPTIMIZATION CHEAT SHEET"]
-    N2["Brute Force Optimization Technique"]
-    N3["O(n²) pairs O(n) HashMap"]
-    N4["O(n²) pairs O(n) or O(n log n) Sort + Two Pointers"]
-    N5["O(n²) subarrays O(n) Sliding Window"]
-    N6["O(n²) subarrays O(n) Prefix Sum + HashMap"]
-    N7["O(n³) substrings O(n) Sliding Window + HashSet"]
-    N8["O(2ⁿ) subsets O(n·W) Dynamic Programming"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -443,16 +389,6 @@ flowchart TD
 └─────────────────────────────────────┴───────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MISTAKE FIX
-2. Wrong technique for redundancy Use the decision map
-
-```mermaid
-flowchart TD
-    N1["MISTAKE FIX"]
-    N2["Wrong technique for redundancy Use the decision map"]
-    N1 --> N2
-```
 
 ---
 

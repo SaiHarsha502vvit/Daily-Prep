@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch21_AlgoEng_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch32_SB_Data_Part2.md)
+﻿**Navigation**: [< Previous](Ch21_AlgoEng_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch32_SB_Data_Part2.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 1: Java Foundations
 
@@ -49,22 +49,6 @@ _"You cannot master Spring without mastering these Java internals first"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Java Foundations Before Spring? / • JVM memory
-2. HOW: How JVM Manages Your Spring Application? / • Heap:
-3. WHEN: When to Deep Dive into JVM Internals? / • Memory
-4. WHICH: Which JVM Topics to Focus On? / ESSENTIAL: Memor
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Java Foundations Before Spring? / • JVM memory"]
-    N2["HOW: How JVM Manages Your Spring Application? / • Heap:"]
-    N3["WHEN: When to Deep Dive into JVM Internals? / • Memory "]
-    N4["WHICH: Which JVM Topics to Focus On? / ESSENTIAL: Memor"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -99,33 +83,6 @@ flowchart TD
 
 ```
 
-**Flow:**
-1. THE SPRING LEARNING HIERARCHY
-2. TIER 9: Testing (Professional's Mark)
-3. TIER 8: Microservices & Cloud Native
-4. TIER 7: Spring Security
-5. TIER 6: Web & REST API
-6. TIER 5: Data Access (JPA & Hibernate)
-7. TIER 4: Spring Boot (Auto-Pilot)
-
-```mermaid
-flowchart TD
-    N1["THE SPRING LEARNING HIERARCHY"]
-    N2["TIER 9: Testing (Professional's Mark)"]
-    N3["TIER 8: Microservices & Cloud Native"]
-    N4["TIER 7: Spring Security"]
-    N5["TIER 6: Web & REST API"]
-    N6["TIER 5: Data Access (JPA & Hibernate)"]
-    N7["TIER 4: Spring Boot (Auto-Pilot)"]
-    N8["TIER 3: AOP (Cross-Cutting Concerns)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -223,25 +180,6 @@ classes from reflection never got garbage collected.
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. HEAP (Shared - GC Managed) / Young Generation Old Gener
-2. METASPACE (Native Memory - No GC by default!) / • Class
-3. Frame 3 / Frame 2 / Frame 1
-4. Frame 2 / Frame 1
-5. Frame 1
-
-```mermaid
-flowchart TD
-    N1["HEAP (Shared - GC Managed) / Young Generation Old Gener"]
-    N2["METASPACE (Native Memory - No GC by default!) / • Class"]
-    N3["Frame 3 / Frame 2 / Frame 1"]
-    N4["Frame 2 / Frame 1"]
-    N5["Frame 1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ### Stack vs Heap - The Critical Difference
 
@@ -373,33 +311,6 @@ public class StringPoolDemo {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY REFERENCE TYPES MATTER
-2. SCENARIO: Building a cache in Spring
-3. WITHOUT KNOWLEDGE:
-4. Map<String, User> cache = new HashMap<>();
-5. WITH KNOWLEDGE:
-6. SPRING USES THESE:
-7. • WeakHashMap for internal caches
-
-```mermaid
-flowchart TD
-    N1["WHY REFERENCE TYPES MATTER"]
-    N2["SCENARIO: Building a cache in Spring"]
-    N3["WITHOUT KNOWLEDGE:"]
-    N4["Map&lt;String, User&gt; cache = new HashMap&lt;&gt;(); "]
-    N5["WITH KNOWLEDGE:"]
-    N6["SPRING USES THESE:"]
-    N7["• WeakHashMap for internal caches"]
-    N8["• SoftReference for session data"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### 🟢 HOW: The Four Reference Types
 
@@ -535,22 +446,6 @@ public class ReferenceTypesDemo {
 └────────────────┴───────────────────────┴────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Type When Collected? Use Case
-2. Strong Never (while exists) Normal variables
-3. Soft Memory pressure only Memory-sensitive caches
-4. Weak Next GC cycle Canonical mappings, WeakHashMap
-
-```mermaid
-flowchart TD
-    N1["Type When Collected? Use Case"]
-    N2["Strong Never (while exists) Normal variables"]
-    N3["Soft Memory pressure only Memory-sensitive caches"]
-    N4["Weak Next GC cycle Canonical mappings, WeakHashMap"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -605,16 +500,6 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 45ms
-2. Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 55ms
-
-```mermaid
-flowchart TD
-    N1["Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 45ms"]
-    N2["Request 1: 50ms ✓ / Request 2: 60ms ✓ / Request 3: 55ms"]
-    N1 --> N2
-```
 
 ### 🟢 HOW: GC Algorithms Explained
 
@@ -667,19 +552,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Application Threads: ████████░░░░░░░░░░░░██████████████
-2. Application Threads: ██████████░░░░░░░░░░░█████████████
-3. Application Threads: ██████████████████████████████████
-
-```mermaid
-flowchart TD
-    N1["Application Threads: ████████░░░░░░░░░░░░██████████████"]
-    N2["Application Threads: ██████████░░░░░░░░░░░█████████████"]
-    N3["Application Threads: ██████████████████████████████████"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### Practical JVM Tuning for Spring Boot
 
@@ -749,33 +621,6 @@ java -Xms8g -Xmx8g \
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CLASS LOADING ERRORS - THE CRITICAL DIFFERENCE
-2. ClassNotFoundException
-3. WHEN: Class.forName('com.example.MyClass') fails
-4. WHY: .class file not in classpath
-5. FIX: Add missing JAR/dependency
-6. NoClassDefFoundError
-7. WHEN: Class was found at compile time but not at runtim
-
-```mermaid
-flowchart TD
-    N1["CLASS LOADING ERRORS - THE CRITICAL DIFFERENCE"]
-    N2["ClassNotFoundException"]
-    N3["WHEN: Class.forName('com.example.MyClass') fails"]
-    N4["WHY: .class file not in classpath"]
-    N5["FIX: Add missing JAR/dependency"]
-    N6["NoClassDefFoundError"]
-    N7["WHEN: Class was found at compile time but not at runtim"]
-    N8["WHY: JAR present during build, missing during run"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### 🟢 HOW: Class Loader Hierarchy
 
@@ -820,22 +665,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Bootstrap ClassLoader / (Native code - JVM) / Loads: ja
-2. Platform ClassLoader / (Java 9+, was Extension) / Loads
-3. Application ClassLoader / (System ClassLoader) / Loads:
-4. Custom ClassLoaders / (Spring Boot uses this!) / Loads:
-
-```mermaid
-flowchart TD
-    N1["Bootstrap ClassLoader / (Native code - JVM) / Loads: ja"]
-    N2["Platform ClassLoader / (Java 9+, was Extension) / Loads"]
-    N3["Application ClassLoader / (System ClassLoader) / Loads:"]
-    N4["Custom ClassLoaders / (Spring Boot uses this!) / Loads:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### Spring Boot's Special ClassLoader
 
@@ -907,33 +736,6 @@ Control over instantiation. `@Component` is a class-level annotation. Spring aut
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY THREADING MATTERS IN SPRING
-2. HTTP Request Flow in Spring Boot:
-3. Request 1 Thread-1 Controller Service Repository
-4. Request 2 Thread-2 Controller Service Repository
-5. Request 3 Thread-3 Controller Service Repository
-6. ⚠️ 3 threads accessing the SAME Singleton bean!
-7. DANGEROUS CODE:
-
-```mermaid
-flowchart TD
-    N1["WHY THREADING MATTERS IN SPRING"]
-    N2["HTTP Request Flow in Spring Boot:"]
-    N3["Request 1 Thread-1 Controller Service Repository"]
-    N4["Request 2 Thread-2 Controller Service Repository"]
-    N5["Request 3 Thread-3 Controller Service Repository"]
-    N6["⚠️ 3 threads accessing the SAME Singleton bean!"]
-    N7["DANGEROUS CODE:"]
-    N8["@Service"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### ThreadLocal - How Spring Stores Request-Scoped Data
 
@@ -1229,33 +1031,6 @@ Control over instantiation. `@Component` is a class-level annotation. Spring aut
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. FUNCTIONAL JAVA IN SPRING
-2. Spring WebFlux (Reactive):
-3. Flux.fromIterable(users)
-4. .filter(u -> u.isActive())
-5. .map(u -> u.getEmail())
-6. .subscribe(email -> sendNewsletter(email));
-7. Spring Data JPA:
-
-```mermaid
-flowchart TD
-    N1["FUNCTIONAL JAVA IN SPRING"]
-    N2["Spring WebFlux (Reactive):"]
-    N3["Flux.fromIterable(users)"]
-    N4[".filter(u -&gt; u.isActive())"]
-    N5[".map(u -&gt; u.getEmail())"]
-    N6[".subscribe(email -&gt; sendNewsletter(email));"]
-    N7["Spring Data JPA:"]
-    N8["repository.findAll().stream()"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Lambda Expressions Deep Dive
 
@@ -1458,33 +1233,6 @@ FUNCTIONAL JAVA:
 □ Can explain effectively final variables
 ```
 
-**Flow:**
-1. MEMORY & JVM:
-2. □ Can explain Stack vs Heap with diagram
-3. □ Understand String Pool and immutability
-4. □ Know all 4 reference types and their GC behavior
-5. □ Can choose appropriate GC for workload
-6. □ Understand Metaspace and class metadata
-7. CLASS LOADING:
-
-```mermaid
-flowchart TD
-    N1["MEMORY & JVM:"]
-    N2["□ Can explain Stack vs Heap with diagram"]
-    N3["□ Understand String Pool and immutability"]
-    N4["□ Know all 4 reference types and their GC behavior"]
-    N5["□ Can choose appropriate GC for workload"]
-    N6["□ Understand Metaspace and class metadata"]
-    N7["CLASS LOADING:"]
-    N8["□ Know the ClassLoader hierarchy"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

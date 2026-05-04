@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](07b_Advanced_DS_Patterns.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](07b_Advanced_DS_Patterns.md)
 
 ---
 
@@ -321,17 +321,6 @@ Without path compression + union by rank: O(N) height possible (linear chain). W
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SKIP LIST NODE (value = 25, level = 3): / value: 25 for
-2. Start at head, level 4 / Level 4: head
-3. nil (no nodes)
-
-```mermaid
-flowchart TD
-    N1["SKIP LIST NODE (value = 25, level = 3): / value: 25 for"]
-    N2["Start at head, level 4 / Level 4: head → nil (no nodes)"]
-    N1 --> N2
-```
 
 ## 📊 Bloom Filter — Bit Array Internals
 
@@ -471,79 +460,6 @@ LRU CACHE:
 └── CPU cache management
 ```
 
-**Flow:**
-1. TRIE:
-2. Autocomplete in Google Search
-3. TRIE:
-4. Spell checkers
-5. TRIE:
-6. IP routing tables
-7. TRIE:
-8. DNA sequence matching
-9. SEGMENT TREE:
-10. Range queries in databases
-11. SEGMENT TREE:
-12. Graphics rendering (visibility)
-
-```mermaid
-flowchart TD
-    N1["TRIE:"]
-    N2["Autocomplete in Google Search"]
-    N3["Spell checkers"]
-    N4["IP routing tables"]
-    N5["DNA sequence matching"]
-    N6["SEGMENT TREE:"]
-    N7["Range queries in databases"]
-    N8["Graphics rendering (visibility)"]
-    N9["Computational geometry"]
-    N10["FENWICK TREE (BIT):"]
-    N11["Cumulative frequency tables"]
-    N12["Range sum queries"]
-    N13["Inversion counting"]
-    N14["DISJOINT SET (UNION-FIND):"]
-    N15["Network connectivity"]
-    N16["Kruskal's MST algorithm"]
-    N17["Image processing (connected components)"]
-    N18["Social networks (friend circles)"]
-    N19["SKIP LIST:"]
-    N20["Redis database"]
-    N21["LevelDB"]
-    N22["Concurrent data structures"]
-    N23["BLOOM FILTER:"]
-    N24["Chrome's malicious URL check"]
-    N25["Database query optimization"]
-    N26["Network routers"]
-    N27["LRU CACHE:"]
-    N28["Operating system page replacement"]
-    N29["Web browser cache"]
-    N30["Database query cache"]
-    N31["CPU cache management"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N6 --> N7
-    N6 --> N8
-    N6 --> N9
-    N10 --> N11
-    N10 --> N12
-    N10 --> N13
-    N14 --> N15
-    N14 --> N16
-    N14 --> N17
-    N14 --> N18
-    N19 --> N20
-    N19 --> N21
-    N19 --> N22
-    N23 --> N24
-    N23 --> N25
-    N23 --> N3
-    N23 --> N26
-    N27 --> N28
-    N27 --> N29
-    N27 --> N30
-    N27 --> N31
-```
 
 ---
 

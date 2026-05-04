@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch40_SB_JPA_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch42_SB_HTTP_Deep_Dive.md)
+﻿**Navigation**: [< Previous](Ch40_SB_JPA_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch42_SB_HTTP_Deep_Dive.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 9: Clean Architecture & Quality Code
 
@@ -49,22 +49,6 @@ _"Good architecture is about managing complexity"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Clean Architecture? / • Technical debt: Bad ar
-2. HOW: How to Structure a Spring Boot Project? / • Layere
-3. WHEN: When to Use Each Architecture Style? / • Simple l
-4. WHICH: Which Quality Practices to Follow? / ESSENTIAL:
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Clean Architecture? / • Technical debt: Bad ar"]
-    N2["HOW: How to Structure a Spring Boot Project? / • Layere"]
-    N3["WHEN: When to Use Each Architecture Style? / • Simple l"]
-    N4["WHICH: Which Quality Practices to Follow? / ESSENTIAL: "]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -129,25 +113,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CLIENT / (Browser/App)
-2. CONTROLLER LAYER / • @RestController, @Controller / • R
-3. SERVICE LAYER / • @Service / • Business logic / • Trans
-4. REPOSITORY LAYER / • @Repository / • Data access (JpaRe
-5. DATABASE
-
-```mermaid
-flowchart TD
-    N1["CLIENT / (Browser/App)"]
-    N2["CONTROLLER LAYER / • @RestController, @Controller / • R"]
-    N3["SERVICE LAYER / • @Service / • Business logic / • Trans"]
-    N4["REPOSITORY LAYER / • @Repository / • Data access (JpaRe"]
-    N5["DATABASE"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ---
 
@@ -231,33 +196,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. RECOMMENDED PACKAGE STRUCTURE
-2. OPTION 1: LAYER-BASED (Traditional)
-3. com.company.myapp/
-4. MyApplication.java
-5. controller/
-6. UserController.java
-7. OrderController.java
-
-```mermaid
-flowchart TD
-    N1["RECOMMENDED PACKAGE STRUCTURE"]
-    N2["OPTION 1: LAYER-BASED (Traditional)"]
-    N3["com.company.myapp/"]
-    N4["MyApplication.java"]
-    N5["controller/"]
-    N6["UserController.java"]
-    N7["OrderController.java"]
-    N8["ProductController.java"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1273,38 +1211,6 @@ Framework Agnosticism. The core principle of Hexagonal Architecture is that the 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SPRING BOOT MASTERY CHECKLIST
-2. ARCHITECTURE:
-3. □ Clear separation: Controller
-4. Service
-5. Repository
-6. □ Clear separation: Controller
-7. Service
-8. Repository
-9. □ DTOs for API contracts, Entities for persistence
-10. □ Single Responsibility in each class
-11. □ Dependency injection via constructor (final fields)
-12. CONTROLLERS:
-
-```mermaid
-flowchart TD
-    N1["SPRING BOOT MASTERY CHECKLIST"]
-    N2["ARCHITECTURE:"]
-    N3["□ Clear separation: Controller → Service → Repository"]
-    N4["□ DTOs for API contracts, Entities for persistence"]
-    N5["□ Single Responsibility in each class"]
-    N6["□ Dependency injection via constructor (final fields)"]
-    N7["CONTROLLERS:"]
-    N8["□ @Valid on request bodies"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1349,33 +1255,6 @@ Framework Agnosticism. The core principle of Hexagonal Architecture is that the 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. You've completed the Spring Boot Mastery Guide covering
-2. Part 1: Java Foundations (JVM, Memory, GC, Threading)
-3. Part 2: Spring Core (IoC, DI, Beans, Lifecycle)
-4. Part 3: AOP & Spring Boot Auto-Configuration
-5. Part 4: Data Access, Web, Security, Testing
-6. Part 5: Lombok & DTOs
-7. Part 6: Service & Repository Best Practices
-
-```mermaid
-flowchart TD
-    N1["You've completed the Spring Boot Mastery Guide covering"]
-    N2["Part 1: Java Foundations (JVM, Memory, GC, Threading)"]
-    N3["Part 2: Spring Core (IoC, DI, Beans, Lifecycle)"]
-    N4["Part 3: AOP & Spring Boot Auto-Configuration"]
-    N5["Part 4: Data Access, Web, Security, Testing"]
-    N6["Part 5: Lombok & DTOs"]
-    N7["Part 6: Service & Repository Best Practices"]
-    N8["Part 7: Controllers & REST API Architecture"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

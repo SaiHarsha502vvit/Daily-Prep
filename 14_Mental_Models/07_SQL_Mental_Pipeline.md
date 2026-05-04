@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](06_Implementation_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Debugging_DryRun.md)
+﻿**Navigation**: [< Previous](06_Implementation_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Debugging_DryRun.md)
 
 # 🗃️ SQL Mental Pipeline — Think in Sets, Build Queries Step-by-Step
 
@@ -23,16 +23,6 @@ You're describing WHAT you want, not HOW to get it.
 SQL is declarative — you describe the result, the engine figures out the steps.
 ```
 
-**Flow:**
-1. SELECT name FROM employees WHERE salary > 50000;
-2. You're describing WHAT you want, not HOW to get it.
-
-```mermaid
-flowchart TD
-    N1["→ SELECT name FROM employees WHERE salary &gt; 50000;"]
-    N2["You're describing WHAT you want, not HOW to get it."]
-    N1 --> N2
-```
 
 ### Mental Model: Think of Tables as Spreadsheets
 ```
@@ -62,41 +52,6 @@ ORDER BY  ─── 6th ───→  7. ORDER BY       (sort)
 LIMIT     ─── 7th ───→  8. LIMIT/OFFSET   (paginate)
 ```
 
-**Flow:**
-1. SELECT --(5th)--> 1. FROM / JOIN (which tables?)
-2. FROM --(1st)--> 2. WHERE (filter rows)
-3. JOIN --(1st)--> 3. GROUP BY (make groups)
-4. WHERE --(2nd)--> 4. HAVING (filter groups)
-5. GROUP BY --(3rd)--> 5. SELECT (pick columns)
-6. HAVING --(4th)--> 6. DISTINCT (remove duplicates)
-
-```mermaid
-flowchart TD
-    N1["SELECT"]
-    N2["1. FROM / JOIN (which tables?)"]
-    N3["FROM"]
-    N4["2. WHERE (filter rows)"]
-    N5["JOIN"]
-    N6["3. GROUP BY (make groups)"]
-    N7["WHERE"]
-    N8["4. HAVING (filter groups)"]
-    N9["GROUP BY"]
-    N10["5. SELECT (pick columns)"]
-    N11["HAVING"]
-    N12["6. DISTINCT (remove duplicates)"]
-    N13["ORDER BY"]
-    N14["7. ORDER BY (sort)"]
-    N15["LIMIT"]
-    N16["8. LIMIT/OFFSET (paginate)"]
-    N1 -->|"5th"| N2
-    N3 -->|"1st"| N4
-    N5 -->|"1st"| N6
-    N7 -->|"2nd"| N8
-    N9 -->|"3rd"| N10
-    N11 -->|"4th"| N12
-    N13 -->|"6th"| N14
-    N15 -->|"7th"| N16
-```
 
 ### Why Execution Order Matters
 ```sql
@@ -190,16 +145,6 @@ FULL OUTER JOIN: All A + All B (nulls where no match)
 CROSS JOIN:      A × B         (every combo — rarely wanted)
 ```
 
-**Flow:**
-1. A / A∩
-2. A∩B
-
-```mermaid
-flowchart TD
-    N1["A / A∩"]
-    N2["A∩B"]
-    N1 --> N2
-```
 
 ### When to Use Each JOIN
 ```
@@ -210,36 +155,6 @@ flowchart TD
 "Find matching records in both tables"        → INNER JOIN
 ```
 
-**Flow:**
-1. 'Get employees WITH their department name'
-2. INNER JOIN (skip employees with no dept)
-3. 'Get ALL employees, even without department'
-4. LEFT JOIN (keep all employees)
-5. 'Find employees WITHOUT a department'
-6. LEFT JOIN + WHERE b.id IS NULL
-7. 'Find all possible team pairings'
-8. CROSS JOIN (or self-join)
-9. 'Find matching records in both tables'
-10. INNER JOIN
-
-```mermaid
-flowchart TD
-    N1["'Get employees WITH their department name'"]
-    N2["INNER JOIN (skip employees with no dept)"]
-    N3["'Get ALL employees, even without department'"]
-    N4["LEFT JOIN (keep all employees)"]
-    N5["'Find employees WITHOUT a department'"]
-    N6["LEFT JOIN + WHERE b.id IS NULL"]
-    N7["'Find all possible team pairings'"]
-    N8["CROSS JOIN (or self-join)"]
-    N9["'Find matching records in both tables'"]
-    N10["INNER JOIN"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-```
 
 ### The Self-Join Pattern
 ```sql
@@ -292,28 +207,6 @@ It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id
    WHERE salary = (SELECT MAX(salary) FROM employees WHERE dept_id = e.dept_id);
 ```
 
-**Flow:**
-1. 'Find employees whose salary > AVERAGE salary'
-2. The inner query computes ONE value
-3. 'Find employees in departments located in NYC'
-4. The inner query computes a LIST
-5. 'Find employees who earn max in their department'
-6. SELECT * FROM employees e
-
-```mermaid
-flowchart TD
-    N1["1. 'Find employees whose salary &gt; AVERAGE salary'"]
-    N2["→ The inner query computes ONE value"]
-    N3["2. 'Find employees in departments located in NYC'"]
-    N4["→ The inner query computes a LIST"]
-    N5["'Find employees who earn max in their department'"]
-    N6["SELECT * FROM employees e"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ### When to Use JOIN Instead
 ```
@@ -325,28 +218,6 @@ Rule of thumb: If you need columns from multiple tables in SELECT → use JOIN
                If you need a value for filtering (WHERE/HAVING) → subquery is fine
 ```
 
-**Flow:**
-1. When you need columns from BOTH tables
-2. JOIN
-3. When subquery would be executed for EACH row (c Consider JOIN When you need to combine/match data JOIN Rule of thumb: If you need columns from multiple t use JOIN If you need a value for filtering (WHERE/HAVING) subquery is fine
-
-```mermaid
-flowchart TD
-    N1["1. When you need columns from BOTH tables"]
-    N2["JOIN"]
-    N3["2. When subquery would be executed for EACH row (c"]
-    N4["Consider JOIN"]
-    N5["3. When you need to combine/match data"]
-    N6["Rule of thumb: If you need columns from multiple t"]
-    N7["use JOIN"]
-    N8["If you need a value for filtering (WHERE/HAVING)"]
-    N9["subquery is fine"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N2
-    N6 --> N7
-    N8 --> N9
-```
 
 ---
 
@@ -392,16 +263,6 @@ Now you can only SELECT:
 ❌ Individual row values (name)   → ERROR! Which name from the pile?
 ```
 
-**Flow:**
-1. HR pile / Alice 60K / Carol 55K
-2. IT pile / Bob 75K / Dave 80K
-
-```mermaid
-flowchart TD
-    N1["HR pile / Alice 60K / Carol 55K"]
-    N2["IT pile / Bob 75K / Dave 80K"]
-    N1 --> N2
-```
 
 ### Common Aggregations
 ```sql
@@ -428,21 +289,6 @@ GROUP BY dept
 HAVING AVG(salary) > 60000  -- Filter GROUPS (after grouping)
 ```
 
-**Flow:**
-1. WHERE: Filters ROWS before grouping
-2. Cannot use aggregates
-3. HAVING: Filters GROUPS after grouping
-4. CAN use aggregates
-
-```mermaid
-flowchart LR
-    N1["WHERE: Filters ROWS before grouping"]
-    N2["Cannot use aggregates"]
-    N3["HAVING: Filters GROUPS after grouping"]
-    N4["CAN use aggregates"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ---
 
@@ -461,15 +307,6 @@ Window functions compute aggregates BUT keep every row!
 | Bob   | IT   | 75000  | 77500    | 2         |
 ```
 
-**Flow:**
-1. GROUP BY collapses rows you lose individual row data
-
-```mermaid
-flowchart LR
-    N1["GROUP BY collapses rows"]
-    N2["you lose individual row data"]
-    N1 --> N2
-```
 
 ### Window Function Template
 ```sql
@@ -535,56 +372,6 @@ See these keywords in the problem? → Use this approach:
 "Hierarchical data (manager chain)"  → Self-join or recursive CTE
 ```
 
-**Flow:**
-1. See these keywords in the problem?
-2. Use this approach:
-3. 'For each department/category...'
-4. GROUP BY
-5. 'Top N per group'
-6. Window function + ROW_NUMBER()
-7. 'Running total / cumulative sum'
-8. Window function + SUM() OVER
-9. 'Compare with previous row'
-10. LAG() / LEAD() window functions
-11. 'Employees not in any project'
-12. LEFT JOIN + IS NULL (or NOT IN)
-
-```mermaid
-flowchart TD
-    N1["See these keywords in the problem?"]
-    N2["Use this approach:"]
-    N3["'For each department/category...'"]
-    N4["GROUP BY"]
-    N5["'Top N per group'"]
-    N6["Window function + ROW_NUMBER()"]
-    N7["'Running total / cumulative sum'"]
-    N8["Window function + SUM() OVER"]
-    N9["'Compare with previous row'"]
-    N10["LAG() / LEAD() window functions"]
-    N11["'Employees not in any project'"]
-    N12["LEFT JOIN + IS NULL (or NOT IN)"]
-    N13["'Second highest salary'"]
-    N14["DENSE_RANK() or LIMIT/OFFSET or subquery"]
-    N15["'Find duplicates'"]
-    N16["GROUP BY + HAVING COUNT(*) &gt; 1"]
-    N17["'Consecutive dates/numbers'"]
-    N18["ROW_NUMBER trick (value - row_num = constant for c"]
-    N19["'Pivot/Unpivot data'"]
-    N20["CASE WHEN + GROUP BY (or PIVOT keyword)"]
-    N21["'Hierarchical data (manager chain)'"]
-    N22["Self-join or recursive CTE"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-    N17 --> N18
-    N19 --> N20
-    N21 --> N22
-```
 
 ---
 
@@ -603,15 +390,6 @@ flowchart TD
 □ Subquery returns multiple rows but used with = instead of IN?
 ```
 
-**Flow:**
-1. □ Am I selecting non-grouped columns without aggre SQL error
-
-```mermaid
-flowchart LR
-    N1["□ Am I selecting non-grouped columns without aggre"]
-    N2["SQL error"]
-    N1 --> N2
-```
 
 ---
 

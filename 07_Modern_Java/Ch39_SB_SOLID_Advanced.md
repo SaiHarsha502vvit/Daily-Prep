@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](Ch38_SB_SOLID_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](Ch38_SB_SOLID_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -26,33 +26,6 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. INTERFACE SEGREGATION PRINCIPLE
-2. FAT INTERFACE PROBLEMS:
-3. • Changes to unused methods affect implementers
-4. • Hard to understand what's actually needed
-5. SOLUTION: Small, focused interfaces
-6. • Each interface represents one capability
-7. • Classes implement only what they need
-
-```mermaid
-flowchart TD
-    N1["INTERFACE SEGREGATION PRINCIPLE"]
-    N2["FAT INTERFACE PROBLEMS:"]
-    N3["• Changes to unused methods affect implementers"]
-    N4["• Hard to understand what's actually needed"]
-    N5["SOLUTION: Small, focused interfaces"]
-    N6["• Each interface represents one capability"]
-    N7["• Classes implement only what they need"]
-    N8["• Easier to test and mock"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### ❌ VIOLATING ISP - Fat Interface
 
@@ -326,22 +299,6 @@ It forces High-Level modules to depend on Abstractions, not Concretions. Instead
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. OrderService / (High-level)
-2. MySQLRepository / (Low-level)
-3. OrderService / (High-level)
-4. Repository / (Abstraction)
-5. MySQLRepository / (Low-level)
-
-```mermaid
-flowchart TD
-    N1["OrderService / (High-level)"]
-    N2["MySQLRepository / (Low-level)"]
-    N3["Repository / (Abstraction)"]
-    N1 --> N2
-    N1 --> N3
-    N3 --> N2
-```
 
 ### ❌ VIOLATING DIP
 
@@ -1105,33 +1062,6 @@ Interface Segregation Principle (ISP): clients shouldn't depend on methods they 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SOLID VIOLATION CODE SMELLS
-2. SRP VIOLATIONS:
-3. • Class name contains 'And' or 'Manager'
-4. • Class has > 500 lines of code
-5. • Multiple @Autowired fields (> 5-7)
-6. • Methods using completely different sets of fields
-7. OCP VIOLATIONS:
-
-```mermaid
-flowchart TD
-    N1["SOLID VIOLATION CODE SMELLS"]
-    N2["SRP VIOLATIONS:"]
-    N3["• Class name contains 'And' or 'Manager'"]
-    N4["• Class has &gt; 500 lines of code"]
-    N5["• Multiple @Autowired fields (&gt; 5-7)"]
-    N6["• Methods using completely different sets of fields"]
-    N7["OCP VIOLATIONS:"]
-    N8["• switch/if-else chains on type/enum"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

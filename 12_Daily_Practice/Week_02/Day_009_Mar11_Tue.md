@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_008_Mar10_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_010_Mar12_Wed.md)
+﻿> **Navigation**: [< Previous](Day_008_Mar10_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_010_Mar12_Wed.md)
 
 # Day 009 - Tuesday, March 11, 2026
 
@@ -63,20 +63,6 @@ TRADE-OFF:
     prev data next       prev data next       prev data next
 ```
 
-**Flow:**
-1. null 10
-2. ← 20
-3. ← 30 null
-4. ← 20
-
-```mermaid
-flowchart LR
-    N1["null 10"]
-    N2["← 20"]
-    N3["← 30 null"]
-    N1 --> N2
-    N3 --> N2
-```
 
 #### 🔧 Implement
 
@@ -158,22 +144,6 @@ public class DoublyLinkedList {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COMPARISON OF SORTING ALGORITHMS (what you know so far)
-2. Algorithm Best Average Worst Space Stable
-3. Quick Sort wins: in-place (O(log n) stack) + cache-frie
-4. Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort
-
-```mermaid
-flowchart TD
-    N1["COMPARISON OF SORTING ALGORITHMS (what you know so far)"]
-    N2["Algorithm Best Average Worst Space Stable"]
-    N3["Quick Sort wins: in-place (O(log n) stack) + cache-frie"]
-    N4["Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 #### HOW: Partition then Recurse
 
@@ -191,29 +161,6 @@ IDEA: Pick a "pivot". Put smaller elements LEFT, larger RIGHT. Repeat.
     Now recursively sort [1, 2, 1] and [6, 8, 10]
 ```
 
-**Flow:**
-1. [3, 6, 8, 10, 1, 2, 1] pivot = 3
-2. PARTITION:
-3. Elements ≤ 3: [1, 2, 1]
-4. Elements > 3: [6, 8, 10]
-5. Result: [1, 2, 1, 3, 6, 8, 10]
-6. ↑ pivot is in its FINAL position!
-7. Now recursively sort [1, 2, 1] and [6, 8, 10]
-
-```mermaid
-flowchart TD
-    N1["[3, 6, 8, 10, 1, 2, 1] pivot = 3"]
-    N2["PARTITION:"]
-    N3["Elements ≤ 3: [1, 2, 1] | Elements &gt; 3: [6, 8, 10]"]
-    N4["Result: [1, 2, 1, 3, 6, 8, 10]"]
-    N5["↑ pivot is in its FINAL position!"]
-    N6["Now recursively sort [1, 2, 1] and [6, 8, 10]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 #### IMPLEMENT: Lomuto Partition Scheme
 
@@ -320,36 +267,6 @@ WHY DOUBLY LINKED LIST?
 This is LeetCode 146 (Medium) — implement it as a bonus challenge!
 ```
 
-**Flow:**
-1. access('home')
-2. Cache: [home] access('about')
-3. Cache: [about, home] access('products')
-4. Cache: [products, about, home]
-5. access('home')
-6. Cache: [home, products, about] ← home moves to fro
-7. access('blog')
-8. Cache: [blog, home, products] ← about evicted (LRU • HashMap for O(1) lookup: key node reference
-
-```mermaid
-flowchart TD
-    N1["access('home')"]
-    N2["Cache: [home]"]
-    N3["access('about')"]
-    N4["Cache: [about, home]"]
-    N5["access('products')"]
-    N6["Cache: [products, about, home]"]
-    N7["Cache: [home, products, about] ← home moves to fro"]
-    N8["access('blog')"]
-    N9["Cache: [blog, home, products] ← about evicted (LRU"]
-    N10["• HashMap for O(1) lookup: key"]
-    N11["node reference"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N1 --> N7
-    N8 --> N9
-    N10 --> N11
-```
 
 ---
 
@@ -435,23 +352,6 @@ WHY does it work?
   Eventually fast "laps" slow → they meet inside the cycle.
 ```
 
-**Flow:**
-1. If they MEET cycle exists
-2. If fast reaches null no cycle
-3. Eventually fast 'laps' slow they meet inside the cycle.
-
-```mermaid
-flowchart LR
-    N1["If they MEET"]
-    N2["cycle exists"]
-    N3["If fast reaches null"]
-    N4["no cycle"]
-    N5["Eventually fast 'laps' slow"]
-    N6["they meet inside the cycle."]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ```java
 public boolean hasCycle(ListNode head) {
@@ -490,20 +390,6 @@ TRICK: Two-pointer with gap of n
     slow.next = slow.next.next → removes node 4 ✓
 ```
 
-**Flow:**
-1. slow is now at the node BEFORE the target
-2. remove it slow.next = slow.next.next
-3. removes node 4 ✓
-
-```mermaid
-flowchart LR
-    N1["3. slow is now at the node BEFORE the target"]
-    N2["remove it"]
-    N3["slow.next = slow.next.next"]
-    N4["removes node 4 ✓"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ```java
 public ListNode removeNthFromEnd(ListNode head, int n) {

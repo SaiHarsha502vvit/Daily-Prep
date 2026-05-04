@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](14_Resources_Links.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous](14_Resources_Links.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Behavioral Interview — Complete Guide
 
@@ -17,19 +17,6 @@ INTERVIEW BREAKDOWN (Most Tech Companies)
 Behavioral = The HIRE/NO-HIRE tiebreaker when coding is equal
 ```
 
-**Flow:**
-1. Coding / 2-3 rounds / 40%
-2. System / Design / 1-2 rounds / 20-30%
-3. Behavioral / 1-2 rounds / 20-30%
-
-```mermaid
-flowchart TD
-    N1["Coding / 2-3 rounds / 40%"]
-    N2["System / Design / 1-2 rounds / 20-30%"]
-    N3["Behavioral / 1-2 rounds / 20-30%"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Mental Model:** Behavioral interviews test PAST behavior as a PREDICTOR of future behavior.
 They're not asking what you WOULD do — they want what you DID do.
@@ -63,22 +50,6 @@ S.T.A.R. FRAMEWORK
 
 ```
 
-**Flow:**
-1. S ituation / (15%)
-2. T ask / (15%)
-3. A ction / (50%)
-4. R esult / (20%)
-
-```mermaid
-flowchart TD
-    N1["S ituation / (15%)"]
-    N2["T ask / (15%)"]
-    N3["A ction / (50%)"]
-    N4["R esult / (20%)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### STAR Anti-Patterns
 
@@ -187,22 +158,6 @@ THE FAILURE ANSWER FORMULA
 └──────────────────┘
 ```
 
-**Flow:**
-1. Real failure / (not humble brag)
-2. Impact
-3. Root cause
-4. Fix + Prevention
-
-```mermaid
-flowchart TD
-    N1["Real failure / (not humble brag)"]
-    N2["Impact"]
-    N3["Root cause"]
-    N4["Fix + Prevention"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### Category 4: Teamwork & Collaboration
 
@@ -243,16 +198,6 @@ RESULT: Production stable within 1 hour, feature delivered next day,
   colleague unblocked. PM appreciated proactive communication.
 ```
 
-**Flow:**
-1. 1. Assessed impact: Production bug
-2. P0, everything else waits
-
-```mermaid
-flowchart LR
-    N1["1. Assessed impact: Production bug"]
-    N2["P0, everything else waits"]
-    N1 --> N2
-```
 
 ### Category 6: Technical Decision-Making
 
@@ -500,33 +445,6 @@ Before every behavioral interview, research:
 □ Open-source contributions by the company
 ```
 
-**Flow:**
-1. Before every behavioral interview, research:
-2. □ Company's recent news / product launches
-3. □ Tech blog posts (shows you care about their engineeri
-4. □ Glassdoor reviews (understand culture)
-5. □ LinkedIn — interviewer's background
-6. □ Company values / mission statement
-7. □ Tech stack (from job listing or StackShare)
-
-```mermaid
-flowchart TD
-    N1["Before every behavioral interview, research:"]
-    N2["□ Company's recent news / product launches"]
-    N3["□ Tech blog posts (shows you care about their engineeri"]
-    N4["□ Glassdoor reviews (understand culture)"]
-    N5["□ LinkedIn — interviewer's background"]
-    N6["□ Company values / mission statement"]
-    N7["□ Tech stack (from job listing or StackShare)"]
-    N8["□ Recent funding / growth trajectory"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -633,33 +551,6 @@ they need to fill. They're rooting for you to be great.
 PREPARATION = CONFIDENCE = PERFORMANCE
 ```
 
-**Flow:**
-1. Think of the interview as a CONVERSATION, not an EXAM
-2. You're evaluating THEM as much as they're evaluating YO
-3. they need to fill. They're rooting for you to be great.
-4. MINDSET SHIFT:
-5. From: 'Please hire me, I'll do anything'
-6. To: 'Let's see if we're a good fit for
-7. each other'
-
-```mermaid
-flowchart TD
-    N1["Think of the interview as a CONVERSATION, not an EXAM"]
-    N2["You're evaluating THEM as much as they're evaluating YO"]
-    N3["they need to fill. They're rooting for you to be great."]
-    N4["MINDSET SHIFT:"]
-    N5["From: 'Please hire me, I'll do anything'"]
-    N6["To: 'Let's see if we're a good fit for"]
-    N7["each other'"]
-    N8["This confidence (not arrogance) comes through"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

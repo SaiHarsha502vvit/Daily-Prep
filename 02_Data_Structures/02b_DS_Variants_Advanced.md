@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -139,34 +139,6 @@ public class MinStackOptimized {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-
-# MAX STACK - COMPLETE GUIDE
-
-1. Max Stack extends Min Stack with one extra operation: `popMax()`.
-2. `popMax()` removes and returns the current maximum element.
-3. This is harder than Min Stack because removal can happen from the middle.
-4. After middle removal, structure consistency must be preserved.
-5. Use `TreeMap + Doubly Linked List` for efficient max lookup and stable stack order.
-
-```mermaid
-flowchart TD
-    N1["MAX STACK - COMPLETE GUIDE"]
-    N2["WHAT IS IT?"]
-    N3["Similar to Min Stack but also supports:"]
-    N4["• popMax() - Remove and return the maximum element"]
-    N5["This is HARDER than Min Stack because:"]
-    N6["- popMax() might remove element from MIDDLE of stack"]
-    N7["- Need to maintain consistency"]
-    N8["APPROACH: Use TreeMap + Doubly Linked List"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -280,34 +252,6 @@ public class MaxStackSimple {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-
-# CIRCULAR QUEUE - COMPLETE GUIDE
-
-1. Circular Queue is a queue implemented using a circular array.
-2. The circular design solves wasted-space issues in linear queue layouts.
-3. In a linear queue, repeated enqueue/dequeue operations leave unused front slots.
-4. Front and rear move forward, but reclaimed front space cannot be reused efficiently.
-5. Circular indexing wraps positions so available slots are reused.
-
-```mermaid
-flowchart TD
-    N1["CIRCULAR QUEUE - COMPLETE GUIDE"]
-    N2["WHAT IS IT?"]
-    N3["A queue implemented using a circular array."]
-    N4["WHY CIRCULAR?"]
-    N5["LINEAR QUEUE PROBLEM:"]
-    N6["After many enqueue/dequeue operations:"]
-    N7["front rear"]
-    N8["Wasted space at beginning!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -437,33 +381,6 @@ public class CircularQueue<T> {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-
-# DEQUE - COMPLETE GUIDE
-
-1. A deque supports insertion and deletion at both ends in `O(1)`.
-2. Front side operations: `addFirst` and `removeFirst`.
-3. Back side operations: `addLast` and `removeLast`.
-4. Because both ends are efficient, deque can behave like both stack and queue.
-
-```mermaid
-flowchart TD
-    N1["DEQUE - COMPLETE GUIDE"]
-    N2["WHAT IS IT?"]
-    N3["A queue where you can add/remove from BOTH ends in O(1)"]
-    N4["VISUAL:"]
-    N5["addFirst → ← addLast"]
-    N6["removeFirst ← → removeLast"]
-    N7["OPERATIONS:"]
-    N8["• addFirst(x) - Add to front"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -627,33 +544,6 @@ Window [-1,-3,5]:
 ...and so on
 ```
 
-**Flow:**
-
-# MONOTONIC QUEUE - COMPLETE GUIDE
-
-1. A monotonic queue keeps elements in sorted order inside a deque.
-2. For window maximums, use a decreasing queue.
-3. Maintain order from front to back (example: `8 > 6 > 5 > 3`).
-4. The front always gives the current maximum.
-
-```mermaid
-flowchart TD
-    N1["MONOTONIC QUEUE - COMPLETE GUIDE"]
-    N2["WHAT IS IT?"]
-    N3["A deque that maintains elements in MONOTONIC order"]
-    N4["(either increasing or decreasing)."]
-    N5["MONOTONIC DECREASING QUEUE (for finding max):"]
-    N6["Elements from front to back: 8 &gt; 6 &gt; 5 &gt; 3"]
-    N7["Front is always the maximum!"]
-    N8["MONOTONIC INCREASING QUEUE (for finding min):"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -713,32 +603,6 @@ public class MonotonicQueue {
    → To know position for result array
 ```
 
-**Flow:**
-
-# INTERVIEW KEY POINTS - MONOTONIC QUEUE
-
-1. Use monotonic queue for sliding-window extrema and next greater/smaller style patterns.
-2. Typical examples include window max/min and stock span style problems.
-3. Total complexity is `O(n)` because each element is inserted and removed at most once.
-
-```mermaid
-flowchart TD
-    N1["🧠 INTERVIEW KEY POINTS - MONOTONIC QUEUE:"]
-    N2["1. 'When to use Monotonic Queue?'"]
-    N3["→ Sliding window min/max problems"]
-    N4["→ Find next greater/smaller element"]
-    N5["→ Stock span problems"]
-    N6["2. 'Time Complexity?'"]
-    N7["→ O(n) overall"]
-    N8["→ Each element added/removed at most once"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -823,33 +687,6 @@ Essentially a linked list!
         3
 ```
 
-**Flow:**
-
-# BINARY TREE VARIANTS OVERVIEW
-
-1. Start with the binary tree family overview.
-2. Distinguish core variants: full, complete, perfect, balanced, and degenerate.
-3. Full tree rule: every node has either `0` or `2` children.
-4. Complete tree rule: all levels are full except possibly the last, filled left-to-right.
-
-```mermaid
-flowchart TD
-    N1["BINARY TREE VARIANTS OVERVIEW"]
-    N2["BINARY TREE"]
-    N3["FULL COMPLETE PERFECT BALANCED DEGENERATE"]
-    N4["FULL BINARY TREE:"]
-    N5["Every node has 0 or 2 children (never 1)"]
-    N6["COMPLETE BINARY TREE:"]
-    N7["All levels filled except possibly last"]
-    N8["Last level has all nodes as far LEFT as possible"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -918,34 +755,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-
-# AVL TREEE - COMPLETE GUIDE
-
-1. AVL is a self-balancing BST.
-2. For every node, balance condition is `|height(left) - height(right)| <= 1`.
-3. When balance is violated, rotations restore structure.
-4. Balancing guarantees `O(log n)` search, insert, and delete.
-5. AVL was introduced by Adelson-Velsky and Landis (1962).
-
-```mermaid
-flowchart TD
-    N1["AVL TREE - COMPLETE GUIDE"]
-    N2["WHAT IS IT?"]
-    N3["A self-balancing Binary Search Tree where:"]
-    N4["• For EVERY node: |height(left) - height(right)| ≤ 1"]
-    N5["INVENTED: 1962 by Adelson-Velsky and Landis"]
-    N6["WHY BALANCE MATTERS:"]
-    N7["Balanced AVL: O(log n) GUARANTEED for all operations!"]
-    N8["BALANCE FACTOR = height(left) - height(right)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -1189,30 +998,6 @@ public class AVLTree {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Red-Black Tree is a self-balancing BST using node colors.
-2. Historical context: refined by Guibas and Sedgewick (1978).
-3. Core rules include color assignment, black root, and black NIL leaves.
-4. These rules maintain logarithmic-height behavior for operations.
-
-```mermaid
-flowchart TD
-    N1["RED-BLACK TREE - COMPLETE GUIDE"]
-    N2["WHAT IS IT?"]
-    N3["REFINED: 1978 by Leonidas Guibas and Robert Sedgewick"]
-    N4["PROPERTIES (MUST ALL BE TRUE):"]
-    N5["1. Every node is either RED or BLACK"]
-    N6["2. Root is always BLACK"]
-    N7["3. Every leaf (NIL) is BLACK"]
-    N8["VISUAL:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -1238,29 +1023,6 @@ flowchart TD
    → Must be -1, 0, or 1
 ```
 
-**Flow:**
-1. AVL vs Red-Black: AVL is stricter and lookup-optimized; RB usually has faster updates.
-2. Both provide `O(log n)` guarantees.
-3. Java `TreeMap` uses a Red-Black Tree.
-
-```mermaid
-flowchart TD
-    N1["🧠 INTERVIEW KEY POINTS - TREE VARIANTS:"]
-    N2["1. 'Difference between AVL and Red-Black?'"]
-    N3["→ AVL: More balanced, better for lookups"]
-    N4["→ RB: Less rotations, better for inserts/deletes"]
-    N5["→ Both guarantee O(log n)"]
-    N6["2. 'Which does Java TreeMap use?'"]
-    N7["→ Red-Black Tree"]
-    N8["3. 'When is BST O(n)?'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -1323,30 +1085,6 @@ Tree:      1      (index 0)
        5   9      (index 3, 4)
 ```
 
-**Flow:**
-1. Heaps are categorized by parent-child ordering and structure.
-2. Min-heap keeps the smallest value at the root.
-3. Max-heap keeps the largest value at the root.
-4. Binary heap is the standard complete-tree implementation used in practice.
-
-```mermaid
-flowchart TD
-    N1["HEAP VARIANTS - COMPLETE GUIDE"]
-    N2["HEAP TYPES"]
-    N3["1. MIN HEAP: Parent ≤ Children"]
-    N4["Min at root!"]
-    N5["2. MAX HEAP: Parent ≥ Children"]
-    N6["Max at root!"]
-    N7["3. BINARY HEAP: Most common, complete binary tree"]
-    N8["4. D-ARY HEAP: Each node has D children (not just 2)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -1539,30 +1277,6 @@ public class MinHeap {
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Hash table variants differ mainly by collision-resolution strategy.
-2. Separate chaining stores collided keys in per-bucket linked structures.
-3. Example: multiple values can map to the same bucket index.
-4. Java map variants then differ by ordering, sorting, and thread-safety behavior.
-
-```mermaid
-flowchart TD
-    N1["HASH TABLE VARIANTS - COMPLETE GUIDE"]
-    N2["COLLISION RESOLUTION STRATEGIES"]
-    N3["1. SEPARATE CHAINING (External Chaining):"]
-    N4["Each bucket contains a linked list"]
-    N5["Index 0: -&gt; null"]
-    N6["Index 1: -&gt; [15] -&gt; [25] -&gt; null (15 % 10 = 5,"]
-    N7["Index 2: -&gt; [12] -&gt; null"]
-    N8["Pros: Simple, unlimited capacity"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 :::
 
@@ -1626,22 +1340,6 @@ HASH TABLE SELECTION:
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Start from need-based selection, not from implementation preference.
-2. Pick linked-list variants by traversal and update requirements.
-3. Pick queue/tree variants by access pattern and complexity guarantees.
-4. Pick hash-map variants by ordering and concurrency requirements.
-
-```mermaid
-flowchart TD
-    N1["Need Use / Simple forward traversal Singly Linked List "]
-    N2["Need Use / Basic FIFO Simple Queue / Fixed size, no was"]
-    N3["Need Use / Basic sorted structure BST / Guaranteed O(lo"]
-    N4["Need Use / Basic key-value HashMap / Maintain insertion"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 :::
 

@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](21_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous](21_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 **Problems 22** | [Prev](21_Design.md) | [Index](../00_MASTER_INDEX.md) | [Next](../06_OOP_Design/01_OOPS_Principles.md)
 
@@ -37,35 +37,6 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. RECURSION & SUBSETS FUNDAMENTALS
-2. THE SUBSET UNIVERSE:
-3. Generate Power Set, Combinations, Permutations
-4. Count Count subsets with sum K, Target Sum
-5. Optimize Partition Equal Subset, Min Diff Partition
-6. Constrain Subsets without duplicates, K-size subsets
-7. RECURSION
-8. MEMOIZATION
-9. DP PIPELINE:
-
-```mermaid
-flowchart TD
-    N1["RECURSION & SUBSETS FUNDAMENTALS"]
-    N2["THE SUBSET UNIVERSE:"]
-    N3["Generate Power Set, Combinations, Permutations"]
-    N4["Count Count subsets with sum K, Target Sum"]
-    N5["Optimize Partition Equal Subset, Min Diff Partition"]
-    N6["Constrain Subsets without duplicates, K-size subsets"]
-    N7["RECURSION → MEMOIZATION → DP PIPELINE:"]
-    N8["Every subset counting/optimization problem follows:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -262,22 +233,6 @@ RECURSION TREE:
 SOLUTION:
 ```
 
-**Flow:**
-1. Index 0 (1): Include
-2. [1]
-3. Exclude
-4. [1]
-5. Exclude
-6. []
-
-```mermaid
-flowchart LR
-    N1["Index 0 (1): Include"]
-    N2["[1] | Exclude"]
-    N3["[]"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 public List<List<Integer>> subsets(int[] nums) {
@@ -338,33 +293,6 @@ THE DUPLICATE HANDLING TRICK:
 SOLUTION:
 ```
 
-**Flow:**
-1. DIFFICULTY: Medium
-2. COMPANIES: Amazon, Facebook, Bloomberg
-3. PATTERN: Backtracking + Skip Duplicates
-4. Input: [1, 2, 2]
-5. Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]
-6. THE DUPLICATE HANDLING TRICK:
-7. 1. SORT the array first
-
-```mermaid
-flowchart TD
-    N1["DIFFICULTY: Medium"]
-    N2["COMPANIES: Amazon, Facebook, Bloomberg"]
-    N3["PATTERN: Backtracking + Skip Duplicates"]
-    N4["Input: [1, 2, 2]"]
-    N5["Output: [[], [1], [1,2], [1,2,2], [2], [2,2]]"]
-    N6["THE DUPLICATE HANDLING TRICK:"]
-    N7["1. SORT the array first"]
-    N8["2. At each level, skip nums[i] if nums[i] == nums[i-1]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public List<List<Integer>> subsetsWithDup(int[] nums) {
@@ -424,32 +352,6 @@ RECURSION TREE for target=7, candidates=[2,3,6,7]:
 SOLUTION:
 ```
 
-**Flow:**
-1. Pick 2: sum=2
-2. Pick 2: sum=4
-3. Pick 2: sum=6
-4. Pick 2: sum=8 ✗ (over)
-5. Pick 3: sum=7 ✓
-6. found [2,2,3]
-7. Pick 7: sum=7 ✓
-8. found [7]
-
-```mermaid
-flowchart TD
-    N1["Pick 2: sum=2"]
-    N2["Pick 2: sum=4"]
-    N3["Pick 2: sum=6"]
-    N4["Pick 2: sum=8 ✗ (over)"]
-    N5["Pick 3: sum=7 ✓"]
-    N6["found [2,2,3]"]
-    N7["Pick 7: sum=7 ✓"]
-    N8["found [7]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
 
 ```java
 public List<List<Integer>> combinationSum(int[] candidates, int target) {
@@ -499,21 +401,6 @@ COMBINING TWO TRICKS:
 SOLUTION:
 ```
 
-**Flow:**
-1. 1. Use element once
-2. recurse with i+1
-3. 2. Skip duplicates
-4. if (i > start && nums[i] == nums[i-1]) continue
-
-```mermaid
-flowchart LR
-    N1["1. Use element once"]
-    N2["recurse with i+1"]
-    N3["2. Skip duplicates"]
-    N4["if (i &gt; start && nums[i] == nums[i-1]) continue"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ```java
 public List<List<Integer>> combinationSum2(int[] candidates, int target) {
@@ -552,33 +439,6 @@ COMPARISON TABLE:
 └───────────────────┴──────────────┴──────────────────┴─────────────┘
 ```
 
-**Flow:**
-1. COMPARISON TABLE:
-2. Problem Reuse? Recurse at Skip dups?
-3. Combination Sum Unlimited i (same index) No
-4. Combination Sum II Once each i+1 Yes (sort!)
-5. Subsets Once each i+1 No
-6. Subsets II Once each i+1 Yes (sort!)
-7. Permutations Once each 0 (use visited[]) No
-
-```mermaid
-flowchart TD
-    N1["COMPARISON TABLE:"]
-    N2["Problem Reuse? Recurse at Skip dups?"]
-    N3["Combination Sum Unlimited i (same index) No"]
-    N4["Combination Sum II Once each i+1 Yes (sort!)"]
-    N5["Subsets Once each i+1 No"]
-    N6["Subsets II Once each i+1 Yes (sort!)"]
-    N7["Permutations Once each 0 (use visited[]) No"]
-    N8["Permutations II Once each 0 (use visited[]) Yes (sort!)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -603,19 +463,6 @@ THE FULL PIPELINE:
 STEP 1 — PURE RECURSION:
 ```
 
-**Flow:**
-1. PATTERN: Recursion
-2. Memoization
-3. DP
-
-```mermaid
-flowchart LR
-    N1["PATTERN: Recursion"]
-    N2["Memoization"]
-    N3["DP"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 // O(2^n) — explores all subsets
@@ -724,21 +571,6 @@ KEY INSIGHT:
 SOLUTION:
 ```
 
-**Flow:**
-1. Output: true
-2. {1, 5, 5} and {11}
-3. If total is odd
-4. immediately false.
-
-```mermaid
-flowchart LR
-    N1["Output: true"]
-    N2["{1, 5, 5} and {11}"]
-    N3["If total is odd"]
-    N4["immediately false."]
-    N1 --> N2
-    N3 --> N4
-```
 
 ```java
 public boolean canPartition(int[] nums) {
@@ -767,26 +599,6 @@ EDGE CASES:
   - Sum is odd → false immediately
 ```
 
-**Flow:**
-1. - Single element
-2. false
-3. - All same elements, even count
-4. true
-5. - Sum is odd
-6. false immediately
-
-```mermaid
-flowchart LR
-    N1["- Single element"]
-    N2["false"]
-    N3["- All same elements, even count"]
-    N4["true"]
-    N5["- Sum is odd"]
-    N6["false immediately"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
@@ -820,33 +632,6 @@ MATHEMATICAL TRANSFORMATION:
 SOLUTION:
 ```
 
-**Flow:**
-1. DIFFICULTY: Medium
-2. COMPANIES: Facebook, Google, Amazon
-3. PATTERN: Subset Sum variant / Count partitions
-4. PROBLEM: Assign + or - to each number to reach target s
-5. Input: nums = [1, 1, 1, 1, 1], target = 3
-6. MATHEMATICAL TRANSFORMATION:
-7. sum(P) - sum(N) = target
-
-```mermaid
-flowchart TD
-    N1["DIFFICULTY: Medium"]
-    N2["COMPANIES: Facebook, Google, Amazon"]
-    N3["PATTERN: Subset Sum variant / Count partitions"]
-    N4["PROBLEM: Assign + or - to each number to reach target s"]
-    N5["Input: nums = [1, 1, 1, 1, 1], target = 3"]
-    N6["MATHEMATICAL TRANSFORMATION:"]
-    N7["sum(P) - sum(N) = target"]
-    N8["sum(P) + sum(N) = totalSum"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int findTargetSumWays(int[] nums, int target) {
@@ -898,33 +683,6 @@ PROBLEM: Given digit string, return all letter combinations.
 SOLUTION:
 ```
 
-**Flow:**
-1. abc, 3
-2. def, 4
-3. ghi, 5
-4. jkl, 6
-5. mno, 7
-6. pqrs, 8
-7. tuv, 9
-
-```mermaid
-flowchart TD
-    N1["abc, 3"]
-    N2["def, 4"]
-    N3["ghi, 5"]
-    N4["jkl, 6"]
-    N5["mno, 7"]
-    N6["pqrs, 8"]
-    N7["tuv, 9"]
-    N8["wxyz"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 private String[] mapping = {"", "", "abc", "def", "ghi", "jkl", 
@@ -1201,32 +959,6 @@ The nth Catalan number C(n) = (2n)! / ((n+1)! × n!)
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. PALINDROME PARTITIONING (LeetCode 131 - Medium)
-2. Partition string s so every substring is a palindrome.
-3. Return all possible partitions.
-4. Example: s = 'aab'
-5. Output: [['a','a','b'], ['aa','b']]
-6. on remaining suffix.
-7. TIME: O(n × 2^n)
-8. SPACE: O(n) recursion depth
-
-```mermaid
-flowchart TD
-    N1["PALINDROME PARTITIONING (LeetCode 131 - Medium)"]
-    N2["Partition string s so every substring is a palindrome."]
-    N3["Return all possible partitions."]
-    N4["Example: s = 'aab'"]
-    N5["Output: [['a','a','b'], ['aa','b']]"]
-    N6["on remaining suffix."]
-    N7["TIME: O(n × 2^n) | SPACE: O(n) recursion depth"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```java
 public List<List<String>> partition(String s) {
@@ -1282,29 +1014,6 @@ private boolean isPalindrome(String s) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COMBINATIONS (LeetCode 77 - Medium)
-2. chosen from range [1, n].
-3. Example: n = 4, k = 2
-4. Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
-5. KEY: Standard backtracking. Prune when remaining < n
-6. TIME: O(C(n,k) × k)
-7. SPACE: O(k)
-
-```mermaid
-flowchart TD
-    N1["COMBINATIONS (LeetCode 77 - Medium)"]
-    N2["chosen from range [1, n]."]
-    N3["Example: n = 4, k = 2"]
-    N4["Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]"]
-    N5["KEY: Standard backtracking. Prune when remaining &lt; n"]
-    N6["TIME: O(C(n,k) × k) | SPACE: O(k)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```java
 public List<List<Integer>> combine(int n, int k) {
@@ -1351,26 +1060,6 @@ private void backtrack(int n, int k, int start, List<Integer> path,
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. N-QUEENS (LeetCode 51 - Hard)
-2. Return all distinct solutions.
-3. Example: n = 4
-4. Output: [['.Q..','...Q','Q...','..Q.'],
-5. TIME: O(n!)
-6. SPACE: O(n²)
-
-```mermaid
-flowchart TD
-    N1["N-QUEENS (LeetCode 51 - Hard)"]
-    N2["Return all distinct solutions."]
-    N3["Example: n = 4"]
-    N4["Output: [['.Q..','...Q','Q...','..Q.'],"]
-    N5["TIME: O(n!) | SPACE: O(n²)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ```java
 public List<List<String>> solveNQueens(int n) {

@@ -66,14 +66,6 @@ HOW   → How do I express this? (JOIN type, window function, subquery)
 
 🔬 **Section Challenge — 1. The SQL Mindset Shift**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
-## 2. Query Execution Order — The Foundation
 
 ```
                     SQL EXECUTION ORDER
@@ -539,14 +531,6 @@ COMPOSITE INDEX ORDER MATTERS:
 
 🔬 **Section Challenge — 4. Performance Thinking — EXPLAIN Your Way to Senior**
 
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-
-## 5. Schema Design Interview Questions
 
 ### Normalization vs Denormalization
 

@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](13_Tree_Plus_DFS_BFS.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Heap_Plus_GreedySelection.md)
+﻿**Navigation**: [< Previous](13_Tree_Plus_DFS_BFS.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Heap_Plus_GreedySelection.md)
 
 # Graph + Traversal Patterns — Combined Pattern Guide
 
@@ -69,53 +69,6 @@ Problem type → Algorithm:
 └── "Bipartite check" → BFS/DFS with 2-coloring
 ```
 
-**Flow:**
-1. Problem type
-2. Algorithm:
-3. 'Shortest path' (unweighted)
-4. BFS
-5. 'Shortest path' (weighted, no negative)
-6. Dijkstra
-7. 'Shortest path' (negative edges)
-8. Bellman-Ford
-9. 'All pairs shortest path'
-10. Floyd-Warshall
-11. 'Connected components'
-12. BFS/DFS or Union-Find
-
-```mermaid
-flowchart TD
-    N1["Problem type"]
-    N2["Algorithm:"]
-    N3["'Shortest path' (unweighted)"]
-    N4["BFS"]
-    N5["'Shortest path' (weighted, no negative)"]
-    N6["Dijkstra"]
-    N7["'Shortest path' (negative edges)"]
-    N8["Bellman-Ford"]
-    N9["'All pairs shortest path'"]
-    N10["Floyd-Warshall"]
-    N11["'Connected components'"]
-    N12["BFS/DFS or Union-Find"]
-    N13["'Cycle detection'"]
-    N14["DFS (directed) or Union-Find (undirected)"]
-    N15["'Topological ordering'"]
-    N16["Kahn's BFS or DFS"]
-    N17["'Minimum spanning tree'"]
-    N18["Prim's or Kruskal's"]
-    N19["'Bridges/Articulation points'"]
-    N20["Tarjan's DFS"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-    N17 --> N18
-    N19 --> N20
-```
 
 ---
 
@@ -234,26 +187,6 @@ Step-by-step:
 Time: O(R×C) | Space: O(R×C) recursion stack worst case
 ```
 
-**Flow:**
-1. (0,0)=1
-2. DFS! Sink (0,0),(0,1),(1,0),(1,1). count=1
-3. (2,2)=1
-4. DFS! Sink (2,2). count=2
-5. (3,3)=1
-6. DFS! Sink (3,3),(3,4). count=3
-
-```mermaid
-flowchart LR
-    N1["(0,0)=1"]
-    N2["DFS! Sink (0,0),(0,1),(1,0),(1,1). count=1"]
-    N3["(2,2)=1"]
-    N4["DFS! Sink (2,2). count=2"]
-    N5["(3,3)=1"]
-    N6["DFS! Sink (3,3),(3,4). count=3"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ---
 
@@ -290,45 +223,6 @@ Step-by-step:
 Time: O(V + E) | Space: O(V + E)
 ```
 
-**Flow:**
-1. Compute indegree: 0
-2. 0, 1
-3. 1, 2
-4. 1, 3
-5. Dequeue 0: order=[0]. Neighbors: 1(indegree 1
-6. 0), 2(indegree 1
-7. 0)
-8. Dequeue 1: order=[0,1]. Neighbors: 3(indegree 2
-9. 1)
-
-```mermaid
-flowchart TD
-    N1["Compute indegree: 0"]
-    N2["0, 1"]
-    N3["1, 2"]
-    N4["1, 3"]
-    N5["Dequeue 0: order=[0]. Neighbors: 1(indegree 1"]
-    N6["0), 2(indegree 1"]
-    N7["0)"]
-    N8["Dequeue 1: order=[0,1]. Neighbors: 3(indegree 2"]
-    N9["1)"]
-    N10["Dequeue 2: order=[0,1,2]. Neighbors: 3(indegree 1"]
-    N11["order.size() == numCourses(4)"]
-    N12["YES, can finish! ✅"]
-    N13["If order.size() &lt; numCourses"]
-    N14["there's a cycle"]
-    N15["impossible!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-    N6 --> N7
-    N8 --> N9
-    N10 --> N7
-    N11 --> N12
-    N13 --> N14
-    N14 --> N15
-```
 
 ---
 
@@ -358,33 +252,6 @@ COMMON MISTAKES:
 5. Grid DFS: Forgetting to mark visited BEFORE recursing into neighbors
 ```
 
-**Flow:**
-1. EDGE CASES:
-2. Edge Case Handling
-3. Disconnected graph BFS/DFS may miss components — loop!
-4. Self-loop Cycle detection catches this
-5. Empty graph (no edges) All nodes are valid, indegree=0
-6. Grid with all 0s 0 islands
-7. Grid with all 1s 1 island
-
-```mermaid
-flowchart TD
-    N1["EDGE CASES:"]
-    N2["Edge Case Handling"]
-    N3["Disconnected graph BFS/DFS may miss components — loop!"]
-    N4["Self-loop Cycle detection catches this"]
-    N5["Empty graph (no edges) All nodes are valid, indegree=0"]
-    N6["Grid with all 0s 0 islands"]
-    N7["Grid with all 1s 1 island"]
-    N8["Single node, no edges Trivially works"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

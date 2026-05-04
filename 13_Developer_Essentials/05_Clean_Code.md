@@ -1,4 +1,4 @@
-# ✨ Clean Code Principles — Complete Guide
+﻿# ✨ Clean Code Principles — Complete Guide
 
 **Navigation**: [< CI/CD](04_CICD_Pipelines.md) | [Index](00_INDEX.md) | [Next: Testing >](06_Testing_Fundamentals.md)
 
@@ -23,30 +23,6 @@ Technical Debt:
   → Code becomes unmaintainable in 6-12 months
   → Company pays 10x more for every new feature
   → Developers quit because working on it is misery
-```
-
-**Flow:**
-1. Bad code slow reading slow changes
-2. bugs more bad code
-3. DEATH SPIRAL
-4. 'We'll clean it up later' Later NEVER comes
-
-```mermaid
-flowchart TD
-    N1["Bad code"]
-    N2["slow reading"]
-    N3["slow changes"]
-    N4["bugs"]
-    N5["more bad code"]
-    N6["DEATH SPIRAL"]
-    N7["'We'll clean it up later'"]
-    N8["Later NEVER comes"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N7 --> N8
 ```
 
 ## WHO
@@ -123,16 +99,7 @@ void calculateTotal() {}        // verb
 boolean isActive() {}           // boolean = is/has/can
 ```
 
-
-
 🔬 **Section Challenge — 1. Naming (The #1 Most Important Skill)**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## 2. Functions / Methods
 
@@ -181,24 +148,6 @@ Rule 6: Command/Query SEPARATION
   Either DO something OR RETURN something, not both
 ```
 
-**Flow:**
-1. If you can extract a meaningful sub-function
-2. it does too much
-3. If it's longer extract sub-methods More create a parameter object
-
-```mermaid
-flowchart LR
-    N1["If you can extract a meaningful sub-function"]
-    N2["it does too much"]
-    N3["If it's longer"]
-    N4["extract sub-methods"]
-    N5["More"]
-    N6["create a parameter object"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
-
 ### Parameter Objects
 
 ```java
@@ -216,8 +165,6 @@ record UserRegistrationRequest(
 ) {}
 ```
 
-
-
 🔬 **Section Challenge — 2. Functions / Methods**
 >
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
@@ -225,7 +172,6 @@ record UserRegistrationRequest(
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
 </details>
-
 
 ## 3. Comments
 
@@ -321,8 +267,6 @@ class OrderService {
 }
 ```
 
-
-
 🔬 **Section Challenge — 4. SOLID Principles**
 
 **Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
@@ -336,7 +280,6 @@ No — it means don't modify existing, tested behavior to add new features. Add 
 
 Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
 </details>
-
 
 ## 5. Code Smells (Warning Signs)
 
@@ -354,48 +297,6 @@ Nested Conditionals (>2)    →  Guard clauses / early return
 Switch on type              →  Polymorphism
 
 Dead Code (unused)          →  DELETE IT (Git remembers)
-```
-
-**Flow:**
-1. Long Method (>20 lines)
-2. Extract Method
-3. Long Parameter List (>3)
-4. Parameter Object
-5. Duplicate Code
-6. Extract to shared method
-7. God Class (too many fields)
-8. Split into focused classes
-9. Feature Envy (uses other Move method to the right class Magic Numbers Named constants
-
-```mermaid
-flowchart TD
-    N1["Long Method (&gt;20 lines)"]
-    N2["Extract Method"]
-    N3["Long Parameter List (&gt;3)"]
-    N4["Parameter Object"]
-    N5["Duplicate Code"]
-    N6["Extract to shared method"]
-    N7["God Class (too many fields)"]
-    N8["Split into focused classes"]
-    N9["Feature Envy (uses other"]
-    N10["Move method to the right class"]
-    N11["Magic Numbers"]
-    N12["Named constants"]
-    N13["Nested Conditionals (&gt;2)"]
-    N14["Guard clauses / early return"]
-    N15["Switch on type"]
-    N16["Polymorphism"]
-    N17["Dead Code (unused)"]
-    N18["DELETE IT (Git remembers)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-    N17 --> N18
 ```
 
 ### Guard Clauses (Flatten Nesting)
@@ -423,16 +324,7 @@ public void processPayment(Payment payment) {
 }
 ```
 
-
-
 🔬 **Section Challenge — 5. Code Smells (Warning Signs)**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 
 ## 📌 6. Dry, Kiss, Yagni
 
@@ -526,6 +418,7 @@ Before submitting code, check:
 # 🏋️ Practice
 
 ## Exercise 1: Refactor This
+
 ```
 Take any old code you've written.
 Apply naming rules + extract methods.
@@ -533,6 +426,7 @@ Compare before vs after readability.
 ```
 
 ## Exercise 2: Code Review Practice
+
 ```
 Read open-source PRs on GitHub.
 Identify code smells.
@@ -543,7 +437,5 @@ Suggest improvements in comments.
 
 **Next Chapter**: [Testing Fundamentals →](06_Testing_Fundamentals.md)
 
-
 ---
 
-> **Navigation**: [< Previous](04_CICD_Pipelines.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Testing_Fundamentals.md)

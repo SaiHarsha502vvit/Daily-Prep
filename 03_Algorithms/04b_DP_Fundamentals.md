@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04c_DP_Advanced.md)
+﻿**Navigation**: [< Previous Chapter](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04c_DP_Advanced.md)
 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
 
 ---
@@ -803,33 +803,6 @@ TABULATION:
 - When you want to optimize space (sliding window)
 ```
 
-**Flow:**
-1. MEMOIZATION (Top-Down)
-2. Approach: Recursive with caching
-3. Direction: Start from main problem, recurse to subprobl
-4. When used: Only computes needed subproblems
-5. Space: Recursion stack + memo table
-6. Pros: Natural, easy to write, lazy evaluation
-7. Cons: Recursion overhead, stack overflow risk
-
-```mermaid
-flowchart TD
-    N1["MEMOIZATION (Top-Down)"]
-    N2["Approach: Recursive with caching"]
-    N3["Direction: Start from main problem, recurse to subprobl"]
-    N4["When used: Only computes needed subproblems"]
-    N5["Space: Recursion stack + memo table"]
-    N6["Pros: Natural, easy to write, lazy evaluation"]
-    N7["Cons: Recursion overhead, stack overflow risk"]
-    N8["TABULATION (Bottom-Up)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

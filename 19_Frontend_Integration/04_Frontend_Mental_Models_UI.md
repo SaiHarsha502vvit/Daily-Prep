@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](03_Build_Tools_Ecosystem.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿> **Navigation**: [< Previous](03_Build_Tools_Ecosystem.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 > **Frontend Integration Chapter 4/4** | [← Build Tools](03_Build_Tools_Ecosystem.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Servers & Networking](../13_Developer_Essentials/17_Servers_Ports_Networking.md)
 
@@ -83,19 +83,6 @@ STEP 3 — IDENTIFY DATA FLOW:
 • Reviews → separate API call, lazy loaded in tab
 ```
 
-**Flow:**
-1. IMAGE / GALLERY / ○ ○ ● ○
-2. Product Title / ★★★★☆ (42 reviews) / $129.99 ~$159.99~
-3. Tab content here...
-
-```mermaid
-flowchart TD
-    N1["IMAGE / GALLERY / ○ ○ ● ○"]
-    N2["Product Title / ★★★★☆ (42 reviews) / $129.99 ~$159.99~ "]
-    N3["Tab content here..."]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -128,40 +115,6 @@ BEFORE WRITING ANY JSX, ANSWER:
 THEN: Write JSX structure → Style with CSS → Add interactions
 ```
 
-**Flow:**
-1. selectedColor changes on click
-2. useState cartItems changes across pages
-3. Zustand/context
-4. Click 'Add to Cart' update cart state
-5. Click thumbnail change main image
-
-```mermaid
-flowchart TD
-    N1["selectedColor"]
-    N2["changes on click"]
-    N3["useState"]
-    N4["cartItems"]
-    N5["changes across pages"]
-    N6["Zustand/context"]
-    N7["Click 'Add to Cart'"]
-    N8["update cart state"]
-    N9["Click thumbnail"]
-    N10["change main image"]
-    N11["Click tab"]
-    N12["switch visible panel"]
-    N13["THEN: Write JSX structure"]
-    N14["Style with CSS"]
-    N15["Add interactions"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N14 --> N15
-```
 
 ---
 
@@ -191,16 +144,6 @@ IF PROP DRILLING > 3 LEVELS DEEP → Consider:
 └── Composition pattern (pass components as children)
 ```
 
-**Flow:**
-1. IF PROP DRILLING > 3 LEVELS DEEP
-2. Consider:
-
-```mermaid
-flowchart LR
-    N1["IF PROP DRILLING &gt; 3 LEVELS DEEP"]
-    N2["Consider:"]
-    N1 --> N2
-```
 
 ---
 
@@ -234,28 +177,6 @@ GOLDEN RULES:
 5. Position absolute ONLY for overlays/tooltips/badges
 ```
 
-**Flow:**
-1. YES
-2. CSS Grid (header, sidebar, main, footer)
-3. YES
-4. Flexbox
-5. YES
-6. CSS Grid with auto-fit
-7. YES
-8. Normal flow (no special CSS)
-
-```mermaid
-flowchart LR
-    N1["YES"]
-    N2["CSS Grid (header, sidebar, main, footer)"]
-    N3["Flexbox"]
-    N4["CSS Grid with auto-fit"]
-    N5["Normal flow (no special CSS)"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-```
 
 ---
 
@@ -417,33 +338,6 @@ function ProductList() {
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. FORM WIZARD ARCHITECTURE:
-2. Step 1 Step 2 Step 3 Step 4
-3. [Personal]
-4. [Address]
-5. [Payment]
-6. [Review]
-7. State Shape: currentStep: 2, formData: { personal: { name, email, phone }, // validated
-
-```mermaid
-flowchart TD
-    N1["FORM WIZARD ARCHITECTURE:"]
-    N2["Step 1 Step 2 Step 3 Step 4"]
-    N3["[Personal] → [Address] → [Payment] → [Review]"]
-    N4["State Shape:"]
-    N5["currentStep: 2,"]
-    N6["formData: {"]
-    N7["personal: { name, email, phone }, // validated"]
-    N8["address: { street, city, zip }, // in progress"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```tsx
 // FormWizard.tsx — Multi-step form
@@ -540,30 +434,6 @@ function FormWizard() {
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BEFORE you write code for any new feature:
-2. □ 1. UNDERSTAND the requirement What exactly should happen? List every behavior.
-3. □ 2. DECOMPOSE into components Draw the component tree on paper/whiteboard.
-4. □ 3. DEFINE types/interfaces What data flows through? What can change?
-
-```mermaid
-flowchart TD
-    N1["BEFORE you write code for any new feature:"]
-    N2["□ 1. UNDERSTAND the requirement"]
-    N3["What exactly should happen? List every behavior."]
-    N4["□ 2. DECOMPOSE into components"]
-    N5["Draw the component tree on paper/whiteboard."]
-    N6["□ 3. DEFINE types/interfaces"]
-    N7["What data flows through? What can change?"]
-    N8["□ 4. IDENTIFY state ownership"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -598,29 +468,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. THINK IN FLUID RANGES, NOT FIXED BREAKPOINTS:
-2. OLD WAY (Bad):
-3. 'At 768px, switch to 2 columns. At 1024px, switch to 3. Brittle. What about 767px? 769px? NEW WAY (Good): 'Each card should be 280-400px wide. As many as fit.' Works at EVERY screen size. No breakpoints needed.
-
-```mermaid
-flowchart TD
-    N1["THINK IN FLUID RANGES, NOT FIXED BREAKPOINTS:"]
-    N2["OLD WAY (Bad):"]
-    N3["'At 768px, switch to 2 columns. At 1024px, switch to 3."]
-    N4["→ Brittle. What about 767px? 769px?"]
-    N5["NEW WAY (Good):"]
-    N6["'Each card should be 280-400px wide. As many as fit.'"]
-    N7["→ Works at EVERY screen size. No breakpoints needed."]
-    N8["CONTENT-FIRST RESPONSIVE:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -656,41 +503,6 @@ Q: What makes a good component API (props)?
   Avoid boolean overload: use variant="primary" not isPrimary, isSecondary.
 ```
 
-**Flow:**
-1. Build bottom-up: atoms molecules
-2. organisms page.
-3. If yes to any
-4. extract into its own component.
-5. Categorize: Server state
-6. TanStack Query.
-7. UI state (open/closed, selected)
-8. useState.
-
-```mermaid
-flowchart TD
-    N1["5. Build bottom-up: atoms"]
-    N2["molecules"]
-    N3["organisms"]
-    N4["page."]
-    N5["If yes to any"]
-    N6["extract into its own component."]
-    N7["Categorize: Server state"]
-    N8["TanStack Query."]
-    N9["UI state (open/closed, selected)"]
-    N10["useState."]
-    N11["Complex form/wizard"]
-    N12["useReducer."]
-    N13["Shared across routes"]
-    N14["Zustand or Context."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-```
 
 ---
 
@@ -699,4 +511,3 @@ flowchart TD
 
 ---
 
-> **Navigation**: [< Previous](03_Build_Tools_Ecosystem.md) | [Back to Index](../00_MASTER_INDEX.md)

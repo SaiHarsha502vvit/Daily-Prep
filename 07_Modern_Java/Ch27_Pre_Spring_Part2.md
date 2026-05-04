@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](Ch26_Pre_Spring_Part1.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](Ch26_Pre_Spring_Part1.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -1537,31 +1537,6 @@ public class RequestLoggingFilter implements Filter {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Answer: TYPE ERASURE
-2. Generics are a COMPILE-TIME feature only!
-3. At runtime, generic type information is ERASED
-4. This affects:
-5. - How Jackson deserializes generic types
-6. - How Spring resolves generic beans
-7. - Why you need TypeReference<T>
-
-```mermaid
-flowchart TD
-    N1["Answer: TYPE ERASURE"]
-    N2["Generics are a COMPILE-TIME feature only!"]
-    N3["At runtime, generic type information is ERASED"]
-    N4["This affects:"]
-    N5["- How Jackson deserializes generic types"]
-    N6["- How Spring resolves generic beans"]
-    N7["- Why you need TypeReference&lt;T&gt;"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ## L.1 What Is Type Erasure?
 
@@ -1745,33 +1720,6 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ADVANCED: How Tools Modify Your Code at Runtime
-2. These tools use bytecode manipulation:
-3. - Spring Data: Generates repository implementations
-4. - Hibernate: Adds lazy loading logic to entities
-5. - Mockito: Creates mock objects
-6. - CGLIB: Proxies for @Transactional
-7. - JaCoCo: Code coverage
-
-```mermaid
-flowchart TD
-    N1["ADVANCED: How Tools Modify Your Code at Runtime"]
-    N2["These tools use bytecode manipulation:"]
-    N3["- Spring Data: Generates repository implementations"]
-    N4["- Hibernate: Adds lazy loading logic to entities"]
-    N5["- Mockito: Creates mock objects"]
-    N6["- CGLIB: Proxies for @Transactional"]
-    N7["- JaCoCo: Code coverage"]
-    N8["- Debuggers: Breakpoints"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## M.1 Java Bytecode Basics
 
@@ -1969,33 +1917,6 @@ public class MyAgent {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHAT YOU SHOULD REMEMBER
-2. REFLECTION
-3. • Spring uses reflection for EVERYTHING
-4. • setAccessible(true) bypasses private
-5. • Reflection is slow but cached
-6. ANNOTATIONS
-7. • RUNTIME retention = Spring can read it
-
-```mermaid
-flowchart TD
-    N1["WHAT YOU SHOULD REMEMBER"]
-    N2["REFLECTION"]
-    N3["• Spring uses reflection for EVERYTHING"]
-    N4["• setAccessible(true) bypasses private"]
-    N5["• Reflection is slow but cached"]
-    N6["ANNOTATIONS"]
-    N7["• RUNTIME retention = Spring can read it"]
-    N8["• SOURCE retention = Compile-time only (Lombok)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

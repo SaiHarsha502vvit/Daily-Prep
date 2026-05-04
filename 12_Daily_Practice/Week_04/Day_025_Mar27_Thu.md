@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_024_Mar26_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_026_Mar28_Fri.md)
+﻿> **Navigation**: [< Previous](Day_024_Mar26_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_026_Mar28_Fri.md)
 
 # DAY 025 — Thursday, March 27, 2026
 ## Topological Sort + Kruskal's MST + SQL Views & Stored Procedures
@@ -52,35 +52,6 @@ Only works on DAG (Directed Acyclic Graph)
 If cycle exists → NO valid ordering (detect: not all nodes processed)
 ```
 
-**Flow:**
-1. Valid order: CS101
-2. CS201
-3. CS301
-4. CS202
-5. CS101
-6. CS202
-7. CS201
-8. CS301
-
-```mermaid
-flowchart TD
-    N1["Valid order: CS101"]
-    N2["CS201"]
-    N3["CS301"]
-    N4["CS202"]
-    N5["CS101"]
-    N6["Topological sort = LINEAR ordering where for every"]
-    N7["v,"]
-    N8["If cycle exists"]
-    N9["NO valid ordering (detect: not all nodes processed"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N4
-    N4 --> N2
-    N6 --> N7
-    N8 --> N9
-```
 
 ### Kahn's Algorithm (BFS-based)
 
@@ -237,25 +208,6 @@ Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
 Output: false (cycle: 0→1→0)
 ```
 
-**Flow:**
-1. numCourses = 2, prerequisites = [[1,0]]
-2. Means: to take course 1, you must first take course 0
-3. Return true if you can finish all courses.
-4. Input: numCourses = 2, prerequisites = [[1,0],[0,1]]
-5. Output: false (cycle: 0 1 0)
-
-```mermaid
-flowchart TD
-    N1["numCourses = 2, prerequisites = [[1,0]]"]
-    N2["Means: to take course 1, you must first take course 0"]
-    N3["Return true if you can finish all courses."]
-    N4["Input: numCourses = 2, prerequisites = [[1,0],[0,1]]"]
-    N5["Output: false (cycle: 0→1→0)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Pattern**: Topological sort — if cycle detected, return false.
 

@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch49_SB_WebFlux_Advanced.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch49_SB_WebFlux_Advanced.md)
 
 ---
 
@@ -57,22 +57,6 @@ _"Handle millions of connections with minimal resources"_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Learn Reactive Programming? / • Handle 10-100x
-2. HOW: How Does WebFlux Work? / • Event loop model (not t
-3. WHEN: When to Use WebFlux vs MVC? / USE WEBFLUX WHEN: /
-4. WHICH: Which Components to Master? / ESSENTIAL: Mono, F
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Learn Reactive Programming? / • Handle 10-100x"]
-    N2["HOW: How Does WebFlux Work? / • Event loop model (not t"]
-    N3["WHEN: When to Use WebFlux vs MVC? / USE WEBFLUX WHEN: /"]
-    N4["WHICH: Which Components to Master? / ESSENTIAL: Mono, F"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -97,33 +81,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHAT THIS PART COVERS
-2. 1. Reactive Programming Fundamentals
-3. 2. Project Reactor: Mono & Flux
-4. 3. Spring WebFlux Basics
-5. 4. Functional Endpoints (RouterFunction)
-6. 5. Reactive Data Access (R2DBC)
-7. 6. WebClient (Reactive HTTP Client)
-
-```mermaid
-flowchart TD
-    N1["WHAT THIS PART COVERS"]
-    N2["1. Reactive Programming Fundamentals"]
-    N3["2. Project Reactor: Mono & Flux"]
-    N4["3. Spring WebFlux Basics"]
-    N5["4. Functional Endpoints (RouterFunction)"]
-    N6["5. Reactive Data Access (R2DBC)"]
-    N7["6. WebClient (Reactive HTTP Client)"]
-    N8["7. Error Handling in Reactive Streams"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -164,18 +121,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Request
-2. Thread 1 (BLOCKED waiting for DB)
-3. Response
-4. Event Loop Thread (never blocks!) / Receives request 1
-
-```mermaid
-flowchart TD
-    N1["Request → Thread 1 (BLOCKED waiting for DB) → Response "]
-    N2["Event Loop Thread (never blocks!) / Receives request 1 "]
-    N1 --> N2
-```
 
 ### Reactive Manifesto Principles
 
@@ -281,16 +226,6 @@ public interface Processor<T, R> extends Subscriber<T>, Publisher<R> {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Like Optional<T> but ASYNC / Mono.just('Hello') /
-2. Like Stream<T> but ASYNC / Flux.just('A', 'B', 'C
-
-```mermaid
-flowchart TD
-    N1["Like Optional&lt;T&gt; but ASYNC / Mono.just('Hello') /"]
-    N2["Like Stream&lt;T&gt; but ASYNC / Flux.just('A', 'B', 'C"]
-    N1 --> N2
-```
 
 ### Maven Dependencies
 
@@ -1070,33 +1005,6 @@ Concurrency vs Ordering. `flatMap()` eagerly subscribes to the inner publishers 
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. R2DBC vs JDBC
-2. JDBC (Traditional):
-3. • Blocking - Thread waits for database response
-4. • Uses thread pool (HikariCP)
-5. • Works with JPA/Hibernate
-6. R2DBC (Reactive):
-7. • Non-blocking - Event loop handles responses
-
-```mermaid
-flowchart TD
-    N1["R2DBC vs JDBC"]
-    N2["JDBC (Traditional):"]
-    N3["• Blocking - Thread waits for database response"]
-    N4["• Uses thread pool (HikariCP)"]
-    N5["• Works with JPA/Hibernate"]
-    N6["R2DBC (Reactive):"]
-    N7["• Non-blocking - Event loop handles responses"]
-    N8["• Uses connection pool (r2dbc-pool)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Dependencies and Configuration
 

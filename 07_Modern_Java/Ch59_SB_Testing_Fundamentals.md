@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch60_SB_Testing_Advanced.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch60_SB_Testing_Advanced.md)
 
 ---
 
@@ -62,22 +62,6 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Testing is Non-Negotiable? / • Bug in producti
-2. HOW: How to Test in Spring Boot? / • JUnit 5: Test fram
-3. WHEN: When to Use Each Test Type? / • Unit tests: Busin
-4. WHICH: Which Testing Tools to Master? / ESSENTIAL: JUni
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Testing is Non-Negotiable? / • Bug in producti"]
-    N2["HOW: How to Test in Spring Boot? / • JUnit 5: Test fram"]
-    N3["WHEN: When to Use Each Test Type? / • Unit tests: Busin"]
-    N4["WHICH: Which Testing Tools to Master? / ESSENTIAL: JUni"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -125,33 +109,6 @@ Production     │ 100x            │ $10,000 to fix
 Post-Release   │ 1000x           │ $100,000+ to fix
 ```
 
-**Flow:**
-1. 🎯 Testing Benefits:
-2. ✅ Catch bugs early (cheaper to fix)
-3. ✅ Documentation through code
-4. ✅ Refactoring confidence
-5. ✅ Design improvement (testable = good design)
-6. ✅ Regression prevention
-7. ✅ Continuous Integration enablement
-
-```mermaid
-flowchart TD
-    N1["🎯 Testing Benefits:"]
-    N2["✅ Catch bugs early (cheaper to fix)"]
-    N3["✅ Documentation through code"]
-    N4["✅ Refactoring confidence"]
-    N5["✅ Design improvement (testable = good design)"]
-    N6["✅ Regression prevention"]
-    N7["✅ Continuous Integration enablement"]
-    N8["### Cost of Bugs by Stage"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -186,33 +143,6 @@ flowchart TD
 Recommended Ratio: 70% Unit : 20% Integration : 10% E2E
 ```
 
-**Flow:**
-1. ╱ E2E╲ ← Few, Slow, Expensive
-2. ╱ ╲ (Selenium, Cypress)
-3. ╱Integration╲ ← Some, Medium Speed
-4. ╱ ╲ (@SpringBootTest)
-5. ╱ Unit Tests ╲ ← Many, Fast, Cheap
-6. ╱ ╲ (JUnit, Mockito)
-7. ╱ Foundation Base ╲
-
-```mermaid
-flowchart TD
-    N1["╱ E2E╲ ← Few, Slow, Expensive"]
-    N2["╱ ╲ (Selenium, Cypress)"]
-    N3["╱Integration╲ ← Some, Medium Speed"]
-    N4["╱ ╲ (@SpringBootTest)"]
-    N5["╱ Unit Tests ╲ ← Many, Fast, Cheap"]
-    N6["╱ ╲ (JUnit, Mockito)"]
-    N7["╱ Foundation Base ╲"]
-    N8["Recommended Ratio: 70% Unit : 20% Integration : 10% E2E"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Test Types Comparison
 
@@ -848,33 +778,6 @@ class StaticMockTest {
 └────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 🎯 Spring Boot Test Annotations:
-2. @SpringBootTest Full application context (integration)
-3. @WebMvcTest Only web layer (controllers)
-4. @DataJpaTest Only JPA components (repositories)
-5. @WebFluxTest Only WebFlux components
-6. @JsonTest Only JSON serialization
-7. @RestClientTest Only REST client components
-
-```mermaid
-flowchart TD
-    N1["🎯 Spring Boot Test Annotations:"]
-    N2["@SpringBootTest Full application context (integration)"]
-    N3["@WebMvcTest Only web layer (controllers)"]
-    N4["@DataJpaTest Only JPA components (repositories)"]
-    N5["@WebFluxTest Only WebFlux components"]
-    N6["@JsonTest Only JSON serialization"]
-    N7["@RestClientTest Only REST client components"]
-    N8["@MockBean Add mock to Spring context"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### @SpringBootTest Deep Dive
 

@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](Day_002_Mar04_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_004_Mar06_Thu.md)
+﻿> **Navigation**: [< Previous](Day_002_Mar04_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_004_Mar06_Thu.md)
 
 # Day 003 - Wednesday, March 5, 2026
 
@@ -52,33 +52,6 @@ String Pool (special memory area):
   RULE: ALWAYS use .equals() for String comparison, NEVER ==
 ```
 
-**Flow:**
-1. Before: Stack: s
-2. [heap: 'hello']
-3. After: Stack: s
-4. [heap: 'hello world'] a == b true (same reference)
-5. a == c false (different references)
-6. a.equals(c)
-7. true (same content)
-
-```mermaid
-flowchart TD
-    N1["Before: Stack: s"]
-    N2["[heap: 'hello']"]
-    N3["After: Stack: s"]
-    N4["[heap: 'hello world']"]
-    N5["a == b"]
-    N6["true (same reference)"]
-    N7["a == c"]
-    N8["false (different references)"]
-    N9["a.equals(c)"]
-    N10["true (same content)"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-```
 
 #### HOW: Essential String operations
 
@@ -183,53 +156,6 @@ Pass 4:
   (1,2) → ok:   [1, 2, 3, 5, 8]  ← DONE
 ```
 
-**Flow:**
-1. (5,3)
-2. swap: [3, 5, 8, 1, 2]
-3. (5,8)
-4. ok: [3, 5, 8, 1, 2]
-5. (8,1)
-6. swap: [3, 5, 1, 8, 2]
-7. (8,2)
-8. swap: [3, 5, 1, 2, 8] ← 8 is in final position
-9. (3,5)
-10. ok: [3, 5, 1, 2, 8]
-11. (5,1)
-12. swap: [3, 1, 5, 2, 8]
-
-```mermaid
-flowchart TD
-    N1["(5,3)"]
-    N2["swap: [3, 5, 8, 1, 2]"]
-    N3["(5,8)"]
-    N4["ok: [3, 5, 8, 1, 2]"]
-    N5["(8,1)"]
-    N6["swap: [3, 5, 1, 8, 2]"]
-    N7["(8,2)"]
-    N8["swap: [3, 5, 1, 2, 8] ← 8 is in final position"]
-    N9["(3,5)"]
-    N10["ok: [3, 5, 1, 2, 8]"]
-    N11["(5,1)"]
-    N12["swap: [3, 1, 5, 2, 8]"]
-    N13["(5,2)"]
-    N14["swap: [3, 1, 2, 5, 8] ← 5 is in final position"]
-    N15["(3,1)"]
-    N16["swap: [1, 3, 2, 5, 8]"]
-    N17["(3,2)"]
-    N18["swap: [1, 2, 3, 5, 8] ← 3 is in final position"]
-    N19["(1,2)"]
-    N20["ok: [1, 2, 3, 5, 8] ← DONE"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-    N15 --> N16
-    N17 --> N18
-    N19 --> N20
-```
 
 #### Optimized Bubble Sort (early termination)
 
@@ -283,22 +209,6 @@ Two strings are anagrams if they contain the same characters in different order.
 "anagram" and "nagaram" → true
 ```
 
-**Flow:**
-1. 'listen' and 'silent' true
-2. 'hello' and 'world' false
-3. 'anagram' and 'nagaram' true
-
-```mermaid
-flowchart LR
-    N1["'listen' and 'silent'"]
-    N2["true"]
-    N3["'hello' and 'world'"]
-    N4["false"]
-    N5["'anagram' and 'nagaram'"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N2
-```
 
 **Three approaches:**
 1. Sort both, compare → O(n log n)

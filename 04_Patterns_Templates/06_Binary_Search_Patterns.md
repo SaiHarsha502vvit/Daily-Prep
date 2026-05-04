@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](05_LeetCode_RealWorld_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Two_Pointers_Complete.md)
+﻿**Navigation**: [< Previous](05_LeetCode_RealWorld_Map.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_Two_Pointers_Complete.md)
 
 ---
 
@@ -116,21 +116,6 @@ Binary Search on 1,000,000 elements:
 └────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Worst case: 1,000,000 comparisons / Average: 500,000 co
-2. 1,000,000
-3. 500,000
-4. 250,000
-5. 125,000
-6. / 62,500
-7. 31
-
-```mermaid
-flowchart TD
-    N1["Worst case: 1,000,000 comparisons / Average: 500,000 co"]
-    N2["1,000,000 → 500,000 → 250,000 → 125,000 → / 62,500 → 31"]
-    N1 --> N2
-```
 
 ### Prerequisites for Binary Search
 
@@ -156,33 +141,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BINARY SEARCH APPLICABILITY
-2. You need ONE of these properties:
-3. 1. SORTED ARRAY
-4. - Ascending or descending
-5. - Search for specific value or boundary
-6. 2. MONOTONIC FUNCTION
-7. - f(x) is always increasing or always decreasing
-
-```mermaid
-flowchart TD
-    N1["BINARY SEARCH APPLICABILITY"]
-    N2["You need ONE of these properties:"]
-    N3["1. SORTED ARRAY"]
-    N4["- Ascending or descending"]
-    N5["- Search for specific value or boundary"]
-    N6["2. MONOTONIC FUNCTION"]
-    N7["- f(x) is always increasing or always decreasing"]
-    N8["- Search for value where f(x) crosses threshold"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -295,26 +253,6 @@ Uses:
 - Insert position for 2.5: lowerBound(2.5) → 4
 ```
 
-**Flow:**
-1. Template 1 (Exact): Returns any 2
-2. index 1, 2, or 3
-3. Template 2 (Lower): First >= 2
-4. index 1
-5. Template 3 (Upper): First > 2
-6. index 4
-
-```mermaid
-flowchart LR
-    N1["Template 1 (Exact): Returns any 2"]
-    N2["index 1, 2, or 3"]
-    N3["Template 2 (Lower): First &gt;= 2"]
-    N4["index 1"]
-    N5["Template 3 (Upper): First &gt; 2"]
-    N6["index 4"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ### Template Cheat Sheet
 
@@ -343,33 +281,6 @@ flowchart LR
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. TEMPLATE QUICK REFERENCE
-2. TEMPLATE 1: left <= right, left/right = mid ± 1
-3. Use for: Exact match
-4. Returns: Index of element or -1
-5. TEMPLATE 2: left < right, right = mid
-6. Use for: First position >= target
-7. Returns: Insert position (0 to n)
-
-```mermaid
-flowchart TD
-    N1["TEMPLATE QUICK REFERENCE"]
-    N2["TEMPLATE 1: left &lt;= right, left/right = mid ± 1"]
-    N3["Use for: Exact match"]
-    N4["Returns: Index of element or -1"]
-    N5["TEMPLATE 2: left &lt; right, right = mid"]
-    N6["Use for: First position &gt;= target"]
-    N7["Returns: Insert position (0 to n)"]
-    N8["TEMPLATE 3: left &lt; right, left = mid + 1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -417,33 +328,6 @@ Range: [3, 6-1] = [3, 5]
 Count: 6 - 3 = 3 occurrences
 ```
 
-**Flow:**
-1. Array: [5, 7, 7, 8, 8, 8, 10], target = 8
-2. lowerBound(8): First >= 8
-3. Index: 0 1 2 3 4 5 6
-4. Value: 5 7 7 8 8 8 10
-5. Returns 3
-6. upperBound(8): First > 8
-7. Returns 6
-
-```mermaid
-flowchart TD
-    N1["Array: [5, 7, 7, 8, 8, 8, 10], target = 8"]
-    N2["lowerBound(8): First &gt;= 8"]
-    N3["Index: 0 1 2 3 4 5 6"]
-    N4["Value: 5 7 7 8 8 8 10"]
-    N5["Returns 3"]
-    N6["upperBound(8): First &gt; 8"]
-    N7["Returns 6"]
-    N8["Range: [3, 6-1] = [3, 5]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Find Insert Position (LeetCode 35)
 
@@ -491,33 +375,6 @@ Left half [4,5,6,7] is sorted (nums[left] <= nums[mid])
 Right half [0,1,2] is NOT sorted in normal order
 ```
 
-**Flow:**
-1. Original Sorted: [0, 1, 2, 4, 5, 6, 7]
-2. Rotated by 3: [4, 5, 6, 7, 0, 1, 2]
-3. Pivot point
-4. Key insight: One half is ALWAYS sorted!
-5. [4, 5, 6, 7, 0, 1, 2], mid = 3 (value 7)
-6. left mid right
-7. Left half [4,5,6,7] is sorted (nums[left] <= nums[mi
-
-```mermaid
-flowchart TD
-    N1["Original Sorted: [0, 1, 2, 4, 5, 6, 7]"]
-    N2["Rotated by 3: [4, 5, 6, 7, 0, 1, 2]"]
-    N3["Pivot point"]
-    N4["Key insight: One half is ALWAYS sorted!"]
-    N5["[4, 5, 6, 7, 0, 1, 2], mid = 3 (value 7)"]
-    N6["left mid right"]
-    N7["Left half [4,5,6,7] is sorted (nums[left] &lt;= nums[mi"]
-    N8["Right half [0,1,2] is NOT sorted in normal order"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Search in Rotated Sorted Array (LeetCode 33)
 
@@ -702,21 +559,6 @@ Multiple peaks exist: index 1 (value 2) and index 5 (value 6)
 Binary search finds ONE of them.
 ```
 
-**Flow:**
-1. 2 < 3: Ascending
-2. move right
-3. 3 > 1: Descending
-4. peak at mid or left
-
-```mermaid
-flowchart LR
-    N1["2 &lt; 3: Ascending"]
-    N2["move right"]
-    N3["3 &gt; 1: Descending"]
-    N4["peak at mid or left"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Peak Index in Mountain Array (LeetCode 852)
 
@@ -772,33 +614,6 @@ public int peakIndexInMountainArray(int[] arr) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BINARY SEARCH ON ANSWER PATTERN
-2. When: You're not searching IN an array, but searching F
-3. an optimal value in a range.
-4. Pattern:
-5. 1. Define search space: [min_possible, max_possible]
-6. 2. Define feasibility function: canAchieve(answer)
-7. 3. Binary search for boundary where answer becomes feas
-
-```mermaid
-flowchart TD
-    N1["BINARY SEARCH ON ANSWER PATTERN"]
-    N2["When: You're not searching IN an array, but searching F"]
-    N3["an optimal value in a range."]
-    N4["Pattern:"]
-    N5["1. Define search space: [min_possible, max_possible]"]
-    N6["2. Define feasibility function: canAchieve(answer)"]
-    N7["3. Binary search for boundary where answer becomes feas"]
-    N8["Examples:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Template: Binary Search on Answer
 
@@ -1361,33 +1176,6 @@ if (nums[left] <= nums[mid])  // ✓
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BINARY SEARCH PROBLEM TYPES
-2. BASIC (Template 1):
-3. - Binary Search, Search Insert Position
-4. BOUNDARY FINDING (Template 2/3):
-5. - First/Last Position of Element
-6. - First Bad Version, Find Smallest Letter
-7. ROTATED ARRAY:
-
-```mermaid
-flowchart TD
-    N1["BINARY SEARCH PROBLEM TYPES"]
-    N2["BASIC (Template 1):"]
-    N3["- Binary Search, Search Insert Position"]
-    N4["BOUNDARY FINDING (Template 2/3):"]
-    N5["- First/Last Position of Element"]
-    N6["- First Bad Version, Find Smallest Letter"]
-    N7["ROTATED ARRAY:"]
-    N8["- Search in Rotated Array I/II"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### First Bad Version (LeetCode 278)
 
@@ -1478,33 +1266,6 @@ public char nextGreatestLetter(char[] letters, char target) {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHICH TEMPLATE TO USE?
-2. 'Find exact element'
-3. Template 1: left <= right
-4. 'Find first position where condition is true'
-5. Template 2: left < right, right = mid
-6. 'Find last position where condition is true'
-7. Template 3: left < right, left = mid, upper mid
-
-```mermaid
-flowchart TD
-    N1["WHICH TEMPLATE TO USE?"]
-    N2["'Find exact element'"]
-    N3["→ Template 1: left &lt;= right"]
-    N4["'Find first position where condition is true'"]
-    N5["→ Template 2: left &lt; right, right = mid"]
-    N6["'Find last position where condition is true'"]
-    N7["→ Template 3: left &lt; right, left = mid, upper mid"]
-    N8["'Minimize answer' (find smallest valid)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Binary Search Checklist
 
@@ -1527,33 +1288,6 @@ After coding:
 □ Test with duplicates (if applicable)
 ```
 
-**Flow:**
-1. Before coding:
-2. □ Is the search space monotonic/sorted?
-3. □ What are the boundaries? (inclusive/exclusive?)
-4. □ What should be returned if not found?
-5. While coding:
-6. □ Use left + (right - left) / 2 to avoid overflow
-7. □ Match while condition with boundary updates
-
-```mermaid
-flowchart TD
-    N1["Before coding:"]
-    N2["□ Is the search space monotonic/sorted?"]
-    N3["□ What are the boundaries? (inclusive/exclusive?)"]
-    N4["□ What should be returned if not found?"]
-    N5["While coding:"]
-    N6["□ Use left + (right - left) / 2 to avoid overflow"]
-    N7["□ Match while condition with boundary updates"]
-    N8["□ Handle the mid boundary case (mid or mid ± 1?)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Complexity Summary
 
@@ -1573,33 +1307,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BINARY SEARCH COMPLEXITIES
-2. Basic Binary Search: O(log n) time, O(1) space
-3. Rotated Array Search: O(log n) time, O(1) space
-4. Rotated Array w/ Dups: O(n) worst, O(log n) average
-5. Binary Search on Answer: O(log R × f(n)) where R = rang
-6. 2D Matrix (sorted): O(log(m×n))
-7. 2D Matrix (row/col sorted): O(m + n)
-
-```mermaid
-flowchart TD
-    N1["BINARY SEARCH COMPLEXITIES"]
-    N2["Basic Binary Search: O(log n) time, O(1) space"]
-    N3["Rotated Array Search: O(log n) time, O(1) space"]
-    N4["Rotated Array w/ Dups: O(n) worst, O(log n) average"]
-    N5["Binary Search on Answer: O(log R × f(n)) where R = rang"]
-    N6["2D Matrix (sorted): O(log(m×n))"]
-    N7["2D Matrix (row/col sorted): O(m + n)"]
-    N8["Median of Two Arrays: O(log min(m, n))"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1632,33 +1339,6 @@ flowchart TD
 └───────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BINARY SEARCH - MASTER CHECKLIST
-2. 1. MEMORIZE THE 3 TEMPLATES
-3. - T1: Exact match (left <= right)
-4. - T2: First true (left < right, right = mid)
-5. - T3: Last true (left < right, left = mid, upper mid
-6. 2. BINARY SEARCH ON ANSWER
-7. - Define search space [min, max]
-
-```mermaid
-flowchart TD
-    N1["BINARY SEARCH - MASTER CHECKLIST"]
-    N2["1. MEMORIZE THE 3 TEMPLATES"]
-    N3["- T1: Exact match (left &lt;= right)"]
-    N4["- T2: First true (left &lt; right, right = mid)"]
-    N5["- T3: Last true (left &lt; right, left = mid, upper mid"]
-    N6["2. BINARY SEARCH ON ANSWER"]
-    N7["- Define search space [min, max]"]
-    N8["- Define feasibility check"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Pro Tip:** When stuck, ask yourself: "At each step, can I eliminate half of the remaining possibilities?" If yes, binary search applies!
 

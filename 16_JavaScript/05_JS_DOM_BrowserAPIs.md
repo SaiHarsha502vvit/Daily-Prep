@@ -50,33 +50,6 @@ KEY INSIGHT: The DOM is NOT your HTML file. It's a LIVE object
 tree in memory. When JS modifies it, the page updates visually.
 ```
 
-**Flow:**
-1. HTML FILE: DOM TREE (in memory):
-2. <html> document
-3. <head>
-4. <title>Page</title>
-5. </head> html (doctype)
-6. <body>
-7. <h1>Hello</h1> head body
-
-```mermaid
-flowchart TD
-    N1["HTML FILE: DOM TREE (in memory):"]
-    N2["&lt;html&gt; document"]
-    N3["&lt;head&gt;"]
-    N4["&lt;title&gt;Page&lt;/title&gt;"]
-    N5["&lt;/head&gt; html (doctype)"]
-    N6["&lt;body&gt;"]
-    N7["&lt;h1&gt;Hello&lt;/h1&gt; head body"]
-    N8["&lt;p&gt;World&lt;/p&gt;"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Node Types
 
@@ -156,34 +129,6 @@ cardsArray.filter(card => card.classList.contains("active"));
 â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-**Flow:**
-1. GIVEN THIS DOM:
-2. <ul id='list'> ul#list
-3. <li>First</li>
-4. <li>Second</li> li li li
-5. <li>Third</li>
-6. PARENT: li.parentElement ul
-7. CHILDREN: ul.children
-8. [li, li, li] (elements)
-
-```mermaid
-flowchart TD
-    N1["GIVEN THIS DOM:"]
-    N2["&lt;ul id='list'&gt; ul#list"]
-    N3["&lt;li&gt;First&lt;/li&gt;"]
-    N4["&lt;li&gt;Second&lt;/li&gt; li li li"]
-    N5["&lt;li&gt;Third&lt;/li&gt;"]
-    N6["PARENT: li.parentElement â†’ ul"]
-    N7["CHILDREN: ul.children â†’ [li, li, li] (elements)"]
-    N8["FIRST: ul.firstElementChild â†’ li (First)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```javascript
 const list = document.getElementById("list");
@@ -317,33 +262,6 @@ list.appendChild(fragment); // ONE DOM update!
 â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-**Flow:**
-1. scroll, load, resize, etc. Event listeners react to the
-2. WHY: This is the bridge between user actions and your c
-3. Every interactive web page uses events.
-4. HOW: Events PROPAGATE through the DOM in 3 phases:
-5. Phase 1: CAPTURING (top target)
-6. document html body div button
-7. Phase 2: TARGET (the element that was clicked)
-
-```mermaid
-flowchart TD
-    N1["scroll, load, resize, etc. Event listeners react to the"]
-    N2["WHY: This is the bridge between user actions and your c"]
-    N3["Every interactive web page uses events."]
-    N4["HOW: Events PROPAGATE through the DOM in 3 phases:"]
-    N5["Phase 1: CAPTURING (top â†’ target)"]
-    N6["document â†’ html â†’ body â†’ div â†’ button"]
-    N7["Phase 2: TARGET (the element that was clicked)"]
-    N8["button â† event fires here"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```
 EVENT PROPAGATION VISUAL:
@@ -364,21 +282,6 @@ EVENT PROPAGATION VISUAL:
 â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
 ```
 
-**Flow:**
-1. EVENT PROPAGATION VISUAL: / document
-2. body div.container
-3. button / â‘¡ TARGET â€” event fires here
-
-```mermaid
-flowchart TD
-    N1["EVENT PROPAGATION VISUAL: / document"]
-    N2["body"]
-    N3["div.container"]
-    N4["button / â‘¡ TARGET â€” event fires here"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```javascript
 // ADDING EVENT LISTENERS:
@@ -459,32 +362,6 @@ document.querySelector("#todo-list").addEventListener("click", (e) => {
 â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-**Flow:**
-1. MOUSE: click, dblclick, mouseenter, mouseleave, mousemo
-2. KEYBOARD: keydown, keyup, keypress (deprecated)
-3. FORM: submit, change, input, focus, blur, reset
-4. TOUCH: touchstart, touchmove, touchend
-5. DRAG: dragstart, drag, dragover, drop, dragend
-6. CLIPBOARD: copy, cut, paste input vs change:
-
-```mermaid
-flowchart TD
-    N1["MOUSE: click, dblclick, mouseenter, mouseleave, mousemo"]
-    N2["KEYBOARD: keydown, keyup, keypress (deprecated)"]
-    N3["FORM: submit, change, input, focus, blur, reset"]
-    N4["TOUCH: touchstart, touchmove, touchend"]
-    N5["DRAG: dragstart, drag, dragover, drop, dragend"]
-    N6["CLIPBOARD: copy, cut, paste"]
-    N7["input vs change:"]
-    N8["â€¢ input: fires on EVERY keystroke/change (real-time)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -558,33 +435,6 @@ USE CASES:
 â€¢ IndexedDB: offline apps, large data, file caching
 ```
 
-**Flow:**
-1. Feature localStorage session Cookies IndexedDB
-2. Capacity ~5-10 MB ~5 MB ~4 KB Large
-3. Persistence Forever Tab close Expires Forever
-4. Sent to server No No Yes (!) No
-5. Scope Origin Tab+origin Domain Origin
-6. API Simple Simple Complex Complex
-7. Data type String only String String Any
-
-```mermaid
-flowchart TD
-    N1["Feature localStorage session Cookies IndexedDB"]
-    N2["Capacity ~5-10 MB ~5 MB ~4 KB Large"]
-    N3["Persistence Forever Tab close Expires Forever"]
-    N4["Sent to server No No Yes (!) No"]
-    N5["Scope Origin Tab+origin Domain Origin"]
-    N6["API Simple Simple Complex Complex"]
-    N7["Data type String only String String Any"]
-    N8["Sync/Async Sync Sync Sync Async"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```javascript
 // localStorage (persists forever until cleared):
@@ -752,34 +602,6 @@ navigator.geolocation.getCurrentPosition(
 â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
-**Flow:**
-1. THE PROBLEM WITH MANUAL DOM MANIPULATION:
-2. Imperative: You tell the DOM WHAT to do, step by ste
-3. 'Find this element, change its text, add this class...'
-4. Complex apps become spaghetti code.
-5. State Sync: Your data (state) and the DOM can get ou
-6. sync. Update one, forget the other
-7. bugs.
-8. Performance: Each DOM change = reflow + repaint.
-
-```mermaid
-flowchart TD
-    N1["THE PROBLEM WITH MANUAL DOM MANIPULATION:"]
-    N2["1. Imperative: You tell the DOM WHAT to do, step by ste"]
-    N3["'Find this element, change its text, add this class...'"]
-    N4["â†’ Complex apps become spaghetti code."]
-    N5["2. State Sync: Your data (state) and the DOM can get ou"]
-    N6["sync. Update one, forget the other â†’ bugs."]
-    N7["3. Performance: Each DOM change = reflow + repaint."]
-    N8["100 small changes = 100 reflows (expensive!)."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -815,21 +637,6 @@ Q: How does React's Virtual DOM relate to the real DOM?
   then applies only those to the real DOM (reconciliation).
 ```
 
-**Flow:**
-1. button div body html document.
-
-```mermaid
-flowchart LR
-    N1["button"]
-    N2["div"]
-    N3["body"]
-    N4["html"]
-    N5["document."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ---
 

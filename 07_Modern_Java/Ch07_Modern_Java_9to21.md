@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
 🧠 **Mental Model**: See [Optimization Pipeline](../14_Mental_Models/14_Optimization_Pipeline.md) — new Java features as optimization tools
 
 ---
@@ -60,25 +60,6 @@ var entry = Map.entry("key", 42);       // Map.Entry<String, Integer>
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHEN TO USE var:
-2. ✅ Long generic types: var map = service.getComplexMap()
-3. WHEN NOT TO USE:
-4. ❌ Numeric literals: var count = 0 // int? long? byte?
-5. ❌ When it hurts readability
-
-```mermaid
-flowchart TD
-    N1["WHEN TO USE var:"]
-    N2["✅ Long generic types: var map = service.getComplexMap()"]
-    N3["WHEN NOT TO USE:"]
-    N4["❌ Numeric literals: var count = 0 // int? long? byte?"]
-    N5["❌ When it hurts readability"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ---
 
@@ -160,25 +141,6 @@ public record User(String name, int age) {
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHEN TO USE RECORDS:
-2. ✅ API responses record ApiResponse<T>(T data, int
-3. ✅ Compound map keys record CacheKey(String type, long i
-4. DON'T USE WHEN:
-5. ❌ Complex inheritance needed
-
-```mermaid
-flowchart TD
-    N1["WHEN TO USE RECORDS:"]
-    N2["✅ API responses record ApiResponse&lt;T&gt;(T data, int"]
-    N3["✅ Compound map keys record CacheKey(String type, long i"]
-    N4["DON'T USE WHEN:"]
-    N5["❌ Complex inheritance needed"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ---
 
@@ -232,31 +194,6 @@ public record Crypto(double amount, String wallet) implements Payment {}
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY SEALED CLASSES?
-2. 2. DOMAIN MODELING — exactly represents business rules
-3. 'A payment can ONLY be CreditCard, BankTransfer, or Cry
-4. 3. LIB DESIGN — allow extension by known types only
-5. sealed = 'these classes and NO others can extend me'
-6. final = 'nobody can extend me'
-7. non-sealed = 'anyone can extend me' (escape hatch)
-
-```mermaid
-flowchart TD
-    N1["WHY SEALED CLASSES?"]
-    N2["2. DOMAIN MODELING — exactly represents business rules"]
-    N3["'A payment can ONLY be CreditCard, BankTransfer, or Cry"]
-    N4["3. LIB DESIGN — allow extension by known types only"]
-    N5["sealed = 'these classes and NO others can extend me'"]
-    N6["final = 'nobody can extend me'"]
-    N7["non-sealed = 'anyone can extend me' (escape hatch)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 
@@ -626,33 +563,6 @@ Decoupling from OS Threads. A traditional Java `Thread` is a 1:1 wrapper around 
 └──────────────┴────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Java Version Key Features
-2. dropWhile, Optional.or/ifPresentOrElse, private interfa
-3. methods, compact Strings internally
-4. Java 10 var (local variable type inference), List.copyO
-5. Collectors.toUnmodifiable*, G1 GC improvements
-6. Java 11 LTS HttpClient, String strip/isBlank/lines/repe
-7. Files.readString/writeString, Optional.isEmpty
-
-```mermaid
-flowchart TD
-    N1["Java Version Key Features"]
-    N2["dropWhile, Optional.or/ifPresentOrElse, private interfa"]
-    N3["methods, compact Strings internally"]
-    N4["Java 10 var (local variable type inference), List.copyO"]
-    N5["Collectors.toUnmodifiable*, G1 GC improvements"]
-    N6["Java 11 LTS HttpClient, String strip/isBlank/lines/repe"]
-    N7["Files.readString/writeString, Optional.isEmpty"]
-    N8["Java 14 Switch expressions (finalized), Helpful NPEs,"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -675,31 +585,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. INTERVIEW MUST-KNOWS:
-2. Q: 'What Java version do you use?'
-3. Q: 'Records vs Lombok @Value?'
-4. Q: 'When would you use sealed classes?'
-5. state machines. Enables exhaustive switch without defau
-6. Q: 'var vs explicit types — your preference?'
-7. Never in public API signatures.'
-
-```mermaid
-flowchart TD
-    N1["INTERVIEW MUST-KNOWS:"]
-    N2["Q: 'What Java version do you use?'"]
-    N3["Q: 'Records vs Lombok @Value?'"]
-    N4["Q: 'When would you use sealed classes?'"]
-    N5["state machines. Enables exhaustive switch without defau"]
-    N6["Q: 'var vs explicit types — your preference?'"]
-    N7["Never in public API signatures.'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 

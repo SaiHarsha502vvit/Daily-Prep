@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](07a_Advanced_DS_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](07a_Advanced_DS_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -122,32 +122,6 @@ class FenwickTree {
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SEGMENT TREE — THEORY & CODE
-2. A Segment Tree allows:
-3. • Range Query (sum/min/max/gcd) in O(log n)
-4. • Point Update in O(log n)
-5. • Range Update with Lazy Propagation in O(log n)
-6. • Uses O(4n) space (built as complete binary tree in ar WHEN TO USE vs BIT/FENWICK:
-
-```mermaid
-flowchart TD
-    N1["SEGMENT TREE — THEORY & CODE"]
-    N2["A Segment Tree allows:"]
-    N3["• Range Query (sum/min/max/gcd) in O(log n)"]
-    N4["• Point Update in O(log n)"]
-    N5["• Range Update with Lazy Propagation in O(log n)"]
-    N6["• Uses O(4n) space (built as complete binary tree in ar"]
-    N7["WHEN TO USE vs BIT/FENWICK:"]
-    N8["• BIT: Only prefix-sum/point-update. Simpler, less memo"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## Segment Tree Implementation (Range Sum + Point Update)
 
@@ -449,19 +423,6 @@ Search for 6:
 Path: 1→9 (overshoot) ↓ 1→4→7 (overshoot) ↓ 4→6 ✓
 ```
 
-**Flow:**
-1. Path: 1 9 (overshoot) ↓ 1 7 (overshoot) ↓ 4
-2. 6 ✓
-
-```mermaid
-flowchart LR
-    N1["Path: 1"]
-    N2["9 (overshoot) ↓ 1"]
-    N3["7 (overshoot) ↓ 4"]
-    N4["6 ✓"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ## Implementation
 
@@ -692,33 +653,6 @@ Access B → Move B to front:
 HEAD ←→ B ←→ A ←→ C ←→ TAIL
 ```
 
-**Flow:**
-1. LRU (Least Recently Used) CACHE:
-2. Operations needed:
-3. - GET: O(1) - HashMap
-4. - PUT: O(1) - HashMap + update order
-5. - EVICT: O(1) - Doubly Linked List
-6. Structure: HashMap + Doubly Linked List
-7. HashMap Doubly Linked List
-
-```mermaid
-flowchart TD
-    N1["LRU (Least Recently Used) CACHE:"]
-    N2["Operations needed:"]
-    N3["- GET: O(1) - HashMap"]
-    N4["- PUT: O(1) - HashMap + update order"]
-    N5["- EVICT: O(1) - Doubly Linked List"]
-    N6["Structure: HashMap + Doubly Linked List"]
-    N7["HashMap Doubly Linked List"]
-    N8["HEAD ←→ A ←→ B ←→ C ←→ TAIL"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## Implementation
 
@@ -847,35 +781,6 @@ WHY B+ TREE for DATABASES?
 3. More keys per node → shallower tree → fewer disk reads
 ```
 
-**Flow:**
-1. [5,7]
-2. [10,15,17]
-3. [20,25,30] null
-4. All data at leaves consistent access time
-5. Linked leaves efficient range queries
-6. More keys per node shallower tree
-
-```mermaid
-flowchart TD
-    N1["[5,7]"]
-    N2["[10,15,17]"]
-    N3["[20,25,30]"]
-    N4["null"]
-    N5["1. All data at leaves"]
-    N6["consistent access time"]
-    N7["2. Linked leaves"]
-    N8["efficient range queries"]
-    N9["3. More keys per node"]
-    N10["shallower tree"]
-    N11["fewer disk reads"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N10 --> N11
-```
 
 ---
 
@@ -901,33 +806,6 @@ k = number of hash functions for Bloom Filter
 α = inverse Ackermann function (practically constant)
 ```
 
-**Flow:**
-1. Data Structure Search Insert Space
-2. Trie O(m) O(m) O(ALPHABET × m × n)
-3. Segment Tree O(log n) O(log n) O(4n)
-4. Fenwick Tree O(log n) O(log n) O(n)
-5. Skip List O(log n)*O(log n)* O(n)*
-6. Bloom Filter O(k) O(k) O(m) bits
-7. LRU Cache O(1) O(1) O(n)
-
-```mermaid
-flowchart TD
-    N1["Data Structure Search Insert Space"]
-    N2["Trie O(m) O(m) O(ALPHABET × m × n)"]
-    N3["Segment Tree O(log n) O(log n) O(4n)"]
-    N4["Fenwick Tree O(log n) O(log n) O(n)"]
-    N5["Skip List O(log n)* O(log n)* O(n)*"]
-    N6["Bloom Filter O(k) O(k) O(m) bits"]
-    N7["LRU Cache O(1) O(1) O(n)"]
-    N8["* = average case for Skip List"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -959,31 +837,6 @@ Query(2, 6): min(sparse[2][2], sparse[3][2]) = min(1, 2) = 1
              Using k=2 (length 4), overlapping ranges [2-5] and [3-6]
 ```
 
-**Flow:**
-1. SPARSE TABLE: Precompute answers for all power-of-2 ran
-2. Perfect for STATIC arrays with repeated queries
-3. Array: [3, 1, 4, 1, 5, 9, 2, 6]
-4. Sparse Table (for MIN):
-5. k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6] (each element its k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -] (min of 2) k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -] (min of 4)
-
-```mermaid
-flowchart TD
-    N1["SPARSE TABLE: Precompute answers for all power-of-2 ran"]
-    N2["Perfect for STATIC arrays with repeated queries"]
-    N3["Array: [3, 1, 4, 1, 5, 9, 2, 6]"]
-    N4["Sparse Table (for MIN):"]
-    N5["k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6] (each element its"]
-    N6["k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -] (min of 2)"]
-    N7["k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -] (min of 4)"]
-    N8["k=3 (2^3=8): [1, -, -, -, -, -, -, -] (min of 8)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 class SparseTable {
@@ -1064,33 +917,6 @@ Step by step (decreasing stack, process right to left):
 Result: [5, 10, 10, -1, -1]
 ```
 
-**Flow:**
-1. Reveals relationships between elements
-2. USE CASES:
-3. Next Greater Element
-4. Previous Greater Element
-5. Next Smaller Element
-6. Stock Span Problem
-7. Largest Rectangle in Histogram
-
-```mermaid
-flowchart TD
-    N1["Reveals relationships between elements"]
-    N2["USE CASES:"]
-    N3["Next Greater Element"]
-    N4["Previous Greater Element"]
-    N5["Next Smaller Element"]
-    N6["Stock Span Problem"]
-    N7["Largest Rectangle in Histogram"]
-    N8["Trapping Rain Water"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // Next Greater Element
@@ -1184,33 +1010,6 @@ Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
 Result: [3, 3, 5, 5, 6, 7]
 ```
 
-**Flow:**
-1. MONOTONIC DEQUE: Deque that maintains decreasing order
-2. Front always has maximum of current window
-3. PROBLEM: Find maximum in each sliding window of size k
-4. Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
-5. Window [1,3,-1] Deque: [3,-1] Max: 3
-6. Window [3,-1,-3] Deque: [3,-1,-3] Max: 3
-7. Window [-1,-3,5] Deque: [5] Max: 5
-
-```mermaid
-flowchart TD
-    N1["MONOTONIC DEQUE: Deque that maintains decreasing order"]
-    N2["Front always has maximum of current window"]
-    N3["PROBLEM: Find maximum in each sliding window of size k"]
-    N4["Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3"]
-    N5["Window [1,3,-1] Deque: [3,-1] Max: 3"]
-    N6["Window [3,-1,-3] Deque: [3,-1,-3] Max: 3"]
-    N7["Window [-1,-3,5] Deque: [5] Max: 5"]
-    N8["Window [-3,5,3] Deque: [5,3] Max: 5"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int[] maxSlidingWindow(int[] nums, int k) {
@@ -1290,19 +1089,6 @@ STRUCTURE:
 └─────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. A B C D E
-2. A B C D E F G H
-3. I B C D E F G H
-
-```mermaid
-flowchart TD
-    N1["A B C D E"]
-    N2["A B C D E F G H"]
-    N3["I B C D E F G H"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 class CircularBuffer<T> {
@@ -1417,16 +1203,6 @@ STRUCTURE:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. NW NE / SW SE
-2. (3,7) (8,8) / (1,4) / (5,2)
-
-```mermaid
-flowchart TD
-    N1["NW NE / SW SE"]
-    N2["(3,7) (8,8) / (1,4) / (5,2)"]
-    N1 --> N2
-```
 
 ```java
 class QuadTree {
@@ -1546,28 +1322,6 @@ STRUCTURE:
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MERKLE TREE: Tree where each leaf is hash of data block
-2. and each non-leaf is hash of its children's hashes STRUCTURE: [Root Hash: abcd1234] [Hash: ab12] [Hash: cd34] Block A Block B Block C Block D VERIFICATION:
-
-```mermaid
-flowchart TD
-    N1["MERKLE TREE: Tree where each leaf is hash of data block"]
-    N2["and each non-leaf is hash of its children's hashes"]
-    N3["STRUCTURE:"]
-    N4["[Root Hash: abcd1234]"]
-    N5["[Hash: ab12] [Hash: cd34]"]
-    N6["Block A Block B Block C Block D"]
-    N7["VERIFICATION:"]
-    N8["To verify Block C is unchanged:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 import java.security.MessageDigest;
@@ -1706,87 +1460,6 @@ HEAP/PRIORITY QUEUE:
 └── LC 767: Reorganize String                     ⭐ Medium
 ```
 
-**Flow:**
-1. TRIE:
-2. LC 208: Implement Trie (Prefix Tree) ⭐ Medium
-3. TRIE:
-4. LC 211: Design Add and Search Words ⭐ Medium
-5. TRIE:
-6. LC 212: Word Search II 🔥 Hard
-7. TRIE:
-8. LC 648: Replace Words ⭐ Medium
-9. TRIE:
-10. LC 1268: Search Suggestions System ⭐ Medium
-11. SEGMENT TREE:
-12. LC 307: Range Sum Query - Mutable ⭐ Medium
-
-```mermaid
-flowchart TD
-    N1["TRIE:"]
-    N2["LC 208: Implement Trie (Prefix Tree) ⭐ Medium"]
-    N3["LC 211: Design Add and Search Words ⭐ Medium"]
-    N4["LC 212: Word Search II 🔥 Hard"]
-    N5["LC 648: Replace Words ⭐ Medium"]
-    N6["LC 1268: Search Suggestions System ⭐ Medium"]
-    N7["SEGMENT TREE:"]
-    N8["LC 307: Range Sum Query - Mutable ⭐ Medium"]
-    N9["LC 315: Count of Smaller Numbers After Self 🔥 Hard"]
-    N10["LC 493: Reverse Pairs 🔥 Hard"]
-    N11["LC 327: Count of Range Sum 🔥 Hard"]
-    N12["DISJOINT SET (UNION-FIND):"]
-    N13["LC 200: Number of Islands ⭐ Medium"]
-    N14["LC 547: Number of Provinces ⭐ Medium"]
-    N15["LC 684: Redundant Connection ⭐ Medium"]
-    N16["LC 721: Accounts Merge ⭐ Medium"]
-    N17["LC 990: Satisfiability of Equality Equations ⭐ Medium"]
-    N18["LC 1584: Min Cost to Connect All Points ⭐ Medium"]
-    N19["MONOTONIC STACK:"]
-    N20["LC 84: Largest Rectangle in Histogram 🔥 Hard"]
-    N21["LC 85: Maximal Rectangle 🔥 Hard"]
-    N22["LC 496: Next Greater Element I ⭐ Easy"]
-    N23["LC 503: Next Greater Element II ⭐ Medium"]
-    N24["LC 739: Daily Temperatures ⭐ Medium"]
-    N25["LC 901: Online Stock Span ⭐ Medium"]
-    N26["LRU CACHE:"]
-    N27["LC 146: LRU Cache ⭐ Medium"]
-    N28["LC 460: LFU Cache 🔥 Hard"]
-    N29["LC 1472: Design Browser History ⭐ Medium"]
-    N30["HEAP/PRIORITY QUEUE:"]
-    N31["LC 23: Merge k Sorted Lists 🔥 Hard"]
-    N32["LC 295: Find Median from Data Stream 🔥 Hard"]
-    N33["LC 347: Top K Frequent Elements ⭐ Medium"]
-    N34["LC 373: Find K Pairs with Smallest Sums ⭐ Medium"]
-    N35["LC 767: Reorganize String ⭐ Medium"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N7 --> N8
-    N7 --> N9
-    N7 --> N10
-    N7 --> N11
-    N12 --> N13
-    N12 --> N14
-    N12 --> N15
-    N12 --> N16
-    N12 --> N17
-    N12 --> N18
-    N19 --> N20
-    N19 --> N21
-    N19 --> N22
-    N19 --> N23
-    N19 --> N24
-    N19 --> N25
-    N26 --> N27
-    N26 --> N28
-    N26 --> N29
-    N30 --> N31
-    N30 --> N32
-    N30 --> N33
-    N30 --> N34
-    N30 --> N35
-```
 
 ---
 
@@ -1828,33 +1501,6 @@ m = string/key length
 k = number of hash functions
 ```
 
-**Flow:**
-1. COMPLETE COMPLEXITY REFERENCE
-2. DATA STRUCTURE ACCESS SEARCH INSERT DELETE SPACE
-3. Fenwick Tree N/A O(logn) O(logn) N/A O(n)
-4. Sparse Table O(1) O(1) N/A N/A O(n log n)
-5. Disjoint Set N/A O(α) O(α) N/A O(n)
-6. Bloom Filter N/A O(k) O(k) N/A O(m) bits
-7. - = amortized or average case
-
-```mermaid
-flowchart TD
-    N1["COMPLETE COMPLEXITY REFERENCE"]
-    N2["DATA STRUCTURE ACCESS SEARCH INSERT DELETE SPACE"]
-    N3["Fenwick Tree N/A O(logn) O(logn) N/A O(n)"]
-    N4["Sparse Table O(1) O(1) N/A N/A O(n log n)"]
-    N5["Disjoint Set N/A O(α) O(α) N/A O(n)"]
-    N6["Bloom Filter N/A O(k) O(k) N/A O(m) bits"]
-    N7["* = amortized or average case"]
-    N8["† = O(1) for peek/min, O(log n) for extract"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1899,82 +1545,6 @@ START: What problem are you solving?
     └── Efficient proof of data? → MERKLE TREE
 ```
 
-**Flow:**
-1. START: What problem are you solving?
-2. Need KEY-VALUE lookup?
-3. START: What problem are you solving?
-4. Keys are strings with prefix search?
-5. TRIE
-6. START: What problem are you solving?
-7. Need O(1) operations?
-8. HASH MAP
-9. START: What problem are you solving?
-10. Need ordered keys?
-11. TREE MAP (Red-Black)
-12. START: What problem are you solving?
-13. Need RANGE operations?
-14. START: What problem are you solving?
-15. Static array, many queries?
-16. SPARSE TABLE
-
-```mermaid
-flowchart TD
-    N1["START: What problem are you solving?"]
-    N2["Need KEY-VALUE lookup?"]
-    N3["Keys are strings with prefix search? → TRIE"]
-    N4["Need O(1) operations? → HASH MAP"]
-    N5["Need ordered keys? → TREE MAP (Red-Black)"]
-    N6["Need RANGE operations?"]
-    N7["Static array, many queries? → SPARSE TABLE"]
-    N8["Updates needed?"]
-    N9["Point update + range query? → SEGMENT TREE or FENWICK"]
-    N10["Range update + range query? → SEGMENT TREE with LAZY PR"]
-    N11["Range minimum specifically? → SPARSE TABLE (if static)"]
-    N12["Need to track CONNECTIVITY?"]
-    N13["Merge sets dynamically? → DISJOINT SET (UNION-FIND)"]
-    N14["Need ORDERING with fast access?"]
-    N15["Min/Max quickly? → HEAP / PRIORITY QUEUE"]
-    N16["Next greater/smaller? → MONOTONIC STACK"]
-    N17["Sliding window max? → MONOTONIC DEQUE"]
-    N18["Need SPATIAL queries?"]
-    N19["2D points? → QUADTREE"]
-    N20["Higher dimensions? → KD-TREE"]
-    N21["Rectangles? → R-TREE"]
-    N22["Need APPROXIMATE membership?"]
-    N23["Fast 'definitely not' check? → BLOOM FILTER"]
-    N24["Need CACHING?"]
-    N25["Least recently used eviction? → LRU CACHE"]
-    N26["Least frequently used eviction? → LFU CACHE"]
-    N27["Need INTEGRITY verification?"]
-    N28["Efficient proof of data? → MERKLE TREE"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N1 --> N9
-    N1 --> N10
-    N1 --> N11
-    N1 --> N12
-    N1 --> N13
-    N1 --> N14
-    N1 --> N15
-    N1 --> N16
-    N1 --> N17
-    N1 --> N18
-    N1 --> N19
-    N1 --> N20
-    N1 --> N21
-    N1 --> N22
-    N1 --> N23
-    N1 --> N24
-    N1 --> N25
-    N1 --> N26
-    N1 --> N27
-    N1 --> N28
-```
 
 ---
 

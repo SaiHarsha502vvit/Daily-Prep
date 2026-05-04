@@ -1,4 +1,4 @@
-> **SQL Chapter 20/20** | [← Previous](19_Interview_Top50.md) | [Index](../00_MASTER_INDEX.md) | 
+﻿> **SQL Chapter 20/20** | [← Previous](19_Interview_Top50.md) | [Index](../00_MASTER_INDEX.md) | 
 
 ---
 
@@ -157,33 +157,6 @@
   □ Write clean, readable SQL code
 ```
 
-**Flow:**
-1. □ Database Fundamentals
-2. □ Understand RDBMS architecture
-3. □ Know SQL command categories (DDL, DML, DCL, TCL)
-4. □ Understand data types and when to use them
-5. □ Basic Operations
-6. □ Master SELECT with all clauses
-7. □ Use all comparison and logical operators
-
-```mermaid
-flowchart TD
-    N1["□ Database Fundamentals"]
-    N2["□ Understand RDBMS architecture"]
-    N3["□ Know SQL command categories (DDL, DML, DCL, TCL)"]
-    N4["□ Understand data types and when to use them"]
-    N5["□ Basic Operations"]
-    N6["□ Master SELECT with all clauses"]
-    N7["□ Use all comparison and logical operators"]
-    N8["□ Perform CRUD operations confidently"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

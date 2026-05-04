@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
+﻿**Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
 
 # Code Review — Best Practices & Checklist
 
@@ -22,44 +22,11 @@ Code reviews also:
 • Build shared ownership of codebase
 ```
 
-**Flow:**
-1. CODE REVIEWS: The Most Underrated Engineering Practice
-2. Bug found in Code Review
-3. Costs: 15 minutes
-4. Bug found in QA
-5. Costs: 2 hours
-6. Bug found in Production
-7. Costs: 2 days
-8. Bug found by customer
-9. Costs: reputation
-10. Code reviews also:
-11. • Spread knowledge across team (bus factor ↑)
-
-```mermaid
-flowchart TD
-    N1["CODE REVIEWS: The Most Underrated Engineering Practice"]
-    N2["Bug found in Code Review → Costs: 15 minutes"]
-    N3["Bug found in QA → Costs: 2 hours"]
-    N4["Bug found in Production → Costs: 2 days"]
-    N5["Bug found by customer → Costs: reputation"]
-    N6["Code reviews also:"]
-    N7["• Spread knowledge across team (bus factor ↑)"]
-    N8["• Maintain consistent code style"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
 ## The Review Checklist — What to Look For
 
 ### 1. Correctness
-
 
 CORRECTNESS CHECKS
 
@@ -71,9 +38,7 @@ CORRECTNESS CHECKS
 □ Is concurrency handled correctly? (if applicable)
 □ Are database transactions used correctly?
 
-
 ### 2. Design & Architecture
-
 
 DESIGN CHECKS
 
@@ -86,9 +51,7 @@ DESIGN CHECKS
 □ Are dependencies injected, not hardcoded?
 □ Does the PR do ONE thing? (Single Purpose PRs)
 
-
 ### 3. Readability & Maintainability
-
 
 READABILITY CHECKS
 
@@ -102,9 +65,7 @@ READABILITY CHECKS
 □ Are magic numbers replaced with named constants?
 ❌ if (retries > 3)     ✅ if (retries > MAX_RETRIES)
 
-
 ### 4. Testing
-
 
 TESTING CHECKS
 
@@ -118,9 +79,7 @@ TESTING CHECKS
 ✅ assertEquals("John", user.getName());
 □ Are negative tests included? (invalid input, errors)
 
-
 ### 5. Security
-
 
 SECURITY CHECKS
 
@@ -132,9 +91,7 @@ SECURITY CHECKS
 □ Are dependencies up-to-date? (no known CVEs)
 □ Is CORS configured correctly?
 
-
 ### 6. Performance
-
 
 PERFORMANCE CHECKS
 
@@ -146,13 +103,11 @@ PERFORMANCE CHECKS
 □ Is the time complexity acceptable for the data size?
 □ Are there memory leaks? (unclosed resources, growing lists)
 
-
 ---
 
 ## How to Give Good Reviews
 
 ### The Tone Pyramid
-
 
 FEEDBACK TONE GUIDE
 
@@ -172,7 +127,6 @@ Level 4 — PRAISE (Good stuff!):
 
 LABEL YOUR COMMENTS with the level so the author knows
 what's blocking and what's optional.
-
 
 ### Comment Templates
 
@@ -231,28 +185,6 @@ if (!isValid(input)) {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE REVIEWER'S MINDSET Review the CODE, not the PERSON ❌ 'You did this wrong' ✅ 'This line might cause issues because...' Ask questions instead of making demands ❌ 'Change this to use a HashMap' ✅ 'Have you considered using a HashMap? It would give
-
-```mermaid
-flowchart TD
-    N1["THE REVIEWER'S MINDSET"]
-    N2["1. Review the CODE, not the PERSON"]
-    N3["❌ 'You did this wrong'"]
-    N4["✅ 'This line might cause issues because...'"]
-    N5["2. Ask questions instead of making demands"]
-    N6["❌ 'Change this to use a HashMap'"]
-    N7["✅ 'Have you considered using a HashMap? It would give"]
-    N8["O(1) lookup vs O(n) with the current ArrayList.'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
 ## How to Receive Reviews (As the Author)
@@ -284,30 +216,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. THE AUTHOR'S MINDSET Don't take it personally
-2. They're reviewing code, not judging your worth. Assume positive intent The reviewer is trying to make the code better. Explain your reasoning, don't just defend
-3. 'I chose ArrayList because we iterate 95% of the time
-
-```mermaid
-flowchart TD
-    N1["THE AUTHOR'S MINDSET"]
-    N2["1. Don't take it personally"]
-    N3["They're reviewing code, not judging your worth."]
-    N4["2. Assume positive intent"]
-    N5["The reviewer is trying to make the code better."]
-    N6["3. Explain your reasoning, don't just defend"]
-    N7["'I chose ArrayList because we iterate 95% of the time"]
-    N8["and rarely do lookups. But I see your point — let me"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
 ## PR Best Practices (Making Reviews Easier)
@@ -332,33 +240,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. PR SIZE MATTERS
-2. Lines Changed Review Quality Time to Review
-3. < 200 Excellent ★★★ 30 min 200 - 400 Good ★★ 1 hour
-4. 400 - 800 Mediocre ★ 2 hours
-5. > 800 'LGTM' ☆ Rubber stamp
-6. If your PR is > 400 lines, consider splitting it:
-
-```mermaid
-flowchart TD
-    N1["PR SIZE MATTERS"]
-    N2["Lines Changed Review Quality Time to Review"]
-    N3["&lt; 200 Excellent ★★★ 30 min"]
-    N4["200 - 400 Good ★★ 1 hour"]
-    N5["400 - 800 Mediocre ★ 2 hours"]
-    N6["&gt; 800 'LGTM' ☆ Rubber stamp"]
-    N7["If your PR is &gt; 400 lines, consider splitting it:"]
-    N8["→ PR 1: Refactoring (no behavior change)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ### PR Description Template
 
 ```markdown
@@ -379,12 +260,6 @@ Technical approach. Key design decisions and trade-offs.
 
 
 🔬 **Section Challenge — Testing**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
 
 
 ## Screenshots (if UI)
@@ -413,34 +288,6 @@ Before and After screenshots.
 ║                                                                      ║
 ║  Types: feat, fix, refactor, test, docs, chore, perf, style, ci      ║
 ╚══════════════════════════════════════════════════════════════════════╝
-```
-
-**Flow:**
-1. CONVENTIONAL COMMITS
-2. Format: type(scope): description
-3. feat(auth): add password reset endpoint
-4. fix(payment): handle null discount code
-5. refactor(user): extract validation to separate class
-6. test(order): add edge case tests for empty cart
-7. docs(api): update Swagger annotations
-
-```mermaid
-flowchart TD
-    N1["CONVENTIONAL COMMITS"]
-    N2["Format: type(scope): description"]
-    N3["feat(auth): add password reset endpoint"]
-    N4["fix(payment): handle null discount code"]
-    N5["refactor(user): extract validation to separate class"]
-    N6["test(order): add edge case tests for empty cart"]
-    N7["docs(api): update Swagger annotations"]
-    N8["chore(deps): update Spring Boot to 3.2.1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
 ```
 
 ---
@@ -483,34 +330,6 @@ flowchart TD
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. TYPICAL PR WORKFLOW
-2. Developer creates feature branch from develop
-3. git checkout -b feat/JIRA-123-password-reset
-4. Developer pushes and creates PR
-5. Target: develop (or main for small teams)
-6. Assigns reviewer(s)
-7. CI runs automatically
-
-```mermaid
-flowchart TD
-    N1["TYPICAL PR WORKFLOW"]
-    N2["1. Developer creates feature branch from develop"]
-    N3["git checkout -b feat/JIRA-123-password-reset"]
-    N4["2. Developer pushes and creates PR"]
-    N5["Target: develop (or main for small teams)"]
-    N6["Assigns reviewer(s)"]
-    N7["3. CI runs automatically"]
-    N8["✓ Build passes"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
 ## Automated Code Quality Tools
@@ -536,34 +355,6 @@ RULE: Automate what can be automated.
       Machines should check STYLE, FORMAT, and KNOWN BUGS.
 ```
 
-**Flow:**
-1. TOOL WHAT IT CHECKS LANGUAGE
-2. SonarQube Bugs, smells, vulnerabilities Multi
-3. Checkstyle Java code style conventions Java
-4. SpotBugs Potential bugs in bytecode Java
-5. ESLint JavaScript/TS code quality JS/TS
-6. Prettier Code formatting Multi
-7. PMD Common programming flaws Java
-
-```mermaid
-flowchart TD
-    N1["TOOL WHAT IT CHECKS LANGUAGE"]
-    N2["SonarQube Bugs, smells, vulnerabilities Multi"]
-    N3["Checkstyle Java code style conventions Java"]
-    N4["SpotBugs Potential bugs in bytecode Java"]
-    N5["ESLint JavaScript/TS code quality JS/TS"]
-    N6["Prettier Code formatting Multi"]
-    N7["PMD Common programming flaws Java"]
-    N8["JaCoCo Test coverage Java"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
 ## Common Code Smells to Watch For
@@ -584,34 +375,6 @@ flowchart TD
 ║  Copy-Paste Programming     │  Same 10 lines in 3 places             ║
 ║  Yo-yo Problem              │  Have to jump between many classes     ║
 ╚══════════════════════════════════════════════════════════════════════╝
-```
-
-**Flow:**
-1. SMELL WHAT IT LOOKS LIKE
-2. God Class Class > 500 lines, does everything
-3. Long Method Method > 30 lines
-4. Feature Envy Method uses another class more
-5. than its own
-6. Primitive Obsession String email instead of Email type
-7. Boolean Parameter process(data, true, false, true)
-
-```mermaid
-flowchart TD
-    N1["SMELL WHAT IT LOOKS LIKE"]
-    N2["God Class Class &gt; 500 lines, does everything"]
-    N3["Long Method Method &gt; 30 lines"]
-    N4["Feature Envy Method uses another class more"]
-    N5["than its own"]
-    N6["Primitive Obsession String email instead of Email type"]
-    N7["Boolean Parameter process(data, true, false, true)"]
-    N8["Shotgun Surgery One change requires editing 10 files"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
 ```
 
 ---
@@ -641,47 +404,12 @@ The author learns:
 4. The principle behind it (to apply elsewhere)
 ```
 
-**Flow:**
-1. make the code better.
-2. Bad Reviewer: 'Fix this.'
-3. Good Reviewer: 'This could cause issues because [reason]. Here's
-4. a pattern that handles it:
-5. [example]. This is important because [context].'
-
-```mermaid
-flowchart TD
-    N1["make the code better."]
-    N2["Bad Reviewer: 'Fix this.'"]
-    N3["Good Reviewer: 'This could cause"]
-    N4["issues because [reason]. Here's"]
-    N5["a pattern that handles it:"]
-    N6["[example]. This is important"]
-    N7["because [context].'"]
-    N8["The author learns:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
-
 ---
 
 *The best code reviews feel like pair programming, not a courtroom trial.*
-
 
 ---
 
 **Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
 
 🔬 **Section Challenge — Mental Model: Code Review as Teaching**
-
-**Challenge 1 (Reasoning):** `ExecutorService.submit(task)` — the task throws a `RuntimeException`. Nobody calls `future.get()`. What happens to the exception?
-<details><summary>Answer</summary>
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
-

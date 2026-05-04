@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](10_Bit_Manipulation_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Greedy_Algorithms_Complete.md)
+﻿**Navigation**: [< Previous](10_Bit_Manipulation_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Greedy_Algorithms_Complete.md)
 
 # 🔄 Backtracking Complete Guide
 
@@ -39,21 +39,6 @@ BRUTE FORCE would try everything → for 8 queens: 64^8 = 281 trillion positions
 BACKTRACKING prunes early → only explore VALID partial solutions
 ```
 
-**Flow:**
-1. BRUTE FORCE would try everything
-2. for 8 queens: 64^8 = 281 trillion positions
-3. BACKTRACKING prunes early
-4. only explore VALID partial solutions
-
-```mermaid
-flowchart LR
-    N1["BRUTE FORCE would try everything"]
-    N2["for 8 queens: 64^8 = 281 trillion positions"]
-    N3["BACKTRACKING prunes early"]
-    N4["only explore VALID partial solutions"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### The Mental Model: Exploring a Tree of Choices
 
@@ -76,28 +61,6 @@ BACKTRACKING = DFS through this tree, BUT:
   - If dead end → UNDO last choice (backtrack) → try next option
 ```
 
-**Flow:**
-1. - Before going deeper
-2. CHECK if this partial solution CAN lead to a valid
-3. - If NO
-4. PRUNE this branch (don't explore further) HUGE time savings - If dead end UNDO last choice (backtrack) try next option
-
-```mermaid
-flowchart TD
-    N1["- Before going deeper"]
-    N2["CHECK if this partial solution CAN lead to a valid"]
-    N3["- If NO"]
-    N4["PRUNE this branch (don't explore further)"]
-    N5["HUGE time savings"]
-    N6["- If dead end"]
-    N7["UNDO last choice (backtrack)"]
-    N8["try next option"]
-    N1 --> N2
-    N3 --> N4
-    N4 --> N5
-    N6 --> N7
-    N7 --> N8
-```
 
 ### The Universal 3-Step Framework: Choose → Explore → Unchoose
 
@@ -113,22 +76,6 @@ you go down a trail, hit a dead end, walk BACK to the fork,
 then try the other trail.
 ```
 
-**Flow:**
-1. CHOOSE: Make a choice (add to current path)
-2. EXPLORE: Recurse to next position
-3. you go down a trail, hit a dead end, walk BACK to the f
-4. then try the other trail.
-
-```mermaid
-flowchart TD
-    N1["1. CHOOSE: Make a choice (add to current path)"]
-    N2["2. EXPLORE: Recurse to next position"]
-    N3["you go down a trail, hit a dead end, walk BACK to the f"]
-    N4["then try the other trail."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### When to Use Backtracking vs Other Approaches
 
@@ -150,18 +97,6 @@ flowchart TD
   GREEDY = "I can make local choices that are globally optimal"
 ```
 
-**Flow:**
-1. - You only need the COUNT (not the actual solution Use DP instead - You need the OPTIMAL solution Use DP or Greedy
-
-```mermaid
-flowchart LR
-    N1["- You only need the COUNT (not the actual solution"]
-    N2["Use DP instead"]
-    N3["- You need the OPTIMAL solution"]
-    N4["Use DP or Greedy"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ### Historical Context
 
@@ -202,35 +137,6 @@ When you hit a dead end, GO BACK and try a different path.
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Backtracking = DFS + Undo
-2. Explore all possible paths.
-3. When you hit a dead end, GO BACK and try a different pa
-4. BACKTRACKING FLOW
-5. CHOOSE
-6. EXPLORE
-7. UNCHOOSE
-8. Make a Recursively Undo the
-9. decision explore with decision
-
-```mermaid
-flowchart TD
-    N1["Backtracking = DFS + Undo"]
-    N2["Explore all possible paths."]
-    N3["When you hit a dead end, GO BACK and try a different pa"]
-    N4["BACKTRACKING FLOW"]
-    N5["1. CHOOSE → 2. EXPLORE → 3. UNCHOOSE"]
-    N6["Make a Recursively Undo the"]
-    N7["decision explore with decision"]
-    N8["that choice (backtrack)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Visual: Decision Tree
 
@@ -269,33 +175,6 @@ Time Complexity usually: O(2^n) or O(n!) - exponential
 That's OK! Problem asks for ALL solutions.
 ```
 
-**Flow:**
-1. USE BACKTRACKING WHEN YOU SEE:
-2. ✓ 'Generate all...'
-3. ✓ 'Find all possible...'
-4. ✓ 'Print all combinations/permutations/subsets'
-5. ✓ 'All ways to...'
-6. ✓ Constraint satisfaction (Sudoku, N-Queens)
-7. ✓ Path finding with constraints
-
-```mermaid
-flowchart TD
-    N1["USE BACKTRACKING WHEN YOU SEE:"]
-    N2["✓ 'Generate all...'"]
-    N3["✓ 'Find all possible...'"]
-    N4["✓ 'Print all combinations/permutations/subsets'"]
-    N5["✓ 'All ways to...'"]
-    N6["✓ Constraint satisfaction (Sudoku, N-Queens)"]
-    N7["✓ Path finding with constraints"]
-    N8["✓ Game solving (word search, crossword)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -388,30 +267,6 @@ public class BacktrackingTemplate {
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CRITICAL IMPLEMENTATION NOTES
-2. ALWAYS COPY before adding to result:
-3. result.add(new ArrayList<>(current)); ✓
-4. result.add(current); ✗ (adds reference, will be modifie REMOVE from END (last element): current.remove(current.size() - 1); ✓ current.remove(element); ✗ (removes by value, slower)
-
-```mermaid
-flowchart TD
-    N1["CRITICAL IMPLEMENTATION NOTES"]
-    N2["1. ALWAYS COPY before adding to result:"]
-    N3["result.add(new ArrayList&lt;&gt;(current)); ✓"]
-    N4["result.add(current); ✗ (adds reference, will be modifie"]
-    N5["2. REMOVE from END (last element):"]
-    N6["current.remove(current.size() - 1); ✓"]
-    N7["current.remove(element); ✗ (removes by value, slower)"]
-    N8["3. 'start' parameter controls:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -426,16 +281,6 @@ Output: [[], [1], [2], [3], [1,2], [1,3], [2,3], [1,2,3]]
 Each element: include OR exclude → 2^n subsets
 ```
 
-**Flow:**
-1. Each element: include OR exclude
-2. 2^n subsets
-
-```mermaid
-flowchart LR
-    N1["Each element: include OR exclude"]
-    N2["2^n subsets"]
-    N1 --> N2
-```
 
 ### Solution
 
@@ -499,68 +344,6 @@ backtrack(start=0, current=[])
 Result: [[], [1], [1,2], [1,2,3], [1,3], [2], [2,3], [3]]
 ```
 
-**Flow:**
-1. backtrack(start=0, current=[])
-2. Add []
-3. backtrack(start=0, current=[])
-4. i=0: Choose 1
-5. backtrack(start=0, current=[])
-6. backtrack(start=1, current=[1])
-7. backtrack(start=0, current=[])
-8. Add [1]
-9. backtrack(start=0, current=[])
-10. i=1: Choose 2
-11. backtrack(start=0, current=[])
-12. backtrack(start=2, current=[1,2])
-
-```mermaid
-flowchart TD
-    N1["backtrack(start=0, current=[])"]
-    N2["Add []"]
-    N3["i=0: Choose 1"]
-    N4["backtrack(start=1, current=[1])"]
-    N5["Add [1]"]
-    N6["i=1: Choose 2"]
-    N7["backtrack(start=2, current=[1,2])"]
-    N8["Add [1,2]"]
-    N9["i=2: Choose 3"]
-    N10["backtrack(start=3, current=[1,2,3])"]
-    N11["Add [1,2,3]"]
-    N12["Unchoose 3"]
-    N13["return"]
-    N14["Unchoose 2"]
-    N15["backtrack(start=3, current=[1,3])"]
-    N16["Add [1,3]"]
-    N17["Unchoose 1"]
-    N18["backtrack(start=2, current=[2])"]
-    N19["Add [2]"]
-    N20["backtrack(start=3, current=[2,3])"]
-    N21["Add [2,3]"]
-    N22["backtrack(start=3, current=[3])"]
-    N23["Add [3]"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N1 --> N9
-    N1 --> N10
-    N1 --> N11
-    N1 --> N12
-    N1 --> N13
-    N1 --> N14
-    N1 --> N15
-    N1 --> N16
-    N1 --> N17
-    N1 --> N18
-    N1 --> N19
-    N1 --> N20
-    N1 --> N21
-    N1 --> N22
-    N1 --> N23
-```
 
 ### Subsets II - With Duplicates (LeetCode 90)
 
@@ -700,45 +483,6 @@ Level 0: Fix position 0
         → Add [3,2,1], [3,1,2]
 ```
 
-**Flow:**
-1. Level 0: Fix position 0 swap(0,0): [1, 2, 3]
-2. Level 0: Fix position 0
-3. Level 1: Fix position 1
-4. Level 0: Fix position 0 swap(1,1): [1, 2, 3]
-5. Level 0: Fix position 0
-6. Level 2: Fix position 2
-7. Level 0: Fix position 0 swap(2,2): [1, 2, 3]
-8. Add [1,2,3]
-9. Level 0: Fix position 0 swap(1,2): [1, 3, 2]
-
-```mermaid
-flowchart TD
-    N1["Level 0: Fix position 0"]
-    N2["swap(0,0): [1, 2, 3]"]
-    N3["Level 1: Fix position 1"]
-    N4["swap(1,1): [1, 2, 3]"]
-    N5["Level 2: Fix position 2"]
-    N6["swap(2,2): [1, 2, 3] → Add [1,2,3]"]
-    N7["swap(1,2): [1, 3, 2]"]
-    N8["Level 2: [1, 3, 2] → Add [1,3,2]"]
-    N9["swap(1,2) back: [1, 2, 3]"]
-    N10["swap(0,1): [2, 1, 3]"]
-    N11["Level 1: ..."]
-    N12["→ Add [2,1,3], [2,3,1]"]
-    N13["swap(0,2): [3, 2, 1]"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N1 --> N9
-    N1 --> N10
-    N1 --> N11
-    N12 --> N13
-    N12 --> N11
-```
 
 ### Permutations II - With Duplicates (LeetCode 47)
 
@@ -1018,22 +762,6 @@ Anti-diagonal (r + c is constant):
     . . ↙ . .   (2,2): r+c = 4
 ```
 
-**Flow:**
-1. Queen at (row, col) attacks:
-2. Same column: col
-3. Main diagonal (r - c is constant):
-4. Anti-diagonal (r + c is constant):
-
-```mermaid
-flowchart TD
-    N1["Queen at (row, col) attacks:"]
-    N2["Same column: col"]
-    N3["Main diagonal (r - c is constant):"]
-    N4["Anti-diagonal (r + c is constant):"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ### Sudoku Solver (LeetCode 37) ⭐⭐⭐
 
@@ -1367,33 +1095,6 @@ for (int end = 0; end < n; end++) {
 └───────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BACKTRACKING PROBLEM TYPES
-2. SUBSETS: PERMUTATIONS:
-3. - Subsets I, II - Permutations I, II
-4. - Combination Sum 1-3 - Next Permutation
-5. - Palindrome Partitioning - Permutation Sequence
-6. COMBINATIONS: GRID/MATRIX:
-7. - Combinations (n,k) - N-Queens
-
-```mermaid
-flowchart TD
-    N1["BACKTRACKING PROBLEM TYPES"]
-    N2["SUBSETS: PERMUTATIONS:"]
-    N3["- Subsets I, II - Permutations I, II"]
-    N4["- Combination Sum 1-3 - Next Permutation"]
-    N5["- Palindrome Partitioning - Permutation Sequence"]
-    N6["COMBINATIONS: GRID/MATRIX:"]
-    N7["- Combinations (n,k) - N-Queens"]
-    N8["- Letter Combinations - Sudoku Solver"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Restore IP Addresses (LeetCode 93) ⭐⭐
 
@@ -1528,36 +1229,6 @@ private List<String> backtrack(String s, int start,
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHICH PATTERN TO USE?
-2. 'Generate all subsets'
-3. SUBSETS PATTERN
-4. start = i + 1, every state valid
-5. 'Generate all permutations'
-6. PERMUTATIONS PATTERN
-7. Use visited[], iterate from 0
-8. 'Find k numbers that sum to n'
-9. COMBINATIONS PATTERN
-10. start = i + 1, size = k is base case
-
-```mermaid
-flowchart TD
-    N1["WHICH PATTERN TO USE?"]
-    N2["'Generate all subsets' → SUBSETS PATTERN"]
-    N3["start = i + 1, every state valid"]
-    N4["'Generate all permutations' → PERMUTATIONS PATTERN"]
-    N5["Use visited[], iterate from 0"]
-    N6["'Find k numbers that sum to n' → COMBINATIONS PATTERN"]
-    N7["start = i + 1, size = k is base case"]
-    N8["'Can reuse elements' → start = i (not i + 1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Skip Duplicates Cheat Sheet
 
@@ -1588,31 +1259,6 @@ Arrays.sort(nums);
 Space: O(n) for recursion stack (excluding output)
 ```
 
-**Flow:**
-1. TIME COMPLEXITIES
-2. Subsets: O(n × 2^n) - 2^n subsets, O(n) to copy
-3. Permutations: O(n × n!) - n! permutations, O(n) copy
-4. Combinations (k): O(k × C(n,k))
-5. N-Queens: O(n!) - roughly
-6. Sudoku: O(9^m) - m = empty cells
-7. Space: O(n) for recursion stack (excluding output)
-
-```mermaid
-flowchart TD
-    N1["TIME COMPLEXITIES"]
-    N2["Subsets: O(n × 2^n) - 2^n subsets, O(n) to copy"]
-    N3["Permutations: O(n × n!) - n! permutations, O(n) copy"]
-    N4["Combinations (k): O(k × C(n,k))"]
-    N5["N-Queens: O(n!) - roughly"]
-    N6["Sudoku: O(9^m) - m = empty cells"]
-    N7["Space: O(n) for recursion stack (excluding output)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### Debug Tips
 
@@ -1662,19 +1308,6 @@ flowchart TD
 All three share: CHOOSE → EXPLORE → UNCHOOSE
 ```
 
-**Flow:**
-1. All three share: CHOOSE
-2. EXPLORE
-3. UNCHOOSE
-
-```mermaid
-flowchart LR
-    N1["All three share: CHOOSE"]
-    N2["EXPLORE"]
-    N3["UNCHOOSE"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Pro Tip:** When solving a new backtracking problem, first identify which of these 3 patterns it maps to. Then adapt the template!
 

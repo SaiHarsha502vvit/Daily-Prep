@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](Ch24_Spring_Boot_Roadmap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch20_AlgoEng_Core.md)
+﻿**Navigation**: [< Previous](Ch24_Spring_Boot_Roadmap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch20_AlgoEng_Core.md)
 
 # 🎯 Functional Programming in Java
 
@@ -265,16 +265,6 @@ List<Integer> result = numbers.stream()
    - Describe WHAT you want, not HOW to get it
 ```
 
-**Flow:**
-1. - Same input
-2. Same output (always!)
-
-```mermaid
-flowchart LR
-    N1["- Same input"]
-    N2["Same output (always!)"]
-    N1 --> N2
-```
 
 ---
 

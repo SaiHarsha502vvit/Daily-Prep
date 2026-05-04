@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
 🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md) — structured approach to any "Design X" question
 
 ---
@@ -126,41 +126,6 @@ Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SHORT URL GENERATION — 3 Approaches
-2. 1. Hash + Truncate:
-3. MD5(longURL)
-4. take first 7 chars of base62
-5. MD5(longURL)
-6. take first 7 chars of base62
-7. Problem: collisions! Need to check DB, retry with salt.
-8. 2. Auto-increment ID + Base62: ← RECOMMENDED
-9. Database gives ID 12345
-10. convert to base62
-11. 'dnh'
-12. Database gives ID 12345
-13. convert to base62
-14. 'dnh'
-15. No collisions! But IDs are predictable (sequential).
-
-```mermaid
-flowchart TD
-    N1["SHORT URL GENERATION — 3 Approaches"]
-    N2["1. Hash + Truncate:"]
-    N3["MD5(longURL) → take first 7 chars of base62"]
-    N4["Problem: collisions! Need to check DB, retry with salt."]
-    N5["2. Auto-increment ID + Base62: ← RECOMMENDED"]
-    N6["Database gives ID 12345 → convert to base62 → 'dnh'"]
-    N7["No collisions! But IDs are predictable (sequential)."]
-    N8["3. Pre-generated Key Service:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -198,21 +163,6 @@ Scale:
   - 500M tweets/day → ~6000 tweets/sec
 ```
 
-**Flow:**
-1. - Average user views feed 5x/day
-2. 750M feed reads/day
-3. - 500M tweets/day
-4. ~6000 tweets/sec
-
-```mermaid
-flowchart LR
-    N1["- Average user views feed 5x/day"]
-    N2["750M feed reads/day"]
-    N3["- 500M tweets/day"]
-    N4["~6000 tweets/sec"]
-    N1 --> N2
-    N3 --> N4
-```
 
 ## The Hard Part — Feed Generation
 
@@ -309,22 +259,6 @@ Scale: 50M DAU, each user sends 40 msgs/day = 2B msgs/day
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Chat Server / (stateful!) --(WebSocket)--> Client
-2. Message Store / (Cassandra) --(Message Queue)--> Chat Server / (stateful!)
-3. Chat Server / (stateful!)
-4. Presence / Service / (Redis)
-
-```mermaid
-flowchart TD
-    N1["Client"]
-    N2["Chat Server / (stateful!)"]
-    N3["Message Store / (Cassandra)"]
-    N4["Presence / Service / (Redis)"]
-    N2 -->|"WebSocket"| N1
-    N3 -->|"Message Queue"| N2
-    N2 --> N4
-```
 
 ---
 
@@ -371,42 +305,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PURPOSE: Prevent abuse, protect resources, enforce SLAs
-2. ALGORITHM 1: Token Bucket
-3. Bucket holds N tokens. Each request takes 1 token.
-4. Bucket: [●●●●●___] capacity=8, current=5
-5. Request arrives
-6. take token
-7. [●●●●____]
-8. Request arrives
-9. take token
-10. [●●●●____]
-11. Refill (every 1/R sec)
-12. [●●●●●___]
-13. Refill (every 1/R sec)
-14. [●●●●●___]
-15. Bucket full
-16. tokens overflow (don't exceed capacity)
-
-```mermaid
-flowchart TD
-    N1["PURPOSE: Prevent abuse, protect resources, enforce SLAs"]
-    N2["ALGORITHM 1: Token Bucket"]
-    N3["Bucket holds N tokens. Each request takes 1 token."]
-    N4["Bucket: [●●●●●___] capacity=8, current=5"]
-    N5["Request arrives → take token → [●●●●____]"]
-    N6["Refill (every 1/R sec) → [●●●●●___]"]
-    N7["Bucket full → tokens overflow (don't exceed capacity)"]
-    N8["Bucket empty → REJECT (HTTP 429 Too Many Requests)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -442,31 +340,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Triggers / (events)
-2. Notificatio / Service
-3. Push / Worker
-4. Message Queue / (Kafka/SQS)
-5. Push / Worker
-6. Message Queue / (Kafka/SQS)
-7. Email / Worker
-8. Message Queue / (Kafka/SQS)
-9. SMS / Worker
-
-```mermaid
-flowchart TD
-    N1["Triggers / (events)"]
-    N2["→ Notificatio / Service"]
-    N3["→ Message Queue / (Kafka/SQS)"]
-    N4["Push / Worker"]
-    N5["Email / Worker"]
-    N6["SMS / Worker"]
-    N1 --> N2
-    N2 --> N4
-    N3 --> N4
-    N3 --> N5
-    N3 --> N6
-```
 
 ---
 
@@ -514,33 +387,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Reduce DB load, sub-millisecond reads
-2. CORE DECISIONS:
-3. 1. EVICTION POLICY:
-4. LRU (Least Recently Used) — most common
-5. LFU (Least Frequently Used) — better for skewed access
-6. TTL (Time To Live) — expire after fixed time
-7. 2. CACHE PATTERNS:
-
-```mermaid
-flowchart TD
-    N1["WHY: Reduce DB load, sub-millisecond reads"]
-    N2["CORE DECISIONS:"]
-    N3["1. EVICTION POLICY:"]
-    N4["LRU (Least Recently Used) — most common"]
-    N5["LFU (Least Frequently Used) — better for skewed access"]
-    N6["TTL (Time To Live) — expire after fixed time"]
-    N7["2. CACHE PATTERNS:"]
-    N8["Cache-Aside (Lazy Loading):"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -593,36 +439,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Client
-2. API Gateway
-3. Client
-4. Product / Service
-5. API Gateway
-6. ▼ ▼ ▼ / duct Order Paym / vice Service Serv / duct Orde
-7. Kafka/SQS
-8. Product / Service
-9. Product / DB
-10. Payment / Service
-11. Payment / DB
-
-```mermaid
-flowchart TD
-    N1["Client"]
-    N2["→ API Gateway"]
-    N3["▼ ▼ ▼ / duct Order Paym / vice Service Serv / duct Orde"]
-    N4["Product / Service"]
-    N5["Payment / Service"]
-    N6["Product / DB"]
-    N7["Payment / DB"]
-    N8["Kafka/SQS"]
-    N1 --> N2
-    N1 --> N4
-    N2 --> N3
-    N3 --> N8
-    N4 --> N6
-    N5 --> N7
-```
 
 ---
 
@@ -665,25 +481,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. URL / Frontier / (priority / queue)
-2. Fetcher / (HTTP GET)
-3. URL / Frontier / (priority / queue)
-4. URL Filter / (visited? / robots.txt / Bloom / filter)
-5. Parser / (Extract / links, / content)
-6. Content / Store / (S3/HDFS)
-
-```mermaid
-flowchart TD
-    N1["URL / Frontier / (priority / queue)"]
-    N2["→ Fetcher / (HTTP GET)"]
-    N3["→ Parser / (Extract / links, / content)"]
-    N4["URL Filter / (visited? / robots.txt / Bloom / filter)"]
-    N5["Content / Store / (S3/HDFS)"]
-    N1 --> N2
-    N1 --> N4
-    N3 --> N5
-```
 
 ---
 

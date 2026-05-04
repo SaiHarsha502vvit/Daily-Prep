@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](09_Array_Plus_SlidingWindow.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Stack_Plus_MonotonicPattern.md)
+﻿**Navigation**: [< Previous](09_Array_Plus_SlidingWindow.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Stack_Plus_MonotonicPattern.md)
 
 # HashMap + Frequency Counting — Combined Pattern Guide
 
@@ -55,16 +55,6 @@ IF the problem says:
 THEN → HashMap + Counting
 ```
 
-**Flow:**
-1. THEN
-2. HashMap + Counting
-
-```mermaid
-flowchart LR
-    N1["THEN"]
-    N2["HashMap + Counting"]
-    N1 --> N2
-```
 
 ---
 
@@ -150,44 +140,6 @@ i=4: prefix=7, need 7-4=3,  IN MAP(1)! → count=2, map={.., 7:1}
 Answer: 2
 ```
 
-**Flow:**
-1. i=0: prefix=1, need 1-4=-3, not in map
-2. count=0, map={0:1, 1:1}
-3. i=1: prefix=3, need 3-4=-1, not in map
-4. count=0, map={0:1, 1:1, 3:1}
-5. i=2: prefix=6, need 6-4=2, not in map
-6. count=0, map={0:1, 1:1, 3:1, 6:1}
-7. i=3: prefix=5, need 5-4=1, IN MAP(1)!
-8. count=1, map={.., 5:1}
-9. subarray from index 1
-10. 3: [2,3,-1] sum=4 ✅
-11. i=4: prefix=7, need 7-4=3, IN MAP(1)!
-12. count=2, map={.., 7:1}
-
-```mermaid
-flowchart TD
-    N1["i=0: prefix=1, need 1-4=-3, not in map"]
-    N2["count=0, map={0:1, 1:1}"]
-    N3["i=1: prefix=3, need 3-4=-1, not in map"]
-    N4["count=0, map={0:1, 1:1, 3:1}"]
-    N5["i=2: prefix=6, need 6-4=2, not in map"]
-    N6["count=0, map={0:1, 1:1, 3:1, 6:1}"]
-    N7["i=3: prefix=5, need 5-4=1, IN MAP(1)!"]
-    N8["count=1, map={.., 5:1}"]
-    N9["subarray from index 1"]
-    N10["3: [2,3,-1] sum=4 ✅"]
-    N11["i=4: prefix=7, need 7-4=3, IN MAP(1)!"]
-    N12["count=2, map={.., 7:1}"]
-    N13["subarray from index 2"]
-    N14["4: [3,-1,2] sum=4 ✅"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-```
 
 ---
 
@@ -239,16 +191,6 @@ The KEY pattern (use for many problems):
 Time: O(n) | Space: O(n)
 ```
 
-**Flow:**
-1. HashMap stores seen numbers, so lookup is O(1) per
-2. O(n) total.
-
-```mermaid
-flowchart LR
-    N1["HashMap stores seen numbers, so lookup is O(1) per"]
-    N2["O(n) total."]
-    N1 --> N2
-```
 
 ---
 
@@ -300,33 +242,6 @@ Time: O(n) | Space: O(n)
 CRITICAL: Always initialize map with {0: 1}!
 ```
 
-**Flow:**
-1. Problem: Count subarrays whose sum equals k=7.
-2. nums = [3, 4, 7, 2, -3, 1, 4, 2]
-3. Step-by-step:
-4. sum = 0, count = 0
-5. map={0:1, 3:1, 7:1}
-6. map={0:1, 3:1, 7:1, 14:1}
-7. map={..., 14:2} (14 now appears twice!)
-
-```mermaid
-flowchart TD
-    N1["Problem: Count subarrays whose sum equals k=7."]
-    N2["nums = [3, 4, 7, 2, -3, 1, 4, 2]"]
-    N3["Step-by-step:"]
-    N4["sum = 0, count = 0"]
-    N5["map={0:1, 3:1, 7:1}"]
-    N6["map={0:1, 3:1, 7:1, 14:1}"]
-    N7["map={..., 14:2} (14 now appears twice!)"]
-    N8["Answer: 4 subarrays ✅"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -358,31 +273,6 @@ flowchart TD
 └─────────────────────────────┴──────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Edge Case Handling
-2. Single element = target Subarray of length 1 is valid
-3. Negative numbers Prefix Sum + HashMap (NOT sliding wind
-4. All zeros, target=0 Every subarray of any length sums t
-5. Empty array Return 0 / empty
-6. Large values (overflow) Use long for prefix sums if nee
-7. is faster for lowercase-only problems
-
-```mermaid
-flowchart TD
-    N1["Edge Case Handling"]
-    N2["Single element = target Subarray of length 1 is valid"]
-    N3["Negative numbers Prefix Sum + HashMap (NOT sliding wind"]
-    N4["All zeros, target=0 Every subarray of any length sums t"]
-    N5["Empty array Return 0 / empty"]
-    N6["Large values (overflow) Use long for prefix sums if nee"]
-    N7["is faster for lowercase-only problems"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ---
 

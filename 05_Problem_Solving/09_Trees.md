@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](08_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Graphs.md)
+﻿**Navigation**: [< Previous](08_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Graphs.md)
 
 **Problems 09/14** | [Prev](08_Stack_Queue.md) | [Index](../00_MASTER_INDEX.md) | [Next](10_Graphs.md)
 
@@ -72,29 +72,6 @@ Does it need BOTH?                       → Both directions + global tracker
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. 2 3
-2. 4 5
-3. Preorder Root
-4. Left
-5. Right 1,2,4,5,3,6 / Inorder Left
-6. Roo
-7. Preorder Root
-8. Left
-9. Right 1,2,4,5,3,6 / Inorder Left
-10. Roo
-11. DFS (Stack/Recursion) BFS (Queue) / - Go deep first - G
-
-```mermaid
-flowchart TD
-    N1["2 3"]
-    N2["4 5"]
-    N3["Preorder Root→Left→Right 1,2,4,5,3,6 / Inorder Left→Roo"]
-    N4["DFS (Stack/Recursion) BFS (Queue) / - Go deep first - G"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -167,38 +144,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. TREE PROBLEMS — COMPLETE UNDERSTANDING & GROWTH MINDSET
-2. WHY ARE TREES THE #1 INTERVIEW TOPIC?
-3. They account for 20-25% of coding interview questions.
-4. REAL-WORLD SYSTEMS BUILT ON TREES:
-5. • File systems: Every folder/file is a tree node
-6. • DOM (web pages): HTML
-7. head/body
-8. div/p... is a tre
-9. • DOM (web pages): HTML
-10. head/body
-11. div/p... is a tre
-12. • AI/ML: Decision trees, random forests, parse trees in
-
-```mermaid
-flowchart TD
-    N1["TREE PROBLEMS — COMPLETE UNDERSTANDING & GROWTH MINDSET"]
-    N2["WHY ARE TREES THE #1 INTERVIEW TOPIC?"]
-    N3["They account for 20-25% of coding interview questions."]
-    N4["REAL-WORLD SYSTEMS BUILT ON TREES:"]
-    N5["• File systems: Every folder/file is a tree node"]
-    N6["• DOM (web pages): HTML → head/body → div/p... is a tre"]
-    N7["• AI/ML: Decision trees, random forests, parse trees in"]
-    N8["• Network routing: Spanning trees prevent packet loops"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // TOP-DOWN TEMPLATE (info flows from parent → children)
@@ -405,37 +350,6 @@ int bothDirections(TreeNode node) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. INORDER TRAVERSAL: Left
-2. Root
-3. Right
-4. 2 Inorder: [1, 3, 2]
-5. Recursive call flow:
-6. inorder(1)
-7. inorder(null)
-8. visit 1
-9. inorder(2)
-10. inorder(1)
-11. inorder(null)
-12. visit 1
-13. inorder(2)
-14. inorder(3)
-15. visit 3
-16. visit 2
-17. inorder(null)
-
-```mermaid
-flowchart TD
-    N1["INORDER TRAVERSAL: Left → Root → Right"]
-    N2["2 Inorder: [1, 3, 2]"]
-    N3["Recursive call flow:"]
-    N4["inorder(1) → inorder(null) → visit 1 → inorder(2)"]
-    N5["→ inorder(3) → visit 3 → visit 2 → inorder(null)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution (Recursive):**
 
@@ -502,25 +416,6 @@ public List<Integer> inorderTraversal(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PREORDER TRAVERSAL: Root
-2. Left
-3. Right
-4. 2 3 Preorder: [1, 2, 4, 5, 3]
-5. Process order: 1
-6. 2
-7. 4
-8. 5
-9. 3
-
-```mermaid
-flowchart TD
-    N1["PREORDER TRAVERSAL: Root → Left → Right"]
-    N2["2 3 Preorder: [1, 2, 4, 5, 3]"]
-    N3["Process order: 1 → 2 → 4 → 5 → 3"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution (Iterative):**
 
@@ -566,34 +461,6 @@ public List<Integer> preorderTraversal(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. POSTORDER TRAVERSAL: Left
-2. Right
-3. Root
-4. 2 3 Postorder: [4, 5, 2, 3, 1]
-5. Trick: Reverse of (Root
-6. Right
-7. Left)
-8. Trick: Reverse of (Root
-9. Right
-10. Left)
-11. Modified preorder: 1
-12. 3
-13. 2
-14. 5
-15. 4 then reverse
-16. 4,5,2,3,1
-
-```mermaid
-flowchart TD
-    N1["POSTORDER TRAVERSAL: Left → Right → Root"]
-    N2["2 3 Postorder: [4, 5, 2, 3, 1]"]
-    N3["Trick: Reverse of (Root → Right → Left)"]
-    N4["Modified preorder: 1→3→2→5→4 then reverse → 4,5,2,3,1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -645,33 +512,6 @@ public List<Integer> postorderTraversal(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LEVEL ORDER TRAVERSAL (BFS)
-2. 3 Level 0: [3]
-3. / \ Level 1: [9, 20]
-4. 9 20 Level 2: [15, 7]
-5. 15 7 Output: [[3], [9,20], [15,7]]
-6. BFS with Queue:
-7. Step Queue Level Output
-
-```mermaid
-flowchart TD
-    N1["LEVEL ORDER TRAVERSAL (BFS)"]
-    N2["3 Level 0: [3]"]
-    N3["/ \ Level 1: [9, 20]"]
-    N4["9 20 Level 2: [15, 7]"]
-    N5["15 7 Output: [[3], [9,20], [15,7]]"]
-    N6["BFS with Queue:"]
-    N7["Step Queue Level Output"]
-    N8["1 [3] Process: [3]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -722,34 +562,6 @@ public List<List<Integer>> levelOrder(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ZIGZAG LEVEL ORDER
-2. 3 Level 0 (
-3. ): [3]
-4. 3 Level 0 (
-5. ): [3]
-6. / \ Level 1 (←): [20, 9]
-7. 9 20 Level 2 (
-8. ): [15, 7]
-9. 9 20 Level 2 (
-10. ): [15, 7]
-11. 15 7 Output: [[3], [20,9], [15,7]]
-12. Alternate direction each level
-
-```mermaid
-flowchart TD
-    N1["ZIGZAG LEVEL ORDER"]
-    N2["3 Level 0 (→): [3]"]
-    N3["/ \ Level 1 (←): [20, 9]"]
-    N4["9 20 Level 2 (→): [15, 7]"]
-    N5["15 7 Output: [[3], [20,9], [15,7]]"]
-    N6["Alternate direction each level"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -816,33 +628,6 @@ public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. VERTICAL ORDER TRAVERSAL
-2. Given a binary tree, return the vertical order traversa
-3. of its nodes' values (column by column from left to rig
-4. 3 (col 0)
-5. 9 20 Column mapping:
-6. / / \ col -2: [4]
-7. 4 15 7 col -1: [9]
-
-```mermaid
-flowchart TD
-    N1["VERTICAL ORDER TRAVERSAL"]
-    N2["Given a binary tree, return the vertical order traversa"]
-    N3["of its nodes' values (column by column from left to rig"]
-    N4["3 (col 0)"]
-    N5["9 20 Column mapping:"]
-    N6["/ / \ col -2: [4]"]
-    N7["4 15 7 col -1: [9]"]
-    N8["/ col 0: [3, 15]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -905,28 +690,6 @@ public List<List<Integer>> verticalOrder(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MAXIMUM DEPTH (Height)
-2. 3 depth = 1 + max(depth(left), depth(right))
-3. 9 20 depth(3) = 1 + max(1, 2) = 3
-4. / \ depth(9) = 1 + max(0, 0) = 1
-5. 15 7 depth(20) = 1 + max(1, 1) = 2
-6. Maximum Depth = 3
-
-```mermaid
-flowchart TD
-    N1["MAXIMUM DEPTH (Height)"]
-    N2["3 depth = 1 + max(depth(left), depth(right))"]
-    N3["9 20 depth(3) = 1 + max(1, 2) = 3"]
-    N4["/ \ depth(9) = 1 + max(0, 0) = 1"]
-    N5["15 7 depth(20) = 1 + max(1, 1) = 2"]
-    N6["Maximum Depth = 3"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -986,25 +749,6 @@ public int maxDepthBFS(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MINIMUM DEPTH - Shortest path from root to leaf
-2. Min depth = 2 Min depth = 3 (not 1!)
-3. (3
-4. 9 is leaf) (3 is not a leaf)
-5. (3
-6. 9 is leaf) (3 is not a leaf)
-7. ⚠️ TRAP: If one child is null, use the other child's de
-
-```mermaid
-flowchart TD
-    N1["MINIMUM DEPTH - Shortest path from root to leaf"]
-    N2["Min depth = 2 Min depth = 3 (not 1!)"]
-    N3["(3→9 is leaf) (3 is not a leaf)"]
-    N4["⚠️ TRAP: If one child is null, use the other child's de"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -1072,26 +816,6 @@ public int minDepthBFS(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BALANCED BINARY TREE
-2. A tree is balanced if for every node, the height differ
-3. between left and right subtrees is at most 1.
-4. Balanced: Unbalanced:
-5. h(L) - h(R)
-6. <= 1 4 ← depth diff > 1
-
-```mermaid
-flowchart TD
-    N1["BALANCED BINARY TREE"]
-    N2["A tree is balanced if for every node, the height differ"]
-    N3["between left and right subtrees is at most 1."]
-    N4["Balanced: Unbalanced:"]
-    N5["|h(L) - h(R)| &lt;= 1 4 ← depth diff &gt; 1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -1135,19 +859,6 @@ private int checkHeight(TreeNode node) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SAME TREE - Check if two trees are identical
-2. Same: true Same: false
-3. (structure same, values diff)
-
-```mermaid
-flowchart TD
-    N1["SAME TREE - Check if two trees are identical"]
-    N2["Same: true Same: false"]
-    N3["(structure same, values diff)"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution:**
 
@@ -1188,16 +899,6 @@ public boolean isSameTree(TreeNode p, TreeNode q) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SYMMETRIC TREE - Mirror image of itself
-2. Symmetric: Not Symmetric:
-
-```mermaid
-flowchart TD
-    N1["SYMMETRIC TREE - Mirror image of itself"]
-    N2["Symmetric: Not Symmetric:"]
-    N1 --> N2
-```
 
 **Solution:**
 
@@ -1263,19 +964,6 @@ public boolean isSymmetricIterative(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. INVERT BINARY TREE - Mirror/Flip the tree
-2. Input: Output:
-3. At each node: swap left and right children
-
-```mermaid
-flowchart TD
-    N1["INVERT BINARY TREE - Mirror/Flip the tree"]
-    N2["Input: Output:"]
-    N3["At each node: swap left and right children"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution:**
 
@@ -1327,29 +1015,6 @@ public TreeNode invertTree(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PATH SUM - Root to leaf path with target sum
-2. targetSum = 22
-3. 4 8 Path: 5
-4. 4
-5. 11
-6. 2 = 22 ✓
-7. 4 8 Path: 5
-8. 4
-9. 11
-10. 2 = 22 ✓
-11. ⚠️ Must reach a LEAF node (no children)
-
-```mermaid
-flowchart TD
-    N1["PATH SUM - Root to leaf path with target sum"]
-    N2["targetSum = 22"]
-    N3["4 8 Path: 5→4→11→2 = 22 ✓"]
-    N4["⚠️ Must reach a LEAF node (no children)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -1393,19 +1058,6 @@ public boolean hasPathSum(TreeNode root, int targetSum) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PATH SUM II - Find ALL paths with target sum
-2. targetSum = 22
-3. Output: [[5,4,11,2], [5,8,4,5]]
-
-```mermaid
-flowchart TD
-    N1["PATH SUM II - Find ALL paths with target sum"]
-    N2["targetSum = 22"]
-    N3["Output: [[5,4,11,2], [5,8,4,5]]"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution:**
 
@@ -1472,28 +1124,6 @@ At each node: `count += map.get(currentSum - target)`.
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. PATH SUM III - Path doesn't need to start at root or en
-2. at leaf, but must go downwards
-3. targetSum = 8
-4. Paths that sum to 8:
-5. Output: 3
-6. Use Prefix Sum technique with HashMap!
-
-```mermaid
-flowchart TD
-    N1["PATH SUM III - Path doesn't need to start at root or en"]
-    N2["at leaf, but must go downwards"]
-    N3["targetSum = 8"]
-    N4["Paths that sum to 8:"]
-    N5["Output: 3"]
-    N6["Use Prefix Sum technique with HashMap!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -1562,38 +1192,6 @@ But also check if using BOTH arms (left + node + right) beats the global max.
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MAXIMUM PATH SUM - Path can start and end at any node
-2. Max path: 15
-3. 20
-4. 7 = 42
-5. Max path: 15
-6. 20
-7. 7 = 42
-8. At each node, we can:
-9. 1. Include node + left path
-10. 2. Include node + right path
-11. 3. Include node + both paths (forms arch)
-12. 4. Just the node itself
-
-```mermaid
-flowchart TD
-    N1["MAXIMUM PATH SUM - Path can start and end at any node"]
-    N2["Max path: 15→20→7 = 42"]
-    N3["At each node, we can:"]
-    N4["1. Include node + left path"]
-    N5["2. Include node + right path"]
-    N6["3. Include node + both paths (forms arch)"]
-    N7["4. Just the node itself"]
-    N8["⚠️ Path that goes through root can't extend further up"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -1652,42 +1250,6 @@ private int maxGain(TreeNode node) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DIAMETER - Longest path between any two nodes (in edges
-2. Longest path: 4
-3. 2
-4. 1
-5. 3 or 5
-6. 2
-7. 1
-8. 3 = 3 edges
-9. Longest path: 4
-10. 2
-11. 1
-12. 3 or 5
-13. 2
-14. 1
-15. 3 = 3 edges
-16. Diameter = 3
-17. Note: Path may NOT pass through root!
-18. 2 Diameter = 4
-19. 2
-20. 5
-21. 6
-22. 7 = 4
-
-```mermaid
-flowchart TD
-    N1["DIAMETER - Longest path between any two nodes (in edges"]
-    N2["Longest path: 4→2→1→3 or 5→2→1→3 = 3 edges"]
-    N3["Diameter = 3"]
-    N4["Note: Path may NOT pass through root!"]
-    N5["2 Diameter = 4→2→5→6→7 = 4"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -1740,33 +1302,6 @@ private int depth(TreeNode node) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BINARY SEARCH TREE PROPERTY
-2. For every node:
-3. - All values in LEFT subtree < node value
-4. - All values in RIGHT subtree > node value
-5. 3 10 Valid BST:
-6. / \ \ - Left of 8: {1,3,6} all < 8
-7. 1 6 14 - Right of 8: {10,14} all > 8
-
-```mermaid
-flowchart TD
-    N1["BINARY SEARCH TREE PROPERTY"]
-    N2["For every node:"]
-    N3["- All values in LEFT subtree &lt; node value"]
-    N4["- All values in RIGHT subtree &gt; node value"]
-    N5["3 10 Valid BST:"]
-    N6["/ \ \ - Left of 8: {1,3,6} all &lt; 8"]
-    N7["1 6 14 - Right of 8: {10,14} all &gt; 8"]
-    N8["/ \ / - Inorder: 1,3,6,8,10,13,14 (sorted!)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -1790,28 +1325,6 @@ flowchart TD
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. VALIDATE BST
-2. Valid BST: Invalid BST:
-3. 1 3 1 4 ← 4 < 5 but 3 > right val!
-4. true 3 6
-5. ⚠️ Common mistake: Only checking immediate children
-6. Must check against valid RANGE for each node
-
-```mermaid
-flowchart TD
-    N1["VALIDATE BST"]
-    N2["Valid BST: Invalid BST:"]
-    N3["1 3 1 4 ← 4 &lt; 5 but 3 &gt; right val!"]
-    N4["true 3 6"]
-    N5["⚠️ Common mistake: Only checking immediate children"]
-    N6["Must check against valid RANGE for each node"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -1877,34 +1390,6 @@ public boolean isValidBSTInorder(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SEARCH IN BST
-2. 4 Search for 2:
-3. / \ 4 > 2
-4. go left
-5. / \ 4 > 2
-6. go left
-7. 2 7 2 == 2
-8. found!
-9. 2 7 2 == 2
-10. found!
-11. 1 3 Return subtree rooted at 2
-12. Time: O(h) where h = height (O(log n) for balanced)
-
-```mermaid
-flowchart TD
-    N1["SEARCH IN BST"]
-    N2["4 Search for 2:"]
-    N3["/ \ 4 &gt; 2 → go left"]
-    N4["2 7 2 == 2 → found!"]
-    N5["1 3 Return subtree rooted at 2"]
-    N6["Time: O(h) where h = height (O(log n) for balanced)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -1951,37 +1436,6 @@ public TreeNode searchBSTIterative(TreeNode root, int val) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LOWEST COMMON ANCESTOR (LCA) in BST
-2. 0 4 7 9 LCA(2, 8) = 6
-3. / \ LCA(2, 4) = 2
-4. 3 5 LCA(3, 5) = 4
-5. BST Property helps:
-6. - If both < node
-7. LCA is in left
-8. - If both < node
-9. LCA is in left
-10. - If both > node
-11. LCA is in right
-
-```mermaid
-flowchart TD
-    N1["LOWEST COMMON ANCESTOR (LCA) in BST"]
-    N2["0 4 7 9 LCA(2, 8) = 6"]
-    N3["/ \ LCA(2, 4) = 2"]
-    N4["3 5 LCA(3, 5) = 4"]
-    N5["BST Property helps:"]
-    N6["- If both &lt; node → LCA is in left"]
-    N7["- If both &gt; node → LCA is in right"]
-    N8["- Otherwise, current node is LCA (split point)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -2032,34 +1486,6 @@ If only ONE returns non-null → that result IS the LCA (both p and q are in sam
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LCA in General Binary Tree (not BST)
-2. 6 2 0 8 LCA(5, 1) = 3
-3. / \ LCA(5, 4) = 5
-4. 7 4 LCA(6, 4) = 5
-5. General approach (no BST property):
-6. - Search both subtrees for p and q
-7. - If found in different subtrees
-8. current is LCA
-
-```mermaid
-flowchart TD
-    N1["LCA in General Binary Tree (not BST)"]
-    N2["6 2 0 8 LCA(5, 1) = 3"]
-    N3["/ \ LCA(5, 4) = 5"]
-    N4["7 4 LCA(6, 4) = 5"]
-    N5["General approach (no BST property):"]
-    N6["- Search both subtrees for p and q"]
-    N7["- If found in different subtrees → current is LCA"]
-    N8["- If both in same subtree → recurse"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -2099,37 +1525,6 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Kth SMALLEST IN BST
-2. / \ Inorder: [1, 2, 3, 4]
-3. \ k=1
-4. return 1
-5. \ k=1
-6. return 1
-7. 2 k=2
-8. return 2
-9. 2 k=2
-10. return 2
-11. k=3
-12. return 3
-13. k=3
-14. return 3
-15. Inorder traversal of BST gives sorted order!
-
-```mermaid
-flowchart TD
-    N1["Kth SMALLEST IN BST"]
-    N2["/ \ Inorder: [1, 2, 3, 4]"]
-    N3["\ k=1 → return 1"]
-    N4["2 k=2 → return 2"]
-    N5["k=3 → return 3"]
-    N6["Inorder traversal of BST gives sorted order!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -2185,34 +1580,6 @@ public int kthSmallest(TreeNode root, int k) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. INORDER SUCCESSOR IN BST
-2. Given a BST and a node p, find the in-order successor o
-3. that node (smallest node greater than p).
-4. 2 4 Successor(3) = 4
-5. / Successor(4) = 5
-6. 1 Successor(6) = null
-7. If p has right child
-8. leftmost in right subtree
-
-```mermaid
-flowchart TD
-    N1["INORDER SUCCESSOR IN BST"]
-    N2["Given a BST and a node p, find the in-order successor o"]
-    N3["that node (smallest node greater than p)."]
-    N4["2 4 Successor(3) = 4"]
-    N5["/ Successor(4) = 5"]
-    N6["1 Successor(6) = null"]
-    N7["If p has right child → leftmost in right subtree"]
-    N8["Else → nearest ancestor where p is in left subtree"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -2281,25 +1648,6 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BUILD TREE FROM PREORDER & INORDER
-2. preorder = [3, 9, 20, 15, 7] (Root, Left, Right)
-3. inorder = [9, 3, 15, 20, 7] (Left, Root, Right)
-4. Step 1: First preorder element (3) is ROOT
-5. Step 3: Recursively build subtrees
-
-```mermaid
-flowchart TD
-    N1["BUILD TREE FROM PREORDER & INORDER"]
-    N2["preorder = [3, 9, 20, 15, 7] (Root, Left, Right)"]
-    N3["inorder = [9, 3, 15, 20, 7] (Left, Root, Right)"]
-    N4["Step 1: First preorder element (3) is ROOT"]
-    N5["Step 3: Recursively build subtrees"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -2363,28 +1711,6 @@ private TreeNode build(int[] preorder, int left, int right) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BUILD TREE FROM INORDER & POSTORDER
-2. inorder = [9, 3, 15, 20, 7] (Left, Root, Right)
-3. postorder = [9, 15, 7, 20, 3] (Left, Right, Root)
-4. LAST postorder element (3) is ROOT
-5. Process postorder from END (right to left)
-6. Build RIGHT subtree before LEFT (reverse of preorder)
-
-```mermaid
-flowchart TD
-    N1["BUILD TREE FROM INORDER & POSTORDER"]
-    N2["inorder = [9, 3, 15, 20, 7] (Left, Root, Right)"]
-    N3["postorder = [9, 15, 7, 20, 3] (Left, Right, Root)"]
-    N4["LAST postorder element (3) is ROOT"]
-    N5["Process postorder from END (right to left)"]
-    N6["Build RIGHT subtree before LEFT (reverse of preorder)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -2440,28 +1766,6 @@ private TreeNode build(int[] postorder, int left, int right) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SERIALIZE AND DESERIALIZE BINARY TREE
-2. / \ Serialize: '1,2,null,null,3,4,null,null,5'
-3. 2 3 (Preorder with null markers)
-4. 4 5 Deserialize: Rebuild from string
-5. Using preorder traversal with null markers works becaus
-6. null positions indicate exact tree structure
-
-```mermaid
-flowchart TD
-    N1["SERIALIZE AND DESERIALIZE BINARY TREE"]
-    N2["/ \ Serialize: '1,2,null,null,3,4,null,null,5'"]
-    N3["2 3 (Preorder with null markers)"]
-    N4["4 5 Deserialize: Rebuild from string"]
-    N5["Using preorder traversal with null markers works becaus"]
-    N6["null positions indicate exact tree structure"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 
@@ -2529,25 +1833,6 @@ public class Codec {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COUNT LEAF NODES
-2. A leaf node has no children (both left and right are nu
-3. 2 3 Leaf nodes: 4, 5, 6
-4. / \ \ Count = 3
-5. Constraints:
-
-```mermaid
-flowchart TD
-    N1["COUNT LEAF NODES"]
-    N2["A leaf node has no children (both left and right are nu"]
-    N3["2 3 Leaf nodes: 4, 5, 6"]
-    N4["/ \ \ Count = 3"]
-    N5["Constraints:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 **Solution:**
 
@@ -2580,19 +1865,6 @@ public int countLeaves(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SUM OF ALL NODES
-2. 2 3 Sum = 1 + 2 + 3 + 4 + 5 + 6 = 21
-3. Simple DFS traversal
-
-```mermaid
-flowchart TD
-    N1["SUM OF ALL NODES"]
-    N2["2 3 Sum = 1 + 2 + 3 + 4 + 5 + 6 = 21"]
-    N3["Simple DFS traversal"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution:**
 
@@ -2626,33 +1898,6 @@ public int sumOfNodes(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LEVEL WITH MAXIMUM SUM
-2. Find the level (1-indexed) with the maximum sum.
-3. 1 Level 1: sum = 1
-4. / \ Level 2: sum = 2 + 3 = 5
-5. 2 3 Level 3: sum = 4 + 5 + 6 = 15 ← Maximum
-6. 4 5 6 Output: 3
-7. Constraints:
-
-```mermaid
-flowchart TD
-    N1["LEVEL WITH MAXIMUM SUM"]
-    N2["Find the level (1-indexed) with the maximum sum."]
-    N3["1 Level 1: sum = 1"]
-    N4["/ \ Level 2: sum = 2 + 3 = 5"]
-    N5["2 3 Level 3: sum = 4 + 5 + 6 = 15 ← Maximum"]
-    N6["4 5 6 Output: 3"]
-    N7["Constraints:"]
-    N8["- -10^5 &lt;= node.val &lt;= 10^5"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Solution:**
 
@@ -2709,22 +1954,6 @@ public int maxLevelSum(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. NODES AT K DISTANCE FROM ROOT
-2. 2 3 Nodes at distance 2: [4, 5, 6]
-3. Distance from root = Level - 1
-4. Nodes at distance k are at level k+1
-
-```mermaid
-flowchart TD
-    N1["NODES AT K DISTANCE FROM ROOT"]
-    N2["2 3 Nodes at distance 2: [4, 5, 6]"]
-    N3["Distance from root = Level - 1"]
-    N4["Nodes at distance k are at level k+1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 **Solution:**
 
@@ -2770,19 +1999,6 @@ private void findNodes(TreeNode node, int k, List<Integer> result) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CHECK IF COMPLETE BINARY TREE
-2. Complete: Not Complete:
-3. 4 5 4 5 6 (gap at left of last level)
-
-```mermaid
-flowchart TD
-    N1["CHECK IF COMPLETE BINARY TREE"]
-    N2["Complete: Not Complete:"]
-    N3["4 5 4 5 6 (gap at left of last level)"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Solution:**
 
@@ -2834,28 +2050,6 @@ public boolean isCompleteTree(TreeNode root) {
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. LEFT VIEW OF BINARY TREE
-2. Print first node of each level (as seen from left side)
-3. 2 3 ← (2 is leftmost at this level)
-4. 5 4 ← (5 is leftmost at this level)
-5. Left view: [1, 2, 5]
-6. Right view would be: [1, 3, 4]
-
-```mermaid
-flowchart TD
-    N1["LEFT VIEW OF BINARY TREE"]
-    N2["Print first node of each level (as seen from left side)"]
-    N3["2 3 ← (2 is leftmost at this level)"]
-    N4["5 4 ← (5 is leftmost at this level)"]
-    N5["Left view: [1, 2, 5]"]
-    N6["Right view would be: [1, 3, 4]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 **Solution:**
 

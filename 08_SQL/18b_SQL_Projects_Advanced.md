@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](18a_SQL_Projects_Beginner.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](18a_SQL_Projects_Beginner.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -198,33 +198,6 @@ ORDER BY this_year.month;
 □ Can detect gaps and islands in data
 ```
 
-**Flow:**
-1. □ Can write JOINs without looking up syntax
-2. □ Can use GROUP BY with HAVING confidently
-3. □ Understand when to use subquery vs JOIN vs CTE
-4. □ Can write window functions (ROW_NUMBER, LAG, SUM OVER
-5. □ Can solve problems multiple ways
-6. □ Can optimize slow queries (know when to check EXPLAIN
-7. □ Can handle NULL values correctly
-
-```mermaid
-flowchart TD
-    N1["□ Can write JOINs without looking up syntax"]
-    N2["□ Can use GROUP BY with HAVING confidently"]
-    N3["□ Understand when to use subquery vs JOIN vs CTE"]
-    N4["□ Can write window functions (ROW_NUMBER, LAG, SUM OVER"]
-    N5["□ Can solve problems multiple ways"]
-    N6["□ Can optimize slow queries (know when to check EXPLAIN"]
-    N7["□ Can handle NULL values correctly"]
-    N8["□ Can pivot/unpivot data"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -262,33 +235,6 @@ Everything you need to master SQL for Data Analytics and Data Engineering roles
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. DATA ENGINEERING SQL REQUIREMENTS
-2. Data Engineers deal with:
-3. • VOLUME: Billions of rows daily
-4. • VELOCITY: Real-time data streams
-5. • VARIETY: Multiple sources, formats
-6. • VERACITY: Data quality issues everywhere
-7. Key SQL Skills Required:
-
-```mermaid
-flowchart TD
-    N1["DATA ENGINEERING SQL REQUIREMENTS"]
-    N2["Data Engineers deal with:"]
-    N3["• VOLUME: Billions of rows daily"]
-    N4["• VELOCITY: Real-time data streams"]
-    N5["• VARIETY: Multiple sources, formats"]
-    N6["• VERACITY: Data quality issues everywhere"]
-    N7["Key SQL Skills Required:"]
-    N8["1. Bulk Data Operations - INSERT millions efficiently"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -526,31 +472,6 @@ TRUNCATE TABLE large_table RESTART IDENTITY CASCADE;  -- Reset sequences, cascad
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ETL DATA PIPELINE
-2. RAW DATA > STAGING > CLEANED > DATA WAREHOUSE
-3. Source Systems: Landing Zone: Cleaning: Final Tables:
-4. • CSV files • raw_sales • Handle NULLs • fact_sales
-5. • APIs • raw_users • Fix types • dim_customers
-6. • Databases • raw_products • Deduplicate • dim_products
-7. • Validate • dim_date
-
-```mermaid
-flowchart TD
-    N1["ETL DATA PIPELINE"]
-    N2["RAW DATA &gt; STAGING &gt; CLEANED &gt; DATA WAREHOUSE"]
-    N3["Source Systems: Landing Zone: Cleaning: Final Tables:"]
-    N4["• CSV files • raw_sales • Handle NULLs • fact_sales"]
-    N5["• APIs • raw_users • Fix types • dim_customers"]
-    N6["• Databases • raw_products • Deduplicate • dim_products"]
-    N7["• Validate • dim_date"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 
 
@@ -1348,33 +1269,6 @@ VALUES ('fact_sales', @@ROWCOUNT, CURRENT_TIMESTAMP);
 □ Can write recursive CTEs for hierarchies
 ```
 
-**Flow:**
-1. □ Can write efficient bulk INSERT/UPDATE/DELETE
-2. □ Understand COPY vs INSERT performance difference
-3. □ Can build ETL transformations in pure SQL
-4. □ Know all window function types (RANK, LAG, SUM OVER)
-5. □ Can implement SCD Type 1 and Type 2
-6. □ Understand star schema design
-7. □ Can perform incremental loads
-
-```mermaid
-flowchart TD
-    N1["□ Can write efficient bulk INSERT/UPDATE/DELETE"]
-    N2["□ Understand COPY vs INSERT performance difference"]
-    N3["□ Can build ETL transformations in pure SQL"]
-    N4["□ Know all window function types (RANK, LAG, SUM OVER)"]
-    N5["□ Can implement SCD Type 1 and Type 2"]
-    N6["□ Understand star schema design"]
-    N7["□ Can perform incremental loads"]
-    N8["□ Know when to use indexes and which type"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

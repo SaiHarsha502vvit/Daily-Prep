@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](06_Two_Pointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Stack_Queue.md)
+﻿**Navigation**: [< Previous](06_Two_Pointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Stack_Queue.md)
 
 **Problems 07/14** | [Prev](06_Two_Pointers.md) | [Index](../00_MASTER_INDEX.md) | [Next](08_Stack_Queue.md)
 
@@ -124,31 +124,6 @@ public int search(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SEARCH INSERT POSITION
-2. Input: nums = [1, 3, 5, 6], target = 5
-3. Output: 2
-4. Input: nums = [1, 3, 5, 6], target = 2
-5. Output: 1
-6. Input: nums = [1, 3, 5, 6], target = 7
-7. Output: 4
-
-```mermaid
-flowchart TD
-    N1["SEARCH INSERT POSITION"]
-    N2["Input: nums = [1, 3, 5, 6], target = 5"]
-    N3["Output: 2"]
-    N4["Input: nums = [1, 3, 5, 6], target = 2"]
-    N5["Output: 1"]
-    N6["Input: nums = [1, 3, 5, 6], target = 7"]
-    N7["Output: 4"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```java
 public int searchInsert(int[] nums, int target) {
@@ -194,28 +169,6 @@ public int searchInsert(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIRST BAD VERSION
-2. Find the first bad version.
-3. Input: n = 5, bad = 4
-4. Versions: [G, G, G, B, B]
-5. Output: 4
-6. Pattern: Find leftmost true (first bad)
-
-```mermaid
-flowchart TD
-    N1["FIRST BAD VERSION"]
-    N2["Find the first bad version."]
-    N3["Input: n = 5, bad = 4"]
-    N4["Versions: [G, G, G, B, B]"]
-    N5["Output: 4"]
-    N6["Pattern: Find leftmost true (first bad)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```java
 public int firstBadVersion(int n) {
@@ -278,28 +231,6 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIND FIRST AND LAST POSITION
-2. Input: nums = [5, 7, 7, 8, 8, 10], target = 8
-3. Output: [3, 4]
-4. Input: nums = [5, 7, 7, 8, 8, 10], target = 6
-5. Output: [-1, -1]
-6. Two binary searches: Find leftmost, find rightmost
-
-```mermaid
-flowchart TD
-    N1["FIND FIRST AND LAST POSITION"]
-    N2["Input: nums = [5, 7, 7, 8, 8, 10], target = 8"]
-    N3["Output: [3, 4]"]
-    N4["Input: nums = [5, 7, 7, 8, 8, 10], target = 6"]
-    N5["Output: [-1, -1]"]
-    N6["Two binary searches: Find leftmost, find rightmost"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```java
 public int[] searchRange(int[] nums, int target) {
@@ -374,33 +305,6 @@ private int findLast(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIND SMALLEST LETTER GREATER THAN TARGET
-2. Letters wrap around (if none greater, return first lett
-3. Input: letters = ['c','f','j'], target = 'a'
-4. Output: 'c'
-5. Input: letters = ['c','f','j'], target = 'c'
-6. Output: 'f'
-7. Input: letters = ['c','f','j'], target = 'k'
-
-```mermaid
-flowchart TD
-    N1["FIND SMALLEST LETTER GREATER THAN TARGET"]
-    N2["Letters wrap around (if none greater, return first lett"]
-    N3["Input: letters = ['c','f','j'], target = 'a'"]
-    N4["Output: 'c'"]
-    N5["Input: letters = ['c','f','j'], target = 'c'"]
-    N6["Output: 'f'"]
-    N7["Input: letters = ['c','f','j'], target = 'k'"]
-    N8["Output: 'c' (wrap around)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public char nextGreatestLetter(char[] letters, char target) {
@@ -454,33 +358,6 @@ public char nextGreatestLetter(char[] letters, char target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SEARCH IN ROTATED SORTED ARRAY
-2. Array was sorted then rotated at unknown pivot.
-3. No duplicates. Search for target.
-4. Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0
-5. Output: 4
-6. Visual:
-7. Original: [0, 1, 2, 4, 5, 6, 7]
-
-```mermaid
-flowchart TD
-    N1["SEARCH IN ROTATED SORTED ARRAY"]
-    N2["Array was sorted then rotated at unknown pivot."]
-    N3["No duplicates. Search for target."]
-    N4["Input: nums = [4, 5, 6, 7, 0, 1, 2], target = 0"]
-    N5["Output: 4"]
-    N6["Visual:"]
-    N7["Original: [0, 1, 2, 4, 5, 6, 7]"]
-    N8["Rotated: [4, 5, 6, 7, 0, 1, 2]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int search(int[] nums, int target) {
@@ -536,25 +413,6 @@ public int search(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SEARCH IN ROTATED SORTED ARRAY II (WITH DUPLICATES)
-2. Same as above but array may have duplicates.
-3. Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0
-4. Output: true
-5. Solution: Skip duplicates by left++, right--
-
-```mermaid
-flowchart TD
-    N1["SEARCH IN ROTATED SORTED ARRAY II (WITH DUPLICATES)"]
-    N2["Same as above but array may have duplicates."]
-    N3["Input: nums = [2, 5, 6, 0, 0, 1, 2], target = 0"]
-    N4["Output: true"]
-    N5["Solution: Skip duplicates by left++, right--"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ```java
 public boolean search(int[] nums, int target) {
@@ -620,33 +478,6 @@ public boolean search(int[] nums, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIND MINIMUM IN ROTATED SORTED ARRAY
-2. Input: nums = [3, 4, 5, 1, 2]
-3. Output: 1
-4. Visual:
-5. 1 ← minimum
-6. KEY: Compare mid with right
-7. - If mid > right: min is in right half
-
-```mermaid
-flowchart TD
-    N1["FIND MINIMUM IN ROTATED SORTED ARRAY"]
-    N2["Input: nums = [3, 4, 5, 1, 2]"]
-    N3["Output: 1"]
-    N4["Visual:"]
-    N5["1 ← minimum"]
-    N6["KEY: Compare mid with right"]
-    N7["- If mid &gt; right: min is in right half"]
-    N8["- If mid &lt; right: min is in left half (including mid"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int findMin(int[] nums) {
@@ -692,28 +523,6 @@ public int findMin(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SQRT(X) - Binary Search on Answer
-2. Find integer square root (truncate decimals).
-3. Input: x = 8
-4. Output: 2 (√8 = 2.828..., truncated to 2)
-5. Binary search range: [1, x]
-6. Find largest n where n*n <= x
-
-```mermaid
-flowchart TD
-    N1["SQRT(X) - Binary Search on Answer"]
-    N2["Find integer square root (truncate decimals)."]
-    N3["Input: x = 8"]
-    N4["Output: 2 (√8 = 2.828..., truncated to 2)"]
-    N5["Binary search range: [1, x]"]
-    N6["Find largest n where n*n &lt;= x"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```java
 public int mySqrt(int x) {
@@ -766,33 +575,6 @@ public int mySqrt(int x) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. KOKO EATING BANANAS
-2. Koko eats k bananas/hour. Guard returns in h hours.
-3. Find minimum k to eat all bananas before guard returns.
-4. Input: piles = [3, 6, 7, 11], h = 8
-5. Output: 4
-6. Explanation: At k=4, time needed:
-7. pile 3: ceil(3/4) = 1 hour
-
-```mermaid
-flowchart TD
-    N1["KOKO EATING BANANAS"]
-    N2["Koko eats k bananas/hour. Guard returns in h hours."]
-    N3["Find minimum k to eat all bananas before guard returns."]
-    N4["Input: piles = [3, 6, 7, 11], h = 8"]
-    N5["Output: 4"]
-    N6["Explanation: At k=4, time needed:"]
-    N7["pile 3: ceil(3/4) = 1 hour"]
-    N8["pile 6: ceil(6/4) = 2 hours"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int minEatingSpeed(int[] piles, int h) {
@@ -849,33 +631,6 @@ private boolean canFinish(int[] piles, int h, int k) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. CAPACITY TO SHIP PACKAGES
-2. Packages must be shipped IN ORDER.
-3. Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5
-4. Output: 15
-5. Explanation:
-6. Day 1: 1,2,3,4,5 (sum=15)
-7. Day 2: 6,7 (sum=13)
-
-```mermaid
-flowchart TD
-    N1["CAPACITY TO SHIP PACKAGES"]
-    N2["Packages must be shipped IN ORDER."]
-    N3["Input: weights = [1,2,3,4,5,6,7,8,9,10], days = 5"]
-    N4["Output: 15"]
-    N5["Explanation:"]
-    N6["Day 1: 1,2,3,4,5 (sum=15)"]
-    N7["Day 2: 6,7 (sum=13)"]
-    N8["Day 3: 8 (sum=8)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int shipWithinDays(int[] weights, int days) {
@@ -936,33 +691,6 @@ private boolean canShip(int[] weights, int days, int capacity) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SPLIT ARRAY LARGEST SUM
-2. Input: nums = [7,2,5,10,8], k = 2
-3. Output: 18
-4. Explanation:
-5. Split: [7,2,5] and [10,8]
-6. Sums: 14 and 18
-7. Largest sum = 18 (minimized)
-
-```mermaid
-flowchart TD
-    N1["SPLIT ARRAY LARGEST SUM"]
-    N2["Input: nums = [7,2,5,10,8], k = 2"]
-    N3["Output: 18"]
-    N4["Explanation:"]
-    N5["Split: [7,2,5] and [10,8]"]
-    N6["Sums: 14 and 18"]
-    N7["Largest sum = 18 (minimized)"]
-    N8["Binary search on max sum allowed"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int splitArray(int[] nums, int k) {
@@ -1045,33 +773,6 @@ private boolean canSplit(int[] nums, int k, int maxSum) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIND K-TH SMALLEST PAIR DISTANCE
-2. (LeetCode 719 - Hard)
-3. Find the k-th smallest distance among all pairs.
-4. Example 1:
-5. Input: nums = [1, 3, 1], k = 1
-6. Output: 0
-7. Explanation:
-
-```mermaid
-flowchart TD
-    N1["FIND K-TH SMALLEST PAIR DISTANCE"]
-    N2["(LeetCode 719 - Hard)"]
-    N3["Find the k-th smallest distance among all pairs."]
-    N4["Example 1:"]
-    N5["Input: nums = [1, 3, 1], k = 1"]
-    N6["Output: 0"]
-    N7["Explanation:"]
-    N8["Sorted: [0, 2, 2]"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int smallestDistancePair(int[] nums, int k) {
@@ -1148,29 +849,6 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIND PEAK ELEMENT (LeetCode 162 - Medium)
-2. A peak element is strictly greater than its neighbors.
-3. Return index of ANY peak. nums[-1] = nums[n] = -∞.
-4. Example: nums = [1,2,3,1]
-5. Output: 2 (nums[2]=3 is pea
-6. Example: nums = [1,2,3,1]
-7. Output: 2 (nums[2]=3 is pea
-8. TIME: O(log n)
-9. SPACE: O(1)
-
-```mermaid
-flowchart TD
-    N1["FIND PEAK ELEMENT (LeetCode 162 - Medium)"]
-    N2["A peak element is strictly greater than its neighbors."]
-    N3["Return index of ANY peak. nums[-1] = nums[n] = -∞."]
-    N4["Example: nums = [1,2,3,1] → Output: 2 (nums[2]=3 is pea"]
-    N5["TIME: O(log n) | SPACE: O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ```java
 public int findPeakElement(int[] nums) {
@@ -1209,26 +887,6 @@ public int findPeakElement(int[] nums) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SEARCH A 2D MATRIX (LeetCode 74 - Medium)
-2. Determine if target exists in matrix.
-3. Example:
-4. Output: true
-5. TIME: O(log(m*n))
-6. SPACE: O(1)
-
-```mermaid
-flowchart TD
-    N1["SEARCH A 2D MATRIX (LeetCode 74 - Medium)"]
-    N2["Determine if target exists in matrix."]
-    N3["Example:"]
-    N4["Output: true"]
-    N5["TIME: O(log(m*n)) | SPACE: O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ```java
 public boolean searchMatrix(int[][] matrix, int target) {
@@ -1270,32 +928,6 @@ public boolean searchMatrix(int[][] matrix, int target) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. TIME BASED KEY-VALUE STORE (LeetCode 981 - Medium)
-2. set(key, value, timestamp) — store key-value with times
-3. Example:
-4. set('foo','bar',1), get('foo',1)
-5. 'bar'
-6. set('foo','bar',1), get('foo',1)
-7. 'bar'
-8. KEY: Binary search on timestamps for each key.
-9. TIME: set O(1), get O(log n)
-10. SPACE: O(n)
-
-```mermaid
-flowchart TD
-    N1["TIME BASED KEY-VALUE STORE (LeetCode 981 - Medium)"]
-    N2["set(key, value, timestamp) — store key-value with times"]
-    N3["Example:"]
-    N4["set('foo','bar',1), get('foo',1) → 'bar'"]
-    N5["KEY: Binary search on timestamps for each key."]
-    N6["TIME: set O(1), get O(log n) | SPACE: O(n)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```java
 class TimeMap {
@@ -1346,39 +978,6 @@ class TimeMap {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. MEDIAN OF TWO SORTED ARRAYS (LeetCode 4 - Hard)
-2. Given two sorted arrays nums1 and nums2, return the med
-3. Overall runtime must be O(log(m+n)).
-4. Example:
-5. nums1 = [1,3], nums2 = [2]
-6. Output: 2.0
-7. nums1 = [1,3], nums2 = [2]
-8. Output: 2.0
-9. nums1 = [1,2], nums2 = [3,4]
-10. Output: 2.5
-11. nums1 = [1,2], nums2 = [3,4]
-12. Output: 2.5
-13. KEY: Binary search on partition of shorter array.
-
-```mermaid
-flowchart TD
-    N1["MEDIAN OF TWO SORTED ARRAYS (LeetCode 4 - Hard)"]
-    N2["Given two sorted arrays nums1 and nums2, return the med"]
-    N3["Overall runtime must be O(log(m+n))."]
-    N4["Example:"]
-    N5["nums1 = [1,3], nums2 = [2] → Output: 2.0"]
-    N6["nums1 = [1,2], nums2 = [3,4] → Output: 2.5"]
-    N7["KEY: Binary search on partition of shorter array."]
-    N8["Split both arrays so left half has (m+n+1)/2 elements."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public double findMedianSortedArrays(int[] nums1, int[] nums2) {
@@ -1438,39 +1037,6 @@ public double findMedianSortedArrays(int[] nums1, int[] nums2) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. MAGNETIC FORCE BETWEEN TWO BALLS (LeetCode 1552 - Mediu
-2. (distance) between any two balls.
-3. Example:
-4. position = [1,2,3,4,7], m = 3
-5. Output: 3
-6. position = [1,2,3,4,7], m = 3
-7. Output: 3
-8. Place at positions 1, 4, 7
-9. min distance = 3
-10. Place at positions 1, 4, 7
-11. min distance = 3
-12. KEY: Binary search on answer (minimum distance).
-13. For each candidate distance, greedily check if m balls
-
-```mermaid
-flowchart TD
-    N1["MAGNETIC FORCE BETWEEN TWO BALLS (LeetCode 1552 - Mediu"]
-    N2["(distance) between any two balls."]
-    N3["Example:"]
-    N4["position = [1,2,3,4,7], m = 3 → Output: 3"]
-    N5["Place at positions 1, 4, 7 → min distance = 3"]
-    N6["KEY: Binary search on answer (minimum distance)."]
-    N7["For each candidate distance, greedily check if m balls"]
-    N8["TIME: O(n log(maxDist)) | SPACE: O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int maxDistance(int[] position, int m) {

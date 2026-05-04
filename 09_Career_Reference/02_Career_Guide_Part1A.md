@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03_Career_Guide_Part1B.md)
+﻿> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03_Career_Guide_Part1B.md)
 
 ---
 
@@ -42,33 +42,6 @@
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. COMPLETE PROJECT LIFECYCLE
-2. 1. CLIENT DISCOVERY 2. REQUIREMENTS
-3. First meeting Feature list
-4. Understanding need User stories
-5. Budget/Timeline Acceptance criteria
-6. 3. DESIGN PHASE 4. ARCHITECTURE
-7. UI/UX Design System design
-
-```mermaid
-flowchart TD
-    N1["COMPLETE PROJECT LIFECYCLE"]
-    N2["1. CLIENT DISCOVERY 2. REQUIREMENTS"]
-    N3["First meeting Feature list"]
-    N4["Understanding need User stories"]
-    N5["Budget/Timeline Acceptance criteria"]
-    N6["3. DESIGN PHASE 4. ARCHITECTURE"]
-    N7["UI/UX Design System design"]
-    N8["Wireframes Database schema"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -85,32 +58,6 @@ BEFORE THE MEETING:
 └── Set up note-taking system
 ```
 
-**Flow:**
-1. BEFORE THE MEETING:
-2. Research the client's business
-3. BEFORE THE MEETING:
-4. Understand their industry
-5. BEFORE THE MEETING:
-6. Look at competitors
-7. BEFORE THE MEETING:
-8. Prepare question list
-9. BEFORE THE MEETING:
-10. Set up note-taking system
-
-```mermaid
-flowchart TD
-    N1["BEFORE THE MEETING:"]
-    N2["Research the client's business"]
-    N3["Understand their industry"]
-    N4["Look at competitors"]
-    N5["Prepare question list"]
-    N6["Set up note-taking system"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-```
 
 ### Essential Questions Checklist
 
@@ -270,31 +217,6 @@ ACCEPTANCE CRITERIA:
 - Then [expected result]
 ```
 
-**Flow:**
-1. 'Users should login'
-2. Auth system (OAuth/JWT/Session)
-3. 'Show dashboard'
-4. Real-time or cached data?
-5. 'Process payments'
-6. Payment gateway integration
-7. 'Send notifications'
-8. Email/SMS/Push/In-app?
-
-```mermaid
-flowchart LR
-    N1["'Users should login'"]
-    N2["Auth system (OAuth/JWT/Session)"]
-    N3["'Show dashboard'"]
-    N4["Real-time or cached data?"]
-    N5["'Process payments'"]
-    N6["Payment gateway integration"]
-    N7["'Send notifications'"]
-    N8["Email/SMS/Push/In-app?"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-```
 
 **Example - Finance App:**
 
@@ -377,33 +299,6 @@ Date: [Date]
    - Technology: [Specified stack]
 ```
 
-**Flow:**
-1. USER STORY: Account Balance View
-2. AS A bank customer
-3. I WANT TO see my account balance
-4. SO THAT I can track my finances
-5. ACCEPTANCE CRITERIA:
-6. - Given I am logged in
-7. - When I open the dashboard
-
-```mermaid
-flowchart TD
-    N1["USER STORY: Account Balance View"]
-    N2["AS A bank customer"]
-    N3["I WANT TO see my account balance"]
-    N4["SO THAT I can track my finances"]
-    N5["ACCEPTANCE CRITERIA:"]
-    N6["- Given I am logged in"]
-    N7["- When I open the dashboard"]
-    N8["- And I see balance formatted in my preferred currency"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -443,33 +338,6 @@ KEY INSIGHT: Even a command-line tool has UX!
 - Good documentation
 ```
 
-**Flow:**
-1. UX (User Experience) UI (User Interface)
-2. How it WORKS How it LOOKS
-3. User journey Colors, fonts
-4. Information architecture Buttons, icons
-5. Interaction design Visual hierarchy
-6. Usability Aesthetics
-7. APPLIES TO: APPLIES TO:
-
-```mermaid
-flowchart TD
-    N1["UX (User Experience) UI (User Interface)"]
-    N2["How it WORKS How it LOOKS"]
-    N3["User journey Colors, fonts"]
-    N4["Information architecture Buttons, icons"]
-    N5["Interaction design Visual hierarchy"]
-    N6["Usability Aesthetics"]
-    N7["APPLIES TO: APPLIES TO:"]
-    N8["✓ Web apps ✓ Web apps"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### UX for Different Application Types
 
@@ -725,44 +593,6 @@ ENTITIES FOR A FINANCE APPLICATION:
    - Security and compliance tracking
 ```
 
-**Flow:**
-1. 1. IDENTIFY ENTITIES
-2. What 'things' exist in the system?
-3. 2. DEFINE ATTRIBUTES
-4. What information about each thing?
-5. 3. ESTABLISH RELATIONSHIPS
-6. How do things relate to each other?
-7. 4. NORMALIZE
-8. Reduce redundancy, ensure integrity
-9. 5. DENORMALIZE (if needed)
-10. Optimize for read performance
-11. 6. INDEX
-12. Speed up frequent queries
-
-```mermaid
-flowchart TD
-    N1["1. IDENTIFY ENTITIES"]
-    N2["What 'things' exist in the system?"]
-    N3["2. DEFINE ATTRIBUTES"]
-    N4["What information about each thing?"]
-    N5["3. ESTABLISH RELATIONSHIPS"]
-    N6["How do things relate to each other?"]
-    N7["4. NORMALIZE"]
-    N8["Reduce redundancy, ensure integrity"]
-    N9["5. DENORMALIZE (if needed)"]
-    N10["Optimize for read performance"]
-    N11["6. INDEX"]
-    N12["Speed up frequent queries"]
-    N13["7. PLAN FOR SCALE"]
-    N14["Partitioning, sharding strategy"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N14
-```
 
 ### Schema Design - Complete Example
 

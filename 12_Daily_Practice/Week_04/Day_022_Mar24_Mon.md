@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_023_Mar25_Tue.md)
+﻿> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_023_Mar25_Tue.md)
 
 # DAY 022 — Monday, March 24, 2026
 ## WEEK 04: Trie + Graph BFS/DFS + SQL Indexes
@@ -48,16 +48,6 @@ Trie = Tree where each edge is a CHARACTER
        Path from root = PREFIX
 ```
 
-**Flow:**
-1. HashMap approach: Check ALL 1M words
-2. O(N * L)
-
-```mermaid
-flowchart LR
-    N1["HashMap approach: Check ALL 1M words"]
-    N2["O(N * L)"]
-    N1 --> N2
-```
 
 ### WHAT: Trie Structure
 
@@ -229,23 +219,6 @@ Finding 'Smith': root → R (go right) → S is in R-U → leaf → found!
 Only 3 levels checked instead of 1M rows
 ```
 
-**Flow:**
-1. Finding 'Smith': root
-2. R (go right)
-3. S is in R-U leaf found!
-
-```mermaid
-flowchart LR
-    N1["Finding 'Smith': root"]
-    N2["R (go right)"]
-    N3["S is in R-U"]
-    N4["leaf"]
-    N5["found!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ### HOW: Create and Use Indexes
 

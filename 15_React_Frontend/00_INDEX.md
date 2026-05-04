@@ -17,6 +17,16 @@
 | 9 | [React Deep Reasoning](09_React_Deep_Reasoning.md) | React reasoning patterns |
 | 10 | [Custom Hooks Library](10_Custom_Hooks_Library.md) | Reusable hooks collection |
 | 11 | [Complex UI Patterns](11_Complex_UI_Pages_Patterns.md) | Dashboard, forms, tables, modals |
+| 12 | [Hands-On React Projects](12_Hands_On_React_Projects.md) | MIT/KTH Edge-Case Challenges (Race conditions, Mutability, Context) |
+| 13 | [MIT Architecture Bootcamp](13_MIT_React_Architecture_Bootcamp.md) | Vanilla JS Engine to React Bridge, Memory, Event Loop |
+
+## Hands-On Practice
+
+After reading the theory, test your understanding with interactive broken-code challenges:
+
+→ [Frontend Challenges (5 broken systems)](../19_Frontend_Integration/frontend_challenges/) — DOM sync, race conditions, stacking contexts, stale closures, deep immutability
+
+Each challenge file contains the bug, the hidden systems knowledge, AND the real-world data flow story.
 
 ---
 [← Back to Master Index](../00_MASTER_INDEX.md)

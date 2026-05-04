@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](15_System_Design_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Frontend_Architecture_Thinking.md)
+﻿**Navigation**: [< Previous](15_System_Design_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Frontend_Architecture_Thinking.md)
 
 # Mental Models — Distributed Systems Thinking
 
@@ -79,32 +79,6 @@ NOT Idem:   POST /payments         (might charge twice!)
 FIX:        POST /payments + idempotency_key=abc123
 ```
 
-**Flow:**
-1. When Service A calls Service B, there are ONLY 3 outcom
-2. SUCCESS — B processed the request and responded
-3. FAILURE — B responded with an error
-4. (At least you KNOW it failed)
-5. TIMEOUT — No response at all ⚠️
-6. This is the WORST case. You DON'T KNOW: - Did B receive the request?
-
-```mermaid
-flowchart TD
-    N1["When Service A calls Service B, there are ONLY 3 outcom"]
-    N2["1. SUCCESS — B processed the request and responded"]
-    N3["2. FAILURE — B responded with an error"]
-    N4["(At least you KNOW it failed)"]
-    N5["3. TIMEOUT — No response at all ⚠️"]
-    N6["This is the WORST case. You DON'T KNOW:"]
-    N7["- Did B receive the request?"]
-    N8["- Did B process it but the response got lost?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -143,36 +117,6 @@ Post likes? Eventual is fine.
 Money transfer? Strong consistency is mandatory.
 ```
 
-**Flow:**
-1. STRICT
-2. Strong (Linearizable)
-3. Example: Bank balance
-4. Sequential
-5. 'Operations from each client are in order'
-6. Causal
-7. Example: Reply appears after the original comment
-8. Read-Your-Writes
-9. Example: Edit your profile, you see it updated
-10. Eventual
-
-```mermaid
-flowchart TD
-    N1["STRICT"]
-    N2["Strong (Linearizable)"]
-    N3["Example: Bank balance"]
-    N4["Sequential"]
-    N5["'Operations from each client are in order'"]
-    N6["Causal"]
-    N7["Example: Reply appears after the original comment"]
-    N8["Read-Your-Writes"]
-    N9["Example: Edit your profile, you see it updated"]
-    N10["Eventual"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-```
 
 ---
 
@@ -305,16 +249,6 @@ Async: User doesn't need immediate response (email, analytics)
 Hybrid: Acknowledge immediately, process in background
 ```
 
-**Flow:**
-1. Event / Queue
-2. B / C / D
-
-```mermaid
-flowchart LR
-    N1["Event / Queue"]
-    N2["B / C / D"]
-    N1 --> N2
-```
 
 ---
 
@@ -349,22 +283,6 @@ TECHNIQUES TO REDUCE BLAST RADIUS:
 • Cell Architecture: Independent copies serving different users
 ```
 
-**Flow:**
-1. Monolith: if payment module / has a memory leak, the EN
-2. User Svc / ✓
-3. Payment Svc / ✗
-4. Notify Svc / ✓
-
-```mermaid
-flowchart TD
-    N1["Monolith: if payment module / has a memory leak, the EN"]
-    N2["User Svc / ✓"]
-    N3["Payment Svc / ✗"]
-    N4["Notify Svc / ✓"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 

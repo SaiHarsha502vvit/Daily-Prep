@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch27_Pre_Spring_Part2.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch27_Pre_Spring_Part2.md)
 
 ---
 
@@ -51,22 +51,6 @@ _The "invisible" knowledge gap between tutorials and real understanding_
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHY: Why Learn Hidden Foundations? / • Spring is 90% re
-2. HOW: How These Foundations Power Spring? / • Reflection
-3. WHEN: When to Study These Topics? / • Before Spring Boo
-4. WHICH: Which Foundations are Most Critical? / ESSENTIAL
-
-```mermaid
-flowchart TD
-    N1["WHY: Why Learn Hidden Foundations? / • Spring is 90% re"]
-    N2["HOW: How These Foundations Power Spring? / • Reflection"]
-    N3["WHEN: When to Study These Topics? / • Before Spring Boo"]
-    N4["WHICH: Which Foundations are Most Critical? / ESSENTIAL"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -135,46 +119,6 @@ If you study each section by asking "what metadata is read", "what boundary is i
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SPRING IS 90% REFLECTION
-2. Spring Boot does ALL of this using Reflection:
-3. @Autowired
-4. Reflection finds field, injects bean
-5. @Autowired
-6. Reflection finds field, injects bean
-7. @Component scan
-8. Reflection discovers classes
-9. @Component scan
-10. Reflection discovers classes
-11. @RequestMapping
-12. Reflection reads annotation metadata
-13. @RequestMapping
-14. Reflection reads annotation metadata
-15. @Value('${prop}')
-16. Reflection sets field values
-17. @Value('${prop}')
-18. Reflection sets field values
-19. @Transactional
-20. Reflection creates proxy at runtime
-
-```mermaid
-flowchart TD
-    N1["SPRING IS 90% REFLECTION"]
-    N2["Spring Boot does ALL of this using Reflection:"]
-    N3["@Autowired → Reflection finds field, injects bean"]
-    N4["@Component scan → Reflection discovers classes"]
-    N5["@RequestMapping → Reflection reads annotation metadata"]
-    N6["@Value('${prop}') → Reflection sets field values"]
-    N7["@Transactional → Reflection creates proxy at runtime"]
-    N8["Repository methods → Reflection generates implementatio"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## A.1 What Is Reflection?
 
@@ -665,40 +609,6 @@ public class CachedDispatcher {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. YOU USE ANNOTATIONS DAILY BUT NEVER ASK: HOW DO THEY WO
-2. @Override
-3. Checked at COMPILE time (compiler magic)
-4. @Override
-5. Checked at COMPILE time (compiler magic)
-6. @Deprecated
-7. Warning at COMPILE time
-8. @Deprecated
-9. Warning at COMPILE time
-10. @Autowired
-11. Processed at RUNTIME (Spring reflection)
-12. @Autowired
-13. Processed at RUNTIME (Spring reflection)
-14. @Entity
-15. Processed at RUNTIME (Hibernate reflection)
-16. @Entity
-17. Processed at RUNTIME (Hibernate reflection)
-18. THREE different mechanisms! Do you know which is which?
-
-```mermaid
-flowchart TD
-    N1["YOU USE ANNOTATIONS DAILY BUT NEVER ASK: HOW DO THEY WO"]
-    N2["@Override → Checked at COMPILE time (compiler magic)"]
-    N3["@Deprecated → Warning at COMPILE time"]
-    N4["@Autowired → Processed at RUNTIME (Spring reflection)"]
-    N5["@Entity → Processed at RUNTIME (Hibernate reflection)"]
-    N6["THREE different mechanisms! Do you know which is which?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ## B.1 Creating Custom Annotations
 
@@ -771,25 +681,6 @@ public @interface RuntimeAvailable { }
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. RETENTION POLICY COMPARISON
-2. Policy In Source In .class At Runtime Example
-3. SOURCE ✅ ❌ ❌ @Override, @SuppressWarnings
-4. CLASS ✅ ✅ ❌ Default, bytecode tools
-5. RUNTIME ✅ ✅ ✅ @Autowired, @Entity
-
-```mermaid
-flowchart TD
-    N1["RETENTION POLICY COMPARISON"]
-    N2["Policy In Source In .class At Runtime Example"]
-    N3["SOURCE ✅ ❌ ❌ @Override, @SuppressWarnings"]
-    N4["CLASS ✅ ✅ ❌ Default, bytecode tools"]
-    N5["RUNTIME ✅ ✅ ✅ @Autowired, @Entity"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 
 
@@ -1053,33 +944,6 @@ Testability and Coupling. In a Service Locator, a class actively asks the enviro
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Your Code: What Spring Creates:
-2. @Service @Service
-3. class UserService { class UserService$Proxy extends ...
-4. @Transactional private UserService target;
-5. void save(User u) {
-6. repo.save(u); void save(User u) {
-7. } beginTransaction();
-
-```mermaid
-flowchart TD
-    N1["Your Code: What Spring Creates:"]
-    N2["@Service @Service"]
-    N3["class UserService { class UserService$Proxy extends ..."]
-    N4["@Transactional private UserService target;"]
-    N5["void save(User u) {"]
-    N6["repo.save(u); void save(User u) {"]
-    N7["} beginTransaction();"]
-    N8["} try {"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## C.1 JDK Dynamic Proxies - Interface-Based
 
@@ -1439,33 +1303,6 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SPRING MVC IS BUILT ON SERVLETS - YOU JUST DON'T SEE TH
-2. When you write: Behind the scenes:
-3. @GetMapping('/users') HttpServletRequest request
-4. public List<User> getUsers() { HttpServletRespons
-5. return userService.findAll(); FilterChain chain
-6. } DispatcherServlet
-7. RequestMapping handler
-
-```mermaid
-flowchart TD
-    N1["SPRING MVC IS BUILT ON SERVLETS - YOU JUST DON'T SEE TH"]
-    N2["When you write: Behind the scenes:"]
-    N3["@GetMapping('/users') HttpServletRequest request"]
-    N4["public List&lt;User&gt; getUsers() { HttpServletRespons"]
-    N5["return userService.findAll(); FilterChain chain"]
-    N6["} DispatcherServlet"]
-    N7["RequestMapping handler"]
-    N8["View resolution"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## D.1 The Servlet Lifecycle
 
@@ -1816,31 +1653,6 @@ Testability and Coupling. In a Service Locator, a class actively asks the enviro
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. EVERY @RestController USES JACKSON - DO YOU KNOW HOW?
-2. @GetMapping('/user')
-3. public User getUser() {
-4. return new User('John', 25);
-5. @PostMapping('/user')
-6. public void create(@RequestBody User user) {
-7. WHO CONVERTS JAVA ↔ JSON? JACKSON!
-
-```mermaid
-flowchart TD
-    N1["EVERY @RestController USES JACKSON - DO YOU KNOW HOW?"]
-    N2["@GetMapping('/user')"]
-    N3["public User getUser() {"]
-    N4["return new User('John', 25);"]
-    N5["@PostMapping('/user')"]
-    N6["public void create(@RequestBody User user) {"]
-    N7["WHO CONVERTS JAVA ↔ JSON? JACKSON!"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ## E.1 ObjectMapper - The Core Component
 

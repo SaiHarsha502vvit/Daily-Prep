@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous](23_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Common_Mistakes.md)
+﻿> **Navigation**: [< Previous](23_Edge_Cases.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_Common_Mistakes.md)
 
 > **Problems 02/14** | [Prev](01_Intro_Checklist.md) | [Index](../00_MASTER_INDEX.md) | [Next](03_Strings.md)
 
@@ -86,33 +86,6 @@ public boolean isPrime(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. COUNT PRIMES
-2. Count the number of prime numbers less than n.
-3. Input: n = 10
-4. Output: 4
-5. Explanation: Primes less than 10 are 2, 3, 5, 7
-6. Input: n = 0
-7. Output: 0
-
-```mermaid
-flowchart TD
-    N1["COUNT PRIMES"]
-    N2["Count the number of prime numbers less than n."]
-    N3["Input: n = 10"]
-    N4["Output: 4"]
-    N5["Explanation: Primes less than 10 are 2, 3, 5, 7"]
-    N6["Input: n = 0"]
-    N7["Output: 0"]
-    N8["Use: SIEVE OF ERATOSTHENES"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // SIEVE OF ERATOSTHENES - O(n log log n)
@@ -163,33 +136,6 @@ public int countPrimes(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIND THE NTH PRIME NUMBER
-2. Given n, find the nth prime number.
-3. Input: n = 1
-4. Output: 2 (1st prime)
-5. Input: n = 5
-6. Output: 11 (5th prime: 2, 3, 5, 7, 11)
-7. Input: n = 10
-
-```mermaid
-flowchart TD
-    N1["FIND THE NTH PRIME NUMBER"]
-    N2["Given n, find the nth prime number."]
-    N3["Input: n = 1"]
-    N4["Output: 2 (1st prime)"]
-    N5["Input: n = 5"]
-    N6["Output: 11 (5th prime: 2, 3, 5, 7, 11)"]
-    N7["Input: n = 10"]
-    N8["Output: 29 (10th prime)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int nthPrime(int n) {
@@ -247,33 +193,6 @@ private boolean isPrime(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIND PREVIOUS AND NEXT PRIME
-2. and nearest prime greater than n (next prime).
-3. Input: n = 10
-4. Output: Previous = 7, Next = 11
-5. Input: n = 14
-6. Output: Previous = 13, Next = 17
-7. Input: n = 7 (n is prime)
-
-```mermaid
-flowchart TD
-    N1["FIND PREVIOUS AND NEXT PRIME"]
-    N2["and nearest prime greater than n (next prime)."]
-    N3["Input: n = 10"]
-    N4["Output: Previous = 7, Next = 11"]
-    N5["Input: n = 14"]
-    N6["Output: Previous = 13, Next = 17"]
-    N7["Input: n = 7 (n is prime)"]
-    N8["Output: Previous = 5, Next = 11"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int[] previousAndNextPrime(int n) {
@@ -332,33 +251,6 @@ private int findNextPrime(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIND ALL PRIME FACTORS
-2. Given a number n, find all its prime factors.
-3. Input: n = 12
-4. Output: [2, 2, 3]
-5. Explanation: 12 = 2 × 2 × 3
-6. Input: n = 100
-7. Output: [2, 2, 5, 5]
-
-```mermaid
-flowchart TD
-    N1["FIND ALL PRIME FACTORS"]
-    N2["Given a number n, find all its prime factors."]
-    N3["Input: n = 12"]
-    N4["Output: [2, 2, 3]"]
-    N5["Explanation: 12 = 2 × 2 × 3"]
-    N6["Input: n = 100"]
-    N7["Output: [2, 2, 5, 5]"]
-    N8["Explanation: 100 = 2 × 2 × 5 × 5"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public List<Integer> primeFactors(int n) {
@@ -438,33 +330,6 @@ public List<Integer> primeFactors(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. CLOSEST PRIME NUMBERS IN RANGE
-2. (LeetCode Premium - Full Problem Description)
-3. and num2 such that:
-4. - left <= num1 < num2 <= right
-5. - Both num1 and num2 are prime numbers
-6. - num2 - num1 is the minimum amongst all other pairs
-7. such pair exists, return [-1, -1].
-
-```mermaid
-flowchart TD
-    N1["CLOSEST PRIME NUMBERS IN RANGE"]
-    N2["(LeetCode Premium - Full Problem Description)"]
-    N3["and num2 such that:"]
-    N4["- left &lt;= num1 &lt; num2 &lt;= right"]
-    N5["- Both num1 and num2 are prime numbers"]
-    N6["- num2 - num1 is the minimum amongst all other pairs"]
-    N7["such pair exists, return [-1, -1]."]
-    N8["Example 1:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int[] closestPrimes(int left, int right) {
@@ -530,33 +395,6 @@ public int[] closestPrimes(int left, int right) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. NTH FIBONACCI NUMBER
-2. Fibonacci Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, ..
-3. F(n) = F(n-1) + F(n-2) for n > 1
-4. Input: n = 4
-5. Output: 3
-6. Input: n = 10
-7. Output: 55
-
-```mermaid
-flowchart TD
-    N1["NTH FIBONACCI NUMBER"]
-    N2["Fibonacci Sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, .."]
-    N3["F(n) = F(n-1) + F(n-2) for n &gt; 1"]
-    N4["Input: n = 4"]
-    N5["Output: 3"]
-    N6["Input: n = 10"]
-    N7["Output: 55"]
-    N8["Visual:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **LeetCode 509** | 🔗 [https://leetcode.com/problems/fibonacci-number/](https://leetcode.com/problems/fibonacci-number/)
 
@@ -619,33 +457,6 @@ private int fibHelper(int n, int[] memo) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SUM OF FIRST N FIBONACCI NUMBERS
-2. Find the sum of first n Fibonacci numbers.
-3. Input: n = 5
-4. Output: 7
-5. Input: n = 10
-6. Output: 88
-7. Explanation: 0+1+1+2+3+5+8+13+21+34 = 88
-
-```mermaid
-flowchart TD
-    N1["SUM OF FIRST N FIBONACCI NUMBERS"]
-    N2["Find the sum of first n Fibonacci numbers."]
-    N3["Input: n = 5"]
-    N4["Output: 7"]
-    N5["Input: n = 10"]
-    N6["Output: 88"]
-    N7["Explanation: 0+1+1+2+3+5+8+13+21+34 = 88"]
-    N8["FORMULA: Sum of first n Fib = F(n+2) - 1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // Method 1: Iterative Sum
@@ -697,33 +508,6 @@ public int sumFibonacciFormula(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. CHECK IF NUMBER IS A FIBONACCI NUMBER
-2. Given a number, check if it belongs to Fibonacci sequen
-3. Input: n = 8
-4. Output: true (8 is F(6))
-5. Input: n = 10
-6. Output: false
-7. PROPERTY: A number is Fibonacci if and only if one of
-
-```mermaid
-flowchart TD
-    N1["CHECK IF NUMBER IS A FIBONACCI NUMBER"]
-    N2["Given a number, check if it belongs to Fibonacci sequen"]
-    N3["Input: n = 8"]
-    N4["Output: true (8 is F(6))"]
-    N5["Input: n = 10"]
-    N6["Output: false"]
-    N7["PROPERTY: A number is Fibonacci if and only if one of"]
-    N8["(5*n² + 4) or (5*n² - 4) is a perfect square."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public boolean isFibonacci(int n) {
@@ -774,22 +558,6 @@ public boolean isFibonacciIterative(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. N-TH TRIBONACCI NUMBER
-2. Sequence: 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, ...
-3. Input: n = 4
-4. Output: 4
-
-```mermaid
-flowchart TD
-    N1["N-TH TRIBONACCI NUMBER"]
-    N2["Sequence: 0, 1, 1, 2, 4, 7, 13, 24, 44, 81, ..."]
-    N3["Input: n = 4"]
-    N4["Output: 4"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ```java
 public int tribonacci(int n) {
@@ -839,33 +607,6 @@ public int tribonacci(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. CLIMBING STAIRS
-2. You can climb 1 or 2 steps at a time.
-3. How many distinct ways to climb n stairs?
-4. Input: n = 3
-5. Output: 3
-6. Ways: [1,1,1], [1,2], [2,1]
-7. Input: n = 5
-
-```mermaid
-flowchart TD
-    N1["CLIMBING STAIRS"]
-    N2["You can climb 1 or 2 steps at a time."]
-    N3["How many distinct ways to climb n stairs?"]
-    N4["Input: n = 3"]
-    N5["Output: 3"]
-    N6["Ways: [1,1,1], [1,2], [2,1]"]
-    N7["Input: n = 5"]
-    N8["Output: 8"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int climbStairs(int n) {
@@ -906,31 +647,6 @@ public int climbStairs(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. SUM OF DIGITS
-2. Find the sum of all digits of a given number.
-3. Input: n = 12345
-4. Output: 15
-5. Explanation: 1 + 2 + 3 + 4 + 5 = 15
-6. Input: n = 9999
-7. Output: 36
-
-```mermaid
-flowchart TD
-    N1["SUM OF DIGITS"]
-    N2["Find the sum of all digits of a given number."]
-    N3["Input: n = 12345"]
-    N4["Output: 15"]
-    N5["Explanation: 1 + 2 + 3 + 4 + 5 = 15"]
-    N6["Input: n = 9999"]
-    N7["Output: 36"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```java
 public int sumOfDigits(int n) {
@@ -977,33 +693,6 @@ public int sumOfDigitsRecursive(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. ADD DIGITS (DIGITAL ROOT)
-2. Repeatedly add digits until single digit remains.
-3. Input: num = 38
-4. Output: 2
-5. Explanation: 3 + 8 = 11, 1 + 1 = 2
-6. Input: num = 9999
-7. Output: 9
-
-```mermaid
-flowchart TD
-    N1["ADD DIGITS (DIGITAL ROOT)"]
-    N2["Repeatedly add digits until single digit remains."]
-    N3["Input: num = 38"]
-    N4["Output: 2"]
-    N5["Explanation: 3 + 8 = 11, 1 + 1 = 2"]
-    N6["Input: num = 9999"]
-    N7["Output: 9"]
-    N8["Explanation: 36 → 9"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // O(1) solution using formula
@@ -1053,33 +742,6 @@ public int addDigitsIterative(int num) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. REVERSE INTEGER
-2. Reverse digits of a 32-bit signed integer.
-3. Return 0 if result overflows.
-4. Input: x = 123
-5. Output: 321
-6. Input: x = -123
-7. Output: -321
-
-```mermaid
-flowchart TD
-    N1["REVERSE INTEGER"]
-    N2["Reverse digits of a 32-bit signed integer."]
-    N3["Return 0 if result overflows."]
-    N4["Input: x = 123"]
-    N5["Output: 321"]
-    N6["Input: x = -123"]
-    N7["Output: -321"]
-    N8["Input: x = 1534236469"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int reverse(int x) {
@@ -1131,31 +793,6 @@ public int reverse(int x) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. PALINDROME NUMBER
-2. Input: x = 121
-3. Output: true
-4. Input: x = -121
-5. Output: false (reads as 121-)
-6. Input: x = 10
-7. Output: false (reads as 01)
-
-```mermaid
-flowchart TD
-    N1["PALINDROME NUMBER"]
-    N2["Input: x = 121"]
-    N3["Output: true"]
-    N4["Input: x = -121"]
-    N5["Output: false (reads as 121-)"]
-    N6["Input: x = 10"]
-    N7["Output: false (reads as 01)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```java
 public boolean isPalindrome(int x) {
@@ -1207,31 +844,6 @@ public boolean isPalindrome(int x) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. HAPPY NUMBER
-2. endlessly in a cycle (not happy).
-3. Input: n = 19
-4. Output: true
-5. Explanation:
-6. Input: n = 2
-7. Output: false (enters cycle)
-
-```mermaid
-flowchart TD
-    N1["HAPPY NUMBER"]
-    N2["endlessly in a cycle (not happy)."]
-    N3["Input: n = 19"]
-    N4["Output: true"]
-    N5["Explanation:"]
-    N6["Input: n = 2"]
-    N7["Output: false (enters cycle)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ```java
 // Floyd's Cycle Detection
@@ -1287,34 +899,6 @@ private int sumSquareDigits(int n) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. GCD - GREATEST COMMON DIVISOR
-2. Find the largest number that divides both a and b.
-3. Input: a = 48, b = 18
-4. Output: 6
-5. Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48
-6. Divisors of 18: 1,2,3,6,9,18
-7. Common: 1,2,3,6
-8. GCD = 6
-
-```mermaid
-flowchart TD
-    N1["GCD - GREATEST COMMON DIVISOR"]
-    N2["Find the largest number that divides both a and b."]
-    N3["Input: a = 48, b = 18"]
-    N4["Output: 6"]
-    N5["Explanation: Divisors of 48: 1,2,3,4,6,8,12,16,24,48"]
-    N6["Divisors of 18: 1,2,3,6,9,18"]
-    N7["Common: 1,2,3,6 → GCD = 6"]
-    N8["EUCLIDEAN ALGORITHM:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // Euclidean Algorithm - O(log(min(a,b)))
@@ -1389,33 +973,6 @@ public int lcm(int a, int b) {
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
 
-**Flow:**
-1. FIND GREATEST COMMON DIVISOR OF ARRAY
-2. (LeetCode Premium - Full Problem Description)
-3. smallest number and largest number in nums.
-4. divides both numbers.
-5. Example 1:
-6. Input: nums = [2, 5, 6, 9, 10]
-7. Output: 2
-
-```mermaid
-flowchart TD
-    N1["FIND GREATEST COMMON DIVISOR OF ARRAY"]
-    N2["(LeetCode Premium - Full Problem Description)"]
-    N3["smallest number and largest number in nums."]
-    N4["divides both numbers."]
-    N5["Example 1:"]
-    N6["Input: nums = [2, 5, 6, 9, 10]"]
-    N7["Output: 2"]
-    N8["Explanation:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 public int findGCD(int[] nums) {

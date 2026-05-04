@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -802,45 +802,6 @@ private static TreeNode deserializeHelper(Queue<String> queue) {
 | MapReduce                               | Divide and Conquer          | Parallel processing        |
 ```
 
-**Flow:**
-1. THE TABLE EVERY DEVELOPER SHOULD MEMORIZE
-2. Real Incident
-3. DSA Used
-4. Why That DSA
-5. Database indexing
-6. B+ Tree
-7. Balanced search + range
-8. Redis cache eviction
-9. LRU/LFU Cache
-10. Space manageme
-11. Load balancer
-12. Consistent Hashing
-13. Distribute evenl
-14. Browser back/forward
-15. Stack
-16. History management
-17. Connection pooling
-18. Queue (bounded)
-19. Reuse resource
-
-```mermaid
-flowchart TD
-    N1["THE TABLE EVERY DEVELOPER SHOULD MEMORIZE"]
-    N2["| Real Incident | DSA Used | Why That DSA |"]
-    N3["| Database indexing | B+ Tree | Balanced search + range"]
-    N4["| Redis cache eviction | LRU/LFU Cache | Space manageme"]
-    N5["| Load balancer | Consistent Hashing | Distribute evenl"]
-    N6["| Browser back/forward | Stack | History management |"]
-    N7["| Connection pooling | Queue (bounded) | Reuse resource"]
-    N8["| DNS resolution | Caching + Trie | Hierarchical lookup"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

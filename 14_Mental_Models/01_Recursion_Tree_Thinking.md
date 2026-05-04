@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DP_State_Thinking.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_DP_State_Thinking.md)
 
 # 🌳 Recursion & Tree Thinking — Mental Model
 
@@ -34,16 +34,6 @@ RIGHT thinking: "Assume sum() works for smaller lists.
                  Answer = 1 + 9 = 10 ✅"
 ```
 
-**Flow:**
-1. Wrong tracing mindset: "sum(1→2→3→4) calls sum(2→3→4) calls sum(3→4)..."
-2. Tracing every nested call causes mental stack overflow.
-
-```mermaid
-flowchart LR
-    N1["Wrong tracing mindset: sum(1→2→3→4) → sum(2→3→4) → sum(3→4)..."]
-    N2["Tracing every nested call causes mental stack overflow."]
-    N1 --> N2
-```
 
 ### The 3-Question Framework
 
@@ -60,30 +50,6 @@ Q3: How do I COMBINE the sub-result with current data?
     → That's your return statement.
 ```
 
-**Flow:**
-1. Q1: What is the SMALLEST INPUT I can answer directly?
-2. That's your base case.
-3. Q2: If my function MAGICALLY WORKS for smaller inputs, how do I use that?
-4. That's your recursive call.
-5. Q3: How do I COMBINE the sub-result with current data?
-6. That's your return statement.
-
-```mermaid
-flowchart TD
-    N1["Q1: What is the SMALLEST INPUT I can answer directly?"]
-    N2["→ That's your base case."]
-    N3["Q2: If my function MAGICALLY WORKS for smaller inputs,"]
-    N4["how do I use that?"]
-    N5["→ That's your recursive call."]
-    N6["Q3: How do I COMBINE the sub-result with current data?"]
-    N7["→ That's your return statement."]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### Applied Example: Reverse a String
 
@@ -165,26 +131,6 @@ Node count ≈ 2^n → Time: O(2^n) without memo
 Unique subproblems = n → Time: O(n) WITH memo
 ```
 
-**Flow:**
-1. OVERLAPPING SUBPROBLEMS
-2. Use Memoization!
-3. Node count ≈ 2^n
-4. Time: O(2^n) without memo
-5. Unique subproblems = n
-6. Time: O(n) WITH memo
-
-```mermaid
-flowchart LR
-    N1["OVERLAPPING SUBPROBLEMS"]
-    N2["Use Memoization!"]
-    N3["Node count ≈ 2^n"]
-    N4["Time: O(2^n) without memo"]
-    N5["Unique subproblems = n"]
-    N6["Time: O(n) WITH memo"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ### Recursion Tree Templates for Common Patterns
 
@@ -197,27 +143,6 @@ factorial(4) → factorial(3) → factorial(2) → factorial(1)
 Total calls: n → O(n) time and O(n) space (call stack)
 ```
 
-**Flow:**
-1. factorial(4)
-2. factorial(3)
-3. factorial(2)
-4. factorial(1)
-5. Total calls: n
-6. O(n) time and O(n) space (call stack)
-
-```mermaid
-flowchart LR
-    N1["factorial(4)"]
-    N2["factorial(3)"]
-    N3["factorial(2)"]
-    N4["factorial(1)"]
-    N5["Total calls: n"]
-    N6["O(n) time and O(n) space (call stack)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N5 --> N6
-```
 
 #### Pattern B: Binary Recursion (Tree splits in two)
 
@@ -229,21 +154,6 @@ flowchart LR
 Height: n, Branching: 2 → O(2^n) total calls
 ```
 
-**Flow:**
-1. f(n-1) f(n-2)
-2. Fibonacci, Tower of Hanoi
-3. Height: n, Branching: 2
-4. O(2^n) total calls
-
-```mermaid
-flowchart LR
-    N1["f(n-1) f(n-2)"]
-    N2["Fibonacci, Tower of Hanoi"]
-    N3["Height: n, Branching: 2"]
-    N4["O(2^n) total calls"]
-    N1 --> N2
-    N3 --> N4
-```
 
 #### Pattern C: Branching Recursion (Multiple choices)
 
@@ -255,21 +165,6 @@ flowchart LR
 Height: n, Branching: k → O(k^n) total calls
 ```
 
-**Flow:**
-1. f(n-1,a) f(n-1,b) f(n-1,c)
-2. Permutations, Combinations
-3. Height: n, Branching: k
-4. O(k^n) total calls
-
-```mermaid
-flowchart LR
-    N1["f(n-1,a) f(n-1,b) f(n-1,c)"]
-    N2["Permutations, Combinations"]
-    N3["Height: n, Branching: k"]
-    N4["O(k^n) total calls"]
-    N1 --> N2
-    N3 --> N4
-```
 
 #### Pattern D: Divide & Conquer (Split in half)
 
@@ -283,16 +178,6 @@ flowchart LR
 Height: log(n), Work per level: O(n) → Total: O(n log n)
 ```
 
-**Flow:**
-1. Height: log(n), Work per level: O(n)
-2. Total: O(n log n)
-
-```mermaid
-flowchart LR
-    N1["Height: log(n), Work per level: O(n)"]
-    N2["Total: O(n log n)"]
-    N1 --> N2
-```
 
 ---
 
@@ -341,16 +226,6 @@ Draw the tree:
      ...     ...
 ```
 
-**Flow:**
-1. ways(5)
-2. ways(4) ways(3) ← overlapping!
-
-```mermaid
-flowchart TD
-    N1["ways(5)"]
-    N2["ways(4) ways(3) ← overlapping!"]
-    N1 --> N2
-```
 
 #### Step 2: Add Memoization (Top-Down DP)
 
@@ -463,19 +338,6 @@ void subsets(int[] nums, int start, List<Integer> current, List<List<Integer>> r
 When a branch ends, we BACKTRACK (remove last choice) and try the next branch.
 ```
 
-**Flow:**
-1. [1] [2] [3] ← choose 1, 2, or 3
-2. [1,2] [1,3] [2,3] ← choose next
-3. [1,2,3] ← choose next
-
-```mermaid
-flowchart TD
-    N1["[1] [2] [3] ← choose 1, 2, or 3"]
-    N2["[1,2] [1,3] [2,3] ← choose next"]
-    N3["[1,2,3] ← choose next"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### When to PRUNE (Skip Branches Early)
 
@@ -492,26 +354,6 @@ PRUNE when you KNOW a branch won't lead to a valid answer:
    if (!isValid(board, row, col)) continue;  // N-Queens
 ```
 
-**Flow:**
-1. Sum exceeds target.
-2. Do not explore that branch further.
-3. Duplicate element at the same level.
-4. Skip that duplicate branch.
-5. Constraint violated.
-6. Abort the current path.
-
-```mermaid
-flowchart LR
-    N1["Sum exceeds target"]
-    N2["Do not explore further"]
-    N3["Duplicate element at same level"]
-    N4["Skip it"]
-    N5["Constraint violated"]
-    N6["Abort path"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-```
 
 ### Visual: Pruning saves MASSIVE work
 
@@ -525,19 +367,6 @@ O O O ...               O ✂
                         → 10x fewer calls!
 ```
 
-**Flow:**
-1. Without pruning, many unnecessary branches are explored.
-2. With pruning, invalid branches are cut early.
-3. Result: around 10x fewer recursive calls.
-
-```mermaid
-flowchart TD
-    N1["Without pruning: many branches explored"]
-    N2["With pruning: invalid branches cut early"]
-    N3["~10x fewer calls"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -570,22 +399,6 @@ Before writing ANY recursive function, answer these:
 □ Can I reduce space? (Only need last row/variable?)
 ```
 
-**Flow:**
-1. What is the recursive relation (how smaller subproblems build the current answer)?
-2. Is the problem size shrinking each call (`n -> n-1` or `n -> n/2`)?
-3. Are there overlapping subproblems (draw the tree and check repeats)?
-4. If overlap exists, add memoization (array or map).
-
-```mermaid
-flowchart TD
-    N1["Recursive relation: smaller -> current"]
-    N2["Problem size shrinks each call"]
-    N3["Check overlap by drawing recursion tree"]
-    N4["If overlap exists, add memoization"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 ---
 
@@ -646,31 +459,6 @@ Permutations         | n!    | O(n) copy | O(n · n!)
 Binary Search        | log n | O(1)      | O(log n)
 ```
 
-**Flow:**
-1. Pattern | Nodes | Work/Node | Total.
-2. Linear (factorial): `n | O(1) | O(n)`.
-3. Binary (fibonacci): `2^n | O(1) | O(2^n)`.
-4. MergeSort: `2n-1 | O(n/level) | O(n log n)`.
-5. Subsets: `2^n | O(n) copy | O(n · 2^n)`.
-6. Permutations: `n! | O(n) copy | O(n · n!)`.
-7. Binary Search: `log n | O(1) | O(log n)`.
-
-```mermaid
-flowchart TD
-    N1["Pattern | Nodes | Work/Node | Total"]
-    N2["Linear (factorial) | n | O(1) | O(n)"]
-    N3["Binary (fibonacci) | 2^n | O(1) | O(2^n)"]
-    N4["MergeSort | 2n-1 | O(n/level)| O(n log n)"]
-    N5["Subsets | 2^n | O(n) copy | O(n · 2^n)"]
-    N6["Permutations | n! | O(n) copy | O(n · n!)"]
-    N7["Binary Search | log n | O(1) | O(log n)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### Quick Rule: Height × Branching
 
@@ -684,34 +472,6 @@ Fibonacci: h=n, b=2 → 2^n nodes → O(2^n)
 Subsets:   h=n, b=2 → 2^n leaves → O(2^n)
 ```
 
-**Flow:**
-1. MergeSort: h=log n, b=2
-2. 2^(log n) = n nodes per level, log n levels
-3. O(n log n)
-4. Fibonacci: h=n, b=2
-5. 2^n nodes
-6. O(2^n)
-7. Subsets: h=n, b=2
-8. 2^n leaves
-9. O(2^n)
-
-```mermaid
-flowchart TD
-    N1["MergeSort: h=log n, b=2"]
-    N2["2^(log n) = n nodes per level, log n levels"]
-    N3["O(n log n)"]
-    N4["Fibonacci: h=n, b=2"]
-    N5["2^n nodes"]
-    N6["O(2^n)"]
-    N7["Subsets: h=n, b=2"]
-    N8["2^n leaves"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-    N7 --> N8
-    N8 --> N6
-```
 
 ---
 

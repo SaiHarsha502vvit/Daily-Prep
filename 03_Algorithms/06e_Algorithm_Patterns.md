@@ -1,4 +1,4 @@
-**Navigation**: [< Previous Chapter](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md)
 🧠 **Mental Model**: See [Optimization Pipeline](../14_Mental_Models/14_Optimization_Pipeline.md) — systematic brute force to optimal approach
 
 ---
@@ -116,32 +116,6 @@ public Set<Integer> vertexCover2Approx(int n, int[][] edges) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. EXAMPLE 2: SET COVER (log n - Approximation)
-2. Universe U + sets S₁...Sₘ; cover all elements
-3. Greedy step: choose set covering most uncovered elements
-4. Add chosen set to solution
-5. Mark those elements as covered
-6. Approximation ratio: O(log n)
-
-```mermaid
-flowchart TD
-    N1["EXAMPLE 2: SET COVER (log n - Approximation)"]
-    N2["Universe U + sets S₁...Sₘ; cover all elements"]
-    N3["Greedy step: choose set covering most uncovered elements"]
-    N4["Add chosen set to solution"]
-    N5["Mark those elements as covered"]
-    N6["Repeat until all elements are covered"]
-    N7["Approximation ratio: O(log n)"]
-    N8["Approximation ratio: O(log n) where n = |U|"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ## 📌 Randomized Algorithms
 
@@ -164,28 +138,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. RANDOMIZED ALGORITHMS - DEEP DIVE
-2. TWO TYPES:
-3. Las Vegas: Always correct, expected polynomial time
-4. Example: Randomized QuickSort
-5. Example: Primality testing, Min-Cut
-6. RANDOMIZED QUICKSORT:
-
-```mermaid
-flowchart TD
-    N1["RANDOMIZED ALGORITHMS - DEEP DIVE"]
-    N2["TWO TYPES:"]
-    N3["1. Las Vegas: Always correct, expected polynomial time"]
-    N4["Example: Randomized QuickSort"]
-    N5["Example: Primality testing, Min-Cut"]
-    N6["RANDOMIZED QUICKSORT:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ```java
 void randomizedQuickSort(int[] arr, int low, int high) {
@@ -225,27 +177,6 @@ void randomizedQuickSort(int[] arr, int low, int high) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. KARGER'S MIN-CUT ALGORITHM: Find minimum cut in undirected graph Algorithm: While more than 2 vertices: a. Pick random edge (u, v) b. Contract u and v into single vertex c. Remove self-loops
-
-```mermaid
-flowchart TD
-    N1["KARGER'S MIN-CUT ALGORITHM:"]
-    N2["Find minimum cut in undirected graph"]
-    N3["Algorithm:"]
-    N4["1. While more than 2 vertices:"]
-    N5["a. Pick random edge (u, v)"]
-    N6["b. Contract u and v into single vertex"]
-    N7["c. Remove self-loops"]
-    N8["2. Return number of edges between final 2 vertices"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // Monte Carlo: May report composite as prime, never reports prime as composite
@@ -315,33 +246,6 @@ private boolean millerRabinTest(long n, long d, int r, long a) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. STRING MATCHING ALGORITHMS - COMPLETE COMPARISON
-2. ALGORITHM COMPARISON:
-3. Algorithm Preprocessing Search Time Space
-4. Naive O(1) O(nm) O(1)
-5. KMP O(m) O(n) O(m)
-6. Boyer-Moore O(m + σ) O(nm) worst O(m + σ)
-7. O(n/m) best
-
-```mermaid
-flowchart TD
-    N1["STRING MATCHING ALGORITHMS - COMPLETE COMPARISON"]
-    N2["ALGORITHM COMPARISON:"]
-    N3["Algorithm Preprocessing Search Time Space"]
-    N4["Naive O(1) O(nm) O(1)"]
-    N5["KMP O(m) O(n) O(m)"]
-    N6["Boyer-Moore O(m + σ) O(nm) worst O(m + σ)"]
-    N7["O(n/m) best"]
-    N8["Rabin-Karp O(m) O(nm) worst O(1)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // Z-ALGORITHM: Find all occurrences of pattern in text
@@ -471,33 +375,6 @@ class AhoCorasick {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MAXIMUM FLOW - COMPLETE GUIDE
-2. with edge capacities
-3. ALGORITHM COMPARISON:
-4. Algorithm Time Complexity Notes
-5. Ford-Fulkerson O(E × maxFlow) Uses DFS, may not termina
-6. Edmonds-Karp O(V × E²) Uses BFS for augmenting
-7. Dinic O(V² × E) Level graph + blocking flow
-
-```mermaid
-flowchart TD
-    N1["MAXIMUM FLOW - COMPLETE GUIDE"]
-    N2["with edge capacities"]
-    N3["ALGORITHM COMPARISON:"]
-    N4["Algorithm Time Complexity Notes"]
-    N5["Ford-Fulkerson O(E × maxFlow) Uses DFS, may not termina"]
-    N6["Edmonds-Karp O(V × E²) Uses BFS for augmenting"]
-    N7["Dinic O(V² × E) Level graph + blocking flow"]
-    N8["Push-Relabel O(V² × E) Different approach"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```java
 // DINIC'S ALGORITHM - O(V²E)
@@ -724,33 +601,6 @@ boolean onSegment(int[] a, int[] b, int[] c) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. WHEN TO USE WHICH PARADIGM
-2. DIVIDE AND CONQUER:
-3. • Problem can be split into independent subproblems
-4. • Subproblems are similar to original
-5. DYNAMIC PROGRAMMING:
-6. GREEDY:
-7. • Local optimal choice leads to global optimal
-
-```mermaid
-flowchart TD
-    N1["WHEN TO USE WHICH PARADIGM"]
-    N2["DIVIDE AND CONQUER:"]
-    N3["• Problem can be split into independent subproblems"]
-    N4["• Subproblems are similar to original"]
-    N5["DYNAMIC PROGRAMMING:"]
-    N6["GREEDY:"]
-    N7["• Local optimal choice leads to global optimal"]
-    N8["• No need to reconsider past choices"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

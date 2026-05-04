@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Knapsack_Family.md)
+﻿**Navigation**: [< Previous](21_Intervals_Pattern.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](23_Knapsack_Family.md)
 
 **Pattern 22** | [Prev](21_Intervals_Pattern.md) | [Index](../00_MASTER_INDEX.md)
 
@@ -39,36 +39,6 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CYCLIC SORT PATTERN
-2. WHEN YOU SEE: 'Find the missing/duplicate number in ran
-3. [1..n] using O(1) extra space'
-4. CYCLIC SORT.
-5. [1..n] using O(1) extra space'
-6. CYCLIC SORT.
-7. CORE IDEA: Numbers in range [1..n] or [0..n] should eac
-8. sit at their 'correct' index. Place each number at its
-9. index, then scan for mismatches.
-10. TEMPLATE:
-
-```mermaid
-flowchart TD
-    N1["CYCLIC SORT PATTERN"]
-    N2["WHEN YOU SEE: 'Find the missing/duplicate number in ran"]
-    N3["[1..n] using O(1) extra space' → CYCLIC SORT."]
-    N4["CORE IDEA: Numbers in range [1..n] or [0..n] should eac"]
-    N5["sit at their 'correct' index. Place each number at its"]
-    N6["index, then scan for mismatches."]
-    N7["TEMPLATE:"]
-    N8["1. While nums[i] isn't at correct position → SWAP to ho"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -154,20 +124,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. for (int i = 0; i < n; i++) { / while (nums[i] != nu
-2. for (int i = 0; i < n; i++) { / if (nums[i] != i + 1
-3. COMMON MISTAKES / 1. Off-by-one: [1..n]
-4. index = val-1
-
-```mermaid
-flowchart TD
-    N1["for (int i = 0; i &lt; n; i++) { / while (nums[i] != nu"]
-    N2["for (int i = 0; i &lt; n; i++) { / if (nums[i] != i + 1"]
-    N3["COMMON MISTAKES / 1. Off-by-one: [1..n] → index = val-1"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ---
 
@@ -195,45 +151,6 @@ VISUAL (n=3, range [0..3]):
 SOLUTION:
 ```
 
-**Flow:**
-1. Input: [3, 0, 1]
-2. Output: 2
-3. Input: [9,6,4,2,3,5,7,0,1]
-4. Output: 8
-5. i=0: nums[0]=3, correct idx=3 (out of bounds for s
-6. skip
-7. i=1: nums[1]=0, correct idx=0, swap
-8. [0, 3, 1]
-9. nums[1]=3, correct idx=3 (out of bounds)
-10. skip
-11. i=2: nums[2]=1, correct idx=1, swap
-12. [0, 1, 3]
-
-```mermaid
-flowchart TD
-    N1["Input: [3, 0, 1]"]
-    N2["Output: 2"]
-    N3["Input: [9,6,4,2,3,5,7,0,1]"]
-    N4["Output: 8"]
-    N5["i=0: nums[0]=3, correct idx=3 (out of bounds for s"]
-    N6["skip"]
-    N7["i=1: nums[1]=0, correct idx=0, swap"]
-    N8["[0, 3, 1]"]
-    N9["nums[1]=3, correct idx=3 (out of bounds)"]
-    N10["i=2: nums[2]=1, correct idx=1, swap"]
-    N11["[0, 1, 3]"]
-    N12["nums[2]=3, correct idx=3 (out of bounds)"]
-    N13["Scan: nums[2] = 3 ≠ 2"]
-    N14["missing = 2 ✓"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N6
-    N10 --> N11
-    N12 --> N6
-    N13 --> N14
-```
 
 ```java
 public int missingNumber(int[] nums) {
@@ -284,16 +201,6 @@ PROBLEM: Find ALL missing numbers in [1..n].
 SOLUTION:
 ```
 
-**Flow:**
-1. Input: [4,3,2,7,8,2,3,1]
-2. Output: [5, 6]
-
-```mermaid
-flowchart LR
-    N1["Input: [4,3,2,7,8,2,3,1]"]
-    N2["Output: [5, 6]"]
-    N1 --> N2
-```
 
 ```java
 public List<Integer> findDisappearedNumbers(int[] nums) {
@@ -337,16 +244,6 @@ PROBLEM: Find all duplicates in [1..n] where each appears at most twice.
 SOLUTION:
 ```
 
-**Flow:**
-1. Input: [4,3,2,7,8,2,3,1]
-2. Output: [2, 3]
-
-```mermaid
-flowchart LR
-    N1["Input: [4,3,2,7,8,2,3,1]"]
-    N2["Output: [2, 3]"]
-    N1 --> N2
-```
 
 ```java
 public List<Integer> findDuplicates(int[] nums) {
@@ -408,53 +305,6 @@ VISUAL:
 SOLUTION:
 ```
 
-**Flow:**
-1. Input: [3,4,-1,1]
-2. Output: 2
-3. Input: [7,8,9,11,12]
-4. Output: 1
-5. i=0: nums[0]=3, correctIdx=2, swap
-6. [-1, 4, 3, 1]
-7. nums[0]=-1, out of range
-8. skip
-9. i=1: nums[1]=4, correctIdx=3, swap
-10. [-1, 1, 3, 4]
-11. nums[1]=1, correctIdx=0, swap
-12. [1, -1, 3, 4]
-
-```mermaid
-flowchart TD
-    N1["Input: [3,4,-1,1]"]
-    N2["Output: 2"]
-    N3["Input: [7,8,9,11,12]"]
-    N4["Output: 1"]
-    N5["i=0: nums[0]=3, correctIdx=2, swap"]
-    N6["[-1, 4, 3, 1]"]
-    N7["nums[0]=-1, out of range"]
-    N8["skip"]
-    N9["i=1: nums[1]=4, correctIdx=3, swap"]
-    N10["[-1, 1, 3, 4]"]
-    N11["nums[1]=1, correctIdx=0, swap"]
-    N12["[1, -1, 3, 4]"]
-    N13["nums[1]=-1, out of range"]
-    N14["i=2: nums[2]=3, correctIdx=2"]
-    N15["already correct"]
-    N16["i=3: nums[3]=4, correctIdx=3"]
-    N17["Scan: i=1"]
-    N18["nums[1]=-1 ≠ 2"]
-    N19["answer = 2 ✓"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-    N11 --> N12
-    N13 --> N8
-    N14 --> N15
-    N16 --> N15
-    N17 --> N18
-    N18 --> N19
-```
 
 ```java
 public int firstMissingPositive(int[] nums) {
@@ -520,19 +370,6 @@ APPROACH 2: Floyd's Cycle Detection (O(1) space, no modification)
   Duplicate creates a cycle. Find cycle entry = duplicate.
 ```
 
-**Flow:**
-1. Treat array as linked list: index
-2. value
-3. next index.
-
-```mermaid
-flowchart LR
-    N1["Treat array as linked list: index"]
-    N2["value"]
-    N3["next index."]
-    N1 --> N2
-    N2 --> N3
-```
 
 ```java
 public int findDuplicate(int[] nums) {
@@ -573,16 +410,6 @@ PROBLEM: Array [1..n] with one duplicate and one missing. Find both.
 SOLUTION:
 ```
 
-**Flow:**
-1. Input: [1,2,2,4]
-2. Output: [2, 3]
-
-```mermaid
-flowchart LR
-    N1["Input: [1,2,2,4]"]
-    N2["Output: [2, 3]"]
-    N1 --> N2
-```
 
 ```java
 public int[] findErrorNums(int[] nums) {
@@ -638,33 +465,6 @@ COMPLEXITY: Time O(n) | Space O(1)
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CYCLIC SORT CHEATSHEET
-2. PROBLEM RANGE SCAN FOR LC#
-3. Missing Number [0..n] nums[i] ≠ i 268
-4. All Disappeared [1..n] nums[i] ≠ i+1 448
-5. All Duplicates [1..n] nums[i] ≠ i+1 442
-6. First Missing +ve [1..n] nums[i] ≠ i+1 41
-7. Find Duplicate [1..n] nums[i] ≠ i+1 287
-
-```mermaid
-flowchart TD
-    N1["CYCLIC SORT CHEATSHEET"]
-    N2["PROBLEM RANGE SCAN FOR LC#"]
-    N3["Missing Number [0..n] nums[i] ≠ i 268"]
-    N4["All Disappeared [1..n] nums[i] ≠ i+1 448"]
-    N5["All Duplicates [1..n] nums[i] ≠ i+1 442"]
-    N6["First Missing +ve [1..n] nums[i] ≠ i+1 41"]
-    N7["Find Duplicate [1..n] nums[i] ≠ i+1 287"]
-    N8["Set Mismatch [1..n] nums[i] ≠ i+1 645"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 

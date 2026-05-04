@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03b_Recursion_Fundamentals.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03b_Recursion_Fundamentals.md)
 🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — call stack visualization and trust-the-recursion framework
 
 ---
@@ -107,30 +107,6 @@ HIGH ADDRESSES
   LOW ADDRESSES
 ```
 
-**Flow:**
-1. Local variables of main / Return address (to JVM/OS) /
-2. [FP+16] Return address
-3. main+42 (8 bytes) / [FP+8] Pre
-4. Return address
-5. sum+15 (return point in sum(4)) / Prev
-6. ... same structure ... / Parameter n = 2
-7. Parameter n = 1
-8. Parameter n = 0 / BASE CASE! Returns 0, no more recursi
-
-```mermaid
-flowchart TD
-    N1["Local variables of main / Return address (to JVM/OS) / "]
-    N2["[FP+16] Return address → main+42 (8 bytes) / [FP+8] Pre"]
-    N3["Return address → sum+15 (return point in sum(4)) / Prev"]
-    N4["... same structure ... / Parameter n = 2"]
-    N5["Parameter n = 1"]
-    N6["Parameter n = 0 / BASE CASE! Returns 0, no more recursi"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 💡 **Key Insight:** Total stack size for `sum(4)` = 5 frames × ~32 bytes = **~160 bytes**
 
@@ -161,32 +137,6 @@ In a decreasing stack (top is smallest), pushing element `x`: all elements small
 14: ireturn       // Return sum
 ```
 
-**Flow:**
-1. 0: iload_1 // Load n onto operand stack
-2. 1: ifgt 6 // If n > 0, jump to line 6
-3. 4: iconst_0 // Push 0
-4. 5: ireturn // Return 0 (base case)
-5. 6: iload_1 // Load n 7: iload_1 // Load n again
-6. 8: iconst_1 // Push 1
-
-```mermaid
-flowchart TD
-    N1["0: iload_1 // Load n onto operand stack"]
-    N2["1: ifgt 6 // If n &gt; 0, jump to line 6"]
-    N3["4: iconst_0 // Push 0"]
-    N4["5: ireturn // Return 0 (base case)"]
-    N5["6: iload_1 // Load n"]
-    N6["7: iload_1 // Load n again"]
-    N7["8: iconst_1 // Push 1"]
-    N8["9: isub // Compute n-1"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### JIT-Compiled x86-64 Assembly (simplified)
 
@@ -218,33 +168,6 @@ sum:
     ret                          ; Return to caller
 ```
 
-**Flow:**
-1. sum:
-2. push rbp ; Save old frame pointer
-3. mov rbp, rsp ; Set new frame pointer
-4. sub rsp, 16 ; Allocate stack space
-5. mov [rbp-4], edi ; Store parameter n
-6. cmp dword [rbp-4], 0 ; Compare n with 0
-7. jle .base_case ; If n <= 0, jump to base case
-
-```mermaid
-flowchart TD
-    N1["sum:"]
-    N2["push rbp ; Save old frame pointer"]
-    N3["mov rbp, rsp ; Set new frame pointer"]
-    N4["sub rsp, 16 ; Allocate stack space"]
-    N5["mov [rbp-4], edi ; Store parameter n"]
-    N6["cmp dword [rbp-4], 0 ; Compare n with 0"]
-    N7["jle .base_case ; If n &lt;= 0, jump to base case"]
-    N8["; Recursive case"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### CPU Cycles per Recursive Call
 
@@ -306,32 +229,6 @@ Here's what it looks like when the stack is about to overflow:
   Stack Limit:   0x7ffe0000 (bottom/low)
 ```
 
-**Flow:**
-1. Stack Memory: 0x7fff0000 (top/high)
-2. Thread local storage, etc.
-3. main() frame sum(10000) frame
-4. sum(9999) frame
-5. (9998 more frames)
-6. sum(1) frame
-
-```mermaid
-flowchart TD
-    N1["Stack Memory: 0x7fff0000 (top/high)"]
-    N2["Thread local storage, etc."]
-    N3["main() frame"]
-    N4["sum(10000) frame"]
-    N5["sum(9999) frame"]
-    N6["(9998 more frames)"]
-    N7["sum(1) frame"]
-    N8["sum(0) frame ← Stack Pointer"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 🚨 **When SP crosses into the guard page → `StackOverflowError` is thrown**
 
@@ -483,25 +380,6 @@ sumTail(1, 9):     Frame: n=1, acc=9   (reused!)
 sumTail(0, 10):    return 10
 ```
 
-**Flow:**
-1. sumTail(4, 0): Frame: n=4, acc=0
-2. sumTail(3, 4): Frame: n=3, acc=4 (reused!)
-3. sumTail(2, 7): Frame: n=2, acc=7 (reused!)
-4. sumTail(1, 9): Frame: n=1, acc=9 (reused!)
-5. sumTail(0, 10): return 10
-
-```mermaid
-flowchart TD
-    N1["sumTail(4, 0): Frame: n=4, acc=0"]
-    N2["sumTail(3, 4): Frame: n=3, acc=4 (reused!)"]
-    N3["sumTail(2, 7): Frame: n=2, acc=7 (reused!)"]
-    N4["sumTail(1, 9): Frame: n=1, acc=9 (reused!)"]
-    N5["sumTail(0, 10): return 10"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ✅ **CONSTANT STACK SPACE!** No stack overflow possible!
 
@@ -644,25 +522,6 @@ fib(2)   fib(1)
 fib(1)  fib(0)
 ```
 
-**Flow:**
-1. fib(5)
-2. fib(4) fib(3) ← Cache hit!
-3. fib(3) fib(2) ← Cache hit!
-4. fib(2) fib(1)
-5. fib(1) fib(0)
-
-```mermaid
-flowchart TD
-    N1["fib(5)"]
-    N2["fib(4) fib(3) ← Cache hit!"]
-    N3["fib(3) fib(2) ← Cache hit!"]
-    N4["fib(2) fib(1)"]
-    N5["fib(1) fib(0)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-```
 
 ✅ Each `fib(k)` computed exactly **ONCE!**
 **Time: O(n)** · **Space: O(n)**
@@ -680,28 +539,6 @@ STACK (much shorter!):
   Only goes 6 levels deep, not exponentially branching!
 ```
 
-**Flow:**
-1. fib(5)
-2. fib(4)
-3. fib(3)
-4. fib(2)
-5. fib(1)
-6. fib(0)
-
-```mermaid
-flowchart TD
-    N1["fib(5)"]
-    N2["fib(4)"]
-    N3["fib(3)"]
-    N4["fib(2)"]
-    N5["fib(1)"]
-    N6["fib(0)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ---
 

@@ -1,4 +1,4 @@
-**SQL Chapter 06/20** | [← Previous](05_Queries_SELECT_WHERE.md) | [Index](../00_MASTER_INDEX.md) | [Next →](07_JOINs_Complete.md)
+﻿**SQL Chapter 06/20** | [← Previous](05_Queries_SELECT_WHERE.md) | [Index](../00_MASTER_INDEX.md) | [Next →](07_JOINs_Complete.md)
 
 ---
 
@@ -94,33 +94,6 @@ GROUP BY CUBE (<column1>, <column2>);            -- Subtotals for col1, col2, co
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. AGGREGATE FUNCTIONS - SUMMARY
-2. a SINGLE value. They ignore NULL values (except COUNT(*
-3. Function Description Example
-4. COUNT(*) Count all rows COUNT(*)
-5. COUNT(column) Count non-NULL values COUNT(email)
-6. COUNT(DISTINCT) Count unique values COUNT(DISTINCT d)
-7. SUM(column) Sum of all values SUM(salary)
-
-```mermaid
-flowchart TD
-    N1["AGGREGATE FUNCTIONS - SUMMARY"]
-    N2["a SINGLE value. They ignore NULL values (except COUNT(*"]
-    N3["Function Description Example"]
-    N4["COUNT(*) Count all rows COUNT(*)"]
-    N5["COUNT(column) Count non-NULL values COUNT(email)"]
-    N6["COUNT(DISTINCT) Count unique values COUNT(DISTINCT d)"]
-    N7["SUM(column) Sum of all values SUM(salary)"]
-    N8["AVG(column) Average of all values AVG(price)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -194,16 +167,6 @@ FROM employees WHERE dept_id = 1;
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. emp_id dept salary / 1 1 100000 / 2 1 80000 / 3 1 10000
-2. dept count sum_sal avg_sal / 1 3 280000 93333.33 / 2 2
-
-```mermaid
-flowchart TD
-    N1["emp_id dept salary / 1 1 100000 / 2 1 80000 / 3 1 10000"]
-    N2["dept count sum_sal avg_sal / 1 3 280000 93333.33 / 2 2 "]
-    N1 --> N2
-```
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════

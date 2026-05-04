@@ -1,4 +1,4 @@
-**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Career_Guide_Part1B.md)
+﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Career_Guide_Part1B.md)
 
 **Career Guide** | See also: [04_Career_Projects_Part1.md](04_Career_Projects_Part1.md) | [05_Career_Projects_Part2.md](05_Career_Projects_Part2.md) | [Index](../00_MASTER_INDEX.md)
 
@@ -38,30 +38,6 @@ Techno-Functional Expert:
 Business Problem → Technical Solution → Business Impact → Continuous Improvement
 ```
 
-**Flow:**
-1. Code
-2. Deploy
-3. Done
-4. Business Problem
-5. Technical Solution
-6. Business Impact
-7. Continuous Improvement
-
-```mermaid
-flowchart TD
-    N1["Code"]
-    N2["Deploy"]
-    N3["Done"]
-    N4["Business Problem"]
-    N5["Technical Solution"]
-    N6["Business Impact"]
-    N7["Continuous Improvement"]
-    N1 --> N2
-    N2 --> N3
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### The Three Pillars
 
@@ -80,33 +56,6 @@ flowchart TD
 └─────────────────┴─────────────────┴─────────────────────────────┘
 ```
 
-**Flow:**
-1. TECHNO-FUNCTIONAL EXPERT
-2. TECHNICAL DOMAIN SOFT SKILLS
-3. EXCELLENCE EXPERTISE MASTERY
-4. • DSA • Banking • Product Mindset
-5. • System Design • Healthcare • Solution Articulation
-6. • Cloud (AWS/ • Telecom • Client Communication
-7. Azure) • Insurance • Problem Ownership
-
-```mermaid
-flowchart TD
-    N1["TECHNO-FUNCTIONAL EXPERT"]
-    N2["TECHNICAL DOMAIN SOFT SKILLS"]
-    N3["EXCELLENCE EXPERTISE MASTERY"]
-    N4["• DSA • Banking • Product Mindset"]
-    N5["• System Design • Healthcare • Solution Articulation"]
-    N6["• Cloud (AWS/ • Telecom • Client Communication"]
-    N7["Azure) • Insurance • Problem Ownership"]
-    N8["• Optimization • E-commerce • Business Acumen"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Why This Matters (India Context)
 
@@ -157,36 +106,6 @@ Level 1: Fundamentals
          └── DSA, Programming basics
 ```
 
-**Flow:**
-1. Level 5: Architecture & Strategy
-2. Design systems that scale to millions
-3. Level 4: Optimization & Performance
-4. Make existing systems 10x faster/cheaper
-5. Level 3: System Integration
-6. Connect multiple services seamlessly
-7. Level 2: Implementation
-8. Write clean, maintainable code
-9. Level 1: Fundamentals
-10. DSA, Programming basics
-
-```mermaid
-flowchart TD
-    N1["Level 5: Architecture & Strategy"]
-    N2["Design systems that scale to millions"]
-    N3["Level 4: Optimization & Performance"]
-    N4["Make existing systems 10x faster/cheaper"]
-    N5["Level 3: System Integration"]
-    N6["Connect multiple services seamlessly"]
-    N7["Level 2: Implementation"]
-    N8["Write clean, maintainable code"]
-    N9["Level 1: Fundamentals"]
-    N10["DSA, Programming basics"]
-    N1 --> N2
-    N3 --> N4
-    N5 --> N6
-    N7 --> N8
-    N9 --> N10
-```
 
 ### Key Technical Areas to Master
 
@@ -244,22 +163,6 @@ System Designer thinks:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. BIGGER / SERVER
-2. S / 1
-3. S / 2
-4. S / 3
-
-```mermaid
-flowchart TD
-    N1["BIGGER / SERVER"]
-    N2["S / 1"]
-    N3["S / 2"]
-    N4["S / 3"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 #### 2. Database Scaling
 
@@ -279,20 +182,6 @@ flowchart TD
         SHARDING: Split data across multiple databases
 ```
 
-**Flow:**
-1. APPLICATION
-2. SHARD / I-P
-3. APPLICATION
-4. SHARD / Q-Z
-
-```mermaid
-flowchart TD
-    N1["APPLICATION"]
-    N3["SHARD / I-P"]
-    N4["SHARD / Q-Z"]
-    N1 --> N3
-    N1 --> N4
-```
 
 #### 3. Caching Strategies
 
@@ -311,28 +200,6 @@ flowchart TD
 └──────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CACHING LAYERS
-2. CLIENT CDN APP CACHE DB CACHE DB
-3. Browser Cloudflare Redis Query Cache MySQL
-4. LocalStorage Akamai Memcached Buffer Pool
-5. Cache Hit Rate Target: > 95%
-6. Latency: 1ms (cache) vs 50-200ms (DB)
-
-```mermaid
-flowchart TD
-    N1["CACHING LAYERS"]
-    N2["CLIENT CDN APP CACHE DB CACHE DB"]
-    N3["Browser Cloudflare Redis Query Cache MySQL"]
-    N4["LocalStorage Akamai Memcached Buffer Pool"]
-    N5["Cache Hit Rate Target: &gt; 95%"]
-    N6["Latency: 1ms (cache) vs 50-200ms (DB)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 #### 4. Load Balancing
 
@@ -357,16 +224,6 @@ flowchart TD
     • Weighted - Based on server capacity
 ```
 
-**Flow:**
-1. LOAD BALANCER / (NGINX/HAProxy)
-2. Server 2 / (Active)
-
-```mermaid
-flowchart TD
-    N1["LOAD BALANCER / (NGINX/HAProxy)"]
-    N3["Server 2 / (Active)"]
-    N1 --> N3
-```
 
 ### System Design Interview Framework
 
@@ -403,70 +260,6 @@ Step 5: WRAP UP (5 min)
 └── Monitoring & alerts
 ```
 
-**Flow:**
-1. Step 1: CLARIFY (5 min)
-2. Functional requirements
-3. Step 1: CLARIFY (5 min)
-4. Non-functional requirements (scale, latency, availabili
-5. Step 1: CLARIFY (5 min)
-6. Constraints and assumptions
-7. Step 1: CLARIFY (5 min)
-8. Core use cases
-9. Step 2: ESTIMATE (5 min)
-10. Daily active users
-11. Step 2: ESTIMATE (5 min)
-12. Read/Write ratio
-
-```mermaid
-flowchart TD
-    N1["Step 1: CLARIFY (5 min)"]
-    N2["Functional requirements"]
-    N3["Non-functional requirements (scale, latency, availabili"]
-    N4["Constraints and assumptions"]
-    N5["Core use cases"]
-    N6["Step 2: ESTIMATE (5 min)"]
-    N7["Daily active users"]
-    N8["Read/Write ratio"]
-    N9["Storage requirements"]
-    N10["Bandwidth needs"]
-    N11["QPS (Queries per second)"]
-    N12["Step 3: HIGH-LEVEL DESIGN (10 min)"]
-    N13["Core components"]
-    N14["Data flow"]
-    N15["API design"]
-    N16["Database schema"]
-    N17["Step 4: DEEP DIVE (15 min)"]
-    N18["Scaling strategies"]
-    N19["Database design"]
-    N20["Caching approach"]
-    N21["Trade-offs discussion"]
-    N22["Edge cases"]
-    N23["Step 5: WRAP UP (5 min)"]
-    N24["Bottlenecks"]
-    N25["Future improvements"]
-    N26["Monitoring & alerts"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N6 --> N7
-    N6 --> N8
-    N6 --> N9
-    N6 --> N10
-    N6 --> N11
-    N12 --> N13
-    N12 --> N14
-    N12 --> N15
-    N12 --> N16
-    N17 --> N18
-    N17 --> N19
-    N17 --> N20
-    N17 --> N21
-    N17 --> N22
-    N23 --> N24
-    N23 --> N25
-    N23 --> N26
-```
 
 ### Practice System Design Problems
 
@@ -530,28 +323,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. EC2 / Lambda / ECS/EKS / Fargate
-2. S3 / EBS / EFS / Glacier
-3. RDS / DynamoDB / Aurora / ElastiC
-4. VPC / Route53 / CloudFr / API GW
-5. IAM / KMS / WAF / Shield
-6. CloudWatch / X-Ray / CloudTrail / Config
-
-```mermaid
-flowchart TD
-    N1["EC2 / Lambda / ECS/EKS / Fargate"]
-    N2["S3 / EBS / EFS / Glacier"]
-    N3["RDS / DynamoDB / Aurora / ElastiC"]
-    N4["VPC / Route53 / CloudFr / API GW"]
-    N5["IAM / KMS / WAF / Shield"]
-    N6["CloudWatch / X-Ray / CloudTrail / Config"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 ### Cost Optimization Strategies
 
@@ -574,33 +345,6 @@ flowchart TD
 └──────────────┴──────────────┴──────────────┴────────────────┘
 ```
 
-**Flow:**
-1. EC2 PRICING MODELS
-2. ON-DEMAND RESERVED SPOT SAVINGS PLAN
-3. Full price 30-75% off Up to 90% Flexible
-4. 1-3 year off commitment
-5. commitment
-6. Use for: Use for: Use for: Use for:
-7. Testing, Production Batch jobs, Variable
-
-```mermaid
-flowchart TD
-    N1["EC2 PRICING MODELS"]
-    N2["ON-DEMAND RESERVED SPOT SAVINGS PLAN"]
-    N3["Full price 30-75% off Up to 90% Flexible"]
-    N4["1-3 year off commitment"]
-    N5["commitment"]
-    N6["Use for: Use for: Use for: Use for:"]
-    N7["Testing, Production Batch jobs, Variable"]
-    N8["Dev, Spiky Steady-state CI/CD, workloads"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### 2. Right-Sizing Strategy
 
@@ -647,33 +391,6 @@ Day 90-365:  Glacier IR (save 83%)
 Day 365+:    Glacier Deep Archive (save 96%)
 ```
 
-**Flow:**
-1. S3 STORAGE CLASSES
-2. STORAGE CLASS COST/GB USE CASE
-3. S3 Standard $0.023 Frequent access
-4. S3 IA $0.0125 Infrequent, quick retrieval
-5. S3 Glacier IR $0.004 Rarely accessed archives
-6. S3 Glacier DA $0.00099 Long-term archives
-7. Lifecycle Policies:
-
-```mermaid
-flowchart TD
-    N1["S3 STORAGE CLASSES"]
-    N2["STORAGE CLASS COST/GB USE CASE"]
-    N3["S3 Standard $0.023 Frequent access"]
-    N4["S3 IA $0.0125 Infrequent, quick retrieval"]
-    N5["S3 Glacier IR $0.004 Rarely accessed archives"]
-    N6["S3 Glacier DA $0.00099 Long-term archives"]
-    N7["Lifecycle Policies:"]
-    N8["Day 0-30: S3 Standard"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Azure Core Services
 
@@ -697,33 +414,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. AZURE SERVICE MAP
-2. AWS AZURE
-3. EC2 Virtual Machines
-4. Lambda Azure Functions
-5. S3 Blob Storage
-6. RDS Azure SQL Database
-7. DynamoDB Cosmos DB
-
-```mermaid
-flowchart TD
-    N1["AZURE SERVICE MAP"]
-    N2["AWS AZURE"]
-    N3["EC2 Virtual Machines"]
-    N4["Lambda Azure Functions"]
-    N5["S3 Blob Storage"]
-    N6["RDS Azure SQL Database"]
-    N7["DynamoDB Cosmos DB"]
-    N8["CloudWatch Azure Monitor"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Cloud Architecture Patterns
 
@@ -757,30 +447,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. API GATEWAY / (Authentication, Routing)
-2. Order / Svc
-3. User / Svc
-4. User / DB
-5. Order / Svc
-6. Order / DB
-7. Payment / Svc
-8. Payment / DB
-
-```mermaid
-flowchart TD
-    N1["API GATEWAY / (Authentication, Routing)"]
-    N2["User / Svc"]
-    N3["Order / Svc"]
-    N4["Payment / Svc"]
-    N5["User / DB"]
-    N6["Order / DB"]
-    N7["Payment / DB"]
-    N1 --> N3
-    N2 --> N5
-    N3 --> N6
-    N4 --> N7
-```
 
 #### 2. Event-Driven Architecture
 
@@ -807,19 +473,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Order / Service
-2. ORDER / CREATED / EVENT
-3. Inventory / Service / Notification / Service / Analytic
-
-```mermaid
-flowchart LR
-    N1["Order / Service"]
-    N2["ORDER / CREATED / EVENT"]
-    N3["Inventory / Service / Notification / Service / Analytic"]
-    N1 --> N2
-    N2 --> N3
-```
 
 #### 3. Serverless Architecture
 
@@ -844,33 +497,6 @@ flowchart LR
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SERVERLESS PATTERN
-2. Client API Gateway Lambda DynamoDB
-3. Lambda S3
-4. Pricing: Pay only for execution time
-5. Scaling: Automatic (0 to millions)
-6. Management: Zero server maintenance
-7. Use Cases:
-
-```mermaid
-flowchart TD
-    N1["SERVERLESS PATTERN"]
-    N2["Client API Gateway Lambda DynamoDB"]
-    N3["Lambda S3"]
-    N4["Pricing: Pay only for execution time"]
-    N5["Scaling: Automatic (0 to millions)"]
-    N6["Management: Zero server maintenance"]
-    N7["Use Cases:"]
-    N8["• REST APIs"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Cloud Certifications Roadmap
 
@@ -896,51 +522,6 @@ SPECIALTY
 └── Azure Security Engineer
 ```
 
-**Flow:**
-1. BEGINNER
-2. AWS Cloud Practitioner (CLF-C02)
-3. BEGINNER
-4. Azure Fundamentals (AZ-900)
-5. BEGINNER
-6. Google Cloud Digital Leader
-7. INTERMEDIATE
-8. AWS Solutions Architect Associate (SAA-C03)
-9. INTERMEDIATE
-10. Azure Administrator (AZ-104)
-11. INTERMEDIATE
-12. AWS Developer Associate (DVA-C02)
-
-```mermaid
-flowchart TD
-    N1["BEGINNER"]
-    N2["AWS Cloud Practitioner (CLF-C02)"]
-    N3["Azure Fundamentals (AZ-900)"]
-    N4["Google Cloud Digital Leader"]
-    N5["INTERMEDIATE"]
-    N6["AWS Solutions Architect Associate (SAA-C03)"]
-    N7["Azure Administrator (AZ-104)"]
-    N8["AWS Developer Associate (DVA-C02)"]
-    N9["ADVANCED"]
-    N10["AWS Solutions Architect Professional"]
-    N11["Azure Solutions Architect Expert"]
-    N12["AWS DevOps Engineer Professional"]
-    N13["SPECIALTY"]
-    N14["AWS Security Specialty"]
-    N15["AWS Database Specialty"]
-    N16["Azure Security Engineer"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N5 --> N6
-    N5 --> N7
-    N5 --> N8
-    N9 --> N10
-    N9 --> N11
-    N9 --> N12
-    N13 --> N14
-    N13 --> N15
-    N13 --> N16
-```
 
 ### Learning Resources - Cloud
 
@@ -992,22 +573,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. CHANNELS / Mobile App / Web Banking / ATM / Branch / US
-2. MIDDLEWARE / API Gateway / ESB / Integration / Layer
-3. CORE SYSTEM / Account / Management / Transaction / Proc
-4. DATABASE / (Oracle)
-
-```mermaid
-flowchart TD
-    N1["CHANNELS / Mobile App / Web Banking / ATM / Branch / US"]
-    N2["MIDDLEWARE / API Gateway / ESB / Integration / Layer"]
-    N3["CORE SYSTEM / Account / Management / Transaction / Proc"]
-    N4["DATABASE / (Oracle)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-```
 
 #### Key Banking Terms
 
@@ -1049,33 +614,6 @@ flowchart TD
 └───────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. UPI PAYMENT FLOW
-2. PAYER PSP NPCI PAYEE
-3. Pay Req
-4. Validate
-5. Check Acct
-6. Confirm
-7. Route
-
-```mermaid
-flowchart TD
-    N1["UPI PAYMENT FLOW"]
-    N2["PAYER PSP NPCI PAYEE"]
-    N3["Pay Req"]
-    N4["Validate"]
-    N5["Check Acct"]
-    N6["Confirm"]
-    N7["Route"]
-    N8["PIN Req"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Banking Data Structures
 
@@ -1139,54 +677,6 @@ Data Structures Used:
 └── Trie for autocomplete categories
 ```
 
-**Flow:**
-1. Features:
-2. User registration/login
-3. Features:
-4. Add income/expense transactions
-5. Features:
-6. Categorize transactions
-7. Features:
-8. Monthly/yearly reports
-9. Features:
-10. Budget alerts
-11. Features:
-12. Export to CSV/PDF
-
-```mermaid
-flowchart TD
-    N1["Features:"]
-    N2["User registration/login"]
-    N3["Add income/expense transactions"]
-    N4["Categorize transactions"]
-    N5["Monthly/yearly reports"]
-    N6["Budget alerts"]
-    N7["Export to CSV/PDF"]
-    N8["Tech Stack:"]
-    N9["Backend: Java Spring Boot"]
-    N10["Database: PostgreSQL"]
-    N11["Frontend: React"]
-    N12["Charts: Chart.js"]
-    N13["Data Structures Used:"]
-    N14["HashMap for category-wise aggregation"]
-    N15["TreeMap for date-sorted transactions"]
-    N16["PriorityQueue for budget alerts"]
-    N17["Trie for autocomplete categories"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N8 --> N9
-    N8 --> N10
-    N8 --> N11
-    N8 --> N12
-    N13 --> N14
-    N13 --> N15
-    N13 --> N16
-    N13 --> N17
-```
 
 **Learning Resources**:
 
@@ -1223,60 +713,6 @@ System Design Concepts:
 └── Rate limiting
 ```
 
-**Flow:**
-1. Features:
-2. Multiple payment methods (Card, UPI, Net Banking)
-3. Features:
-4. Secure tokenization
-5. Features:
-6. Webhook handling
-7. Features:
-8. Refund processing
-9. Features:
-10. Transaction reconciliation
-11. Features:
-12. Retry mechanism for failures
-
-```mermaid
-flowchart TD
-    N1["Features:"]
-    N2["Multiple payment methods (Card, UPI, Net Banking)"]
-    N3["Secure tokenization"]
-    N4["Webhook handling"]
-    N5["Refund processing"]
-    N6["Transaction reconciliation"]
-    N7["Retry mechanism for failures"]
-    N8["Dashboard with analytics"]
-    N9["Tech Stack:"]
-    N10["Backend: Java/Node.js"]
-    N11["Message Queue: RabbitMQ/Kafka"]
-    N12["Database: PostgreSQL + Redis"]
-    N13["Payment APIs: Razorpay/Stripe"]
-    N14["Monitoring: Prometheus + Grafana"]
-    N15["System Design Concepts:"]
-    N16["Idempotency keys"]
-    N17["Distributed transactions"]
-    N18["Event sourcing"]
-    N19["Circuit breaker pattern"]
-    N20["Rate limiting"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N9 --> N10
-    N9 --> N11
-    N9 --> N12
-    N9 --> N13
-    N9 --> N14
-    N15 --> N16
-    N15 --> N17
-    N15 --> N18
-    N15 --> N19
-    N15 --> N20
-```
 
 **Learning Resources**:
 
@@ -1319,19 +755,6 @@ ML Features:
 └── Historical spending patterns
 ```
 
-**Flow:**
-1. Features: / Real-time transaction scoring / ML-based an
-2. Rules Engine Alert
-3. Dashboard / ML Features: / Transaction amount deviation
-
-```mermaid
-flowchart TD
-    N1["Features: / Real-time transaction scoring / ML-based an"]
-    N2["Rules Engine Alert"]
-    N3["Dashboard / ML Features: / Transaction amount deviation"]
-    N1 --> N2
-    N2 --> N3
-```
 
 **Learning Resources**:
 
@@ -1373,68 +796,6 @@ Tech Stack:
 └── Monitoring: ELK Stack
 ```
 
-**Flow:**
-1. Modules:
-2. Customer Management (KYC, CIF)
-3. Modules:
-4. Account Management (Open, Close, Dormant)
-5. Modules:
-6. Transaction Processing (Credit, Debit, Transfer)
-7. Modules:
-8. Interest Calculation (Daily, Monthly)
-9. Modules:
-10. Statement Generation
-11. Modules:
-12. GL Posting (Double-entry)
-
-```mermaid
-flowchart TD
-    N1["Modules:"]
-    N2["Customer Management (KYC, CIF)"]
-    N3["Account Management (Open, Close, Dormant)"]
-    N4["Transaction Processing (Credit, Debit, Transfer)"]
-    N5["Interest Calculation (Daily, Monthly)"]
-    N6["Statement Generation"]
-    N7["GL Posting (Double-entry)"]
-    N8["Regulatory Reporting"]
-    N9["Audit Trail"]
-    N10["Key Challenges:"]
-    N11["ACID compliance across distributed systems"]
-    N12["End-of-day batch processing"]
-    N13["Interest accrual algorithms"]
-    N14["Multi-currency support"]
-    N15["Regulatory compliance"]
-    N16["High availability (99.99%)"]
-    N17["Tech Stack:"]
-    N18["Backend: Java Spring Boot + Microservices"]
-    N19["Database: Oracle/PostgreSQL"]
-    N20["Caching: Redis"]
-    N21["Messaging: Kafka"]
-    N22["Batch: Spring Batch"]
-    N23["Orchestration: Kubernetes"]
-    N24["Monitoring: ELK Stack"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N1 --> N9
-    N10 --> N11
-    N10 --> N12
-    N10 --> N13
-    N10 --> N14
-    N10 --> N15
-    N10 --> N16
-    N17 --> N18
-    N17 --> N19
-    N17 --> N20
-    N17 --> N21
-    N17 --> N22
-    N17 --> N23
-    N17 --> N24
-```
 
 ---
 
@@ -1479,23 +840,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ADMIN / SYSTEMS / Billing / Scheduling / Insurance / Cl
-2. CLINICAL / SYSTEMS / EHR/EMR / Lab Systems / Imaging /
-3. ANALYTICS / PLATFORM / Population / Health / AI/ML / Re
-4. ADMIN / SYSTEMS / Billing / Scheduling / Insurance / Cl
-5. INTEGRATION / ENGINE / (HL7/FHIR)
-
-```mermaid
-flowchart TD
-    N1["CLINICAL / SYSTEMS / EHR/EMR / Lab Systems / Imaging / "]
-    N2["ADMIN / SYSTEMS / Billing / Scheduling / Insurance / Cl"]
-    N3["ANALYTICS / PLATFORM / Population / Health / AI/ML / Re"]
-    N4["INTEGRATION / ENGINE / (HL7/FHIR)"]
-    N2 --> N1
-    N3 --> N2
-    N2 --> N4
-```
 
 #### Key Healthcare Terms
 
@@ -1570,56 +914,6 @@ Data Models:
 └── Prescription (medications, dosage)
 ```
 
-**Flow:**
-1. Features:
-2. Patient registration
-3. Features:
-4. Doctor profiles
-5. Features:
-6. Appointment scheduling
-7. Features:
-8. Medical history tracking
-9. Features:
-10. Prescription management
-11. Features:
-12. Basic reporting
-
-```mermaid
-flowchart TD
-    N1["Features:"]
-    N2["Patient registration"]
-    N3["Doctor profiles"]
-    N4["Appointment scheduling"]
-    N5["Medical history tracking"]
-    N6["Prescription management"]
-    N7["Basic reporting"]
-    N8["Tech Stack:"]
-    N9["Backend: Python Django/Java Spring"]
-    N10["Database: PostgreSQL"]
-    N11["Frontend: React"]
-    N12["PDF Generation: ReportLab/iText"]
-    N13["Data Models:"]
-    N14["Patient (demographics, insurance)"]
-    N15["Provider (doctors, specialists)"]
-    N16["Appointment (scheduling, status)"]
-    N17["MedicalRecord (diagnoses, notes)"]
-    N18["Prescription (medications, dosage)"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N8 --> N9
-    N8 --> N10
-    N8 --> N11
-    N8 --> N12
-    N13 --> N14
-    N13 --> N15
-    N13 --> N16
-    N13 --> N17
-    N13 --> N18
-```
 
 #### Project 2: Telemedicine Platform (Intermediate)
 
@@ -1650,60 +944,6 @@ Security Considerations:
 └── Data anonymization
 ```
 
-**Flow:**
-1. Features:
-2. Video/audio consultation
-3. Features:
-4. Appointment booking
-5. Features:
-6. Digital prescriptions
-7. Features:
-8. Payment integration
-9. Features:
-10. Medical records access
-11. Features:
-12. Chat functionality
-
-```mermaid
-flowchart TD
-    N1["Features:"]
-    N2["Video/audio consultation"]
-    N3["Appointment booking"]
-    N4["Digital prescriptions"]
-    N5["Payment integration"]
-    N6["Medical records access"]
-    N7["Chat functionality"]
-    N8["Follow-up reminders"]
-    N9["Tech Stack:"]
-    N10["Backend: Node.js/Python"]
-    N11["Video: WebRTC/Twilio"]
-    N12["Database: MongoDB + PostgreSQL"]
-    N13["Storage: AWS S3 (HIPAA compliant)"]
-    N14["Notifications: Firebase"]
-    N15["Security Considerations:"]
-    N16["End-to-end encryption"]
-    N17["HIPAA compliance"]
-    N18["Access control (RBAC)"]
-    N19["Audit logging"]
-    N20["Data anonymization"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N9 --> N10
-    N9 --> N11
-    N9 --> N12
-    N9 --> N13
-    N9 --> N14
-    N15 --> N16
-    N15 --> N17
-    N15 --> N18
-    N15 --> N19
-    N15 --> N20
-```
 
 **Learning Resources**:
 
@@ -1744,33 +984,6 @@ ML Approach:
 └── Continuous learning pipeline
 ```
 
-**Flow:**
-1. Features:
-2. DICOM image upload/viewing
-3. AI-based anomaly detection
-4. Report generation
-5. Radiologist review workflow
-6. Integration with PACS
-7. Model explainability
-
-```mermaid
-flowchart TD
-    N1["Features:"]
-    N2["DICOM image upload/viewing"]
-    N3["AI-based anomaly detection"]
-    N4["Report generation"]
-    N5["Radiologist review workflow"]
-    N6["Integration with PACS"]
-    N7["Model explainability"]
-    N8["Architecture:"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Learning Resources**:
 
@@ -1822,23 +1035,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. ACCESS / NETWORK / Cell Towers / Wi-Fi / Fiber / 5G NR
-2. CORE / NETWORK / Routing / Switching / Core (EPC) / IMS
-3. SERVICES / LAYER / Billing / CRM / VAS / OTT
-4. CORE / NETWORK / Routing / Switching / Core (EPC) / IMS
-5. OSS/BSS / (Operations & / Business / Support)
-
-```mermaid
-flowchart TD
-    N1["ACCESS / NETWORK / Cell Towers / Wi-Fi / Fiber / 5G NR"]
-    N2["CORE / NETWORK / Routing / Switching / Core (EPC) / IMS"]
-    N3["SERVICES / LAYER / Billing / CRM / VAS / OTT"]
-    N4["OSS/BSS / (Operations & / Business / Support)"]
-    N1 --> N2
-    N2 --> N3
-    N2 --> N4
-```
 
 #### Key Telecom Terms
 
@@ -1876,33 +1072,6 @@ Raw CDR ──► Parser ──► Validation ──► Rating ──► Billing
                            └──► Customer Insights
 ```
 
-**Flow:**
-1. CDR (Call Detail Record):
-2. Calling Number: +91-9876543210
-3. Called Number: +91-9123456789
-4. Start Time: 2024-01-15 14:30:00
-5. Duration: 180 seconds
-6. Call Type: Voice
-7. Cell Tower: MH-MUM-123
-
-```mermaid
-flowchart TD
-    N1["CDR (Call Detail Record):"]
-    N2["Calling Number: +91-9876543210"]
-    N3["Called Number: +91-9123456789"]
-    N4["Start Time: 2024-01-15 14:30:00"]
-    N5["Duration: 180 seconds"]
-    N6["Call Type: Voice"]
-    N7["Cell Tower: MH-MUM-123"]
-    N8["Cost: ₹3.00"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Telecom Projects
 
@@ -1934,58 +1103,6 @@ Key Data Structures:
 └── LRU Cache for popular plans
 ```
 
-**Flow:**
-1. Features:
-2. User registration with mobile verification
-3. Features:
-4. Recharge plan display
-5. Features:
-6. Payment integration
-7. Features:
-8. Balance tracking
-9. Features:
-10. Transaction history
-11. Features:
-12. Plan recommendations
-
-```mermaid
-flowchart TD
-    N1["Features:"]
-    N2["User registration with mobile verification"]
-    N3["Recharge plan display"]
-    N4["Payment integration"]
-    N5["Balance tracking"]
-    N6["Transaction history"]
-    N7["Plan recommendations"]
-    N8["Notifications (SMS/Push)"]
-    N9["Tech Stack:"]
-    N10["Backend: Java Spring Boot"]
-    N11["Database: MySQL + Redis"]
-    N12["Payment: Razorpay/Paytm"]
-    N13["SMS: Twilio/MSG91"]
-    N14["Frontend: React Native"]
-    N15["Key Data Structures:"]
-    N16["HashMap for plan caching"]
-    N17["Queue for async processing"]
-    N18["Trie for mobile number validation"]
-    N19["LRU Cache for popular plans"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N9 --> N10
-    N9 --> N11
-    N9 --> N12
-    N9 --> N13
-    N9 --> N14
-    N15 --> N16
-    N15 --> N17
-    N15 --> N18
-    N15 --> N19
-```
 
 #### Project 2: Network Monitoring Dashboard (Intermediate)
 
@@ -2023,33 +1140,6 @@ Metrics to Track:
 └── SLA compliance
 ```
 
-**Flow:**
-1. Features:
-2. Real-time network metrics
-3. Alert generation
-4. Historical analysis
-5. Topology visualization
-6. Threshold configuration
-7. Report generation
-
-```mermaid
-flowchart TD
-    N1["Features:"]
-    N2["Real-time network metrics"]
-    N3["Alert generation"]
-    N4["Historical analysis"]
-    N5["Topology visualization"]
-    N6["Threshold configuration"]
-    N7["Report generation"]
-    N8["Incident management"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 **Learning Resources**:
 
@@ -2093,33 +1183,6 @@ Technical Challenges:
 └── Regulatory compliance
 ```
 
-**Flow:**
-1. Features:
-2. Real-time usage rating
-3. Multiple pricing plans
-4. Proration support
-5. Invoice generation
-6. Usage alerts
-7. Revenue assurance
-
-```mermaid
-flowchart TD
-    N1["Features:"]
-    N2["Real-time usage rating"]
-    N3["Multiple pricing plans"]
-    N4["Proration support"]
-    N5["Invoice generation"]
-    N6["Usage alerts"]
-    N7["Revenue assurance"]
-    N8["Fraud detection"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
@@ -2146,31 +1209,6 @@ flowchart TD
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. MINDSET TRANSFORMATION
-2. EMPLOYEE MINDSET PRODUCT MINDSET
-3. 'Tell me what to do' 'Let me solve this problem'
-4. 'It's not my job' 'How can I help?'
-5. 'Requirements are unclear' 'Let me clarify and propose'
-6. 'It's working' 'Is it valuable to users?'
-7. 'Feature is done' 'Let's measure the impact'
-
-```mermaid
-flowchart TD
-    N1["MINDSET TRANSFORMATION"]
-    N2["EMPLOYEE MINDSET PRODUCT MINDSET"]
-    N3["'Tell me what to do' 'Let me solve this problem'"]
-    N4["'It's not my job' 'How can I help?'"]
-    N5["'Requirements are unclear' 'Let me clarify and propose'"]
-    N6["'It's working' 'Is it valuable to users?'"]
-    N7["'Feature is done' 'Let's measure the impact'"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-```
 
 ### Product Thinking Framework
 
@@ -2202,28 +1240,6 @@ For every feature, ask:
 └─────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. For every feature, ask:
-2. WHO is the user?
-3. WHAT problem are they facing?
-4. WHY is this problem important?
-5. HOW will we measure success?
-6. WHAT's the simplest solution?
-
-```mermaid
-flowchart TD
-    N1["For every feature, ask:"]
-    N2["WHO is the user?"]
-    N3["WHAT problem are they facing?"]
-    N4["WHY is this problem important?"]
-    N5["HOW will we measure success?"]
-    N6["WHAT's the simplest solution?"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-```
 
 #### 3. Impact-Driven Development
 
@@ -2246,33 +1262,6 @@ EFFORT  │                │                │    EFFORT
                     LOW IMPACT
 ```
 
-**Flow:**
-1. Prioritization Matrix:
-2. HIGH IMPACT
-3. QUICK WINS BIG BETS
-4. (Do First) (Plan Well)
-5. LOW HIGH
-6. EFFORT EFFORT
-7. FILL-INS MONEY PITS
-
-```mermaid
-flowchart TD
-    N1["Prioritization Matrix:"]
-    N2["HIGH IMPACT"]
-    N3["QUICK WINS BIG BETS"]
-    N4["(Do First) (Plan Well)"]
-    N5["LOW HIGH"]
-    N6["EFFORT EFFORT"]
-    N7["FILL-INS MONEY PITS"]
-    N8["(Do Later) (Avoid)"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 #### 4. Metrics That Matter
 
@@ -2299,56 +1288,6 @@ Technical Metrics:
 └── Mean time to recovery (MTTR)
 ```
 
-**Flow:**
-1. Business Metrics (North Stars):
-2. Revenue impact
-3. Business Metrics (North Stars):
-4. Customer acquisition cost (CAC)
-5. Business Metrics (North Stars):
-6. Customer lifetime value (LTV)
-7. Business Metrics (North Stars):
-8. Net Promoter Score (NPS)
-9. Business Metrics (North Stars):
-10. Monthly recurring revenue (MRR)
-11. Product Metrics:
-12. Daily/Monthly Active Users (DAU/MAU)
-
-```mermaid
-flowchart TD
-    N1["Business Metrics (North Stars):"]
-    N2["Revenue impact"]
-    N3["Customer acquisition cost (CAC)"]
-    N4["Customer lifetime value (LTV)"]
-    N5["Net Promoter Score (NPS)"]
-    N6["Monthly recurring revenue (MRR)"]
-    N7["Product Metrics:"]
-    N8["Daily/Monthly Active Users (DAU/MAU)"]
-    N9["Feature adoption rate"]
-    N10["Time to value"]
-    N11["User retention"]
-    N12["Task completion rate"]
-    N13["Technical Metrics:"]
-    N14["System availability (99.9% SLA)"]
-    N15["Response time (P50, P95, P99)"]
-    N16["Error rate"]
-    N17["Deployment frequency"]
-    N18["Mean time to recovery (MTTR)"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N7 --> N8
-    N7 --> N9
-    N7 --> N10
-    N7 --> N11
-    N7 --> N12
-    N13 --> N14
-    N13 --> N15
-    N13 --> N16
-    N13 --> N17
-    N13 --> N18
-```
 
 ### Becoming a Strategic Partner
 
@@ -2430,56 +1369,6 @@ RESULT: Quantify the outcome
    └── Have backup slides ready
 ```
 
-**Flow:**
-1. 1. HOOK (30 seconds)
-2. Start with the problem impact
-3. 1. HOOK (30 seconds)
-4. 'We're losing $X / Users are frustrated by Y'
-5. 2. CONTEXT (2 minutes)
-6. Current situation
-7. 2. CONTEXT (2 minutes)
-8. Why it matters
-9. 2. CONTEXT (2 minutes)
-10. Scope and constraints
-11. 3. SOLUTION (5 minutes)
-12. High-level approach
-
-```mermaid
-flowchart TD
-    N1["1. HOOK (30 seconds)"]
-    N2["Start with the problem impact"]
-    N3["'We're losing $X / Users are frustrated by Y'"]
-    N4["2. CONTEXT (2 minutes)"]
-    N5["Current situation"]
-    N6["Why it matters"]
-    N7["Scope and constraints"]
-    N8["3. SOLUTION (5 minutes)"]
-    N9["High-level approach"]
-    N10["Key design decisions"]
-    N11["Trade-offs considered"]
-    N12["4. DEMO/EVIDENCE (3 minutes)"]
-    N13["Show, don't just tell"]
-    N14["Metrics and results"]
-    N15["5. NEXT STEPS (1 minute)"]
-    N16["Clear action items"]
-    N17["Timeline and owners"]
-    N18["Anticipate questions"]
-    N19["Have backup slides ready"]
-    N1 --> N2
-    N1 --> N3
-    N4 --> N5
-    N4 --> N6
-    N4 --> N7
-    N8 --> N9
-    N8 --> N10
-    N8 --> N11
-    N12 --> N13
-    N12 --> N14
-    N15 --> N16
-    N15 --> N17
-    N15 --> N18
-    N15 --> N19
-```
 
 ### Writing Effective Technical Documents
 
@@ -2499,33 +1388,6 @@ GOOD TECHNICAL WRITING:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. GOOD TECHNICAL WRITING:
-2. ✓ Executive summary first (TL;DR)
-3. ✓ Clear problem statement
-4. ✓ Visual diagrams > walls of text
-5. ✓ Numbered steps for processes
-6. ✓ Code examples for implementation
-7. ✓ Trade-offs explicitly stated
-
-```mermaid
-flowchart TD
-    N1["GOOD TECHNICAL WRITING:"]
-    N2["✓ Executive summary first (TL;DR)"]
-    N3["✓ Clear problem statement"]
-    N4["✓ Visual diagrams &gt; walls of text"]
-    N5["✓ Numbered steps for processes"]
-    N6["✓ Code examples for implementation"]
-    N7["✓ Trade-offs explicitly stated"]
-    N8["✓ Risks and mitigations"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ### Handling Difficult Conversations
 
@@ -2583,19 +1445,6 @@ DO:
 └─────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. SENSORS / & DEVICES / Traffic / Air Quality / Water Met
-2. DATA / PLATFORM / IoT Hub / Stream Proc / Data Lake / M
-3. APPLICATIONS / Traffic Mgmt / Health Alert / Utility Bi
-
-```mermaid
-flowchart LR
-    N1["SENSORS / & DEVICES / Traffic / Air Quality / Water Met"]
-    N2["DATA / PLATFORM / IoT Hub / Stream Proc / Data Lake / M"]
-    N3["APPLICATIONS / Traffic Mgmt / Health Alert / Utility Bi"]
-    N1 --> N2
-    N2 --> N3
-```
 
 ### Project Portfolio Progression
 
@@ -2625,59 +1474,6 @@ MONTH 7+: Expert Projects
 └── Focus: Enterprise architecture, Leadership
 ```
 
-**Flow:**
-1. MONTH 1-2: Foundation Projects
-2. Personal Finance Tracker (Banking)
-3. MONTH 1-2: Foundation Projects
-4. Patient Registration System (Healthcare)
-5. MONTH 1-2: Foundation Projects
-6. Prepaid Recharge System (Telecom)
-7. MONTH 1-2: Foundation Projects
-8. Focus: CRUD, APIs, Database design
-9. MONTH 3-4: Intermediate Projects
-10. Payment Gateway Integration (Banking)
-11. MONTH 3-4: Intermediate Projects
-12. Telemedicine Platform (Healthcare)
-
-```mermaid
-flowchart TD
-    N1["MONTH 1-2: Foundation Projects"]
-    N2["Personal Finance Tracker (Banking)"]
-    N3["Patient Registration System (Healthcare)"]
-    N4["Prepaid Recharge System (Telecom)"]
-    N5["Focus: CRUD, APIs, Database design"]
-    N6["MONTH 3-4: Intermediate Projects"]
-    N7["Payment Gateway Integration (Banking)"]
-    N8["Telemedicine Platform (Healthcare)"]
-    N9["Network Monitoring Dashboard (Telecom)"]
-    N10["Focus: System design, Cloud deployment"]
-    N11["MONTH 5-6: Advanced Projects"]
-    N12["Fraud Detection System (Banking)"]
-    N13["Medical Imaging Analysis (Healthcare)"]
-    N14["Billing & Rating Engine (Telecom)"]
-    N15["Focus: ML integration, Scale optimization"]
-    N16["MONTH 7+: Expert Projects"]
-    N17["Core Banking System (Banking)"]
-    N18["Hospital Information System (Healthcare)"]
-    N19["5G Network Orchestration (Telecom)"]
-    N20["Focus: Enterprise architecture, Leadership"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N6 --> N7
-    N6 --> N8
-    N6 --> N9
-    N6 --> N10
-    N11 --> N12
-    N11 --> N13
-    N11 --> N14
-    N11 --> N15
-    N16 --> N17
-    N16 --> N18
-    N16 --> N19
-    N16 --> N20
-```
 
 ---
 
@@ -2717,74 +1513,6 @@ ADVANCED (Month 5-6)
     └── Build domain-specific projects
 ```
 
-**Flow:**
-1. FOUNDATION (Month 1-2)
-2. Data Structures & Algorithms
-3. FOUNDATION (Month 1-2)
-4. LeetCode, AlgoExpert
-5. FOUNDATION (Month 1-2)
-6. System Design Basics
-7. FOUNDATION (Month 1-2)
-8. Designing Data-Intensive Applications (Book)
-9. FOUNDATION (Month 1-2)
-10. One Programming Language (Deep)
-11. FOUNDATION (Month 1-2)
-12. Java/Python - Official docs + practice
-
-```mermaid
-flowchart TD
-    N1["FOUNDATION (Month 1-2)"]
-    N2["Data Structures & Algorithms"]
-    N3["LeetCode, AlgoExpert"]
-    N4["System Design Basics"]
-    N5["Designing Data-Intensive Applications (Book)"]
-    N6["One Programming Language (Deep)"]
-    N7["Java/Python - Official docs + practice"]
-    N8["Database Fundamentals"]
-    N9["SQL + NoSQL basics"]
-    N10["INTERMEDIATE (Month 3-4)"]
-    N11["Cloud Certification"]
-    N12["AWS Solutions Architect Associate"]
-    N13["Containerization"]
-    N14["Docker, Kubernetes basics"]
-    N15["CI/CD Pipelines"]
-    N16["GitHub Actions, Jenkins"]
-    N17["Domain Introduction"]
-    N18["Choose one domain, learn basics"]
-    N19["ADVANCED (Month 5-6)"]
-    N20["Advanced System Design"]
-    N21["Practice with real architectures"]
-    N22["Performance Optimization"]
-    N23["Profiling, caching, query optimization"]
-    N24["Security Fundamentals"]
-    N25["OWASP Top 10, secure coding"]
-    N26["Domain Deep Dive"]
-    N27["Build domain-specific projects"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N1 --> N6
-    N1 --> N7
-    N1 --> N8
-    N1 --> N9
-    N10 --> N11
-    N10 --> N12
-    N10 --> N13
-    N10 --> N14
-    N10 --> N15
-    N10 --> N16
-    N10 --> N17
-    N10 --> N18
-    N19 --> N20
-    N19 --> N21
-    N19 --> N22
-    N19 --> N23
-    N19 --> N24
-    N19 --> N25
-    N19 --> N26
-    N19 --> N27
-```
 
 ### Recommended Resources
 
@@ -2853,57 +1581,6 @@ AGILE/MANAGEMENT
 └── TOGAF (Enterprise Architecture)
 ```
 
-**Flow:**
-1. CLOUD
-2. AWS Cloud Practitioner (Entry)
-3. CLOUD
-4. AWS Solutions Architect Associate (Core)
-5. CLOUD
-6. AWS Solutions Architect Professional (Advanced)
-7. CLOUD
-8. Specialty: Security, Database, ML
-9. DEVELOPMENT
-10. Oracle Certified Java Professional
-11. DEVELOPMENT
-12. Kubernetes Administrator (CKA)
-
-```mermaid
-flowchart TD
-    N1["CLOUD"]
-    N2["AWS Cloud Practitioner (Entry)"]
-    N3["AWS Solutions Architect Associate (Core)"]
-    N4["AWS Solutions Architect Professional (Advanced)"]
-    N5["Specialty: Security, Database, ML"]
-    N6["DEVELOPMENT"]
-    N7["Oracle Certified Java Professional"]
-    N8["Kubernetes Administrator (CKA)"]
-    N9["HashiCorp Terraform Associate"]
-    N10["MongoDB Developer Certification"]
-    N11["DOMAIN-SPECIFIC"]
-    N12["Banking: CISA, CRISC"]
-    N13["Healthcare: HCISPP, HL7 Certification"]
-    N14["Telecom: CCNA, CompTIA Network+"]
-    N15["Security: CISSP, CEH"]
-    N16["AGILE/MANAGEMENT"]
-    N17["Certified ScrumMaster (CSM)"]
-    N18["PMI-ACP"]
-    N19["TOGAF (Enterprise Architecture)"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N6 --> N7
-    N6 --> N8
-    N6 --> N9
-    N6 --> N10
-    N11 --> N12
-    N11 --> N13
-    N11 --> N14
-    N11 --> N15
-    N16 --> N17
-    N16 --> N18
-    N16 --> N19
-```
 
 ---
 
@@ -2934,50 +1611,6 @@ Daily Routine:
 └── 1 hour: Project work
 ```
 
-**Flow:**
-1. Week 1-4: Technical Foundation
-2. Complete DSA fundamentals
-3. Week 1-4: Technical Foundation
-4. System design basics
-5. Week 1-4: Technical Foundation
-6. Start cloud certification prep
-7. Week 1-4: Technical Foundation
-8. Deliverable: 50+ LeetCode problems
-9. Week 5-8: Domain Introduction
-10. Choose primary domain (Banking/Healthcare/Telecom)
-11. Week 5-8: Domain Introduction
-12. Learn domain terminology
-
-```mermaid
-flowchart TD
-    N1["Week 1-4: Technical Foundation"]
-    N2["Complete DSA fundamentals"]
-    N3["System design basics"]
-    N4["Start cloud certification prep"]
-    N5["Deliverable: 50+ LeetCode problems"]
-    N6["Week 5-8: Domain Introduction"]
-    N7["Choose primary domain (Banking/Healthcare/Telecom)"]
-    N8["Learn domain terminology"]
-    N9["Build first basic project"]
-    N10["Deliverable: Personal Finance Tracker"]
-    N11["Daily Routine:"]
-    N12["2 hours: DSA practice"]
-    N13["1 hour: System design study"]
-    N14["1 hour: Domain learning"]
-    N15["1 hour: Project work"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N6 --> N7
-    N6 --> N8
-    N6 --> N9
-    N6 --> N10
-    N11 --> N12
-    N11 --> N13
-    N11 --> N14
-    N11 --> N15
-```
 
 ### Month 3-4: Skill Integration
 
@@ -2995,41 +1628,6 @@ Week 13-16: System Design + Product Thinking
 └── Deliverable: Design document for a real system
 ```
 
-**Flow:**
-1. Week 9-12: Cloud + Domain
-2. Complete AWS/Azure certification
-3. Week 9-12: Cloud + Domain
-4. Deploy projects to cloud
-5. Week 9-12: Cloud + Domain
-6. Intermediate domain project
-7. Week 9-12: Cloud + Domain
-8. Deliverable: Payment Gateway OR Telemedicine Platform
-9. Week 13-16: System Design + Product Thinking
-10. Practice system design interviews
-11. Week 13-16: System Design + Product Thinking
-12. Start thinking in terms of business impact
-
-```mermaid
-flowchart TD
-    N1["Week 9-12: Cloud + Domain"]
-    N2["Complete AWS/Azure certification"]
-    N3["Deploy projects to cloud"]
-    N4["Intermediate domain project"]
-    N5["Deliverable: Payment Gateway OR Telemedicine Platform"]
-    N6["Week 13-16: System Design + Product Thinking"]
-    N7["Practice system design interviews"]
-    N8["Start thinking in terms of business impact"]
-    N9["Begin technical writing practice"]
-    N10["Deliverable: Design document for a real system"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N6 --> N7
-    N6 --> N8
-    N6 --> N9
-    N6 --> N10
-```
 
 ### Month 5-6: Advanced Projects
 
@@ -3047,41 +1645,6 @@ Week 21-24: Portfolio & Presentation
 └── Deliverable: Complete portfolio + 3 case studies
 ```
 
-**Flow:**
-1. Week 17-20: Advanced Implementation
-2. Build advanced domain project
-3. Week 17-20: Advanced Implementation
-4. Focus on optimization
-5. Week 17-20: Advanced Implementation
-6. Contribute to open source
-7. Week 17-20: Advanced Implementation
-8. Deliverable: Fraud Detection OR Medical Imaging Analysi
-9. Week 21-24: Portfolio & Presentation
-10. Document all projects
-11. Week 21-24: Portfolio & Presentation
-12. Create portfolio website
-
-```mermaid
-flowchart TD
-    N1["Week 17-20: Advanced Implementation"]
-    N2["Build advanced domain project"]
-    N3["Focus on optimization"]
-    N4["Contribute to open source"]
-    N5["Deliverable: Fraud Detection OR Medical Imaging Analysi"]
-    N6["Week 21-24: Portfolio & Presentation"]
-    N7["Document all projects"]
-    N8["Create portfolio website"]
-    N9["Practice technical presentations"]
-    N10["Deliverable: Complete portfolio + 3 case studies"]
-    N1 --> N2
-    N1 --> N3
-    N1 --> N4
-    N1 --> N5
-    N6 --> N7
-    N6 --> N8
-    N6 --> N9
-    N6 --> N10
-```
 
 ---
 

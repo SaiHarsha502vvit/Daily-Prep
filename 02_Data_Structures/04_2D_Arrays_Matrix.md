@@ -1,4 +1,4 @@
-**Navigation**: [< Previous](03_Collections_Java.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous](03_Collections_Java.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # 🔲 2D Arrays & Matrix: Complete Deep Dive
 
@@ -143,16 +143,6 @@ COLUMN-MAJOR ORDER (Fortran, MATLAB):
 arr[0][0], arr[1][0], arr[2][0], arr[0][1], arr[1][1]...
 ```
 
-**Flow:**
-1. Start with a row-column grid view: `1 2 3 4 / 5 6 7 8 / 9 10 11 12`.
-2. Store the same values linearly in row-major order: `1 2 3 4 5 6 7 8 9 10 11 12`.
-
-```mermaid
-flowchart TD
-    N1["1 2 3 4 / 5 6 7 8 / 9 10 11 12"]
-    N2["1 2 3 4 5 6 7 8 9 10 11 12"]
-    N1 --> N2
-```
 
 ## 🔴 Real-World Origin: Spreadsheets & Images (1970s)
 
@@ -1104,37 +1094,6 @@ private static void dfsIsland(int[][] grid, int r, int c,
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-**Flow:**
-1. Read the problem statement and identify the key phrase.
-2. Map phrase to pattern quickly:
-    - `Find shortest distance` -> `BFS`
-    - `Can wrap around edges` -> modulo indexing
-    - `Count distinct shapes` -> `DFS + coordinate normalization`
-    - `Path from A to B` -> `BFS` (shortest) or `DFS` (any path)
-    - `Rotate matrix` -> `new[j][n-1-i] = old[i][j]`
-3. Validate edge cases before finalizing:
-    - empty matrix, single cell
-    - no valid path, target not found
-    - all cells identical, wrap-around boundaries
-
-```mermaid
-flowchart TD
-    N1["MATRIX PROBLEM RECOGNITION GUIDE"]
-    N2["'Find shortest distance...' → BFS"]
-    N3["'Count distinct shapes...' → DFS + normalize coordinate"]
-    N4["'Path from A to B...' → BFS (shortest) or DFS (any path"]
-    N5["'Rotate matrix...' → Formula: new[j][n-1-i] = old[i][j]"]
-    N6["COMMON EDGE CASES:"]
-    N7["• Empty matrix • Single cell"]
-    N8["• No valid path exists • Target not found"]
-    N1 --> N2
-    N2 --> N3
-    N3 --> N4
-    N4 --> N5
-    N5 --> N6
-    N6 --> N7
-    N7 --> N8
-```
 
 ---
 
