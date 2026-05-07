@@ -1,4 +1,4 @@
-﻿# 🔄 CI/CD Pipelines — Complete Guide
+# 🔄 CI/CD Pipelines — Complete Guide
 
 **Navigation**: [< Docker](03_Docker_Containers.md) | [Index](00_INDEX.md) | [Next: Clean Code >](05_Clean_Code.md)
 
@@ -54,11 +54,6 @@ CD = Continuous Deployment
 ## Basic Pipeline: Build + Test
 
 ```yaml
-
-
-🔬 **Section Challenge — Basic Pipeline: Build + Test**
-
-
 # .github/workflows/ci.yml
 name: CI Pipeline
 
@@ -111,10 +106,25 @@ jobs:
           path: target/*.jar
 ```
 
+🔬 **Section Challenge - Basic Pipeline: Build + Test**
+
+**Challenge 1 (Reasoning):** The workflow caches `~/.m2` with key `runner.os-maven-hashFiles('**/pom.xml')`. What does `hashFiles` compute and why is `pom.xml` the correct cache key input?
+
+<details><summary>Answer</summary>
+
+`hashFiles('**/pom.xml')` computes a SHA-256 of all `pom.xml` files. The cache is valid only while `pom.xml` is unchanged (no new/updated dependencies). When a dependency is added, the hash changes, GitHub Actions discards the old `~/.m2` cache and Maven re-downloads fresh jars. If `pom.xml` is unchanged, the cached `~/.m2` directory is restored, saving 1-3 minutes per build. This pattern is universal: `package-lock.json` for npm, `go.sum` for Go, `Gemfile.lock` for Ruby. The key principle: cache invalidation must be tied to the dependency manifest, not source code.
+
+</details>
+
+**Challenge 2 (Debug):** CI passes locally with `mvn test` but fails in GitHub Actions with `OutOfMemoryError: Java heap space`. Name two likely causes and fixes.
+
+<details><summary>Answer</summary>
+
+1. **JVM heap default**: GitHub runners have 7GB RAM but JVM defaults to 256MB-512MB heap. Fix: add `env: MAVEN_OPTS: "-Xmx2g"` to the test step, or set `<argLine>-Xmx2g</argLine>` in maven-surefire-plugin config. 2. **Parallel test forking**: Surefire may launch multiple JVM forks simultaneously. 4 forks x 512MB = 2GB. Fix: set `<forkCount>1</forkCount>` in surefire config, or `<parallel>none</parallel>` to disable parallel test execution.
+
+</details>
+
 ## Full Pipeline: Build → Test → Docker → Deploy
-
-```yaml
-
 
 🔬 **Section Challenge — Full Pipeline: Build → Test → Docker → Deploy**
 
@@ -130,7 +140,7 @@ In the overlay filesystem, modifying a file in a lower layer creates a COPY in t
 `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
 </details>
 
-
+```yaml
 # .github/workflows/deploy.yml
 name: Build, Test & Deploy
 
@@ -221,11 +231,6 @@ Code Push to main
 ## Pipeline Triggers
 
 ```yaml
-
-
-🔬 **Section Challenge — Pipeline Triggers**
-
-
 # When to run the pipeline:
 on:
   push:                    # On every push
@@ -235,6 +240,24 @@ on:
     - cron: '0 6 * * 1'   # Every Monday 6 AM
   workflow_dispatch:       # Manual trigger button
 ```
+
+🔬 **Section Challenge — Pipeline Triggers**
+
+**Challenge 1 (Reasoning):** Why should `workflow_dispatch` always be included in a production pipeline even when `push` and `schedule` triggers exist?
+
+<details><summary>Answer</summary>
+
+`workflow_dispatch` enables on-demand execution without a code commit. Key use cases: (1) **Emergency rollback** — retrigger the deploy pipeline to redeploy the last known-good Docker image without committing anything; (2) **Incident debugging** — run tests on a specific branch during an investigation; (3) **Scheduled job override** — run Monday's data sync on a Tuesday without waiting for the cron; (4) **Parameterized deployments** — `workflow_dispatch` with `inputs:` lets you select `environment: staging|production`, enabling one workflow file to deploy anywhere. Without it, every trigger requires a code change, polluting Git history.
+
+</details>
+
+**Challenge 2 (Design):** 20 developers push 5 times each per day = 100 runs/day at 8 min each. GitHub free tier = 2,000 min/month. Exhausted on day 2. Name two architectural fixes.
+
+<details><summary>Answer</summary>
+
+1. **Path filtering**: `on: push: paths: ['src/**', 'pom.xml']` skips CI for documentation-only changes (README edits need no build). Saves 20-40% of runs for typical teams. 2. **Concurrency cancellation**: `concurrency: group: ${{ github.ref }} cancel-in-progress: true` — when a developer pushes 3 commits in 60 seconds (typo fixes), only the last run executes, cancelling the previous two. This alone reduces wasted CI minutes by 50-70% on active branches.
+
+</details>
 
 ## Environment Variables & Secrets
 
@@ -323,20 +346,3 @@ Azure DevOps    → Best for Microsoft ecosystem
 
 **Next Chapter**: [Clean Code Principles →](05_Clean_Code.md)
 
----
-
----
-
-🔬 **Section Challenge — Exercise 2: Docker + Deploy**
-
-**Challenge 1 (Reasoning):** Docker image layers — if you modify a file in layer 3, what happens to layers 4 and 5?
-<details><summary>Answer</summary>
-
-In the overlay filesystem, modifying a file in a lower layer creates a COPY in the write layer (copy-on-write). The original lower layer is unchanged. But in image BUILD: if Dockerfile instruction 3 changes, layers 4 and 5 are INVALIDATED — Docker can't reuse cached layers. Rule: put instructions that change most often LAST in Dockerfile. Dependencies (`npm install`, `mvn package`) before source code copies — this maximizes cache reuse.
-</details>
-
-**Challenge 2 (Design):** What's the difference between `COPY` and `ADD` in Dockerfile? When should you use each?
-<details><summary>Answer</summary>
-
-`COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
-</details>

@@ -285,17 +285,17 @@ int fib(int n) {
 
 ---
 
- 🔬 **Section Challenge — 6. Recursion: Why It Overflows and When To Convert To Iteration**
+🔬 **Section Challenge — 6. Recursion: Why It Overflows and When To Convert To Iteration**
 
- **Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
- <details><summary>Answer</summary>
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
 
- An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
- </details>
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS -> explicit stack. Factorial -> accumulator variable (tail recursion -> loop). Tree traversal -> stack with nodes + visited flag. Recursion is cleaner when depth is bounded; iteration is safer when depth is unbounded or performance-critical.
+</details>
 
- **Challenge 2 (Bug Hunt):**
+**Challenge 2 (Bug Hunt):**
 
- ```java
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -303,7 +303,7 @@ Why and what are the 3 fixes?
 <details><summary>Answer</summary>
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
- </details>
+</details>
 
 ## 7. Stable vs Unstable Sort: Why It Matters In Real Systems
 
@@ -422,16 +422,20 @@ The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3S
 
 🔬 **Section Challenge — 9. Why Balanced BST When We Have HashMap**
 
-**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
-<details><summary>Answer</summary>
+**Challenge 1 (Constraint Reasoning):** `HashMap` gives average `O(1)`, but a problem asks for "smallest key greater than x", "all keys in [L, R]", and online inserts. Why does this push you toward a balanced BST?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
+`HashMap` destroys order. It can answer exact-key lookup quickly, but it cannot jump to the next greater key or scan a sorted range without checking many entries.
+
+A balanced BST keeps keys ordered while supporting `insert`, `delete`, `floor`, `ceiling`, and range iteration in `O(log N)` plus output size. In Java, this is `TreeMap`/`TreeSet`; in lower-level implementations it is often a Red-Black Tree or AVL Tree.
 </details>
 
-**Challenge 2 (Bug Hunt):** Two `Person` objects with same name and age. You override `equals()` to return true but not `hashCode()`. What happens when used as `HashMap` keys?
-<details><summary>Answer</summary>
+**Challenge 2 (Trade-off):** If both `TreeMap` and `HashMap` pass the time limit for exact lookup, which one should you choose?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Both objects land in DIFFERENT buckets (different hashCodes → different bucket index). The HashMap doesn't check `equals()` across buckets — it goes straight to one bucket. So `map.get(person2)` returns NULL even though `person1.equals(person2)`. Overriding `equals` without `hashCode` violates the contract and breaks all hash-based collections. Always override both together.
+Choose the simpler structure that matches required operations. If you only need exact lookup, `HashMap` is usually better because it has lower asymptotic average lookup and no ordering maintenance.
+
+Choose `TreeMap` only when order is part of the problem: sorted traversal, predecessor/successor, range queries, rank-like logic, or deterministic ordered output. Paying `O(log N)` without needing order is unnecessary.
 </details>
 
 ## 10. The Array vs LinkedList Reality: Cache Lines Matter

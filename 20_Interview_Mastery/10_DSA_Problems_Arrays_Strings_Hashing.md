@@ -483,10 +483,6 @@ Step 2: For each number:
 **Interview narration**: "The trick is recognizing that I should only start counting from the beginning of a sequence. I detect the beginning by checking if num-1 is absent. This ensures each element participates in counting at most once."
 
 ---
-
-It's silently swallowed. The exception is stored in the `Future` object. Without `future.get()` or `.whenComplete()`, no one ever sees it. The thread pool thread resets and picks up the next task as if nothing happened. This is one of the most dangerous production bugs. Fix: always attach `future.whenComplete((r,ex) -> { if(ex!=null) log.error("Task failed",ex); })` or use `execute()` + `UncaughtExceptionHandler`.
-</details>
-
 ## HASHING (Advanced)
 
 ---
@@ -616,6 +612,17 @@ Decode:
 
 🔬 **Section Challenge — HASHING (Advanced)**
 
+**Challenge 1 (Prefix Sum Initialization):** In the "Subarray Sum Equals K" problem, why is initializing the HashMap with `{0: 1}` mathematically mandatory? Give a concrete example of an array that would fail without it.
+
+<details><summary>Answer</summary>
+
+Initializing the map with `{0: 1}` represents the "empty prefix" before any elements are processed. It acts as the mathematical anchor for subarrays that start precisely at index 0. 
+
+For example: `nums = [5, 2]`, `k = 5`.
+At index 0, the `runningSum` is 5. We check for `complement = runningSum - k = 0`.
+If the map does not contain `{0: 1}`, the count remains 0, and the valid subarray `[5]` is missed entirely. The `{0: 1}` ensures that a running sum exactly equal to `k` registers as 1 valid subarray.
+
+</details>
 | 4 | Product Except Self | prefix × suffix | Prefix/Suffix | Decompose into left and right products |
 | 5 | Maximum Subarray | extend or restart | Kadane's | Negative prefix always hurts |
 | 6 | Merge Intervals | sort + greedy merge | Sort + Scan | Overlapping iff next.start ≤ curr.end |
@@ -637,6 +644,15 @@ Decode:
 
 🔬 **Section Challenge — MASTER PROBLEM MAP — Arrays, Strings, Hashing**
 
+**Challenge 1 (Data Structure Escalation):** You are given a string and need to find the first non-repeating character. A junior dev uses a `HashMap<Character, Integer>` for frequency counting. Why is this structurally inefficient, and what is the specific $O(1)$ space alternative?
+
+<details><summary>Answer</summary>
+
+While a `HashMap` provides $O(1)$ amortized lookups, it introduces significant constant-factor overhead (object hashing, node allocation, memory boxing for primitives). Because the alphabet of a string is typically constrained (e.g., 26 lowercase English letters or 256 ASCII characters), the structurally optimal choice is a **Fixed-Size Array** (e.g., `int[26]`). 
+
+You map characters via ascii arithmetic (`char - 'a'`). This achieves pure $O(1)$ time with a guaranteed negligible space footprint, completely bypassing the hashing engine overhead.
+
+</details>
 **Q: "Array is sorted?"** → Binary Search or Two Pointers first. Don't use HashMap.
 
 

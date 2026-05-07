@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch52_SB_WebSocket_GraphQL_gRPC.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch15_Concurrency_Core.md)
+**Navigation**: [< Previous](Ch52_SB_WebSocket_GraphQL_gRPC.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch15_Concurrency_Core.md)
 
 # 🚀 SPRING BOOT COMPLETE CURRICULUM — Separate Study Plan
 
@@ -713,8 +713,15 @@ Without circuit breakers: A has a thread pool for B calls. B is slow (waiting fo
 
 
 
-🔬 **Section Challenge — Week 9: Cloud + Docker + GraphQL + gRPC**
->>
+> 🔬 **Section Challenge — Week 9: Cloud + Docker + GraphQL + gRPC**
+>
+> **Challenge 1 (Systems Architecture):** You are exposing a single GraphQL endpoint to the frontend, which aggregates data from multiple backend gRPC microservices. What is the biggest performance trap with this "GraphQL over gRPC" design when querying nested relationships (e.g., fetching a User, their 50 Orders, and the 3 Items per Order), and how do you solve it?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** The Distributed N+1 Problem in GraphQL DataFetchers.
+> **Trace:** In REST + JPA, N+1 occurs in the database layer. In GraphQL over microservices, N+1 becomes a *network-level* catastrophe. The GraphQL engine resolves the `User` (1 gRPC call to UserService). Then for their 50 `Orders`, it makes 50 distinct gRPC calls to the OrderService. Finally, for the 150 total `Items`, it makes 150 distinct gRPC calls to the InventoryService. What was one frontend query just spawned 201 network requests across your infrastructure, crushing latency.
+> **Debug/Fix:** Use the **DataLoader** pattern (implemented via `org.dataloader` in Spring for GraphQL). DataLoader batches and caches resolution requests at the field level. Instead of making 50 individual gRPC calls for orders, DataLoader aggregates the 50 User IDs, waits for the current tick of the event loop, and dispatches a *single* batched gRPC request (`getOrdersByUserIds(List<String>)`) to the OrderService. This reduces the network calls from 201 to exactly 3.
+> </details>
 
 ## Week 10: Expert Topics + Capstone
 

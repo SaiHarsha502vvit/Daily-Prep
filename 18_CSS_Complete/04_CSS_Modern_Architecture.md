@@ -136,21 +136,16 @@ Modules for scoping. Building a design system.
 
 🔬 **Section Challenge — 1. CSS Custom Properties (Variables) — Design Tokens**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Design System Reasoning):** A product has `#1d4ed8`, `8px`, and `16px` copied across dozens of components. The team now needs dark mode and brand refresh support. How should CSS custom properties change the architecture?
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** Hard-coded values make every component own design decisions. A brand change becomes a file-by-file hunt, and dark mode creates duplicated selectors or fragile overrides.
+
+**Reasoning:** Design tokens move repeated decisions into named variables. Components should consume semantic tokens like `--color-action-bg`, `--space-3`, and `--radius-control`, while themes redefine token values at the root or container boundary.
+
+**Debug/Fix:** Put primitive values in `:root`, expose semantic aliases for components, override theme values with `[data-theme="dark"]`, and audit components so they reference tokens instead of raw hex/spacing values.
+
 </details>
 
 
@@ -1010,11 +1005,16 @@ border-left: 1px solid;     /* border-inline-start: 1px solid; */
 
 
 🔬 **Section Challenge — 11. Modern CSS Functions — The Power Tools**
->
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-<details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+**Challenge 1 (Constraint Reasoning):** A card title should grow with available space but never go below `0.875rem` or above `1.5rem`. The card width should never exceed `400px`, and spacing must never drop below `1rem`. Which modern CSS functions solve this without extra media queries?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** The constraints are min/preferred/max sizing for type, a hard upper bound for width, and a lower bound for spacing.
+
+**Reasoning:** Use `clamp(min, preferred, max)` for fluid typography, `min(400px, 100%)` for width capped by the parent, and `max(1rem, 3vw)` for spacing that can grow but not shrink below the minimum.
+
+**Debug/Fix:** Write the constraint directly in CSS: `font-size: clamp(0.875rem, 4cqi, 1.5rem)`, `width: min(400px, 100%)`, and `padding: max(1rem, 3vw)`. Then test narrow, normal, and wide containers instead of only viewport sizes.
+
 </details>
-
 

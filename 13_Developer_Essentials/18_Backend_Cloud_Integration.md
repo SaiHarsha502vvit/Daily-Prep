@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](17_Servers_Ports_Networking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Concurrency_Models_Coroutines.md)
+**Navigation**: [< Previous](17_Servers_Ports_Networking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Concurrency_Models_Coroutines.md)
 
 **Developer Essentials Chapter 18** | [← Servers & Networking](17_Servers_Ports_Networking.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Spring Boot Deps Map](../07_Modern_Java/Ch30_Dependencies_Annotations_Map.md)
 
@@ -185,6 +185,22 @@ Also connected:
 
 🔬 **Section Challenge — 4. Typical Spring Boot Cloud Architecture**
 
+**Challenge 1 (Reasoning):** A typical Spring Boot deployment uses Route 53 → CloudFront → ALB → ECS Fargate (Spring Boot) → RDS + Redis. If CloudFront is configured to forward *all* headers to the ALB, what happens to caching performance and why?
+
+<details><summary>Answer</summary>
+
+Caching performance collapses to near zero. **Why**: CloudFront uses the forwarded headers as part of the cache key. If it forwards headers that change per request (like `User-Agent`, `Authorization`, or custom client IDs), CloudFront treats every request as unique and never serves a cache hit. **Fix**: Configure CloudFront to only forward specific headers needed for content negotiation or authorization, or use a separate cache behavior for static assets (which shouldn't forward headers) vs API calls (which bypass cache anyway).
+
+</details>
+
+**Challenge 2 (Design):** In the architecture above, the ECS Fargate instances auto-scale based on CPU. During a massive traffic spike, instances scale up from 3 to 15, but the system crashes entirely. What two downstream bottlenecks were likely ignored in the auto-scaling design?
+
+<details><summary>Answer</summary>
+
+(1) **Database Connection Exhaustion**: Each Spring Boot instance maintains a HikariCP connection pool (default 10 connections). Scaling from 3 to 15 instances increases total DB connections from 30 to 150. If the RDS instance max connections limit is 100, the new instances fail to start or crash trying to connect. **Fix**: Use RDS Proxy or PgBouncer to multiplex connections. (2) **Redis/ElastiCache Saturation**: A sudden 5x increase in instances means a 5x increase in session lookups or cache hits, potentially overwhelming the Redis primary node's network or CPU. **Fix**: Ensure Redis is scaled to handle the peak concurrent load of the *maximum* possible auto-scaled instances, not just the baseline.
+
+</details>
+
 ## 5. Environment Configuration
 
 ```
@@ -275,6 +291,22 @@ ENTRYPOINT ["java", "-jar", "app.jar"]
 
 🔬 **Section Challenge — 6. CI/CD Pipeline for Spring Boot**
 
+**Challenge 1 (Debug):** A Spring Boot pipeline builds a Docker image using `FROM maven:3.9-eclipse-temurin-21` and copies the source code to run `mvn clean package` inside the Dockerfile. The final image is 1.2GB. Why is this an anti-pattern and how do you fix it?
+
+<details><summary>Answer</summary>
+
+This is a single-stage build. It includes the entire JDK, Maven, all downloaded dependencies in `.m2`, and the source code in the final production image. This increases the attack surface, pull time, and storage cost. **Fix**: Use a **Multi-stage Docker build**. Stage 1 (`build`): Use the heavy Maven image to compile the jar. Stage 2 (final): Use a lightweight JRE image (e.g., `eclipse-temurin:21-jre-alpine`), and `COPY --from=build` only the compiled `app.jar`. The final image drops to ~150MB, containing only the JRE and the artifact.
+
+</details>
+
+**Challenge 2 (Reasoning):** The CI/CD pipeline deploys a new container image to ECS. During the rolling update, 5% of user requests randomly fail with HTTP 502/504 errors, then everything stabilizes. What is missing in the Spring Boot configuration?
+
+<details><summary>Answer</summary>
+
+**Graceful Shutdown** is missing. When ECS stops the old container, it sends a `SIGTERM` signal. By default, Tomcat immediately stops accepting new connections AND abruptly drops in-flight requests, causing the 50x errors. **Fix**: Enable graceful shutdown in `application.properties` via `server.shutdown=graceful` and `spring.lifecycle.timeout-per-shutdown-phase=20s`. This tells Tomcat to stop accepting *new* requests but wait up to 20s for active requests to finish before shutting down. The load balancer (ALB) also needs connection draining configured to match.
+
+</details>
+
 ## 7. Monitoring in Production
 
 ```
@@ -309,6 +341,22 @@ Spring Boot Actuator endpoints for monitoring:
 ---
 
 🔬 **Section Challenge — 7. Monitoring in Production**
+
+**Challenge 1 (Reasoning):** A user complains they got a "500 Internal Server Error" at exactly 2:15 PM. You have 10 Spring Boot microservices and 5 instances of each (50 total logs to check). Without checking all 50 manually, what observability pattern solves this instantly?
+
+<details><summary>Answer</summary>
+
+**Distributed Tracing and Correlation IDs**. When a request hits the API Gateway (or first service), it generates a unique `X-Correlation-ID` (or `traceparent` in W3C standards). This ID is passed in HTTP headers to every downstream service and injected into MDC (Mapped Diagnostic Context) in Spring Boot, so it prints on every log line. **Fix**: Search the centralized log aggregator (Kibana/CloudWatch) for `level:ERROR` around 2:15 PM, grab the correlation ID of the 500 error, and then search the entire log system for *that specific ID*. You immediately see the exact path the request took through all 10 microservices and exactly where it failed.
+
+</details>
+
+**Challenge 2 (Design):** You configure an alert to page you if CPU usage on your EC2 instances exceeds 90% for 5 minutes. Is this a good or bad alert? Why?
+
+<details><summary>Answer</summary>
+
+**Bad alert (Anti-pattern)**. This is a *cause-based* alert, not a *symptom-based* alert. High CPU is not inherently a problem if the application is still serving requests quickly and successfully. Paging someone at 3 AM because CPU hit 90% when users aren't experiencing any issues causes alert fatigue. **Fix**: Alert on **User-Facing Symptoms** (The Golden Signals). Page if the 95th percentile latency exceeds 500ms, or if the 5xx error rate exceeds 1%. CPU can be recorded on a dashboard for investigation *after* a symptom alert fires.
+
+</details>
 
 ## Interview Quick-Fire
 

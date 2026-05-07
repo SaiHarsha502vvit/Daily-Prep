@@ -71,7 +71,7 @@ The base image doesn't provide a kernel — it provides the **userspace**: syste
 │                           │    │                           │
 │      Hypervisor           │    │      Host OS (Linux)      │
 │      Host OS              │    │      Hardware             │
-│      Hardware             │    └────────────────────────────┘
+│      Hardware             │    └───────────────────────────┘
 └────────────────────────────────────────────────────────────┘
                                   
 VM:        Heavy (GB), 30s startup, full OS per app

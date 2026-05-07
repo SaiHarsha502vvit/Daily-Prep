@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)
+**Navigation**: [< Previous](05_RealWorld_Problems_DSA.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_RealWorld_Problems_Part3.md)
 
 # 🌍 Real-World Problems Solved with DSA - Part 2
 
@@ -621,8 +621,15 @@ public class MedicineInteractionChecker {
 
 
 
-🔬 **Section Challenge — Problem 17: Medicine Interaction Checker (Graph - Cycle Detection)**
->>
+> 🔬 **Section Challenge — Problem 17: Medicine Interaction Checker (Graph - Cycle Detection)**
+>
+> **Challenge 1 (System Design):** A junior developer implements the Medicine Interaction Checker. They use DFS to find a path between `Medicine A` and `Medicine B` in the interaction graph. If a path exists, they flag it as a dangerous combination. Why is this logically catastrophic for drug interactions, and what exact graph property should they be checking instead?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Mapping business requirements to the correct graph algorithm.
+> **Trace:** If `A` interacts with `B` (e.g., Warfarin + Aspirin), and `B` interacts with `C` (e.g., Aspirin + Ibuprofen), it does NOT mathematically mean `A` interacts with `C`. Drug interactions are direct chemical conflicts, not transitive relationships. DFS finds *connected components* (transitive paths). If the developer uses DFS, they will falsely flag almost every medicine in the database as dangerous because most drugs are loosely connected through intermediate interactions.
+> **Debug/Fix:** The developer is solving the wrong graph problem. They should NOT be running a traversal or path-finding algorithm. They simply need to check for **Edge Existence** between two specific nodes. This should be an `O(1)` check using an Adjacency Matrix or a `HashSet` lookup in an Adjacency List, rather than an `O(V + E)` DFS.
+> </details>
 
 # PART 8: TRAVEL BOOKING (MakeMyTrip/Goibibo)
 

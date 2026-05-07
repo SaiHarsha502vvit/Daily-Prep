@@ -81,10 +81,14 @@ System.out.println(MyApp.class.getClassLoader());
 
 🔬 **Section Challenge — 1. The Three ClassLoaders**
 
-**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-<details><summary>Answer</summary>
+**Challenge 1 (ClassLoader Reasoning):** A class named `com.app.User` loads successfully, but your own `java.lang.String` class is ignored. Which class loader rule explains both outcomes?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+The application class loader can load application classes from your classpath, such as `com.app.User`. But class loading follows parent-first delegation.
+
+For core JDK classes like `java.lang.String`, the request delegates upward to the bootstrap class loader first. Bootstrap finds the trusted JDK class before the application loader gets a chance.
+
+This prevents application code from overriding core Java classes and is a security boundary as much as a loading mechanism.
 </details>
 
 
@@ -157,21 +161,14 @@ Object plugin = pluginClass.getDeclaredConstructor().newInstance();
 
 🔬 **Section Challenge — 3. Custom ClassLoader — Practical Use**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (ClassLoader Design):** A plugin system loads jars from a `/plugins` folder and supports hot reload. Why can keeping references to old plugin objects create a memory leak?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+Each plugin jar may be loaded by its own class loader. Classes are eligible for unloading only when the defining class loader and all classes/instances loaded by it become unreachable.
+
+If a registry, thread, static field, cache, or listener keeps a reference to an old plugin object, the old class loader stays alive. That keeps old bytecode and metadata alive too.
+
+Fix by isolating plugins behind a parent-loaded interface, closing URLClassLoader resources, stopping plugin threads, unregistering listeners, clearing caches, and dropping every reference to the old loader during reload.
 </details>
 
 
@@ -198,10 +195,14 @@ Class<?> clazz = ClassLoader.getSystemClassLoader()
 
 🔬 **Section Challenge — 4. Class.forName vs ClassLoader.loadClass**
 
-**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-<details><summary>Answer</summary>
+**Challenge 1 (Initialization Reasoning):** `Class.forName("com.mysql.Driver")` triggers driver registration, but `loader.loadClass("com.mysql.Driver")` may not. Why?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+`ClassLoader.loadClass` loads the class metadata but does not necessarily initialize the class. `Class.forName(String)` loads and initializes by default.
+
+Initialization runs static initializers. Older JDBC drivers registered themselves in a static block, so merely loading without initialization could skip driver registration.
+
+Use the correct API for intent: load metadata when you only need a `Class` object; initialize when static registration or side effects are intentionally required. Modern JDBC usually uses service loading, but the distinction still matters.
 </details>
 
 
@@ -213,10 +214,14 @@ Session data (shopping cart, auth state) is stored on ONE server. Round-robin se
 
 🔬 **Section Challenge — PART 2: JDBC — Database Access Internals**
 
-**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
-<details><summary>Answer</summary>
+**Challenge 1 (JDBC Reasoning):** Why is `PreparedStatement` safer and often faster than building SQL strings with concatenation?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
+String concatenation mixes SQL structure and user data. A malicious value can escape the intended literal context and become executable SQL.
+
+`PreparedStatement` sends query structure and bind values separately. The database treats parameters as data, not syntax, and may reuse the execution plan for repeated calls.
+
+Use prepared statements for all dynamic values. They solve injection risk, improve clarity, and can reduce parse/plan overhead for repeated statements.
 </details>
 
 
@@ -356,10 +361,14 @@ try (Connection conn = ds.getConnection()) {  // Borrows from pool
 
 🔬 **Section Challenge — 7. Connection Pooling — Why and How**
 
-**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
-<details><summary>Answer</summary>
+**Challenge 1 (Production Debug):** A Spring service occasionally hangs under load. Thread dumps show many threads waiting for a JDBC connection. What pool-level questions should you ask?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
+The application is not necessarily CPU-bound; it may be connection-pool bound. Threads are waiting because all connections are checked out or slow queries hold them too long.
+
+Check max pool size, active/idle counts, connection acquisition timeout, slow query logs, transaction duration, leak detection, and whether code always closes connections via try-with-resources or Spring-managed transactions.
+
+Fix the bottleneck, not just the pool size. Increase pool size only if the database can handle it; otherwise optimize queries, shorten transactions, add indexes, or remove connection leaks.
 </details>
 
 
@@ -443,10 +452,14 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 
 🔬 **Section Challenge — PART 3: LOGGING — The Observability Foundation**
 
-**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
-<details><summary>Answer</summary>
+**Challenge 1 (Observability Reasoning):** A production incident has an error log but no request id, user id, or upstream call timing. Why is that log almost useless?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
+A log line without correlation context tells you something failed but not which request, tenant, user action, or upstream dependency caused it.
+
+Logging is useful when it connects events across a request path. Metrics show the shape of the problem, traces show the path, and logs explain local facts at a point in time.
+
+Add correlation ids, structured fields, exception stack traces, request metadata, and dependency timings. Avoid logging secrets.
 </details>
 
 
@@ -478,10 +491,14 @@ The JVM strictly ignores it and uses the built-in String class. This is enforced
 
 🔬 **Section Challenge — 10. Logging Landscape**
 
-**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
-<details><summary>Answer</summary>
+**Challenge 1 (Logging Architecture):** What is the difference between SLF4J and Logback, and why should application code depend on the facade?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
+SLF4J is the logging API/facade your code calls. Logback is an implementation that actually formats and writes log events.
+
+Depending on the facade decouples application code from the backend. You can swap Logback, Log4j2, or other implementations through dependencies/configuration without rewriting every class.
+
+Use `private static final Logger log = LoggerFactory.getLogger(CurrentClass.class);`, parameterized messages, and backend-specific config outside business code.
 </details>
 
 
@@ -658,10 +675,14 @@ public class RequestIdFilter implements Filter {
 
 🔬 **Section Challenge — 14. MDC — Mapped Diagnostic Context**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
-<details><summary>Answer</summary>
+**Challenge 1 (Context Propagation):** You put `requestId` into MDC in a servlet filter, but logs inside an `@Async` method lose the request id. Why?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+MDC is usually backed by `ThreadLocal`. The servlet request runs on one thread, while `@Async` work runs on another thread from a pool.
+
+Thread-local context does not automatically cross thread boundaries. The async thread may have no MDC, or worse, stale MDC from a previous task if cleanup is missing.
+
+Fix with a task decorator/context propagator, copy the MDC map into async tasks, and always clear MDC in `finally` blocks after request/task completion.
 </details>
 
 
@@ -696,10 +717,14 @@ Every context consumer re-renders when ANY context value changes. If you have `{
 
 🔬 **Section Challenge — 15. Structured JSON Logging — Production Standard**
 
-**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
-<details><summary>Answer</summary>
+**Challenge 1 (Production Search):** Why is `log.info("user " + userId + " failed")` weaker than structured JSON logging in a distributed system?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
+Plain strings are hard for log systems to query reliably. You end up regex-searching message text instead of filtering fields.
+
+Structured logs emit fields such as `event`, `userId`, `requestId`, `status`, `latencyMs`, and `errorCode`. Log platforms can index and aggregate those fields.
+
+Use parameterized logging for normal messages and structured appenders for production. Keep field names stable and avoid secrets or high-cardinality noise unless it is intentional.
 </details>
 
 
@@ -762,10 +787,14 @@ Logging Rules:
 
 🔬 **Section Challenge — 17. Quick Reference — All Three Combined**
 
-**Challenge 1 (Reasoning):** What happens if you try to define your own class named `java.lang.String` in your project and execute it?
-<details><summary>Answer</summary>
+**Challenge 1 (Integrated Debug):** An API is slow only in production. How do ClassLoader, JDBC, and logging knowledge combine into a debugging path?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-The JVM strictly ignores it and uses the built-in String class. This is enforced by the ClassLoader Delegation Model (Parent-First). When your application asks the ApplicationClassLoader to load `java.lang.String`, it immediately delegates the request up to the Bootstrap ClassLoader. The Bootstrap loader finds the authentic `String` class in the JDK's `rt.jar` and returns it, preventing malicious code from overriding core JDK security classes.
+ClassLoader knowledge helps verify which driver/library version actually loaded. JDBC knowledge helps inspect pool saturation, slow queries, transaction duration, fetch size, and prepared statement usage.
+
+Logging knowledge gives correlation ids and structured fields so one request can be followed through controller, service, database call, and exception handling.
+
+Debug path: confirm runtime class versions, inspect connection pool metrics, trace SQL timings, use request ids across logs, then fix the bottleneck with evidence rather than guessing.
 </details>
 
 

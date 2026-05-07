@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](15_Cloud_Services_Guide.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Servers_Ports_Networking.md)
+**Navigation**: [< Previous](15_Cloud_Services_Guide.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Servers_Ports_Networking.md)
 
 # Infrastructure as Code — Terraform & DevOps
 
@@ -25,6 +25,21 @@ code: version it, test it, review it, automate it.
 
 🔬 **Section Challenge — What is Infrastructure as Code (IaC)?**
 
+**Challenge 1 (Reasoning):** A company manages 40 AWS EC2 instances with Bash scripts and manual console clicks. A new engineer wants to migrate to Terraform. The manager objects: "Bash works fine." Name three concrete failure modes Terraform solves.
+
+<details><summary>Answer</summary>
+
+1. **Configuration drift**: Over 6 months, engineers add firewall rules via the console. Actual infra no longer matches any documented state. `terraform plan` detects drift immediately — it compares state file against real AWS and shows the diff. 2. **No disaster recovery**: If the account is compromised or deleted, recovering 40 servers requires guessing configurations. `terraform apply` rebuilds everything from code in minutes. 3. **No change review process**: Bash can be run by anyone with no review. A typo runs `aws ec2 terminate-instances --instance-ids i-ALL`. IaC in Git means every infra change is a PR, reviewed, with `terraform plan` showing exact changes before apply. `prevent_destroy = true` prevents accidental deletions.
+
+</details>
+
+**Challenge 2 (Trace):** A `terraform apply` fails mid-run: VPC and subnets were created, EC2 instances failed. What is the state of `terraform.tfstate` and what happens on the next `terraform apply`?
+
+<details><summary>Answer</summary>
+
+Terraform updates state **as resources are created** — not atomically. After the partial failure, `tfstate` contains the VPC and subnets (recorded). EC2 instances are NOT in state (they failed before recording). Second `terraform apply`: Terraform sees VPC/subnets already exist → no action. Sees EC2 missing → creates them. If the root cause is fixed, apply completes. This is **idempotency** — re-running apply is safe. No duplicate VPCs are created because state tracks what exists.
+
+</details>
 
 ## IaC Tool Landscape
 
@@ -256,13 +271,25 @@ infrastructure/
 └── terraform.tfvars
 ```
 
-
-```hcl
-
-
 🔬 **Section Challenge — Terraform — Intermediate Patterns**
 
+**Challenge 1 (Reasoning):** A team uses `count = var.instance_count` to create 3 web servers (`web[0]`, `web[1]`, `web[2]`). They need to remove the MIDDLE server `web[1]`. What happens when they change `count` to 2 and `terraform apply`?
 
+<details><summary>Answer</summary>
+
+This is the **count index shift problem**. With `count = 3`: `web[0]`, `web[1]`, `web[2]` exist. Changing to `count = 2`: Terraform maps `web[0]` → keep, `web[1]` → keep (was `web[2]`), `web[2]` → **destroy**. Result: the **LAST** instance is destroyed, not the middle one. The existing `web[1]` may be **replaced** if it now maps to different config. Fix: use `for_each` with named keys (`"web-a"`, `"web-b"`, `"web-c"`). Removing `"web-b"` from the map destroys exactly that resource with no index shifting. Rule: never use `count` for resources you might need to remove individually from the middle.
+
+</details>
+
+**Challenge 2 (Design):** A Terraform module creates an RDS database. In prod `multi_az = true` and `deletion_protection = true` are required; in dev both are `false`. How do you implement this correctly in the module?
+
+<details><summary>Answer</summary>
+
+Module `variables.tf`: `variable "multi_az" { type = bool, default = false }` and `variable "deletion_protection" { type = bool, default = false }`. Resource uses `multi_az = var.multi_az`. Prod caller sets `multi_az = true, deletion_protection = true`. Dev caller uses defaults. Add a validation: `validation { condition = var.environment == "prod" ? var.deletion_protection == true : true, error_message = "Prod must have deletion_protection." }` — this enforces the safety constraint at `plan` time, before any apply touches real infrastructure.
+
+</details>
+
+```hcl
 # modules/vpc/main.tf
 resource "aws_vpc" "this" {
   cidr_block = var.cidr_block
@@ -514,12 +541,27 @@ RULE: Only CI/CD applies. Humans don't run apply.
 
 ### GitHub Actions Example
 
-```yaml
-
+```
 
 🔬 **Section Challenge — CI/CD for Infrastructure**
 
+**Challenge 1 (Reasoning):** A GitHub Actions pipeline runs `terraform apply -auto-approve` triggered on every push to `main`. A developer pushes a commit with a typo in an RDS config. What production failure scenarios does this create, and what pipeline change prevents them?
 
+<details><summary>Answer</summary>
+
+Failure scenarios: (1) **Automatic destructive change**: a typo in `engine_version = "16"` (was `"15"`) triggers an RDS engine upgrade or replacement. With `-auto-approve`, no human reviews the plan. The database is modified or recreated automatically. (2) **No break-glass**: if apply fails mid-way (DB update started, failed), the pipeline can't roll back automatically. Infrastructure is in a partial state. (3) **Blast radius is unbounded**: every `.tf` change, even a variable rename or comment addition, triggers a full apply across ALL resources. Fix: (A) **Require PR + `terraform plan` comment on PR**: use `terraform plan -out=tfplan` in CI, post the plan output as a PR comment using `github-script` action. Reviewers see exactly what will change before approving. (B) **Separate plan (PR) and apply (merge)**: apply runs ONLY on merge to main, after human approval. (C) **Add `lifecycle { prevent_destroy = true }` to critical resources** (RDS, ElastiCache): even if someone accidentally writes a config that would destroy the DB, Terraform refuses and exits with an error. `-auto-approve` does not override `prevent_destroy`.
+
+</details>
+
+**Challenge 2 (Design):** Your Terraform pipeline needs AWS credentials to apply changes. A junior engineer suggests storing `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` as GitHub Actions secrets. Why is this an anti-pattern and what is the correct approach for a production pipeline?
+
+<details><summary>Answer</summary>
+
+Long-lived static credentials are an anti-pattern: (1) They don't expire — if leaked (via log output, compromised runner), they're valid indefinitely until manually rotated. (2) They're hard to rotate — every place using the secret must be updated. (3) They have no scope — the key holder has whatever permissions the IAM user has, often over-broad. Correct approach: **OIDC (OpenID Connect) federation** between GitHub Actions and AWS. Setup: (1) Create an IAM Identity Provider in AWS for GitHub Actions (`token.actions.githubusercontent.com`). (2) Create an IAM Role with a trust policy that allows only your specific repo/branch to assume it: `Condition: { StringLike: { "token.actions.githubusercontent.com:sub": "repo:myorg/myrepo:ref:refs/heads/main" } }`. (3) In the GitHub Actions workflow: `- uses: aws-actions/configure-aws-credentials@v4` with `role-to-assume: arn:aws:iam::123:role/terraform-role`. GitHub Actions gets a **short-lived token** (1 hour max) via OIDC. No static credentials stored anywhere. If the token is captured, it expires in <1 hour. Principle of least privilege: the role only has the permissions Terraform needs (EC2, RDS, VPC — not IAM or S3 for other buckets).
+
+</details>
+
+```yaml
 # .github/workflows/terraform.yml
 name: Terraform
 

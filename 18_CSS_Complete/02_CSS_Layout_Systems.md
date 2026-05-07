@@ -519,7 +519,19 @@ COMMON COMBO: Grid for page layout, Flex inside components.
 
 
 
-> 🔬 **Section Challenge — 4. Subgrid — Aligning Nested Grids**
+🔬 **Section Challenge — 4. Subgrid — Aligning Nested Grids**
+
+**Challenge 1 (Layout Reasoning):** A pricing table has cards with nested feature rows, but row labels and prices do not align across cards. Why does normal nested grid fail, and how does `subgrid` solve it?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** Each nested grid creates its own track sizing, so rows/columns inside one card do not know the track sizes of sibling cards. The result is almost aligned, but not truly shared.
+
+**Reasoning:** `subgrid` lets a child grid participate in the parent grid's track sizing. The nested layout can inherit column or row tracks, so labels, values, and content align across component boundaries.
+
+**Debug/Fix:** Put the shared structure on the parent grid, make nested children use `grid-template-columns: subgrid` or `grid-template-rows: subgrid`, and verify browser support/fallbacks for the target audience.
+
+</details>
 
 ## 5. Container Queries — The Future of Responsive Components
 
@@ -563,7 +575,19 @@ COMMON COMBO: Grid for page layout, Flex inside components.
 
 
 
-> 🔬 **Section Challenge — 5. Container Queries — The Future of Responsive Components**
+🔬 **Section Challenge — 5. Container Queries — The Future of Responsive Components**
+
+**Challenge 1 (Responsive Reasoning):** The same card appears in a `300px` sidebar and an `800px` main panel on the same viewport. Why do viewport media queries fail, and what should container queries change?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** A viewport query sees one screen width, so both cards receive the same layout decision even though their actual available space differs.
+
+**Reasoning:** Responsive components should react to the space they own, not only the page width. Container queries make the component layout depend on its parent/container size.
+
+**Debug/Fix:** Add `container-type: inline-size` to the wrapper, then write `@container` rules for the component. Use this for reusable cards, sidebars, widgets, and dashboard panels where viewport size is the wrong signal.
+
+</details>
 
 ## Interview Quick-Fire
 

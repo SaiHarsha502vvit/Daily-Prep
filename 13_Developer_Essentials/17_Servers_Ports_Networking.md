@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](16_IaC_Terraform.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Backend_Cloud_Integration.md)
+**Navigation**: [< Previous](16_IaC_Terraform.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_Backend_Cloud_Integration.md)
 
 **Developer Essentials Chapter 17** | [← IaC Terraform](16_IaC_Terraform.md) | [Index](../00_MASTER_INDEX.md) | [Next → Backend + Cloud](18_Backend_Cloud_Integration.md)
 
@@ -489,6 +489,22 @@ SSL handshake failed           │ Certificate expired or invalid.
 
 
 🔬 **Section Challenge — 10. Common Networking Errors (What They Mean)**
+
+**Challenge 1 (Debug):** A Spring Boot app deployed on EC2 port 8080 works fine when curled via `localhost:8080` from SSH, but the public IP `http://1.2.3.4:8080` gives "Connection timed out". What are the two most likely causes at the infrastructure layer?
+
+<details><summary>Answer</summary>
+
+"Connection timed out" means TCP SYN packets are dropped and never reach the application. Causes: (1) **Cloud Firewall (Security Group)**: The AWS Security Group attached to the EC2 instance doesn't have an inbound rule allowing TCP port 8080 from `0.0.0.0/0` (or your IP). (2) **OS Firewall (iptables/ufw)**: The Linux firewall is blocking port 8080. **Crucial distinction**: If it were a Spring Boot configuration issue (e.g., binding to `127.0.0.1` instead of `0.0.0.0`), you would get "Connection refused", NOT "Connection timed out". A timeout specifically implies the network packet was silently dropped before the OS could even reject it.
+
+</details>
+
+**Challenge 2 (Debug):** The same application is put behind an Nginx reverse proxy. Nginx handles SSL and forwards to Spring Boot on `localhost:8080`. Users report occasional "502 Bad Gateway" errors during traffic spikes. Spring Boot logs show no crashes. What is happening?
+
+<details><summary>Answer</summary>
+
+"502 Bad Gateway" means the proxy (Nginx) tried to connect to the upstream (Spring Boot), but the upstream failed to respond or accept the connection. Since Spring isn't crashing, it's **resource exhaustion at the connection layer**: (1) **Tomcat Thread Pool Exhaustion**: Spring Boot defaults to 200 max threads. During a spike, if all 200 are busy, new connections from Nginx are queued or rejected. Nginx gives up and returns 502. (2) **Keep-Alive race condition**: Nginx reuses TCP connections to Spring Boot. If Spring Boot closes an idle connection exactly as Nginx sends a new request on it, Nginx gets a connection reset (ECONNRESET) and returns 502. Fix: Ensure Tomcat's `server.tomcat.keep-alive-timeout` is slightly LONGER than Nginx's `keepalive_timeout` so Nginx is always the one to close idle connections.
+
+</details>
 
 
 ## Interview Quick-Fire

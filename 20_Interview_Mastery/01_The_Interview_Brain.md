@@ -284,12 +284,15 @@ When you read the problem statement, certain **words** should trigger **immediat
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 3. Parameter Recognition — Reading the Problem Like Source Code**
 
+**Challenge 1 (Constraint Mapping):** You are given an array of integers $N$ where $N \le 10^5$, and a target $K$. You need to find the number of contiguous subarrays that sum to $K$. A junior dev suggests sorting the array first and using two pointers. Why is this technically flawed, and what specific constraint keyword proves it?
+
+<details><summary>Answer</summary>
+
+The keyword **"contiguous subarray"** explicitly prohibits sorting. Sorting destroys the original relative ordering of the elements, which is the defining characteristic of a contiguous subarray. While $N \le 10^5$ *does* suggest an $O(N)$ or $O(N \log N)$ algorithm, the correct approach for contiguous sum queries without sorting is a **Prefix Sum with a HashMap** to achieve $O(N)$ time.
+
+</details>
 
 ### The Master Decision Tree
 
@@ -420,12 +423,15 @@ PATTERN: DP variants
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 4. The Decision Engine — DS/Algorithm/Pattern Selection**
 
+**Challenge 1 (Design Trade-offs):** You need to design an in-memory cache that supports `get(key)` and `put(key, value)` in $O(1)$ time, while evicting the least recently used (LRU) item when capacity is reached. Why does a standard HashMap fail this requirement, and what exact data structure composition is required to fix it?
+
+<details><summary>Answer</summary>
+
+A standard HashMap provides $O(1)$ `get` and `put`, but it inherently lacks **ordering**. To evict the *least recently used* item, you must maintain a chronological order of access. To solve this, you compose a **HashMap with a Doubly Linked List**. The HashMap stores references to the Linked List nodes for $O(1)$ access, while the Doubly Linked List maintains the access order (moving accessed nodes to the head) allowing $O(1)$ eviction at the tail.
+
+</details>
 
 ### The Complexity Conversation Framework
 
@@ -547,12 +553,15 @@ ALWAYS SAY:
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 5. Complexity Reasoning — Think Before You Code**
 
+**Challenge 1 (Complexity Trace):** Consider a backtracking algorithm generating all permutations of a string of length $N$. Inside the base case (when a permutation of length $N$ is formed), you append the current string to a `List<String>`. What is the true time complexity of this algorithm? Is it $O(N!)$?
+
+<details><summary>Answer</summary>
+
+No, it is **$O(N \cdot N!)$**. While there are exactly $N!$ permutations generated (which represents the number of recursive leaves), creating a copy of the string (or deep copying the current path array) to add it to the result list takes $O(N)$ time. Therefore, the dominant operation is the string copy executed $N!$ times, making the true complexity $O(N \cdot N!)$.
+
+</details>
 
 ### The STAR-T Method for Technical Answers
 
@@ -802,12 +811,15 @@ TRAP: Greedy doesn't actually work
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 8. The Debugging Brain — When You're Stuck**
 
+**Challenge 1 (Dry Run Logic):** You are writing a Binary Search to find the *first* occurrence of a target in a sorted array with duplicates. Your loop condition is `while (lo <= hi)`. If `arr[mid] == target`, you execute `return mid;`. Why will this fail, and how do you debug it?
+
+<details><summary>Answer</summary>
+
+Returning `mid` immediately upon finding the target is a flaw because you might have found the *second* or *third* occurrence, not the *first*. To debug and fix this, you must **not** return immediately. Instead, when `arr[mid] == target`, you should record the potential answer (`ans = mid`) and aggressively search the left half by setting `hi = mid - 1` to see if an even earlier occurrence exists.
+
+</details>
 
 ### The Universal Problem-Solving Matrix
 
@@ -885,12 +897,15 @@ but distributed. Snowflake IDs use bit manipulation — epoch time + machine ID
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 9. Cross-Domain Thinking — DSA × SQL × System Design × OOP**
 
+**Challenge 1 (System Design Translation):** How does the concept of a "Trie" (Prefix Tree) map to a large-scale System Design component, specifically for a search engine's autocomplete feature?
+
+<details><summary>Answer</summary>
+
+In DSA, a Trie efficiently stores strings for prefix matching. In System Design, an autocomplete service uses a **Distributed Trie**. Because the entire Trie cannot fit on a single machine, it is sharded across multiple nodes (often using Consistent Hashing based on the prefix). Furthermore, each node in the distributed Trie caches the "Top $K$" most frequent completions to avoid traversing all the way to the leaves for every keystroke query.
+
+</details>
 
 ### The Learning Ladder
 
@@ -944,12 +959,15 @@ Level 5: TEACHER (12+ months)
 
 ```markdown
 
-
-
-
-
 🔬 **Section Challenge — 10. The Growth Mindset Architecture**
 
+**Challenge 1 (Reflection Priority):** After failing a mock interview on a DP problem, you review the optimal solution and realize it was a standard 0/1 Knapsack variant. What is the single most important actionable note to write in your Weekly Reflection?
+
+<details><summary>Answer</summary>
+
+The most critical note is **NOT** the code template for 0/1 Knapsack. The critical note is the **Trigger Signal**: *"What specific keyword or constraint in the problem statement should have warned me this was 0/1 Knapsack instead of Greedy?"* (e.g., identifying that items were indivisible and the goal was global maximization under a hard capacity constraint). You must document the *recognition failure*, not just the solution.
+
+</details>
 
 ### What I got right:
 - [Pattern I recognized correctly]
@@ -1041,9 +1059,12 @@ When you finish:
 
 [📚 Index](00_INDEX.md) | [Next: Constraint→Algorithm Map ➡](02_Constraint_to_Algorithm_Map.md)
 
-
-
-
-
 🔬 **Section Challenge — Cross-References to Existing Guides**
 
+**Challenge 1 (Navigation Trace):** You are struggling with identifying when to use a Monotonic Stack versus a regular Stack. Based on the cross-reference table, which specific guide should you jump to next to master this pattern recognition?
+
+<details><summary>Answer</summary>
+
+You should navigate to **04_Pattern_Recognition** inside the `04_Patterns_Templates/` directory, as it specifically details the "See X → Think Y" triggers that differentiate a standard LIFO stack requirement (like balanced parentheses) from a Monotonic Stack requirement (like "next greater element" or "visible buildings").
+
+</details>

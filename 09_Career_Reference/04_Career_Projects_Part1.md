@@ -1159,11 +1159,21 @@ const useWebSocket = (url: string) => {
 
 ### Docker - Containerization
 
-```dockerfile
-
-
 🔬 **Section Challenge — Phase 6: Full-Stack Development - Complete Guide**
->
+
+**Challenge 1 (Trace/Reasoning):** You deploy the Spring Boot full-stack project with a single-stage Dockerfile that copies the source into a JDK image and runs Maven at container startup. The image is huge, cold starts are slow, and the app runs as root. What is wrong with this deployment design, and how does the multi-stage Dockerfile below fix it?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** A single-stage image keeps build tools, source files, dependency caches, and a full JDK in the runtime container. Startup does build work at the wrong time, pulls are slower, and root execution increases the blast radius if the app is compromised.
+
+**Reasoning:** Production containers should separate build-time and runtime concerns. The builder stage compiles the artifact and extracts Spring Boot layers so dependency layers can be cached. The runtime stage uses a smaller JRE image, copies only executable layers, and runs as a non-root user.
+
+**Debug/Fix:** Build during CI, keep Maven out of runtime, copy layered artifacts from `builder`, expose health through Actuator, and verify image size plus `USER spring:spring` before shipping.
+
+</details>
+
+```dockerfile
 
 # ============================================
 # MULTI-STAGE DOCKERFILE - Spring Boot

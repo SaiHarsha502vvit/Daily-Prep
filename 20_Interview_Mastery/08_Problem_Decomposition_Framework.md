@@ -65,12 +65,15 @@ HOW   → How do I break this into steps? (the actual decomposition)
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 1. The Decomposition Mindset**
 
+**Challenge 1 (Simplification Trap):** You are asked to solve "Longest Palindromic Substring." You try to simplify the problem by first writing a function `isPalindrome(String s)`. Why is this specific simplification actually a trap that leads to an optimal failure?
+
+<details><summary>Answer</summary>
+
+While `isPalindrome(s)` correctly simplifies checking a single string, decomposing the problem into "Generate all substrings $\to$ check `isPalindrome` for each" forces an $O(N^3)$ complexity ($O(N^2)$ substrings $\times$ $O(N)$ check). The *correct* simplification ladder should focus on the *structure* of a palindrome, leading to "Can I find a palindrome centered at index `i`?" which naturally decomposes into the optimal $O(N^2)$ Expand-Around-Center approach.
+
+</details>
 
 ### Step 1: Understand (Don't Rush to Code)
 
@@ -78,15 +81,15 @@ HOW   → How do I break this into steps? (the actual decomposition)
 THE INPUT-OUTPUT-CONSTRAINT TRIANGLE:
 
   ┌────────────┐
-  │   INPUT     │  ← What do I receive? Types, ranges, structure
+  │   INPUT    │  ← What do I receive? Types, ranges, structure 
   └──────┬─────┘
          │
    ┌─────▼─────┐
-   │  PROCESS   │  ← What transformation must happen?
+   │  PROCESS  │  ← What transformation must happen?
    └─────┬─────┘
          │
   ┌──────▼─────┐
-  │   OUTPUT    │  ← What must I return? Format, ordering
+  │   OUTPUT   │  ← What must I return? Format, ordering
   └────────────┘
 
   + CONSTRAINTS: Size limits, time limits, space limits
@@ -273,12 +276,15 @@ DECOMPOSITION:
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 3. Decomposing DSA Problems**
 
+**Challenge 1 (State Decomposition):** You are tasked with designing an `LRUCache`. You decide to use an array of objects `[{key, value, lastAccessedTime}]` and update the time on every `get()`. To evict, you scan the array for the oldest time. What specific complexity constraint did your decomposition violate, and how does the standard dual-structure approach resolve it?
+
+<details><summary>Answer</summary>
+
+This decomposition violates the $O(1)$ time complexity constraint. Scanning an array to find the oldest time takes $O(N)$, and shifting elements (if you remove from the array) takes $O(N)$. The problem must be decomposed by *operation requirements*: $O(1)$ lookup requires a **HashMap**, and $O(1)$ ordered eviction/updating requires a **Doubly Linked List**. Only by combining these two independent structures can you achieve the $O(1)$ bounds.
+
+</details>
 
 ### The SQL Decomposition Process
 
@@ -355,12 +361,18 @@ DECOMPOSITION:
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 4. Decomposing SQL Problems**
 
+**Challenge 1 (CTE Granularity):** You are writing a complex SQL query using CTEs (Common Table Expressions) to find "Top 3 departments by average salary of employees hired in 2023." Your first CTE joins `Departments` and `Employees` and calculates the average. Why is this decomposition flawed, and what is the rule of "Inside-Out" filtering?
+
+<details><summary>Answer</summary>
+
+If your first CTE aggregates the average *before* filtering for the hire date, you calculate the wrong average (including all years) or you join massive amounts of unnecessary data. The "Inside-Out" rule dictates that you must filter raw data **first**. 
+CTE 1: Filter `Employees` where `hire_date` is in 2023. 
+CTE 2: Join with `Departments` and calculate the average. 
+Outer Query: `ORDER BY` average and `LIMIT 3`.
+
+</details>
 
 ### The System Design Decomposition
 
@@ -426,12 +438,15 @@ DECOMPOSITION:
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 5. Decomposing System Design Problems**
 
+**Challenge 1 (Microservice Boundary):** You are designing a Ride-Sharing app. A junior engineer proposes putting the User Profile data and the Real-Time Location (Lat/Long) tracking data in the same PostgreSQL database table because "they both belong to the Driver entity." What non-functional requirement does this violate, and how should it be decomposed?
+
+<details><summary>Answer</summary>
+
+This violates the **Scale/Throughput** non-functional requirement. User Profiles are read-heavy and rarely updated (low QPS), perfect for Postgres. Real-time locations update every 3 seconds per active driver (massive write QPS), which will instantly lock up and crash a standard relational table. They must be decomposed into separate services: a Profile Service (Postgres/MySQL) and a Location Service (Redis/Cassandra/TimescaleDB) optimized for extreme write throughput.
+
+</details>
 
 ### The OOP Decomposition
 
@@ -461,12 +476,15 @@ STEP 4: IDENTIFY BEHAVIORS that VARY → use PATTERNS
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 6. Decomposing OOP/Design Problems**
 
+**Challenge 1 (Behavior Encapsulation):** You are designing a Vending Machine. You have a `dispenseItem()` method with a massive `switch` statement checking if the state is `IDLE`, `HAS_MONEY`, `DISPENSING`, or `OUT_OF_STOCK`. What OOP design pattern specifically exists to decompose this exact problem?
+
+<details><summary>Answer</summary>
+
+The **State Pattern**. Instead of a massive `switch` statement that violates the Open/Closed Principle, you create a `VendingMachineState` interface with methods like `insertMoney()`, `dispense()`, etc. Then, you create separate concrete classes (`IdleState`, `HasMoneyState`) that implement these behaviors. The Vending Machine simply delegates the action to its current state object.
+
+</details>
 
 ### 1. Two Sum → HashMap (DSA)
 
@@ -586,26 +604,30 @@ Decompose:
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 7. 10 Worked Decompositions (Cross-Domain)**
 
+**Challenge 1 (Cross-Domain Translation):** Translate the "Two Pointers" DSA decomposition (used to find a pair summing to a target in a sorted array) into its direct SQL equivalent. What is the SQL operation, and what acts as the "target"?
+
+<details><summary>Answer</summary>
+
+The direct SQL equivalent of Two Pointers for pair-finding is a **Self-Join**. 
+Instead of pointers `i` and `j` moving across an array, you alias the table twice (`SELECT * FROM table t1 JOIN table t2`). The "target" condition becomes the `ON` or `WHERE` clause (e.g., `ON t1.value + t2.value = target`). If avoiding duplicates (like $i < j$), you add `WHERE t1.id < t2.id`.
+
+</details>
 
 ```
 ╔══════════════════════════════════════════════════════════════╗
-║  IF THE PROBLEM FEELS TOO BIG:                              ║
+║  IF THE PROBLEM FEELS TOO BIG:                               ║
 ║                                                              ║
-║    1. Restate it in your own words                          ║
-║    2. Ask "what's the simplest version of this?"            ║
-║    3. Solve the simple version                              ║
-║    4. Ask "what's missing to get to the full problem?"      ║
-║    5. Add that piece                                        ║
-║    6. Repeat 4-5 until done                                 ║
+║    1. Restate it in your own words                           ║
+║    2. Ask "what's the simplest version of this?"             ║
+║    3. Solve the simple version                               ║
+║    4. Ask "what's missing to get to the full problem?"       ║
+║    5. Add that piece                                         ║
+║    6. Repeat 4-5 until done                                  ║
 ║                                                              ║
 ║  THIS WORKS FOR:                                             ║
-║    DSA, SQL, System Design, OOP, Real-world engineering     ║
+║    DSA, SQL, System Design, OOP, Real-world engineering      ║
 ╚══════════════════════════════════════════════════════════════╝
 ```
 

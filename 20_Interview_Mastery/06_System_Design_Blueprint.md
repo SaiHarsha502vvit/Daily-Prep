@@ -600,16 +600,20 @@ THE THREE PILLARS:
 
 🔬 **Section Challenge — 7. Non-Functional Requirements**
 
-**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-<details><summary>Answer</summary>
+**Challenge 1 (NFR Reasoning):** A design prompt says, "Build a notification system for 10M users." Which non-functional requirements must you clarify before choosing the architecture?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+Clarify latency, throughput, fan-out size, delivery guarantee, durability, ordering, availability, retry policy, notification channels, abuse limits, observability, and cost ceiling.
+
+Those constraints decide the design. Low-latency chat needs push and presence. Marketing notifications can use queues and batch delivery. Financial alerts may need durable logs, idempotency, audit trails, and stronger retry semantics.
 </details>
 
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-<details><summary>Answer</summary>
+**Challenge 2 (Trade-off):** Users receive a real notification only once every few hours. Should you default to WebSockets or polling?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+Do not default to WebSockets just because they feel "real time." Idle WebSocket connections pin server and OS resources for every connected user. Polling or long polling can be cheaper when events are rare because the server releases connection memory between checks.
+
+Choose WebSockets for high-frequency, bidirectional exchange such as multiplayer, live trading, or collaborative editing. For rare notifications, start with polling, long polling, SSE, or push infrastructure depending on latency and platform constraints.
 </details>
 
 
@@ -626,4 +630,3 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 ---
 
 [⬅ SQL Interview Thinking](05_SQL_Interview_Thinking.md) | [📚 Index](00_INDEX.md) | [Next: Design Patterns Guide ➡](07_Design_Patterns_Interview_Guide.md)
-

@@ -330,10 +330,12 @@ System.out.println(safe.compare(Integer.MAX_VALUE, -1));  // Positive (correct!)
 
 🔬 **Section Challenge — 4. Comparator Mastery: Sorting Logic That Doesn't Break**
 
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-<details><summary>Answer</summary>
+**Challenge 1 (Bug Hunt):** A comparator returns `a.priority - b.priority`, and sometimes sorting throws `Comparison method violates its general contract`. What should you inspect?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+Inspect overflow, inconsistent tie handling, and non-transitive comparisons. A comparator must be antisymmetric and transitive: if `a < b` and `b < c`, then `a < c`.
+
+Use `Integer.compare(a.priority, b.priority)` or `Comparator.comparingInt(Task::priority).thenComparing(Task::createdAt)`. The deeper rule: sorting depends on a strict ordering contract, not just code that "usually returns negative or positive."
 </details>
 
 

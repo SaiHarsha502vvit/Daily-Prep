@@ -152,6 +152,14 @@
 
 
 > 🔬 **Section Challenge — 2. HTML Parsing — Building the DOM Tree**
+>
+> **Challenge 1 (Trace):** Why does placing a `<script src="heavy.js"></script>` in the `<head>` cause a "white screen of death," but placing it just before `</body>` doesn't?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Long rendering delays on initial page load.
+> **Trace:** HTML parsing is strictly synchronous and top-down. When the parser hits a `<script>` tag, it HALTS parsing, fetches the script (if external), executes it, and only then resumes parsing. If it's in the `<head>`, the parser stops before reading the `<body>`, so the screen stays blank. If it's at the end of the `<body>`, the DOM is already built and painted.
+> **Debug/Design Fix:** Use the `defer` attribute (`<script src="..." defer></script>`) in the `<head>`. It tells the parser to fetch the file in parallel but WAIT to execute it until after the HTML parsing is fully complete, preserving the fast DOM construction.
+> </details>
 
 ## 3. CSS Parsing — Building the CSSOM
 
@@ -210,6 +218,14 @@
 
 
 > 🔬 **Section Challenge — 3. CSS Parsing — Building the CSSOM**
+>
+> **Challenge 1 (Trace):** A developer moves a heavy CSS file from the top of the HTML to the bottom, expecting the text to appear faster and be styled later. Instead, the page stays blank for the exact same amount of time. Why?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Attempting to unblock HTML parsing by moving CSS down the page.
+> **Trace:** CSS is **render-blocking**. The browser refuses to paint ANY pixels until the CSSOM (CSS Object Model) is fully constructed. If it painted without CSS, users would see a Flash of Unstyled Content (FOUC), and the browser would have to do a massive, expensive recalculation (Layout/Paint) once the CSS arrived.
+> **Debug/Design Fix:** You cannot prevent CSS from blocking the render, but you can optimize it. Extract the "Critical CSS" (above-the-fold styles) and inline it directly into a `<style>` block in the `<head>`. Load the remaining CSS asynchronously using `<link rel="preload">` or `media="print" onload="this.media='all'"`.
+> </details>
 
 ## 4. The Render Tree — Combining DOM + CSSOM
 
@@ -258,6 +274,14 @@
 
 
 > 🔬 **Section Challenge — 4. The Render Tree — Combining DOM + CSSOM**
+>
+> **Challenge 1 (Reasoning):** You want to hide a heavy, complex DOM subtree. How does using `display: none` differ from `visibility: hidden` in terms of memory and the Render Tree?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Hiding elements to improve performance.
+> **Trace:** The Render Tree combines the DOM and CSSOM but EXCLUDES anything that shouldn't be painted. If you apply `display: none`, the element and all its children are completely omitted from the Render Tree. The browser does zero layout or paint work for them. If you apply `visibility: hidden`, the element is INVISIBLE, but it is STILL IN the Render Tree. The browser still calculates its exact layout (width/height) because it must take up space.
+> **Debug:** For best performance when hiding complex trees, use `display: none` or the HTML5 `hidden` attribute. Use `visibility: hidden` ONLY if you need the empty space to preserve the layout structure.
+> </details>
 
 ## 5. Layout (Reflow) — Calculating Geometry
 
@@ -312,6 +336,14 @@
 
 
 > 🔬 **Section Challenge — 5. Layout (Reflow) — Calculating Geometry**
+>
+> **Challenge 1 (Debug):** Animating the `width` and `height` of a 100-item list causes massive frame drops (jank) on mobile devices. Why?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** CSS animations causing lag.
+> **Trace:** Changing `width` or `height` invalidates the geometry of the element. This forces the browser to run the **Layout** step. Because elements affect each other, a layout change in one item can cascade, forcing the browser to recalculate the geometry of its parent, siblings, and children. Doing this 60 times a second (in an animation) destroys the CPU.
+> **Debug/Design Fix:** Never animate geometry properties (width, height, top, left, margin). Instead, use `transform: scale(x, y)` or `transform: translate(x, y)`. Transforms bypass Layout and Paint entirely, happening solely on the GPU during the Composite phase.
+> </details>
 
 ## 6. Paint — Drawing Pixels
 
@@ -354,6 +386,14 @@
 
 
 > 🔬 **Section Challenge — 6. Paint — Drawing Pixels**
+>
+> **Challenge 1 (Reasoning):** A developer adds `box-shadow` and `border-radius` to 500 cards on a dashboard, and scrolling suddenly becomes extremely sluggish. What phase of the pipeline is choking?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Fancy UI styles causing scroll lag.
+> **Trace:** `box-shadow` and `border-radius` are notoriously expensive **Paint** operations. The browser has to mathematically calculate the pixel blending for shadows and anti-aliasing for curves. When scrolling, new parts of the page enter the viewport, forcing the browser to rapidly paint these expensive pixels on the CPU.
+> **Debug:** The pipeline is choking at the Paint phase. To fix it, you can either remove the expensive properties, or promote the cards to their own GPU layers (using `will-change: transform` or `transform: translateZ(0)`), so they are painted once and cached as a texture on the GPU.
+> </details>
 
 ## 7. Compositing — GPU Layers
 
@@ -421,6 +461,15 @@
 
 
 > 🔬 **Section Challenge — 7. Compositing — GPU Layers**
+>
+> **Challenge 1 (Design):** You learn that `will-change: transform` puts an element on its own GPU layer, making animations silky smooth. You decide to apply `* { will-change: transform; }` to your entire app. What happens next?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Over-optimizing by forcing everything onto the GPU.
+> **Trace:** GPU memory (VRAM) is strictly limited. Every new compositor layer requires memory to store its texture (the painted pixels). By forcing every element into its own layer, you will immediately exhaust the device's VRAM.
+> **Debug:** The browser will crash, or the OS will aggressively terminate the tab.
+> **Design Fix:** Use `will-change` sparingly. Only apply it to elements that are *currently* or *about to be* animated, and remove it when the animation completes to free up GPU memory.
+> </details>
 
 ## 8. The Critical Rendering Path
 
@@ -489,6 +538,15 @@
 
 
 > 🔬 **Section Challenge — 8. The Critical Rendering Path**
+>
+> **Challenge 1 (Reasoning):** Your web app has a 2MB CSS file. A user on a slow 3G connection visits your site. Explain exactly what the user sees on their screen during the 15 seconds it takes to download this CSS file.
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Massive, render-blocking CSS on a slow connection.
+> **Trace:** The browser quickly downloads the HTML and begins constructing the DOM. However, it spots the `<link rel="stylesheet">` in the `<head>`. Because CSS is render-blocking, the browser completely halts the rendering pipeline at the CSSOM step. It will build the DOM in the background, but it will **not** construct the Render Tree, nor will it Layout or Paint.
+> **Debug:** The user sees an absolutely blank white screen for 15 seconds.
+> **Fix:** Implement Critical CSS. Extract the bare minimum styles needed for the initial viewport, inline them in the `<head>`, and load the remaining 2MB file asynchronously (e.g., `<link rel="stylesheet" href="main.css" media="print" onload="this.media='all'">`).
+> </details>
 
 ## 9. JavaScript Execution & the Event Loop in the Browser
 
@@ -549,6 +607,15 @@
 
 
 > 🔬 **Section Challenge — 9. JavaScript Execution & the Event Loop in the Browser**
+>
+> **Challenge 1 (Trace):** You have a CPU-intensive `while` loop that takes 5 seconds to complete on the main thread. During those 5 seconds, the user furiously clicks a button 10 times. What happens, and when do the click handlers run?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Blocking the main thread while user input occurs.
+> **Trace:** The Event Loop only processes the macrotask/microtask queues when the Call Stack is empty. During the 5-second `while` loop, the Call Stack is blocked. The browser's OS thread registers the 10 clicks and pushes them into the Macrotask Queue, but the Event Loop cannot dequeue them.
+> **Debug:** For 5 seconds, the UI is completely frozen (no hover states, no scrolling). Exactly after the 5-second loop finishes and the Call Stack clears, the Event Loop will aggressively process the Macrotask Queue, firing the click handler 10 times in rapid succession.
+> **Fix:** Offload the 5-second calculation to a Web Worker, freeing the main thread to handle the click events instantly.
+> </details>
 
 ## 10. Reflow vs Repaint — What Triggers What
 
@@ -618,6 +685,15 @@ items.forEach((item, i) => {
 
 
 > 🔬 **Section Challenge — 10. Reflow vs Repaint — What Triggers What**
+>
+> **Challenge 1 (Trace):** Why does `const h = el.offsetHeight; el.style.height = (h + 10) + 'px';` cause Layout Thrashing if placed inside a `for` loop, but `const h = el.offsetHeight;` alone does not?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Accidentally forcing synchronous layout in a loop.
+> **Trace:** Browsers are lazy and batch DOM writes. `el.style.height = ...` doesn't immediately recalculate layout; it just flags the DOM as "dirty." However, when you ask for `el.offsetHeight` (a read), the browser MUST give you the exact, pixel-perfect value. If the DOM is "dirty" from a previous write in the loop, the browser is forced to pause JavaScript execution and run a synchronous Layout step immediately to calculate the correct height.
+> **Debug:** In a loop, write-then-read forces a full layout recalculation on *every iteration*.
+> **Fix:** Read all values first (caching them), then write all values. Or use `requestAnimationFrame` to batch DOM updates just before the next paint.
+> </details>
 
 ## 11. requestAnimationFrame & Rendering Pipeline Timing
 
@@ -670,6 +746,14 @@ requestAnimationFrame(animate);
 
 
 > 🔬 **Section Challenge — 11. requestAnimationFrame & Rendering Pipeline Timing**
+>
+> **Challenge 1 (Reasoning):** You use `setInterval(animate, 1000 / 60)` to move an element to achieve 60fps. Why will this animation occasionally look stuttery or tear, whereas `requestAnimationFrame(animate)` will not?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Using JavaScript timers for UI animation.
+> **Trace:** `setInterval` is just a timer pushing a macrotask into the queue every ~16.6ms. It has zero awareness of the monitor's physical refresh rate or the browser's rendering pipeline. If the Event Loop is busy, the interval callback might be delayed, causing two frames to render back-to-back, or it might fire right in the middle of a screen draw, causing visual tearing.
+> **Debug/Design:** `requestAnimationFrame` is hooked directly into the rendering pipeline. The browser guarantees that the `rAF` callback will execute *exactly once* right before the style calculation and layout phases of the next screen refresh, resulting in perfectly synchronized, tear-free animations.
+> </details>
 
 ## 12. How Browsers Optimize — Batching, Layers, and Compositing
 

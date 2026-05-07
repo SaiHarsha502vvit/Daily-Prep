@@ -1,4 +1,4 @@
-﻿# 🌐 API Design & REST — Complete Guide
+# 🌐 API Design & REST — Complete Guide
 
 **Navigation**: [< Testing](06_Testing_Fundamentals.md) | [Index](00_INDEX.md) | [Next: Security >](08_Security_Fundamentals.md)
 
@@ -9,22 +9,22 @@
 ## The Contract Between Systems
 
 ```
-┌─────────────┐     HTTP Request      ┌──────────────┐
-│   Frontend   │ ──────────────────>   │   Backend   │
-│  (React/     │                       │  (Spring    │
-│   Angular)   │ <──────────────────   │   Boot)     │
-│              │     HTTP Response     │             │
+┌─────────────┐     HTTP Request       ┌─────────────┐
+│   Frontend  │ ──────────────────>    │   Backend   │
+│  (React/    │                        │  (Spring    │
+│   Angular ) │ <──────────────────    │   Boot)     │
+│             │     HTTP Response      │             │
 └─────────────┘                        └─────────────┘
 
-┌─────────────┐     HTTP Request      ┌──────────────┐
-│   Mobile     │ ──────────────────>   │   Your API  │
-│   App        │ <──────────────────   │             │
-└─────────────┘     HTTP Response     └──────────────┘
+┌─────────────┐     HTTP Request       ┌─────────────┐
+│   Mobile    │ ──────────────────>    │   Your API  │
+│   App       │ <──────────────────    │             │
+└─────────────┘     HTTP Response      └─────────────┘
 
-┌─────────────┐     HTTP Request      ┌──────────────┐
-│   Partner    │ ──────────────────>   │   Your API  │
-│   Company    │ <──────────────────   │             │
-└─────────────┘     HTTP Response     └──────────────┘
+┌─────────────┐     HTTP Request       ┌─────────────┐
+│   Partner   │ ──────────────────>    │   Your API  │
+│   Company   │ <──────────────────    │             │
+└─────────────┘     HTTP Response      └─────────────┘
 
 Your API = a CONTRACT. Once published, breaking changes = TRUST broken.
 ```
@@ -67,10 +67,12 @@ Example:
 
 🔬 **Section Challenge — HTTP Methods (Verbs)**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Reasoning):** `PUT /api/users/42` and `PATCH /api/users/42` both update user 42. When does idempotency matter and which one is NOT idempotent by definition?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+`PUT` is idempotent: calling it 5 times has the same effect as calling it once — it completely replaces the resource with the full body you send. `PATCH` is **not idempotent by definition** (though implementations can make it so). Example: `PATCH {"views": "+1"}` increments the view count — calling it 5 times = 5 increments. `PUT {"views": 100}` called 5 times = still 100. Idempotency matters in network failures: if a client retries a timed-out request, `PUT` is safe to retry. Blindly retrying `POST` creates duplicate orders. This is why payment APIs use **idempotency keys** — a unique UUID per request that the server uses to deduplicate retries.
+
 </details>
 
 ## HTTP Status Codes
@@ -104,10 +106,12 @@ HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still hea
 
 🔬 **Section Challenge — HTTP Status Codes**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Trace):** Your API returns `403 Forbidden` when a user tries to access another user’s order. A teammate says it should be `404 Not Found` to avoid leaking that the resource exists. Who is right and why?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+Both are defensible, and this is a real security design decision. Returning `403` is technically correct (you’re authenticated but unauthorized) but **confirms the resource exists** — an attacker can enumerate valid IDs by seeing 403 vs 404. Returning `404` for unauthorized resources is the **security-by-obscurity** pattern (used by GitHub — private repos return 404 to non-members, not 403). The right answer for interviews: acknowledge the tradeoff. In high-security APIs (healthcare, finance), prefer `404` to prevent information leakage. In internal APIs where enumeration isn’t a threat model, `403` is clearer. Distinguish `401` (not authenticated — no token) from `403` (authenticated but forbidden — valid token, wrong role).
+
 </details>
 
 # HOW: Designing Good APIs
@@ -283,10 +287,12 @@ SEARCH:
 
 🔬 **Section Challenge — Level 6 — Filtering, Sorting, Field Selection**
 
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
+**Challenge 1 (Design):** A client requests `GET /api/users?fields=id,name`. Your `User` entity has 20 fields including `passwordHash` and `ssn`. What are the two risks of a naive “field selection” implementation and how do you prevent them?
+
 <details><summary>Answer</summary>
 
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+1. **Sensitive field exposure**: if you implement field selection by reflecting over the entity and filtering by field name, a client could request `?fields=passwordHash,ssn` and receive them in the response. Fix: use a DTO allowlist — only expose fields that exist on your `UserResponse` DTO, never filter from the entity directly. The DTO is the contract; entities are internal. 2. **N+1 query on join fields**: `?fields=name,orderCount` might trigger a lazy-loaded `orders` collection per user if you’re not careful. Fix: use projections at the JPA/query layer — `SELECT u.name, COUNT(o.id) FROM User u LEFT JOIN u.orders o GROUP BY u.id` rather than fetching full entities and filtering in Java.
+
 </details>
 
 # WHERE: Real-World Patterns
@@ -349,6 +355,22 @@ Common limits:
 ---
 
 🔬 **Section Challenge — Rate Limiting**
+
+**Challenge 1 (Reasoning):** Explain the difference between a **fixed window** and a **sliding window** rate limiter. Which one allows a burst attack at the window boundary?
+
+<details><summary>Answer</summary>
+
+**Fixed window**: counter resets at a fixed clock boundary (e.g., every 60 seconds at :00). A client can make 100 requests at :59, then 100 more at :01 of the next window = 200 requests in 2 seconds. This is the **boundary burst attack**. **Sliding window**: tracks timestamps of recent requests in a rolling log. At any point in time, it counts requests in the last 60 seconds — no boundary to exploit. More accurate but requires storing per-request timestamps (memory cost). Sliding window log variant uses O(requests) memory; sliding window counter (Redis sorted set or two-bucket approximation) reduces this. Bucket4j (used in Spring Boot) implements the **token bucket** algorithm: a bucket holds N tokens, refilled at a constant rate. A burst consumes tokens instantly, then rate is throttled by the refill rate — this allows legitimate traffic spikes without the boundary exploit.
+
+</details>
+
+**Challenge 2 (Design):** Your API returns `429 Too Many Requests`. What headers should you include in the response, and why does each one matter to the client?
+
+<details><summary>Answer</summary>
+
+Standard rate limit headers: `X-RateLimit-Limit: 100` (the total allowed per window), `X-RateLimit-Remaining: 0` (tokens left in this window), `X-RateLimit-Reset: 1709500060` (Unix timestamp when the window resets — client knows exactly when to retry), `Retry-After: 30` (seconds until retry — required by RFC 6585 for 429). Without these headers, clients have no way to implement **exponential backoff** intelligently — they’ll retry immediately, hammering your server further. Well-behaved API clients (Stripe SDK, Twilio SDK) read `Retry-After` and sleep exactly that duration. Missing these headers turns a protection mechanism into a source of cascading retry storms.
+
+</details>
 
 # 🧭 API Design Cheat Sheet
 

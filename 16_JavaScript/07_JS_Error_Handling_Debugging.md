@@ -73,7 +73,18 @@ try {
 
 
 🔬 **Section Challenge — 1. Error Types in JavaScript**
->
+
+**Challenge 1 (Runtime Reasoning):** A function sometimes throws `TypeError`, sometimes `ReferenceError`, and sometimes a custom `ValidationError`. How should you categorize these errors before deciding whether to retry, show a user message, or crash fast?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** `ReferenceError` often means the code referenced a missing binding. `TypeError` often means the value exists but is not being used correctly, such as calling `undefined` as a function. A custom domain error usually represents an expected business-rule failure.
+
+**Reasoning:** Not all errors deserve the same handling. Programmer errors should be fixed, not swallowed. Domain errors can be shown to users. Transient network errors may be retried with limits.
+
+**Debug/Fix:** Classify errors by source: programmer bug, validation/business rule, external dependency, or cancellation. Then choose the response: fail fast, show message, retry, fallback, or report with context.
+
+</details>
 
 ## 2. try/catch/finally
 
@@ -202,21 +213,16 @@ try {
 
 🔬 **Section Challenge — 3. Custom Error Classes**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Design):** Design JavaScript custom errors for an API client that needs to distinguish validation failures, authentication failures, network failures, and server failures. What should the base class contain?
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** A useful custom error should preserve the original `cause`, carry a stable `code`, and include safe debugging context such as HTTP status, request ID, or field name.
+
+**Reasoning:** JavaScript lets you extend `Error`, but you must set `name` and preserve stack/cause correctly. Callers should catch by class or code, not by fragile message text.
+
+**Debug/Fix:** Create `AppError extends Error` with `{ code, status, cause, context }`, then derive `ValidationError`, `AuthError`, `NetworkError`, and `ServerError`. Never include secrets/tokens in `context`.
+
 </details>
 
 
@@ -751,4 +757,3 @@ Without try-with-resources: if body throws e1 and finally-close() throws e2, e2 
 
 **Synchronous**: exception propagates up the call stack naturally. Caller can catch. **CompletableFuture**: exception stored in the future, only surfaces on `.get()` or `.join()`. Unhandled: silently swallowed. ALWAYS add `.exceptionally()` or `.handle()`. **ExecutorService.execute()**: uncaught exception → UncaughtExceptionHandler → default: print to stderr and DIE silently. **ExecutorService.submit()**: exception stored in Future — silently swallowed unless `.get()` called. **Reactive (Reactor)**: exception is a signal on the stream — `.onErrorReturn()`, `.onErrorResume()`, `.doOnError()`. Key principle: in async code, exceptions NEVER propagate automatically — you must explicitly handle them at the async boundary.
 </details>
-

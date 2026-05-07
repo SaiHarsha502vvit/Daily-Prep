@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous Chapter](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](02a_DS_Variants_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -690,8 +690,15 @@ Essentially a linked list!
 
 :::
 
-🔬 **Section Challenge — 4.1 Binary Tree Types**
+> 🔬 **Section Challenge — 4.1 Binary Tree Types**
 >
+> **Challenge 1 (Design):** A developer decides to use a strictly "Perfect Binary Tree" to store exactly 1 million user records, assuming it will provide the ultimate balanced `O(log N)` search time. Why is this structurally impossible, and what Tree variant should they use instead?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Selecting the correct tree invariant for arbitrary dataset sizes.
+> **Trace:** A Perfect Binary Tree requires every internal node to have 2 children, and all leaves must be on the exact same level. Mathematically, a perfect tree of height `h` contains exactly `2^(h+1) - 1` nodes.
+> **Debug/Fix:** You cannot build a Perfect tree with exactly 1,000,000 nodes. The closest perfect tree sizes are 524,287 nodes (height 18) and 1,048,575 nodes (height 19). If you try to force 1,000,000 nodes into this shape, you will have empty spaces on the bottom level, which immediately turns it into a **Complete Binary Tree** (if filled strictly left-to-right) or just a general **Balanced Binary Tree** (like an AVL or Red-Black Tree). This is why "Perfect" trees are mostly theoretical, while "Complete" and "Balanced" trees are the production standard.
+> </details>
 
 ## 4.2 AVL Tree (Self-Balancing BST)
 

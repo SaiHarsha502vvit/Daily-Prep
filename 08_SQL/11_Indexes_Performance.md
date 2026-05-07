@@ -1,4 +1,4 @@
-﻿> **SQL Chapter 11/20** | [← Previous](10_Normalization.md) | [Index](../00_MASTER_INDEX.md) | [Next →](12_Views_StoredProcs_Triggers.md)
+> **SQL Chapter 11/20** | [← Previous](10_Normalization.md) | [Index](../00_MASTER_INDEX.md) | [Next →](12_Views_StoredProcs_Triggers.md)
 
 ---
 
@@ -262,6 +262,19 @@ SELECT * FROM employees WHERE dept_id = 1;
 -- GOOD: Select only indexed columns (index-only scan)
 SELECT emp_id, dept_id FROM employees WHERE dept_id = 1;
 ```
+
+---
+
+> 🔬 **Section Challenge — B-Tree Internals & EXPLAIN Analysis**
+>
+> **Challenge 1 (The Leading Edge Trap):** You have a composite B-Tree index on `(last_name, first_name, date_of_birth)`. You run `SELECT * FROM employees WHERE first_name = 'John' AND date_of_birth = '1990-01-01'`. The DBA points to the `EXPLAIN` output showing a `Seq Scan` (or `ALL` access type in MySQL) and says your query is bypassing the index. Why does this happen mechanically within the B-Tree?
+>
+> <details><summary>Answer</summary>
+>
+> This happens because of the **Leftmost Prefix Rule**. A composite B-Tree is sorted hierarchically: it orders all rows by `last_name` first, and only orders by `first_name` *within* identical last names. Without providing the `last_name` in the `WHERE` clause, the database has no starting node to navigate the tree's branches. It's mathematically identical to searching for a first name "John" in a physical phone book—you must scan every single page.
+> 
+> **The Fix:** You must either include the leading column (`last_name`) in your query predicates, or create a secondary index where `first_name` is the leading edge.
+> </details>
 
 ---
 

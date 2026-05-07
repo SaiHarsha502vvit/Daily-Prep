@@ -212,7 +212,19 @@ public static int binaryGCD(int a, int b) {
 
 ---
 
-> 🔬 **Section Challenge — Algorithm 4: Binary GCD (Stein's Algorithm)**
+🔬 **Section Challenge — Algorithm 4: Binary GCD (Stein's Algorithm)**
+
+**Challenge 1 (Bit-Level Reasoning):** Binary GCD replaces division/modulo with shifts and subtraction. Why can this be faster, and what edge cases must your implementation handle?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** If both numbers are even, `gcd(a, b) = 2 * gcd(a/2, b/2)`. If one number is even, remove its factor of two. If both are odd, subtract the smaller from the larger and continue.
+
+**Reasoning:** Shifts and subtraction are cheaper than repeated modulo on some systems, especially for large integer arithmetic. The algorithm preserves common factors while reducing the numbers toward equality.
+
+**Debug/Fix:** Normalize negatives if allowed, handle `gcd(0, b) = |b|`, handle `gcd(0, 0)` according to the problem statement, and track the common power of two so it can be restored at the end.
+
+</details>
 
 ## LCM (Least Common Multiple)
 
@@ -668,7 +680,19 @@ public static List<Integer> getAllDivisors(int n) {
 
 ---
 
-> 🔬 **Section Challenge — Problem P4: Count Divisors Using Prime Factorization**
+🔬 **Section Challenge — Problem P4: Count Divisors Using Prime Factorization**
+
+**Challenge 1 (Formula Reasoning):** Why does `n = p1^a * p2^b * p3^c` have `(a + 1)(b + 1)(c + 1)` divisors, and how do constraints decide the factorization method?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** Every divisor chooses an exponent for each prime: `p1` can be used `0..a` times, `p2` can be used `0..b` times, and so on. The choices are independent, so multiply the counts.
+
+**Reasoning:** The formula is combinatorics over prime exponents. The algorithmic question is how fast you can get those exponents: trial division for small `sqrt(n)`, SPF sieve for many queries with bounded `n`, or stronger primality/factorization tools for huge numbers.
+
+**Debug/Fix:** Divide `n` completely by each found prime, count exponents, and if the remaining `n > 1`, it contributes exponent `1`. For many queries, precompute smallest prime factor once.
+
+</details>
 
 # ═══════════════════════════════════════════════════════════
 

@@ -137,11 +137,17 @@ ALTER TABLE orders ATTACH PARTITION orders_archive
 ---
 
 
-
-
-
-
 > 🔬 **Section Challenge — Part 1 — Table Partitioning**
+>
+> **Challenge 1 (Partition Pruning Failure):** You partitioned a massive `orders` table by `RANGE (order_date)`. A developer writes the following query to find orders in Q1: `SELECT * FROM orders WHERE EXTRACT(MONTH FROM order_date) IN (1,2,3);`. The DBA notices this is causing a full table scan across *all* partitions. Why did partition pruning fail, and how do you fix the query?
+>
+> <details><summary>Answer</summary>
+>
+> Partition pruning relies on the database optimizer being able to statically evaluate the boundaries during the query planning phase. Wrapping the partition key (`order_date`) inside a function like `EXTRACT()` makes the condition non-sargable (Search Argument Able). The optimizer cannot evaluate the function against the partition boundaries without executing it on every single row, forcing a full scan across all partitions.
+> 
+> **The Fix:** Query against the raw column values so the optimizer can prune:
+> `WHERE order_date >= '2024-01-01' AND order_date < '2024-04-01';`
+> </details>
 
 ## Part 2 — Database Sharding
 
@@ -209,11 +215,16 @@ def get_connection(user_id: int):
     return create_engine(SHARD_CONFIG[shard_id])
 
 
-
-
-
-
 > 🔬 **Section Challenge — Part 2 — Database Sharding**
+>
+> **Challenge 1 (The Hot Shard Anti-Pattern):** You are building a B2B SaaS application and decide to shard your database by `tenant_id` (each company gets their data on a specific shard based on a hash of their ID). A year later, one of your customers becomes an enterprise giant, generating 100x more traffic than the others. Your Shard 2 CPU hits 100%, taking down that customer and 400 small customers sharing that shard. What architectural sharding rule did you violate, and how is this resolved?
+>
+> <details><summary>Answer</summary>
+>
+> This violates the rule of **Even Data/Compute Distribution** by failing to account for "Whale Tenants" (the Hot Shard problem). 
+> 
+> A static hash of `tenant_id` assumes all tenants have roughly equal load. To resolve this, you must migrate from Hash-based to **Directory-based (Lookup) Sharding**. The enterprise tenant is isolated onto their own dedicated shard (or multiple shards if you shard by `tenant_id + user_id`), while the lookup table routes the smaller tenants to shared shards.
+> </details>
 
 # Query a specific user → goes to ONE shard
 def get_user(user_id):
@@ -403,11 +414,18 @@ plt.show()
 ---
 
 
-
-
-
-
 > 🔬 **Section Challenge — Part 4 — Monitoring & Troubleshooting**
+>
+> **Challenge 1 (Replication Lag Trap):** You have a Primary DB for writes and a Read Replica for analytics. A user updates their profile picture (write to Primary), and the UI instantly redirects them to their profile page (read from Replica). The user sees their *old* picture and submits a bug report. What is this phenomenon called, and what are two standard architectural solutions?
+>
+> <details><summary>Answer</summary>
+>
+> This is called **Read-After-Write Inconsistency**, caused by Asynchronous Replication Lag. The write reached the Primary, but the Read Replica hasn't replayed the WAL (Write-Ahead Log) yet.
+> 
+> **Solutions:**
+> 1. **Write-Path Caching:** When the user updates the profile, cache the new picture URL in Redis/Browser. The UI reads from the cache first, falling back to the replica.
+> 2. **Session Consistency (Sticky Routing):** Route all read queries from a user to the Primary for *N* seconds after they perform a write, then fall back to the Read Replica once replication has caught up.
+> </details>
 
 ## Decision Matrix
 

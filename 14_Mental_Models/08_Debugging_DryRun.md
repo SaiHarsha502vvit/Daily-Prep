@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
+**Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
 
 # 🔬 Debugging & Dry Run — How to Find Bugs Systematically
 
@@ -350,7 +350,22 @@ void levelOrder(TreeNode root) {
 
 
 🔬 **Section Challenge — Part 6: Debugging Graph/Tree Problems**
->>
+
+**Challenge 1 (Trace):** You are implementing BFS to find the shortest path in an unweighted grid. Your queue logic pushes a node, pops it, checks its neighbors, and pushes the valid neighbors. You mark a node as `visited = true` the moment you *pop* it from the queue. Why will this cause `Time Limit Exceeded` (TLE) on large grids?
+
+<details><summary>Answer</summary>
+
+Because you are marking nodes as visited too late! If a node is added to the queue but not yet popped, it is not marked as visited. As a result, other neighboring nodes currently being processed might see it as "unvisited" and push *duplicate* copies of the same node onto the queue. This causes the queue size to explode exponentially, leading to TLE. **Fix:** Always mark nodes as visited the exact moment you *push* them into the queue.
+
+</details>
+
+**Challenge 2 (Debug):** You are dry-running a recursive DFS for a Binary Search Tree (BST). Your output array is `[10, 5, 2, 7, 15]`. Since this is a BST, you expected the output to be sorted (`[2, 5, 7, 10, 15]`). What specific debugging mistake does this output reveal about your traversal order?
+
+<details><summary>Answer</summary>
+
+The output `[10, 5, 2, 7, 15]` corresponds to a **Pre-order traversal** (Root → Left → Right), not an In-order traversal. To get a sorted array from a BST, you must use **In-order traversal** (Left → Root → Right). The debugging output immediately isolates the root cause: you placed the `list.add(node.val)` or `print` statement *before* the recursive call to `node.left`, instead of *between* the calls to `node.left` and `node.right`.
+
+</details>
 
 ## Part 7: Debugging Checklist (Quick Reference)
 

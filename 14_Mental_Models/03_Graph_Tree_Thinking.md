@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](02_DP_State_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Array_String_Thinking.md)
+**Navigation**: [< Previous](02_DP_State_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Array_String_Thinking.md)
 
 # 🗺️ Graph & Tree Problem Thinking — Mental Model
 
@@ -29,7 +29,14 @@ Problem says:                          → Model as:
 
 
 🔬 **Section Challenge — Part 1: "Is This a Graph Problem?" — Recognition**
->>
+
+**Challenge 1 (Reasoning):** You are building a system to resolve package dependencies for a package manager (like `npm install`). You need to install packages in an order such that no package is installed before its dependencies. What kind of graph is this, and what is the specific algorithm to solve it?
+
+<details><summary>Answer</summary>
+
+This is a **Directed Acyclic Graph (DAG)**. It must be directed because "A depends on B" is a one-way relationship. It must be acyclic because if A depends on B, and B depends on A, the system is deadlocked (circular dependency). The specific algorithm to resolve this is **Topological Sorting** (usually implemented via Kahn's Algorithm using indegrees, or DFS with a post-order stack).
+
+</details>
 
 ## Part 2: BFS vs DFS — The Decision Framework
 
@@ -211,7 +218,14 @@ boolean[][] visited;  // When you can't mutate the grid
 
 
 🔬 **Section Challenge — Part 4: Grid/Matrix as Graph — Mental Model**
->>
+
+**Challenge 1 (Trace):** In the "Rotting Oranges" problem, a grid has fresh oranges (1), rotten oranges (2), and empty cells (0). Every minute, any fresh orange adjacent (4-directionally) to a rotten orange becomes rotten. You decide to use DFS starting from the first rotten orange you find. Why will DFS fail to give the minimum minutes required, and what is the correct approach?
+
+<details><summary>Answer</summary>
+
+DFS goes as deep as possible along one path. It might trace a winding path of 10 fresh oranges and mark them as rotting in 10 minutes. However, a different rotten orange might have been right next to the 10th orange and could have rotted it in 1 minute. DFS loses the "time" (level) synchrony. The correct approach is **Multi-Source BFS**. You find ALL initially rotten oranges, put them all in a Queue at time T=0, and then process them level-by-level (minute-by-minute). BFS guarantees the shortest path (minimum time) in unweighted graphs.
+
+</details>
 
 ## Part 5: Common Graph Patterns & When They Appear
 
@@ -249,7 +263,14 @@ Mental model: "Can child reach higher than parent without this edge?"
 
 
 🔬 **Section Challenge — Part 5: Common Graph Patterns & When They Appear**
->>
+
+**Challenge 1 (Design):** You are given a social network of users and a list of `dislikes(A, B)`. You want to divide the users into exactly two groups such that nobody in the same group dislikes each other. Which graph algorithm determines if this is possible?
+
+<details><summary>Answer</summary>
+
+This is exactly the **Bipartite Graph (2-Coloring)** problem. The graph's nodes are the users, and the edges are the dislikes. You want to color the graph using exactly 2 colors (the two groups) such that no two adjacent nodes (people who dislike each other) share the same color. You solve this with BFS or DFS: start coloring a node Red, all its neighbors Blue, all their neighbors Red. If you ever find a neighbor that has already been colored the *same* color as the current node, the graph is not bipartite, and the division is impossible.
+
+</details>
 
 ## Part 6: Graph/Tree Debugging Checklist
 
@@ -285,5 +306,12 @@ Mental model: "Can child reach higher than parent without this edge?"
 
 
 🔬 **Section Challenge — Part 6: Graph/Tree Debugging Checklist**
->>
+
+**Challenge 1 (Debug):** A junior developer writes a BFS to find the shortest path in a maze. Their code gets a `Memory Limit Exceeded` or `OutOfMemoryError`. Their visited logic is: `if (!visited[neighbor]) { queue.add(neighbor); }` and they mark `visited[curr] = true` *after* popping `curr` from the queue. Why did memory explode?
+
+<details><summary>Answer</summary>
+
+They marked nodes as visited when DEQUEUING instead of ENQUEUING. Because of this, if a node is reachable via multiple paths of the same length, it gets added to the queue multiple times before it is finally popped and marked visited. In a dense graph or empty grid, this causes the queue size to explode exponentially as the same nodes are duplicated hundreds of times in the queue. **Fix**: ALWAYS mark a node as visited the exact moment you *enqueue* it.
+
+</details>
 

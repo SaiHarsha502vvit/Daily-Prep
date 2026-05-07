@@ -1,4 +1,4 @@
-﻿> **Navigation**: [< Previous Chapter](01e_HashTable.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01g_DS_Internals.md)
+> **Navigation**: [< Previous Chapter](01e_HashTable.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01g_DS_Internals.md)
 
 ---
 
@@ -42,6 +42,14 @@ No pointers needed! This makes heaps extremely cache-friendly (contiguous memory
 
 
 > 🔬 **Section Challenge — PART 0: COMPLETE UNDERSTANDING — The WHY Before the WHAT**
+>
+> **Challenge 1 (Trace):** Why is an un-balanced Binary Search Tree (BST) considered a potential Denial of Service (DoS) vulnerability if used to index sequential user inputs?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Processing sequentially generated keys (like timestamps or auto-incrementing IDs) in a naive BST.
+> **Trace:** If a user sends keys in strictly increasing order (e.g., `1, 2, 3, 4...`), a naive BST inserts each node as the right child of the previous node. The tree degenerates completely into a **linked list**.
+> **Debug/Impact:** Because the tree height is now `N` instead of `log N`, all operations (search, insert, delete) degrade to `O(N)`. If a malicious actor sends 1 million sequential requests, the server will take `O(N)` time per request, exhausting CPU resources. This is why production systems *always* use self-balancing trees like **Red-Black Trees** (Java's `TreeMap`) or **B-Trees** (Databases), which mathematically enforce `O(log N)` height regardless of insertion order.
+> </details>
 
 ## 🧬 Nature & Behavior
 
@@ -612,6 +620,16 @@ SEE THESE WORDS → USE THIS:
 
 
 > 🔬 **Section Challenge — 🧠 Pattern Fingerprint — Trees & Heaps**
+>
+> **Challenge 1 (Reasoning):** A problem asks you to find the "Top K Frequent Elements" from an array of N items. You have two options: build a Max-Heap of all N items, or maintain a Min-Heap of size K. Trace the time/space complexity difference. Which is better and why?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Choosing the correct heap pattern for "Top K" algorithms.
+> **Trace:** 
+> 1. **Max-Heap of size N:** You push all `N` elements into the heap `O(N log N)`, then pop the top `K` times `O(K log N)`. Memory required is `O(N)`.
+> 2. **Min-Heap of size K:** You push elements into the Min-Heap. If the heap size exceeds `K`, you immediately pop the *smallest* element. The heap only ever holds `K` items. Time complexity: `O(N log K)`. Space required: `O(K)`.
+> **Design Fix:** The **Min-Heap of size K** is vastly superior. If you process 1 billion server logs (`N = 1,000,000,000`) to find the top 10 error IPs (`K = 10`), the Max-Heap will crash the server with an OutOfMemory error. The Min-Heap will use virtually zero memory `O(10)` and run nearly in `O(N)` time since `log 10` is a constant.
+> </details>
 
 ## ✅ You Know Trees & Heaps — Now Practice! (JIT Study Path)
 

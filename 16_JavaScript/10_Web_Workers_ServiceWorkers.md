@@ -434,7 +434,19 @@ if ('serviceWorker' in navigator) {
 
 
 🔬 **Section Challenge — 8. Service Workers — The Proxy Between Browser and Network**
->
+
+**Challenge 1 (Design):** You deploy a new version of your SPA, but users complain they are still seeing the old UI for days. Your Service Worker uses a standard 'Cache First' strategy for the HTML file. What caused this, and how do you design a robust SW update flow?
+<details><summary>Answer</summary>
+
+**Scenario:** Users stuck on an old version of the app despite new deployments.
+**Trace:** The browser fetches the `sw.js` file (which is byte-compared with the existing one). If it detects a change, the new SW installs but goes into the **WAITING** state. It will *not* activate until all tabs controlled by the old SW are closed. Furthermore, if the `index.html` was heavily cached, the browser might not even know there's a new SW.
+**Debug/Design Fix:**
+1. **Never cache `index.html` or `sw.js`** with a Cache-First strategy. Use `Network-First` or set strict `Cache-Control: no-cache` headers for them.
+2. Listen for the SW update on the client: when a new SW is waiting, show a "New version available! [Refresh]" toast.
+3. On clicking Refresh, send a message to the waiting SW: `worker.postMessage({ type: 'SKIP_WAITING' })`.
+4. Inside the SW, handle it: `self.addEventListener('message', e => { if (e.data.type === 'SKIP_WAITING') self.skipWaiting(); })`.
+5. Listen for the `controllerchange` event on the client to automatically reload the page once the new SW takes over.
+</details>
 
 ## 9. Service Worker Lifecycle
 

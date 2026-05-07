@@ -106,6 +106,16 @@ LSM-TREE            │ • Cassandra, LevelDB, RocksDB, ScyllaDB
 ---
 
 > 🔬 **Section Challenge — The History of DS in Computing**
+>
+> **Challenge 1 (System Design):** A senior engineer claims: "B-Trees were invented in 1972 for slow spinning hard drives. We have NVMe SSDs now, so we should replace all PostgreSQL B-Tree indexes with modern LSM-Trees." Trace the fundamental difference between Read-Optimized and Write-Optimized structures. Why do relational databases still use B-Trees today?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Choosing the right storage engine index (B-Tree vs. LSM-Tree).
+> **Trace:** 
+> - **B-Trees (Read-Optimized):** They enforce a strict, balanced structure where finding any record takes exactly `O(log N)` disk page reads. However, inserting a record might cause a slow "page split" (Random I/O).
+> - **LSM-Trees (Write-Optimized):** They buffer writes in RAM and flush them sequentially to disk as immutable SSTables. This is blazing fast for writes (Sequential I/O), but reading requires checking the MemTable and potentially multiple SSTable files (Read Amplification).
+> **Debug/Fix:** NVMe SSDs are fast, but Sequential I/O is *still* faster than Random I/O. We use LSM-Trees (Cassandra, Kafka) for extreme write-heavy workloads (e.g., millions of IoT telemetry events per second). However, PostgreSQL still uses B-Trees because relational data relies on complex `JOIN`s, immediate consistency, and secondary indexes. For workloads that are read-heavy (90% reads, 10% writes), the stable, singular `O(log N)` lookup guarantee of a B-Tree outperforms searching through multiple LSM SSTable files.
+> </details>
 
 # Performance Characteristics — The Full Picture
 

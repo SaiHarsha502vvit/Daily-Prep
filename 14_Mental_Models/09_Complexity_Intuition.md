@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](08_Debugging_DryRun.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Interview_Thinking.md)
+**Navigation**: [< Previous](08_Debugging_DryRun.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Interview_Thinking.md)
 
 # ⏱️ Complexity Intuition — Reason About Time & Space Without Formulas
 
@@ -172,15 +172,24 @@ Examples:
 
 
 🔬 **Section Challenge — Part 3: Recursion Complexity — Use the Tree Method**
->
-**Challenge 2 (Bug Hunt):** ```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
-```
-Why and what are the 3 fixes?
+
+**Challenge 1 (Trace):** A recursive algorithm processes an array of size `N`. In each step, it does O(N) work to scan the array, then splits the array into 2 halves, and makes a recursive call on *only one* of the halves. What is the tree height, the work per level, and the overall time complexity?
+
 <details><summary>Answer</summary>
 
-Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+- **Height**: `log2(N)`. (The array size halves each time until it hits 1).
+- **Work per level**: At the root, it's N. At level 1, there is only *one* call of size N/2, so the work is N/2. At level 2, work is N/4.
+- **Overall Time Complexity**: The total work is the geometric series `N + N/2 + N/4 + N/8 ...` which sums to `2N`. Therefore, the time complexity is **O(N)**. 
+*Note*: This is the exact complexity analysis of algorithms like QuickSelect or Binary Search on an unsorted array where you scan before reducing.
+
+</details>
+
+**Challenge 2 (Reasoning):** Why does naive recursive Fibonacci `fib(n) = fib(n-1) + fib(n-2)` take O(2^N) time, while naive recursive factorial `fact(n) = n * fact(n-1)` takes only O(N) time?
+
+<details><summary>Answer</summary>
+
+It's all about the **Branching Factor**. Factorial has a branching factor of 1: each call makes exactly 1 recursive call. A tree with a branching factor of 1 is just a straight line, so if the height is N, the total nodes are N. Time is O(N). Fibonacci has a branching factor of 2: each call makes 2 recursive calls. A tree with branching factor 2 and height N has `2^N` nodes. Even though the work per node is O(1) in both, the massive explosion in the number of nodes makes Fibonacci exponential.
+
 </details>
 
 

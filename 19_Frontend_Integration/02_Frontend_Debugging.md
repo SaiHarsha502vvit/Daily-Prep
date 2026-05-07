@@ -53,7 +53,19 @@
 
 
 
-> 🔬 **Section Challenge — 1. The Debugging Mindset**
+🔬 **Section Challenge — 1. The Debugging Mindset**
+
+**Challenge 1 (Debugging Reasoning):** A React screen suddenly shows stale data after a deployment. What is the first structured debugging path, and why is "change random code and retry" dangerous?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** First reproduce the bug, define expected vs actual behavior, and isolate whether the stale data comes from network response, cache, state management, props, memoization, or rendering.
+
+**Reasoning:** Debugging is hypothesis elimination. Random edits destroy evidence and can hide the real cause. A good path moves from outside-in: Network tab response -> application state -> component props -> render logic -> CSS visibility.
+
+**Debug/Fix:** Record the failing input, inspect the API payload, compare cache/state values in DevTools, trace the component tree, then apply the smallest fix that invalidates the stale value at its source.
+
+</details>
 
 ## 2. Chrome DevTools — Beyond Console.log
 
@@ -386,7 +398,19 @@ Problem: Bundle too large (slow initial load)
 
 
 
-> 🔬 **Section Challenge — 5. CORS Debugging — The Most Confusing Error**
+🔬 **Section Challenge — 5. CORS Debugging — The Most Confusing Error**
+
+**Challenge 1 (Network Debug):** The browser says CORS blocked the request, but Postman succeeds. Why is this not proof that the frontend is wrong, and what exact headers/requests should you inspect?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** Postman is not a browser, so it does not enforce the browser's same-origin policy. The browser may also send an `OPTIONS` preflight request before the real request.
+
+**Reasoning:** CORS is a server permission contract. The server must allow the requesting origin, method, and headers. With credentials, `Access-Control-Allow-Origin: *` is invalid; the server must echo a specific origin and include `Access-Control-Allow-Credentials: true`.
+
+**Debug/Fix:** Inspect the Network tab for the preflight `OPTIONS` response, status code, `Access-Control-Allow-Origin`, `Access-Control-Allow-Methods`, `Access-Control-Allow-Headers`, and credential mode. Fix server CORS config or use a dev proxy for local development.
+
+</details>
 
 ## 6. Debugging Checklist by Symptom
 
@@ -434,7 +458,19 @@ Problem: Bundle too large (slow initial load)
 
 
 
-> 🔬 **Section Challenge — 6. Debugging Checklist by Symptom**
+🔬 **Section Challenge — 6. Debugging Checklist by Symptom**
+
+**Challenge 1 (Symptom Triage):** A user reports "the button does nothing." Build a debugging checklist that separates event handling, disabled state, overlay/z-index, network failure, and state update bugs.
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** First verify whether the click event fires. If it does not, inspect the DOM, disabled attributes, pointer-events, overlays, and event propagation. If it fires, inspect handler logic, network calls, state updates, and render conditions.
+
+**Reasoning:** The same symptom can come from different layers. A checklist prevents you from jumping directly to React state when the actual issue is an invisible overlay or a disabled form control.
+
+**Debug/Fix:** Use Elements tab to inspect the clickable area, Event Listeners to verify handler attachment, Console breakpoints/logs to confirm execution, Network tab for requests, and React DevTools to confirm state changes.
+
+</details>
 
 ## Interview Quick-Fire
 

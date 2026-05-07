@@ -205,21 +205,14 @@ public class AppConfig implements Serializable {
 
 🔬 **Section Challenge — 4. Custom Serialization Hooks**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Serialization Reasoning):** A class has a cached field, a password field, and an invariant that `startDate <= endDate`. How should custom serialization hooks protect correctness and security?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+Mark secrets and recomputable caches as `transient`. During `writeObject`, write only durable state. During `readObject`, restore derived fields and validate invariants before the object escapes.
+
+The danger is that deserialization can create objects without normal constructors. If `readObject` does not re-check invariants, an invalid object graph can enter the application.
+
+Use `private void writeObject(ObjectOutputStream out)` and `private void readObject(ObjectInputStream in)` carefully, prefer modern formats like JSON/Protobuf for external boundaries, and never deserialize untrusted bytes without strict filtering.
 </details>
 
 
@@ -304,10 +297,14 @@ ois.setObjectInputFilter(filter);
 
 🔬 **Section Challenge — 6. Serialization Security Risks**
 
-**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
-<details><summary>Answer</summary>
+**Challenge 1 (Security Reasoning):** Why is Java native deserialization dangerous when the byte stream comes from a user or network boundary?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+Native deserialization rebuilds an object graph from class metadata and field values. Attackers can craft payloads that trigger gadget chains in classes already on the classpath.
+
+The core problem is not only data parsing; it is behavior during object reconstruction. Methods such as `readObject`, validation hooks, and library gadgets can execute while the object graph is being restored.
+
+Avoid native Java serialization for untrusted input. Use JSON/Protobuf with explicit schemas, apply `ObjectInputFilter` when legacy deserialization is unavoidable, allowlist classes, and keep dangerous gadget libraries off exposed boundaries.
 </details>
 
 
@@ -355,10 +352,14 @@ User user = gson.fromJson(json, User.class);
 
 🔬 **Section Challenge — PART 2: JAVA I/O STREAMS — The Complete Picture**
 
-**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-<details><summary>Answer</summary>
+**Challenge 1 (I/O Reasoning):** You read a 4GB file using `Files.readAllBytes()` and the JVM crashes. Which I/O mental model did you violate?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+`readAllBytes()` materializes the whole file in heap memory. A stream-based design processes bytes in chunks, so memory stays bounded regardless of file size.
+
+Java I/O streams are about data flow, buffering, and resource lifetime. The right abstraction depends on data type: bytes for binary data, readers/writers for text, and buffered wrappers to reduce system calls.
+
+Fix by using `InputStream`, `BufferedInputStream`, `Files.newBufferedReader`, or NIO channels, then process incrementally with try-with-resources.
 </details>
 
 **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
@@ -415,10 +416,14 @@ RULE: Byte streams for binary data, Character streams for text
 
 🔬 **Section Challenge — 8. The I/O Stream Hierarchy**
 
-**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-<details><summary>Answer</summary>
+**Challenge 1 (Hierarchy Reasoning):** Why does Java split I/O into `InputStream`/`OutputStream` and `Reader`/`Writer`, instead of using one universal API?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+`InputStream` and `OutputStream` move raw bytes. `Reader` and `Writer` move decoded characters using a charset. Text is not bytes until an encoding is chosen.
+
+Using byte streams for text without charset awareness causes silent corruption when the platform default charset differs from the file encoding.
+
+Use byte streams for images, zip files, PDFs, and network protocols. Use readers/writers for text and always specify `StandardCharsets.UTF_8` unless the format demands something else.
 </details>
 
 **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
@@ -461,10 +466,14 @@ try (BufferedReader br = new BufferedReader(
 
 🔬 **Section Challenge — 9. Byte Streams vs Character Streams**
 
-**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
-<details><summary>Answer</summary>
+**Challenge 1 (Bug Hunt):** A CSV with names from multiple languages works on your laptop but shows broken characters in production. What likely happened?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+The code probably used the platform default charset, such as `new FileReader(file)`, instead of specifying the file encoding. Different machines can have different defaults.
+
+Bytes do not become characters until decoded. If UTF-8 bytes are decoded as another charset, characters become corrupted.
+
+Fix by using `Files.newBufferedReader(path, StandardCharsets.UTF_8)` or `InputStreamReader(input, StandardCharsets.UTF_8)`. For binary files, never use character streams.
 </details>
 
 **Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
@@ -525,10 +534,14 @@ Decorator chain visualized:
 
 🔬 **Section Challenge — 10. The Decorator Pattern in I/O**
 
-**Challenge 1 (Reasoning):** Why does a decorator without `@functools.wraps` break Flask/FastAPI route registration?
-<details><summary>Answer</summary>
+**Challenge 1 (Design Pattern Reasoning):** Why is `new BufferedInputStream(new FileInputStream(path))` a Decorator pattern instead of inheritance?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Flask uses function name (`func.__name__`) to register routes. Without `@functools.wraps`, the decorator replaces the original function with a `wrapper` function. All decorated routes have `__name__ = 'wrapper'` → duplicate view function name error. `@functools.wraps(fn)` copies `__name__`, `__doc__`, `__annotations__`  from the wrapped function. Same issue with pytest markers, Celery tasks, and any framework that inspects function attributes.
+`FileInputStream` knows how to read bytes from a file. `BufferedInputStream` adds buffering behavior around any `InputStream`, not only file streams.
+
+The decorator keeps the same interface while layering behavior at runtime. You can stack buffering, compression, encryption, or data conversion without creating a subclass for every combination.
+
+The mental model is wrapper composition: each layer delegates to the wrapped stream and adds one responsibility.
 </details>
 
 
@@ -644,10 +657,14 @@ Common encodings:
 
 🔬 **Section Challenge — 12. Character Encoding — The Silent Bug Source**
 
-**Challenge 1 (Reasoning):** Why is Java's native built-in Serialization (`implements Serializable`) widely considered an obsolete and dangerous anti-pattern?
-<details><summary>Answer</summary>
+**Challenge 1 (Encoding Reasoning):** Why can `string.getBytes()` and `new String(bytes)` be a production bug even when tests pass locally?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Security Vulnerabilities (RCE) and Brittleness. Native serialization stores the exact internal class structure. If an attacker intercepts the byte stream and alters the class metadata, they can trick the JVM into instantiating malicious classes during deserialization, leading to Remote Code Execution (RCE). Furthermore, if you change a field name in the class without updating the `serialVersionUID`, all previously saved data instantly becomes unreadable. Modern apps strictly use JSON/Protobuf instead.
+Those overloads use the platform default charset. If local and production defaults differ, the same text can produce different bytes or decode incorrectly.
+
+Encoding bugs are dangerous because they are data-dependent. ASCII-only tests pass, while names, currency symbols, emojis, or multilingual text fail later.
+
+Always specify the charset at boundaries: `text.getBytes(StandardCharsets.UTF_8)` and `new String(bytes, StandardCharsets.UTF_8)`. Treat bytes/text conversion as an explicit design decision.
 </details>
 
 

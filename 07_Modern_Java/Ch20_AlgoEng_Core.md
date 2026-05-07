@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch21_AlgoEng_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch21_AlgoEng_Advanced.md)
 
 ---
 
@@ -718,8 +718,15 @@ public int[] closestPairSum(int[] arr, int target) {
 
 
 
-🔬 **Section Challenge — Example 1: Binary Search + Two Pointers**
->>
+> 🔬 **Section Challenge — Example 1: Binary Search + Two Pointers**
+>
+> **Challenge 1 (Edge Case Engineering):** In the `closestPairSum` while loop, what happens if the array contains duplicate elements and multiple pairs yield the *exact same* closest sum? Does the algorithm guarantee returning the first pair, the last pair, or is it non-deterministic?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Stability of Two-Pointer Algorithms.
+> **Trace:** The current implementation `if (Math.abs(sum - target) < Math.abs(closestSum - target))` uses a strict less-than `<`. If a subsequent pair has an equal `Math.abs(...)` difference, it will *not* update the result. Because the `while` loop shrinks from the outside in (left++, right--), the *outermost* pair with the minimal difference will be the one retained.
+> **Debug/Fix:** If the business requirement demands the pair with the smallest `left` index, the strict `<` works perfectly. If you need the pair with the minimal variance or inner-most pair, you must change to `<=` and handle tie-breaking logic explicitly.
+> </details>
 
 ## Example 2: DFS + Memoization (Tree DP)
 
@@ -819,8 +826,15 @@ private void dfs(char[][] board, int i, int j, TrieNode node, List<String> resul
 
 
 
-🔬 **Section Challenge — Example 3: Trie + DFS (Word Search II)**
->>
+> 🔬 **Section Challenge — Example 3: Trie + DFS (Word Search II)**
+>
+> **Challenge 1 (Performance):** The Trie+DFS combination `findWords` is powerful, but on a massive board, it still times out. What hidden inefficiency exists when a word is found, and how do you optimize the Trie structure dynamically during the DFS?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Dead-End Exploration in Trie DFS.
+> **Trace:** When a word is found, we set `node.word = null` to prevent duplicates. However, the *leaf node* (and potentially its parents) remains in the Trie. Future DFS paths will still traverse down these now "dead" branches, wasting massive amounts of CPU cycles exploring prefixes that can no longer yield valid words.
+> **Debug/Fix:** Implement dynamic Trie pruning. When returning from the DFS, if a `TrieNode` has no children and `node.word == null`, you must *delete* that node from its parent. This continuously shrinks the Trie as words are found, drastically cutting down the DFS search space over time.
+> </details>
 
 ## Example 4: Union-Find + Binary Search
 
@@ -871,8 +885,15 @@ private boolean canConnect(int n, int[][] edges, int maxCost) {
 
 
 
-🔬 **Section Challenge — Example 4: Union-Find + Binary Search**
->>
+> 🔬 **Section Challenge — Example 4: Union-Find + Binary Search**
+>
+> **Challenge 1 (Algorithmic Insight):** The provided solution uses Binary Search on the sorted edges combined with Union-Find to check connectivity (`O(E log E)` sorting + `O(log E * E * alpha(V))` binary search). Can you achieve the exact same result in a single pass without Binary Search?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Over-engineering vs. Classical Algorithms.
+> **Trace:** The problem asks for the minimum maximum-edge weight to connect all vertices. This is literally the definition of the bottleneck edge in a Minimum Spanning Tree (MST). While Binary Search + UF works, it runs UF multiple times.
+> **Debug/Fix:** Just use Kruskal's Algorithm! Sort the edges by weight. Iterate through the edges, `union()` them, and decrement a `components` counter (starting at `V`). The moment `components == 1`, the weight of the *last edge added* is your exact answer. This drops the `log E` multiplier, yielding a faster and simpler solution.
+> </details>
 
 # 🧩 Part 7: Mental Models for Problem Solving
 

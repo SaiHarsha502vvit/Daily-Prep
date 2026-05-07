@@ -1,4 +1,4 @@
-﻿> **Navigation**: [< Previous](09_Complexity_Intuition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Greedy_vs_DP_Decision.md)
+> **Navigation**: [< Previous](09_Complexity_Intuition.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Greedy_vs_DP_Decision.md)
 
 # 🎯 Interview Thinking — Solve Problems Under Pressure
 
@@ -92,11 +92,16 @@ i=1: num=7, complement=2, found in map at index 0 → return [0, 1] ✅"
 ---
 
 
+🔬 **Section Challenge — Part 2: The "Think Out Loud" Protocol**
 
+**Challenge 1 (Reasoning):** You are 5 minutes into an interview. You have read the problem and immediately see it's a standard Two Sum variant. You know the exact O(N) HashMap solution. Why should you still take 2 minutes to explain the O(N^2) brute force approach first?
 
+<details><summary>Answer</summary>
 
+1. **Safety Net**: If you jump straight to the optimal solution and mess up the implementation or misread a constraint, the interviewer might think you memorized the answer without understanding it, or worse, that you can't even solve it at all.
+2. **Communication Signal**: Explaining the brute force first establishes the baseline time complexity. When you transition to the optimal solution, you explicitly demonstrate *why* the optimal solution is better (e.g., "The brute force is `O(N^2)` because of the nested loop, but we can trade `O(N)` space for an `O(N)` time complexity using a HashMap"). This proves engineering maturity.
 
-> 🔬 **Section Challenge — Part 2: The "Think Out Loud" Protocol**
+</details>
 
 ## Part 3: When You're STUCK — Recovery Strategies
 
@@ -261,11 +266,15 @@ private int findMostFrequent(Map<Integer, Integer> freq) { ... }
 ---
 
 
+🔬 **Section Challenge — Part 6: Handling Follow-Up Questions**
 
+**Challenge 1 (Reasoning):** You have successfully implemented an O(N) space, O(N) time algorithm to find the duplicate in an array of `N+1` integers (using a HashSet). The interviewer asks: "Can you do this in O(1) space without modifying the array?" You are totally blanking. How do you respond using the 2-Minute Rule?
 
+<details><summary>Answer</summary>
 
+Do not go silent. Acknowledge the constraint and start reasoning out loud. "Okay, so `O(1)` space means I cannot use a HashSet or extra array. Not modifying the array means I cannot sort it or use in-place sign flipping. This leaves me with two potential families of algorithms: Two Pointers (maybe treating the array values as pointers like a Linked List cycle?) or Binary Search (maybe binary searching the answer space `1` to `N` and counting frequencies?)." Even if you don't instantly know the cycle-detection answer (Floyd's Tortoise and Hare), this response scores massive points because it systematically narrows the solution space based on constraints.
 
-> 🔬 **Section Challenge — Part 6: Handling Follow-Up Questions**
+</details>
 
 ## Part 7: Managing Anxiety — Practical Techniques
 
@@ -323,11 +332,15 @@ After each interview, write down:
 ---
 
 
+🔬 **Section Challenge — Part 7: Managing Anxiety — Practical Techniques**
 
+**Challenge 1 (Reasoning):** It's the morning of your onsite loop at a FAANG company. You decide to warm up by tackling a random "Hard" LeetCode problem you've never seen before. You struggle for 45 minutes and can't solve it. Your confidence tanks. What specific rule of the "Technical Warm-Up" did you violate?
 
+<details><summary>Answer</summary>
 
+You violated the rule: **"Do 1-2 easy warm-up problems (10 min max each)"**. The purpose of a morning warm-up is to wake up your syntax recall and get your fingers moving, NOT to learn new concepts or challenge your ego. Failing a hard problem right before an interview triggers anxiety and adrenaline spikes that will cloud your thinking during the actual loop. Always warm up with problems you've already solved or trivial ones (like reversing a linked list or writing a basic BFS).
 
-> 🔬 **Section Challenge — Part 7: Managing Anxiety — Practical Techniques**
+</details>
 
 ## Part 8: Quick Reference — Interview Problem Checklist
 

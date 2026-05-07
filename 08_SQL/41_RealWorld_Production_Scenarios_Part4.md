@@ -196,13 +196,26 @@ ALTER TABLE users DROP COLUMN phone;
 ALTER TABLE users RENAME COLUMN phone_number TO phone;
 ```
 
----
+---🔬 **Section Challenge — Scenario 78: Column Type Change Breaks Data**
 
+**Challenge 1 (The Re-Cast Trap):** You are migrating an old `user_id` column from `VARCHAR(50)` to `UUID`. You run `ALTER TABLE users ALTER COLUMN user_id TYPE UUID USING user_id::UUID;`. The migration fails halfway through because row #5,000,000 has a `user_id` of `'UNKNOWN'`. How do you safely cast valid UUIDs while nullifying invalid ones without crashing the migration?
 
+<details><summary>Answer</summary>
 
-🔬 **Section Challenge — Scenario 78: Column Type Change Breaks Data**
->
+You must use a `CASE` statement within the `USING` clause, paired with a regex check (or a custom exception-handling function), to safely cast the data. 
 
+```sql
+ALTER TABLE users 
+ALTER COLUMN user_id TYPE UUID 
+USING CASE 
+    WHEN user_id ~ '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$' 
+    THEN user_id::UUID 
+    ELSE NULL 
+END;
+```
+This guarantees the transaction succeeds. You can then query for `WHERE user_id IS NULL` to handle the dirty data manually.
+
+</details>
 ## Scenario 79: Dropping Column That Application Still Reads
 
 ### 🔴 The Incident
@@ -373,13 +386,18 @@ ALTER TABLE orders ADD CONSTRAINT chk_status
 -- VARCHAR + CHECK = flexible, versionable, transactional
 ```
 
----
+---🔬 **Section Challenge — Scenario 82: ENUM Type Extended — Deployment Order Matters**
 
+**Challenge 1 (The Postgres ENUM Transaction Trap):** You are deploying a new feature and need to add `'refunded'` to your `order_status` ENUM. You wrap this in a Flyway migration: `ALTER TYPE order_status ADD VALUE 'refunded';`. Flyway runs migrations inside a transaction block by default. What error occurs when this executes against PostgreSQL, and how do you bypass it?
 
+<details><summary>Answer</summary>
 
-🔬 **Section Challenge — Scenario 82: ENUM Type Extended — Deployment Order Matters**
->
+PostgreSQL will throw: `ERROR: ALTER TYPE ... ADD cannot run inside a transaction block`. 
+Unlike most DDL operations in Postgres which are transactional, extending an ENUM type modifies system catalogs in a way that cannot be rolled back. 
 
+**The Fix:** You must instruct your migration tool to run this specific script *outside* of a transaction. In Flyway, this is done by adding a configuration parameter or naming convention, or executing it manually before deployment. (Alternatively, as recommended, avoid ENUMs entirely and use `VARCHAR` + `CHECK` constraint, which *is* transactional).
+
+</details>
 ## Scenario 83: Default Value Change Breaks INSERT Logic
 
 ### SQL Solution

@@ -451,7 +451,18 @@ Before every behavioral interview, research:
 
 
 🔬 **Section Challenge — "Why This Company?" — Research Checklist**
->>
+
+**Challenge 1 (Interview Reasoning):** Your answer to "Why this company?" is: "I like your culture and growth opportunities." Why is this weak, and how do you rebuild it using company research?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** The answer is generic. It could apply to any company, so it does not prove you understand their product, engineering problems, customers, or current business context.
+
+**Reasoning:** A strong answer connects three things: what the company is doing now, why that work matters to you, and how your background makes you useful for that environment.
+
+**Debug/Fix:** Use the checklist above to cite one concrete product/news/engineering signal, one personal motivation, and one contribution angle. Example shape: "I saw your team is investing in X. That interests me because Y. My experience with Z would help me contribute to that kind of problem."
+
+</details>
 
 ## Interview Day Checklist
 

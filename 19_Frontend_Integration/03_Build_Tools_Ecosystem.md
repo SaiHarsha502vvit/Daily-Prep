@@ -456,7 +456,19 @@ export default defineConfig({
 
 
 
-> 🔬 **Section Challenge — 6. Vite Configuration Explained**
+🔬 **Section Challenge — 6. Vite Configuration Explained**
+
+**Challenge 1 (Build Reasoning):** A Vite app works in dev but fails after deployment because API calls go to `/api/users` on the static host. What configuration distinction did the team miss?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** Vite dev server proxy rules only apply during local development. After `vite build`, the output is static assets; the browser sends `/api/users` to whatever host serves the app unless runtime config or backend routing handles it.
+
+**Reasoning:** Build tools separate dev-time convenience from production runtime behavior. `server.proxy` fixes local CORS and routing, but production needs a real API base URL, reverse proxy, environment variable, or same-origin backend route.
+
+**Debug/Fix:** Check `import.meta.env`, `base`, `server.proxy`, and deployment routing. Use `VITE_API_BASE_URL` for production, keep secrets out of frontend env vars, and test the built artifact with `vite preview` before deploying.
+
+</details>
 
 ## Interview Quick-Fire
 

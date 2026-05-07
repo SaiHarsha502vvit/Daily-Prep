@@ -60,12 +60,24 @@ HOW   → How do I express this? (JOIN type, window function, subquery)
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 1. The SQL Mindset Shift**
 
+**Challenge 1 (Procedural vs Set-Based Thinking):** A junior developer writes a Python script that pulls all 50,000 rows from the `Users` table into memory, loops through them to find users registered before 2020, and calculates the sum of their `lifetime_value`. Why is this an anti-pattern, and what is the specific SQL translation that represents "Set-Based Thinking"?
+
+<details><summary>Answer</summary>
+
+This is an anti-pattern because pulling all rows into application memory violates the **Data Gravity** principle—you are moving massive amounts of data to the compute, rather than pushing the compute to the data. 
+
+In "Set-Based Thinking," you define the *exact subset* of data you want and let the database engine handle the loops in optimized C/C++ via indexes.
+The correct SQL is:
+```sql
+SELECT SUM(lifetime_value) 
+FROM Users 
+WHERE registration_date < '2020-01-01';
+```
+This reduces network payload from 50,000 rows to a single integer, utilizing the database's native aggregation speed.
+
+</details>
 
 ```
                     SQL EXECUTION ORDER
@@ -525,12 +537,19 @@ COMPOSITE INDEX ORDER MATTERS:
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 4. Performance Thinking — EXPLAIN Your Way to Senior**
 
+**Challenge 1 (Composite Index Trap):** You have a table `Orders` with a composite index on `(status, created_at)`. You run the following query: `SELECT * FROM Orders WHERE created_at > '2024-01-01' AND status = 'SHIPPED';`. Will this query fully utilize the composite index? Explain why or why not based on the EXPLAIN rules.
+
+<details><summary>Answer</summary>
+
+**Yes, it will fully utilize the index.** 
+The trap here is thinking that the order of conditions in the `WHERE` clause must match the index definition. *The SQL Optimizer is smart enough to reorder your `WHERE` conditions to match the index.* 
+
+Because `status` is an equality check (`=`) and it is the **first** column in the `(status, created_at)` index, the database will instantly jump to the 'SHIPPED' section of the B-Tree, and then seamlessly scan the contiguous `created_at` values > '2024-01-01'. 
+(Note: If the index was `(created_at, status)`, the range scan on `created_at` would block the index from filtering efficiently on `status`, leading to heavy sequential scanning).
+
+</details>
 
 ### Normalization vs Denormalization
 

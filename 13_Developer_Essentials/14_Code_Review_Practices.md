@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
+**Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
 
 # Code Review — Best Practices & Checklist
 
@@ -257,10 +257,23 @@ Technical approach. Key design decisions and trade-offs.
 - [ ] Manual testing done
 - [ ] Edge cases covered
 
-
-
 🔬 **Section Challenge — Testing**
 
+**Challenge 1 (Bug Hunt):** A PR has 95% code coverage and all tests pass CI. A reviewer flags it as inadequate testing. What specific test quality issues should the reviewer look for that coverage metrics don't catch?
+
+<details><summary>Answer</summary>
+
+100% line coverage does not mean tests are meaningful. Specific anti-patterns: (1) **Assertions on mocks, not behavior**: `verify(mockRepo, times(1)).save(any())` — this asserts the code called a method, not that the method did the right thing. If the `save()` was called with wrong data, the test passes. (2) **Testing implementation, not behavior**: test asserts that a private method was called in a specific order. Refactor the code → test breaks. Tests should assert outcomes, not internal call sequences. (3) **No negative test cases**: 95% coverage with only happy-path tests. Missing: what happens when `userId` is null? When payment gateway is down? When DB throws a unique constraint violation? (4) **Tautological assertions**: `assertEquals("", user.getName())` after calling `new User("")` — testing the constructor stores what you pass, not business logic. Review standard: read each test name aloud. If it doesn't describe a meaningful business scenario with a specific outcome, it's a test-theater test.
+
+</details>
+
+**Challenge 2 (Design):** A PR adds a new `OrderDiscountService`. The test file has `@MockitoExtension` and mocks `OrderRepository`, `UserRepository`, and `DiscountRepository`. A reviewer comments: "This is over-mocked." What does this mean and what is the correct alternative?
+
+<details><summary>Answer</summary>
+
+Over-mocking: when a unit test mocks so many collaborators that it only tests the wiring between mocks, not actual logic. If `calculateDiscount()` depends on data from 3 repos, mocking all 3 means the test only verifies that the service stitches together stub responses — it tests nothing about the discount algorithm itself. Signs of over-mocking: (1) test setup is longer than the assertion, (2) changing the algorithm doesn't break the test. Correct alternative depends on what you're testing: (A) **Unit test the pure algorithm**: extract `calculateDiscount(Order order, User user, List<Discount> discounts)` as a pure function with no repo dependencies. Test it with real objects, no mocks. Fast, deterministic, tests actual logic. (B) **Integration test the DB layer**: use `@DataJpaTest` with H2 in-memory DB — test that the repo queries return correct data. No service layer in scope. (C) **Integration test the full service**: `@SpringBootTest` with Testcontainers (real PostgreSQL). Tests the whole flow including DB. Rule: mock external systems (HTTP APIs, message queues, email). Use real objects for same-process collaborators when possible.
+
+</details>
 
 ## Screenshots (if UI)
 Before and After screenshots.
@@ -413,3 +426,23 @@ The author learns:
 **Navigation**: [< Previous](13_Agile_Scrum.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Cloud_Services_Guide.md)
 
 🔬 **Section Challenge — Mental Model: Code Review as Teaching**
+
+**Challenge 1 (Rewrite):** A reviewer leaves this comment: "This is wrong. Use a HashMap." Rewrite this as a teaching comment that follows the Good Reviewer model from the mental model above.
+
+<details><summary>Answer</summary>
+
+**Original**: "This is wrong. Use a HashMap."
+
+**Teaching version**: "SUGGESTION: The current `ArrayList` lookup in `findUserById()` is O(n) — it iterates through every user on each call. In our current load profile (~500 concurrent requests), this could become a bottleneck as the user list grows. A `HashMap<Long, User>` keyed by userId would give O(1) lookup. Here's the pattern: `Map<Long, User> userCache = users.stream().collect(Collectors.toMap(User::getId, u -> u));` — worth considering if this method is called frequently. If the list is always small (<20 items), the ArrayList is fine and this is just a nit. What's the expected size of this collection?"
+
+What the teaching comment does: (1) identifies the WHAT (ArrayList lookup), (2) explains the WHY (O(n) vs O(1)), (3) contextualizes the impact (only matters at scale), (4) provides the concrete HOW (code example), (5) asks a question to understand context rather than demanding a change. The author learns the performance reasoning, not just "use HashMap."
+
+</details>
+
+**Challenge 2 (Reasoning):** A junior developer submits a PR with 15 review comments from a senior. The junior merges the changes mechanically without understanding why. What does the reviewer do differently in the NEXT review to ensure knowledge transfer actually happens?
+
+<details><summary>Answer</summary>
+
+Mechanical compliance = cargo cult code improvement. The junior copies the pattern but doesn't internalize the principle, so they make the same mistake in 3 months on a different file. Next review strategies: (1) **Ask instead of tell on 2-3 key comments**: instead of "Add null check here," write "What happens if `user` is null at this point? Walk me through it." This forces the author to reason through it. If they can't answer, schedule a 15-min sync to explain. (2) **Follow up on repeated patterns**: if the junior made the same mistake as last sprint (e.g., missing null checks), call it out explicitly: "I noticed this same pattern in your last PR — let's discuss the general rule so this becomes second nature." (3) **Pair on the fix**: for complex comments, offer to pair on the implementation — the author watches, asks questions, types. Teaching in context is 10x more effective than text comments. (4) **Point to the principle, not just the fix**: link to the relevant section in the team's engineering guide, or a concrete resource. "Check out the team wiki on null object pattern — it's the core principle behind this comment."
+
+</details>

@@ -36,11 +36,16 @@ OLAP: "What was revenue by region per month?" → 10M rows, 2-30s
 ---
 
 
-
-
-
-
 > 🔬 **Section Challenge — Part 1 — OLTP vs OLAP Modeling**
+>
+> **Challenge 1 (The Hybrid Anti-Pattern):** A startup's main application database (PostgreSQL in 3NF) handles 5,000 transactions per second. The data science team runs a complex monthly aggregation query that joins 8 tables to calculate customer lifetime value. Running this query takes 45 seconds and causes the main application to time out for active users. Why does this happen, and what is the standard architectural fix?
+>
+> <details><summary>Answer</summary>
+>
+> This happens because OLAP queries require massive sequential scans and aggressive CPU/memory utilization, which completely evicts the OLTP application's "hot data" from the Buffer Pool/Cache and locks critical rows, leading to transaction timeouts.
+> 
+> **The Fix:** Implement the **CQRS** (Command Query Responsibility Segregation) or ETL pattern. You replicate the PostgreSQL data asynchronously to a dedicated OLAP Data Warehouse (like Redshift or BigQuery), and run the heavy analytical queries there, completely isolating the compute and memory resources from the production application.
+> </details>
 
 ## Part 2 — Star Schema
 
@@ -381,11 +386,16 @@ ALTER TABLE fact_sales ADD COLUMN flag_key INT REFERENCES dim_order_flags(flag_k
 ---
 
 
-
-
-
-
 > 🔬 **Section Challenge — Part 5 — Modeling Patterns**
+>
+> **Challenge 1 (Junk Dimension vs Wide Fact Table):** You are designing a `fact_sales` table. An order can have 15 different low-cardinality boolean flags (e.g., `is_gift`, `is_rush_delivery`, `used_coupon`). A junior engineer suggests adding all 15 boolean columns directly to the fact table. Why is this an anti-pattern in dimensional modeling, and how does a "Junk Dimension" mathematically solve it?
+>
+> <details><summary>Answer</summary>
+>
+> Adding 15 boolean columns to a fact table containing 1 billion rows wastes immense storage and pollutes the fact table with non-measure data, violating the principle that fact tables should only contain Foreign Keys and numeric Measures. 
+> 
+> **The Mathematical Solution:** A Junk Dimension pre-calculates the Cartesian product of all possible flag combinations. For 15 booleans, there are $2^{15} = 32,768$ possible combinations. You create a single `dim_order_flags` table with 32,768 rows. The fact table then only needs a single `flag_key` integer column, drastically reducing row width and improving query compression/speed.
+> </details>
 
 ## Part 6 — Python: Schema Visualization
 

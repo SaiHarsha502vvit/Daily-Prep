@@ -474,12 +474,19 @@ dual-write, backfill, swap — with zero downtime. BIGINT gives us
 last 250 billion years."
 ```
 
----
+---🔬 **Section Challenge — 🏆 Part 9: The 30-Second Elevator Summary**
 
+**Challenge 1 (Elevator Pitch Optimization):** You are in a senior engineering interview. The interviewer asks: "Tell me about a time you fixed a slow API." Your instinct is to say: "The API was slow because the table was huge, so I added an index to the email column and it got faster." 
+Rewrite this into a professional, 30-second SIREN-framework elevator summary that incorporates scale, technical specifics, and prevention.
 
+<details><summary>Answer</summary>
 
-🔬 **Section Challenge — 🏆 Part 9: The 30-Second Elevator Summary**
->
+"**SITUATION:** Our user-lookup API latency degraded to 4 seconds during peak traffic for a table of 150 million users. 
+**INVESTIGATION & ROOT CAUSE:** I analyzed the slow query logs and identified a full table scan occurring because the `WHERE` clause queried the `email` column, which lacked an index.
+**EXECUTION:** I introduced a B-Tree index on `email`, which reduced the lookup from an $O(N)$ sequential scan to an $O(\log N)$ traversal, dropping latency to 12ms. 
+**NEXT Steps:** To prevent recurrence, I added an automated CI/CD check that warns if a query in our ORM targets a non-indexed column on tables exceeding 1M rows."
+
+</details>
 
 ## 📋 Part 10: Interview Self-Check Rubric
 

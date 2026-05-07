@@ -480,12 +480,15 @@ void backtrack(List<List<String>> result, int[] queens, int row, int n,
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 2. The Master Constraint Table — With 50+ Algorithms**
 
+**Challenge 1 (Constraint Trap):** You see a problem where $N \le 10^5$, asking to find the length of the Longest Increasing Subsequence (LIS). You immediately write the classic double-for-loop DP solution. Why will you fail this interview, and what specific optimization does $N \le 10^5$ demand?
+
+<details><summary>Answer</summary>
+
+The classic DP approach for LIS has a time complexity of $O(N^2)$. If $N = 10^5$, $N^2 = 10^{10}$ operations, which violently exceeds the $\sim 10^8$ operations per second budget, resulting in a Time Limit Exceeded (TLE) error. The constraint $N \le 10^5$ is a hard signal that you *must* find an $O(N \log N)$ approach. For LIS, this requires the **Patience Sorting / Binary Search** optimization, maintaining an active array of smallest possible tail elements for each subsequence length.
+
+</details>
 
 ### O(n) Algorithms — The Art of Single Pass
 
@@ -580,12 +583,15 @@ INPUT IS A MATRIX (n × m):
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 4. Constraint Combinations — Multi-Variable Analysis**
 
+**Challenge 1 (Multi-Variable Limit):** A problem gives you a tree with $N$ nodes ($N \le 10^5$) and $Q$ queries ($Q \le 10^5$), where each query asks for the distance between two nodes `u` and `v`. A candidate proposes running BFS from `u` to `v` for every query. Why is this catastrophic, and what algorithm combination is required?
+
+<details><summary>Answer</summary>
+
+Running BFS for every query gives a worst-case time of $O(Q \cdot N) = 10^5 \cdot 10^5 = 10^{10}$ operations, leading to TLE. You need an approach where queries are resolved much faster. The correct multi-variable strategy is **LCA (Lowest Common Ancestor)** using Binary Lifting. You preprocess the tree in $O(N \log N)$ time and space, allowing you to answer each of the $Q$ queries in $O(\log N)$ time. The total complexity becomes $O((N + Q) \log N)$, safely passing the $10^8$ budget.
+
+</details>
 
 ### How to Think About SQL Performance
 
@@ -652,12 +658,15 @@ Step 4: Can we pre-compute?
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 5. SQL Constraint Analysis**
 
+**Challenge 1 (Join vs Subquery Budget):** You have an `Orders` table with $10^7$ rows and a `Customers` table with $10^6$ rows. You need to find all customers who placed an order > $1000. You write: `SELECT * FROM Customers c WHERE c.id IN (SELECT o.customer_id FROM Orders o WHERE o.amount > 1000)`. Assume no indexes. What is the execution risk here?
+
+<details><summary>Answer</summary>
+
+Without indexes, older database engines might execute this as a **Correlated Subquery**, performing a full scan of `Orders` ($10^7$ rows) for *every single row* in `Customers` ($10^6$ rows). That's $10^{13}$ operations—an instant timeout. Even if optimized to an uncorrelated subquery, memory could blow up hashing the large inner result. The constraint-safe approach is an `INNER JOIN` or `EXISTS`, combined with explicitly adding an index on `Orders(customer_id, amount)`.
+
+</details>
 
 ### The Numbers Every Engineer Should Know
 
@@ -754,12 +763,18 @@ CONSTRAINT SEEN → COMPONENT CHOSEN
 ---
 
 
-
-
-
-
 🔬 **Section Challenge — 6. System Design Constraint Analysis**
 
+**Challenge 1 (Bandwidth vs Storage Bottleneck):** You are designing a video streaming service. The constraints state you must store 10,000 new videos daily (avg 1GB each) and serve 10,000 requests per second (avg 5MB chunks). Which is your true bottleneck: Storage Capacity, Database Latency, or Network Bandwidth? Provide the math.
+
+<details><summary>Answer</summary>
+
+**Network Bandwidth** is the critical bottleneck.
+1. *Storage*: 10,000 videos $\times$ 1GB = 10TB/day (Easily handled by S3 or Blob Storage).
+2. *DB Latency*: Metadata reads are trivial to cache; actual video bytes bypass the DB.
+3. *Network Bandwidth*: 10,000 req/sec $\times$ 5MB = 50,000 MB/s = **50 GB/s** (or 400 Gbps) continuous throughput. This massively exceeds the capacity of a single data center network link. You *must* distribute the traffic geographically using a Content Delivery Network (CDN) to serve chunks from edge nodes.
+
+</details>
 
 ### Exercise: Read constraints and predict the algorithm
 

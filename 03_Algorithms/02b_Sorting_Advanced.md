@@ -613,21 +613,12 @@ Arrays.sort(arr, fromIndex, toIndex);
 
 🔬 **Section Challenge — Custom Comparators in Java**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Bug Hunt):** You sort intervals with `(a, b) -> a[0] - b[0]`, and coordinates may be close to `Integer.MIN_VALUE` or `Integer.MAX_VALUE`. What can break, and what comparator should you use?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+Subtraction can overflow, so a smaller value may look larger and the comparator can violate ordering rules. Broken comparators create wrong sorted order and can even trigger `Comparison method violates its general contract`.
+
+Use `Integer.compare(a[0], b[0])` for the primary key and add tie-breakers explicitly: `Comparator.<int[]>comparingInt(x -> x[0]).thenComparingInt(x -> x[1])`. The mental rule: comparator code must express ordering, not arithmetic shortcuts.
 </details>
 
 
@@ -677,10 +668,12 @@ private ListNode merge(ListNode l1, ListNode l2) {
 
 🔬 **Section Challenge — Sorting Linked Lists**
 
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-<details><summary>Answer</summary>
+**Challenge 1 (Constraint Reasoning):** Why is merge sort usually the natural choice for sorting a linked list, while array-style QuickSort is awkward?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+Linked lists have no random access, so partitioning around a pivot and jumping by index is painful. Merge sort fits the structure: split with slow/fast pointers, recursively sort halves, then merge by rewiring `next` pointers.
+
+The constraint lens is: no indexing means prefer pointer-friendly algorithms. Merge sort gives `O(N log N)` time, stable ordering, and can be implemented with low extra memory because merging lists does not require copying into an array.
 </details>
 
 
@@ -730,10 +723,12 @@ public void kWayMerge(List<Scanner> sortedFiles, PrintWriter output) {
 
 🔬 **Section Challenge — External Sorting (Large Files)**
 
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-<details><summary>Answer</summary>
+**Challenge 1 (Constraint Reasoning):** You must sort a `200GB` log file on a machine with `2GB` free RAM. Why does normal in-memory sorting fail, and what is the external sorting plan?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+The input is larger than memory, so loading everything into an array will page heavily or crash. The correct category is external memory sorting, not "find a faster comparator."
+
+Split the file into RAM-sized chunks, sort each chunk in memory, write sorted runs to disk, then k-way merge the runs with a min-heap over the current head of each run. Tune chunk size, merge fan-in, buffer size, and temp file cleanup around memory and file descriptor limits.
 </details>
 
 
@@ -959,10 +954,12 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 
 🔬 **Section Challenge — 🔄 Radix Sort — Non — Comparison Based Sorting**
 
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-<details><summary>Answer</summary>
+**Challenge 1 (Constraint Reasoning):** `N = 1e6` non-negative integers are all below `1e9`. When can radix sort beat comparison sorting, and what hidden constraints must you check first?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+Comparison sorting has a lower bound of `O(N log N)`, but radix sort can run in `O(d * (N + base))`, where `d` is the number of digits/passes. It can win when keys are fixed-width integers and the digit count is small.
+
+Check whether values are negative, whether stability is required, how much extra memory counting buckets need, and whether the constant factors beat Java's highly optimized built-in sorts for the actual input size.
 </details>
 
 
@@ -1093,10 +1090,12 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 
 🔬 **Section Challenge — 🧠 External Sorting — When Data Doesn't Fit in Memory**
 
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-<details><summary>Answer</summary>
+**Challenge 1 (Systems Reasoning):** During k-way merge, you create 50,000 sorted temp files and the program fails before sorting finishes. What constraint did you ignore?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+External sorting is limited by RAM, disk bandwidth, and OS file descriptors. A k-way merge that opens every run at once can exceed the file descriptor limit even if the algorithm is correct on paper.
+
+Fix it with multi-pass merging: merge a safe fan-in like 128 or 512 runs at a time, write larger intermediate runs, and repeat. Keep buffered readers small but effective, close files promptly, and delete temp files after each pass.
 </details>
 
 
@@ -1163,10 +1162,12 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 
 🔬 **Section Challenge — 🔄 Parallel Sorting — Using Multiple CPU Cores**
 
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-<details><summary>Answer</summary>
+**Challenge 1 (Performance Reasoning):** Should you always replace `Arrays.sort()` with `Arrays.parallelSort()` for large inputs?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+No. Parallel sorting adds split/merge overhead, uses the common ForkJoinPool, and can become memory-bandwidth bound. It may help on very large primitive arrays with available CPU cores, but it can hurt small arrays or busy servers.
+
+The selection rule is benchmark under production-like load. Use parallel sort when input size is large enough, the machine has idle cores, comparator cost is not the bottleneck, and sharing the common pool will not starve other work.
 </details>
 
 
@@ -1240,10 +1241,12 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 
 🔬 **Section Challenge — 🔄 Sorting Stability — Deep Explanation**
 
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-<details><summary>Answer</summary>
+**Challenge 1 (Trace Reasoning):** You sort employees by `name`, then sort again by `department`. When does this produce employees grouped by department while still alphabetized inside each department?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+This works only if the second sort is stable. A stable sort preserves the relative order of equal keys, so employees with the same department keep the name order established by the first sort.
+
+If the second sort is unstable, equal-department rows may be rearranged. The safer Java approach is either use a stable object sort or express the full ordering in one comparator: `comparing(Employee::department).thenComparing(Employee::name)`.
 </details>
 
 
@@ -1341,10 +1344,12 @@ _Master sorting and you master a huge portion of algorithm problems!_
 
 🔬 **Section Challenge — 🔄 Sorting in Competitive Programming**
 
-**Challenge 1 (Reasoning):** QuickSort average O(N log N) but worst case O(N²). When exactly does the worst case happen and how do you prevent it?
-<details><summary>Answer</summary>
+**Challenge 1 (Constraint Pattern):** Values are up to `1e9`, `N <= 2e5`, and queries ask for ranks/counts of values less than `x`. Why is a raw frequency array impossible, and what sorting-based rewrite works?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced partition). This happens when: (1) always picking first/last element as pivot on already-sorted or reverse-sorted data. (2) Pivot happens to be the minimum or maximum. Prevention: random pivot (randomized quicksort — expected O(N log N) even on adversarial input), or median-of-three (pick median of first/middle/last element as pivot). Java's dual-pivot quicksort uses careful pivot selection to avoid this.
+A raw array indexed by value would need size `1e9`, which is too large. But only `N` distinct input values can appear, so the real coordinate space is small after compression.
+
+Sort the unique values, map each value to its compressed rank, and answer counts/ranks with binary search or a Fenwick tree if updates are involved. The mental move is: huge value range plus limited item count means coordinate compression.
 </details>
 
 
@@ -1393,4 +1398,3 @@ Worst case: pivot always ends up at position 0 or N-1 (completely unbalanced par
 | Minimum Number of Arrows | LC 452 | Sort intervals + greedy |
 | Count of Smaller Numbers After Self | Hard LC 315 | Merge sort + counting inversions |
 | Magnetic Force Between Two Balls | Medium LC 1552 | Binary search on answer (like Aggressive Cows) |
-

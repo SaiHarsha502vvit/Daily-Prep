@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](12_Space_Time_Tradeoffs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Optimization_Pipeline.md)
+**Navigation**: [< Previous](12_Space_Time_Tradeoffs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Optimization_Pipeline.md)
 
 **Mental Model 13** | [Index](../00_MASTER_INDEX.md)
 
@@ -61,15 +61,7 @@ If you can articulate both outer and inner roles, you stop "trying random patter
 
 ---
 
-## COMPOSITION 1: Binary Search + Greedy
-
-
-
-🔬 **Section Challenge — COMPOSITION 1: Binary Search + Greedy**
->>
-
-## Pattern: "Binary Search On The Answer"
-
+## COMPOSITION 1: Binary Search + Greedy / "Binary Search On The Answer"
 
 **Trigger**: "Minimize the maximum" or "Maximize the minimum"
 
@@ -125,7 +117,24 @@ private boolean canSplit(int[] nums, int m, int maxSum) {
 
 
 🔬 **Section Challenge — Pattern: "Binary Search On The Answer"**
->>
+
+**Challenge 1 (Design):** You are tasked with determining the minimum capacity a ship needs to transport `N` packages in `D` days. You cannot change the order of the packages. Define the `lo` and `hi` boundaries for your binary search answer space.
+
+<details><summary>Answer</summary>
+
+- `lo`: The maximum weight of any single package in the array. (If the ship capacity is smaller than the heaviest package, you can never transport it, so the ship would be stuck).
+- `hi`: The sum of all package weights in the array. (This is the capacity needed if you want to ship everything on day 1).
+The answer MUST lie in the range `[max_weight, sum_weight]`.
+
+</details>
+
+**Challenge 2 (Trace):** What happens if the greedy feasibility check returns exactly `D` days used for capacity `mid`? Do you stop the binary search and return `mid`?
+
+<details><summary>Answer</summary>
+
+No! If capacity `mid` takes `D` days, it's a *feasible* answer, but it might not be the *minimum* feasible capacity. A capacity of `mid - 1` might *also* take exactly `D` days. You record `mid` as a valid answer (by setting `hi = mid`), but you continue binary searching the lower half to see if you can squeeze the capacity even further without exceeding `D` days.
+
+</details>
 
 ## COMPOSITION 2: BFS + Bitmask DP
 
@@ -216,7 +225,14 @@ private boolean canSplit(int[] nums, int m, int maxSum) {
 
 
 🔬 **Section Challenge — COMPOSITION 4: Prefix Sum + HashMap**
->
+
+**Challenge 1 (Trace):** In the "Subarray Sum Equals K" problem, why does the map store the *frequency* of prefix sums rather than just a boolean `true`/`false` for existence?
+
+<details><summary>Answer</summary>
+
+Because array elements can be `0` or negative. If the array has negative numbers or zeros, the same prefix sum can occur at multiple different indices. For example, in `[3, 0, 0, 4]`, the prefix sum is `3` at index 0, 1, and 2. If `K = 4`, and we are at index 3 (prefix sum = 7), we need `7 - 4 = 3`. Since the prefix sum `3` appeared *three times* previously, there are exactly three different valid subarrays ending at index 3 that sum to 4: `[4]`, `[0, 4]`, and `[0, 0, 4]`. If we only stored boolean existence, we would only count it as 1 subarray, giving the wrong answer.
+
+</details>
 
 ## COMPOSITION 5: DFS + Memoization
 

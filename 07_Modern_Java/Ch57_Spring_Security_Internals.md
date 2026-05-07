@@ -51,43 +51,43 @@
        │
        ▼
   ┌─── Tomcat (Servlet Container) ─────────────────────────────────┐
-  │                                                                 │
+  │                                                                │
   │  DelegatingFilterProxy                                         │
   │  (Bridge between Servlet world and Spring world)               │
-  │       │                                                         │
-  │       ▼                                                         │
+  │       │                                                        │
+  │       ▼                                                        │
   │  FilterChainProxy (Spring Security's entry point)              │
-  │       │                                                         │
+  │       │                                                        │
   │       ├── Match request to SecurityFilterChain                 │
-  │       │   (you can have MULTIPLE chains for different paths)    │
+  │       │   (you can have MULTIPLE chains for different paths)   │
   │       │   /api/** → chain with JWT filters                     │
   │       │   /admin/** → chain with session + RBAC filters        │
   │       │   /public/** → chain that permits all                  │
-  │       │                                                         │
-  │       ▼                                                         │
+  │       │                                                        │
+  │       ▼                                                        │
   │  SecurityFilterChain (ordered list of filters)                 │
-  │  ┌──────────────────────────────────────────────────────┐     │
-  │  │ Filter 1: DisableEncodeUrlFilter                      │     │
-  │  │ Filter 2: WebAsyncManagerIntegrationFilter             │     │
-  │  │ Filter 3: SecurityContextHolderFilter                  │     │
-  │  │ Filter 4: HeaderWriterFilter                           │     │
-  │  │ Filter 5: CorsFilter                                   │     │
-  │  │ Filter 6: CsrfFilter                                   │     │
-  │  │ Filter 7: LogoutFilter                                 │     │
-  │  │ Filter 8: UsernamePasswordAuthenticationFilter         │     │
-  │  │ Filter 9: DefaultLoginPageGeneratingFilter             │     │
-  │  │ Filter 10: BasicAuthenticationFilter                   │     │
-  │  │ Filter 11: RequestCacheAwareFilter                     │     │
-  │  │ Filter 12: SecurityContextHolderAwareRequestFilter     │     │
-  │  │ Filter 13: AnonymousAuthenticationFilter               │     │
-  │  │ Filter 14: ExceptionTranslationFilter                  │     │
-  │  │ Filter 15: AuthorizationFilter                         │     │
-  │  └──────────────────────────────────────────────────────┘     │
-  │       │                                                         │
-  │       ▼                                                         │
-  │  DispatcherServlet → Controller → Service → Repository          │
-  │                                                                 │
-  └─────────────────────────────────────────────────────────────────┘
+  │  ┌──────────────────────────────────────────────────────┐      │
+  │  │ Filter 1: DisableEncodeUrlFilter                     │      │
+  │  │ Filter 2: WebAsyncManagerIntegrationFilter           │      │
+  │  │ Filter 3: SecurityContextHolderFilter                │      │
+  │  │ Filter 4: HeaderWriterFilter                         │      │
+  │  │ Filter 5: CorsFilter                                 │      │
+  │  │ Filter 6: CsrfFilter                                 │      │
+  │  │ Filter 7: LogoutFilter                               │      │
+  │  │ Filter 8: UsernamePasswordAuthenticationFilter       │      │
+  │  │ Filter 9: DefaultLoginPageGeneratingFilter           │      │
+  │  │ Filter 10: BasicAuthenticationFilter                 │      │
+  │  │ Filter 11: RequestCacheAwareFilter                   │      │
+  │  │ Filter 12: SecurityContextHolderAwareRequestFilter   │      │
+  │  │ Filter 13: AnonymousAuthenticationFilter             │      │
+  │  │ Filter 14: ExceptionTranslationFilter                │      │
+  │  │ Filter 15: AuthorizationFilter                       │      │
+  │  └──────────────────────────────────────────────────────┘      │
+  │       │                                                        │
+  │       ▼                                                        │
+  │  DispatcherServlet → Controller → Service → Repository         │
+  │                                                                │
+  └────────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -158,10 +158,12 @@
 
 🔬 **Section Challenge — 2. The Filter Chain — The Core Architecture**
 
-**Challenge 1 (Reasoning):** Why does `SecurityContextHolder.getContext().getAuthentication()` sometimes return `null` when called inside a new thread spawned by a `@Async` method?
+**Challenge 1 (Engineering):** A monolithic application fires an `@Async` background event to send an email upon successful user registration, extracting the current user's email via `SecurityContextHolder.getContext().getAuthentication().getName()`. Intermittently, the system crashes with a `NullPointerException`, and logs reveal `getAuthentication()` is returning `null`. Why does this happen, and how do you resolve it architecturally?
 <details><summary>Answer</summary>
 
-ThreadLocal isolation. The `SecurityContext` is stored in a `ThreadLocal` variable, which means it is exclusively bound to the exact HTTP request thread. When you spawn a new thread (via `@Async` or manual `new Thread()`), the context is NOT automatically copied over. To fix this, you must configure Spring Security to use `MODE_INHERITABLETHREADLOCAL` or use `DelegatingSecurityContextExecutor` to explicitly pass the context to the new thread before execution.
+**Scenario:** Background execution threads fail to access the authenticated user's context, leading to intermittent NPEs.
+**Trace:** `SecurityContextHolder` uses a `ThreadLocal` strategy by default (`MODE_THREADLOCAL`). The context is exclusively bound to the Tomcat HTTP worker thread that intercepted the request. When `@Async` delegates execution to a separate thread pool (`TaskExecutor`), the newly spawned worker thread has an empty `ThreadLocal` state.
+**Debug/Fix:** Do not rely on `MODE_INHERITABLETHREADLOCAL` in thread-pooled environments, as worker threads are reused, risking severe security cross-contamination where User B might inherit User A's context. The architectural fix is to wrap the thread pool with Spring Security's concurrency utilities. Configure the `@Async` executor to return a `DelegatingSecurityContextExecutor`, which explicitly propagates and clears the `SecurityContext` across thread boundaries safely for each task execution.
 </details>
 
 
@@ -213,7 +215,14 @@ ThreadLocal isolation. The `SecurityContext` is stored in a `ThreadLocal` variab
 
 
 🔬 **Section Challenge — 3. Authentication vs Authorization — Two Different Questions**
->
+
+**Challenge 1 (Engineering):** A REST API returns `401 Unauthorized` for an endpoint secured with `@PreAuthorize("hasRole('ADMIN')")`, even though the user successfully logged in as an administrator. Logs show that `Authentication.isAuthenticated()` is `true`. Why is the server returning a 401 instead of a 403, and what architectural misconfiguration causes this?
+<details><summary>Answer</summary>
+
+**Scenario:** An authenticated admin receives an Authentication error (401) instead of an Authorization evaluation (403 or 200).
+**Trace:** In the Spring Security Filter Chain, the `AuthorizationFilter` evaluates `@PreAuthorize` rules. If an `AccessDeniedException` is thrown, the `ExceptionTranslationFilter` intercepts it. It checks if the user is authenticated. However, if the `Authentication` object represents an *Anonymous* user (or if the token filter failed to populate the `SecurityContext` for this specific request), it assumes the user isn't logged in and returns a 401. If the user *is* authenticated but lacks the role, it returns a 403. If a 401 is returned despite a "successful" login, the state is being lost.
+**Debug/Fix:** This happens in stateless JWT architectures when the `JwtAuthenticationFilter` is placed *after* the `AuthorizationFilter` in the security chain, or if the JWT is missing from the `Authorization` header on this specific client request. Fix the order by explicitly configuring `.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)`.
+</details>
 
 ## 4. SecurityContext and ThreadLocal — Where "Current User" Lives
 
@@ -286,10 +295,12 @@ ThreadLocal isolation. The `SecurityContext` is stored in a `ThreadLocal` variab
 
 🔬 **Section Challenge — 4. SecurityContext and ThreadLocal — Where "Current User" Lives**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Engineering):** In a reactive Spring WebFlux application using Project Reactor, calling `SecurityContextHolder.getContext().getAuthentication()` returns `null` inside a `flatMap` operator, even though the user is authenticated at the controller level. Why does this happen, and how do you retrieve the user identity in a reactive pipeline?
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+**Scenario:** Standard ThreadLocal-based security contexts disappear during reactive stream execution, causing unexpected `null` errors.
+**Trace:** `SecurityContextHolder` relies on `ThreadLocal` storage. In reactive programming (WebFlux/Reactor), a single HTTP request is processed asynchronously across multiple worker threads (event loop). When execution jumps from the I/O thread to a worker thread inside a `flatMap`, the `ThreadLocal` state is left behind on the original thread.
+**Debug/Fix:** Never use `SecurityContextHolder` in WebFlux. Instead, use the reactive `ReactiveSecurityContextHolder`. To access the context inside a reactive pipeline, use `ReactiveSecurityContextHolder.getContext()`, which retrieves the context from the Reactor `Context` (which safely propagates across thread boundaries), e.g., `ReactiveSecurityContextHolder.getContext().map(ctx -> ctx.getAuthentication().getName())`.
 </details>
 
 
@@ -705,10 +716,12 @@ Every context consumer re-renders when ANY context value changes. If you have `{
 
 🔬 **Section Challenge — 9. CORS and CSRF — Why They Exist and How Spring Handles Them**
 
-**Challenge 1 (Reasoning):** Why does `SecurityContextHolder.getContext().getAuthentication()` sometimes return `null` when called inside a new thread spawned by a `@Async` method?
+**Challenge 1 (Engineering):** A Single Page Application (SPA) on `https://frontend.com` attempts to send a `POST` request to `https://api.backend.com/login`. The browser's network tab shows the `OPTIONS` preflight request succeeds (200 OK), but the subsequent `POST` request fails with a CORS network error. Why did the actual request fail if the preflight succeeded?
 <details><summary>Answer</summary>
 
-ThreadLocal isolation. The `SecurityContext` is stored in a `ThreadLocal` variable, which means it is exclusively bound to the exact HTTP request thread. When you spawn a new thread (via `@Async` or manual `new Thread()`), the context is NOT automatically copied over. To fix this, you must configure Spring Security to use `MODE_INHERITABLETHREADLOCAL` or use `DelegatingSecurityContextExecutor` to explicitly pass the context to the new thread before execution.
+**Scenario:** CORS policy blocks a cross-origin state-changing request despite a successful OPTIONS preflight.
+**Trace:** The `CorsFilter` correctly handled the `OPTIONS` request and returned `Access-Control-Allow-Origin: https://frontend.com`. However, the `POST` request hits the `CsrfFilter` before reaching the controller. Because the SPA did not include a valid CSRF token in the request header (e.g., `X-CSRF-TOKEN`), the `CsrfFilter` immediately rejected the request with a 403 Forbidden. The browser sees a failed request lacking the proper CORS headers in the error response, masking it as a generic "CORS error".
+**Debug/Fix:** If the API uses stateless JWTs instead of session cookies, disable CSRF entirely using `.csrf(csrf -> csrf.disable())` since CSRF exploits cookie auto-inclusion. If using session cookies, configure a `CookieCsrfTokenRepository` to send the token to the frontend, and ensure the SPA reads the `XSRF-TOKEN` cookie and attaches it as an `X-XSRF-TOKEN` header on every `POST`/`PUT`/`DELETE` request.
 </details>
 
 
@@ -780,10 +793,12 @@ public class SecurityConfig {
 
 🔬 **Section Challenge — 10. How to Configure Security — Modern Way (Spring Security 6+)**
 
-**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+**Challenge 1 (Engineering):** In a microservices architecture using stateless JWTs for authentication, a malicious user's account is suspended by an administrator. However, the malicious user continues to make successful API calls for the next 45 minutes until their token expires. How do you design an architectural fix to immediately revoke access without abandoning the stateless, decentralized benefits of JWTs?
 <details><summary>Answer</summary>
 
-JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+**Scenario:** A compromised or suspended JWT continues to grant access because stateless tokens cannot be revoked natively by the authorization server.
+**Trace:** By design, JWTs are mathematically verified via signature checks (HMAC/RSA) locally by each microservice without calling a central database. Because the token is valid until its `exp` claim passes, the downstream services have no way of knowing the user's state has changed. Moving back to stateful session validation defeats the purpose of decentralized JWTs.
+**Debug/Fix:** Implement a hybrid token-revocation pattern using an asynchronous Redis Deny List. When an account is suspended, the Auth server publishes a "revoke" event to an event broker (Kafka/RabbitMQ). All microservices consume this event and cache the `jti` (JWT ID) in a local fast-lookup store (or a shared low-latency Redis cluster) with a TTL matching the token's remaining lifespan. The API Gateway or `JwtAuthenticationFilter` simply checks the cache for the `jti` before performing the signature validation.
 </details>
 
 
@@ -920,10 +935,12 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 
 🔬 **Section Challenge — 12. Common Security Mistakes and Fixes**
 
-**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+**Challenge 1 (Engineering):** An application uses Spring Security 6+ and configures authorization rules using `.requestMatchers("/api/admin/**").hasRole("ADMIN")` followed by `.requestMatchers("/api/**").permitAll()`. During a pentest, an attacker discovers they can bypass the admin check by sending a request to `/api/admin/dashboard/` (with a trailing slash) or `/api//admin/dashboard`. Why does this bypass the security rule, and how does Spring Security 6 address it?
 <details><summary>Answer</summary>
 
-JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+**Scenario:** URL path manipulation allows an unauthenticated user to bypass authorization filters and access restricted endpoints.
+**Trace:** Historically (in Spring Security 5 with `AntPathRequestMatcher`), path matching was strict. If the security rule was `/api/admin/**`, a request to `/api/admin/dashboard/` might be treated differently than `/api/admin/dashboard` depending on Spring MVC's trailing slash configuration, leading to severe bypass vulnerabilities if the controller still routed the malicious path to the restricted handler.
+**Debug/Fix:** Spring Security 6 mitigates this by dropping `antMatchers` in favor of `requestMatchers`, which natively integrates with Spring MVC's `HandlerMappingIntrospector`. However, to fully secure endpoints against path traversal/normalization attacks (like `//` or `%2e`), you must enforce `StrictHttpFirewall` (the default) and ensure your routing rules strictly match the MVC handlers. Never rely solely on URL prefix matching; combine it with `@PreAuthorize("hasRole('ADMIN')")` directly on the controller methods to guarantee defense-in-depth regardless of the URL path requested.
 </details>
 
 

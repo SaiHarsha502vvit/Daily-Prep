@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_JS_Functions_Closures.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_JS_Functions_Closures.md)
 
 **JavaScript Chapter 1/7** | [Index](../00_MASTER_INDEX.md) | [Next → Functions & Closures](02_JS_Functions_Closures.md)
 
@@ -162,7 +162,15 @@ Assignment copies what's on the stack (value OR pointer).
 
 
 🔬 **Section Challenge — 2. Data Types — The 8 Types**
->
+
+**Challenge 1 (Trace):** A developer uses `typeof` to check an API response: `if (typeof data.settings === 'object') { data.settings.enabled = true; }`. What is the dangerous flaw here, and how does the JS engine evaluate it?
+<details><summary>Answer</summary>
+
+**Scenario:** Checking if a property is an object before assigning to it.
+**Trace:** In JS, `typeof null === 'object'`. This is a legacy bug from the first implementation where values were stored in 32-bit units with the lowest 3 bits representing the type tag. The object type tag was `000`. `null` was represented as the NULL pointer (all zeros), so its type tag matched objects.
+**Debug:** If `data.settings` is `null`, the `if` condition passes, and `null.enabled = true` throws a `TypeError: Cannot set properties of null`.
+**Fix:** Always use an explicit null check or optional chaining: `if (data.settings && typeof data.settings === 'object')`.
+</details>
 
 ## 3. Type Coercion — JS's Most Confusing Feature
 
@@ -235,7 +243,22 @@ if ([]) console.log("truthy!");  // PRINTS! empty array is truthy
 
 
 🔬 **Section Challenge — 3. Type Coercion — JS's Most Confusing Feature**
->
+
+**Challenge 1 (Reasoning):** Explain the exact internal coercion algorithm that makes `[] + {}` evaluate to `"[object Object]"` but `{} + []` (in a console) evaluate to `0`.
+<details><summary>Answer</summary>
+
+**Scenario:** Bizarre results when using the `+` operator on complex objects.
+**Trace:** The `+` operator forces the JS engine to call `ToPrimitive()` on both operands.
+For `[] + {}`:
+1. `[].valueOf()` is `[]` (not primitive). `[].toString()` is `""` (empty string).
+2. `{}.valueOf()` is `{}` (not primitive). `{}.toString()` is `"[object Object]"`.
+3. `"" + "[object Object]"` results in `"[object Object]"`.
+For `{} + []`:
+1. The JS parser interprets the leading `{}` not as an empty object, but as an **empty code block**.
+2. Thus, the expression is evaluated as `+ []` (unary plus on an empty array).
+3. `+` forces `ToNumber()`. `[].toString()` is `""`. `Number("")` is `0`.
+**Debug/Design:** This exposes the danger of implicit coercion and the JS parser's ambiguity between object literals and code blocks. Never rely on implicit object-to-primitive conversion in arithmetic operations.
+</details>
 
 ## 4. Variables — var vs let vs const
 

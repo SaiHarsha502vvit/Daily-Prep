@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](06_Implementation_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Debugging_DryRun.md)
+**Navigation**: [< Previous](06_Implementation_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Debugging_DryRun.md)
 
 # 🗃️ SQL Mental Pipeline — Think in Sets, Build Queries Step-by-Step
 
@@ -225,16 +225,20 @@ Rule of thumb: If you need columns from multiple tables in SELECT → use JOIN
 
 🔬 **Section Challenge — Part 5: Subquery vs JOIN — Decision Framework**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Reasoning):** You need to "find employees whose salary is greater than the average salary." Why must you use a subquery for this, rather than a JOIN?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+Because "average salary" is an aggregate value computed over the entire `employees` table, while the filtering condition (`>`) must be applied to individual rows. A JOIN requires matching keys between rows, but here we are comparing row-level data against a global aggregate. You cannot compute `AVG(salary)` and select individual rows in the same level without a window function. Therefore, the subquery `(SELECT AVG(salary) FROM employees)` is necessary to compute the scalar aggregate first.
+
 </details>
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+**Challenge 2 (Performance):** Correlated subqueries are often described as having `O(N^2)` performance characteristics. Why? How can a JOIN fix this?
+
 <details><summary>Answer</summary>
 
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+A correlated subquery references columns from the outer query (e.g., `WHERE salary = (SELECT MAX(salary) FROM employees WHERE dept_id = outer.dept_id)`). This forces the database engine to execute the inner query *once for every single row* returned by the outer query. If the outer table has N rows, the inner table is scanned N times, leading to `O(N^2)` performance. A JOIN fixes this by computing the aggregate for all departments *once* (e.g., `JOIN (SELECT dept_id, MAX(salary) AS max_sal FROM employees GROUP BY dept_id)`), returning a temporary table that is then hash-joined to the outer query in `O(N)` time.
+
 </details>
 
 

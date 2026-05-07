@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Monitoring](12_Monitoring_Observability.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Monitoring](12_Monitoring_Observability.md)
 🧠 **Mental Model**: See [Production Debugging Thinking](../14_Mental_Models/18_Production_Debugging_Thinking.md)
 
 ---
@@ -109,6 +109,22 @@ public class RequestFilter implements Filter {
 
 🔬 **Section Challenge — Part 3: Structured Logging**
 
+**Challenge 1 (Bug Hunt):** A production service logs every DB query at `DEBUG` level. A developer enables `DEBUG` logging to investigate a bug and the server runs out of memory in 3 minutes. What caused this and how do you safely enable debug logging in production?
+
+<details><summary>Answer</summary>
+
+The cause: with `DEBUG` enabled, every SQL query, every request/response body, and every framework internal is logged. Under 500 req/s this generates ~50MB/s of log data. The JVM log buffer fills, GC pressure spikes, then heap exhaustion → OOM. Safe alternatives: (1) **Dynamic log level via Actuator** — `POST /actuator/loggers/com.myapp.OrderService` with body `{"configuredLevel": "DEBUG"}` — enables debug for ONE class for a short window, then revert. (2) **Sampling** — log only 1% of DEBUG events in production using a filter. (3) **Conditional DEBUG** — `if (log.isDebugEnabled())` prevents string interpolation cost when DEBUG is off. Never enable root-level DEBUG in production.
+
+</details>
+
+**Challenge 2 (Reasoning):** An MDC `correlationId` set in a request filter leaks into a subsequent unrelated request. What is the exact mechanism and which line of code prevents it?
+
+<details><summary>Answer</summary>
+
+Mechanism: Spring Boot uses a thread pool (Tomcat default: 200 threads). When request 1 completes, its thread returns to the pool. If the `finally { MDC.clear(); }` block is missing, the `correlationId` stays in the thread's `ThreadLocal` storage. Request 2 from a different user picks up the same thread → logs for request 2 contain request 1's `correlationId` → distributed tracing is corrupted. Prevention: `MDC.clear()` in the `finally` block of the filter (not just the normal path). The `finally` guarantees execution even on exception. This is why the code example shows `try { chain.doFilter() } finally { MDC.clear() }` — the `finally` is load-bearing, not optional.
+
+</details>
+
 ## Part 4: Error Handling
 
 ```java
@@ -158,6 +174,22 @@ public class GlobalExceptionHandler {
 ---
 
 🔬 **Section Challenge — Part 4: Error Handling**
+
+**Challenge 1 (Trace):** `catch (Exception e) { e.printStackTrace(); }` appears in a production payment service. Name three specific things that go wrong in a production environment with this pattern.
+
+<details><summary>Answer</summary>
+
+1. **Lost stack trace**: `printStackTrace()` writes to `System.err`, which is typically not captured by centralized log aggregators (ELK/Loki capture `System.out`/structured logs). The error vanishes. 2. **No alerting**: proper logging frameworks integrate with alertmanager/PagerDuty via appenders. `e.printStackTrace()` bypasses all of this — the on-call engineer is never notified. 3. **No context**: you see the exception type and stack, but zero business context — no `orderId`, no `userId`, no `correlationId`. When debugging at 3am, "NullPointerException at line 47" is useless without knowing which order triggered it. Fix: `log.error("Payment failed orderId={}", orderId, e)` — the exception is the LAST parameter, SLF4J automatically appends the full stack trace after the structured message.
+
+</details>
+
+**Challenge 2 (Design):** A `@ControllerAdvice` has a handler for `Exception.class` that returns `500` with `{"error": "Something went wrong"}`. A security reviewer flags this as incomplete. What specific attack does returning the raw `e.getMessage()` instead enable?
+
+<details><summary>Answer</summary>
+
+Returning `e.getMessage()` to the client enables **Information Disclosure** (OWASP A05). Database exceptions leak schema information: `PSQLException: column "password_hash" of relation "users" does not exist` reveals the table name and column names. Hibernate exceptions reveal entity class names. Connection errors reveal internal hostnames: `Could not connect to jdbc:postgresql://prod-db-01.internal:5432`. Each piece of internal architecture info helps an attacker build a map of your system. Fix: (1) log the full exception server-side with `log.error(..., e)`, (2) return ONLY a generic message to the client `{"error": "An unexpected error occurred", "correlationId": "abc-123"}` — the correlationId lets support trace the log without exposing internals.
+
+</details>
 
 ## Part 5: Health Checks & Graceful Shutdown
 

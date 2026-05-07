@@ -525,7 +525,18 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 
 
 🔬 **Section Challenge — 7. Typography System**
->>
+
+**Challenge 1 (Design Debug):** A dashboard uses random font sizes like `13`, `15`, `17`, `22`, and `29px`, plus inconsistent line heights. Labels clip on mobile and dense tables are hard to scan. How do you repair the typography system?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** Random sizes create weak hierarchy, unpredictable wrapping, and line-height bugs. The UI becomes hard to scan because similar elements do not share a visual role.
+
+**Reasoning:** Typography should be tokenized by semantic role: body, caption, label, heading, table cell, button, and code. Each role needs a stable font size, line height, weight, and responsive behavior.
+
+**Debug/Fix:** Define a small type scale, pair every size with an explicit line height, map components to semantic tokens, test long labels and narrow widths, and avoid viewport-based font scaling for dense UI.
+
+</details>
 
 ## 8. Color System & Theming
 
@@ -842,4 +853,3 @@ h3 { font-size: var(--text-2xl); line-height: var(--leading-tight); font-weight:
 ---
 
 **Next Chapter**: [CSS Component Design Systems →](06_CSS_UI_Design_Process.md)
-

@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch24_Spring_Boot_Roadmap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch20_AlgoEng_Core.md)
+**Navigation**: [< Previous](Ch24_Spring_Boot_Roadmap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch20_AlgoEng_Core.md)
 
 # 🎯 Functional Programming in Java
 
@@ -957,8 +957,15 @@ int sum = numbers.stream()
 
 
 
-🔬 **Section Challenge — Example 2: Sum of Squares of Even Numbers**
+> 🔬 **Section Challenge — Example 2: Sum of Squares of Even Numbers**
 >
+> **Challenge 1 (Performance):** In the functional approach `numbers.stream().map(n -> n * n)`, does it create a new `Integer` object for every mapped element (auto-boxing) leading to massive GC overhead? If so, how do you fix it for a stream of 1 million integers?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** JVM Memory Overhead in Streams.
+> **Trace:** Yes, if `numbers` is a `List<Integer>`, then `numbers.stream()` is a `Stream<Integer>`. The operation `map(n -> n * n)` unboxes the Integer, squares it, and *re-boxes* it into a new Integer object. For 1 million numbers, this creates 1,000,000 short-lived objects on the heap, thrashing the Garbage Collector.
+> **Debug/Fix:** Use primitive streams! Replace `.map()` with `.mapToInt(n -> n * n)`. This converts the `Stream<Integer>` into an `IntStream` (a specialized stream of primitive `int`s), completely eliminating boxing overhead for the transformation and allowing a direct `.sum()`.
+> </details>
 
 ## Example 3: First Duplicate
 

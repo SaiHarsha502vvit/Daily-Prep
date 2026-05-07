@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch19_JVM_Object_Model.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](Ch19_JVM_Object_Model.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 35 — Concurrency Synchronizers Deep: Semaphore, CountDownLatch, CyclicBarrier, Phaser & Beyond
 
@@ -603,8 +603,15 @@ new Thread(() -> {
 
 
 
-🔬 **Section Challenge — 6. Exchanger: The Two-Person Handoff**
+> 🔬 **Section Challenge — 6. Exchanger: The Two-Person Handoff**
 >
+> **Challenge 1 (Concurrency Design):** An `Exchanger` blocks until *both* threads arrive at the exchange point. What happens if the Producer thread crashes and dies before calling `exchange()`, and how do you prevent the Consumer from hanging infinitely?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Handling Thread Death in Rendezvous Synchronizers.
+> **Trace:** If the Producer thread throws an unhandled exception and terminates, the Consumer thread will reach `exchange(buffer)` and block forever, waiting for a partner that no longer exists. This is a classic thread starvation/hang scenario.
+> **Debug/Fix:** Never use indefinite blocking in production pipelines. Always use the timed version: `exchanger.exchange(buffer, 5, TimeUnit.SECONDS)`. If a `TimeoutException` is thrown, the Consumer knows the Producer has stalled or died. The Consumer can then gracefully degrade, log an alert, or trigger a restart of the Producer thread.
+> </details>
 
 ## 7. Livelock vs Deadlock vs Starvation
 

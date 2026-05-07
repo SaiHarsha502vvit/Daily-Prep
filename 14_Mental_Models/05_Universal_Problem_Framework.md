@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)
+**Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)
 
 # 🧭 Universal Problem-Solving Framework — 6-Step Method for ANY Problem
 
@@ -110,7 +110,22 @@ STRING MANIPULATION?
 
 
 🔬 **Section Challenge — Step 2: CLASSIFY — What Type of Problem Is This?**
->
+
+**Challenge 1 (Reasoning):** A problem asks you to find the "minimum number of jumps to reach the end of an array." What are the two most likely algorithmic classifications for this problem, and what specific constraint would force you to pick one over the other?
+
+<details><summary>Answer</summary>
+
+The two most likely classifications are **Dynamic Programming** (optimization problem with overlapping subproblems) and **Greedy** (if a local optimum leads to the global optimum). If the constraint is `N = 100,000`, O(N^2) DP will fail with `Time Limit Exceeded`, forcing you to find the O(N) Greedy solution. If `N = 1,000`, the O(N^2) DP approach is perfectly acceptable.
+
+</details>
+
+**Challenge 2 (Design):** You are given a list of a million words and must frequently query whether a specific prefix exists in the list. What classification is this, and what is the optimal data structure?
+
+<details><summary>Answer</summary>
+
+This is a **Data Retrieval (Query/Lookup)** classification, specifically involving String Prefix Matching. The optimal data structure is a **Trie (Prefix Tree)**. While a HashMap provides O(1) exact-word lookups, it cannot easily answer "does any word *start with* this prefix" without iterating over all keys. A Trie answers prefix queries in O(K) time, where K is the length of the prefix.
+
+</details>
 
 ## Step 3: PLAN — Design Your Approach
 

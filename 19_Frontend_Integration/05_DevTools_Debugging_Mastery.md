@@ -356,7 +356,18 @@ getEventListeners($0)
 
 
 🔬 **Section Challenge — 4. Network Tab — Request Waterfall Analysis**
->
+
+**Challenge 1 (Trace/Debug):** A page feels slow and the Network tab shows one request taking `1.8s`. The waterfall is `20ms DNS`, `30ms TCP`, `40ms TLS`, `50ms request sent`, `1.5s waiting (TTFB)`, and `80ms content download`. Where is the bottleneck, and what should you inspect next?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** Most of the time is in `waiting (TTFB)`, not DNS, connection setup, TLS, upload, or download.
+
+**Reasoning:** High TTFB usually means the browser is waiting for the server to begin responding. The bottleneck is likely backend processing, database latency, cache misses, upstream API calls, cold starts, or server saturation.
+
+**Debug/Fix:** Copy the request as cURL, reproduce it outside the UI, check server logs/traces for that request ID, inspect slow DB queries and cache behavior, and compare with a cached or simplified endpoint.
+
+</details>
 
 ## 5. Performance Tab — Finding What Makes Your App Slow
 
@@ -813,6 +824,5 @@ getEventListeners($0)
 ---
 
 **Next Chapter**: [Web Performance & Core Web Vitals →](06_Web_Performance_CoreWebVitals.md)
-
 
 

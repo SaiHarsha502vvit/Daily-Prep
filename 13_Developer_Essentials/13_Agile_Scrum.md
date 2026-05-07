@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](12_Monitoring_Observability.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Code_Review_Practices.md)
+**Navigation**: [< Previous](12_Monitoring_Observability.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Code_Review_Practices.md)
 
 # Agile & Scrum — Complete Developer Guide
 
@@ -222,6 +222,22 @@ Activities:
 
 🔬 **Section Challenge — Start Doing     │  Stop Doing      │  Continue Doing**
 
+**Challenge 1 (Reasoning):** A retrospective ends with 12 action items. Next sprint, none were implemented. Why does this happen and what structural fix makes retros actually change team behavior?
+
+<details><summary>Answer</summary>
+
+Root cause: **action items without owners and deadlines are wishes, not commitments**. 12 items means the team is spreading attention too thin — nothing gets prioritized. Structural fix: (1) **Maximum 2-3 action items per retro** — ruthlessly prioritize. (2) **Each item has ONE named owner** (not "the team") and a specific definition of done: "Alice will add pre-commit ESLint hook by Wednesday." (3) **First agenda item of NEXT retro**: review last sprint's action items. If they weren't done, why not? This creates accountability. (4) **Convert action items to stories** in the sprint backlog — if it doesn't make the board, it doesn't happen. The team that does 2 action items per retro consistently will outperform the team that promises 12 and delivers 0.
+
+</details>
+
+**Challenge 2 (Design):** A team does the "Start/Stop/Continue" format every sprint. After 6 months, retros feel stale and participation drops. Name two alternative retrospective formats and when to use each.
+
+<details><summary>Answer</summary>
+
+1. **"4Ls" (Liked, Learned, Lacked, Longed For)**: Use when the team needs to focus on growth and learning, not just process. "Liked" = what went well, "Learned" = new insights, "Lacked" = missing support/tools, "Longed For" = desired improvements. Better than Start/Stop/Continue when team morale needs boosting — starts with positives. 2. **"Sailboat" (anchors vs wind)**: Draw a sailboat. Wind = things pushing us forward (strengths). Anchors = things slowing us down (blockers). Use when the team is stuck on systemic blockers (team dependencies, tooling, org impediments). Visual format increases engagement. Rule: rotate formats every 3-4 sprints. Format variety prevents retro fatigue and surfaces different problem dimensions.
+
+</details>
+
 ## User Stories — Writing & Understanding
 
 USER STORY FORMAT:
@@ -265,6 +281,22 @@ T — Testable    (has clear acceptance criteria)
 
 🔬 **Section Challenge — User Stories — Writing & Understanding**
 
+**Challenge 1 (Trace):** Evaluate this user story: "As a user, I want the system to be faster." Apply all 6 INVEST criteria and identify every violation.
+
+<details><summary>Answer</summary>
+
+**I (Independent)**: ❌ Violates. "Faster" is vague — it could mean DB queries, API response time, page load, background jobs. It has implicit dependencies on every system component. **N (Negotiable)**: ❌ Violates. No scope to negotiate — there's no defined measure of "faster." **V (Valuable)**: ✅ Passes loosely — performance does provide user value. But without specificity, can't verify value was delivered. **E (Estimable)**: ❌ Violates critically. No acceptance criteria, no baseline, no target. The team can't size this in any unit. **S (Small)**: ❌ Violates. "Faster" could be a 1-point DB index addition or a 21-point distributed caching overhaul. **T (Testable)**: ❌ Violates. No criterion for "done." Fixed version: "As a user, I want product search results to appear in under 500ms for the first 20 results, so I can browse quickly on mobile." Now it's measurable, testable, and estimable.
+
+</details>
+
+**Challenge 2 (Design):** A PO writes: "As a developer, I want to refactor the PaymentService to use the Strategy pattern." Why is this a problematic user story format and how do you rewrite it correctly?
+
+<details><summary>Answer</summary>
+
+Problematic because: (1) **Wrong actor** — user stories are FROM the perspective of who receives VALUE, not who does the work. "As a developer" is a technical task, not a user story. Stakeholders can't prioritize it because they can't see the business value. (2) **Solution-prescribing** — the story specifies the implementation (Strategy pattern) rather than the need. The team should decide HOW to solve the problem. Fix: First, identify WHY the refactor is needed. If it's to add new payment providers: "As a product owner, I want to add PayPal as a payment option without a 4-week development cycle, so we can respond to market demand quickly." Now engineering can propose the Strategy pattern refactoring as the HOW. The business value is visible. The sprint review can demonstrate the outcome (adding a new payment method takes 2 days instead of 3 weeks).
+
+</details>
+
 ## Story Points & Estimation
 
 STORY POINTS — Relative Sizing (NOT hours)
@@ -294,6 +326,22 @@ VELOCITY = Total story points completed per sprint
 ---
 
 🔬 **Section Challenge — Story Points & Estimation**
+
+**Challenge 1 (Reasoning):** A team's velocity is 40 points/sprint for 6 months. A manager starts using velocity as a performance KPI and pressures teams to increase it each sprint. What two failure modes emerge?
+
+<details><summary>Answer</summary>
+
+1. **Story point inflation**: the team unconsciously (or consciously) inflates estimates. A story that was 3 points becomes 5 points. Velocity climbs from 40 to 55 points/sprint. But throughput (actual features delivered) stays the same. The metric looks better; the system is no better. Goodhart's Law: "When a measure becomes a target, it ceases to be a good measure." 2. **Quality collapse**: to hit point targets, the team skips tests, cuts corners on error handling, accumulates tech debt. Velocity is high this quarter; production incidents spike next quarter. Fix: velocity is an **internal planning tool** — use it to forecast sprint capacity, nothing else. If stakeholders want a performance metric, use **cycle time** (how long from story start to production) or **escaped defect rate** (bugs found in production). These can't be gamed as easily.
+
+</details>
+
+**Challenge 2 (Trace):** Planning Poker: a 5-person team estimates a story. Estimates are: 2, 3, 13, 3, 5. What should the Scrum Master do next and why?
+
+<details><summary>Answer</summary>
+
+The SM asks the **highest** (13) and **lowest** (2) estimators to explain their reasoning — in that order. The 13: "This touches the payment gateway, which requires a new API contract negotiation with the vendor. I've done this before and it took 2 weeks." The 2: "I thought we were just changing the discount calculation logic, one method." **This is a misunderstanding of scope** — the team has two different mental models of the story. The PO clarifies: the story includes the vendor negotiation. Re-vote: now estimates are 8, 8, 13, 8, 8. Consensus at 8. The divergence in the first round was valuable: it revealed a hidden dependency. If everyone had voted 3, the sprint would have blown up in week 1. Planning Poker's real value is not the number — it's surfacing disagreements about scope.
+
+</details>
 
 ## Kanban — The Alternative Agile Framework
 
@@ -349,6 +397,22 @@ A story is "Done" when ALL of these are true:
 ---
 
 🔬 **Section Challenge — Definition of Done (DoD)**
+
+**Challenge 1 (Reasoning):** A team's DoD says "Code reviewed by at least 1 team member." In practice, under sprint deadline pressure, developers self-approve their own PRs and merge directly. What organizational mechanism prevents DoD bypass?
+
+<details><summary>Answer</summary>
+
+Soft DoD (honor-system) breaks under pressure every time. Hard enforcement mechanisms: (1) **Branch protection rules** (GitHub/GitLab): require minimum 1 approved review before merge is allowed — the UI literally won't let you merge without it. Configure: Settings → Branches → Branch protection rules → "Require a pull request before merging" + "Require approvals: 1." (2) **CODEOWNERS file**: specific files require specific owners' approval. Payment code requires a senior engineer sign-off regardless of who wrote it. (3) **CI gate**: the "deployed to staging" DoD item is enforced by making the CD pipeline the only deploy path — no manual pushes to staging. The key insight: DoD items that CAN be bypassed WILL be bypassed under pressure. Every DoD item should have a corresponding automated or structural gate. If you can't automate it, make the bypass visible (e.g., required PR label "DoD-exception" that notifies the Scrum Master).
+
+</details>
+
+**Challenge 2 (Design):** A team's DoD includes "PO has accepted the story." But the PO is in a different timezone and review takes 48+ hours, creating a sprint-end bottleneck. Redesign this DoD item without removing the PO acceptance requirement.
+
+<details><summary>Answer</summary>
+
+The bottleneck is synchronous, end-of-sprint acceptance. Fixes: (1) **Continuous acceptance**: PO reviews and accepts stories as they complete during the sprint (not only at Sprint Review). Schedule a 30-min PO slot mid-sprint for story acceptance. Stories completed early get accepted early — no end-of-sprint pile-up. (2) **Acceptance criteria as contract**: write acceptance criteria in Given-When-Then format at story creation time (planning). If all ACs are met and verified by automated tests, the story is "conditionally accepted" — PO reviews the test results async, not the live feature. (3) **Async demo recordings**: developer records a 2-min Loom showing the feature working against each AC. PO reviews async in their timezone. Approval via PR comment. The redesigned DoD: "All acceptance criteria verified by automated tests AND PO has reviewed the demo recording and approved via PR comment." Removes the synchronous dependency while keeping PO accountability.
+
+</details>
 
 ## Agile Metrics That Matter
 
@@ -437,3 +501,19 @@ team — not the other way around.
 **Navigation**: [< Previous](12_Monitoring_Observability.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Code_Review_Practices.md)
 
 🔬 **Section Challenge — Mental Model: Agile Is a Mindset, Not Just Ceremonies**
+
+**Challenge 1 (Reasoning):** A team has daily standups, sprint planning, reviews, and retros — but ships features on a 6-month cycle and never talks to users. A consultant says they're "doing Agile." What specific Agile values are they violating?
+
+<details><summary>Answer</summary>
+
+They violate the core manifesto values, not just surface ceremonies: (1) **Working software over comprehensive documentation** — a 6-month cycle means no working software reaches users for 6 months. Ceremonies without delivery is theater. (2) **Customer collaboration over contract negotiation** — never talking to users means requirements are assumed, not validated. The Agile principle "satisfy the customer through early and continuous delivery" is directly violated. (3) **Responding to change** — a 6-month cycle makes the team structurally unable to respond to change. By the time they ship, the market has moved. What they have is **Cargo Cult Agile**: adopting Agile rituals (standups, sprints) while keeping a Waterfall delivery model underneath. Fix: the ceremonies are not the problem — the lack of feedback loops is. Add: weekly production deploys (even to beta users), monthly user interviews, sprint reviews with actual end users present. Ceremonies are instruments of feedback; without actual feedback loops, they're meaningless.
+
+</details>
+
+**Challenge 2 (Design):** Your team is Scrum-certified and follows all ceremonies. A senior engineer proposes switching to Kanban for the next quarter. The Scrum Master objects: "We can't abandon Agile." Why is this objection logically flawed?
+
+<details><summary>Answer</summary>
+
+The objection conflates **Scrum** with **Agile** — they are not the same thing. Agile is a set of values and principles (the Manifesto). Scrum is ONE framework for implementing those values. Kanban is ALSO an Agile framework. Both prioritize continuous delivery, feedback, and adaptation. The Scrum Master's objection is an example of Agile fundamentalism: treating the framework as the goal instead of treating the team's effectiveness as the goal. Manifesto Principle 12: "At regular intervals, the team reflects on how to become more effective, then tunes and adjusts its behavior accordingly." If Kanban serves the team better (e.g., they have high-priority support tickets interrupting sprints), switching is the most Agile thing they can do. The correct response: "What problem are we solving by switching? What outcomes do we expect to improve?" Choose the framework that serves the work, not the work that serves the framework.
+
+</details>

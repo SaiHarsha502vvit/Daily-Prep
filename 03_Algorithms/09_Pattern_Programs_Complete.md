@@ -1720,31 +1720,21 @@ Input: n=4, char='#'
 Output:
 
 
-🔬 **Section Challenge — Q1: Print Triangle with Custom Character**
-
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
-
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-</details>
-
-
 #
 # #
 # # #
 # # # #
 ```
+
+🔬 **Section Challenge — Q1: Print Triangle with Custom Character**
+
+**Challenge 1 (Loop Reasoning):** For `n = 4` and `char = '#'`, how do you derive the nested loops instead of memorizing the pattern?
+<details><summary>Trace, Reasoning & Debug</summary>
+
+Trace the output row by row. Row `1` prints one character, row `2` prints two, and row `i` prints `i` characters. That gives the loop structure directly: outer loop `i = 1..n`, inner loop `j = 1..i`, print the character, then print a newline after each row.
+
+The constraint lens is simple: if the pattern is triangular, one loop usually controls rows and the other loop depends on the row number. For `n <= 0`, print nothing or validate input depending on the problem statement.
+</details>
 
 ```java
 public static void customTriangle(int n, char c) {

@@ -72,11 +72,17 @@ Companies pay premium for people who understand BOTH technology AND business.
 
 
 🔬 **Section Challenge — The Techno-Functional Framework**
->
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
-<details><summary>Answer</summary>
 
-Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+**Challenge 1 (Career Reasoning):** A product manager says, "Checkout latency is up 40%, support tickets are rising, and revenue is leaking during peak traffic." How should a techno-functional engineer translate that business signal into a technical investigation and solution plan?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** The problem is not "make code faster" yet. The business symptom is lost revenue and user friction. The technical investigation should map the symptom to measurable system signals: p95/p99 latency, error rate, payment gateway response time, database slow queries, queue depth, and peak-hour traffic shape.
+
+**Reasoning:** A techno-functional engineer connects business impact to architecture choices. If the bottleneck is payment gateway latency, retries/idempotency/circuit breakers matter. If it is database contention, indexing, read models, caching, or transaction boundaries matter. If it is frontend checkout friction, instrumentation and UX flow matter.
+
+**Debug/Fix:** Define the metric, isolate the bottleneck, estimate business impact, propose a phased fix, and communicate trade-offs: quick mitigation first, durable architecture second, and monitoring so the business can verify improvement.
+
 </details>
 
 

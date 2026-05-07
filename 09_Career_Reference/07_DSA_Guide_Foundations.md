@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](08_DSA_Guide_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](08_DSA_Guide_Advanced.md)
 
 ---
 
@@ -1385,7 +1385,14 @@ class StackWithMiddle {
 
 
 🔬 **Section Challenge — Stacks - Complete Guide**
->
+
+**Challenge 1 (Engineering):** A highly concurrent event-driven server processes requests recursively via DFS parsing of JSON payloads. Under sudden load spikes, the application crashes with `StackOverflowError`. 
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Scenario:** Complex nested JSON requests trigger deep recursion, exceeding the thread stack size limit (`-Xss`). This crashes the thread entirely.
+**Trace:** Recursive calls allocate a new stack frame for each nested level. With a default stack size (e.g., 1MB), processing deeply nested structures blows the stack. Because thread death might go unhandled by the global executor pool, this causes silent task drops.
+**Debug/Fix:** Replace recursion with **Iteration + Explicit Stack**. Move the memory burden from the JVM thread stack (limited) to the Heap (abundant) using `Deque<Node> stack = new ArrayDeque<>()`. This converts the `StackOverflowError` risk into a manageable `OutOfMemoryError` risk, which can be mitigated by rejecting payloads exceeding a max depth threshold.
+</details>
 
 ## Queues - Complete Guide
 

@@ -1377,7 +1377,18 @@ Use Cases: Network design, clustering
 
 
 🔬 **Section Challenge — Graphs - Complete Guide**
->>
+
+**Challenge 1 (Constraint Reasoning):** A problem gives `N <= 2e5`, `M <= 2e5`, and asks whether two nodes are connected after each edge insertion. A junior proposes DFS after every query. Why does that fail, and what data structure should replace the repeated traversal?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** DFS per query can cost `O(N + M)`. Across many insertions and queries, this becomes `O(Q * (N + M))`, which is impossible at `2e5` scale.
+
+**Reasoning:** The operation is dynamic connectivity under edge additions. You do not need to rediscover whole components after each edge; you need to maintain component representatives.
+
+**Debug/Fix:** Use Disjoint Set Union with path compression and union by rank/size. `union(u, v)` merges components, and `find(u) == find(v)` answers connectivity in near-constant amortized time.
+
+</details>
 
 ## Advanced Data Structures
 

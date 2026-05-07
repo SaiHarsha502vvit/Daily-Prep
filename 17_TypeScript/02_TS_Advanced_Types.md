@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](01_TS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_TS_Patterns_BestPractices.md)
+**Navigation**: [< Previous](01_TS_Foundations.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_TS_Patterns_BestPractices.md)
 
 **TypeScript Chapter 2/3** | [← Foundations](01_TS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Patterns](03_TS_Patterns_BestPractices.md)
 
@@ -334,7 +334,14 @@ type CreateUserParams = Parameters<typeof createUser>;
 
 
 🔬 **Section Challenge — 2. Utility Types — Built-in Type Transformations**
->
+
+**Challenge 1 (Reasoning):** You have a generic function `function delay<T>(fn: () => T, ms: number)`. How do you extract the exact return type of the function passed in, so you can correctly type the `delay` function's return signature?
+<details><summary>Answer</summary>
+
+**Scenario:** Building generic wrapper functions that preserve inner types.
+**Trace:** TypeScript provides the `ReturnType<T>` utility type, which uses `infer` under the hood to extract the return type of a function signature.
+**Design Fix:** You type the return value of `delay` as `Promise<ReturnType<typeof fn>>`. However, since `T` is already the return type in the generic definition `fn: () => T`, the return signature is simply `Promise<T>`. But if you didn't have `T`, or were extracting it from an existing function reference `const myFn = () => 42;`, you would use `type Res = ReturnType<typeof myFn>;`.
+</details>
 
 ## 3. Mapped Types — Type Algebra
 
@@ -389,7 +396,18 @@ type UserStrings = OnlyStringProps<User>;
 
 
 🔬 **Section Challenge — 3. Mapped Types — Type Algebra**
->
+
+**Challenge 1 (Design):** You have an interface `DatabaseRow { id: string; createdAt: Date; name: string; age: number; }`. You want to write an update function where `id` and `createdAt` CANNOT be updated, and the rest of the fields are optional. How do you compose this using Mapped and Utility types?
+<details><summary>Answer</summary>
+
+**Scenario:** Crafting precise API payload shapes.
+**Trace:** We need to split the type into two groups: the omitted properties and the partial properties.
+**Design Fix:**
+```typescript
+type UpdatePayload = Partial<Omit<DatabaseRow, "id" | "createdAt">>;
+```
+This evaluates to `{ name?: string; age?: number; }`. The ID and Date are completely removed from the payload type, ensuring the compiler rejects any accidental attempts to overwrite immutable database fields.
+</details>
 
 ## 4. Conditional Types — Type-Level If/Else
 
@@ -456,7 +474,15 @@ type EventPayload<E extends string> =
 
 
 🔬 **Section Challenge — 4. Conditional Types — Type-Level If/Else**
->
+
+**Challenge 1 (Trace):** Why does `type ToArray<T> = T extends any ? T[] : never;` when given `string | number` evaluate to `string[] | number[]`, instead of `(string | number)[]`?
+<details><summary>Answer</summary>
+
+**Scenario:** Understanding Distributive Conditional Types.
+**Trace:** In TypeScript, conditional types are **distributive** by default when the checked type (`T`) is a bare type parameter. This means the compiler splits the union and applies the condition to each member individually. It evaluates `(string extends any ? string[] : never) | (number extends any ? number[] : never)`, resulting in `string[] | number[]`.
+**Debug/Fix:** If you want to disable distribution and evaluate the union as a single block, wrap both sides of the `extends` clause in tuples:
+`type ToArrayNonDist<T> = [T] extends [any] ? T[] : never;`
+</details>
 
 ## 5. Template Literal Types
 
@@ -500,7 +526,20 @@ type Params = ExtractRouteParams<"/users/:userId/posts/:postId">;
 
 
 🔬 **Section Challenge — 5. Template Literal Types**
->
+
+**Challenge 1 (Design):** You are building a Tailwind CSS clone. You want to type a padding utility that accepts strings like `p-4`, `p-8`, or `pt-4`. How do you define this using Template Literal Types?
+<details><summary>Answer</summary>
+
+**Scenario:** Generating highly specific string validation types.
+**Trace:** Template literal types allow you to multiply unions together to generate all possible string combinations at compile time.
+**Design Fix:**
+```typescript
+type Prefix = "p" | "pt" | "pr" | "pb" | "pl" | "px" | "py";
+type Size = "0" | "1" | "2" | "4" | "8";
+type PaddingClass = `${Prefix}-${Size}`;
+// Generates "p-0" | "p-1" | ... | "py-8" (35 specific literal strings)
+```
+</details>
 
 ## 6. Discriminated Unions — Advanced Patterns
 

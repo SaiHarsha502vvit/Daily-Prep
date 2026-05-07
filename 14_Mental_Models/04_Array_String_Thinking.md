@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](03_Graph_Tree_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Universal_Problem_Framework.md)
+**Navigation**: [< Previous](03_Graph_Tree_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Universal_Problem_Framework.md)
 
 # 🔍 Array & String Problem Thinking — Mental Model
 
@@ -110,7 +110,14 @@ while (left < right) {
 
 
 🔬 **Section Challenge — Part 2: Two Pointers — When and How**
->
+
+**Challenge 1 (Reasoning):** In the classic "Two Sum II" (array is sorted), you start pointers at `left = 0` and `right = n - 1`. If `sum > target`, you do `right--`. A junior engineer asks, "How do we know we didn't just skip the correct answer by moving `right`? What if `arr[left+1] + arr[right]` was the target?" Provide the mathematical proof.
+
+<details><summary>Answer</summary>
+
+Because the array is sorted, `arr[left+1] >= arr[left]`. If `arr[left] + arr[right] > target`, then `arr[left+1] + arr[right]` must be EVEN GREATER than the target! The current `right` element is simply too large to pair with *any* element equal to or larger than `arr[left]`. Therefore, the current `right` element cannot be part of any valid pair with elements to the right of `left`. We can safely discard it by doing `right--` without missing the answer. This is the core "search space reduction" proof for two pointers.
+
+</details>
 
 ## Part 3: Sliding Window — When and How
 
@@ -222,7 +229,14 @@ return count;
 
 
 🔬 **Section Challenge — Part 4: Prefix Sum — When and How**
->
+
+**Challenge 1 (Debug):** You are solving "Subarray Sum Equals K" using a HashMap. Your code loops through the array, updates the running `sum`, and checks `if (map.containsKey(sum - k)) count += map.get(sum - k);`. You test it with `arr = [3, 4, 7]`, `k = 7`. It returns `0` instead of `2` (the subarrays `[3, 4]` and `[7]`). What initialization step did you forget?
+
+<details><summary>Answer</summary>
+
+You forgot the sentinel value: `map.put(0, 1)`. When the loop reaches the `7` at index 2, the running `sum` is `14`. It checks for `14 - 7 = 7`. The prefix sum `7` exists in the map (from index 1, where `3+4=7`). So it correctly counts the `[7]` subarray. BUT, when the loop is at index 1 (`4`), the running sum is `7`. It checks for `7 - 7 = 0`. Since `0` is not in the map, it fails to count the valid subarray `[3, 4]`. The prefix `0` represents the "empty prefix" before the array starts, which is mathematically necessary to count subarrays that start at index 0.
+
+</details>
 
 ## Part 5: String-Specific Patterns
 

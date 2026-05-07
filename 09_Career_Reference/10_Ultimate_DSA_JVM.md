@@ -229,10 +229,12 @@ protected Class<?> loadClass(String name, boolean resolve) {
 
 🔬 **Section Challenge — ⚙️ Class Loader Subsystem — Deep Dive**
 
-**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
-<details><summary>Answer</summary>
+**Challenge 1 (JVM Reasoning):** Two jars contain `com.app.Util`. The app works locally, but production loads the older class. How do class loader delegation and classpath order explain the bug?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+Class loading is usually parent-first: bootstrap, platform, application, then custom loaders. Once a loader defines a class for a binary name, that definition is reused for that loader.
+
+If the older jar appears earlier on the classpath or is visible to a parent loader, the newer jar may never be used. Debug with `-verbose:class`, inspect the runtime classpath, and remember that class identity is the pair `(binary name, defining class loader)`.
 </details>
 
 
@@ -319,21 +321,12 @@ public class HotReloadClassLoader extends ClassLoader {
 
 🔬 **Section Challenge — 📌 Creating Custom Class Loaders**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Class Identity):** A hot-reload class loader reloads `com.app.Plugin`, but casting an old plugin instance to the new `Plugin` type throws `ClassCastException`. Why?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+In the JVM, class identity is not only the package and class name. It is the class name plus the defining class loader. `com.app.Plugin` loaded by loader A and `com.app.Plugin` loaded by loader B are different runtime types.
+
+For hot reload, create a fresh child loader per reload, keep shared API interfaces in a stable parent loader, drop references to old instances/loaders, and close URLClassLoader resources so old classes can be garbage collected.
 </details>
 
 
@@ -508,7 +501,18 @@ public int calculate(int a, int b) {
 
 
 🔬 **Section Challenge — 📚 Stack Frame Structure**
->
+
+**Challenge 1 (JVM Trace):** A recursive DFS works on small trees but crashes on a skewed tree with 200,000 nodes. Explain what is stored in each stack frame and why increasing heap size does not fix the crash.
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** Every recursive call creates a new thread stack frame. That frame holds method parameters, local variables, the operand stack, return metadata, and references to heap objects.
+
+**Reasoning:** `StackOverflowError` is a thread stack problem, not a heap capacity problem. `-Xmx` gives more heap for objects, but recursion depth consumes `-Xss` stack space frame by frame.
+
+**Debug/Fix:** Convert the traversal to an iterative DFS/BFS with an explicit heap-backed stack or queue. Increasing `-Xss` may delay failure, but it does not change the algorithmic risk for very deep recursion.
+
+</details>
 
 ## 📚 Garbage Collection — Complete Guide
 
@@ -1033,5 +1037,3 @@ _"Data structures + Algorithms = Programs. Master both, master programming."_
 ---
 
 **Navigation**: [< Previous](09_Ultimate_DSA_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Quick_Reference.md)
-
-

@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Problems_Part2.md)
+**Navigation**: [< Previous](04_ERP_Finance_RealWorld.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_RealWorld_Problems_Part2.md)
 
 # 🌍 Real-World Problems Solved with DSA
 
@@ -328,8 +328,15 @@ public class ProductAutocomplete {
 
 
 
-🔬 **Section Challenge — Problem 3: Product Search Autocomplete (Trie)**
->>
+> 🔬 **Section Challenge — Problem 3: Product Search Autocomplete (Trie)**
+>
+> **Challenge 1 (System Design):** An autocomplete system using a standard Java Trie crashes with `OutOfMemoryError` in production when loaded with 50 million products. Trace the memory overhead of a `HashMap<Character, TrieNode> children` per node vs. `TrieNode[] children = new TrieNode[26]`. Why do standard heap-allocated Tries fail at scale, and what is the production alternative?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Memory optimization for massive prefix trees.
+> **Trace:** A standard Java `HashMap` has massive object overhead: the `HashMap` object itself, the backing bucket array, the `Node` object for each entry, and the boxed `Character` object (since Java generics don't support primitives). This easily adds up to ~100+ bytes of overhead *per character* in the Trie. Alternatively, `TrieNode[26]` uses a fixed 104-byte pointer array per node, wasting memory for sparse nodes (where most characters don't have 26 children). 
+> **Debug/Fix:** Standard heap-allocated Tries are never used for 50M products. Production systems use **Radix Trees (Compressed Tries)** to merge single-child paths (e.g., merging 's'->'o'->'n'->'y' into a single "sony" edge). For ultimate scale, systems like Elasticsearch use FSTs (Finite State Transducers) or Double-Array Tries, which flatten the entire tree into a single contiguous byte array, completely eliminating JVM object overhead and pointer chasing.
+> </details>
 
 # 🧩 Part 2: Banking & Finance Problems
 

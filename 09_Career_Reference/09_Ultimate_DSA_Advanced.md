@@ -155,7 +155,19 @@ class AhoCorasick {
 
 
 
-> 🔬 **Section Challenge — 📝 String Algorithms — the Complete Toolkit**
+🔬 **Section Challenge — 📝 String Algorithms — the Complete Toolkit**
+
+**Challenge 1 (Constraint Selection):** A problem asks whether a pattern appears in a text. Sometimes there is one pattern, sometimes `10^5` patterns, and sometimes you need repeated substring/range comparisons. How do you choose between KMP, Rabin-Karp, Trie/Aho-Corasick, and suffix structures?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** One pattern in one text favors KMP because it guarantees `O(n + m)` without hash collisions. Many patterns favor Trie or Aho-Corasick because one automaton scans the text once. Repeated substring comparison favors rolling hash or suffix array/tree depending on collision tolerance and query volume.
+
+**Reasoning:** The string algorithm is selected by query shape, not by memorized names. Single exact match -> KMP. Many dictionary matches -> Aho-Corasick. Fast substring equality -> rolling hash with collision safeguards. Lexicographic suffix/rank/LCP queries -> suffix array plus LCP.
+
+**Debug/Fix:** Read constraints first: number of patterns, text length, online/offline queries, collision tolerance, and memory. If correctness cannot tolerate probability, avoid single-hash Rabin-Karp or use double hash plus verification.
+
+</details>
 
 ## 📌 Randomized Algorithms
 
@@ -648,7 +660,19 @@ class CuckooFilter {
 
 
 
-> 🔬 **Section Challenge — 📌 Modern Data Structures in Production**
+🔬 **Section Challenge — 📌 Modern Data Structures in Production**
+
+**Challenge 1 (Production DS Selection):** You need to track trending queries, unique visitors, bad-token membership, and time-window analytics at scale. Which data structures fit each job, and what trade-off are you accepting?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** Trending queries need top-k maintenance, often heap + hashmap or sketch-based heavy hitters. Unique visitors can use HyperLogLog when approximate cardinality is acceptable. Bad-token membership can use a Bloom filter when false positives are acceptable. Time-window analytics often need ring buffers, segment trees, Fenwick trees, or stream processors depending on update/query shape.
+
+**Reasoning:** Production data structures are chosen by memory, accuracy, latency, and update model. Exact answers cost more memory. Approximate structures buy scale by accepting bounded error or false positives.
+
+**Debug/Fix:** Define the SLA before choosing the DS: exact vs approximate, false positive tolerance, deletion support, cardinality, update frequency, and whether queries are online or batch.
+
+</details>
 
 ## 🎨 Interview Patterns — Advanced Level
 

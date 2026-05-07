@@ -1,4 +1,4 @@
-﻿> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02b_DS_Variants_Advanced.md)
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02b_DS_Variants_Advanced.md)
 
 ---
 
@@ -449,6 +449,14 @@ public class SinglyLinkedList<T> {
 ---
 
 > 🔬 **Section Challenge — 1.1 Singly Linked List**
+>
+> **Challenge 1 (Trace):** You need to implement a "Delete from tail" method for a singly linked list. Because you maintain a `tail` pointer, a junior engineer writes: `tail = null; size--;`. Trace why this completely corrupts the data structure and what the true time complexity of tail deletion is.
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Optimizing tail operations on a Singly Linked List.
+> **Trace:** Setting the `tail` reference to `null` only updates your class variable. The actual second-to-last node in the list *still has its `.next` pointer pointing to the old tail object in memory*. Furthermore, because you didn't update the second-to-last node, you now have no way to find the new tail! The list is corrupted.
+> **Debug/Fix:** To delete the tail, you MUST update the `.next` pointer of the second-to-last node to `null`. In a Singly Linked List, the only way to find the second-to-last node is to start at the head and traverse `N-1` steps. Therefore, even with a `tail` pointer, **deleting from the tail is strictly `O(N)`**.
+> </details>
 
 ## 1.2 Doubly Linked List
 
@@ -914,6 +922,23 @@ public class DoublyLinkedList<T> {
 ---
 
 > 🔬 **Section Challenge — 1.2 Doubly Linked List**
+>
+> **Challenge 1 (Debug):** A developer writes an `O(1)` node deletion function: `public void deleteNode(Node n) { n.prev.next = n.next; n.next.prev = n.prev; }`. What critical `NullPointerException` (NPE) edge cases did they miss?
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Deleting an arbitrary node in a Doubly Linked List.
+> **Trace:** The logic assumes that `n.prev` and `n.next` always exist.
+> - If `n` is the `head`, `n.prev` is `null`. Calling `n.prev.next` throws an NPE.
+> - If `n` is the `tail`, `n.next` is `null`. Calling `n.next.prev` throws an NPE.
+> **Debug/Fix:** You must handle the boundaries explicitly:
+> ```java
+> if (n.prev != null) n.prev.next = n.next;
+> else head = n.next; // We are deleting the head
+> 
+> if (n.next != null) n.next.prev = n.prev;
+> else tail = n.prev; // We are deleting the tail
+> ```
+> </details>
 
 ## 1.3 Circular Linked List
 
@@ -1171,6 +1196,18 @@ public class CircularLinkedList<T> {
 ---
 
 > 🔬 **Section Challenge — 1.3 Circular Linked List**
+>
+> **Challenge 1 (Reasoning):** Why does an optimized Circular Linked List maintain a `tail` pointer instead of a `head` pointer? Trace how this allows `O(1)` insertions at BOTH the front and the back.
+> <details><summary>Answer</summary>
+>
+> **Scenario:** Designing an efficient Circular Queue or Round-Robin Scheduler.
+> **Trace:** If you only keep a `head` pointer, inserting at the back `insertAtEnd()` requires you to traverse the entire circle `O(N)` to find the last node so you can update its `.next` pointer to the new node.
+> **Design Fix:** Keep a `tail` pointer instead. 
+> - The head is always trivially accessible via `tail.next`.
+> - **Insert at Front:** `newNode.next = tail.next; tail.next = newNode;` (O(1)).
+> - **Insert at Back:** `newNode.next = tail.next; tail.next = newNode; tail = newNode;` (O(1)).
+> By simply maintaining the `tail`, you gain `O(1)` access to both ends of the circle!
+> </details>
 
 ## 1.4 Circular Doubly Linked List
 
@@ -1391,6 +1428,19 @@ public class CircularDoublyLinkedList<T> {
 ---
 
 > 🔬 **Section Challenge — 1.4 Circular Doubly Linked List**
+>
+> **Challenge 1 (Trace):** You are building a bidirectional image carousel. Trace the exact 4 pointer assignments required to insert a new `Node X` exactly between the `tail` and `head` so it becomes the new `head`.
+> <details><summary>Answer</summary>
+>
+> **Scenario:** `O(1)` insertions in a completely connected ring.
+> **Trace:** In a Circular Doubly Linked List, `tail.next == head` and `head.prev == tail`. When we insert `X` as the new head, `X` must sit between the old `tail` and the old `head`.
+> **Execution (The 4 Pointers):**
+> 1. `X.next = head;` (X points forward to old head)
+> 2. `X.prev = tail;` (X points backward to tail)
+> 3. `head.prev = X;` (Old head points backward to X)
+> 4. `tail.next = X;` (Tail points forward to X)
+> Finally, update the class variable: `head = X;`. This perfect symmetry is why CDLLs are used in advanced OS memory managers (like the Linux Kernel's `list_head`).
+> </details>
 
 ## 1.5 Skip List
 

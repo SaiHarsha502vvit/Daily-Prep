@@ -409,12 +409,18 @@ LIMIT 20;
 ---
 
 
-
-
-
-
 > 🔬 **Section Challenge — Reading EXPLAIN ANALYZE — The Diagnostic Tool**
-
+>
+> **Challenge 1 (The Ghost of Stale Statistics):** You deploy a new feature that inserts 50,000 rows into an empty `active_sessions` table every minute. After 10 minutes, a background query `SELECT * FROM active_sessions WHERE user_id = 42` suddenly spikes from 2ms to 4000ms. You run `EXPLAIN ANALYZE` and see: `Seq Scan on active_sessions (cost=0.00..12000.00 rows=5 width=128) (actual time=0.015..3980.200 rows=1 loops=1)`. The table *does* have an index on `user_id`. Why is the optimizer ignoring your index, and how do you permanently fix this?
+>
+> <details><summary>Answer</summary>
+>
+> The optimizer is falling victim to stale statistics. When the table was empty (or very small), the database stats engine recorded that a `Seq Scan` was cheaper than an `Index Scan`. Because you rapidly inserted 500,000 rows in 10 minutes, the PostgreSQL `autovacuum` daemon (which also runs `ANALYZE`) hasn't triggered yet to update the statistics. Thus, the optimizer still believes the table is tiny and opts for a full sequential scan.
+> 
+> **The Fix:** 
+> 1. **Immediate:** Run `ANALYZE active_sessions;` to force the optimizer to update its row estimations.
+> 2. **Permanent:** Tune the autovacuum thresholds for this specific high-velocity table: `ALTER TABLE active_sessions SET (autovacuum_analyze_scale_factor = 0.01);`. This tells the background daemon to run `ANALYZE` much more frequently (every 1% change instead of the default 10-20%), ensuring the optimizer always has fresh data.
+> </details>
 # PART 3: Physical Operators — How Joins Actually Execute
 
 ---

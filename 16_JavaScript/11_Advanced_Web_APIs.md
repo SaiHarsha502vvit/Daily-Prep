@@ -481,16 +481,16 @@ eventSource.close();
 
 🔬 **Section Challenge — 7. Server-Sent Events — One-Way Streaming**
 
-**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+**Challenge 1 (Design):** You are building a live stock ticker using Server-Sent Events (SSE). If the user loses internet connection for 10 seconds and reconnects, how do you ensure they don't miss any price updates that occurred during the outage?
 <details><summary>Answer</summary>
 
-Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
-</details>
-
-**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-<details><summary>Answer</summary>
-
-`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
+**Scenario:** Handling connection drops in a one-way SSE stream.
+**Trace:** `EventSource` automatically attempts to reconnect when the connection drops. However, simply reconnecting doesn't recover lost messages unless the server knows what the client missed. The SSE protocol handles this natively via the `Last-Event-ID` header.
+**Debug/Design Fix:**
+1. **Server:** When sending events, include an `id` field: `id: 1045\ndata: {"price": 150}\n\n`.
+2. **Client Drop:** Connection breaks.
+3. **Client Reconnect:** The browser automatically reconnects and includes the `Last-Event-ID: 1045` HTTP header in the new request.
+4. **Server Recovery:** The server reads the header, retrieves all events with an ID > 1045 from its cache/database, and streams them immediately before resuming real-time events.
 </details>
 
 

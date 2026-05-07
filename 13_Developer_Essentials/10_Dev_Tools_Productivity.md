@@ -1,4 +1,4 @@
-﻿# 🛠️ Dev Tools & Productivity — Complete Guide
+# 🛠️ Dev Tools & Productivity — Complete Guide
 
 **Navigation**: [< System Design](09_System_Design.md) | [Index](00_INDEX.md) | [Chapter 1: Git >](01_Git_Version_Control.md)
 
@@ -280,6 +280,22 @@ public class PerformanceAspect {
 ---
 
 🔬 **Section Challenge — Level 6 — Performance Profiling**
+
+**Challenge 1 (Scenario):** Your Spring Boot service has an API endpoint that takes 3 seconds to respond. `htop` shows CPU at 15% and memory stable. Walk through your exact diagnostic steps to find the bottleneck.
+
+<details><summary>Answer</summary>
+
+CPU-idle + slow response = the bottleneck is **I/O or blocking wait**, not computation. Steps: (1) **Spring Actuator** `/actuator/metrics/http.server.requests` — find the slow endpoint and its p99 latency. (2) **Thread dump** via `jstack <PID>` or VisualVM — look for threads in `BLOCKED` or `WAITING` state. If 20 threads are waiting on a DB connection pool, you've found the bottleneck. (3) **Database query profiling** — enable `spring.jpa.show-sql=true` + `logging.level.org.hibernate.stat=DEBUG` to log query counts and times. The classic cause of 3-second responses: N+1 queries (1 query for orders, then 1 query per order for line items = 200 queries). (4) **VisualVM** timeline view — if DB is fine, check if threads are waiting on external HTTP calls. Add a timeout: `restTemplate.setReadTimeout(500ms)`. Fix: use `JOIN FETCH` in JPQL or `@EntityGraph` to eliminate N+1.
+
+</details>
+
+**Challenge 2 (Reasoning):** What is the difference between a **sampling profiler** and an **instrumentation profiler**? Which should you use in production and why?
+
+<details><summary>Answer</summary>
+
+**Sampling profiler** (VisualVM, async-profiler): periodically interrupts all threads and records their stack trace. Statistical approximation — overhead is 1-3%, safe for production. Shows which methods consume the most CPU time by frequency of appearance in samples. **Instrumentation profiler** (JProfiler, YourKit with bytecode injection): modifies every method's bytecode to record enter/exit timestamps. Gives exact timing for every method call — but adds 10-100x overhead. Never safe in production; use only in dev/staging. Rule of thumb: **start with sampling** (async-profiler with `-d 30 -f profile.html`) to identify the hot path. Switch to instrumentation only if you need exact millisecond breakdowns in the suspect method. In production incidents, `jstack` + application metrics (Micrometer + Grafana) replace profilers — they give thread state visibility with zero instrumentation overhead.
+
+</details>
 
 # WHERE: Daily Workflow Optimization
 

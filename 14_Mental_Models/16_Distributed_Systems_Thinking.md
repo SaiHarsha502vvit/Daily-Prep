@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](15_System_Design_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Frontend_Architecture_Thinking.md)
+**Navigation**: [< Previous](15_System_Design_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_Frontend_Architecture_Thinking.md)
 
 # Mental Models — Distributed Systems Thinking
 
@@ -46,7 +46,14 @@ Design every remote interaction with timeout + retry + fallback.
 
 
 🔬 **Section Challenge — Mental Model 1: The Network Is NOT Reliable**
->
+
+**Challenge 1 (Design):** Your microservice sends an email to a user upon signup. Because the network is unreliable, you implement a retry loop: if the email service times out, you retry up to 3 times. What catastrophic bug does this introduce, and how must you change the email service API to fix it?
+
+<details><summary>Answer</summary>
+
+A timeout does NOT mean the request failed; it just means you didn't receive the response. If the email service successfully sends the email but the *response* is lost in the network, your 3 retries will send the exact same email 3 more times! The user gets spammed with 4 signup emails. To fix this, you must make the email service API **idempotent**. You should pass a unique `Idempotency-Key` (e.g., the user's ID or a UUID) in the request header. The email service checks if it has already processed that key; if so, it skips sending and just returns `200 OK`.
+
+</details>
 
 ## Mental Model 2: The Three Possible Outcomes
 
