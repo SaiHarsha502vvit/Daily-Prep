@@ -176,16 +176,12 @@ WHERE e.salary > m.salary;
 
 🔬 **Section Challenge — Part 4: JOIN Mental Models**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Mental Model — Who/When/What):** Draw the mental pipeline for: `SELECT c.name, COUNT(o.id) FROM customers c LEFT JOIN orders o ON c.id = o.customer_id WHERE c.country = 'IN' GROUP BY c.id HAVING COUNT(o.id) = 0`. **Who** gets counted as 0? **When** does the LEFT JOIN matter here? **What** would INNER JOIN return instead?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Mental pipeline:** (1) FROM+JOIN: all `customers` rows from India (after WHERE pushdown) LEFT JOINed with `orders` — customers with no orders get `o.id = NULL`. (2) WHERE `c.country = 'IN'` — filters customers table (the LEFT side) — safe, doesn't remove NULL rows. (3) GROUP BY: each customer becomes one group. (4) HAVING `COUNT(o.id) = 0` — `COUNT(o.id)` counts non-NULL values, so customers with no orders get `COUNT(o.id) = 0`. **Who gets counted as 0?** Indian customers with zero orders — the NULL rows from the LEFT JOIN. **When does LEFT JOIN matter?** EXACTLY here — it's what keeps customers with no orders in the result set. **What would INNER JOIN return?** Empty set — INNER JOIN excludes customers with no orders, so HAVING COUNT(o.id)=0 would never be true. This query pattern (LEFT JOIN + HAVING COUNT = 0) is the canonical "find entities with no related records" template.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 

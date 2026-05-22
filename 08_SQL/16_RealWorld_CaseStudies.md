@@ -706,16 +706,12 @@ SELECT COUNT(*) FROM order_items;      -- 500,000
 
 🔬 **Section Challenge — 🟡 Disaster Type 2: The Accidental Cartesian Join**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Debug — Who/When/What):** A billing report queries `invoices JOIN line_items`. On Thursday morning, the query ran fine in 200ms. On Friday, it ran for 3 hours and filled the temp disk. **Who** changed the behavior? **When** did the query become a Cartesian join? **What** should be the first diagnostic step?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who changed it?** A developer who added a third table to the join but forgot the ON clause — or more subtly, accidentally removed the ON condition during a merge conflict. **When did it become Cartesian?** The query itself may have been syntactically valid with a WHERE filter that previously eliminated most rows — but a data change (a new status value, a date range change) caused the WHERE to match more rows, allowing the Cartesian explosion to manifest. **First diagnostic step:** `EXPLAIN` the query immediately — look for `Nested Loop` or `Hash Join` entries with extremely high estimated row counts (e.g., `rows=50000000` for a 1000-row × 50-row table). Also run `SELECT COUNT(*) FROM invoices`, `SELECT COUNT(*) FROM line_items` to understand table sizes. Then verify every JOIN has an ON clause with `\grep -c "ON " query.sql` — missing ON = likely Cartesian. **Prevention:** Code review all JOINs, set `max_execution_time` (MySQL) or `statement_timeout` (PostgreSQL) to kill runaway queries before they fill disk.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 

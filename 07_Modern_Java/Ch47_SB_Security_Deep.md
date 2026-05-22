@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous Chapter](Ch46_SB_Database_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch46_SB_Database_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -238,10 +238,12 @@ public interface SecureDocumentRepository extends JpaRepository<Document, Long> 
 
 🔬 **Section Challenge — Chapter 5: Filtering Data by User Context**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Design — Who/When/What):** A multi-tenant SaaS app has `orders` table with `tenant_id`. Users must ONLY see their own tenant's data — even if they craft a URL with another tenant's `orderId`. **Who** enforces tenant isolation? **When** in the request lifecycle? **What** is the Spring Security + JPA pattern?
+
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+**Who enforces?** Three layers: (1) **Spring Security** — authentication confirms the tenant from the JWT claim. (2) **Repository layer** — every query automatically appends `AND tenant_id = :currentTenant`. (3) **Service layer** — explicit ownership check before returning sensitive objects. **When?** Repository-level enforcement at every DB query — not just at the controller. A crafted URL bypasses the controller check if you only check there. **Pattern:** (1) Store tenant in `SecurityContextHolder` after JWT parse: `tenantId = jwtClaims.get("tenantId")`. (2) Use `@FilterDef` + `@Filter` (Hibernate) OR Spring Data `@Query` with SpEL `?#{principal.tenantId}`: `@Query("SELECT o FROM Order o WHERE o.tenantId = ?#{principal.tenantId}")`. (3) For critical resources, add explicit check in service: `if (!order.getTenantId().equals(currentTenant)) throw new AccessDeniedException("...")`. **Why triple-layer?** Defense in depth — if one layer has a bug, the others catch it.
+
 </details>
 
 

@@ -124,10 +124,12 @@ Flow:
 
 🔬 **Section Challenge — Variant A: Maximum XOR of Two Numbers**
 
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+**Challenge 1 (Trace — Who/When/What):** You process `[3, 10, 5, 25, 2]` using the Maximum XOR Bitwise Trie. After inserting all numbers and querying each, **who** produces the maximum XOR pair? **When** during the scan does the max get locked in? **What** happens at each bit level for the winning pair?
+
 <details><summary>Answer</summary>
 
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+**Who:** The pair `(5, 25)` → `5 XOR 25 = 28` (binary: `00101 XOR 11001 = 11100`). **When:** When querying `5` against the trie that already contains `{3, 10, 25, 2}` — at bit 4 (value 16), `5`'s bit is 0, the trie has 1 (from 25) → takes opposite, contributing 16 to XOR. At bit 3 (value 8), `5`'s bit is 0, trie has 1 (from 25) → contributes 8. At bit 2 (value 4), `5`'s bit is 1, trie prefers 0 (from 25→`11001`, bit 2 = 0) → contributes 4. Total: 28. **What happens bit by bit:** Level 4: 0→prefers 1 (25 goes there) +16. Level 3: 0→prefers 1 (25 goes there) +8. Level 2: 1→prefers 0 (25 goes there) +4. Level 1: 0→prefers 1 (no opposite available, takes 0) +0. Level 0: 1→prefers 0 (25 has 1, same) +0. Total XOR = 28.
+
 </details>
 
 
@@ -159,10 +161,12 @@ Logic:
 
 🔬 **Section Challenge — Variant C: Prefix XOR + Trie (max subarray XOR)**
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+**Challenge 1 (Design — Who/When/What):** Array `a = [3, 10, 5, 25, 2]`. Find the maximum XOR of any subarray using Prefix XOR + Bitwise Trie. **Who** forms the maximum XOR subarray? **When** do you insert into the trie? **What** is the XOR formula?
+
 <details><summary>Answer</summary>
 
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+**XOR formula:** `XOR(l, r) = prefixXor[r] XOR prefixXor[l-1]`. So: find `prefixXor[r] XOR prefixXor[l-1]` maximized. **Algorithm:** Start with `trie = {0}` (sentinel for empty prefix), compute prefix XOR running. For each new `prefixXor[i]`, query the trie for max XOR partner, then insert `prefixXor[i]`. **Who forms max?** The pair that maximizes the bit disagreement — for `a=[3,10,5,25,2]`: `prefixXor = [3, 9, 12, 21, 23]`. Best query: `21 XOR 0 = 21` — subarray `[3,10,5,25]`. Or `23 XOR 0 = 23` — full array. Check: `3 XOR 10 XOR 5 XOR 25 XOR 2 = 23`. **When to insert:** AFTER querying (so you don't XOR an element with itself unless that's valid), OR before (for subarrays starting at index 0 — hence the initial `trie.insert(0)`).
+
 </details>
 
 
@@ -208,10 +212,12 @@ Interview line:
 
 🔬 **Section Challenge — Option 2: Bounded range optimization**
 
-**Challenge 1 (Reasoning):** `<T extends Comparable<T>>` vs `<T extends Comparable>` — what's the difference and why does the first form matter?
+**Challenge 1 (Performance — Who/When/What):** You use a 32-bit Bitwise Trie for integers guaranteed to be ≤ 10⁶. **Who** wastes memory? **When** does reducing bit width matter? **What** is the exact node count reduction?
+
 <details><summary>Answer</summary>
 
-The raw form `<T extends Comparable>` loses type safety — compares apples to oranges at runtime. `<T extends Comparable<T>>` specifies that T can compare WITH ITSELF: `Integer.compareTo(Integer)`, not `Integer.compareTo(Object)`. This is why `Collections.sort()` uses `<T extends Comparable<? super T>>` — T can be compared using its own or a supertype's compareTo.
+**Who wastes?** The 32-bit trie — for values ≤ 10⁶, only 20 bits are needed (`2^20 = 1,048,576 > 10^6`). **Memory:** Each Trie node has 2 child pointers. Worst case: `n` numbers × `bitWidth` nodes = `n × 32` nodes for 32-bit vs `n × 20` nodes for 20-bit — a **37.5% reduction**. For n=10⁵: saves 1.2M node objects. **When it matters:** Competitive programming memory limits (256MB), embedded systems, problems with 10⁶+ queries. **What to change in code:** `for (int bit = 19; bit >= 0; bit--)` instead of `bit = 31`. **Interview line:** "I read the constraint: max value ≤ 10⁶ → needs 20 bits. I'll use `int bit = 19` as the MSB to reduce trie depth and memory footprint by 37%."
+
 </details>
 
 

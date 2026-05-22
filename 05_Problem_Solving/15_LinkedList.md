@@ -1,4 +1,4 @@
-﻿> **Navigation**: [< Previous](14_Mixed_Competitive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_Heap.md)
+> **Navigation**: [< Previous](14_Mixed_Competitive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](16_Heap.md)
 
 > **Problems 15/22** | [Prev](14_Mixed_Competitive.md) | [Index](../00_MASTER_INDEX.md) | [Next](16_Heap.md)
 
@@ -1751,6 +1751,26 @@ TEMPLATE: Two-pointer on sorted DLL.
 ---
 
 > 🔬 **Section Challenge — 13.4 Hidden Gems — Advanced Linked List**
+
+**Challenge 1 (Trace — Reservoir Sampling):** A linked list has nodes `[5, 3, 8, 1]`. Trace `getRandom()` step by step. At which step does the algorithm decide to keep `8`, and what is the mathematical probability that `8` ends up as the final result?
+
+<details><summary>Answer</summary>
+
+**Who executes?** A single-threaded scan from `head`. **When?** At each node `i`, `rand.nextInt(i)` is sampled. **What already exists?** `result=5, i=1` at start.
+
+Step 1 (node=5, i=1): `nextInt(1)=0` always → `result=5`, i→2. Step 2 (node=3, i=2): if `rand=0` (prob 1/2) → `result=3`. Step 3 (node=8, i=3): if `rand=0` (prob 1/3) → `result=8`. Step 4 (node=1, i=4): if `rand=0` (prob 1/4) → `result=1`.
+
+**P(8 is final result)** = P(selected at step 3) × P(NOT overridden at step 4) = (1/3) × (3/4) = **1/4 = 1/n**. Every node has exactly 1/n probability. This proves uniform distribution across unknown-length streams.
+
+</details>
+
+**Challenge 2 (Design — Who/When/What):** In "First Non-Repeating Character in a Stream," when a duplicate character `c` arrives — **Who** performs the DLL node removal? **When** does it happen? **What must already exist** in the HashMap for O(1) deletion to be possible, and why does a SLL break this guarantee?
+
+<details><summary>Answer</summary>
+
+**Who?** The current thread processing the stream event. **When?** Synchronously, immediately on receiving duplicate `c`, before the next character. **What already exists?** The HashMap MUST contain `c → direct DLL node pointer`. This direct reference is the entire pre-condition. With it: `node.prev.next = node.next; node.next.prev = node.prev` — O(1) deletion. Without it, you'd scan the DLL from head to find `c` — O(alphabet size) = O(26) = O(1) here, but conceptually O(n) in general. A SLL breaks this because `node.prev` doesn't exist — you'd need to track the predecessor separately, adding O(1) overhead per character but making the code significantly more fragile. After removal, mark `map.put(c, null)` to ignore future occurrences. DLL head = current first non-repeating answer in O(1).
+
+</details>
 
 ## 🏆 MASTERY CHECKLIST
 

@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch23_Streams_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch17_Concurrency_Synchronizers.md)
+**Navigation**: [< Previous](Ch23_Streams_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch17_Concurrency_Synchronizers.md)
 
 # Chapter 34 — JVM Object Model Internals: How Java Objects REALLY Live in Memory
 
@@ -257,10 +257,12 @@ if (obj instanceof String s) {
 
 🔬 **Section Challenge — 3. Klass Pointer: How JVM Knows the Type**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Trace — Who/When/What):** `Animal a = new Dog(); a.speak()` — **who** resolves `speak()` to `Dog.speak()`? **When** at runtime? **What** data structure in the JVM makes this possible?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+**Who resolves?** The JVM's virtual dispatch mechanism via the Klass pointer. **When?** At the `invokevirtual` bytecode instruction — not at compile time. **What data structure?** The vtable (virtual method table) embedded in the Klass (C++ object in JVM metadata). Each class's vtable is an array of method pointers. `Dog`'s vtable entry for `speak` points to `Dog.speak()`. When `a.speak()` executes: (1) Load object ref `a`. (2) Follow Klass pointer (compressed, in object header). (3) Look up `speak()` in the vtable at a fixed index. (4) Call the resolved method pointer. This entire dispatch costs ~1 ns — significantly faster than reflection which bypasses this and does hash-map lookups.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?

@@ -28,32 +28,32 @@
   
   ┌──────────────────────────────────────────────────────────────────┐
   │                                                                  │
-  │  LCP (Largest Contentful Paint):        LOADING SPEED           │
+  │  LCP (Largest Contentful Paint):        LOADING SPEED            │
   │  ───────────────────────────────         ─────────────           │
   │  When does the biggest content appear?                           │
-  │  GOOD: < 2.5s  │  NEEDS WORK: 2.5-4s  │  POOR: > 4s           │
+  │  GOOD: < 2.5s  │  NEEDS WORK: 2.5-4s  │  POOR: > 4s              │
   │                                                                  │
-  │  ████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░               │
+  │  ████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░                  │
   │  0s              2.5s              4s                            │
   │                                                                  │
   ├──────────────────────────────────────────────────────────────────┤
   │                                                                  │
-  │  INP (Interaction to Next Paint):       RESPONSIVENESS          │
+  │  INP (Interaction to Next Paint):       RESPONSIVENESS           │
   │  ───────────────────────────────         ──────────────          │
   │  How fast does UI respond to clicks/taps?                        │
-  │  GOOD: < 200ms  │  NEEDS WORK: 200-500ms  │  POOR: > 500ms    │
+  │  GOOD: < 200ms  │  NEEDS WORK: 200-500ms  │  POOR: > 500ms       │
   │                                                                  │
-  │  ████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░               │
+  │  ████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░                  │
   │  0ms            200ms            500ms                           │
   │                                                                  │
   ├──────────────────────────────────────────────────────────────────┤
   │                                                                  │
-  │  CLS (Cumulative Layout Shift):         VISUAL STABILITY        │
+  │  CLS (Cumulative Layout Shift):         VISUAL STABILITY         │
   │  ─────────────────────────────          ────────────────         │
   │  How much does content shift around?                             │
-  │  GOOD: < 0.1  │  NEEDS WORK: 0.1-0.25  │  POOR: > 0.25       │
+  │  GOOD: < 0.1  │  NEEDS WORK: 0.1-0.25  │  POOR: > 0.25           │
   │                                                                  │
-  │  ████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░               │
+  │  ████████████████████▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░                  │
   │  0              0.1             0.25                             │
   │                                                                  │
   └──────────────────────────────────────────────────────────────────┘
@@ -113,14 +113,14 @@
   INP measures: User clicks → Visual response appears
   
   ┌── What happens on click ─────────────────────────────────────┐
-  │                                                               │
+  │                                                              │
   │  Click! → Event handler runs → DOM updates → Style → Layout  │
-  │           ████████████████     ████          ██      ██       │
-  │           ← Input Delay → ← Processing → ← Presentation →   │
-  │                                                               │
+  │           ████████████████     ████          ██      ██      │
+  │           ← Input Delay → ← Processing → ← Presentation →    │
+  │                                                              │
   │  Total INP = Input Delay + Processing + Presentation Delay   │
-  │                                                               │
-  └───────────────────────────────────────────────────────────────┘
+  │                                                              │
+  └──────────────────────────────────────────────────────────────┘
   
   
   HOW TO IMPROVE INP:
@@ -254,20 +254,20 @@
   │  HIGH PRIORITY (blocks rendering):                         │
   │  • HTML document itself                                    │
   │  • CSS in <head>                                           │
-  │  • <script> without defer/async                           │
+  │  • <script> without defer/async                            │
   │  • Preloaded resources                                     │
-  │  • LCP image with fetchpriority="high"                    │
+  │  • LCP image with fetchpriority="high"                     │
   ├────────────────────────────────────────────────────────────┤
   │  MEDIUM PRIORITY:                                          │
-  │  • <script async>                                         │
+  │  • <script async>                                          │
   │  • Images in viewport                                      │
   │  • Fonts referenced in CSS                                 │
   ├────────────────────────────────────────────────────────────┤
   │  LOW PRIORITY:                                             │
-  │  • <script defer>                                         │
-  │  • Images below fold (loading="lazy")                     │
+  │  • <script defer>                                          │
+  │  • Images below fold (loading="lazy")                      │
   │  • Prefetched resources                                    │
-  │  • <link rel="prefetch">                                  │
+  │  • <link rel="prefetch">                                   │
   └────────────────────────────────────────────────────────────┘
 ```
 
@@ -369,14 +369,14 @@ body {
 
 ```
   ┌───────────────────────────────────────────────────────────┐
-  │  FONT LOADING BEST PRACTICES:                            │
+  │  FONT LOADING BEST PRACTICES:                             │
   │                                                           │
-  │  1. Use woff2 only (smallest, 97%+ support)              │
+  │  1. Use woff2 only (smallest, 97%+ support)               │
   │  2. Self-host fonts (avoid Google Fonts round trip)       │
-  │  3. Preload your primary font                            │
-  │  4. Use font-display: swap                               │
+  │  3. Preload your primary font                             │
+  │  4. Use font-display: swap                                │
   │  5. Subset fonts (only chars you need)                    │
-  │  6. Limit to 2-3 font families max                       │
+  │  6. Limit to 2-3 font families max                        │
   │  7. Use variable fonts (1 file for all weights)           │
   │                                                           │
   └───────────────────────────────────────────────────────────┘
@@ -401,16 +401,16 @@ body {
   
   Shows a treemap of what's in your bundle:
   ┌──────────────────────────────────────────────────────────┐
-  │ ┌──────────────────────────────┐ ┌────────────────────┐ │
-  │ │                              │ │                    │ │
-  │ │  react-dom (128KB)           │ │  lodash (72KB)     │ │
-  │ │                              │ │                    │ │
-  │ │                              │ └────────────────────┘ │
-  │ └──────────────────────────────┘ ┌────────────────────┐ │
-  │ ┌──────────────┐ ┌────────────┐ │  moment (66KB)     │ │
-  │ │ your code    │ │ chart.js   │ │  ← REPLACE with    │ │
-  │ │ (25KB)       │ │ (40KB)     │ │     date-fns (8KB) │ │
-  │ └──────────────┘ └────────────┘ └────────────────────┘ │
+  │ ┌──────────────────────────────┐ ┌────────────────────┐  │
+  │ │                              │ │                    │  │
+  │ │  react-dom (128KB)           │ │  lodash (72KB)     │  │
+  │ │                              │ │                    │  │
+  │ │                              │ └────────────────────┘  │
+  │ └──────────────────────────────┘ ┌────────────────────┐  │
+  │ ┌──────────────┐ ┌────────────┐  │  moment (66KB)     │  │
+  │ │ your code    │ │ chart.js   │  │  ← REPLACE with    │  │
+  │ │ (25KB)       │ │ (40KB)     │  │     date-fns (8KB) │  │
+  │ └──────────────┘ └────────────┘  └────────────────────┘  │
   └──────────────────────────────────────────────────────────┘
 ```
 
@@ -474,11 +474,11 @@ function Dashboard() {
 
 ```
   ┌──────────────────────────────────────────────────────────────┐
-  │  REQUEST FLOW WITH CACHING:                                   │
-  │                                                               │
-  │  Browser → Memory Cache? → Disk Cache? → Network → Server   │
-  │             (fastest)       (fast)         (slow)             │
-  │                                                               │
+  │  REQUEST FLOW WITH CACHING:                                  │
+  │                                                              │
+  │  Browser → Memory Cache? → Disk Cache? → Network → Server    │
+  │             (fastest)       (fast)         (slow)            │
+  │                                                              │
   │  Memory cache: Tab closes → gone                             │
   │  Disk cache: Persists across sessions                        │
   └──────────────────────────────────────────────────────────────┘
@@ -508,12 +508,12 @@ function Dashboard() {
   ┌───────────────────┬──────────────────────────────────────────┐
   │ Asset             │ Cache Strategy                           │
   ├───────────────────┼──────────────────────────────────────────┤
-  │ app.a1b2c3.js     │ max-age=31536000, immutable             │
-  │ styles.x4y5z6.css │ max-age=31536000, immutable             │
-  │ hero.webp         │ max-age=86400 (1 day)                   │
-  │ index.html        │ no-cache (always check)                 │
-  │ /api/user         │ no-store (never cache)                  │
-  │ /api/products     │ max-age=300 (5 min)                     │
+  │ app.a1b2c3.js     │ max-age=31536000, immutable              │
+  │ styles.x4y5z6.css │ max-age=31536000, immutable              │
+  │ hero.webp         │ max-age=86400 (1 day)                    │
+  │ index.html        │ no-cache (always check)                  │
+  │ /api/user         │ no-store (never cache)                   │
+  │ /api/products     │ max-age=300 (5 min)                      │
   └───────────────────┴──────────────────────────────────────────┘
 ```
 
@@ -523,10 +523,12 @@ function Dashboard() {
 
 🔬 **Section Challenge — 9. Caching Strategies — HTTP Cache Headers**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Debug — Who/When/What):** You deploy a CSS bug fix. The file is `styles.a1b2c3.css` with `Cache-Control: max-age=31536000, immutable`. Users still see the broken styles. **Who** is serving the old file? **When** will they see the fix? **What** does `immutable` mean?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Who serves old file?** The BROWSER's disk cache — it has `styles.a1b2c3.css` cached for 1 year with `immutable` (never revalidate). **When fix seen?** NEVER on their machine, unless they force-refresh or the cache is cleared. **What `immutable` means:** Tells the browser "this file will NEVER change — don't even bother checking with the server for the entire max-age period." **The real fix:** The cache-busting hash in the filename (`a1b2c3`) changed to `d4e5f6` when the CSS changed. The NEW `index.html` references `styles.d4e5f6.css`. When the browser loads the updated `index.html` (which has `Cache-Control: no-cache`), it sees the NEW filename → cache miss → downloads fresh CSS. **Lesson:** `immutable` is only safe for content-hashed filenames. HTML must always be `no-cache` so users get the latest entry point.
+
 </details>
 
 

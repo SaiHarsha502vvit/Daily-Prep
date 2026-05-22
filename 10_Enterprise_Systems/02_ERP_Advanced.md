@@ -3,6 +3,7 @@
 ---
 
 
+```java
         return result;
     }
 
@@ -898,16 +899,16 @@ public class NotificationService {
 
 🔬 **Section Challenge — 📧 Email Notifications in Hierarchy**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-<details><summary>Answer</summary>
+**Challenge 1 (Reasoning):** An ERP system must notify everyone under a manager. Should the notification traversal be DFS, BFS, queue-based async, or direct recursion?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+Use traversal to select recipients, then queue work for delivery. DFS/BFS both find descendants, but a queue-based async pipeline gives retries, rate limits, dedupe, and observability. Direct recursion that sends emails inline couples hierarchy walking to slow external I/O.
 </details>
 
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-<details><summary>Answer</summary>
+**Challenge 2 (Bug Hunt):** A service sends emails inside the same database transaction that updates the organization hierarchy. What can go wrong?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+The transaction stays open while email I/O runs, increasing lock time. If the transaction rolls back after emails are sent, users receive messages about changes that never committed. Prefer an outbox/event pattern: commit the hierarchy change and notification event together, then let a worker deliver emails idempotently.
 </details>
 
 

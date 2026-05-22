@@ -777,11 +777,7 @@ public sealed interface ApiResponse<T> {
 
 🔬 **Section Challenge — 14. Sealed Interfaces + Records = Algebraic Data Types**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-<details><summary>Answer</summary>
-
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Challenge 1 (Debug — Who/When/What):** You have a `sealed interface Shape permits Circle, Rectangle, Triangle`. A `switch(shape)` expression covers only `Circle` and `Rectangle`. **Who** detects the missing case? **When?** **What** error is thrown?\n\n<details><summary>Answer</summary>\n\n**Who detects?** The Java compiler (`javac`) at compile time. Sealed classes make the set of permitted subtypes KNOWN at compile time — the compiler can check switch exhaustiveness. **When?** During compilation, before the code ever runs. **Error:** `compile error: the switch expression does not cover all possible input values` — specifically naming `Triangle` as unhandled. **Why this matters:** Without sealed, you'd need a `default` case and could only get runtime failures. With sealed + pattern matching, you get compile-time exhaustiveness checking — the compiler FORCES you to handle every subtype. If you add `Diamond` to the sealed hierarchy later, every switch breaks at compile time — no silent bugs.\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
 <details><summary>Answer</summary>

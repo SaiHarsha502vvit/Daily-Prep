@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch41_SB_Architecture_Quality.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch43_SB_Auth_Security.md)
+**Navigation**: [< Previous](Ch41_SB_Architecture_Quality.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch43_SB_Auth_Security.md)
 
 # 🌐 SPRING BOOT MASTERY - Part 10: HTTP Deep Dive
 
@@ -159,10 +159,12 @@ _"Every API call is a journey through layers of protocols"_
 
 🔬 **Section Challenge — Chapter 2: HTTP Request Structure**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Debug — Who/When/What):** A client sends `Content-Type: application/json` but the body is actually form-encoded. **Who** first detects the mismatch in Spring Boot? **What** exception is thrown? **When** in the request lifecycle?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Who detects?** `HttpMessageConverter` selection inside `RequestMappingHandlerAdapter`. When your controller has `@RequestBody`, Spring picks the converter matching `Content-Type`. For `application/json`, it picks `MappingJackson2HttpMessageConverter`. **What exception?** `HttpMessageNotReadableException` — Jackson fails to parse form-encoded data as JSON. Spring's `DefaultHandlerExceptionResolver` translates this to HTTP 400 Bad Request. **When?** Before your controller method is called, during argument resolution. The converter reads the request body stream eagerly — if it fails, the method never executes.
+
 </details>
 
 
@@ -216,12 +218,14 @@ Content-Encoding │ gzip
 
 
 
-🔬 **Section Challenge — Anatomy Of An Http Request**
+🔬 **Section Challenge — Anatomy Of An HTTP Request**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Design — Who/When/What):** Between `Authorization: Bearer token` vs a cookie-based `session=xyz` — **who** validates each one? **When** does validation happen? **What** makes Bearer tokens stateless?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Bearer token (JWT):** Validated by the application server on every request. Spring Security's `JwtAuthenticationFilter` decodes and verifies the JWT signature + expiry. **When?** Before every protected endpoint — no DB lookup needed because all claims are inside the token. **Stateless** because the server stores NO session state — the token IS the identity. **Cookie session:** The `session=xyz` is a session ID. The server looks up the session in memory (or Redis). **When?** On every request, a DB/cache lookup occurs. **Stateful** — scaling horizontally requires sticky sessions or shared session storage. Bearer wins for microservices; sessions win for simple, low-scale web apps.
+
 </details>
 
 
@@ -231,10 +235,12 @@ HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still hea
 
 🔬 **Section Challenge — Chapter 3: HTTP Response Structure**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Reasoning — Who/When/What):** A response has `Cache-Control: max-age=3600`. **Who** caches it? **When** does the cache entry expire? **What** happens to subsequent requests within that hour?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Who caches?** The browser (or CDN/proxy if public). `Cache-Control: max-age=3600` without `public`/`private` defaults to private (browser only). Add `public` for CDN caching. **When expires?** 3600 seconds from the `Date` header timestamp. **What happens to subsequent requests?** The browser returns the cached response WITHOUT hitting the server — no network round-trip at all (200 from cache, shown as `(disk cache)` in DevTools). **Invalidation problem:** If you deploy a bug fix, cached clients still get the old response for up to 1 hour. Fix: use versioned URLs (`/api/v1/users`) and short TTLs, or `Cache-Control: no-cache` for dynamic data that must always be fresh.
+
 </details>
 
 
@@ -291,12 +297,14 @@ RESPONSE BODY
 
 
 
-🔬 **Section Challenge — Anatomy Of An Http Response**
+🔬 **Section Challenge — Anatomy Of An HTTP Response**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Debug — Who/When/What):** Your API returns 200 OK when creating a user instead of 201 Created. **What** is the practical impact? **Who** actually cares about the distinction?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Practical impact:** REST conventions say 201 = resource created + `Location` header with the new resource URL. Returning 200 omits both signals. **Who cares?** (1) API clients that check status codes for routing logic (e.g., a mobile app that reads the `Location` header to redirect). (2) OpenAPI/Swagger docs that document different status codes for different operations. (3) Monitoring systems that track 2xx but distinguish creation events. (4) Proxy servers that may cache 200 GET responses but not 201. **Fix in Spring Boot:** `return ResponseEntity.created(URI.create("/users/" + user.getId())).body(user)` — this sets 201 AND the `Location` header automatically.
+
 </details>
 
 
@@ -1632,10 +1640,13 @@ _Continue to Part 11: Authentication & Authorization_
 
 🔬 **Section Challenge — Chapter 12: HTTP Client Implementations**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Design — Who/When/What):** `RestTemplate` vs `WebClient` — both make HTTP calls. **Who** blocks the calling thread? **When** should you pick `WebClient` even in a non-reactive app? **What** does `WebClient.block()` do internally?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Who blocks?** `RestTemplate` always blocks the calling thread — it's synchronous. `WebClient` is non-blocking by default. **When pick WebClient in non-reactive?** (1) When you need reactive features like streaming, SSE, or connection pooling with backpressure. (2) RestTemplate is in maintenance mode since Spring 5 — new features only in WebClient. (3) When consuming microservices with variable latency — `WebClient` can aggregate multiple parallel calls with `Mono.zip()`. **What does `block()` do?** Subscribes to the reactive pipeline and blocks the current thread until the result arrives — similar to `CompletableFuture.get()`. You get the convenience of sync code while the underlying HTTP layer remains non-blocking. Downside: defeats reactive scalability — avoid in reactive contexts.
+
 </details>
+
 
 

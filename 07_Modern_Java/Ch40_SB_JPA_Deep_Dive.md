@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch37_SB_Controllers_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch41_SB_Architecture_Quality.md)
+**Navigation**: [< Previous](Ch37_SB_Controllers_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch41_SB_Architecture_Quality.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 8: JPA & Hibernate Deep Dive
 
@@ -1096,10 +1096,12 @@ public class EntityLifecycleDemo {
 
 🔬 **Section Challenge — Chapter 5: Entity Lifecycle & Persistence Context**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Debug — Who/When/What):** You load a `User` entity, modify `user.setEmail("new@email.com")`, and DON'T call `entityManager.save()`. The email IS updated in the database. **Who** detected and persisted the change? **When** does flush happen? **What** is the mechanism?
+
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+**Who?** JPA's **dirty checking** mechanism — the persistence context (first-level cache) stores a snapshot of every managed entity at load time. At flush, it compares current field values against the snapshot. **When flush happens:** By default `FlushModeType.AUTO` — before query execution (to avoid stale reads) and at transaction commit. So your modification is flushed at `@Transactional` method exit → `EntityManager.flush()` → `EntityManager.close()` → `UPDATE` SQL sent. **Mechanism:** Hibernate compares entity field by field (reflective snapshot). If ANY field changed → generates `UPDATE SET field=? WHERE id=?`. **When to be careful:** (1) In `@Transactional` methods — unintended mutations flush automatically. (2) For bulk updates, use JPQL `UPDATE` to bypass dirty checking overhead. (3) Use `entityManager.detach(entity)` to remove from persistence context and prevent dirty check.
+
 </details>
 
 
@@ -1197,11 +1199,7 @@ public class User {
 
 🔬 **Section Challenge — Chapter 6: Cascade Types**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-<details><summary>Answer</summary>
-
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Challenge 1 (Debug — Who/When/What):** `@OneToMany(cascade = CascadeType.ALL)` — you delete a `User` and ALL their `Orders` are deleted. **Who** issues the DELETE statements? **When** relative to the parent DELETE? **What** happens if an Order has FK references from another table?\n\n<details><summary>Answer</summary>\n\n**Who issues?** Hibernate's `DefaultDeleteEventListener`. CascadeType.REMOVE propagates `session.delete()` to each child entity. **When?** Children are deleted BEFORE the parent (to satisfy FK constraints). Hibernate traverses the cascade graph depth-first. **FK from another table?** If `order_items` table has `order_id` FK without `ON DELETE CASCADE`, Hibernate deletes `Order` but `order_items` still reference it → `ConstraintViolationException`. **Fix options:** (1) Add `orphanRemoval = true` + handle items in lifecycle. (2) Set `@OnDelete(action = OnDeleteAction.CASCADE)` on the DB constraint. (3) Remove items first in application code. **Warning:** `CascadeType.ALL` + `CascadeType.REMOVE` are often too aggressive — prefer explicit control of delete cascades.\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
 <details><summary>Answer</summary>

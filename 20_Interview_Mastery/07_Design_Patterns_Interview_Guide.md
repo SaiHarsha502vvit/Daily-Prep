@@ -70,16 +70,12 @@ MANAGE behavior?
 
 🔬 **Section Challenge — 1. The Pattern Selection Framework**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Reasoning — Who/When/What):** The Decision Map has 3 categories. In an interview, you're asked to design a notification system. **Who** uses which category? Trace your thought process: **what** pattern(s) from each category would you select and **when** do you combine them?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Creational:** Factory Method — `NotificationFactory.create("email")` creates the correct sender without the caller knowing the concrete class. **Structural:** Decorator — wrap notifications with `LoggingDecorator(RetryDecorator(sender))` to add logging and retry without modifying senders. **Behavioral:** Observer — users subscribe to event types; when an event fires, all subscribers are notified. Strategy — different delivery channels (email/SMS/push) are interchangeable strategies. **When combined?** The Factory creates the right Strategy, the Observer dispatches events to subscribers, and Decorators add cross-cutting concerns. This is how real notification systems (Spring Events + strategy injection) work.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -220,16 +216,12 @@ HttpRequest req = new HttpRequest.Builder("https://api.example.com/users")
 
 🔬 **Section Challenge — 2. Creational Patterns**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Debug — Who/When/What):** The Bill Pugh Singleton uses a static inner class `Holder`. **When** exactly does the JVM load the `Holder` class? **What** happens if two threads call `getInstance()` simultaneously? **Why** is this better than double-checked locking?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**When loaded?** Only when `getInstance()` is called for the first time — the JVM loads `Holder` class at that moment (lazy). Static inner classes are NOT loaded when the outer class loads. **Two threads simultaneously?** No problem. The JLS guarantees class initialization is thread-safe: the JVM acquires a lock internally during class loading. Only ONE thread initializes `Holder.INSTANCE`; the other waits. **Why better than DCL?** Double-checked locking requires `volatile` + explicit synchronization + 2 null checks — complex and error-prone. Bill Pugh achieves the same with zero application-level synchronization, leveraging JVM class-loading guarantees.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -400,16 +392,12 @@ public class ProxyImage implements Image {
 
 🔬 **Section Challenge — 3. Structural Patterns**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Trace — Who/When/What):** In the Decorator example: `new CompressionDecorator(new EncryptionDecorator(new FileDataSource("f")))`. When `writeData("secret")` is called, trace the exact execution order. **Who** runs first? **What** is the data at each step?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Call:** `compressionDecorator.writeData("secret")`. Step 1: CompressionDecorator compresses "secret" → "cmprsd". Step 2: Calls `encryptionDecorator.writeData("cmprsd")`. Step 3: EncryptionDecorator encrypts "cmprsd" → "x7k9m". Step 4: Calls `fileDataSource.writeData("x7k9m")`. Step 5: FileDataSource writes "x7k9m" to disk. **Key insight:** The outermost decorator runs first. On `readData()`, the order reverses: read raw → decrypt → decompress. This is why order matters: compress-then-encrypt ≠ encrypt-then-compress (compressed data has higher entropy, making encryption stronger).
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -650,16 +638,12 @@ chain.handle(new Request(5));  // → L2 handles it
 
 🔬 **Section Challenge — 4. Behavioral Patterns**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Design — Who/When/What):** The Chain of Responsibility example routes support tickets (L1 → L2 → L3). In Spring Security, the filter chain works similarly. **What** happens if NO handler in the chain can process the request? **Who** is responsible for the "no handler" case? Compare the two designs.
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Support ticket chain:** Falls through to the final `else` branch — prints "No handler." This is a SILENT failure. In production, this means a critical ticket gets dropped. **Spring Security chain:** Uses `FilterChainProxy` which has a default behavior: if no filter handles auth, the request is REJECTED with 401/403. The chain has an explicit terminal handler. **Key design difference:** Always have a "catch-all" at the end of the chain. Either (1) throw an exception (fail-fast), (2) use a default handler (`L3Support` that handles everything), or (3) return a meaningful error. Never silently drop requests.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -763,18 +747,14 @@ MAGIC NUMBERS:
 
 
 
-🔬 **Section Challenge — 6. Anti-Patterns (What NOT to Do)**
+🔬 **Section Challenge — 6. Anti-Patterns**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Reasoning — Who/When/What):** The anti-pattern list includes "God Class" and "Lava Flow." **When** in a project lifecycle does each typically emerge? **Who** introduces them? **What** specific refactoring pattern fixes each?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**God Class:** Emerges gradually during rapid feature development — "just add it to UserService" repeated 50 times. **Who?** Usually the whole team, incrementally. Nobody owns it, everyone adds to it. **Fix:** Extract Class refactoring guided by SRP — identify clusters of related methods, move them to dedicated classes. **Lava Flow:** Emerges after personnel changes — "I don't know what this code does, afraid to delete it." **Who?** The ABSENCE of the original author. **Fix:** Delete it. `git log` shows who wrote it and why. If no tests break, it's dead code. **Key insight:** God Class is a sin of COMMISSION (doing too much). Lava Flow is a sin of OMISSION (not cleaning up).
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 

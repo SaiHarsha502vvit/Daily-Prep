@@ -82,16 +82,12 @@ LEFT JOIN orders o ON u.user_id = o.user_id;
 
 🔬 **Section Challenge — 2. JOINs**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Freeze Moment — Who/When/What):** The query planner evaluates `orders (10M rows) INNER JOIN customers (50K rows) ON orders.customer_id = customers.id`. **Who** chooses the join algorithm? **When** will it use a Hash Join vs Nested Loop? **What** index would change the decision?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who chooses?** The query optimizer — it uses table statistics (row counts, cardinality, data distribution histograms) to estimate cost of each algorithm. **When Hash Join?** When neither join column has a useful index AND both tables are large. The optimizer loads `customers` (smaller table) into a hash map in memory, then streams `orders` rows and hashes `customer_id` to look up matches in O(1). Memory usage = size of smaller table. **When Nested Loop?** When `customers.id` is a PRIMARY KEY (and thus has a B-tree index). For each of the 10M `orders` rows, it does an index lookup on `customers` — O(log 50K) ≈ 16 operations. With index: nested loop wins. **Index that changes decision:** `INDEX ON orders(customer_id)` — now the optimizer can also use an index range scan from the `customers` side. Run `EXPLAIN ANALYZE` to see the chosen algorithm and actual vs estimated row counts.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 

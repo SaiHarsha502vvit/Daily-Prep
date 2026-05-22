@@ -289,16 +289,16 @@ COMMIT;
 
 🔬 **Section Challenge — T3: Lock Hierarchy & Escalation**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-<details><summary>Answer</summary>
+**Challenge 1 (Reasoning):** Why can one huge `UPDATE` hold far more locks, block more sessions, and create worse rollback risk than the same work in small committed batches?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+Locks live until the transaction commits or rolls back. A large update expands the lock footprint, increases undo/redo pressure, and can trigger escalation or long waits. Batching shortens lock lifetime, limits rollback size, and gives other transactions chances to progress between commits.
 </details>
 
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-<details><summary>Answer</summary>
+**Challenge 2 (Bug Hunt):** A nightly job updates millions of rows during peak traffic in one transaction. Users report timeouts. Name the likely lock problem and two fixes.
+<details><summary>Trace, Reasoning & Debug</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+The job is probably holding many row/page/table locks for too long, blocking interactive writes and sometimes reads depending on isolation level. Fix by batching by primary-key ranges, running off-peak, narrowing predicates with usable indexes, and committing between chunks. For critical systems, also add progress checkpoints and retry-safe idempotency.
 </details>
 
 
@@ -700,16 +700,12 @@ RED FLAGS in execution plans:
 
 🔬 **Section Challenge — T8: Join Algorithms — Reading Execution Plans Like a Senior**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Debug — Who/When/What):** You see `Hash Join (cost=45000 rows=5M)` in EXPLAIN. At 2AM, the query starts returning a disk spill warning. **Who** is spilling? **When** does a Hash Join fall back to disk? **What** are the tuning knobs?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who is spilling?** The hash table — the Hash Join algorithm builds an in-memory hash table from the smaller (build) side. If the build side exceeds available memory, it spills to disk using a grace hash join (partition the data into chunks, hash each chunk to disk, then join chunk by chunk). **When does it happen?** When the `work_mem` (PostgreSQL) or `join_buffer_size` (MySQL) is too small to hold the build side. At 2AM: possibly a spike in data volume (month-end batch), or concurrent queries consuming memory. **Tuning knobs:** (1) `SET work_mem = '256MB'` (PostgreSQL) for this session only — increases the hash table memory limit. (2) Add an index on the join column — optimizer may switch to Nested Loop (no memory pressure). (3) `ANALYZE tablename` — refresh statistics so optimizer gets accurate row estimates. (4) Consider partitioning the table if the join column has clear partition boundaries. Always check `pg_stat_statements` or `performance_schema` for the 5 most expensive queries.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 
@@ -730,4 +726,3 @@ It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id
 ---
 
 [⬅ Previous: 46_Interview_Scenarios_Part3](46_Interview_Scenarios_Explained_Part3.md) | [📚 Index](00_INDEX.md) | [Next: 48_Problem_Variants_Bank ➡](48_Problem_Variants_Bank.md)
-

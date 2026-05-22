@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
 🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md) — structured approach to any "Design X" question
 
 ---
@@ -78,16 +78,12 @@ flowchart LR
 
 🔬 **Section Challenge — High-Level Design**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Reasoning — Who/When/What):** In the URL shortener high-level design, why is Cache placed alongside the Database and not in front of the Load Balancer? **Who** reads from cache? **When** is the cache checked? **What** determines if it's a hit or miss?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Who?** The App Server, not the Load Balancer. The LB only routes TCP connections — it doesn't understand application semantics (which short URL maps to which long URL). **When?** After the App Server receives a redirect request (GET /abc123), it checks Redis FIRST. On hit: return 302 immediately (~1ms). On miss: query DB, populate cache for next time, return 302 (~10ms). **What determines hit/miss?** The short URL key's presence in Redis. The 80/20 rule applies: 20% of URLs get 80% of traffic, so caching hot URLs gives massive throughput gains with minimal memory.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -133,16 +129,20 @@ Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or
 
 🔬 **Section Challenge — Key Design Decisions**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Design):** Compare the 3 short URL generation approaches. If you're building for 100M URLs/month with zero collision tolerance, which approach do you pick and why? What's the trade-off you accept?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+**Pick: Pre-generated Key Service.** Why? Zero collisions (keys are pre-generated and unique). No DB lookup needed at generation time (just grab a key from the pool). Scales horizontally (each app server caches a batch of unused keys). **Trade-off:** Operational complexity — you need a separate key-generation service, two tables (used/unused), and a batch-refill mechanism. Auto-increment ID + Base62 is simpler but predictable (competitors can guess your URL count). Hash + Truncate has collision risk requiring retry loops. For 100M/month, pre-generated keys provide the best guarantees with acceptable complexity.
+
 </details>
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+**Challenge 2 (Reasoning):** Why does the design recommend HTTP 302 (temporary redirect) over 301 (permanent) for analytics, even though 301 reduces server load? Use the Who/When/What framework.
+
 <details><summary>Answer</summary>
 
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+**Who makes the redirect decision?** With 301: the BROWSER caches the redirect permanently. On subsequent clicks, the browser goes directly to the long URL — the server never sees the request. **When is the server bypassed?** Every click after the first. **What is lost?** All click analytics: click count, geographic distribution, referrer data, device info. With 302: every click hits the server first, the server logs analytics, THEN redirects. **The trade-off:** 302 costs more server load but gives complete analytics. For a URL shortener where analytics IS the product (bit.ly's business model), 302 is essential.
+
 </details>
 
 

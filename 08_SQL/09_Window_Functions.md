@@ -1,4 +1,4 @@
-﻿**SQL Chapter 09/20** | [← Previous](08_Subqueries_CTEs.md) | [Index](../00_MASTER_INDEX.md) | [Next →](10_Normalization.md)
+**SQL Chapter 09/20** | [← Previous](08_Subqueries_CTEs.md) | [Index](../00_MASTER_INDEX.md) | [Next →](10_Normalization.md)
 
 ---
 
@@ -927,16 +927,20 @@ WHERE c.customer_id IN (
 
 🔬 **Section Challenge — Chapter 1: Understanding JOINs**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Bug Hunt — Who/When/What):** `SELECT * FROM orders o LEFT JOIN customers c ON o.customer_id = c.id WHERE c.country = 'US'`. **Who** gets excluded? **When** does a LEFT JOIN silently become an INNER JOIN? **What** is the fix?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
+**Who gets excluded?** Orders with no matching customer — the very rows LEFT JOIN is supposed to keep. The `WHERE c.country = 'US'` filter on the right-side table eliminates NULL rows (because `NULL = 'US'` is NULL, not TRUE). **When does it happen?** Any time you put a filter condition on the RIGHT table's column in the WHERE clause of a LEFT JOIN. **What is the fix?** Move the condition into the ON clause: `LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US'`. This keeps orders with no customer (c.country = NULL for them) AND only matches US customers for those with a customer. **Rule:** Filter on LEFT table in WHERE. Filter on RIGHT table in ON.
+
 </details>
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+**Challenge 2 (Design — Who/When/What):** `customers LEFT JOIN orders` vs `orders LEFT JOIN customers` — **who** is preserved in each? **When** would you choose each? **What** if you need both sides?
+
 <details><summary>Answer</summary>
 
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+**`customers LEFT JOIN orders`:** ALL customers preserved, even those with no orders. Orders without a customer are excluded. Use when: "show me all customers, even inactive ones." **`orders LEFT JOIN customers`:** ALL orders preserved, even orphan orders with no customer. Customers with no orders are excluded. Use when: "show me all orders, flag which ones have a missing customer." **Need both sides?** `FULL OUTER JOIN` (PostgreSQL, SQL Server). In MySQL: `LEFT JOIN UNION RIGHT JOIN`. Or use a proper data integrity constraint (FK) to prevent orphan orders in the first place.
+
 </details>
 
 

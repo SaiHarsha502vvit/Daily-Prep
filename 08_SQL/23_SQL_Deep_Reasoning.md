@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](22_NoSQL_MongoDB.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_SQL_Data_Analyst_RealWorld.md)
+**Navigation**: [< Previous](22_NoSQL_MongoDB.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](24_SQL_Data_Analyst_RealWorld.md)
 
 # Chapter 23 — SQL Deep Reasoning: The Questions That Freeze People
 
@@ -330,10 +330,12 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 
 🔬 **Section Challenge — 6. Deadlocks: Why Two Transactions Can Freeze Each Other**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (Debug — Who/When/What):** Transaction A holds a lock on `accounts row id=1` and requests `accounts row id=2`. Transaction B holds `row id=2` and requests `row id=1`. **Who** breaks the deadlock? **When** does the database detect it? **What** can you do at the application level to prevent it?
+
 <details><summary>Answer</summary>
 
-READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
+**Who breaks it?** The database's **deadlock detector** — it periodically checks the wait-for graph (a directed graph where an edge means "T1 is waiting for T2"). When it detects a cycle, it picks a **victim** (usually the transaction that has done the least work) and rolls it back with `ERROR: deadlock detected`. **When detected?** Typically within milliseconds — MySQL checks every `innodb_deadlock_detect` interval (default: on). **Application-level prevention:** (1) **Lock in consistent order** — always lock account IDs in ascending order: `WHERE id IN (1, 2) ORDER BY id FOR UPDATE`. If both T1 and T2 lock row 1 first, one blocks until the other commits — no cycle. (2) **Keep transactions short** — release locks faster. (3) **Retry on deadlock** — catch `SQLTransactionRollbackException` and retry with exponential backoff. Spring `@Retryable` + `@Transactional` handles this cleanly.
+
 </details>
 
 

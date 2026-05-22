@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch36_SB_Service_Repository.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch40_SB_JPA_Deep_Dive.md)
+**Navigation**: [< Previous](Ch36_SB_Service_Repository.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch40_SB_JPA_Deep_Dive.md)
 
 # 🌱 SPRING BOOT MASTERY - Part 7: Controllers & REST API Architecture
 
@@ -166,11 +166,7 @@ public class UserController {
 
 🔬 **Section Challenge — Chapter 2: HTTP Method Mappings**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-<details><summary>Answer</summary>
-
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-</details>
+**Challenge 1 (Debug — Who/When/What):** Your `@GetMapping` returns an object, but the client receives XML instead of JSON. **Who** selected XML? **When** is the content type decided? **What** controls the priority?\n\n<details><summary>Answer</summary>\n\n**Who selects?** Spring's `ContentNegotiationManager`, which evaluates the `Accept` header. If the client sends `Accept: application/xml` and your app has Jackson XML on the classpath, Spring returns XML. **When decided?** During handler adapter processing, before serialization — `HttpMessageConverter` selection happens after the controller method returns. **Priority:** (1) `Accept` header from client, (2) URL extension (deprecated), (3) request parameter (`?format=json`). **Fix:** If you ALWAYS want JSON, either: configure `ContentNegotiationConfigurer.defaultContentType(MediaType.APPLICATION_JSON)`, or add `produces = "application/json"` to your `@GetMapping`. Remove Jackson XML from classpath if XML responses are unintended.\n\n</details>
 
 
 ## Chapter 3: Request Parameters

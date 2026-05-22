@@ -234,11 +234,7 @@ HTTPS = HTTP + TLS/SSL encryption
 
 🔬 **Section Challenge — 5. HTTP / HTTPS — What Developers Use Most**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-<details><summary>Answer</summary>
-
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-</details>
+**Challenge 1 (Reasoning — Who/When/What):** HTTPS adds a TLS handshake before data flows. **Who** performs it? **When** does it happen? **What** is the performance impact in modern TLS 1.3 vs TLS 1.2?\n\n<details><summary>Answer</summary>\n\n**Who performs?** Client and server together — the client sends a `ClientHello`, server responds with its certificate + chosen cipher suite, then keys are exchanged. **When?** On the FIRST TCP connection to a server (or after connection timeout). Subsequent requests on the same connection (HTTP keep-alive or HTTP/2) reuse the already-negotiated TLS session. **TLS 1.2:** 2 round-trips before data (1 for TCP, 1 for TLS) — ~200ms on transatlantic connections. **TLS 1.3:** Only 1 round-trip for new connections; supports **0-RTT** (zero round-trip) for resumed sessions — client sends data in the FIRST packet. **Practical impact:** Modern HTTPS with HTTP/2 + TLS 1.3 has negligible overhead vs HTTP, often faster due to binary protocol + HPACK compression.\n\n</details>
 
 
 ## 6. DNS — How Names Become IP Addresses

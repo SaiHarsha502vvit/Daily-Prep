@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch60_SB_Testing_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch60_SB_Testing_Advanced.md)
 
 ---
 
@@ -116,8 +116,13 @@ Post-Release   │ 1000x           │ $100,000+ to fix
 
 🔬 **Section Challenge — Testing Philosophy**
 
-**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
+**Challenge 1 (Philosophy — Who/When/What):** The "Test Pyramid" principle says: many unit tests, fewer integration tests, fewest E2E tests. A team inverts it (many E2E, few unit tests). **Who** suffers the most? **When** does the inversion reveal its cost? **What** is the concrete pain point in their CI pipeline?
+
 <details><summary>Answer</summary>
+
+**Who suffers:** The development team's feedback loop. E2E tests run the entire stack (browser, API, DB, external services). **When the cost reveals itself:** (1) At CI run time — E2E suite takes 45 minutes vs. unit suite taking 45 seconds. Every PR blocks for 45 minutes. (2) At failure time — E2E test failure says "checkout failed" but doesn't tell you which of 500 lines of code caused it. Root cause hunting takes hours. **Concrete CI pipeline pain:** (1) Flaky tests — E2E tests fail due to network timeouts, browser rendering delays, test data contamination. 15% failure rate means 15% of PRs require manual retries. (2) Slow feedback — developers switch context to another task while waiting; bugs are found hours after the code was written. (3) Expensive parallelism — running 100 browser instances in CI costs 100x a unit test runner. **Unit tests are cheap because:** they test ONE unit in isolation, run in-memory, take milliseconds, and pinpoint exactly which function broke.
+
+</details>
 
 `@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
@@ -158,8 +163,13 @@ Recommended Ratio: 70% Unit : 20% Integration : 10% E2E
 
 🔬 **Section Challenge — Testing Pyramid**
 
-**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
+**Challenge 1 (Layer Identification):** You have a `PaymentService` that calls `StripeClient.charge()` and `OrderRepository.save()`. Categorize these 4 tests by pyramid layer and justify: (A) Test `PaymentService.process()` with mocked `StripeClient` and `OrderRepository`. (B) Test the HTTP endpoint `POST /pay` using `MockMvc`. (C) Test `OrderRepository.save()` against a real H2 DB. (D) Test the full checkout flow via browser.
+
 <details><summary>Answer</summary>
+
+**(A) Mock-based PaymentService test → Unit Test.** Only `PaymentService` is real. All dependencies mocked. Tests business logic in isolation. Fast, deterministic. **(B) MockMvc endpoint test → Integration Test (slice).** Tests the HTTP layer (request mapping, validation, response serialization) without a real server. `@WebMvcTest` loads only the web layer. Medium speed. **(C) Repository against H2 → Integration Test (slice).** Tests JPA mapping, queries, and DB behavior. `@DataJpaTest` spins up H2 and JPA layer only. Medium speed. **(D) Browser checkout flow → End-to-End Test.** Full stack: browser + frontend + API + DB + Stripe sandbox. Slowest, most brittle, most realistic. **Pyramid implication:** You should have 100s of type-A tests, 20-30 of type-B/C, and 5-10 of type-D. The pyramid shape = test count (wide base = many unit tests).
+
+</details>
 
 `@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
@@ -491,8 +501,13 @@ class UserServiceNestedTest {
 
 🔬 **Section Challenge — Unit Testing with JUnit 5**
 
-**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
+**Challenge 1 (JUnit 5 Mechanics):** You use `@ParameterizedTest` with `@MethodSource` to test `discountCalculator.apply(price, tier)` for 10 input/output pairs. **Who** runs each parameter set, **when** does a single failing case stop the test, and **what** is the difference between `@MethodSource` and `@CsvSource` for this use case?
+
 <details><summary>Answer</summary>
+
+**Who runs each set:** JUnit 5's `ParameterizedTestExtension` — it invokes the test method once per parameter set, each as a separate test case with its own pass/fail status. **When a failing case stops:** NEVER by default — each parameter set is independent. A failure in case 3 doesn't cancel cases 4-10. All 10 run. This is the major advantage over a for-loop inside a test: a loop stops at the first assertion failure. **@MethodSource vs @CsvSource:** `@MethodSource("discountCases")` points to a static `Stream<Arguments>` factory method — can use complex Java objects, computed values, external data files. Best when inputs need logic to construct. `@CsvSource({"100,GOLD,85", "50,SILVER,45", ...})` is inline CSV strings parsed at runtime — quick for simple primitive inputs, readable in one place. Limitation: can only use types that JUnit can convert from String (int, long, double, String, enum). For complex types (custom objects), `@MethodSource` is mandatory.
+
+</details>
 
 `@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
@@ -842,8 +857,13 @@ class SpecificConfigTest {
 
 🔬 **Section Challenge — Spring Boot Test Annotations**
 
-**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
+**Challenge 1 (Annotation Selection):** You have 4 test scenarios. **What** annotation (and why) for each: (A) Test only the JPA repositories against a real DB. (B) Test a REST controller's input validation. (C) Test the full application context including all beans. (D) Test a service with real Spring DI but mocked external HTTP calls.
+
 <details><summary>Answer</summary>
+
+**(A) `@DataJpaTest`:** Loads only JPA entities, repositories, and an embedded DB (H2 by default). Auto-configures `TestEntityManager`. No controllers, no services, no security. Fastest for repository testing. **(B) `@WebMvcTest(UserController.class)`:** Loads only the specified controller, `HandlerMapping`, `Converter`, `Filter`, security config. NO service beans (must be mocked with `@MockBean`). Tests HTTP request parsing, `@Valid` constraints, response serialization without starting a server. **(C) `@SpringBootTest`:** Full application context — all beans, all auto-configuration, optionally a real embedded server (`webEnvironment=RANDOM_PORT`). Slowest, most realistic. Use sparingly. **(D) `@SpringBootTest` + `@MockBean HttpClient`:** Load the full context but replace the external HTTP client with a mock. Alternatively, use `@SpringBootTest` with WireMock (stub HTTP server) for realistic external API mocking. **Decision tree:** DB only → `@DataJpaTest`. HTTP layer only → `@WebMvcTest`. Everything → `@SpringBootTest`. Slice + mock externals → `@SpringBootTest` + `@MockBean`.
+
+</details>
 
 `@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
@@ -1048,8 +1068,13 @@ class OrderServiceTest {
 
 🔬 **Section Challenge — Service Layer Testing**
 
-**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
+**Challenge 1 (Mockito Mechanics — Who/When/What):** You mock `userRepository.findById(1L)` to return `Optional.of(user)`. But your test fails because `userRepository.findById(2L)` is called instead. **Who** called with `2L`? **When** does Mockito's default behavior kick in for unmocked calls? **What** is the exact default return for an unmocked `Optional` method?
+
 <details><summary>Answer</summary>
+
+**Who called with 2L:** Your service's internal logic — perhaps the ID passed to the service is transformed (e.g., `userId + 1`, or fetched from a mocked session object that returns 2 instead of 1). **When default behavior kicks in:** Any call to a mock method that wasn't explicitly stubbed falls back to Mockito's default. **Default returns by type:** `int/long/double/float` → 0. `boolean` → false. `Object` → null. `Optional` → `Optional.empty()` (Mockito 2+ uses RETURNS_EMPTY_OPTIONALS for Optional). `List/Collection` → empty collection. **The exact default for Optional:** `Optional.empty()` — NOT `Optional.of(null)` (which would throw NPE), NOT null. **Debugging approach:** Use `Mockito.verify(userRepository).findById(anyLong())` FIRST to see what ID was actually passed. Alternatively, use `Mockito.RETURNS_SMART_NULLS` when creating the mock — it provides descriptive errors instead of NPEs when you access unstubbed return values.
+
+</details>
 
 `@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
@@ -1204,8 +1229,13 @@ class UserRepositoryH2Test {
 
 🔬 **Section Challenge — Repository Layer Testing**
 
-**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
+**Challenge 1 (DataJpaTest Mechanics):** You use `@DataJpaTest` and `TestEntityManager.persistAndFlush(user)` to save a user. Your custom query `@Query("SELECT u FROM User u WHERE u.email = :email")` is being tested. **Who** manages the transaction? **When** is the flush needed? **What** happens if you test without `flush()` and just use `persist()`?
+
 <details><summary>Answer</summary>
+
+**Who manages the transaction:** `@DataJpaTest` wraps each test in a transaction that is ROLLED BACK after the test (default `@Transactional` with rollback=true). So your test data never pollutes the DB across tests. **When flush is needed:** `flush()` sends the INSERT SQL to the DB immediately. Without it, the INSERT may only be in the persistence context (first-level cache) — not yet in the actual H2 tables. Your JPQL query `SELECT u FROM User u WHERE...` goes through JPQL, which triggers a flush anyway (Hibernate's AUTO flush mode flushes before queries). BUT `nativeQuery=true` queries bypass JPQL — they hit the raw DB and will NOT see unflushed data. **What happens without flush for native queries:** The native `SELECT * FROM users WHERE email = ?` finds 0 rows because the INSERT hasn't been sent to H2 yet. The test falsely asserts the query is broken. **Best practice:** Always use `persistAndFlush()` (not just `persist()`) in `@DataJpaTest` to guarantee the DB state is visible to all query types before assertions.
+
+</details>
 
 `@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>
@@ -1348,8 +1378,13 @@ class UserControllerTest {
 
 🔬 **Section Challenge — Controller Layer Testing**
 
-**Challenge 1 (Reasoning):** What is the fundamental difference between `@Mock` and `@InjectMocks` in a pure unit test?
+**Challenge 1 (MockMvc Trace — Who/When/What):** You test `POST /users` with `MockMvc`. The request body is `{"name": ""}` (empty name). Your controller has `@Valid @RequestBody CreateUserRequest req`. **Who** validates the request? **When** does the validation run relative to the controller method? **What** is the exact MockMvc assertion to verify a 400 with the field error message?
+
 <details><summary>Answer</summary>
+
+**Who validates:** `MethodArgumentNotValidException` is thrown by `HandlerMethodArgumentResolver` during argument resolution — BEFORE the controller method body executes. The `@Valid` annotation triggers Bean Validation (Hibernate Validator). **When it runs:** In the Spring MVC request processing chain: `DispatcherServlet` → `HandlerAdapter` → `HandlerMethodArgumentResolver.resolveArgument()` → Bean Validation → if invalid, throw `MethodArgumentNotValidException` (mapped to 400) → controller method NEVER executes. **MockMvc assertion:** `mockMvc.perform(post("/users").contentType(APPLICATION_JSON).content("{\"name\":\"\"}")).andExpect(status().isBadRequest()).andExpect(jsonPath("$.errors[0].field").value("name")).andExpect(jsonPath("$.errors[0].message").value("must not be blank"))` — assuming your `@ControllerAdvice` formats errors as `{errors: [{field, message}]}`. **Key insight:** `@WebMvcTest` automatically includes `@ControllerAdvice` beans, so your global exception handler IS active during the test. You're testing the real HTTP error response format, not just that an exception was thrown.
+
+</details>
 
 `@Mock` creates a fake, empty shell of a dependency (a proxy returning nulls/defaults). `@InjectMocks` creates the *real* instance of the class you are testing, and uses reflection to automatically inject the `@Mock` instances into its constructor or fields. It eliminates the need to manually instantiate the target class and wire its mock dependencies via `new MyService(mockRepo)`.
 </details>

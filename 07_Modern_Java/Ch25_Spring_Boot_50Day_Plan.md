@@ -226,11 +226,7 @@ JDK Dynamic Proxies require the target class to implement an interface. If your 
 
 🔬 **Section Challenge — Week 2: AOP + HTTP + Building APIs**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-<details><summary>Answer</summary>
-
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-</details>
+**Challenge 1 (Trace — Who/When/What):** You add `@Transactional` to a private method in your `@Service`. The transaction silently doesn't work. **Who** creates the proxy? **When?** **Why** can't the proxy intercept private methods?\n\n<details><summary>Answer</summary>\n\n**Who creates proxy?** Spring's `AbstractAutoProxyCreator` BeanPostProcessor, triggered during bean initialization. **When?** At ApplicationContext startup — before any HTTP requests are served. **Why private methods not intercepted?** Spring uses either JDK proxies (interface-based) or CGLIB (subclass-based). CGLIB generates a subclass at runtime. Subclasses CANNOT override `private` methods in Java — it's a JVM rule. So the proxy subclass has no way to intercept the private method call. **The deeper issue:** Even `this.privateMethod()` bypasses the proxy — the call goes directly to the real object, not through the proxy. Fix: either make the method `public`/`protected`, or extract to a separate Spring bean (self-injection).\n\n</details>
 
 
 ## Week 3: JPA Deep Dive + Data Access

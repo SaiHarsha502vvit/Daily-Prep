@@ -370,8 +370,13 @@ dogs.sort(byName);  // ✅ sort() accepts Comparator<? super Dog>
 
 🔬 **Section Challenge — 4. Invariance, Covariance & Contravariance — The Big Picture**
 
-**Challenge 1 (Reasoning):** What is Type Erasure in Java Generics, and why does `List<String>` become a raw `List` at runtime?
+**Challenge 1 (Array vs Generic Variance):** The code shows `Animal[] animals = new Dog[3]` COMPILES, then `animals[1] = new Cat()` throws `ArrayStoreException` at RUNTIME. **Who** detects the problem in arrays vs. generics? **When** does each catch it? **What** made Java choose invariant generics but covariant arrays?
+
 <details><summary>Answer</summary>
+
+**Who detects:** Arrays — the JVM at runtime (every array assignment triggers an `ArrayStore` check). Generics — the Java compiler at compile time. **When caught:** Arrays: when you actually try to store an incompatible element (`animals[1] = new Cat()`). Generics: when you write `List<Animal> = new ArrayList<Dog>()` — before your code even runs. **Why covariant arrays:** Java 1.0 (1995) had no generics. Covariant arrays were needed to write generic methods like `Arrays.sort(Object[])` — without generics, you needed `Dog[]` to be usable as `Object[]`. It was a pragmatic design compromise. **Why invariant generics (Java 5, 2004):** By 2004, the language designers knew covariant arrays was a mistake. Generics were designed to be compile-time safe. Making them invariant by default prevents the Cat-in-Dog's-list class of bugs at compile time. Wildcards (`? extends`, `? super`) provide opt-in flexibility when needed.
+
+</details>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
 </details>
@@ -491,16 +496,12 @@ max(10, 20);              // 20 — Integer implements Comparable
 
 🔬 **Section Challenge — 6. Generic Methods — Type Inference**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Design — Who/When/What):** `Collections.sort(list)` infers `T` automatically. **Who** performs the type inference? **When** (compile time or runtime)? **What** happens if the list contains mixed types like `List<Object>` with both `String` and `Integer`?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Who?** The Java compiler's type inference engine (`javac`). **When?** Compile time — type inference is purely a compile-time process. At runtime there is no T. **Mixed types `List<Object>`:** `sort()` signature is `<T extends Comparable<? super T>> void sort(List<T> list)`. For `List<Object>`, T=Object. But `Object` does NOT implement `Comparable` — compile error! At runtime, if you bypassed this with a raw List, you'd get `ClassCastException` when comparing `String` to `Integer`. The compiler's type bound `extends Comparable` exists precisely to prevent this class of bug at compile time.
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 </details>
 
 
@@ -615,16 +616,12 @@ list.stream()
 
 🔬 **Section Challenge — 8. Type Inference Evolution**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Reasoning — Who/When/What):** Java 10 introduced `var`. `var list = new ArrayList<String>()` works. But `var list = new ArrayList<>()` gives a raw type warning. **Why?** **What** type does the compiler infer?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Why?** With `var`, the compiler infers the type from the right-hand side. `new ArrayList<String>()` — compiler knows T=String, so `var` = `ArrayList<String>`. `new ArrayList<>()` — the diamond `<>` infers T from context. But with `var`, there IS no context on the left side to infer from. The compiler defaults to `ArrayList<Object>` (raw erasure). **What's inferred?** `ArrayList<Object>` — you lose type safety. **Fix:** Always specify the type argument with `var`: `var list = new ArrayList<String>()` or use explicit type: `List<String> list = new ArrayList<>()`. Rule: `var` and `<>` should not be used together.
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 </details>
 
 
@@ -636,10 +633,12 @@ NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure).
 
 🔬 **Section Challenge — PART 2: EXCEPTION HANDLING — Beyond try-catch**
 
-**Challenge 1 (Reasoning):** What is Type Erasure in Java Generics, and why does `List<String>` become a raw `List` at runtime?
+**Challenge 1 (Trace — Who/When/What):** A `RuntimeException` thrown in a `@Transactional` method — **who** catches it first? **When** does the transaction roll back? **What** state is the database in if the exception is swallowed by a caller?
+
 <details><summary>Answer</summary>
 
-Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
+**Who catches first?** Spring's `TransactionInterceptor` (the AOP advice around the method). It inspects the exception type and the `rollbackFor`/`noRollbackFor` rules. **When rollback?** Default: rolls back on `RuntimeException` and `Error`, commits on `Exception` (checked). So unchecked exceptions = automatic rollback, checked exceptions = commit (unless overridden with `@Transactional(rollbackFor = Exception.class)`). **If swallowed?** The TransactionInterceptor only acts on exceptions that ESCAPE the `@Transactional` method. If a caller catches and swallows, the transaction COMMITS even though the operation partially failed — data corruption. Never swallow exceptions inside transactional boundaries.
+
 </details>
 
 
@@ -825,8 +824,13 @@ record ErrorResponse(String code, String message) {}
 
 🔬 **Section Challenge — 11. Exception Translation — Layer Boundaries**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+**Challenge 1 (Translation Design):** A `DataAccessException` (Spring's unchecked DB exception) leaks into the Controller layer. **Who** translates it? **When** should translation happen? **What** is the anti-pattern of catching `DataAccessException` directly in the Controller?
+
 <details><summary>Answer</summary>
+
+**Who translates:** The SERVICE layer. `Repository` → throws `DataAccessException` (Spring wraps all JDBC/JPA exceptions). `Service` → catches it and throws a domain-specific `DatabaseOperationException` or `UserNotFoundException`. The service layer knows the business context ("user not found" vs. "DB constraint violation"). **When translation happens:** At LAYER BOUNDARIES. DB exception should never cross from Repository to Controller. The rule: each layer should only know about its own exception vocabulary. **Anti-pattern of catching in Controller:** (1) Violates Separation of Concerns — the Controller now knows about DB internals. (2) Makes the Controller layer tightly coupled to the persistence layer. (3) The `@ControllerAdvice` can't handle `DataAccessException` uniformly because different services have different contexts for the same exception type. **Correct pattern:** Service catches `DataAccessException`, analyzes the cause (ConstraintViolation vs. connection timeout), and rethrows the right domain exception. Controller only handles domain exceptions.
+
+</details>
 
 `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
 </details>
@@ -1002,8 +1006,13 @@ User user = retry(() -> userService.fetchFromExternalApi(id), 3, Duration.ofSeco
 
 🔬 **Section Challenge — 13. Exception Handling Patterns**
 
-**Challenge 1 (Reasoning):** What is Type Erasure in Java Generics, and why does `List<String>` become a raw `List` at runtime?
+**Challenge 1 (Pattern Selection):** You have a `sendEmail()` method that throws `SmtpException` (transient network error) and `InvalidAddressException` (permanent user error). **What** exception handling pattern fits each? **Who** decides whether to retry? **When** do you stop retrying?
+
 <details><summary>Answer</summary>
+
+**`SmtpException` (transient) → Retry with Exponential Backoff:** Transient failures (network timeout, SMTP server overloaded) recover on retry. Pattern: `int attempts = 0; while (attempts < maxRetries) { try { sendEmail(); break; } catch (SmtpException e) { sleep(Math.pow(2, attempts++) * baseDelay); } }`. **`InvalidAddressException` (permanent) → Fail Fast:** Never retry. An invalid email address won't become valid. Immediately translate to a user-facing error (`400 Bad Request`). Retrying wastes resources and delay. **Who decides whether to retry:** The exception TYPE and optionally a `retryable` flag in the exception. Some systems use `@Retryable(SmtpException.class)` (Spring Retry) to declaratively mark retryable operations. **When to stop retrying:** (1) Max attempts reached. (2) Total timeout exceeded (circuit breaker). (3) The exception type changes from transient to permanent mid-retry (e.g., `AuthException` thrown on retry — stop immediately). Exponential backoff with jitter prevents thundering herd: `delay = baseDelay * 2^attempt + random(0, baseDelay)`.
+
+</details>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
 </details>
@@ -1095,8 +1104,13 @@ Rules:
 
 🔬 **Section Challenge — 16. The Complete Exception Strategy**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+**Challenge 1 (Strategy Audit):** You review code: `catch (Exception e) { throw new ServiceException("Failed", e); }`. **Who** loses information? **When** does this pattern become dangerous in a monitoring context? **What** two fields should every wrapper exception carry?
+
 <details><summary>Answer</summary>
+
+**Who loses information:** The monitoring/alerting system. `ServiceException("Failed", e)` wraps but the message "Failed" is generic. If the same wrapper is used for 50 different failure modes, logs show 50 identical "Failed" errors with no discrimination. **When dangerous in monitoring:** When you can't distinguish between `OutOfMemoryError` (critical) and `UserNotFoundException` (normal) from the same `ServiceException("Failed")` without reading the full stack trace. Alert rules can't work on generic messages. **Two mandatory fields for wrapper exceptions:** (1) `errorCode` (String or Enum) — machine-readable, unique per failure type (`"USER_NOT_FOUND"`, `"DB_TIMEOUT"`). Used for alert routing, retry decisions, and client error messages. (2) `correlationId` (String) — the request trace ID (from MDC/Span). Links the exception to the full distributed trace in logs. `throw new ServiceException("USER_NOT_FOUND", MDC.get("requestId"), "User not found", cause);` — this is a complete, monitorable exception.
+
+</details>
 
 `Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
 </details>
@@ -1210,8 +1224,13 @@ public void doWork() throws InterruptedException {
 
 🔬 **Section Challenge — 18. Exceptions in Multithreaded Code — The Hidden Traps**
 
-**Challenge 1 (Reasoning):** What is Type Erasure in Java Generics, and why does `List<String>` become a raw `List` at runtime?
+**Challenge 1 (Thread Propagation Trace):** You submit `() -> { throw new RuntimeException("task failed"); }` to an `ExecutorService`. **Who** catches the exception? **When** does the calling thread see it? **What** happens if you never call `future.get()`?
+
 <details><summary>Answer</summary>
+
+**Who catches:** The `ForkJoinPool`'s worker thread framework. The exception is caught inside the thread's run loop and stored in the `Future` object. It does NOT propagate to the submitting thread immediately. **When calling thread sees it:** ONLY when `future.get()` is called. `get()` throws `ExecutionException` wrapping the original `RuntimeException`. If you use `future.get(timeout, unit)` and timeout expires, you get `TimeoutException` instead. **What happens if `future.get()` never called:** The exception is SILENTLY SWALLOWED. The task failed, the exception was stored in the `Future`, but since nobody called `get()`, nobody ever saw it. This is the #1 bug in concurrent code — "fire and forget" tasks that fail silently. **Prevention patterns:** (1) Always call `future.get()` in a try-catch. (2) Register a callback: `CompletableFuture.supplyAsync(...).exceptionally(e -> { log.error(...); return fallback; })`. (3) Use a custom `ThreadFactory` that sets an `UncaughtExceptionHandler` on threads to log unhandled exceptions.
+
+</details>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
 </details>
@@ -1279,8 +1298,13 @@ public AsyncUncaughtExceptionHandler asyncUncaughtExceptionHandler() {
 
 🔬 **Section Challenge — 19. Exceptions in CompletableFuture — Async Exception Handling**
 
-**Challenge 1 (Reasoning):** What is Type Erasure in Java Generics, and why does `List<String>` become a raw `List` at runtime?
+**Challenge 1 (Chain Behavior):** `CompletableFuture.supplyAsync(() -> fetchUser(id)).thenApply(user -> enrich(user)).exceptionally(e -> fallback)`. If `fetchUser()` throws, **who** handles it? **When** does `thenApply()` run? **What** value does the final `.get()` return?
+
 <details><summary>Answer</summary>
+
+**Who handles it:** `exceptionally(e -> fallback)` at the END of the chain. When `fetchUser()` throws, the exception propagates through the chain. **When `thenApply()` runs:** NEVER. `thenApply()` only runs on SUCCESS. When `fetchUser()` throws, the stage is completed exceptionally, and `thenApply` is skipped entirely (like a short-circuit). **What `.get()` returns:** The `fallback` value returned by `exceptionally`. The chain recovers at the `exceptionally` stage and produces a normal value. **Contrast with `handle()`:** `handle((result, ex) -> ...)` runs for BOTH success AND failure (like a `finally` that can transform). Use `handle` when you always need to do something regardless of outcome. **The pattern:** `exceptionally` = catch and recover (replace exception with value). `handle` = catch and transform (inspect both result and exception). `whenComplete` = side effect regardless of outcome (doesn't transform result).
+
+</details>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
 </details>
@@ -1433,8 +1457,13 @@ always chain the original cause, **and handle UncaughtExceptionHandler in every 
 
 🔬 **Section Challenge — 20. Spring Boot Global Exception Handling — Complete Strategy**
 
-**Challenge 1 (Reasoning):** What is Type Erasure in Java Generics, and why does `List<String>` become a raw `List` at runtime?
+**Challenge 1 (Resolution Order):** Your `@ControllerAdvice` has two `@ExceptionHandler` methods: one for `ResourceNotFoundException` and one for `ApplicationException` (its parent). A `ResourceNotFoundException` is thrown. **Who** decides which handler fires? **When** do both handlers run? **What** happens if you have two `@ControllerAdvice` classes both handling the same exception type?
+
 <details><summary>Answer</summary>
+
+**Who decides:** Spring's `ExceptionHandlerExceptionResolver`. It searches for the MOST SPECIFIC exception handler matching the thrown exception type. Since `ResourceNotFoundException extends ApplicationException`, it picks the `ResourceNotFoundException` handler first (most specific match). **When both handlers run:** NEVER for the same exception — only the most specific handler fires. **If two `@ControllerAdvice` classes handle the same type:** The one with higher `@Order` priority (lower number = higher priority) wins. Default: undefined order. **Production problem:** Two teams add a `@ControllerAdvice` for `Exception.class` in different modules. Both are loaded. The one that wins is unpredictable by `@Order`. **Fix:** Have ONE canonical `@ControllerAdvice` with a clear hierarchy. Mark it `@Order(Ordered.HIGHEST_PRECEDENCE)`. For library code, use `@Order(Ordered.LOWEST_PRECEDENCE)` to be overridable. **Handler method resolution:** Spring first checks the controller class itself for `@ExceptionHandler`, then checks `@ControllerAdvice` beans in priority order.
+
+</details>
 
 Backward Compatibility. Generics were introduced in Java 5. To ensure that new code compiled with Generics could still run on older JVMs (Java 1.4), the compiler strips away all Generic type information (`<String>`) during compilation. At runtime, the JVM only sees a raw `List` of `Object`s. The compiler simply inserts hidden casting instructions (`(String) list.get(0)`) where necessary. This is why you cannot do `if (obj instanceof List<String>)` at runtime.
 </details>

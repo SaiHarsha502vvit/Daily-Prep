@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Design Patterns](02_Design_Patterns.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Design Patterns](02_Design_Patterns.md)
 🧠 **Mental Model**: See [System Design Thinking](../14_Mental_Models/15_System_Design_Thinking.md)
 
 ---
@@ -139,16 +139,20 @@ Singleton Pattern → ParkingLot instance (debatable, prefer DI)
 
 🔬 **Section Challenge — Class Design**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Debug — Who/When/What):** The `parkVehicle` method is `synchronized`. **Who** holds the lock? **When** is it acquired? **What** bug occurs if you remove `synchronized` and two threads call `parkVehicle` simultaneously for the last available spot?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+**Who?** The thread executing `parkVehicle` acquires the intrinsic lock on the `ParkingLot` instance. **When?** At method entry, released at method exit. **Bug without synchronized:** Thread A calls `spots.stream().filter(canFit).findFirst()` and gets Spot #42. Thread B does the same BEFORE Thread A calls `spot.park()` — both threads see Spot #42 as available. Both park on the same spot → double-booking. The `synchronized` ensures atomicity of the check-then-act sequence. **Better alternative:** Use `ConcurrentLinkedQueue<ParkingSpot>` per size — `poll()` is atomic. Or use database-level `SELECT ... FOR UPDATE` in a real system.
+
 </details>
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+**Challenge 2 (Design):** The `PricingStrategy` is injected into `ParkingLot`. How would you add a "weekend surge pricing" strategy WITHOUT modifying any existing code? Which SOLID principle does this demonstrate?
+
 <details><summary>Answer</summary>
 
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+Create `WeekendSurgePricing implements PricingStrategy` — multiply base rate by 1.5x on weekends. Inject it via constructor or setter: `parkingLot.setPricingStrategy(new WeekendSurgePricing())`. No existing class modified. This is **Open/Closed Principle**: open for extension (new strategies), closed for modification (existing `HourlyPricing` and `ParkingLot` untouched). You could even compose strategies: `new CompositePricing(new HourlyPricing(), new WeekendMultiplier(1.5))` using the Decorator pattern.
+
 </details>
 
 

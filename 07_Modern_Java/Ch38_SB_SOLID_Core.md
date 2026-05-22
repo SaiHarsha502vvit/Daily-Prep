@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch39_SB_SOLID_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch39_SB_SOLID_Advanced.md)
 
 ---
 
@@ -1074,11 +1074,7 @@ public class DatabaseDataProcessor implements DataProcessor {
 
 🔬 **Section Challenge — Chapter 3: "Subtypes must be substitutable for their base types"**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-<details><summary>Answer</summary>
-
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Challenge 1 (Design — Who/When/What):** A `Square extends Rectangle` fails LSP. **Who** is the caller that breaks? **What** invariant does `Square` violate? **When** at runtime does the failure manifest?\n\n<details><summary>Answer</summary>\n\n**Who breaks?** Any caller relying on Rectangle's contract: `rect.setWidth(5); rect.setHeight(4); assert rect.area() == 20`. With `Square`, `setWidth(5)` also sets height to 5 → area = 25, not 20 — assertion fails. **What invariant violated?** Rectangle's pre/post-condition: setting width independently of height. Square CANNOT honor this because width == height always. **When at runtime?** Whenever a `Square` is passed where `Rectangle` is expected and the caller sets dimensions independently. **Fix:** Don't use inheritance here. Use composition: `Shape` interface with `area()`. Both `Rectangle` and `Square` implement it independently. No subtype relationship. LSP rule: if you override a method, you must keep the postconditions of the parent OR strengthen them (never weaken).\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
 <details><summary>Answer</summary>

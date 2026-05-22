@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](04_CSS_Modern_Architecture.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](04_CSS_Modern_Architecture.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 5 — CSS Deep Reasoning: The Questions That Freeze People
 
@@ -227,10 +227,12 @@ Content shrinks to fit: 200 - 20 - 20 - 5 - 5 = 150px
 
 🔬 **Section Challenge — 5. Block Formatting Context (BFC): The Invisible Layout Force**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Debug — Who/When/What):** A parent `<div>` with a float child collapses to zero height. You add `overflow: hidden` to the parent and it fixes it. **Who** creates the BFC? **When** does a BFC contain floats? **What** other properties trigger BFC?
+
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+**Who creates the BFC?** `overflow: hidden` on the parent — any value other than `visible` or `clip` establishes a new Block Formatting Context. **When does a BFC contain floats?** Always — a BFC's height includes all float descendants. This is why `overflow: hidden` "clearfixes" the parent. The browser calculates the BFC's height by extending it to wrap all floats inside. **Other BFC triggers:** `display: flow-root` (the clean modern way — no overflow clipping side effects), `display: flex/grid` (the container itself becomes a BFC), `position: absolute/fixed`, `float: left/right` (the float itself is a BFC). **Modern approach:** Use `display: flow-root` instead of `overflow: hidden` for explicit clearfix semantics — it creates a BFC without affecting scrollability or clip behavior. **Why BFC isolation matters:** BFCs don't allow their margins to collapse with adjacent elements outside the BFC — useful for preventing unwanted margin merging.
+
 </details>
 
 

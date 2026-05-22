@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](02_Design_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_User_System_Flows.md)
+**Navigation**: [< Previous](02_Design_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_User_System_Flows.md)
 
 # 🏗️ System Design & Feature Creation Guide
 
@@ -47,16 +47,12 @@ requirements.
 
 🔬 **Section Challenge — What Is System Design?**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Reasoning — Who/When/What):** The evolution timeline shows 1990s → 3-Tier Architecture. **Who** splits the system into 3 tiers? **When** does the separation happen (compile-time or runtime)? **What** problem does it solve that 2-tier client-server doesn't?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Who?** The architect, at design time. The tiers are: Presentation (UI), Business Logic (application server), Data (database). **When?** The separation is both compile-time (separate codebases/deployable units) and runtime (different servers). **What problem does it solve?** In 2-tier, business logic lives in the client (fat client) — every client update requires redeploying to all desktops. 3-tier centralizes logic on the server: update once, all clients get the new behavior. This also enables independent scaling — you can add more app servers without touching the DB tier.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -85,16 +81,12 @@ REAL-WORLD FAILURES WITHOUT GOOD DESIGN:
 
 🔬 **Section Challenge — What Problem Does System Design Solve**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Reasoning):** The Facebook 2019 outage lost $90M in 14 hours. Using the Who/When/What framework: **Who** was the single point of failure? **When** did the cascading failure begin? **What** system design principle was violated?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Who?** A misconfigured BGP routing update (single configuration change). **When?** The cascade began the moment Facebook's DNS servers became unreachable — since their internal tools ALSO depended on the same DNS infrastructure, engineers couldn't even log in to fix it. **What principle was violated?** No redundancy in the management plane. The control system (used to diagnose and fix outages) depended on the same infrastructure it needed to fix. This violates the principle of **independent failure domains** — your recovery mechanism must never share failure modes with the system it recovers.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -121,17 +113,14 @@ Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or
 
 🔬 **Section Challenge — Why Learn System Design**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Reasoning — Who/When/What):** The section says system design is about "constraints" and "creative solutions." You're designing a notification service that must send 10M push notifications per hour. **Who** are the actors? **What** is the bottleneck? **When** does a naive approach fail?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+**Who?** Producer: the event trigger (e.g., new message received). Consumer: the notification sender (calls Firebase/APNS). **Naive approach:** Synchronous loop — for each event, call Firebase API directly. **When does it fail?** At scale. Each Firebase call takes ~100ms. Sequential: 10M × 100ms = 277 hours. Even with 100 threads: 2.7 hours — too slow. **Fix:** Message queue (Kafka) + worker pool. Producer publishes events to a topic. N consumers pull batches and send in parallel. Firebase supports batch sends (up to 500/request). 10M ÷ 500 = 20K requests ÷ 100 workers = 200 requests/worker × 100ms = 20 seconds. **Bottleneck shifts** from CPU to network/rate limits — that's the real system design challenge.
+
 </details>
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
-</details>
 
 
 ## When To Apply System Design Thinking
@@ -193,16 +182,12 @@ STEP 5: IDENTIFY BOTTLENECKS (5 min)
 
 🔬 **Section Challenge — How To Approach System Design (Step-By-Step)**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Design):** You're asked to design "Instagram". Walk through Steps 1-3 in under 5 minutes. What are 3 functional requirements, 2 non-functional requirements, and what does the high-level component diagram look like?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Step 1 — Functional:** (1) Upload photos with captions, (2) Follow users and see their posts in a feed, (3) Like/comment on photos. **Non-functional:** (1) High availability (99.9%+), (2) Read-heavy — feed reads >> photo uploads, so optimize reads. **Step 2 — Scale:** ~500M DAU, ~100M photos/day, average photo 2MB → ~200TB/day storage, read:write ratio ~100:1. **Step 3 — High-level:** `Client → CDN (static images) → Load Balancer → API Gateway → {User Service, Feed Service, Upload Service, Notification Service} → {PostgreSQL (user/metadata), Object Store/S3 (photos), Redis (feed cache), Kafka (async events)}`.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -540,9 +525,34 @@ turning it into working software.
 
 
 🔬 **Section Challenge — Types of Data Flows**
->
+
+**Challenge 1 (Reasoning — Who/When/What):** A user places an order. The system must: (1) save the order to the database, (2) send a confirmation email, (3) update inventory, (4) log analytics. Which of these should be synchronous and which asynchronous? For each, answer Who executes it, When, and What must already exist.
+
+<details><summary>Answer</summary>
+
+**Synchronous (user waits):** Save order to DB — **Who?** Order Service. **When?** Immediately, before responding to the user. **What must exist?** An open DB connection. This is synchronous because: (1) the user needs an order confirmation ID, and (2) data consistency is critical — if the save fails, the user must know immediately.
+
+**Asynchronous (background):**
+- Email: **Who?** Email Worker. **When?** After the order event is enqueued. **What exists?** The order record in DB (already saved). Sending email is slow (~100ms-1s) and non-critical-path.
+- Inventory update: **Who?** Inventory Worker. **When?** Async after order event. **What exists?** The committed order. Can tolerate eventual consistency (brief over-sell window is acceptable for most systems).
+- Analytics log: **Who?** Analytics Worker. **When?** Async. Purely for reporting — zero user impact if delayed.
+
+**Pattern:** Synchronous = critical path + user-visible + consistency-required. Asynchronous = slow operations + eventual consistency acceptable + multiple consumers.
+
+</details>
+
+**Challenge 2 (Design):** In Event-Driven architecture, the Order Service publishes `ORDER_PLACED` event. Both Inventory Service and Email Service subscribe. The Inventory Service crashes. What happens to the Email Service? What happens to the Inventory update? Answer using the Who/When/What framework.
+
+<details><summary>Answer</summary>
+
+**Email Service:** **Who?** A completely independent consumer. **When?** Immediately upon seeing the `ORDER_PLACED` event in the bus. **What already exists?** The event in the bus is independent of Inventory's state. **Result:** Email sends successfully. This is the KEY benefit of loose coupling — Inventory crash does NOT cascade.
+
+**Inventory update:** **Who?** Inventory Service (crashed). **When?** It CANNOT process now. **What already exists?** The event remains in the Message Queue (Kafka retains it). When Inventory Service restarts, it replays from its last committed offset — the event is NOT lost. This is exactly why Kafka (persistent log) is used over simple pub/sub (which loses events if consumer is down). Eventual consistency guarantees the update WILL happen.
+
+</details>
 
 # PART 4: OOP vs FUNCTIONAL DESIGN
+
 
 ## When To Use Oop Design
 
@@ -584,16 +594,12 @@ this.status = OrderStatus.SUBMITTED;
 
 🔬 **Section Challenge — When To Use Oop Design**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Reasoning — Who/When/What):** In the Order class, `submit()` calls `validateItems()` and `validatePayment()` before setting status to `SUBMITTED`. Why do these live inside the `Order` class instead of in an external `OrderValidator` service? What OOP principle justifies this?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Who validates?** The `Order` object itself. **When?** At the moment of state transition (`submit()`). **What already exists?** The Order has direct access to `items` and payment info — it's the ONLY object that knows its own invariants. This is **encapsulation**: behavior lives with the data it operates on. An external `OrderValidator` would need to extract private fields (breaking encapsulation) and could be bypassed (someone calls `setStatus(SUBMITTED)` directly). By keeping validation inside `submit()`, the Order **enforces its own invariants** — it's impossible to submit an invalid order. This is the Tell Don't Ask principle: don't ask Order for its data and validate externally; tell Order to submit and let it validate itself.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -633,16 +639,12 @@ return validateRequest(request)
 
 🔬 **Section Challenge — When To Use Functional Design**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Reasoning — Who/When/What):** In the `processOrder` pipeline, each `.map()` transforms the data. **Who** owns the state at each stage? **What** happens if `applyDiscounts` throws an exception — does `calculatePricing` need to roll back? Why or why not?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Who owns state?** Nobody — that's the point. Each function receives an immutable input and produces a new output. There is no shared mutable state. **What happens on exception?** `calculatePricing` does NOT need to roll back because it never mutated anything. The original `OrderRequest` is untouched. The `Optional` chain short-circuits via `.orElseThrow()`. This is the key advantage of functional pipelines: no side effects means no rollback complexity. In OOP with mutable state, a failure in step 4 of 5 might leave the object in a half-modified state requiring compensating transactions. In functional: fail anywhere, original data is intact. This is why functional is preferred for data transformation pipelines.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 

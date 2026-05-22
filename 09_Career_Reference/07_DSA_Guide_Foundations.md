@@ -82,16 +82,16 @@
 
 🔬 **Section Challenge — THE MEMORY HIERARCHY - THE FOUNDATION OF PERFORMANCE**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-<details><summary>Answer</summary>
+**Challenge 1 (Reasoning):** Two solutions are both `O(N)`: one scans an `int[]`, the other walks a linked list of boxed `Integer` nodes. Why can the array version be much faster?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+Big-O hides constants and memory layout. Arrays are contiguous, cache-friendly, and avoid object-pointer chasing. Linked lists scatter nodes across memory, causing cache misses and extra dereferences. When constraints are large, choose the structure that matches both asymptotic complexity and memory locality.
 </details>
 
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-<details><summary>Answer</summary>
+**Challenge 2 (Bug Hunt):** You used `HashMap<Integer, Integer>` for a tight frequency counter where values are small and bounded. What is the likely overhead, and what should you consider instead?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+Boxing, hashing, node allocation, and cache misses can dominate runtime. If values fit a known small range, use an `int[]` frequency table. If the range is huge or sparse, use a map. Constraint lens: bounded dense key space usually means array; sparse or unknown key space usually means hashmap/tree.
 </details>
 
 

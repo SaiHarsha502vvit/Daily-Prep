@@ -1,4 +1,4 @@
-﻿> **Navigation**: [< Previous](17_HashMap_Hashing.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix.md)
+> **Navigation**: [< Previous](17_HashMap_Hashing.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](19_Matrix.md)
 
 > **Problems 18/22** | [Prev](17_HashMap_Hashing.md) | [Index](../00_MASTER_INDEX.md) | [Next](19_Matrix.md)
 
@@ -493,7 +493,28 @@ public int[] singleNumber(int[] nums) {
 
 > 🔬 **Section Challenge — Single Number — Every Element Appears Twice Except One**
 
+**Challenge 1 (Trace — XOR semantics):** Given `nums=[7, 3, 5, 3, 7]`, manually trace the XOR accumulation step by step. What is the binary representation after each XOR, and what is the final answer?
+
+<details><summary>Answer</summary>
+
+**Who executes?** One loop, one XOR per element. **When?** Each `result ^= num` executes in order. **What already exists?** `result=0` (identity) at start.
+
+Step 1: `0 ^ 7 = 7` (0000...0111). Step 2: `7 ^ 3 = 4` (0111 ^ 0011 = 0100). Step 3: `4 ^ 5 = 1` (0100 ^ 0101 = 0001). Step 4: `1 ^ 3 = 2` (0001 ^ 0011 = 0010). Step 5: `2 ^ 7 = 5` (0010 ^ 0111 = 0101).
+
+**Final answer = 5.** The XOR doesn't "wait" for pairs to be adjacent — the commutative and associative properties ensure that regardless of order, `7^7=0` and `3^3=0`, leaving only `5`.
+
+</details>
+
+**Challenge 2 (Debug):** A developer applies the XOR-all trick to `nums=[2, 2, 2, 3]`, expecting to find the unique element. What answer do they get and why is the XOR trick fundamentally broken for this input?
+
+<details><summary>Answer</summary>
+
+`2^2^2^3 = 0^2^3 = 2^3 = 1`. They get `1`, which is wrong. **Why?** The XOR trick relies on `a^a=0` — it cancels elements appearing **exactly twice**. `2` appears **three times** (odd count), so `2^2^2 = 2` (not 0). The unique element here is `3`, not `1`. For elements appearing 3 times, use **bit-counting mod 3** (Single Number II pattern): count set bits at each position, apply `% 3`, reconstruct the unique number. Always verify the precondition: the XOR trick only works when every non-unique element appears an **even** number of times.
+
+</details>
+
 ## 16.2 Power & Counting (Easy-Medium)
+
 
 ### Problem #290: [Power of Two](https://leetcode.com/problems/power-of-two/) (LC 231)
 
@@ -698,7 +719,28 @@ public int hammingDistance(int x, int y) {
 
 > 🔬 **Section Challenge — 16.2 Power & Counting (Easy-Medium)**
 
+**Challenge 1 (Trace — Who/When/What):** In `countBits(n=6)`, trace the DP recurrence `dp[i] = dp[i & (i-1)] + 1` for every `i` from 1 to 6. For each step, show what `i & (i-1)` evaluates to in binary and why.
+
+<details><summary>Answer</summary>
+
+**Who?** One loop iteration per i. **When?** `dp[i]` is computed only after `dp[i & (i-1)]` already exists — this is guaranteed because `i & (i-1) < i` always (clearing a bit reduces the value). **What already exists?** `dp[0]=0` is the base case.
+
+i=1 (001): `1&0=0(000)` → `dp[0]+1=1`. i=2 (010): `2&1=0(000)` → `dp[0]+1=1`. i=3 (011): `3&2=2(010)` → `dp[2]+1=2`. i=4 (100): `4&3=0(000)` → `dp[0]+1=1`. i=5 (101): `5&4=4(100)` → `dp[4]+1=2`. i=6 (110): `6&5=4(100)` → `dp[4]+1=2`.
+
+Result: `[0, 1, 1, 2, 1, 2, 2]`. The key invariant: `i & (i-1)` is always a previously computed index — guaranteeing bottom-up correctness.
+
+</details>
+
+**Challenge 2 (Design):** `isPowerOfTwo(n)` uses `n > 0 && (n & (n-1)) == 0`. Why is the `n > 0` guard necessary? What does `n & (n-1)` evaluate to when `n=0`, and why would omitting the guard give the wrong answer?
+
+<details><summary>Answer</summary>
+
+When `n=0`: `0 & (0-1) = 0 & (-1)`. In two's complement, `-1` is all 1s. So `0 & (all 1s) = 0`. The expression `(n & (n-1)) == 0` evaluates to `true` when `n=0`. But `0` is **NOT** a power of 2 (no integer `k` satisfies `2^k = 0`). Without the guard, `isPowerOfTwo(0)` would incorrectly return `true`. The `n > 0` guard explicitly excludes this edge case. Similarly, negative numbers: `-8 & -9 = 1000 & 0111 (two's complement)` — the guard `n > 0` also correctly rejects all negatives in one check.
+
+</details>
+
 ## 16.3 Math Problems (Easy-Medium)
+
 
 ### Problem #295: [Reverse Integer](https://leetcode.com/problems/reverse-integer/) (LC 7)
 

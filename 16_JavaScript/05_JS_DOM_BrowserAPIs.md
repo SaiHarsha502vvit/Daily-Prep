@@ -512,10 +512,12 @@ response.ok;       // true if status 200-299
 
 ðŸ”¬ **Section Challenge â€” 8. Fetch API â€” Making HTTP Requests**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 â€” what does each one do differently for multiplexing?
+**Challenge 1 (Debug — Who/When/What):** `fetch('/api/users')` does not throw even when the server returns 500. **Who** decides what counts as a rejection? **When** does `fetch` actually reject? **What** must you check manually?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking â€” request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Who decides?** The Fetch API specification — `fetch` only rejects on **network-level failures** (no DNS, connection refused, CORS block, offline). **When rejects?** Only when the TCP connection fails before any HTTP response arrives. **Status 500?** The server DID respond — that is a valid HTTP response. Fetch resolves with a `Response` object where `response.ok === false` and `response.status === 500`. **What to check:** Always `if (!response.ok) throw new Error(response.status)` before calling `response.json()`. Otherwise 4xx/5xx responses are silently treated as success — a common bug where error JSON gets parsed as if it were data.
+
 </details>
 
 

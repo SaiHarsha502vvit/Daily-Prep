@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md)
 🧠 **Mental Model**: See [Optimization Pipeline](../14_Mental_Models/14_Optimization_Pipeline.md) — new Java features as optimization tools
 
 ---
@@ -496,10 +496,12 @@ CompletableFuture<HttpResponse<String>> future = client.sendAsync(request,
 
 🔬 **Section Challenge — HTTP Client (Java 11)**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Debug — Who/When/What):** Java 9 module system — your library uses `module-info.java` with `exports com.lib.api`. A user tries `module.open("com.lib.internal")` via reflection. **Who** enforces access? **When?** **What** is the difference between `exports` and `opens`?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Who enforces?** The JVM's module access control at runtime — `java.lang.module.Module.canRead()`. **When?** At the reflective access call (`field.setAccessible(true)`). The JVM throws `InaccessibleObjectException` if the package is neither `exports` nor `opens`. **`exports` vs `opens`:** `exports com.lib.api` = compile-time + runtime API access (other modules can compile against it and call public methods). `opens com.lib.internal` = runtime-ONLY deep reflection access (allows `field.setAccessible(true)`, Jackson/Hibernate deserialization). `exports` is strict; `opens` allows frameworks to introspect internals. `opens ... to specific.module` limits which modules can reflect.
+
 </details>
 
 

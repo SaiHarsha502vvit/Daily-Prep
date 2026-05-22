@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Design_Patterns.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Design_Patterns.md)
 
 # 🏗️ OOPS & Design Principles: Complete Guide
 
@@ -189,16 +189,12 @@ As software grows, complexity grows **exponentially**. Procedural programming sc
 
 🔬 **Section Challenge — Signs of Good OOP Design**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Reasoning — Who/When/What):** A `UserService` creates users, sends welcome emails, AND generates PDF reports. **Who** has too many responsibilities? **What** metric is violated? **When** does this become a problem?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Who?** `UserService` — it's a God Class. **What metric?** Low Cohesion. Email sending, PDF generation, and user CRUD are unrelated — they use different dependencies, change for different reasons. **When?** When the email template changes → you retest entire UserService. A PDF library upgrade breaks user creation tests. Two developers editing UserService create merge conflicts. Fix: split into `UserService`, `EmailService`, `ReportService` — each with high cohesion and low coupling.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -595,10 +591,12 @@ THIS IS DEPENDENCY INJECTION!
 
 🔬 **Section Challenge — The Interior Decorator Analogy**
 
-**Challenge 1 (Reasoning):** Why does a decorator without `@functools.wraps` break Flask/FastAPI route registration?
+**Challenge 1 (Trace — Who/When/What):** In Java I/O, `new BufferedReader(new InputStreamReader(new FileInputStream("f.txt")))` stacks 3 decorators. **Who** does the actual file reading? **What** does each layer add? **When** you close only the outermost, do all layers close?
+
 <details><summary>Answer</summary>
 
-Flask uses function name (`func.__name__`) to register routes. Without `@functools.wraps`, the decorator replaces the original function with a `wrapper` function. All decorated routes have `__name__ = 'wrapper'` → duplicate view function name error. `@functools.wraps(fn)` copies `__name__`, `__doc__`, `__annotations__`  from the wrapped function. Same issue with pytest markers, Celery tasks, and any framework that inspects function attributes.
+**Who reads?** `FileInputStream` — it's the concrete component. `InputStreamReader` decorates it to convert bytes → chars (adds encoding). `BufferedReader` decorates that to add buffering (reduces system calls). **Closing:** Yes — `BufferedReader.close()` calls `InputStreamReader.close()`, which calls `FileInputStream.close()`. Each decorator delegates `close()` to its wrapped stream. BUT: if the constructor of `BufferedReader` threw an exception, `InputStreamReader` would leak because no variable holds its reference. Fix: use try-with-resources on each resource, or Java 9+ allows `var isr = new InputStreamReader(...); var br = new BufferedReader(isr)` in the try header.
+
 </details>
 
 
@@ -963,16 +961,12 @@ User user = new User.Builder("John", "john@email.com")
 
 🔬 **Section Challenge — Creational Patterns**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Debug — Who/When/What):** `DatabaseConnection.getInstance()` is `synchronized`. **Who** pays the performance cost? **When** is synchronization actually needed? **What** optimization exists?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Who pays?** EVERY caller, EVERY call — even after instance exists. **When needed?** Only the FIRST call, when `instance == null`. After that, it's just a field read. **Optimization:** Double-checked locking (first check without lock, then synchronize, check again), or enum approach (`enum DatabasePool { INSTANCE; }`) — JVM guarantees thread-safe lazy init with zero sync overhead.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -1065,16 +1059,12 @@ System.out.println(myCoffee.getCost());         // 1.7
 
 🔬 **Section Challenge — Structural Patterns**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Reasoning — Who/When/What):** Both Adapter and Decorator use wrapping. `PrinterAdapter` wraps `NewPrinter`; `MilkDecorator` wraps `Coffee`. **What** is the fundamental difference in intent?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**Adapter:** Changes the INTERFACE without changing BEHAVIOR. `PrinterAdapter` doesn't add printing capability — it translates `printOld()` → `print()`. **Decorator:** Preserves the INTERFACE but changes BEHAVIOR. `MilkDecorator` keeps `Coffee` interface but ADDS extra cost. Key test: Does it add new functionality? Decorator. Does it just translate APIs? Adapter.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 
@@ -1186,16 +1176,12 @@ agency.publishNews("Breaking: Java 21 released!");
 
 🔬 **Section Challenge — Behavioral Patterns**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Debug — Who/When/What):** In the Observer example, `publishNews()` iterates the observers list. **What** happens if one subscriber's `update()` throws? Do remaining subscribers get notified? **Who** should handle errors?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
-</details>
+**What happens?** The loop terminates at the failing observer — all subscribers AFTER it never get notified. **Who handles?** The Subject. Fix: wrap each call in try-catch: `try { observer.update(news); } catch (Exception e) { log.error(e); }`. **Bonus bug:** Memory leak — if you `attach()` but forget `detach()`, the Subject holds a strong reference → observer can't be GC'd. Use `WeakReference<Observer>` or ensure `detach()` in lifecycle cleanup.
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
-<details><summary>Answer</summary>
-
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
 </details>
 
 

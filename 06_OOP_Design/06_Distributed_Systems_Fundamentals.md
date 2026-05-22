@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [System Design Problems](05_SD_Interview_Problems.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [System Design Problems](05_SD_Interview_Problems.md)
 🧠 **Mental Model**: See [Distributed Systems Thinking](../14_Mental_Models/16_Distributed_Systems_Thinking.md)
 
 ---
@@ -287,16 +287,24 @@ USED BY: etcd (Kubernetes), CockroachDB, TiKV, Consul
 
 🔬 **Section Challenge — Part 7: Common Distributed System Patterns**
 
-**Challenge 1 (Design):** Factory Method vs Abstract Factory — give a concrete example showing when each is appropriate.
+**Challenge 1 (Trace — Who/When/What):** A Circuit Breaker protecting calls to Payment Service has 3 states: CLOSED → OPEN → HALF-OPEN. Trace the lifecycle: **Who** decides to trip the breaker? **When** does it transition between states? **What** happens to requests in each state?
+
 <details><summary>Answer</summary>
 
-Factory Method: `DocumentParser.createParser(fileType)` returns a `PdfParser` or `DocxParser`. One product family, one creator. Abstract Factory: `UIFactory` with `createButton()` + `createTextField()` + `createDialog()`. A `WindowsUIFactory` and `MacUIFactory` each create a FAMILY of related components. Use Abstract Factory when multiple interdependent products must be created together from the same family.
+**CLOSED (normal):** All requests pass through. **Who counts?** The breaker itself tracks failure count. **When does it trip?** When failures exceed threshold (e.g., 5 failures in 60 seconds) → transition to OPEN.
+
+**OPEN:** All requests are REJECTED immediately (fail-fast, no network call). **What happens?** Returns cached response or fallback error. A timer starts (e.g., 30 seconds). **When does it transition?** After the timeout → HALF-OPEN.
+
+**HALF-OPEN:** Allows ONE trial request through. **Who decides?** The breaker lets a single request pass. If it succeeds → back to CLOSED. If it fails → back to OPEN (restart timer). This prevents a recovering service from being overwhelmed by full traffic. The Circuit Breaker is the Bulkhead's partner: Bulkhead isolates failure, Circuit Breaker prevents cascade.
+
 </details>
 
-**Challenge 2 (Reasoning):** Singleton is often called an anti-pattern. Why?
+**Challenge 2 (Design):** In the Saga pattern for Order → Pay → Ship: Payment succeeds but Shipping fails. Walk through the compensation sequence. Why can't you use a regular database rollback?
+
 <details><summary>Answer</summary>
 
-1) Hidden global state — any code can access/modify the singleton, making dependencies implicit and testing hard. 2) Tight coupling — hard to swap implementation (no interface). 3) Concurrency: lazy init needs double-checked locking. 4) Violates SRP often. Better: use dependency injection — pass the single instance as a constructor argument. The DI container manages lifecycle. You get the same 'one instance' behavior with testability and explicit dependencies.
+**Why no rollback?** Each step is a LOCAL transaction on a DIFFERENT database/service. There's no distributed `ROLLBACK` across 3 services. **Compensation sequence:** Shipping fails → trigger `compensate_ship` (no-op, nothing to undo) → trigger `compensate_pay` (REFUND the payment) → trigger `compensate_order` (mark order as CANCELLED). Each compensation is itself a NEW transaction, not an undo. **Critical insight:** Compensations must be idempotent — if `compensate_pay` is called twice (due to retry), it must not double-refund. Use a saga execution ID to deduplicate.
+
 </details>
 
 

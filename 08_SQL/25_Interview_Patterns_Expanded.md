@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Database_Internals.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](21_Database_Internals.md)
 
 # SQL Interview — Top 50 Problems & Patterns
 
@@ -594,16 +594,12 @@ JOIN employees e2 ON e1.dept_id = e2.dept_id AND e1.id < e2.id;
 
 🔬 **Section Challenge — Pattern 4: Joins & Subqueries (Q21-Q30)**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Performance — Who/When/What):** Find customers who placed at least one order. Three options: `JOIN + DISTINCT`, `WHERE EXISTS (subquery)`, `WHERE id IN (subquery)`. **Who** wins at scale? **When** does IN become dangerous? **What** does the optimizer actually do?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**`JOIN + DISTINCT`:** `SELECT DISTINCT c.id FROM customers c JOIN orders o ON c.id = o.customer_id`. The optimizer can use a semi-join optimization — it stops processing once it finds the first matching order per customer. Generally fast with an index on `orders.customer_id`. **`EXISTS`:** `WHERE EXISTS (SELECT 1 FROM orders WHERE customer_id = c.id)`. Semantically a semi-join — stops at first match per customer. Most optimizers convert this to the same execution plan as JOIN. Preferred for clarity of intent. **`IN`:** `WHERE id IN (SELECT customer_id FROM orders)`. **When dangerous?** When the subquery returns a large result set (100K+ IDs). The DB materializes the entire subquery result into memory before the outer query runs. MySQL historically couldn't optimize correlated IN subqueries well. **What optimizer does:** PostgreSQL and modern MySQL convert all three to the same Hash Semi-Join or Nested Loop Semi-Join. Use `EXPLAIN` to confirm — if they produce the same plan, choose `EXISTS` for readability.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 

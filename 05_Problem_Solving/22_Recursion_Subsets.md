@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](21_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](21_Design.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 **Problems 22** | [Prev](21_Design.md) | [Index](../00_MASTER_INDEX.md) | [Next](../06_OOP_Design/01_OOPS_Principles.md)
 
@@ -548,9 +548,23 @@ num, causing it to be counted multiple times (unbounded knapsack behavior).
 
 
 🔬 **Section Challenge — PROBLEM 5: Subset Sum — Count Subsets with Given Sum**
->
+
+**Challenge 1 (Trace — Why Right-to-Left):** In the 1D DP version of Subset Sum, the inner loop runs `for (int t = target; t >= num; t--)`. Why RIGHT-to-LEFT? Trace `dp` for `nums=[2,3]` and `target=5` using BOTH left-to-right and right-to-left, and show which gives the wrong count.
+
+<details><summary>Answer</summary>
+
+**Who executes?** The inner loop for each `num`. **When?** `dp[t]` is updated while processing `num`. **What already exists?** Previous `dp` values from prior `num` iterations.
+
+With `nums=[2,3], target=5`, initial `dp=[1,0,0,0,0,0]`.
+
+**Right-to-left (correct — 0/1 knapsack):** Process num=2: t=5: dp[5]+=dp[3]=0; t=4: dp[4]+=dp[2]=0; t=3: dp[3]+=dp[1]=0; t=2: dp[2]+=dp[0]=1. dp=[1,0,1,0,0,0]. Process num=3: t=5: dp[5]+=dp[2]=1; t=4: dp[4]+=dp[1]=0; t=3: dp[3]+=dp[0]=1. dp=[1,0,1,1,0,1]. Answer: **dp[5]=1** (only {2,3}). Correct.
+
+**Left-to-right (wrong — unbounded knapsack):** Process num=2: t=2: dp[2]+=dp[0]=1; t=3: dp[3]+=dp[1]=0; t=4: dp[4]+=dp[2]=1 (uses UPDATED dp[2]!); t=5: dp[5]+=dp[3]=0. dp=[1,0,1,0,1,0]. 2 appears reused (dp[4] counts {2,2}). Wrong.
+
+</details>
 
 ## PROBLEM 6: Partition Equal Subset Sum (LC 416)
+
 
 ```
 DIFFICULTY: Medium
@@ -605,9 +619,21 @@ EDGE CASES:
 
 
 🔬 **Section Challenge — PROBLEM 6: Partition Equal Subset Sum (LC 416)**
->
+
+**Challenge 1 (Debug — Who/When/What):** `canPartition([1,5,11,5])` runs correctly. But `canPartition([1,2,5])` returns `false` when the total sum is 8 (odd divided target). Trace the first 2 lines of logic to confirm why it returns `false` early and never runs DP.
+
+<details><summary>Answer</summary>
+
+**Who?** The `canPartition` method. **When?** Before any DP is initialized. **What already exists?** Nothing — the check happens first.
+
+`sum = 1+2+5 = 8`. `if (sum % 2 != 0)` → `8 % 2 = 0` → not triggered. `target = 4`. DP runs: `dp[0]=true`. num=1: dp[1]=true. num=2: dp[3]=true, dp[2]=true. num=5: t>=5 only: dp[5] would need dp[0]=true but t=5>target=4 so loop stops. `dp[4]=false`. Returns `false`.
+
+**Key insight:** The odd-sum guard (`sum % 2 != 0`) handles impossible cases instantly. The DP correctly handles cases where no subset hits exactly `target`. Both are needed; the guard is just an O(1) optimistic short-circuit.
+
+</details>
 
 ## PROBLEM 7: Target Sum (LC 494)
+
 
 ```
 DIFFICULTY: Medium
@@ -665,9 +691,29 @@ BRILLIANT REDUCTION: +/- assignment → subset partition → subset sum count!
 
 
 🔬 **Section Challenge — PROBLEM 7: Target Sum (LC 494)**
->
+
+**Challenge 1 (Reasoning — Mathematical Reduction):** `findTargetSumWays([1,1,1,1,1], target=3)` uses the reduction `subsetSum = (totalSum + target) / 2`. Verify the math: what is `totalSum`, what is `subsetSum`, and intuitively WHY does "count subsets with sum=subsetSum" equal "count +/- assignments reaching target"?
+
+<details><summary>Answer</summary>
+
+**Who derives this?** A mathematical identity, not code. **When?** Before DP runs — it's a problem reduction. **What already exists?** All elements: [1,1,1,1,1], sum=5.
+
+`subsetSum = (5+3)/2 = 4`. So we count subsets of `[1,1,1,1,1]` with sum=4. Answer = 5 (pick any 4 of the 5 ones to mark positive; the remaining 1 gets negative: 1+1+1+1-1=3).
+
+**Why it works:** If subset P sums to `subsetSum=4`, the rest N sums to `totalSum - subsetSum = 1`. Then `sum(P) - sum(N) = 4 - 1 = 3 = target`. Every subset with sum=4 corresponds to exactly one valid +/- assignment. The reduction is bijective: one-to-one correspondence between subsets and assignments. This transforms an exponential backtracking problem into O(n×subsetSum) DP.
+
+</details>
+
+**Challenge 2 (Debug):** `findTargetSumWays([1,2], target=4)`. Total sum=3. `(3+4)/2 = 3.5` → not an integer. The code checks `(sum + target) % 2 != 0`. What does it return and why?
+
+<details><summary>Answer</summary>
+
+Returns **0**. The mathematical derivation requires `(sum + target)` to be even (so `subsetSum` is an integer). If it's odd, NO valid partition exists — it's mathematically impossible to assign +/- to reach an integer target from integers. This is a critical edge-case guard that prevents the DP array from being sized with a fractional index. Always check `(sum + target) % 2 != 0` AND `Math.abs(target) > sum` before running the DP.
+
+</details>
 
 ## PROBLEM 8: Letter Combinations of Phone Number (LC 17)
+
 
 ```
 DIFFICULTY: Medium
@@ -875,16 +921,25 @@ TRICK: Modify board in-place to mark visited (avoid boolean[][] array).
 
 🔬 **Section Challenge — PROBLEM 11: Word Search (LC 79)**
 
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+**Challenge 1 (Trace — Who/When/What):** On a 2×3 board `[['A','B','C'],['D','E','F']]`, trace the DFS call for `word="ABE"`. At each recursive call, answer: Who holds the current cell? When is the cell marked `#`? What cells are already visited?
+
 <details><summary>Answer</summary>
 
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+**Who?** `dfs(board, word, i, j, k)` — the recursive function. **When?** `board[i][j] = '#'` is set BEFORE the 4-directional recursive calls, and restored AFTER.
+
+Call 1: `dfs(0,0,0)` — `board[0][0]='A'`, matches `word[0]='A'`. Mark `board[0][0]='#'`. What's visited? `{(0,0)}`.
+- Try right: `dfs(0,1,1)` — `board[0][1]='B'`, matches `word[1]='B'`. Mark `board[0][1]='#'`. Visited: `{(0,0),(0,1)}`.
+  - Try up: OOB. Try down: `dfs(1,1,2)` — `board[1][1]='E'`, matches `word[2]='E'`. `k+1=3=word.length()` → return `true`.
+  - Propagates `true` all the way up. The in-place `#` marking IS the visited array — no extra space needed. The backtrack `board[i][j] = temp` only runs on the `false` path.
+
 </details>
 
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+**Challenge 2 (Debug):** A developer forgets `board[i][j] = temp` (the backtrack step). What goes wrong on `board=[['A','B'],['A','B']]`, `word="ABA"`? Why does the search fail when it should succeed?
+
 <details><summary>Answer</summary>
 
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+Without backtracking, `board[0][0]='A'` gets marked `'#'` permanently. The search tries path (0,0)→(0,1)→needs 'A' next. It looks down at (1,1)='B' — no. Looks left at (0,0) — but it's `'#'` now, not 'A'. The DFS fails to find "ABA" even though path (0,0)→(0,1)→(1,1) doesn't work, the path (0,0)→(1,0)→(0,0) would revisit (0,0) which is correctly prevented. The REAL valid path is (0,0)→(0,1)→(1,1) — but word[2]='A' ≠ 'B'. Actually (1,0)→(0,0)→(0,1) works: A→A→B = "AAB" ≠ "ABA". So (0,0)→(1,0)→(1,1): A→A→B = "AAB" ≠ "ABA". Valid: (0,0)→(0,1)→(1,1): A→B→B = "ABB" ≠ "ABA". The answer is this specific board has no valid "ABA" path — but the deeper lesson is: without backtracking, cells stay permanently poisoned across DIFFERENT starting points, causing false negatives when a valid path exists through a cell used by an earlier failed attempt.
+
 </details>
 
 

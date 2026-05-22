@@ -655,16 +655,16 @@ public class OrgChartController {
 
 🔬 **Section Challenge — 📝 Example: Converting "Employee Hierarchy" to Code**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-<details><summary>Answer</summary>
+**Challenge 1 (Reasoning):** Convert an employee hierarchy into an API response. Which data structure represents the organization, and which traversal should you use for tree output?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+The organization is a rooted tree when every employee has one manager, or a graph if matrix reporting exists. Build an adjacency map `managerId -> directReports`, then use DFS for nested JSON and BFS for level-wise charts. If the business allows multiple managers, switch your mental model from tree to graph and add visited tracking.
 </details>
 
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-<details><summary>Answer</summary>
+**Challenge 2 (Bug Hunt):** The hierarchy endpoint recursively loads each employee's reports from the database. It works on small data but times out in production. What is the bug?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+That is an N+1 traversal: every node triggers another query. Fetch the needed rows in one query, build the adjacency map in memory, then traverse. Also add depth limits or cycle detection so bad HR data does not crash the endpoint.
 </details>
 
 

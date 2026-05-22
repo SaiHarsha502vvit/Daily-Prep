@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch32_SB_Data_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch34_SB_Security_Part4.md)
+**Navigation**: [< Previous](Ch32_SB_Data_Part2.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch34_SB_Security_Part4.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 3: AOP & Spring Boot Magic
 
@@ -171,8 +171,13 @@ public Object logMethod(ProceedingJoinPoint pjp) {
 
 🔬 **Section Challenge — Chapter 2: AOP Terminology**
 
-**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
+**Challenge 1 (Terminology Trace — Who/When/What):** Map these 5 AOP terms to a Spring logging example that logs every public service method's execution time. **Who** is the `Aspect`, **what** is the `JoinPoint`, **what** is the `Pointcut`, **when** does the `Advice` run, and **what** is the `Weaving` step?
+
 <details><summary>Answer</summary>
+
+**Aspect:** `@Aspect @Component class ExecutionTimeAspect` — the class that packages the cross-cutting concern (timing). **JoinPoint:** Every method execution in the `com.app.service` package — a specific point in execution. The `JoinPoint` object gives you method name, args, target object. **Pointcut:** `@Pointcut("execution(public * com.app.service.*.*(..))")` — the EXPRESSION that selects which JoinPoints. The pointcut is the WHERE. **Advice:** `@Around` method that calls `System.currentTimeMillis()` before `proceedingJoinPoint.proceed()` and after — this is the WHAT and WHEN. Around = before + after. **Weaving:** Spring Boot does **runtime weaving** — at startup, Spring wraps your `UserService` bean in a CGLIB proxy. The proxy intercepts calls, runs advice, then delegates to the real method. Unlike AspectJ's compile-time weaving, Spring's is entirely proxy-based. Weaving = the HOW of connecting aspects to code.
+
+</details>
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
@@ -360,11 +365,7 @@ public class ComprehensiveAspect {
 
 🔬 **Section Challenge — Chapter 3: Advice Types**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-<details><summary>Answer</summary>
-
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Challenge 1 (Trace — Who/When/What):** You have `@Around` and `@Before` advice on the same method. **Who** executes first? **When** does `@Around` call `proceed()`? **What** happens if `@Around` never calls `proceed()`?\n\n<details><summary>Answer</summary>\n\n**Who executes first?** `@Around` always wraps `@Before`/`@After`. Call stack: Around (enter) → Before → Method → After → Around (exit). **When `proceed()` called?** `proceed()` is the pivot point — everything BEFORE `proceed()` is pre-processing, everything AFTER is post-processing. `@Before` advice runs when `proceed()` is called. **If `proceed()` never called?** The target method and ALL remaining advice (`@Before`, `@After`, `@AfterReturning`) are SKIPPED. The `@Around` advice effectively intercepts and replaces the method call. This is intentional for caching (`@Cacheable` checks cache, returns cached value without calling proceed if cache hit), circuit breakers (returns fallback without calling the actual method).\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
 <details><summary>Answer</summary>
@@ -514,8 +515,13 @@ public class PointcutExamplesAspect {
 
 🔬 **Section Challenge — Chapter 4: Pointcut Expressions**
 
-**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
+**Challenge 1 (Expression Debug):** You write pointcut `"execution(* com.app.service.*.*(..))"`  to intercept all service methods. But your `OrderServiceImpl` in `com.app.service.impl` is NOT intercepted. **Who** is the scope that excludes it? **What** is the corrected expression, and **what** is the difference between `.*.` and `..*` in pointcut syntax?
+
 <details><summary>Answer</summary>
+
+**Who excludes it:** The single-level wildcard `*`. `com.app.service.*.*` matches classes DIRECTLY in `com.app.service` package, NOT subpackages. `OrderServiceImpl` is in `com.app.service.impl` (one level deeper). **Corrected expression:** `"execution(* com.app.service..*.*(..))"`  — note `..` instead of first `.*`. **Difference between `.*.` and `..*`:** `.*.` = single-level package wildcard (one subdirectory level). `..*` = multi-level package wildcard (any depth of subpackages). So `com.app.service..*.*` matches: `com.app.service.UserService.save()`, `com.app.service.impl.UserServiceImpl.save()`, `com.app.service.order.impl.OrderServiceImpl.process()`. **Common mistake:** Using `.*.*` thinking it means "all classes in this tree" — it only means "all classes in the EXACT package". The `..` token is the subtree selector in pointcut expressions.
+
+</details>
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
@@ -681,8 +687,13 @@ public class UserService {
 
 🔬 **Section Challenge — Chapter 5: How Spring AOP Works (Proxy Magic)**
 
-**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
+**Challenge 1 (Proxy Debug — Who/When/What):** You have `@Transactional UserService.save()`. Inside `save()`, you call `this.validate()`. `validate()` has a `@Cacheable` annotation. The cache is NEVER populated. **Who** is `this`? **When** is the proxy bypassed? **What** is the fix?
+
 <details><summary>Answer</summary>
+
+**Who is `this`:** The REAL `UserService` object — not the proxy. When Spring wraps `UserService` in a proxy, `this` inside the object still refers to itself directly, bypassing the proxy. **When proxy is bypassed:** Any time you call a method on `this` directly from within the same bean. The AOP proxy only intercepts external calls (from outside the bean). Internal `this.method()` calls skip the proxy entirely. **What is the fix:** (1) **Self-injection:** `@Autowired private UserService self;` then call `self.validate()`. This references the proxy. (2) **AOP-aware lookup:** `((UserService) AopContext.currentProxy()).validate()` — requires `@EnableAspectJAutoProxy(exposeProxy=true)`. (3) **Refactor:** Move `validate()` to a separate Spring bean (`ValidatorService`) so external injection routes through the proxy. **Why this matters:** `@Transactional`, `@Cacheable`, `@Async`, `@Retryable` ALL use Spring AOP proxies. Internal self-calls silently break all of them — no error, just wrong behavior.
+
+</details>
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
@@ -972,8 +983,13 @@ spring:
 
 🔬 **Section Challenge — Chapter 7: The Magic of @SpringBootApplication**
 
-**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
+**Challenge 1 (Annotation Internals):** `@SpringBootApplication` is a meta-annotation composed of 3 annotations. **What** are they, **who** triggers auto-configuration, and **when** does `@ConditionalOnMissingBean` fire to prevent double-registering a DataSource?
+
 <details><summary>Answer</summary>
+
+**Three composing annotations:** (1) `@SpringBootConfiguration` — marks this as a Spring `@Configuration` class (equivalent to `@Configuration`). (2) `@EnableAutoConfiguration` — triggers the auto-configuration mechanism: reads `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` and conditionally registers beans. (3) `@ComponentScan` — scans the package and sub-packages of the class for `@Component`, `@Service`, `@Repository`, `@Controller`. **Who triggers auto-config:** `@EnableAutoConfiguration` instructs Spring to load `DataSourceAutoConfiguration`, `JpaAutoConfiguration`, etc. from the classpath. **When @ConditionalOnMissingBean fires:** During the `BeanFactory` refresh phase, AFTER user-defined `@Configuration` beans are processed, BEFORE auto-config beans run. If you defined `@Bean DataSource myDataSource()` in your own config, `@ConditionalOnMissingBean(DataSource.class)` evaluates `true` (bean already exists) — auto-config skips its DataSource. Your custom bean wins. This is why `@ConditionalOnMissingBean` is the "user overrides framework" mechanism: the auto-config only fills in what you haven't explicitly provided.
+
+</details>
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>
@@ -1126,8 +1142,13 @@ public class EmailService {
 
 🔬 **Section Challenge — Chapter 9: Profiles in Spring Boot**
 
-**Challenge 1 (Reasoning):** Why should you use `@ControllerAdvice` to handle exceptions globally instead of using `try-catch` blocks inside every single Controller method?
+**Challenge 1 (Profile Debug — Who/When/What):** You have `application-dev.yml` with `spring.datasource.url=jdbc:h2:mem:testdb` and `application-prod.yml` with the real PostgreSQL URL. You deploy to production but it's connecting to H2. **Who** determines the active profile? **When** is it resolved? **What** are the 4 ways to set the active profile in order of precedence?
+
 <details><summary>Answer</summary>
+
+**Who determines active profile:** The `Environment` abstraction in Spring — it evaluates all property sources and resolves `spring.profiles.active`. **When resolved:** At application context startup, before beans are instantiated. Once resolved, profile-specific property files are loaded and merged. **4 ways in ORDER OF PRECEDENCE (highest to lowest):** (1) **Command line argument:** `--spring.profiles.active=prod` (overrides everything). (2) **Environment variable:** `SPRING_PROFILES_ACTIVE=prod` (set by Docker/Kubernetes). (3) **JVM system property:** `-Dspring.profiles.active=prod` (set in startup script). (4) **`application.properties/yml`:** `spring.profiles.active=dev` (lowest — the default). **Why H2 was used in prod:** The deployment script was missing the env var / CLI arg, so Spring fell back to `application.yml` which had `spring.profiles.active=dev` as a default. **Fix:** `export SPRING_PROFILES_ACTIVE=prod` in the production deployment script, OR in Kubernetes: `env: [{name: SPRING_PROFILES_ACTIVE, value: prod}]`.
+
+</details>
 
 Separation of Concerns. Controllers should only focus on mapping requests and delegating to services (the "Happy Path"). Cluttering them with repetitive `try-catch` blocks violates the DRY principle and makes code unreadable. `@ControllerAdvice` acts as a global interceptor that catches exceptions thrown anywhere in the application and translates them into standardized HTTP responses (e.g., `ProblemDetail` or `ErrorResponse`), ensuring a consistent API contract across hundreds of endpoints.
 </details>

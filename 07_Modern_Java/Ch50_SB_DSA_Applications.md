@@ -1322,16 +1322,16 @@ public class OrganizationController {
 
 🔬 **Section Challenge — Chapter 8: Organization Hierarchy with Tree Traversal**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-<details><summary>Answer</summary>
+**Challenge 1 (Reasoning):** For an organization chart API, when should you choose BFS, DFS, parent pointers, or an adjacency map?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+Use an adjacency map to store `managerId -> employees`. Use DFS to emit nested trees, BFS to return level-order charts, and parent pointers to climb from an employee to ancestors or find a common manager. The chosen traversal follows the output shape: nested output screams DFS; level output screams BFS; ancestor questions scream parent links.
 </details>
 
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-<details><summary>Answer</summary>
+**Challenge 2 (Bug Hunt):** The organization traversal assumes the data is a tree, but production has a cycle caused by bad imports. What breaks, and how do you defend?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+Plain recursion can loop until stack overflow. Add `visited` tracking, maximum depth, and validation that prevents an employee from becoming their own ancestor. In APIs, return a clear data-integrity error instead of hanging the request.
 </details>
 
 

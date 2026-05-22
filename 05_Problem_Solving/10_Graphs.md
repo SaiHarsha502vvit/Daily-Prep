@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](09_Trees.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Dynamic_Programming.md)
+**Navigation**: [< Previous](09_Trees.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Dynamic_Programming.md)
 
 **Problems 10/14** | [Prev](09_Trees.md) | [Index](../00_MASTER_INDEX.md) | [Next](11_Dynamic_Programming.md)
 
@@ -1555,16 +1555,12 @@ private void union(Map<String, String> parent, String x, String y) {
 
 🔬 **Section Challenge — 9.4 Union-Find (Disjoint Set)**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Trace — Who/When/What):** `find(parent, 5)` on a Union-Find with path compression. The tree is `5 → 3 → 1 → 0`. **Who** gets updated? **When** exactly? **What** is the tree shape after the call?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who gets updated?** Nodes 5 and 3 \u2014 path compression flattens them directly to the root. **When?** During the recursive unwind: `find(5)` calls `find(3)` which calls `find(1)` which calls `find(0)` which returns 0. As the call stack unwinds: `parent[1] = 0` (already there), then `parent[3] = 0`, then `parent[5] = 0`. **Tree shape after:** All four nodes (5, 3, 1) point directly to root 0. Next `find(5)` call = O(1), not O(depth). **Why this matters:** Without path compression, a degenerate Union-Find is a linked list with O(n) find. With path compression (and union by rank), amortized complexity is O(α(n)) — the inverse Ackermann function, which is effectively constant for all practical n (stays ≤ 4 for n ≤ 10^80).
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 

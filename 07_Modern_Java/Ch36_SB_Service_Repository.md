@@ -1120,21 +1120,23 @@ public interface UserProjection {
 
 🔬 **Section Challenge — Chapter 7: Custom Queries (@Query)**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Rewrite):** You first solved "find active customers from a domain with orders above a threshold" using nested loops in Java. Rewrite it as a Spring Data custom query. Which parameters, joins, projection, and pagination choices matter?
+<details><summary>Trace, Reasoning & Debug</summary>
 
 ```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
+@Query("""
+       select new com.app.CustomerSummary(c.id, c.name, count(o.id))
+       from Customer c
+       join c.orders o
+       where c.active = true
+         and c.email like concat('%', :domain)
+         and o.total >= :minTotal
+       group by c.id, c.name
+       """)
+Page<CustomerSummary> findActiveBuyers(String domain, BigDecimal minTotal, Pageable page);
 ```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+
+The rewrite moves filtering and joining to the database, keeps the returned shape small with a projection, and preserves scalability with `Pageable`. Use `@Query` when method names become unreadable or when you need joins, grouping, vendor functions, or DTO projection.
 </details>
 
 

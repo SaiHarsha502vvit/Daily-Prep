@@ -166,16 +166,12 @@ ALTER TABLE t1 ALTER COLUMN marks TYPE NUMERIC(10,2);
 
 🔬 **Section Challenge — 4.3 Modify datatype**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Debug — Who/When/What):** You run `ALTER TABLE employee MODIFY COLUMN salary DECIMAL(12,2)` in MySQL on a 50M-row production table. **Who** is blocked? **When?** **What** is the safer alternative?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Who is blocked?** ALL reads AND writes on the `employee` table. MySQL 5.x performs a **table-level lock** for most DDL — it copies the entire table to a temp file with the new schema, then swaps. **When?** For the full duration of the copy — on a 50M-row table with slow disk, this could be 30-60 minutes of complete table unavailability. **Safer alternative:** (1) **MySQL 5.6+ Online DDL**: `ALTER TABLE ... ALGORITHM=INPLACE, LOCK=NONE` — for supported operations (changing column length, adding indexes), MySQL allows concurrent reads/writes during the operation. (2) **pt-online-schema-change** (Percona Toolkit): creates shadow table, copies data in batches, uses triggers to sync writes, then atomically swaps. Zero downtime. (3) **gh-ost** (GitHub): trigger-free online schema change tool — more reliable for high-traffic tables.
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 </details>
 
 
@@ -530,16 +526,12 @@ SELECT * FROM t1, t2 WHERE t1.no = t2.no;
 
 🔬 **Section Challenge — 9.1 `INNER JOIN`**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Debug — Who/When/What):** `SELECT orders.id, items.name FROM orders, order_items items WHERE orders.id = items.order_id AND orders.status = 'PENDING'` — **who** executes the join? **What** implicit join type is this? **What** catastrophic query results if you delete the WHERE clause?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who executes:** The SQL query optimizer — it converts the comma-syntax to an implicit INNER JOIN. **What join type:** Implicit INNER JOIN, functionally identical to `orders INNER JOIN order_items ON orders.id = items.order_id`. **What catastrophe without WHERE:** A full CROSS JOIN (Cartesian product) — every order row paired with EVERY item row. If `orders` has 10,000 rows and `order_items` has 50,000, you get 500,000,000 rows (500M). This can crash the DB server or consume all memory. **Why this matters:** Always use explicit `JOIN ... ON` syntax — the intent is clear, the ON clause is co-located with the join, and accidental cross joins are much harder to write by mistake.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 
@@ -584,16 +576,12 @@ Equivalent by swapping table order with LEFT JOIN.
 
 🔬 **Section Challenge — 9.3 `RIGHT JOIN`**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Reasoning — Who/When/What):** `departments RIGHT JOIN employees` returns all employees including those without a department. **Who** is null? **When** would you prefer this over `employees LEFT JOIN departments`? **What** does the convention say?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who is null?** The `departments` columns — specifically `dept_id`, `dept_name`, etc. — are NULL for employees not assigned to any department. **When prefer RIGHT JOIN?** Almost never — by convention, most engineers rewrite it as `employees LEFT JOIN departments` (swap table order) to keep the "primary" table on the left. RIGHT JOIN reads counter-intuitively: you're reading `departments` first but ALL rows from `employees` are preserved. **Convention says:** Use LEFT JOIN. Many linters and code review guides ban RIGHT JOIN for readability. Only use RIGHT JOIN when you have a complex query with many joins and rewriting would require restructuring all table references. **Interview tip:** Always rewrite `A RIGHT JOIN B` → `B LEFT JOIN A` before explaining to your interviewer.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 
@@ -609,16 +597,12 @@ Pure Cartesian product (every row with every row).
 
 🔬 **Section Challenge — 9.4 `CROSS JOIN`**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Design — Who/When/What):** CROSS JOIN is considered dangerous but has legitimate use cases. **Who** should use it? **When** is it the correct tool? **What** is a real-world example?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who should use it?** Data engineers and analysts generating combinatorial datasets — not typical CRUD developers. **When is it correct?** (1) **Generating test data:** `SELECT * FROM sizes CROSS JOIN colors` — if `sizes` has 3 rows and `colors` has 5, you get 15 combinations for every size+color product variant. (2) **Date/calendar generation:** `SELECT date_series.d, products.id FROM generate_series(...) date_series CROSS JOIN products` — one row per product per day for reporting. (3) **Matrix/grid problems:** Generate all possible pairs to then filter. **What example:** An e-commerce pivot table: `SELECT months.m, categories.cat FROM months CROSS JOIN categories` gives every month-category combination, even if there were no sales (needed for zero-fill reporting). **Guard against accidental CROSS JOIN:** Always check `EXPLAIN` — if you see `Nested Loop` without an index condition, you may have accidentally written one.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 
@@ -636,16 +620,12 @@ Interview line:
 
 🔬 **Section Challenge — 9.5 `NATURAL JOIN` (usually avoid in production)**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Bug Hunt — Who/When/What):** `orders NATURAL JOIN customers` worked for a year. A new developer adds a `status` column to both `orders` AND `customers`. The query still runs but now returns wrong results with no error. **Who** caused the break? **When** did results silently corrupt? **What** happened?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who caused it?** The developer who added `status` to both tables — they didn't realize NATURAL JOIN automatically joins on ALL matching column names. **When did it corrupt?** Silently, from the moment the migration ran. No error, no warning. **What happened?** NATURAL JOIN previously joined on `customer_id` (the only shared column name). After adding `status` to both tables, it now joins on BOTH `customer_id` AND `status`. So only rows where BOTH the customer ID matches AND the order status matches the customer status are returned — severely filtering results without any indication. This is the core danger: **NATURAL JOIN is schema-dependent** — a column rename or addition invisibly changes join semantics. **Fix:** Always use explicit `JOIN orders o ON o.customer_id = c.customer_id` — the join condition is visible, stable, and schema-change-proof.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 
@@ -663,16 +643,12 @@ LEFT JOIN employee m ON e.manager_id = m.emp_id;
 
 🔬 **Section Challenge — 9.6 `SELF JOIN`**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Design — Who/When/What):** The org chart SELF JOIN works for a flat manager hierarchy. Your company now has 8 levels of management. **Who** should you call to get the full reporting chain for an employee? **When** does SELF JOIN break down? **What** replaces it?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who:** The database engine — but it needs the right tool. **When SELF JOIN breaks:** SELF JOIN is a fixed-depth join — you join the table to itself N times for N levels. `employee e JOIN employee m ON e.manager_id = m.emp_id` gives you 1 level up (direct manager). For 8 levels you'd need 8 joins — and the depth must be known at query-write time. If an employee is at level 3 and another is at level 7, a 4-level join returns wrong results for the shallower one (NULLs). **What replaces it:** A **Recursive CTE** (WITH RECURSIVE): Start with the root, then repeatedly join employees to their managers until the chain terminates. Works for ANY depth. Supported in MySQL 8+, PostgreSQL, SQL Server. `WITH RECURSIVE chain AS (SELECT id, name, manager_id FROM employee WHERE id = ? UNION ALL SELECT e.id, e.name, e.manager_id FROM employee e JOIN chain c ON e.id = c.manager_id) SELECT * FROM chain;`
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 
@@ -818,17 +794,7 @@ Interview line:
 
 🔬 **Section Challenge — 12.1 Datatypes**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-<details><summary>Answer</summary>
-
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
-
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-</details>
+**Challenge 1 (Debug — Who/When/What):** You store a price as `DECIMAL(10,2)`. A user inputs `12345678901.99`. **Who** rejects it? **When?** **What** is the maximum value `DECIMAL(10,2)` can store?\n\n<details><summary>Answer</summary>\n\n**Who rejects?** The database engine, not the application. MySQL raises `ERROR 1264: Out of range value`. **When?** At INSERT/UPDATE time — after the application sends the value, before it's committed. **Max value:** `DECIMAL(10,2)` = 10 total digits, 2 after decimal point = 8 digits before decimal. Max: `99999999.99` (~$100M). **Common mistake:** DECIMAL(10,2) on an e-commerce price column seems large, but if you need to store values above $99,999,999.99 (international orders, B2B), you'll hit this. **Fix:** Use `DECIMAL(15,2)` for financial data by default (handles up to $9.9 trillion). For cryptocurrency: `DECIMAL(18,8)` (8 decimal places for satoshi-level precision). Never use FLOAT/DOUBLE for money — floating point representation causes cents-level rounding errors.\n\n</details>
 
 
 ## 12.2 Constraints

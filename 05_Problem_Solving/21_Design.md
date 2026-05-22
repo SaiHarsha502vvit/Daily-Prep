@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](20_Sorting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Recursion_Subsets.md)
+**Navigation**: [< Previous](20_Sorting.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](22_Recursion_Subsets.md)
 
 **Problems 21** | [Prev](20_Sorting.md) | [Index](../00_MASTER_INDEX.md) | [Next](22_Recursion_Subsets.md)
 
@@ -365,9 +365,33 @@ VARIANT: Use HashMap<Character, Trie> instead of array for Unicode support.
 
 
 🔬 **Section Challenge — PROBLEM 3: Implement Trie / Prefix Tree (LC 208)**
->
+
+**Challenge 1 (Trace — Who/When/What):** Trace `insert("app")` then `search("app")` and `startsWith("ap")` on an initially empty Trie. At each character step, answer: Who holds the current position? When is `isEnd` set? What already exists before each traversal starts?
+
+<details><summary>Answer</summary>
+
+**Insert "app":** Who? `node` pointer starting at `root`. When? `isEnd=true` is set ONLY after the last character is processed. What already exists? All `children[26]` are null at root initially.
+- char 'a' (idx=0): `root.children[0]==null` → create new Trie node. `node = root.children[0]`.
+- char 'p' (idx=15): `node.children[15]==null` → create. `node = ...children[15]`.
+- char 'p' (idx=15): `node.children[15]==null` → create. `node = ...children[15]`.
+- After loop: `node.isEnd = true` on the final 'p' node.
+
+**search("app"):** `findNode("app")` traverses the same 3 nodes (they now exist). Returns the last 'p' node where `isEnd=true` → returns **true**.
+
+**startsWith("ap"):** `findNode("ap")` traverses 2 nodes, returns the second 'p' node (non-null) → returns **true** (no check on `isEnd`).
+
+</details>
+
+**Challenge 2 (Design):** `search("apple")` after only `insert("app")`. What does `findNode("apple")` return and why? Where exactly does traversal fail?
+
+<details><summary>Answer</summary>
+
+After inserting "app", the Trie has nodes for 'a'->'p'->'p' with `isEnd=true` on the last 'p'. For `search("apple")`: 'a' → exists, 'p' → exists, 'p' → exists, 'l' → **`node.children['l'-'a'] == null`**. `findNode` returns `null`. `search` returns `null != null && ...` = `false`. Correct behavior: "apple" was never inserted even though "app" is a prefix of it. The Trie precisely distinguishes prefix-membership (`startsWith`) from word-membership (`search`) via the `isEnd` flag.
+
+</details>
 
 ## PROBLEM 4: Design Add and Search Words (LC 211)
+
 
 ```
 DIFFICULTY: Medium

@@ -112,10 +112,12 @@ int total = orders.stream()
 
 🔬 **Section Challenge — What Problem Does Functional Programming Solve?**
 
-**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+**Challenge 1 (Concurrency Safety):** The section shows an imperative `total += o.getAmount()` loop vs. a functional `mapToInt(...).sum()`. **Who** is the safety threat in the imperative version? **When** does the race condition manifest? **What** makes the stream version safe without explicit `synchronized`?
+
 <details><summary>Answer</summary>
 
-Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
+**Who threatens safety:** Any concurrent thread that also reads/writes the shared mutable `total` variable. In a multi-threaded environment (e.g., parallel HTTP request handlers), two threads can interleave the read-increment-write of `total` (classic check-then-act race). **When it manifests:** Non-deterministically. Only when two threads execute the `total += o.getAmount()` simultaneously. In production this causes lost updates: 100 orders processed but total only counts 95. **Why stream is safe:** `mapToInt(Order::getAmount).sum()` is a **pipeline over immutable elements**. No shared mutable variable is touched. `.sum()` reduces to a final value using only the stream's local accumulator. For `parallelStream()`, Java uses `ForkJoinPool` with task-local accumulators that are combined at merge points — no shared state across threads. **Key FP principle:** Pure functions + immutable data = free parallelism. The compiler/runtime can parallelize because there's no ordering constraint from side effects.
+
 </details>
 
 
@@ -133,10 +135,12 @@ Input requirements. A `Function<T, R>` represents a transformation. It takes exa
 
 🔬 **Section Challenge — Why Learn Functional Programming?**
 
-**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+**Challenge 1 (Trade-off Analysis):** The section lists 5 benefits of FP. **What** is the ONE scenario where `parallelStream()` is actually SLOWER than a regular sequential stream? **Who** determines whether parallelization helps? **When** should you avoid `.parallelStream()`?
+
 <details><summary>Answer</summary>
 
-Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
+**When parallelStream() is SLOWER:** When the data source is small (< ~10,000 elements) OR when the pipeline operations have thread coordination overhead that exceeds the computation savings. Splitting, merging, and coordinating `ForkJoinPool` workers has fixed overhead (~100μs). For `list.parallelStream().filter(x -> x > 5).count()` on a 100-element list, parallelism is slower than sequential. **Who determines if it helps:** The `ForkJoinPool.commonPool()` — its efficiency depends on: (1) Number of available CPUs (meaningful on 4+ cores). (2) Whether operations are CPU-bound (parallelism helps) vs I/O-bound (blocking threads waste pool workers — use `CompletableFuture` instead). (3) Whether the source supports efficient splitting (`ArrayList` splits well, `LinkedList` does not). **When to avoid:** Small datasets, I/O-bound operations, operations with side effects (thread-unsafe collectors), streams that depend on encounter order (`.forEachOrdered()` negates parallelism benefit).
+
 </details>
 
 
@@ -183,10 +187,12 @@ Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for tie
 
 🔬 **Section Challenge — Difficulties in Learning FP**
 
-**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+**Challenge 1 (Debug Trace):** You're debugging a stream pipeline but `peek()` shows no output. The stream runs silently and returns nothing. **Who** is responsible for triggering execution? **When** does `peek()` actually execute? **What** is the one thing missing from the pipeline that would make it work?
+
 <details><summary>Answer</summary>
 
-Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
+**Who triggers execution:** The TERMINAL operation. `peek()` is an intermediate operation and is LAZY — it does nothing until a terminal operation is called. **When `peek()` executes:** Only when data flows through it during terminal operation processing. If there's no terminal op, the pipeline is never executed. **What's missing:** A terminal operation: `.collect(Collectors.toList())`, `.forEach(...)`, `.count()`, `.findFirst()`, etc. `stream.peek(System.out::println)` builds the pipeline but doesn't run it. `stream.peek(System.out::println).toList()` actually runs it. **Real debugging pattern:** Use `peek()` BETWEEN operations to trace intermediate values: `stream.filter(x -> x > 0).peek(x -> log.debug("After filter: " + x)).map(x -> x * 2).peek(x -> log.debug("After map: " + x)).collect(toList())` — this is the functional equivalent of adding print statements inside a loop.
+
 </details>
 
 
@@ -272,10 +278,12 @@ List<Integer> result = numbers.stream()
 
 🔬 **Section Challenge — Core Principles**
 
-**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+**Challenge 1 (Purity Test):** Label each of these 4 Java functions as PURE or IMPURE, and justify why: (A) `int add(int a, int b) { return a + b; }` (B) `void save(User u) { db.persist(u); }` (C) `String format(String name) { return "Hello, " + name; }` (D) `int nextId() { return ++counter; }` (where `counter` is a class field)
+
 <details><summary>Answer</summary>
 
-Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
+**(A) PURE:** Same inputs always produce same output (`add(2,3)` always returns `5`). No side effects. **(B) IMPURE:** Side effect — persists to DB. Same call with same `User` object produces different DB state each time. Cannot be safely parallelized or memoized. **(C) PURE:** String concatenation is immutable. `format("Alice")` always returns `"Hello, Alice"`. No external state touched. Can be safely memoized, parallelized, tested in isolation. **(D) IMPURE:** Reads AND modifies `counter` (external mutable state). Two calls with no arguments return DIFFERENT values (n, n+1). Not safe to parallelize. Not safe to reorder. **Why this matters in FP:** Pure functions are the unit of composition. You can chain, memoize, parallelize, and test pure functions trivially. Impure functions require careful ordering, synchronization, and test setup.
+
 </details>
 
 
@@ -410,10 +418,12 @@ square.apply(5);  // 25
 
 🔬 **Section Challenge — Built-in Functional Interfaces**
 
-**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+**Challenge 1 (Interface Selection):** You need to: (A) Check if a user is an admin. (B) Get the current timestamp without any input. (C) Transform a user ID string to a `User` object. (D) Log a user to the console without returning anything. **What** functional interface fits each case, and **what** is the exact generic signature?
+
 <details><summary>Answer</summary>
 
-Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
+**(A) Check if admin → `Predicate<User>`:** `Predicate<User> isAdmin = user -> user.getRole() == Role.ADMIN;`. Signature: `T -> boolean`. **(B) Current timestamp → `Supplier<LocalDateTime>`:** `Supplier<LocalDateTime> now = LocalDateTime::now;`. Signature: `() -> T`. No input, generates output. **(C) ID to User object → `Function<String, User>`:** `Function<String, User> findUser = id -> userRepo.findById(id);`. Signature: `T -> R`. **(D) Log user → `Consumer<User>`:** `Consumer<User> logger = user -> log.info(user.getName());`. Signature: `T -> void`. **Memory trick:** Supplier = factory (supplies things). Function = transform (in goes T, out comes R). Consumer = sink (eats T, produces nothing). Predicate = gate (in goes T, out comes boolean — true/false decision). BiFunction = two inputs, one output. UnaryOperator = Function<T,T> (same type in and out).
+
 </details>
 
 
@@ -443,10 +453,12 @@ isNotPositive.test(-5);  // true
 
 🔬 **Section Challenge — Chaining Predicates**
 
-**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+**Challenge 1 (Short-Circuit Reasoning):** `Predicate.and(other)` chains two predicates. **Who** evaluates second when first is false? **When** does `or()` skip evaluation of its second predicate? **What** is the functional equivalent of Java's `&&` short-circuit vs. `&` eager-evaluation in predicate terms?
+
 <details><summary>Answer</summary>
 
-Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
+**Who evaluates second when first is false:** NOBODY — `Predicate.and(other)` short-circuits. If `first.test(x)` returns `false`, `other.test(x)` is NEVER called. This is identical to Java's `&&` operator. **When `or()` skips second:** When the FIRST predicate returns `true`. `isAdmin.or(isSupervisor)` — if `isAdmin.test(u)` is `true`, `isSupervisor.test(u)` is skipped. **Functional equivalents of eager `&` vs. lazy `&&`:** Java's `Predicate` always short-circuits (lazy). There's no eager `Predicate.and()` equivalent. To force both evaluations (e.g., for side effects like logging), you must write: `p1 -> { boolean r1 = isAdmin.test(p1); boolean r2 = isSupervisor.test(p1); return r1 && r2; }`. **Why this matters:** If `other` predicate throws exceptions or has side effects, short-circuit means those effects may NOT happen. Design predicates as pure functions to avoid this issue entirely.
+
 </details>
 
 
@@ -638,10 +650,12 @@ Integer[] arr = numbers.stream().toArray(Integer[]::new);
 
 🔬 **Section Challenge — Terminal Operations (Produce Result)**
 
-**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+**Challenge 1 (Reduce Deep Dive):** `numbers.stream().reduce(0, (a, b) -> a + b)` sums all numbers. **What** is the `0` called and why does it matter? **Who** gets called first? **What** breaks if you use `reduce(Integer::sum)` (no identity) on an empty stream?
+
 <details><summary>Answer</summary>
 
-Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
+**What `0` is called:** The IDENTITY element. An identity element for an operation satisfies: `identity op x == x` for all x. For addition: `0 + x == x`. For multiplication: `1 * x == x`. For string concat: `"" + x == x`. **Why it matters:** It's the starting accumulator value AND the safe return value for empty streams. **Who gets called first:** `accumulator(0, first_element)` — the identity is the `a` in the first call. **What breaks with no-identity `reduce(Integer::sum)` on empty stream:** Returns `Optional.empty()` — not a crash, but you must handle the Optional. `reduce(0, ...)` always returns an `int` (never Optional), making it safe for guaranteed non-null results. **Real bug:** Using wrong identity: `reduce(1, (a, b) -> a + b)` on `[1,2,3]` returns `7` instead of `6` because the identity 1 is counted as an extra element. Always ensure: `identity op x == x` for your operation before using it.
+
 </details>
 
 
@@ -686,10 +700,12 @@ Map<String, Long> countByCity = people.stream()
 
 🔬 **Section Challenge — Pattern 2: Grouping**
 
-**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+**Challenge 1 (Grouping Internals):** `Collectors.groupingBy(Person::getCity)` returns a `Map<String, List<Person>>`. **Who** determines the insertion order of groups? **What** downstream collector makes it return `Map<String, Long>` (count per city)? **When** would you use `groupingBy(getCity, TreeMap::new, counting())` instead?
+
 <details><summary>Answer</summary>
 
-Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
+**Who determines insertion order:** The default groupingBy returns a `HashMap` — NO guaranteed order. Groups appear in arbitrary hash-bucket order. **What returns count per city:** `Collectors.groupingBy(Person::getCity, Collectors.counting())` — the second arg is the downstream collector that processes each group's elements. `counting()` is equivalent to `mapping(e -> 1L, summingLong(x -> x))`. **When to use `TreeMap::new`:** When you need groups in SORTED KEY ORDER. `groupingBy(Person::getCity, TreeMap::new, counting())` returns a `TreeMap<String, Long>` with cities in alphabetical order. Useful for: display order in UI, reproducible output in tests, range-based key queries (`headMap`, `tailMap`, `subMap`). **Alternative for LinkedHashMap (insertion order):** `groupingBy(Person::getCity, LinkedHashMap::new, toList())` preserves the order in which cities first appear in the stream.
+
 </details>
 
 
@@ -708,10 +724,12 @@ Map<Boolean, List<Person>> adultOrNot = people.stream()
 
 🔬 **Section Challenge — Pattern 3: Partitioning**
 
-**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+**Challenge 1 (Partitioning vs Grouping):** `partitioningBy` always returns `Map<Boolean, List<T>>`. **What** is the ONE advantage of `partitioningBy` over `groupingBy(x -> predicate)` even though both split into two groups? **When** would you choose `groupingBy` with a boolean expression over `partitioningBy`?
+
 <details><summary>Answer</summary>
 
-Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.
+**ONE advantage of `partitioningBy`:** It ALWAYS returns both keys (`true` and `false`), even when one group is empty. `groupingBy(p -> p.getAge() >= 18)` on an all-adult list returns `{true: [...]}` — the `false` key is ABSENT. `partitioningBy(p -> p.getAge() >= 18)` always returns `{true: [...], false: []}` — the false group is an empty list, not missing. This means `map.get(false)` returns `[]` not `null`, preventing NPE. **When to use groupingBy with boolean:** When you need the DOWNSTREAM collector to be more complex than just `toList()`. `groupingBy(p -> p.isAdult(), Collectors.averagingInt(Person::getAge))` works. But `partitioningBy` also accepts a downstream collector: `partitioningBy(p -> p.isAdult(), Collectors.counting())`. Both approaches work equivalently with downstream collectors; `partitioningBy` wins for the null-safety guarantee on the result map.
+
 </details>
 
 
@@ -735,16 +753,12 @@ String withPrefixSuffix = names.stream()
 
 🔬 **Section Challenge — Pattern 4: Joining Strings**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Trace — Who/When/What):** `Collectors.joining(", ", "[", "]")` on an empty stream \u2014 **who** produces the result? **What** is the output? **When** does this differ from `String.join()`?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who produces?** The `Collectors.joining` collector \u2014 it accumulates via a `StringJoiner` internally. **What output on empty stream?** `"[]"` \u2014 the prefix `"["` and suffix `"]"` are ALWAYS included, even when there are no elements. This is intentional: an empty collection still produces valid bracket notation. **When differs from `String.join()`?** `String.join(", ", emptyList)` returns `""` (empty string, no prefix/suffix). **Practical gotcha:** If you want `""` for empty and `"[a, b]"` for non-empty, you must check `list.isEmpty()` separately before joining. **Performance note:** `Collectors.joining` is O(n) for n elements \u2014 it uses a single `StringBuilder`-like accumulation, not quadratic string concatenation.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 
@@ -807,16 +821,12 @@ Function<Integer, int[]> arrayMaker = int[]::new;
 
 🔬 **Section Challenge — The Four Types**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Debug — Who/When/What):** `list.sort(String::compareToIgnoreCase)` — which of the four method reference types is this? **Who** captures the comparison target? **What** does it compile to as a lambda?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Type 3: Instance method of arbitrary object of particular type.** `String::compareToIgnoreCase` is a reference to an instance method, but no specific instance is captured. **Who is captured?** No object is captured at the reference site — instead the first argument of the `Comparator` interface becomes the receiver. **Lambda equivalent:** `(s1, s2) -> s1.compareToIgnoreCase(s2)`. The first lambda param becomes `this` (the receiver), the second becomes the argument. This is why it satisfies `Comparator<String>` — two `String` arguments, `String` is the type owning `compareToIgnoreCase`. **Type 2 (specific instance)** would be: `"prefix"::concat` — the specific String object `"prefix"` is captured.
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 </details>
 
 
@@ -1096,16 +1106,12 @@ Function<Integer, Integer> lambda = x -> x * 2;  // Explicit type
 
 🔬 **Section Challenge — A. LOCAL VARIABLE TYPE INFERENCE (var) - Java 10**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Reasoning — Who/When/What):** `var list = new ArrayList<>()` — **who** infers the type? **What** type is inferred? **When** at compile time vs runtime?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Who infers?** `javac` (the Java compiler). `var` is purely a compile-time feature. **What type inferred?** `ArrayList<Object>` — without explicit type argument, diamond `<>` has no target type to infer from, so it defaults to `Object`. You get a raw-type warning. **Fix:** `var list = new ArrayList<String>()` — now inferred as `ArrayList<String>`. **When?** Compile time only. At runtime, `var` is completely gone — the bytecode sees the fully resolved type. **Restriction:** `var` only works for local variables. Cannot use for fields, method parameters, or return types. It is NOT dynamic typing — the type is fixed at compile time, just written once.
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 </details>
 
 

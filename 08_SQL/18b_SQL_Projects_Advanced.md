@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous Chapter](18a_SQL_Projects_Beginner.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](18a_SQL_Projects_Beginner.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -830,21 +830,10 @@ FROM customer_stats;
 
 🔬 **Section Challenge — 3.5 Customer Lifetime Value (CLV)**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Design):** Build a CLV query from orders. Which inputs decide whether you use simple historical spend, projected annual value, or cohort-based lifetime value?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+Start with constraints: available history, repeat-purchase cadence, churn definition, refunds, and whether revenue or margin matters. If history is short, use conservative historical spend. If purchase intervals are stable, project from average order value and purchase frequency. If cohorts behave differently, compute CLV per acquisition cohort so old customers do not distort new-customer expectations.
 </details>
 
 
@@ -1079,16 +1068,12 @@ WHERE p1.id < p2.id
 
 🔬 **Section Challenge — Questions Set 3: Complex JOINs**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Debug — Who/When/What):** A sales report joins `orders → order_items → promotions` and the total revenue figure is 3x higher than expected. **Who** caused the row explosion? **When** does a multi-table JOIN produce unexpected row multiplication? **What** query tells you if fan-out is happening?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who caused it?** The join to `promotions` — if each `order_item` can have multiple applied promotions, then one item with 3 promotions appears 3 times in the result, tripling all aggregated values. **When does it happen?** Any many-to-many JOIN without proper aggregation. `orders JOIN order_items JOIN promotions` can be: 1 order × 5 items × 3 promotions = 15 rows for that one order. SUM(amount) on this = 15× the actual order value. **Diagnostic query:** `SELECT o.id, COUNT(*) as row_count FROM orders o JOIN order_items oi ON o.id=oi.order_id JOIN promotions p ON oi.id=p.order_item_id GROUP BY o.id HAVING COUNT(*) > 1`. If row_count > 1, you have fan-out. **Fix options:** (1) Aggregate promotions first: `JOIN (SELECT order_item_id, COUNT(*) promo_count FROM promotions GROUP BY order_item_id) p`. (2) Use `SELECT DISTINCT` on the grain you want. (3) Use `EXISTS` instead of JOIN when you only need to know IF a promotion exists. (4) Re-examine the data model — should promotions be on `order_items` or on `orders`?
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 
@@ -1273,5 +1258,4 @@ VALUES ('fact_sales', @@ROWCOUNT, CURRENT_TIMESTAMP);
 ---
 
 _Data Engineering is 80% SQL. Master these patterns and you'll excel in any DE interview!_
-
 

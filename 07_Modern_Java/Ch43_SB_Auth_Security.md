@@ -1058,21 +1058,20 @@ public class ProjectController {
 
 🔬 **Section Challenge — Chapter 7: Custom Security Expressions**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Design):** Design a custom security expression `@authz.canAccessProject(#projectId, authentication)`. What inputs should it receive, where should ownership checks happen, and what must stay out of the controller?
+<details><summary>Trace, Reasoning & Debug</summary>
 
 ```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+@Component("authz")
+public class AuthorizationRules {
+    public boolean canAccessProject(Long projectId, Authentication authentication) {
+        UserPrincipal user = (UserPrincipal) authentication.getPrincipal();
+        return projectRepository.existsByIdAndMembers_Id(projectId, user.id());
     }
 }
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
 ```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+
+The controller should express the rule, not implement it. Keep row-level authorization in a named bean so it can use repositories, be tested directly, and stay consistent across endpoints. Pass only stable identifiers and the authenticated principal; never trust request bodies for ownership.
 </details>
 
 

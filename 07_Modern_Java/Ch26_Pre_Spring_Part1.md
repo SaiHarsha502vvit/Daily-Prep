@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch27_Pre_Spring_Part2.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](Ch27_Pre_Spring_Part2.md)
 
 ---
 
@@ -175,10 +175,12 @@ Modifier.isFinal(modifiers);     // true/false
 
 🔬 **Section Challenge — A.2 The Class Object - Your Entry Point**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Reasoning — Who/When/What):** `Class.forName("com.example.UserService")` is used in frameworks like Spring. **When** does it load the class? **Who** pays the performance cost? **What** caches the result?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**When loaded?** On the first call — the classloader reads the bytecode from the JAR file and creates the `Class` object. **Who pays?** The calling thread blocks during class loading (disk I/O + bytecode parsing). **Caching:** The JVM caches loaded `Class` objects in the ClassLoader's internal table. Subsequent `Class.forName("com.example.UserService")` calls return the cached object instantly (no disk I/O). Spring exploits this: during startup it scans and loads all classes once, then caches references. At request time, bean instantiation uses the cached `Class` object — no repeated I/O.
+
 </details>
 
 
@@ -413,10 +415,12 @@ UserService instance = withRepo.newInstance(repoInstance);
 
 🔬 **Section Challenge — A.5 Constructor Reflection - How Spring Creates Beans**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Trace — Who/When/What):** Spring uses `constructor.newInstance(args)` to create beans. **What** happens if the class has NO no-arg constructor and you don't use `@Autowired`? **Who** throws the exception and when?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**What happens?** Spring tries to find a single constructor. If there's exactly ONE constructor (even with parameters), Spring 4.3+ autowires it automatically. If there are MULTIPLE constructors and none is marked `@Autowired`, Spring throws `NoUniqueBeanDefinitionException` or `BeanInstantiationException` — it can't determine which constructor to use. **Who throws?** `ConstructorResolver.autowireConstructor()` inside Spring's `AbstractAutowireCapableBeanFactory`. **When?** During application context startup, in the bean creation phase. This is why `@RequiredArgsConstructor` (Lombok) works so well with Spring — it generates exactly ONE constructor, which Spring auto-wires.
+
 </details>
 
 
@@ -478,10 +482,12 @@ for (Parameter param : params) {
 
 🔬 **Section Challenge — A.6 Annotation Reflection - How Spring Reads Configuration**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Debug — Who/When/What):** You add `@Transactional` to a method. **Who** reads this annotation? **When** during startup? **What** would you see if you called `method.getAnnotation(Transactional.class)` at runtime on the PROXY vs the RAW bean?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Who reads?** `AnnotationTransactionAttributeSource`, called by `InfrastructureAdvisorAutoProxyCreator` (a `BeanPostProcessor`). **When?** After bean initialization, before the bean is stored in the singleton cache. **Proxy vs Raw:** On the RAW object: `method.getAnnotation(Transactional.class)` returns the annotation — it's there in bytecode. On a CGLIB PROXY class: the proxy is a generated subclass; calling `proxy.getClass().getMethod(...).getAnnotation(...)` may return `null` because CGLIB's generated subclass methods don't copy annotations. Spring handles this with `AnnotationUtils.findAnnotation()` which walks the class hierarchy to find inherited annotations — always use this instead of direct `getAnnotation()` in framework code.
+
 </details>
 
 
@@ -519,10 +525,12 @@ for (Type type : genericInterfaces) {
 
 🔬 **Section Challenge — A.7 Generic Type Information - The Advanced Stuff**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Trace — Who/When/What):** `method.getGenericReturnType()` returns `ParameterizedType` for `List<User>`. **What** calls would you chain to extract the actual `User.class` from it? **When** would this fail to give you `User.class`?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
+**Chain:** `ParameterizedType pt = (ParameterizedType) method.getGenericReturnType();` then `Type typeArg = pt.getActualTypeArguments()[0];` then `Class<?> userClass = (Class<?>) typeArg;` → `User.class`. **When fails?** If the return type is `List<T>` (a TypeVariable, not a concrete class) — `typeArg` is a `TypeVariable`, not a `Class`, and casting to `Class` throws `ClassCastException`. Also fails for nested generics like `List<List<User>>` — `typeArg` is another `ParameterizedType`, not a raw `Class`. Spring's `ResolvableType.forMethodReturnType(method).getGeneric(0).resolve()` handles all these edge cases safely.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
@@ -686,21 +694,19 @@ public @interface RuntimeAvailable { }
 
 🔬 **Section Challenge — B.1 Creating Custom Annotations**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Design):** Build a custom annotation `@MeasureLatency` for service methods and decide how Spring will discover it. Which retention policy, target, and default attributes are required?
+<details><summary>Trace, Reasoning & Debug</summary>
 
 ```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface MeasureLatency {
+    String value() default "";
+    boolean logArgs() default false;
 }
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
 ```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+
+The constraint is discovery time. Spring/AOP reads annotations while the app is running, so `RetentionPolicy.RUNTIME` is non-negotiable. Because the behavior wraps method execution, `ElementType.METHOD` keeps the annotation honest and prevents class/field usage that the aspect cannot process.
 </details>
 
 
@@ -780,10 +786,12 @@ public class AnnotationProcessor {
 
 🔬 **Section Challenge — B.2 Processing Annotations at Runtime (Spring's Way)**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Trace — Who/When/What):** Spring's `@Component` scan finds all annotated classes. **Who** triggers the scan? **When** in the startup sequence? **What** is the output — what data structure is built?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Who triggers?** `ClassPathBeanDefinitionScanner`, invoked by `AnnotationConfigApplicationContext` when it processes `@ComponentScan`. **When?** Phase 1 of startup: BeanDefinition registration (before any beans are instantiated). **Output:** A `BeanDefinitionRegistry` — a map of `{beanName → BeanDefinition}`. Each `BeanDefinition` records the class, scope, init/destroy methods, dependencies — but no actual object is created yet. Object creation (Phase 2: bean instantiation) only begins after ALL BeanDefinitions are registered. This two-phase design allows circular dependency detection before wasting time constructing beans.
+
 </details>
 
 
@@ -843,10 +851,12 @@ public class User {
 
 🔬 **Section Challenge — B.3 Compile-Time Annotation Processing (Lombok's Way)**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Reasoning — Who/When/What):** Lombok generates code at **compile-time** while Spring reads annotations at **runtime**. **Why** did Lombok choose compile-time? **What** would break if Lombok used runtime reflection instead?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Why compile-time?** Type safety. Lombok generates actual Java source (getters, constructors, builders) that the compiler validates. If your field type changes, the generated getter type updates automatically. **What breaks with runtime?** (1) IDE support dies — IDEs can't see generated methods, no autocomplete. (2) Performance — runtime reflection-generated proxies add overhead on every method call. (3) Debugging difficulty — stack traces go through proxy layers. (4) Serialization — Jackson, JPA, and other frameworks use reflection to discover fields; they'd see proxied methods, not plain Java. Compile-time generation produces real `.class` files indistinguishable from hand-written code.
+
 </details>
 
 
@@ -905,10 +915,12 @@ public class BuilderProcessor extends AbstractProcessor {
 
 🔬 **Section Challenge — B.4 Creating a Compile-Time Annotation Processor**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Debug — Who/When/What):** Your annotation processor runs but generates no files. You have `@SupportedAnnotationTypes("com.example.MyAnnotation")`. **When** does the processor run relative to compilation? **What** common mistake causes no output?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**When it runs?** Between parse and bytecode generation. `javac` first parses source → invokes all processors → processors may generate new source → javac re-parses generated source → repeat ("rounds") until no new sources are generated → then emits bytecode. **Common mistakes:** (1) Not registering the processor in `META-INF/services/javax.annotation.processing.Processor` — javac never discovers it. (2) Using `processingEnv.getFiler().createSourceFile()` but swallowing the `IOException`. (3) The annotation has `@Retention(SOURCE)` — it's stripped before processors see it; use `@Retention(CLASS)` or `@Retention(RUNTIME)`. (4) Writing to `filer` in a round where `processingOver()` returns true — final round, new files won't be compiled.
+
 </details>
 
 
@@ -1031,10 +1043,12 @@ proxiedService.save(new User());  // Prints: BEGIN TRANSACTION, COMMIT
 
 🔬 **Section Challenge — C.1 JDK Dynamic Proxies - Interface-Based**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Trace — Who/When/What):** When you call a method on a Spring `@Transactional` JDK proxy, trace the exact execution path. **Who** executes first? **What** is the call stack before your real method runs?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Call stack (top to bottom):** (1) Your caller invokes `proxy.saveUser(user)`. (2) JDK's `Proxy` class intercepts — calls `TransactionInterceptionAdvice.invoke(MethodInvocation)`. (3) `TransactionAspectSupport.invokeWithinTransaction()` checks `@Transactional` attributes. (4) `PlatformTransactionManager.getTransaction()` — opens or joins transaction, acquires DB connection from pool. (5) `ReflectiveMethodInvocation.proceed()` — calls the actual method on the RAW `UserService` object (not the proxy). (6) Your `saveUser` executes. (7) On return: commit or rollback based on exception type. **Key:** Step 5 calls the RAW object — this is why self-invocation (`this.save()`) bypasses the proxy and has no transaction.
+
 </details>
 
 
@@ -1099,10 +1113,12 @@ class TransactionInterceptor implements MethodInterceptor {
 
 🔬 **Section Challenge — C.2 CGLIB Proxies - Class-Based (No Interface Needed)**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Debug — Who/When/What):** You mark your `@Service` class as `final`. Spring throws an exception at startup. **Who** throws it? **What** is the exact reason CGLIB can't proxy a `final` class?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Who throws?** `CglibAopProxy` during proxy creation at bean initialization. Exception: `Cannot subclass final class com.example.UserService`. **Why?** CGLIB creates a SUBCLASS of your bean class at runtime. `final` classes cannot be subclassed in Java — it's a JVM restriction, not a Spring limitation. CGLIB's generated `UserService$$EnhancerBySpringCGLIB$$abc123 extends UserService` is literally impossible with `final`. **Fix options:** (1) Remove `final`. (2) Extract an interface — Spring switches to JDK proxy (doesn't need to subclass). (3) Use `spring.aop.proxy-target-class=false` to force JDK proxies globally (requires interfaces). Kotlin classes are `final` by default — this is why Spring Boot's Kotlin support uses the `kotlin-spring` plugin which adds `open` automatically to Spring-managed classes.
+
 </details>
 
 
@@ -1130,10 +1146,12 @@ Testability and Coupling. In a Service Locator, a class actively asks the enviro
 
 🔬 **Section Challenge — C.3 JDK vs CGLIB - When Spring Uses Which**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Reasoning — Who/When/What):** Spring Boot 2.x changed the default proxy strategy to **always use CGLIB** even when interfaces exist. **Why** was this change made? **What** problem did it fix?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Why CGLIB by default?** Before the change: if `UserService implements UserServiceInterface`, Spring created a JDK proxy. Code that auto-wired `UserService` (the class, not the interface) would fail with `BeanNotOfRequiredTypeException` because the JDK proxy is only an instance of the interface, not the class. Developers would write `@Autowired UserService service` and get a confusing exception. **Fix:** Always use CGLIB — CGLIB subclasses the class, so `instanceof UserService` works for both class and interface injection. **Downside:** CGLIB proxies can't proxy `final` classes/methods. Spring Boot mitigated this with `kotlin-spring` plugin for Kotlin and documentation warnings.
+
 </details>
 
 
@@ -1407,10 +1425,12 @@ public void debugRequest(HttpServletRequest request) {
 
 🔬 **Section Challenge — D.2 HttpServletRequest - Everything About the Request**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Debug — Who/When/What):** You store a user object via `request.setAttribute("user", user)`. **Who** can read this attribute? **When** is it garbage collected? **What** happens if you try to read it in a different thread?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Who can read?** Only code in the SAME request processing chain — filters, interceptors, and the controller handling THIS request. Attributes are per-request. **When GC'd?** When the request object is recycled by Tomcat after the response is committed and the request processing thread returns to the thread pool. Tomcat reuses `HttpServletRequest` wrapper objects (pooling), so the attribute map is cleared. **Different thread?** Request attributes are NOT thread-safe. If you pass the request to another thread (e.g., `@Async`), the request may be recycled by the time the async thread reads it. Fix: extract what you need before handing off to async, or use `RequestContextHolder` with `copyInheritableRequestContextToChildThread()` for short async tasks.
+
 </details>
 
 
@@ -1458,10 +1478,12 @@ public void customResponse(HttpServletResponse response) throws IOException {
 
 🔬 **Section Challenge — D.3 HttpServletResponse - Controlling the Response**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Trace — Who/When/What):** You call `response.setHeader("X-Custom", "value")` AFTER calling `response.getWriter().write("data")`. **What** happens? **When** is the response "committed"?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**What happens?** The header is silently IGNORED. Once you write to the response body, the HTTP response headers are flushed to the network first (HTTP protocol: headers before body). The response is now "committed" — headers are sent and cannot be changed. **When committed?** As soon as you call `getWriter().write()` / `getOutputStream().write()` OR when the buffer (default 8KB in Tomcat) fills up and is auto-flushed. **Check before setting:** `if (!response.isCommitted()) { response.setHeader(...); }`. This is why Spring's `ExceptionHandlerExceptionResolver` must be invoked BEFORE any output is written — it needs to set the error status code and headers.
+
 </details>
 
 
@@ -1562,10 +1584,12 @@ public class RequestLoggingFilter implements Filter {
 
 🔬 **Section Challenge — D.4 Filters - The Pipeline Before Controllers**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Debug — Who/When/What):** You have a `LoggingFilter` and an `AuthFilter`. Logging must run BEFORE auth so every request — including rejected ones — is logged. **Who** controls the order? **What** annotation/config sets it?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Who controls order?** The Servlet container (Tomcat) applies filters in registration order. Spring Boot registration order is determined by `@Order` value or `FilterRegistrationBean.setOrder()`. **Lower number = runs earlier.** `@Order(1)` runs before `@Order(2)`. **Config options:** (1) `@Order(Ordered.HIGHEST_PRECEDENCE)` on the filter class. (2) Register via `@Bean FilterRegistrationBean<LoggingFilter>` and call `.setOrder(1)`. (3) For Spring Security's `SecurityFilterChain`, use `@Order` on the security config class. **Gotcha:** `@WebFilter` with `@Order` doesn't work — `@WebFilter` bypasses Spring's registration mechanism. Use `FilterRegistrationBean` for reliable ordering.
+
 </details>
 
 
@@ -1620,10 +1644,12 @@ public class DispatcherServlet extends FrameworkServlet {
 
 🔬 **Section Challenge — D.5 Understanding DispatcherServlet**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Trace — Who/When/What):** A `POST /api/users` request arrives. Trace the path through `DispatcherServlet`. **Who** handles each step? **What** decides which controller method is called?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Path through DispatcherServlet:** (1) Tomcat receives request → passes to `DispatcherServlet.service()`. (2) `HandlerMapping` (e.g., `RequestMappingHandlerMapping`) resolves the handler — matches `POST /api/users` to `UserController.createUser()` by scanning `@RequestMapping` metadata. (3) `HandlerAdapter` (e.g., `RequestMappingHandlerAdapter`) adapts the handler — deserializes request body via `HttpMessageConverter` (Jackson), resolves `@RequestBody`/`@PathVariable` etc. (4) Your controller method executes. (5) Return value processed — `@ResponseBody` → Jackson serializes to JSON. (6) Response written to HTTP socket. **What decides the method?** `RequestMappingHandlerMapping` uses a trie-based route table built at startup from all `@RequestMapping` annotations.
+
 </details>
 
 
@@ -1827,21 +1853,19 @@ public class MoneySerializer extends JsonSerializer<BigDecimal> {
 
 🔬 **Section Challenge — E.3 Custom Serializers & Deserializers**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Design):** A finance API must serialize `BigDecimal amount` as `"INR 123.45"` for new clients but still deserialize numeric input from legacy clients. Where should the custom serializer/deserializer live, and what edge cases must it handle?
+<details><summary>Trace, Reasoning & Debug</summary>
 
 ```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
+public final class MoneySerializer extends JsonSerializer<BigDecimal> {
+    @Override
+    public void serialize(BigDecimal value, JsonGenerator gen, SerializerProvider provider)
+            throws IOException {
+        gen.writeString("INR " + value.setScale(2, RoundingMode.HALF_UP));
     }
 }
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
 ```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-</details>
 
+Attach the serializer at the field/type/module boundary depending on blast radius: field for one DTO, module for a shared money format. Handle `null`, scale/rounding, locale/currency prefixes, and legacy numeric strings during deserialization; otherwise a formatting feature becomes a breaking API change.
+</details>
 

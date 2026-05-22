@@ -515,21 +515,10 @@ ORDER BY total_spend DESC;
 
 🔬 **Section Challenge — 6. Customer Segmentation & RFM Analysis**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Reasoning):** In RFM segmentation, why do recency, frequency, and monetary value need separate scores instead of one raw `total_spend` sort?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+`total_spend` hides behavior. A customer who spent a lot two years ago is different from a recent frequent buyer with lower spend. RFM separates freshness, habit, and value so the business action changes: win back lost whales, reward champions, nurture frequent low spenders, and avoid over-targeting inactive accounts.
 </details>
 
 
@@ -932,4 +921,3 @@ LIMIT 10;
 | **Streak Detection** | date - ROW_NUMBER trick, GROUP BY streak | "Longest consecutive active days?" |
 | **Gap Detection** | generate_series + LEFT JOIN + IS NULL | "Which dates had no data?" |
 | **Distribution** | NTILE, PERCENTILE_CONT, PERCENT_RANK | "What's the median? 90th percentile?" |
-

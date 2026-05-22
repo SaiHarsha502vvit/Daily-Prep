@@ -609,16 +609,12 @@ JOIN (
 
 🔬 **Section Challenge — Scenario 34: DISTINCT Masking a JOIN Explosion**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Debug — Who/When/What):** A query uses `SELECT DISTINCT customer_id FROM orders JOIN tags ON orders.id = tags.order_id WHERE tags.name = 'VIP'`. It seems fast and returns correct-looking customer IDs. **Who** is hiding a problem? **When** would removing DISTINCT break the query? **What** is the performance trap?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who is hiding it?** `DISTINCT` — it masks the JOIN explosion happening underneath. Before DISTINCT, the result may have 500K rows (one per order-tag combination for VIP customers). DISTINCT then deduplicates them to 20K unique customer IDs. **When would removing DISTINCT break it?** Any SUM, COUNT, or AVG on this result — if you later add `SUM(orders.total)`, you'd sum each order N times (once per VIP tag on that order). **The performance trap:** The DB still materializes all 500K rows before DISTINCT eliminates them — wasted work. **Better alternatives:** (1) `EXISTS`: `SELECT DISTINCT customer_id FROM orders o WHERE EXISTS (SELECT 1 FROM tags t WHERE t.order_id = o.id AND t.name = 'VIP')` — stops at first matching tag per order. (2) Semi-join in subquery: `WHERE order_id IN (SELECT order_id FROM tags WHERE name = 'VIP')`. Both avoid materializing the full Cartesian result. **Lesson:** DISTINCT is often a code smell that signals a hidden fan-out JOIN. Always ask: "Why do I need DISTINCT here?"
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 

@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](08_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Graphs.md)
+**Navigation**: [< Previous](08_Stack_Queue.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Graphs.md)
 
 **Problems 09/14** | [Prev](08_Stack_Queue.md) | [Index](../00_MASTER_INDEX.md) | [Next](10_Graphs.md)
 
@@ -1280,7 +1280,27 @@ private int depth(TreeNode node) {
 
 
 🔬 **Section Challenge — 8.3 Path & Sum Problems**
->
+
+**Challenge 1 (Trace):** Trace the execution of `pathSum(root, 8)` (LC 437 — Path Sum III) on the tree `[10, 5, -3, 3, 2, null, 11, 3, -2, null, 1]` using the prefix-sum HashMap approach. At the node with value `5`, what is the state of `prefixSumCount` map, and what does `map.getOrDefault(currentSum - 8, 0)` evaluate to?
+
+<details><summary>Answer</summary>
+
+**Who executes?** A single DFS call stack frame on node `5`. **When?** After visiting root `10` (which adds `{0:1, 10:1}`). **What already exists?** `prefixSumCount = {0:1, 10:1}`, `currentSum = 15` (10+5).
+
+Lookup: `currentSum - target = 15 - 8 = 7`. `map.getOrDefault(7, 0) = 0` (no prefix sum of 7 exists yet). So this node contributes 0 paths *ending here*. The trick is that `currentSum - target` represents "is there a previous prefix sum such that the segment between that prefix and this node sums to target?" Since we haven't seen prefix=7, no valid path ends at node 5.
+
+</details>
+
+**Challenge 2 (Debug):** In `maxPathSum` (LC 124), a developer writes the recursive function to return `node.val + Math.max(leftGain, rightGain)` — but they **forget** the `Math.max(gain, 0)` clamping for negative subtrees. On the tree `[-3, -1, -2]`, what wrong answer does their code produce vs. the correct answer?
+
+<details><summary>Answer</summary>
+
+**Without clamping:** `leftGain = -1`, `rightGain = -2`. `pathThroughNode = -3 + (-1) + (-2) = -6`. Return value is `-3 + max(-1, -2) = -4`. Global max is set to `-6` then `-4` then `-1` then `-2` — final wrong answer: `-1` (from a leaf). Actually the root call returns `-4`, corrupting the arch check.
+
+**With clamping:** `leftGain = max(-1, 0) = 0`, `rightGain = max(-2, 0) = 0`. `pathThroughNode = -3 + 0 + 0 = -3`. Return is `-3 + 0 = -3`. Global max candidates: `-3`, `-1`, `-2` → correct answer: **`-1`** (just the best single node). The `Math.max(gain, 0)` is the insight: *a negative subtree contribution always makes the path worse — cut it off.*
+
+</details>
+
 
 ## 8.4 Binary Search Tree (BST) Problems
 

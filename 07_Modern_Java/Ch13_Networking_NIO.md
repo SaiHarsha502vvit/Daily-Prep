@@ -249,10 +249,12 @@ HttpResponse<String> postResponse = client.send(
 
 🔬 **Section Challenge — 4. Java 11 HttpClient — Modern HTTP**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Reasoning — Who/When/What):** NIO `Selector` handles 10,000 connections on a single thread. Traditional I/O uses 1 thread per connection. **Who** blocks in each model? **When** does the Selector wake up? **What** is the trade-off?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Traditional I/O:** EACH thread blocks on `socket.read()` waiting for data. 10,000 connections = 10,000 blocked threads = 10,000 MB stack space. **NIO Selector:** The Selector is the single thread that calls `selector.select()` — it blocks until ANY registered channel has data. **When wakes up?** When the OS delivers a read-ready event for any registered `SocketChannel`. **The Selector returns a `Set<SelectionKey>`** with all ready channels. **Trade-off:** NIO wins on memory and scalability (no per-connection thread). But all business logic runs on one thread — a slow handler blocks ALL connections. Solution: Reactor pattern (Netty) — Selector thread only dispatches; actual work goes to a separate worker thread pool.
+
 </details>
 
 

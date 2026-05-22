@@ -401,21 +401,10 @@ ORDER BY total_revenue DESC;
 
 🔬 **Section Challenge — Part 5 — Customer Lifetime Value (CLV)**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Reasoning):** A CLV query classifies customers into Bronze/Silver/Gold/Platinum tiers. Which constraints can make those tiers misleading?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+Raw revenue tiers can mislead when returns, discounts, shipping, taxes, one-time bulk purchases, or different customer ages are ignored. A fair CLV model should define the time window, use net revenue or margin when possible, normalize by customer age/cohort, and separate active customers from churned customers before assigning tiers.
 </details>
 
 

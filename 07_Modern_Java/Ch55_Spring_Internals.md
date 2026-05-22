@@ -517,10 +517,12 @@ protected Object doGetBean(String name) {
 
 🔬 **Section Challenge — 3. The Bean Container — ApplicationContext Internals**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Trace — Who/When/What):** You have two `DataSource` beans — `primaryDataSource` and `backupDataSource`. `@Autowired DataSource ds` in a service. Spring throws `NoUniqueBeanDefinitionException`. **Who** is responsible for resolution? **When** does it fail — startup or first use? **What** are the three ways to resolve?
+
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+**Who?** The `DefaultListableBeanFactory` — specifically its `doResolveDependency()` method. **When?** At context startup during singleton bean initialization — NOT at first use (unless `@Lazy`). **Three resolution strategies:** (1) `@Primary` on `primaryDataSource` — marks it as the default when multiple candidates exist. Applied at bean definition. (2) `@Qualifier("primaryDataSource")` at the injection point — explicitly names which bean. Most precise. (3) Name-matching — if the field name is `primaryDataSource` (matching the bean name), Spring uses it as a tie-breaker. **Precedence:** `@Qualifier` > name-match > `@Primary`. **Best practice:** Use `@Primary` for the "normal" default, `@Qualifier` when you need a specific non-primary bean. For test environments, use `@TestConfiguration` to override the primary without changing production code.
+
 </details>
 
 

@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous Chapter](Ch26_Pre_Spring_Part1.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch26_Pre_Spring_Part1.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -57,10 +57,12 @@ public class Product {
 
 🔬 **Section Challenge — Theory-First Master Lens (Part 2: Infrastructure to Runtime Behavior)**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Trace — Who/When/What):** When Spring Boot returns JSON from a `@RestController`, **who** does the serialization? **When** does it happen in the request lifecycle? **What** annotation on the response triggers it?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Who?** `MappingJackson2HttpMessageConverter` using an `ObjectMapper` instance. **When?** After the controller method returns, the `DispatcherServlet` delegates to `RequestResponseBodyMethodProcessor`, which iterates registered `HttpMessageConverter`s and selects Jackson based on the `Accept: application/json` header + `@ResponseBody` (implicit in `@RestController`). **What triggers it?** `@ResponseBody` (present on every method in `@RestController`). Without it, Spring tries to resolve a view template instead of serializing the return value.
+
 </details>
 
 
@@ -98,16 +100,12 @@ public class Cat extends Animal {
 
 🔬 **Section Challenge — E.4 Polymorphic Type Handling**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Debug — Who/When/What):** Jackson deserializes `{"type":"DOG","name":"Rex"}` into an `Animal` field. **Who** reads the `"type"` discriminator? **When** must `@JsonTypeInfo` be configured? **What** happens if the discriminator is missing?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Who reads?** Jackson's `TypeDeserializer`, selected by `ObjectMapper` based on `@JsonTypeInfo(use=Id.NAME, property="type")` on the `Animal` base class. **When configured?** At startup — Jackson registers the type resolver when it first serializes/deserializes the annotated class. **Missing discriminator?** Throws `InvalidTypeIdException: Could not resolve subtype`. Fix: use `@JsonTypeInfo(use=Id.DEDUCTION)` (Jackson 2.12+) for discriminator-free resolution based on JSON fields present, or provide `@JsonSubTypes.Type(value=Dog.class, name="DOG")` on the base class so Jackson can map the `"type"` string to the concrete class.
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 </details>
 
 
@@ -163,10 +161,12 @@ spring:
 
 🔬 **Section Challenge — E.5 Configuring ObjectMapper in Spring Boot**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Debug — Who/When/What):** You register a custom `ObjectMapper` bean but Jackson still uses default settings. **What** is the most likely cause? **Who** has higher priority — your bean or Spring Boot auto-configuration?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Most likely cause:** You created a `new ObjectMapper()` in a `@Bean` method but Spring Boot's `JacksonAutoConfiguration` already registered one. If you use `@Bean` for ObjectMapper, Spring Boot backs off (your bean wins). BUT: if you registered a `Jackson2ObjectMapperBuilderCustomizer` instead, it customizes the AUTO-CONFIGURED ObjectMapper. The two approaches conflict if mixed. **Fix:** Use ONE approach: either provide your own `@Bean ObjectMapper` (full control), or use `Jackson2ObjectMapperBuilderCustomizer` (additive customization). Check with: `context.getBeansOfType(ObjectMapper.class)` — if there are 2, that's the bug.
+
 </details>
 
 
@@ -210,9 +210,9 @@ Testability and Coupling. In a Service Locator, a class actively asks the enviro
 │  ┌────────────────────────────────────────────┐                                  │
 │  │ Connection Pool (HikariCP)                 │                                  │
 │  │                                            │                                  │
-│  │  [Conn1][Conn2][Conn3][Conn4][Conn5]      │ ◄── Minimum idle connections      │
-│  │    ↑      ↑      ↑      ↑      ↑          │      created at startup           │
-│  │   idle   idle   idle   idle   idle        │                                   │
+│  │  [Conn1][Conn2][Conn3][Conn4][Conn5]       │ ◄── Minimum idle connections     |
+│  │    ↑      ↑      ↑      ↑      ↑           │      created at startup          │
+│  │   idle   idle   idle   idle   idle         │                                  │
 │  │                                            │                                  │
 │  └────────────────────────────────────────────┘                                  │
 │                                                                                  │
@@ -220,7 +220,7 @@ Testability and Coupling. In a Service Locator, a class actively asks the enviro
 │  ┌────────────────────────────────────────────┐                                  │
 │  │ Connection Pool                            │                                  │
 │  │                                            │                                  │
-│  │  [    ][Conn2][Conn3][Conn4][Conn5]       │                                   │
+│  │  [    ][Conn2][Conn3][Conn4][Conn5]        │                                  │
 │  │    ↑                                       │                                  │
 │  │   Conn1 borrowed by Thread-1               │                                  │
 │  │                                            │                                  │
@@ -230,7 +230,7 @@ Testability and Coupling. In a Service Locator, a class actively asks the enviro
 │  ┌────────────────────────────────────────────┐                                  │
 │  │ Connection Pool                            │                                  │
 │  │                                            │                                  │
-│  │  [Conn1][Conn2][Conn3][Conn4][Conn5]      │ ◄── Conn1 returned to pool        │
+│  │  [Conn1][Conn2][Conn3][Conn4][Conn5]       │ ◄── Conn1 returned to pool       │
 │  │    ↑                                       │      (NOT closed!)               │
 │  │   idle again                               │                                  │
 │  │                                            │                                  │
@@ -243,10 +243,12 @@ Testability and Coupling. In a Service Locator, a class actively asks the enviro
 
 🔬 **Section Challenge — F.1 How Connection Pooling Works**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Trace — Who/When/What):** When your `@Repository` method calls `jdbcTemplate.query(...)`, **who** gives it a database connection? **When** is the connection returned to the pool? **What** happens if you forget to close it?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Who?** HikariCP's `HikariDataSource.getConnection()` — it returns a wrapped `Connection` from its pool. **When returned?** When `connection.close()` is called — but HikariCP intercepts `close()` and RETURNS the connection to the pool instead of actually closing it. `JdbcTemplate` handles this automatically in its `execute()` method's `finally` block. **Forgot to close?** Connection leak. The connection stays "borrowed" forever. Eventually all pool connections are leaked, new requests block waiting for `connectionTimeout` (default 30s), then throw `SQLTransientConnectionException`. HikariCP has leak detection: `spring.datasource.hikari.leak-detection-threshold=2000` logs a warning if a connection isn't returned within 2 seconds.
+
 </details>
 
 
@@ -309,10 +311,12 @@ spring:
 
 🔬 **Section Challenge — F.3 Connection Pool Sizing**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Reasoning — Who/When/What):** The HikariCP wiki says optimal pool size ≈ `(core_count * 2) + disk_spindles`. For a 4-core server with SSD, that's ~9 connections. **Why** is BIGGER not better? **What** happens with 100 connections?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Why not bigger?** Database connections compete for shared resources: CPU cores, disk I/O, memory, and PostgreSQL's `max_connections` (default 100). With 100 connections on a 4-core DB server: massive context switching. Each connection holds a backend process (~5-10MB RAM). 100 connections trying to write simultaneously thrash the disk scheduler. **Result:** WORSE throughput than 10 connections. The 10-connection pool queues requests efficiently, each connection gets full CPU time slices. **The formula works** because: 2 connections per core (one computes while the other waits on I/O) + spindle count (parallel disk access). SSDs have no seek time, so `spindles` ≈ 1.
+
 </details>
 
 
@@ -562,10 +566,12 @@ user1 = (User) user2;  // ClassCastException!
 
 🔬 **Section Challenge — G.3 Common Classloading Problems**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Debug — Who/When/What):** `NoClassDefFoundError` vs `ClassNotFoundException` — they sound the same but have DIFFERENT causes. **When** does each occur? **Who** throws each one?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**ClassNotFoundException:** Thrown by `Class.forName("com.Foo")` or `ClassLoader.loadClass()` when the `.class` file is NOT on the classpath at all. **Who throws?** The ClassLoader itself. Cause: missing dependency, wrong Maven scope. **NoClassDefFoundError:** The class WAS found during compilation but is MISSING at runtime. Often caused by: static initializer failure (the class loaded once, its `<clinit>` threw, now all future loads fail with NCDFE), or transitive dependency excluded. **Key difference:** CNFE = never found. NCDFE = found once but failed to initialize. Check static blocks and `@PostConstruct` methods for hidden exceptions.
+
 </details>
 
 
@@ -600,10 +606,12 @@ Testability and Coupling. In a Service Locator, a class actively asks the enviro
 
 🔬 **Section Challenge — G.4 Spring DevTools Hot Reload**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Reasoning — Who/When/What):** Spring DevTools uses TWO classloaders: a "base" classloader for libraries and a "restart" classloader for your code. **Why** two instead of one? **What** does this enable that a full JVM restart doesn't?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Why two?** Libraries (Spring, Jackson, etc.) don't change during development — reloading them wastes 5-10 seconds per restart. By keeping them in the base classloader and only reloading YOUR code in a new restart classloader, DevTools achieves sub-second restarts. **What it enables:** Incremental class reloading. Change a controller → save → restart classloader is discarded and recreated with new classes in ~300ms. Without DevTools: full JVM restart = 10-15 seconds. **Limitation:** Changes to library versions, resource files, or `@Configuration` classes still require a full restart because those are in the base classloader.
+
 </details>
 
 
@@ -663,18 +671,18 @@ Testability and Coupling. In a Service Locator, a class actively asks the enviro
 │                                                                                  │
 │  Scope      │ Compile │ Test │ Runtime │ Transitive │ Example                    │
 │  ───────────┼─────────┼──────┼─────────┼────────────┼────────────────────────    │
-│  compile    │   ✅    │  ✅  │   ✅    │    ✅      │ spring-boot-starter            │
+│  compile    │   ✅    │  ✅  │   ✅    │    ✅      │ spring-boot-starter        │
 │  (default)  │         │      │         │            │                            │
 │             │         │      │         │            │                            │
-│  provided   │   ✅    │  ✅  │   ❌    │    ❌      │ servlet-api (provided          │
+│  provided   │   ✅    │  ✅  │   ❌    │    ❌      │ servlet-api (provided    │
 │             │         │      │         │            │ by Tomcat)                 │
 │             │         │      │         │            │                            │
-│  runtime    │   ❌    │  ✅  │   ✅    │    ✅      │ JDBC drivers (mysql-           │
+│  runtime    │   ❌    │  ✅  │   ✅    │    ✅      │ JDBC drivers (mysql-     │
 │             │         │      │         │            │ connector-java)            │
 │             │         │      │         │            │                            │
-│  test       │   ❌    │  ✅  │   ❌    │    ❌      │ JUnit, Mockito                 │
+│  test       │   ❌    │  ✅  │   ❌    │    ❌      │ JUnit, Mockito           │
 │             │         │      │         │            │                            │
-│  system     │   ✅    │  ✅  │   ✅    │    ❌      │ Local JAR file                 │
+│  system     │   ✅    │  ✅  │   ✅    │    ❌      │ Local JAR file           │
 │             │         │      │         │            │ (avoid this!)              │
 │                                                                                  │
 │  COMMON CONFUSION:                                                               │
@@ -860,11 +868,7 @@ Constructor injection is better: (1) Dependencies explicit — you can't create 
 
 🔬 **Section Challenge — I.1 HTTP Message Format**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
-<details><summary>Answer</summary>
-
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
-</details>
+**Challenge 1 (Trace — Who/When/What):** A Spring Boot response for a large JSON payload uses `Transfer-Encoding: chunked` instead of `Content-Length`. **Who** decides to use chunked encoding? **When?** **What** is the advantage?\n\n<details><summary>Answer</summary>\n\n**Who decides?** Tomcat's `Response` object — when the response body size is not known before writing begins (no `Content-Length` set). Jackson serializes the object to Tomcat's output buffer incrementally. **When decided?** When the first write exceeds the response buffer (default 8KB) before the response is committed — Tomcat automatically switches to `Transfer-Encoding: chunked`. **Advantage:** You can start sending data to the client BEFORE you know the total size. Each chunk has its own size header, followed by data, terminated by a zero-length chunk. **Client impact:** The client receives and processes chunks as they arrive — better latency for large payloads. **Spring control:** `ResponseEntity.ok().body(data)` with known size sets `Content-Length`. `StreamingResponseBody` or `ResponseBodyEmitter` explicitly stream chunks.\n\n</details>
 
 
 ## I.2 HTTP Methods - Semantic Meaning
@@ -874,15 +878,15 @@ HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still hea
 │                    HTTP METHODS DEEP DIVE                                        │
 ├──────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                  │
-│  Method   │ Safe │ Idempotent │ Has Body │ Use Case                              │
+│  Method   │ Safe │ Idempotent │ Has Body │ Use Case                             │
 │  ─────────┼──────┼────────────┼──────────┼─────────────────────────────────────  │
-│  GET      │  ✅  │     ✅     │    ❌    │ Retrieve resource                        │
-│  HEAD     │  ✅  │     ✅     │    ❌    │ Like GET but no body (check exists)      │
-│  OPTIONS  │  ✅  │     ✅     │    ❌    │ Get allowed methods (CORS preflight)     │
-│  POST     │  ❌  │     ❌     │    ✅    │ Create resource (not idempotent!)        │
-│  PUT      │  ❌  │     ✅     │    ✅    │ Replace entire resource                  │
-│  PATCH    │  ❌  │     ❌     │    ✅    │ Partial update                           │
-│  DELETE   │  ❌  │     ✅     │    ❌*   │ Remove resource                          │
+│  GET      │  ✅  │     ✅    │    ❌    │ Retrieve resource                    │
+│  HEAD     │  ✅  │     ✅    │    ❌    │ Like GET but no body (check exists)  │
+│  OPTIONS  │  ✅  │     ✅    │    ❌    │ Get allowed methods (CORS preflight)   │
+│  POST     │  ❌  │     ❌    │    ✅    │ Create resource (not idempotent!)     │
+│  PUT      │  ❌  │     ✅    │    ✅    │ Replace entire resource               │
+│  PATCH    │  ❌  │     ❌    │    ✅    │ Partial update                       │
+│  DELETE   │  ❌  │     ✅    │    ❌*   │ Remove resource                       │
 │                                                                                  │
 │  SAFE: Doesn't modify server state                                               │
 │  IDEMPOTENT: Multiple identical requests = same result                           │
@@ -900,10 +904,12 @@ HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still hea
 
 🔬 **Section Challenge — I.2 HTTP Methods - Semantic Meaning**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Reasoning — Who/When/What):** `DELETE /orders/1` is idempotent but `POST /orders` is not. Your client retries a failed POST request due to a timeout. **What** problem can this cause? **What** header pattern prevents duplicate creation?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Problem:** Duplicate resource creation — the first POST may have succeeded (server processed it) but the response was lost in transit. Client retries → second order created. **Fix:** Idempotency keys. Client generates a unique `Idempotency-Key: uuid-1234` header. Server stores (key → response) in a cache. On retry with same key, server returns the cached response without re-processing. Stripe, PayPal, and most payment APIs require this. Alternative: use `PUT /orders/{client-generated-id}` which IS idempotent — multiple PUTs with same ID update (not create) the same resource.
+
 </details>
 
 
@@ -957,12 +963,14 @@ HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still hea
 
 
 
-🔬 **Section Challenge — I.3 HTTP Status Codes - Complete Reference**
+🔬 **Section Challenge — I.3 HTTP Status Codes**
 
-**Challenge 1 (Reasoning):** `Connection: keep-alive` vs HTTP/2 — what does each one do differently for multiplexing?
+**Challenge 1 (Debug — Who/When/What):** Your Spring Boot app returns 500 for a validation error that should be 400. **Who** decides the status code? **When** does Spring auto-map exceptions to codes? **What** annotation fixes this?
+
 <details><summary>Answer</summary>
 
-HTTP/1.1 keep-alive: reuse ONE TCP connection for sequential requests. Still head-of-line blocking — request 2 waits for response 1. HTTP/2: one TCP connection, but requests are multiplexed as frames with stream IDs. Multiple requests in-flight simultaneously. Response frames for different streams are interleaved. HTTP/2 also has header compression (HPACK) and server push. Still has TCP HOL blocking (one lost packet blocks all streams). HTTP/3 (QUIC): uses UDP, per-stream reliability, eliminates TCP HOL blocking entirely.
+**Who decides?** Spring's `DefaultHandlerExceptionResolver` for known exceptions, or your `@ControllerAdvice` for custom handling. **When auto-mapped?** `@Valid` failures → 400 automatically. `NoHandlerFoundException` → 404. Unhandled exceptions → 500 (the catch-all). **Fix:** If your custom exception should be 400, annotate it: `@ResponseStatus(HttpStatus.BAD_REQUEST) class InvalidOrderException extends RuntimeException {}`. Or use `@ExceptionHandler` in `@ControllerAdvice` to return `ResponseEntity.badRequest().body(errorDto)`. Never let validation errors bubble to 500 — it signals server bugs to clients and triggers alerting.
+
 </details>
 
 
@@ -1076,10 +1084,12 @@ public class SingletonBeanFactory {
 
 🔬 **Section Challenge — J.1 Singleton Pattern**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Debug — Who/When/What):** A `@Service` bean has a `List<String> log = new ArrayList<>()` field. Requests add to it. After 1000 requests, **what** does the list contain? **Who** is responsible for this bug? **What** is the fix?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**What does it contain?** All 1000 entries from ALL requests — the log grows forever and is SHARED across every request. **Who is responsible?** The developer. Spring beans are Singleton by default — ONE instance shared across ALL requests. Mutable instance fields are shared state. **Fix options:** (1) Don't store request state in beans at all — pass it as method parameters. (2) Use `ThreadLocal<List<String>>` for request-scoped storage (clear in finally). (3) For true per-request beans, use `@Scope("request")` — but this creates a new bean per HTTP request via a proxy, which has performance overhead. Rule: `@Service`/`@Repository` should be **stateless**. All data flows through method parameters and return values.
+
 </details>
 
 
@@ -1250,10 +1260,12 @@ public class LoggingBeanPostProcessor implements BeanPostProcessor {
 
 🔬 **Section Challenge — J.7 Decorator Pattern**
 
-**Challenge 1 (Reasoning):** Why does a decorator without `@functools.wraps` break Flask/FastAPI route registration?
+**Challenge 1 (Trace — Who/When/What):** The code shows `BeanPostProcessor` wrapping beans. **When** in Spring's bean lifecycle does `postProcessAfterInitialization` run? **What** has already happened to the bean at that point? **Who** calls it?
+
 <details><summary>Answer</summary>
 
-Flask uses function name (`func.__name__`) to register routes. Without `@functools.wraps`, the decorator replaces the original function with a `wrapper` function. All decorated routes have `__name__ = 'wrapper'` → duplicate view function name error. `@functools.wraps(fn)` copies `__name__`, `__doc__`, `__annotations__`  from the wrapped function. Same issue with pytest markers, Celery tasks, and any framework that inspects function attributes.
+**When?** After: (1) constructor injection, (2) setter/field injection, (3) `@PostConstruct` method, (4) `InitializingBean.afterPropertiesSet()`, (5) custom `init-method`. **What already happened?** The bean is FULLY initialized — all dependencies are injected, all init callbacks have run. **Who calls?** `AbstractAutowireCapableBeanFactory.initializeBean()` iterates ALL registered BeanPostProcessors and calls `postProcessAfterInitialization()` on each bean. This is how `@Transactional` proxies are created — the BeanPostProcessor wraps the fully-initialized bean in a proxy AFTER all initialization is complete.
+
 </details>
 
 
@@ -1280,10 +1292,12 @@ public interface Filter {
 
 🔬 **Section Challenge — J.8 Chain of Responsibility**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Debug — Who/When/What):** In Spring Security's filter chain, a custom `AuthFilter` calls `chain.doFilter(req, res)` to pass to the next filter. **What** happens if you forget to call `chain.doFilter()`? **Who** never executes?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**What happens?** The request STOPS at your filter. No subsequent filters execute, and the Controller never receives the request. The client gets a blank response (or whatever your filter wrote to the response). **Who never executes?** All downstream filters + the DispatcherServlet + your Controller. This is called "short-circuiting" the chain — it's intentional for auth failures (return 401 without proceeding), but a bug if you forgot the call. **Key pattern:** Always call `chain.doFilter()` in the success path. Only skip it when you intentionally want to block the request (e.g., invalid token → write 401 → return).
+
 </details>
 
 
@@ -1342,16 +1356,12 @@ Testability and Coupling. In a Service Locator, a class actively asks the enviro
 
 🔬 **Section Challenge — K.1 Tomcat Thread Pool**
 
-**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+**Challenge 1 (Reasoning — Who/When/What):** Default Tomcat max threads = 200. Your endpoint calls an external API taking 2 seconds per request. **When** does your server stop accepting new requests? **What** is the max throughput in requests/sec?
+
 <details><summary>Answer</summary>
 
-First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
-</details>
+**When?** After 200 concurrent requests — all threads are blocked waiting for the external API. Request 201 enters the `accept-count` queue (default 100). Request 301 gets connection refused. **Max throughput:** 200 threads ÷ 2 sec/request = 100 requests/sec. **Fix options:** (1) Increase threads (but each thread costs ~1MB stack → 200 threads = 200MB). (2) Use `@Async` + `CompletableFuture` to release the Tomcat thread during the API call. (3) Switch to WebFlux (reactive, non-blocking) — one thread handles thousands of concurrent requests. (4) Add a timeout: `RestTemplate.setConnectTimeout(500)` — fail fast instead of blocking forever.
 
-**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
-<details><summary>Answer</summary>
-
-Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
 </details>
 
 
@@ -1430,10 +1440,12 @@ public class EmailService {
 
 🔬 **Section Challenge — K.3 @Async in Spring**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Debug — Who/When/What):** You annotate a method `@Async` but it still runs synchronously on the caller's thread. **What** is the most common cause? **Who** creates the proxy that enables async behavior?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Most common cause:** Calling the `@Async` method from within the SAME class (`this.sendEmail()`). Spring's `@Async` works via a proxy wrapper. When you call `this.sendEmail()`, you bypass the proxy and invoke the raw method directly. **Who creates the proxy?** `AsyncAnnotationBeanPostProcessor`, which wraps the bean in a proxy that intercepts `@Async` methods and submits them to the configured `TaskExecutor`. **Fix:** Inject the service into another class and call it from there, or inject `self` via `@Lazy @Autowired`. Same issue affects `@Transactional`, `@Cacheable` — all proxy-based AOP features.
+
 </details>
 
 
@@ -1561,17 +1573,7 @@ if (obj instanceof List<String>) { }  // Compile error!
 
 🔬 **Section Challenge — L.1 What Is Type Erasure?**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-<details><summary>Answer</summary>
-
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
-
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-</details>
+**Challenge 1 (Reasoning — Who/When/What):** Generics were erased for backward compatibility with Java 1.4. **Who** generates bridge methods? **When?** **What** is a bridge method?\n\n<details><summary>Answer</summary>\n\n**Who generates?** `javac` — the Java compiler, not the JVM. **When?** During compilation of a class that overrides a generic method. **What is a bridge method?** When you implement `Comparable<String>.compareTo(String)`, the compiler generates TWO methods in the bytecode: your actual `compareTo(String)` AND a synthetic bridge `compareTo(Object)` that casts and delegates. The bridge satisfies the erased `Comparable.compareTo(Object)` contract — required because older JVM bytecode expects `compareTo(Object)`. You can see bridge methods with `javap -verbose`. **Why it matters:** Bridge methods can cause unexpected method resolution in reflection — `getDeclaredMethods()` returns bridge methods too. Filter with `Method.isBridge()` to exclude them.\n\n</details>
 
 
 ## L.2 Problems Caused by Type Erasure
@@ -1609,16 +1611,12 @@ public <T> void process(List<T> list) {
 
 🔬 **Section Challenge — L.2 Problems Caused by Type Erasure**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Design — Who/When/What):** The code shows `new T()` fails. The solution is `Class<T> type` passed to the constructor. **Why** can't the JVM just "remember" T? **What** specifically is lost at compile time?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**What's lost?** The compiler replaces `T` with its upper bound (usually `Object`) during erasure. `Box<String>` and `Box<Integer>` compile to identical bytecode: `Box<Object>`. The JVM sees ONE class, not two parameterized versions. **Why not keep it?** Backward compatibility. Generics were added in Java 5 (2004) but the JVM spec couldn't break existing bytecode. Reified generics (like C# has) would require JVM changes that break all existing .class files. **The `Class<T>` trick works** because `Class` objects DO exist at runtime — `String.class` is a real object. You're passing the type info explicitly rather than relying on generic metadata.
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 </details>
 
 
@@ -1650,16 +1648,12 @@ List<User> users = objectMapper.readValue(
 
 🔬 **Section Challenge — L.3 TypeReference - Jackson's Solution**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Trace — Who/When/What):** `new TypeReference<List<User>>() {}` uses an anonymous class. **Why** does this trick preserve generic type info when normal generics are erased? **What** reflection method does Jackson call to extract it?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Why preserved?** Anonymous classes are compiled to actual `.class` files (e.g., `MyClass$1.class`). The EXTENDS clause (`extends TypeReference<List<User>>`) is baked into the bytecode as the generic superclass — this is structural type info that survives erasure. Only TYPE VARIABLES (like `T`) are erased; CONCRETE parameterized types in class hierarchies are retained. **Jackson calls:** `getClass().getGenericSuperclass()` which returns `ParameterizedType`, then `getActualTypeArguments()[0]` to get `List<User>`. This is the "Super Type Token" pattern invented by Neal Gafter.
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 </details>
 
 
@@ -1687,16 +1681,12 @@ Class<?> entityClass = listType.resolve();  // User.class
 
 🔬 **Section Challenge — L.4 ResolvableType - Spring's Solution**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
+**Challenge 1 (Reasoning — Who/When/What):** `ResolvableType` lets Spring resolve `JpaRepository<User, Long>` to know the entity is `User`. **When** does Spring need this? **What** would fail without it?
+
 <details><summary>Answer</summary>
 
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**When?** During auto-configuration. Spring Data needs to know the entity type to: (1) generate the `SimpleJpaRepository` implementation, (2) configure the correct `EntityManager`, (3) validate `@Query` method return types. **What fails?** Without type resolution, `findAll()` would return `List<Object>` instead of `List<User>`. Custom query methods like `findByEmail(String)` couldn't be auto-implemented because Spring wouldn't know WHICH table to query. `ResolvableType` uses the same "generic superclass preservation" trick as TypeReference, but wraps it in a Spring-friendly API with caching and hierarchical resolution.
 
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
 </details>
 
 
@@ -1772,10 +1762,12 @@ public class UserRepositoryImpl implements UserRepository {
 
 🔬 **Section Challenge — M.2 How Spring Data Generates Repository Implementations**
 
-**Challenge 1 (Reasoning):** Before Spring existed, Java EE applications used the Service Locator pattern to find dependencies. Why did Spring's Dependency Injection (Inversion of Control) completely replace it?
+**Challenge 1 (Trace — Who/When/What):** You write `interface UserRepo extends JpaRepository<User, Long> { List<User> findByEmail(String email); }` with NO implementation. **Who** creates the implementation? **When?** **What** bytecode is generated?
+
 <details><summary>Answer</summary>
 
-Testability and Coupling. In a Service Locator, a class actively asks the environment for its dependencies (`ServiceLocator.get(Database.class)`). This tightly couples the class to the Service Locator infrastructure, making it impossible to unit test without booting up the entire environment. With Dependency Injection, the class passively receives its dependencies via constructor arguments. This allows you to pass in pure mock objects during unit testing without any framework overhead.
+**Who?** `JpaRepositoryFactoryBean` + `ProxyFactory`. Spring Data scans for interfaces extending `Repository`, creates a JDK dynamic proxy for each. **When?** At application startup, during bean creation. **What's generated?** A proxy that delegates: `findByEmail("x")` → Spring Data parses the method name into a JPQL query `SELECT u FROM User u WHERE u.email = ?1`, executes it via `EntityManager`, and returns the result. Standard methods like `findAll()` delegate to `SimpleJpaRepository` (a concrete class Spring Data provides). The "magic" is method-name-to-query parsing — not actual bytecode generation like Hibernate does for entities.
+
 </details>
 
 

@@ -194,16 +194,16 @@ ORDER BY total_budget DESC;
 
 🔬 **Section Challenge — Part 2 — Organizational Hierarchy**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
-<details><summary>Answer</summary>
+**Challenge 1 (Reasoning):** In an employee hierarchy query, why does a recursive CTE need both an anchor query and a recursive member?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+The anchor picks the starting manager/root. The recursive member repeatedly joins children to the rows already discovered. Without the anchor, there is no initial frontier; without the recursive member, the query returns only the root. Think of it as BFS/DFS expressed in SQL: seed rows first, expand rows next, stop when no new child rows appear.
 </details>
 
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
-<details><summary>Answer</summary>
+**Challenge 2 (Bug Hunt):** A recursive hierarchy query uses `UNION ALL` and has no cycle guard. What can go wrong, and how do you protect it?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+Bad data like `A -> B -> C -> A` can recurse forever or until the database recursion limit fails the query. Add a visited path, depth limit, cycle detection clause where supported, and validation constraints at write time. `UNION` may hide some duplicates, but it is not a full substitute for modeling and guarding against cycles.
 </details>
 
 
@@ -530,15 +530,9 @@ plt.show()
 
 
 🔬 **Section Challenge — Recursion Safety Checklist**
->
-**Challenge 2 (Bug Hunt):** ```java
-void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
-fib(50) // takes forever
-```
-Why and what are the 3 fixes?
-<details><summary>Answer</summary>
 
-Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+**Challenge 1 (Bug Hunt):** A recursive CTE works in staging but crashes in production after a bad import creates a cycle. What should you add before trusting it?
+<details><summary>Trace, Reasoning & Debug</summary>
+
+Add a cycle guard, a maximum depth, and a visited-path check. For example, carry a path column and reject rows already in the path, then add a database-specific recursion cap such as `MAXRECURSION` or `cte_max_recursion_depth`. Production hierarchy data is never perfectly tree-shaped forever, so recursive SQL must defend against graph behavior.
 </details>
-
-

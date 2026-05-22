@@ -396,11 +396,7 @@ You must use **Fencing Tokens**. When a lock is acquired, the lock service must 
 
 🔬 **Section Challenge — 6. CRDT — Conflict-Free Replicated Data Types**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-<details><summary>Answer</summary>
-
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Challenge 1 (Reasoning — Who/When/What):** A G-Counter CRDT has 3 nodes each with vector `[node1, node2, node3]`. Node1=`[5,3,2]`, Node2=`[3,7,1]`. **Who** merges them? **What** is the merged value? **When** does eventual consistency converge?\n\n<details><summary>Answer</summary>\n\n**Who merges?** Any node receiving the state from another — no coordinator needed (fully decentralized). **Merged value:** Element-wise MAX: `[max(5,3), max(3,7), max(2,1)]` = `[5,7,2]`. Total count = 5+7+2 = 14. **When convergence?** Once all nodes have exchanged their states (gossip protocol), every node will have the same vector and same total. CRDTs guarantee convergence regardless of message ordering or delivery. **Why MAX works:** Each element represents a node's OWN increment count. A node never decrements its own slot. MAX safely captures the highest observed count per node without losing any increments, even when messages arrive out of order.\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
 <details><summary>Answer</summary>

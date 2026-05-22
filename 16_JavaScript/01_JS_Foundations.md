@@ -574,10 +574,12 @@ Stack Overflow = too many pushes without pops (infinite recursion)
 
 🔬 **Section Challenge — 8. Execution Context — How JS Runs Your Code**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Trace — Who/When/What):** `function a() { b(); } function b() { c(); } function c() { console.log(new Error().stack); } a();`. **Who** created each Execution Context? **When** were they pushed/popped from the Call Stack? **What** does the stack trace show?
+
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+**Who created each EC?** The JS engine — one Global EC at script start, then one Function EC per call: `a()` pushed, `b()` pushed, `c()` pushed. **Call Stack at `console.log` moment:** `[Global, a, b, c]` (c on top). **Stack trace shows:** `c` (line X), `b` (line Y), `a` (line Z), `<anonymous>` (global). **When popped?** `c()` returns → c's EC popped. `b()` returns → b's EC popped. `a()` returns → a's EC popped. Global EC stays until script ends. **Each EC contains:** (1) Variable Environment — `let/const/var` bindings for that function. (2) Scope Chain — link to parent EC for variable lookup. (3) `this` binding — in non-arrow functions, depends on HOW `a/b/c` were called (here: as plain functions → `this = undefined` in strict mode, `window` in non-strict). **Key insight:** The call stack is LIFO — Last In, First Out. Stack overflow = call stack exceeded its size limit (V8 default: ~10,000 frames on most systems).
+
 </details>
 
 

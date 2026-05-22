@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](16_Heap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_BitManipulation.md)
+**Navigation**: [< Previous](16_Heap.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18_BitManipulation.md)
 
 **Problems 17/22** | [Prev](16_Heap.md) | [Index](../00_MASTER_INDEX.md) | [Next](18_BitManipulation.md)
 
@@ -865,10 +865,34 @@ VARIANTS:
 
 
 
+
 🔬 **Section Challenge — 15.2 PREFIX SUM + HASHMAP (Medium–Hard)**
->
+
+**Challenge 1 (Trace — Who/When/What):** In `subarraySum(nums=[3,-2,1,3], k=3)` using Prefix Sum + HashMap: trace every step — what is in `prefixCount`, what is `prefixSum`, and how many subarrays are counted at each index?
+
+<details><summary>Answer</summary>
+
+**Who executes?** A single loop iteration per index. **When?** Count BEFORE updating the map (so we don't use the current prefix with itself). **What already exists?** `prefixCount={0:1}` at start — this is the critical sentinel representing the empty prefix.
+
+Index 0 (num=3): prefixSum=3. Lookup 3-3=0 → map has 1 → count=1 (subarray [3]). Map={0:1, 3:1}.
+Index 1 (num=-2): prefixSum=1. Lookup 1-3=-2 → 0. Map={0:1, 3:1, 1:1}.
+Index 2 (num=1): prefixSum=2. Lookup 2-3=-1 → 0. Map={0:1, 3:1, 1:1, 2:1}.
+Index 3 (num=3): prefixSum=5. Lookup 5-3=2 → map has 1 → count=2 (subarray [-2,1,3]). Map={0:1, 3:1, 1:1, 2:1, 5:1}.
+
+**Final count=2.** Subarrays: `[3]` (index 0) and `[-2,1,3]` (indices 1-3).
+
+</details>
+
+**Challenge 2 (Debug):** A developer initializes `prefixCount` without the sentinel `{0:1}`. On `subarraySum([3], k=3)` the answer should be 1. What does their code return, and why?
+
+<details><summary>Answer</summary>
+
+Without `{0:1}`, at index 0: `prefixSum=3`, lookup `3-3=0` → map is empty → count stays 0. The code returns **0** instead of 1. The sentinel `{0:1}` represents the empty prefix (sum=0 before any elements). Without it, any subarray starting from index 0 that sums to `k` is invisible to the algorithm. **Rule:** Always initialize `prefixCount.put(0, 1)` — this is the #1 bug in prefix sum interviews.
+
+</details>
 
 ## #️⃣ 15.3 Design / Advanced Hashmap
+
 
 ---
 

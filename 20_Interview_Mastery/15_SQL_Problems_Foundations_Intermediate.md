@@ -293,16 +293,12 @@ ORDER BY s.student_id, sub.subject_name
 
 🔬 **Section Challenge — JOINS**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Trace — Who/When/What):** You run `SELECT COUNT(*) FROM customers LEFT JOIN orders ON customers.id = orders.customer_id`. The count is 12,450 but `SELECT COUNT(*) FROM customers` is 10,000. **Who** created the extra rows? **When** can a LEFT JOIN return MORE rows than the left table? **What** query diagnoses the fan-out customers?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who created extras?** Customers with multiple orders — each order creates an additional row. The 2,450 extra rows = customers with 2+ orders (each multi-order customer contributes `order_count - 1` extra rows). **When does LEFT JOIN return more rows?** When the right table has multiple rows matching a single left-table row. One customer with 5 orders = 5 result rows for that customer. **Diagnostic query:** `SELECT customer_id, COUNT(*) as order_count FROM orders GROUP BY customer_id HAVING COUNT(*) > 1` — this shows customers causing row multiplication. **Consequence:** `SUM(revenue)` on this join would count those customers' non-order columns (name, signup_date) multiple times — not usually a problem, but `COUNT(*)` gives you the joined result count, not the customer count. Always use `COUNT(DISTINCT customers.id)` to count unique customers through a join.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 
@@ -461,16 +457,12 @@ GROUP BY s.user_id
 
 🔬 **Section Challenge — MASTER PROBLEM MAP — SQL Foundations, Joins, Aggregations**
 
-**Challenge 1 (Reasoning):** `LEFT JOIN` returns all rows from the left table. When does it return MORE rows than the left table?
+**Challenge 1 (Synthesis — Who/When/What):** Looking at the 16-problem map: problems 3, 6, 10, 16 all use LEFT JOIN but for different purposes. **Who** determines when to use LEFT JOIN vs INNER JOIN vs NOT EXISTS? **When** does LEFT JOIN give a wrong count? **What** is the single mental-model question to decide?
+
 <details><summary>Answer</summary>
 
-When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
-</details>
+**Who determines?** The business question — specifically, whether you need rows with NO match on the right side. **Decision question:** "Do I need rows from the LEFT table even if there's NO corresponding row on the RIGHT?" YES → LEFT JOIN. NO → INNER JOIN. **Why LEFT JOIN gives wrong counts:** Problem 10 (Student Exams) uses `COUNT(e.student_id)` not `COUNT(*)` because `COUNT(*)` on a LEFT JOIN always ≥ 1 (the CROSS JOIN row). `COUNT(column)` counts non-NULLs, giving 0 for unmatched. Problem 16 (Confirmation Rate) wraps in `IFNULL` because `0/0 = NULL`, not 0. **Pattern comparison:** (3) Anti-join: LEFT JOIN + IS NULL = rows with NO match. (6) Outer preserve: LEFT JOIN, keep all people even without addresses. (10) Count with zeros: CROSS + LEFT JOIN, `COUNT(right_col)`. (16) Ratio with zeros: LEFT JOIN + IFNULL(SUM(CASE)/COUNT, 0). Each is a different flavor of the same tool — master these 4 and you handle 80% of real-world reporting queries.
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
-<details><summary>Answer</summary>
-
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
 </details>
 
 

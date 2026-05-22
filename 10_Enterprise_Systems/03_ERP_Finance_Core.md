@@ -51,21 +51,12 @@ A fresher can build this in a week.
 
 🔬 **Section Challenge — What Customer Sees (Frontend)**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (5W1H Trace):** A customer clicks **Pay Now**. Which data should the frontend send, which decisions must the backend own, and which finance records should be created?
+<details><summary>Trace, Reasoning & Debug</summary>
 
-```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
-}
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
-```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
+Frontend sends intent: cart id, selected store, customer id/session, payment method token, and delivery/pickup choice. Backend owns truth: price lookup, tax, discounts, inventory reservation, idempotency, fraud checks, payment authorization, invoice creation, and ledger impact.
+
+The key split is trust. UI can display totals, but ERP/finance must recompute them from authoritative data before charging. A correct flow records order, payment attempt, invoice/tax snapshot, inventory movement, and accounting entries so support and reconciliation can trace the transaction later.
 </details>
 
 
@@ -668,10 +659,12 @@ public class Transaction {
 
 🔬 **Section Challenge — 💰 Essential Finance Terms (With Code Context)**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Design — Who/When/What):** A customer pays ₹50,000 for an invoice. **Who** makes the journal entry? **When** should revenue be recognized — when cash arrives or when service was delivered? **What** are the exact debit/credit entries?
+
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+**Who makes the entry?** The accounts receivable/cash module — triggered by the payment receipt event. **When is revenue recognized?** At service delivery (accrual accounting) — NOT when cash arrives. If cash arrives before service, it's "Deferred Revenue" (a liability). **Debit/Credit entries at service delivery:** `Dr Accounts Receivable ₹50,000 | Cr Revenue ₹50,000`. At cash collection: `Dr Cash ₹50,000 | Cr Accounts Receivable ₹50,000`. **Why two separate entries?** Accrual accounting separates the earning event from the cash event. In code: the `Invoice` entity triggers the first entry; the `Payment` entity triggers the second. **Golden Rule:** Every transaction has equal debits and credits (double-entry). A balance sheet always balances: Assets = Liabilities + Equity. A coding bug that skips the Accounts Receivable credit creates a phantom asset — the balance sheet won't reconcile. Always validate `SUM(debit) == SUM(credit)` after posting.
+
 </details>
 
 

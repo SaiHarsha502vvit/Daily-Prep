@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch31_SB_Core_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch33_SB_Web_Part3.md)
+**Navigation**: [< Previous](Ch31_SB_Core_Part1.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch33_SB_Web_Part3.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 2: Spring Core (IoC & DI)
 
@@ -1154,10 +1154,12 @@ public class SpringContextHolder implements ApplicationContextAware {
 
 🔬 **Section Challenge — Chapter 7: ApplicationContext - The IoC Container**
 
-**Challenge 1 (Reasoning):** When does React Context cause performance problems and how do you avoid them?
+**Challenge 1 (Trace — Who/When/What):** You call `new SpringApplication(App.class).run(args)`. **Who** creates the `ApplicationContext`? **When** does bean initialization happen relative to your `main()` completing? **What** is the exact order: `@Configuration` parsing → `@Bean` method execution → `@PostConstruct` → `CommandLineRunner`?
+
 <details><summary>Answer</summary>
 
-Every context consumer re-renders when ANY context value changes. If you have `{theme, user, cart}` in one context, updating cart re-renders all theme and user consumers. Fixes: (1) Split into separate contexts: `ThemeContext`, `UserContext`, `CartContext`. (2) Memoize components with `React.memo`. (3) For complex state, use a state library (Zustand, Jotai) with selector-based subscriptions — only re-render when the specific piece of state changes.
+**Who?** `SpringApplication.run()` delegates to `AnnotationConfigServletWebServerApplicationContext` (for web apps) or `AnnotationConfigApplicationContext` (non-web). **Order:** (1) Parse `@Configuration` classes → build `BeanDefinition` map (metadata only, no instantiation yet). (2) Instantiate non-lazy singleton beans → call `@Bean` methods, constructor injection. (3) Call `@PostConstruct` methods on each bean after injection complete. (4) Publish `ApplicationReadyEvent`. (5) Execute `CommandLineRunner`/`ApplicationRunner` beans. **When does main() finish?** `run()` blocks until all runners complete, then returns. In an embedded server app, `run()` keeps the thread alive via Tomcat's accept loop. **Key insight:** `@Lazy` beans skip step 2 entirely — they initialize on first `getBean()` call, which can cause startup-time injection failures to appear only at runtime.
+
 </details>
 
 

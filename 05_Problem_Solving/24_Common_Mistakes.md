@@ -1,4 +1,4 @@
-﻿> **Navigation**: [< Previous](02_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Strings.md)
+> **Navigation**: [< Previous](02_Math_Numbers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Strings.md)
 
 # 🚨 COMMON MISTAKES & HOW TO AVOID THEM
 
@@ -222,7 +222,18 @@ while (left < right)              // CORRECT: < (stop when they meet)
 
 > 🔬 **Section Challenge — 💥 3. Integer Overflow**
 
+**Challenge (Debug — Who/When/What):** `int result = 100000 * 100000;` returns a negative number. Who computed this multiplication? When did the overflow occur? What was already true about Java's `int` type that made this inevitable, and what is the minimal fix?
+
+<details><summary>Answer</summary>
+
+**Who?** The JVM's integer arithmetic unit. **When?** At the multiplication instruction, before any assignment. **What already exists?** Java `int` is a 32-bit signed type with max value 2,147,483,647. `100,000 × 100,000 = 10,000,000,000` which exceeds this by ~8× — the result wraps around (two's complement overflow) to a large negative value.
+
+**Minimal fix:** `long result = 100000L * 100000;` (or `(long) 100000 * 100000`). The `L` suffix forces the multiplication to happen in `long` arithmetic BEFORE the result is stored. **Critical rule:** Cast BEFORE the operation, not after: `(long)(100000 * 100000)` is WRONG — overflow already occurred inside the parentheses.
+
+</details>
+
 ## 📝 4. String Comparison Mistakes
+
 
 ```
                   STRING COMPARISON MISTAKES
@@ -279,7 +290,18 @@ But DON'T rely on this! Always use .equals() to be safe.
 
 > 🔬 **Section Challenge — 📝 4. String Comparison Mistakes**
 
+**Challenge (Trace — Who/When/What):** `String s1 = "hello"; String s2 = new String("hello"); System.out.println(s1 == s2);` What does this print, and why? Then: `String s3 = "hello"; System.out.println(s1 == s3);` — what does THIS print and why is it different?
+
+<details><summary>Answer</summary>
+
+**s1 == s2 prints `false`.** Who compares? The `==` operator. When? At runtime. What already exists? `s1` points to the String Pool literal `"hello"`. `s2` was created with `new String(...)`, which forces allocation of a NEW heap object even if content is identical. The `==` operator compares reference addresses, not content. Different heap addresses → `false`.
+
+**s1 == s3 prints `true`.** Why different? Both `s1 = "hello"` and `s3 = "hello"` are string literals. At compile time, the JVM interns them to the **same** String Pool entry. Both references point to the same memory address → `==` returns `true`. **Never rely on this.** Always use `.equals()` for content comparison — the pool optimization is an implementation detail, not a language guarantee.
+
+</details>
+
 ## 📌 5. Scanner Input Mistakes
+
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗
@@ -354,7 +376,27 @@ But DON'T rely on this! Always use .equals() to be safe.
 
 > 🔬 **Section Challenge — 📌 5. Scanner Input Mistakes**
 
+**Challenge (Debug — Who/When/What):** A student reads an integer then a full line:
+```java
+int n = scanner.nextInt();
+String s = scanner.nextLine();
+```
+For input `"5\nhello"`, what does `s` contain and why? State exactly **who** consumed what, **when**, and **what state** the buffer was in before `nextLine()` executed.
+
+<details><summary>Answer</summary>
+
+`s` contains `""` (empty string), NOT `"hello"`.
+
+**Who?** `nextInt()` reads token `"5"` but does NOT consume the `\n` newline that follows. **When?** After `nextInt()` returns, the buffer pointer is positioned AT the `\n` character. **What already exists in the buffer?** `"\nhello"` — the newline is still there.
+
+`nextLine()` then reads everything up to the NEXT newline — which is the `\n` immediately ahead. It consumes just that `\n` and returns an empty string `""`. The `"hello"` text is still buffered, unread.
+
+**Fix:** Insert `scanner.nextLine();` as a flush call between `nextInt()` and the string-reading `nextLine()`. This consumes the stale `\n`, positioning the buffer at `"hello"` for the next call.
+
+</details>
+
 ## 🏛️ 6. Loop Mistakes
+
 
 ```
                   LOOP MISTAKES
@@ -704,7 +746,18 @@ REFERENCE TABLE:
 
 > 🔬 **Section Challenge — 📌 10. Variable Initialization Mistakes**
 
+**Challenge (Debug — Who/When/What):** Find the bug: `int max = 0; for (int num : arr) { if (num > max) max = num; }` on `arr = [-5, -3, -1]`. Who reads `max` during comparison? When does the comparison fail? What must already be true for the result to be correct, and what is the fix?
+
+<details><summary>Answer</summary>
+
+**Who reads max?** The `if (num > max)` comparison on every iteration. **When does it fail?** On EVERY iteration — no element is greater than `0`. After the loop, `max = 0` which is not even in the array. **What must be true for correctness?** The initial value must be ≤ every possible element. `0` violates this when all elements are negative.
+
+**Fix 1:** `int max = Integer.MIN_VALUE;` — guaranteed to be less than every valid `int`. **Fix 2:** `int max = arr[0];` then iterate from index 1 — valid as long as you guard `arr.length > 0`. **Why Fix 2 is preferred:** It avoids magic constants and is correct for both positive and negative arrays. Always ask: "What is the identity element for my operation?" For `max`: the smallest possible value (`arr[0]` or `Integer.MIN_VALUE`). For `min`: the largest.
+
+</details>
+
 ## 📋 PRE-SUBMISSION CHECKLIST
+
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════╗

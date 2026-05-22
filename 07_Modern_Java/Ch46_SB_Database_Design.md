@@ -1063,21 +1063,16 @@ public class SecurityService {
 
 🔬 **Section Challenge — Chapter 4: @PreAuthorize, @Secured, and Custom Expressions**
 
-**Challenge 1 (Design):** Design a custom exception hierarchy for a payment system. What should the base class extend and what fields must it have?
-<details><summary>Answer</summary>
+**Challenge 1 (Selection):** A method needs row-level access control: admins can update any user, but normal users can update only their own profile. Should you use `@Secured`, plain `hasRole`, or a custom expression?
+<details><summary>Trace, Reasoning & Debug</summary>
 
 ```java
-public class PaymentException extends RuntimeException { // unchecked!
-    private final String errorCode;
-    private final String transactionId;
-    public PaymentException(String code, String txId, String msg, Throwable cause) {
-        super(msg, cause); this.errorCode=code; this.transactionId=txId;
-    }
+@PreAuthorize("hasRole('ADMIN') or @authz.isSelf(#userId, authentication)")
+public void updateUser(Long userId, UpdateUserRequest request) {
+    // business update after authorization passes
 }
-public class InsufficientFundsException extends PaymentException { ... }
-public class PaymentGatewayException extends PaymentException { ... }
 ```
-Always chain the original cause. Include domain-relevant context (errorCode, transactionId) for logging/debugging.
-</details>
 
+Use `@Secured` for simple role gates only. Use `@PreAuthorize` when the rule depends on method arguments, ownership, tenant, or entity state. Put reusable row-level checks behind `@authz` so controllers/services do not duplicate repository lookups and security logic.
+</details>
 

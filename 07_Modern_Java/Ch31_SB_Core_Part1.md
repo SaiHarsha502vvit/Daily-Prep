@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch21_AlgoEng_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch32_SB_Data_Part2.md)
+**Navigation**: [< Previous](Ch21_AlgoEng_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch32_SB_Data_Part2.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 1: Java Foundations
 
@@ -453,11 +453,7 @@ public class ReferenceTypesDemo {
 
 🔬 **Section Challenge — Chapter 2: Reference Types (Garbage Collection Keys)**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-<details><summary>Answer</summary>
-
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
+**Challenge 1 (Reasoning — Who/When/What):** `WeakReference<User>` is used in a cache. **Who** decides when the referent is cleared? **When** exactly? **What** is the difference between Soft and Weak for caching?\n\n<details><summary>Answer</summary>\n\n**Who decides?** The GC. A WeakReference is cleared during ANY GC cycle if no strong references exist. **When exactly?** As soon as GC runs and finds no strong or soft references pointing to the object. This can happen at any time, even with plenty of available heap. **Soft vs Weak for caching:** `SoftReference` is only cleared when the JVM is running LOW on memory (before OOM is thrown) — better for caches that you want to keep as long as possible. `WeakReference` is cleared on the NEXT GC cycle regardless of memory pressure — useful for canonicalizing maps (`WeakHashMap`) but poor for general caches. For production caches, use Caffeine/Guava which manage eviction policies more predictably than reference semantics.\n\n</details>
 
 **Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
 <details><summary>Answer</summary>

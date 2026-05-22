@@ -1,4 +1,4 @@
-﻿**SQL Chapter 07/20** | [← Previous](06_Aggregations_GroupBy.md) | [Index](../00_MASTER_INDEX.md) | [Next →](08_Subqueries_CTEs.md)
+**SQL Chapter 07/20** | [← Previous](06_Aggregations_GroupBy.md) | [Index](../00_MASTER_INDEX.md) | [Next →](08_Subqueries_CTEs.md)
 
 ---
 
@@ -351,10 +351,12 @@ INNER JOIN departments d ON e.dept_id = d.dept_id;
 When the right table has MULTIPLE matching rows for one left-table row. Example: Orders LEFT JOIN OrderItems — one order with 5 items = 5 result rows for that one order. Analogy: `1 order × 5 items = 5 rows`. Always check your join multiplicity. Use `SELECT COUNT(*) vs COUNT(DISTINCT left.id)` to detect row explosion.
 </details>
 
-**Challenge 2 (Bug Hunt):** `SELECT * FROM A, B WHERE A.id = B.a_id` — what join type is this and is it equivalent to `A JOIN B ON A.id = B.a_id`?
+**Challenge 2 (Performance — Who/When/What):** `orders INNER JOIN customers ON orders.customer_id = customers.id` vs `orders, customers WHERE orders.customer_id = customers.id` — are they identical to the query optimizer? **Who** decides the join algorithm? **When** does the join order matter?
+
 <details><summary>Answer</summary>
 
-It's an old-style INNER JOIN. Functionally equivalent to `A INNER JOIN B ON A.id = B.a_id` — only returns rows where both sides match. BUT: the comma syntax is dangerous. Forgetting the WHERE clause on a multi-table comma join → CROSS JOIN (cartesian product). Explicit JOIN syntax with ON makes intent clear and prevents the accidental cross join.
+**Who decides?** The query optimizer — it analyzes table statistics and available indexes. **Are they identical?** Functionally YES (both produce INNER JOIN semantics), but the optimizer has more freedom with explicit JOIN syntax. **When does join order matter?** With 3+ tables: `A JOIN B JOIN C` — the optimizer can reorder joins (swap B and C) for efficiency. With comma syntax in old code, some optimizers treat the listed order as a hint. **The real difference:** Explicit JOIN is unambiguous about intent; the optimizer uses table size statistics to determine the actual join algorithm (nested loop if one side is small + indexed, hash join if neither side has useful indexes, merge join if both sides are already sorted). Check with `EXPLAIN FORMAT=JSON` to see which algorithm was chosen and why.
+
 </details>
 
 

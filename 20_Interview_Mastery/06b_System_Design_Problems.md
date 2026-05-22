@@ -610,17 +610,7 @@ PERSONALIZATION:
 
 🔬 **Section Challenge — 2.10 Design a Typeahead / Autocomplete System**
 
-**Challenge 1 (Reasoning):** You write `List<String> list = new ArrayList<>();`. At runtime, can you check `list instanceof List<String>`?
-<details><summary>Answer</summary>
-
-No — `instanceof List<String>` is a compile error. After erasure, it's just `List` at runtime. Use `instanceof List<?>` for an unparameterized check. This is why you can't do `new T()`, `new T[]`, or `T.class` — T doesn't exist at runtime.
-</details>
-
-**Challenge 2 (Bug Hunt):** A method returns `(T) jsonDeserialize(json)` where T is a generic type param. When does the `ClassCastException` actually occur?
-<details><summary>Answer</summary>
-
-NOT at the cast — the unchecked cast compiles to nothing at runtime (erasure). The CCE occurs when the calling code tries to USE the returned value as a specific type. This makes debugging hard: the error appears far from the actual source. Use `Class<T> clazz` parameter to do safe `clazz.cast(...)` instead.
-</details>
+**Challenge 1 (Design — Who/When/What):** You shard the autocomplete Trie by first 2 chars. A user types "tw". **Who** routes the request? **When** does the top-K list get stale? **What** happens if the "tw" shard goes down?\n\n<details><summary>Answer</summary>\n\n**Who routes?** The API Gateway / Load Balancer — it hashes the 2-char prefix to determine the correct Trie shard. "tw" always maps to shard 3 (or whichever is assigned). **When stale?** Top-K counts are batch-updated every 15-30 minutes (real-time updates are too expensive for 200K QPS). So trending terms (viral tweet, breaking news) may not appear for 15 minutes. **If shard down?** All queries starting with "tw" fail — 1/676 (2-char combos) of all queries degrade. Mitigation: (1) Replica per shard for read failover. (2) Cache hot prefixes in Redis as a warm fallback — even if Redis has 5-minute-old top-K, it's better than empty results. (3) Graceful degradation: return empty suggestions rather than error.\n\n</details>
 
 
 # Quick Reference — System Design Cheat Sheet
