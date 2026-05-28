@@ -733,24 +733,22 @@ WHERE state = 'idle in transaction'
   AND NOW() - xact_start > INTERVAL '30 seconds';
 ```
 
-```yaml
-
-
 🔬 **Section Challenge — S6: Connection Pool Exhaustion**
 
-**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+**Challenge 1 (Reasoning):** A payment API slows down, and every request keeps a database transaction open while waiting for HTTP. Why does this drain the connection pool even if each SQL statement is fast?
 <details><summary>Answer</summary>
 
-First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+The transaction owns a database connection for the whole method, not only while SQL is executing. If the external API waits 45 seconds, that connection is pinned for 45 seconds. With 20 pool connections, capacity becomes roughly `20 / 45 = 0.44` requests/sec for that path, no matter how fast the actual SQL is. The fix is to move external calls outside the transaction or split the workflow into short DB transactions plus retryable/outbox steps.
 </details>
 
-**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+**Challenge 2 (Design):** Why is killing `idle in transaction` sessions only an emergency action, not the real fix?
 <details><summary>Answer</summary>
 
-Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+Terminating sessions frees connections immediately, but it can abort in-flight business work and does not remove the code path that created long transactions. The real fix is to shorten transaction scope, add transaction timeouts, add Hikari leak detection, and keep non-DB I/O outside DB transactions. Emergency termination restores service; code and configuration changes prevent recurrence.
 </details>
 
 
+```yaml
 # Increase pool size for immediate relief:
 spring:
   datasource:
@@ -1080,5 +1078,3 @@ String findStatusById(@Param("id") Long id);
 ---
 
 [⬅ Previous: 43_Interview_Mindset](43_Interview_Mindset_How_Professionals_Explain.md) | [📚 Index](00_INDEX.md) | [Next: 45_Interview_Scenarios_Part2 ➡](45_Interview_Scenarios_Explained_Part2.md)
-
-

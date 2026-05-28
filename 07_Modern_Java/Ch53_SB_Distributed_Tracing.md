@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch47_SB_Security_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch59_SB_Testing_Fundamentals.md)
+**Navigation**: [< Previous](Ch47_SB_Security_Deep.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch59_SB_Testing_Fundamentals.md)
 
 # Spring Boot Part 18: Distributed Tracing - Sleuth, Zipkin & Micrometer
 
@@ -90,10 +90,6 @@ Distributed tracing tracks requests across multiple services, helping debug and 
 🔬 **Section Challenge — 1. Tracing Fundamentals**
 
 **Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
-<details><summary>Answer</summary>
-
-A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
-</details>
 
 
 ## 2. Spring Cloud Sleuth (Spring Boot 2.x)
@@ -808,10 +804,12 @@ public class CustomHeaderPropagation {
 
 🔬 **Section Challenge — 8. Tracing Across Message Queues**
 
-**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
+**Challenge 1 (Kafka Header Propagation):** Service A sends a Kafka message. Service C consumes it. The Zipkin trace shows A → B (HTTP) but C appears as a new root trace. **Who** failed to propagate the trace context? **When** does header injection into Kafka happen? **What** Micrometer API manually bridges the trace?
+
 <details><summary>Answer</summary>
 
-A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
+**Who failed:** The Kafka producer in Service B. Distributed tracing across Kafka requires the producer to INJECT trace headers into the `ProducerRecord` headers, and the consumer to EXTRACT those headers to continue the trace. Without explicit header injection, Kafka messages have no `traceparent`/`b3` header — Service C starts a fresh root span. **When injection happens:** At the point of `kafkaTemplate.send()`. With Micrometer Tracing + Spring Kafka, `KafkaTemplate` auto-propagates if `spring.kafka.producer.properties.spring.sleuth.enabled=true` (Boot 2) or Micrometer instrumentation is enabled (Boot 3). **Manual bridge:** Use `tracer.currentTraceContext().wrap(Runnable)` or set headers explicitly: `record.headers().add("traceparent", currentTraceId.getBytes())`. In Spring Boot 3 + Micrometer: `KafkaSenderContext` and `KafkaReceiverContext` handle this automatically when `micrometer-tracing-bridge-brave` is on the classpath. **Gotcha:** Async Kafka consumers run in a different thread. `ThreadLocalAccessor` ensures the trace context is propagated to worker threads — without it, the consumer span has no parent.
+
 </details>
 
 
@@ -923,10 +921,12 @@ public class ObservationConfiguration {
 
 🔬 **Section Challenge — 9. Sampling Strategies**
 
-**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
+**Challenge 1 (Sampling Strategy Tradeoff):** Your tracing config has `sampler.probability=0.1` (10% sampling). A bug only reproduces in 1% of requests. **Who** decides which requests are sampled? **When** does head-based sampling miss the bug? **What** sampling strategy would capture it?
+
 <details><summary>Answer</summary>
 
-A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
+**Who decides with head-based sampling:** The FIRST service in the chain (e.g., API gateway or Service A). It decides at the START of the request whether to sample. This decision is propagated via the `sampled` flag in the `b3` header. All downstream services HONOR this decision — they don't re-decide. **When head-based sampling misses the bug:** If the bug only manifests in requests that hit a specific code path (e.g., users with a rare payment method), and those requests aren't among the 10% sampled, you'll never capture a trace showing the bug. A 1-in-100 bug with 10% sampling means you'd only capture ~0.1% of bug occurrences. **Tail-based sampling (the fix):** Decide to sample AFTER the request completes. If the request resulted in an error, slow span, or specific business condition — THEN record it. Tools: Jaeger's `tail-based sampling` collector, OpenTelemetry Collector with `tail_sampling` processor. **Micrometer approach:** Implement a custom `Sampler` that samples 100% of ERROR responses: `if (span.tags().get("error") != null) return SamplingDecision.RECORD_AND_SAMPLE; return parentSampler.shouldSample(...)`. This ensures all errors are captured regardless of the base sample rate.
+
 </details>
 
 
@@ -980,10 +980,10 @@ public class GatewayConfig {
 
 🔬 **Section Challenge — 10. Complete Microservices Example**
 
-**Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
+**Challenge 1 (Diagnostic - Who/What/Where):** A developer uses `@Async` on a method in `NotificationService` that sends an email. In Zipkin, the email sending span is completely disconnected from the parent web request trace. **Who** lost the trace context? **Where** must you intervene, and **What** specific wrapper must be applied to fix it?
 <details><summary>Answer</summary>
 
-Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
+**Who lost it:** The standard Java `ThreadPoolTaskExecutor` (or `SimpleAsyncTaskExecutor`) which spun up a new thread without copying the `ThreadLocal` trace context from the main web thread. **Where to intervene:** In your `@Configuration` class where you define the `Executor` bean for `@Async`. **What to wrap:** You must decorate the executor. In Micrometer Tracing (Boot 3), Spring Boot auto-configures context propagation, but if you define a custom `ThreadPoolTaskExecutor`, you must manually set its task decorator to `ContextPropagatingTaskDecorator` to bridge the trace headers into the new thread. Without this, the async thread starts a fresh root trace.
 </details>
 
 
@@ -1497,10 +1497,12 @@ public class TracingAnalysisService {
 
 🔬 **Section Challenge — 11. Debugging with Traces**
 
-**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
+**Challenge 1 (Slow Span Root Cause):** Zipkin shows a trace where Service A span = 500ms, Service B span = 480ms, Service B DB span = 5ms. **Who** is responsible for the 475ms gap? **When** does span timing NOT equal actual processing time? **What** Zipkin view reveals client vs. server timing?
+
 <details><summary>Answer</summary>
 
-A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
+**Who is responsible for the 475ms gap:** The NETWORK and framework overhead between Service A's HTTP client call and Service B's HTTP server receiving the request. Service B's DB query is only 5ms. Service B's span = 480ms means it was processing for 480ms. But Service B's DB span = 5ms means most of those 480ms are elsewhere. If Service B has NO other spans, the 475ms is: network latency + thread pool queue time (if Service B's thread pool was saturated) + HTTP framework overhead + serialization/deserialization. **When span timing ≠ actual processing:** When the `start` timestamp is recorded at HTTP connection establishment vs. when the thread actually starts processing. Thread pool saturation causes requests to WAIT in a queue before a span even starts. The waiting time is invisible in the span itself. **Zipkin view:** The "Trace Timeline" shows spans in a waterfall. Look at `Server Receive (sr)` timestamp vs `Client Send (cs)` timestamp on the same span — the gap between `cs` and `sr` = network latency. If `sr - cs` is large (e.g., 450ms), it's network or service-mesh overhead. If `sr - cs` is small but span is still long, the work is inside Service B.
+
 </details>
 
 
@@ -1627,10 +1629,12 @@ class ExternalServiceTracingTest {
 
 🔬 **Section Challenge — 12. Testing Traced Code**
 
-**Challenge 1 (Reasoning):** In Distributed Tracing (like Zipkin/Jaeger), what is the exact difference between a `Trace ID` and a `Span ID`?
+**Challenge 1 (Trace-Context Test Propagation):** You write a unit test for a method that creates a child span. **Who** provides the parent span context in tests? **When** does `TestObservationRegistry` differ from real tracing? **What** assertion verifies the trace propagated correctly?
+
 <details><summary>Answer</summary>
 
-A `Trace ID` represents the entire lifecycle of a single user request as it travels across the entire microservice ecosystem. It is generated once at the API Gateway and passed in the headers to every downstream service. A `Span ID` represents a specific, isolated unit of work *within* that trace (e.g., Service A calling Service B, or a specific database query). A single Trace is made up of a tree of many Spans.
+**Who provides the parent span context:** In unit tests, NO real trace context exists unless you create one. Use `TestObservationRegistry` (Micrometer 1.10+) or `BraveTracer` test utilities. Without a test tracer, the method's spans are no-ops — never recorded. **TestObservationRegistry:** `@AutoConfigureObservability` + `@Autowired TestObservationRegistry registry` in `@SpringBootTest`. The registry captures all `Observation` instances created during the test. **Assertion:** `TestObservationRegistry.assertThat(registry).hasObservationWithNameEqualTo("http.server.requests").that().hasBeenStarted().hasBeenStopped()`. For span hierarchy: verify the span's parent ID matches the expected parent span. **When TestObservationRegistry differs from real tracing:** (1) It doesn't export to Zipkin/Jaeger — spans are captured in memory only. (2) Sampling decisions may differ (test registry samples 100%). (3) Span names may differ if instrumentation uses different naming in test vs. production (different `ObservationConvention`). **Integration test approach:** Use `@SpringBootTest` + `WireMock` + a real Zipkin test container (via Testcontainers), then query the Zipkin API to verify trace propagation across service boundaries.
+
 </details>
 
 

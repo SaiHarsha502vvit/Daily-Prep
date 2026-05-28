@@ -228,7 +228,13 @@ this.payment = payment;
 
 🔬 **Section Challenge — The Problem: Tight Coupling**
 
-**Challenge 1 (Reasoning):** You are writing a query to find users by email: `findByEmail(String email)`. Why is this inherently vulnerable to SQL injection if implemented using native JDBC string concatenation, but completely safe in Spring Data JPA?
+**Challenge 1 (Singleton Scope Shared State Risk):** The default Spring bean scope is `singleton`. **Who** shares state? **When** does singleton scope cause a concurrency bug? **What** is the fix and which scope should you use?
+
+<details><summary>Answer</summary>
+
+**Who shares state:** ALL callers of the same singleton bean share the SAME instance. In a web server with 100 concurrent requests, all 100 request-handling threads call the same `UserService` bean instance. **When it causes a concurrency bug:** When the singleton bean has MUTABLE INSTANCE FIELDS. `private String currentUser;` set in `processRequest(user)` — Thread 1 sets `currentUser = "Alice"`, Thread 2 sets `currentUser = "Bob"`, Thread 1 reads `currentUser` and gets `"Bob"`. Race condition. **The fix:** (1) Make beans stateless (no mutable instance fields). Business logic only uses method parameters and local variables. (2) If state is needed per-request: use `@Scope("request")` — new instance per HTTP request. `@Scope("prototype")` — new instance per injection point. `@Scope("session")` — new instance per HTTP session. **Production pattern:** Controllers, Services, Repositories — always stateless singleton. Cart contents, user preferences — `@SessionScoped` beans or stored in the database.
+
+</details>
 <details><summary>Answer</summary>
 
 Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
@@ -243,7 +249,13 @@ Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE ema
 
 🔬 **Section Challenge — Chapter 2: Spring Beans - The Building Blocks**
 
-**Challenge 1 (Reasoning):** You are writing a query to find users by email: `findByEmail(String email)`. Why is this inherently vulnerable to SQL injection if implemented using native JDBC string concatenation, but completely safe in Spring Data JPA?
+**Challenge 1 (@Component vs @Bean — When to Use Each):** `@Component` annotates a class directly. `@Bean` annotates a method in a `@Configuration` class. **Who** should use `@Bean`? **When** can't you use `@Component`? **What** is the key difference in instantiation control?
+
+<details><summary>Answer</summary>
+
+**Who uses `@Bean`:** Developers registering beans from THIRD-PARTY classes (classes you don't own). You cannot add `@Component` to a class in a library JAR. `@Bean` lets you write: `@Bean public ObjectMapper objectMapper() { ObjectMapper om = new ObjectMapper(); om.configure(...); return om; }`. **When you CAN'T use `@Component`:** (1) External library classes (`Jackson`, `RestTemplate`, `DataSource`). (2) When you need CUSTOM INITIALIZATION logic (multiple constructor arguments, builder patterns). (3) When you need CONDITIONAL creation (`@ConditionalOnProperty`). **Instantiation control difference:** `@Component` — Spring instantiates via reflection using no-arg constructor (or `@Autowired` constructor). You can't control the instantiation chain. `@Bean` — you write the instantiation code directly. Full control: builder patterns, factory methods, static constructors, custom configuration. **`@Configuration` proxy trick:** `@Configuration` classes are CGLIB-proxied. Calling another `@Bean` method within the same config class returns the SAME singleton (intercepted by CGLIB). `@Component` classes are NOT proxied — calling an `@Bean` method directly would create a new instance each time.
+
+</details>
 <details><summary>Answer</summary>
 
 Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
@@ -356,7 +368,13 @@ public class AppConfig { }
 
 🔬 **Section Challenge — Spring Bean Definition**
 
-**Challenge 1 (Reasoning):** You are writing a query to find users by email: `findByEmail(String email)`. Why is this inherently vulnerable to SQL injection if implemented using native JDBC string concatenation, but completely safe in Spring Data JPA?
+**Challenge 1 (Bean Lifecycle @PostConstruct and @PreDestroy):** A `@Service` bean has `@PostConstruct void init()` and `@PreDestroy void cleanup()`. **Who** calls these? **When** exactly are they invoked relative to dependency injection? **What** happens if `init()` throws an exception?
+
+<details><summary>Answer</summary>
+
+**Who calls them:** The Spring IoC container. After constructing the bean and COMPLETING dependency injection (`@Autowired` fields set), Spring calls `@PostConstruct`. Before destroying the bean (on `ApplicationContext.close()` or JVM shutdown hook), Spring calls `@PreDestroy`. **Exact timing:** (1) Constructor called. (2) Dependency injection completed (all `@Autowired` fields/setters set). (3) `@PostConstruct` called (fully constructed, all dependencies available). This is why `@PostConstruct` is safe to use dependencies — they are guaranteed to be set. **If `@PostConstruct` throws:** Spring aborts the bean initialization. The bean is NOT added to the context. Dependent beans that expected this bean will fail with `NoSuchBeanDefinitionException` or `BeanCreationException`. The application context typically fails to start. **Use cases for @PostConstruct:** Cache warming (load data from DB into cache after DataSource is injected). Connection validation (verify external service is reachable). Thread pool startup. **@PreDestroy use cases:** Close database connections, flush pending writes, stop scheduled tasks. NOT called if JVM is killed with `SIGKILL (-9)` — only for graceful shutdowns.
+
+</details>
 <details><summary>Answer</summary>
 
 Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.
@@ -645,7 +663,13 @@ public class UserService {
 
 🔬 **Section Challenge — Chapter 4: Resolving Dependencies (@Qualifier, @Primary)**
 
-**Challenge 1 (Reasoning):** You are writing a query to find users by email: `findByEmail(String email)`. Why is this inherently vulnerable to SQL injection if implemented using native JDBC string concatenation, but completely safe in Spring Data JPA?
+**Challenge 1 (@Primary vs @Qualifier Precedence):** Two `PaymentService` implementations: `StripePaymentService` annotated `@Primary` and `PayPalPaymentService`. You inject with `@Autowired @Qualifier("payPalPaymentService")`. **Who** wins? **When** does `@Primary` take effect? **What** if both `@Primary` and `@Qualifier` are present?
+
+<details><summary>Answer</summary>
+
+**Who wins:** `@Qualifier` ALWAYS wins over `@Primary`. `@Qualifier` is an explicit, precise selector. `@Primary` is a default-fallback hint. When `@Qualifier` is specified, Spring ignores `@Primary`. **When `@Primary` takes effect:** Only when there is NO `@Qualifier` and multiple beans of the same type exist. `@Autowired PaymentService ps` — Spring sees `StripePaymentService` (marked `@Primary`) and `PayPalPaymentService`. Injects `StripePaymentService`. **`@Primary` + `@Qualifier` together:** `@Qualifier` takes precedence. The `PayPalPaymentService` is injected, regardless of `@Primary` on `StripePaymentService`. **Interview trap:** `@Qualifier` must match the bean NAME, not the annotation. Default bean name = lowercase first letter of class name: `stripePaymentService`. `@Qualifier("stripePaymentService")` — note the lowercase `s`. Or use named `@Qualifier` annotation on the bean class: `@Qualifier("stripe")`. **When to use each:** `@Primary` — configure once, used everywhere by default (e.g., real `DataSource` vs test `DataSource`). `@Qualifier` — when specific injection points need a specific bean (e.g., one endpoint uses Stripe, another PayPal).
+
+</details>
 <details><summary>Answer</summary>
 
 Prepared Statements. If you concatenate strings (`"SELECT * FROM users WHERE email = '" + email + "'"`), a malicious user can input `' OR 1=1; DROP TABLE users;--` and execute arbitrary SQL. Spring Data JPA automatically compiles the query into a JDBC `PreparedStatement` with bind parameters (`WHERE email = ?`). The database treats the input strictly as literal string data, not executable code, making SQL injection impossible.

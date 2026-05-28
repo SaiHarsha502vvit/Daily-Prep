@@ -1,7 +1,8 @@
-﻿**Navigation**: [< Previous Chapter](Ch63_SB_Cloud_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch63_SB_Cloud_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
+```yaml
 # application.yml for Azure
 spring:
   cloud:

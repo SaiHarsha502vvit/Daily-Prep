@@ -402,7 +402,9 @@ Every day follows this structure:
 
 🔬 **Section Challenge — 📆 WEEK 3: Mar 5-11 — Linked List + Recursion Introduction**
 >
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```

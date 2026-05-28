@@ -26,6 +26,33 @@ For the rewrite workflow, pair it with [Brute Force to Optimal Playbook](../14_M
 
 ---
 
+# PART 0: Open-Source Reference Anchors
+
+Open-source implementations are useful when they reveal the invariant behind a data structure. Do not paste a large implementation into your notes. Link it, explain what design choice matters, then rewrite the idea in your own contest/interview style.
+
+Use this format:
+
+```text
+Source link -> invariant learned -> when to use -> when not to copy directly
+```
+
+| Need To Understand | Strong Reference | What To Extract | Do Not Blindly Copy |
+|--------------------|------------------|-----------------|---------------------|
+| point updates + prefix/range sum | [AtCoder fenwicktree.hpp](https://github.com/atcoder/ac-library/blob/master/atcoder/fenwicktree.hpp) | `add` and prefix accumulation are both logarithmic | C++ template details into Java |
+| range queries with lazy updates | [AtCoder lazysegtree.hpp](https://github.com/atcoder/ac-library/blob/master/atcoder/lazysegtree.hpp) | monoid value + lazy function + composition | the generic abstraction before you understand the math |
+| compact contest templates | [KACTL content](https://github.com/kth-competitive-programming/kactl/tree/main/content) | minimal state, invariant comments, tested snippets | terse macros/style in Java answers |
+| proof-oriented algorithm notes | [cp-algorithms repo](https://github.com/cp-algorithms/cp-algorithms) | correctness proof, edge cases, complexity | C++ implementation assumptions without translating constraints |
+| production Java collection behavior | [OpenJDK LinkedList.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedList.java), [PriorityQueue.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java) | invariants, iterator behavior, API tradeoffs | production API complexity for a 20-line interview solution |
+
+Decision rule:
+
+```text
+If the repo code is long, copy the invariant, not the implementation.
+If the repo code is short, still translate names, indexing, overflow, and language constraints.
+```
+
+---
+
 # PART 1: Input Size Budget
 
 The first constraint is `N`.

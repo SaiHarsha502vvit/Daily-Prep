@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)
+**Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)
 
 # 🎨 COMPLETE CODE TEMPLATES WITH VISUAL EXPLANATIONS
 
@@ -448,7 +448,7 @@ public String minWindow(String s, String t) {
 
 🔬 **Section Challenge — 📌 3. Sliding Window — Variable**
 
-**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+**Challenge 1 (Variable Window Shrink Condition):** Variable sliding window shrinks the window when a CONSTRAINT is violated. **Who** decides when to shrink? **When** does a `while` loop work better than an `if` for the shrink step? **What** is the minimum window substring shrink logic for LC 76?\n\n<details><summary>Answer</summary>\n\n**Who decides when to shrink:** The constraint check. For LC 76 (Minimum Window Substring): shrink when the window contains all required characters (constraint satisfied = window is valid but possibly too big). For LC 3 (Longest Substring Without Repeating): shrink when `charCount[right] > 1` (constraint violated = duplicate found). **`while` vs `if` for shrink:** Use `while` when you need to shrink UNTIL the constraint is satisfied (e.g., remove all duplicates: `while (freq[s[left]] > 1) { freq[s[left]]--; left++; }`). Use `if` when at most one element needs removal per step. In practice, `while` is safer — it handles multiple violations in one expansion step. **LC 76 Minimum Window Substring shrink logic:** (1) Expand `right`: add `s[right]` to window frequency. (2) Check if all required chars are present (use `formed == required` counter). (3) While window is valid: update `minLen`, shrink from `left` (remove `s[left]` from freq, decrement `formed` if needed, increment `left`). (4) Continue expanding. **Key insight:** Variable window achieves O(n) because each character is added to the window exactly once (right pointer advances) and removed at most once (left pointer advances). Total pointer moves = 2n.\n\n</details>
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
@@ -734,6 +734,11 @@ public int subarraySum(int[] arr, int k) {
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
 </details>
 
+> [!NOTE]
+> **Open Source Reference: Dynamic Prefix Sums**
+> * [atcoder/ac-library/fenwicktree](https://github.com/atcoder/ac-library/blob/master/atcoder/fenwicktree.hpp) -> **Invariant:** Each node `i` stores the sum of a specific range of elements, leveraging binary representations to achieve $O(\log N)$ updates and queries.
+> * **Local rewrite:** While static arrays are $O(N)$ build and $O(1)$ query, Fenwick trees (Binary Indexed Trees) are used when the underlying array values are being updated concurrently with range queries.
+> * **Constraint warning:** Fenwick trees only work for invertible operations (like addition/subtraction, XOR) because range queries depend on `prefix(R) - prefix(L-1)`. They cannot be used for `min()` or `max()` queries.
 
 ## 📌 6. Frequency Count
 
@@ -1233,7 +1238,9 @@ private void backtrack(int[] nums, List<Integer> current, boolean[] used, List<L
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```

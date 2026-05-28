@@ -152,16 +152,16 @@ COVERING INDEX:
 
 🔬 **Section Challenge — Part 5: Buffer Pool & Memory Management**
 
-**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+**Challenge 1 (Reasoning):** Your database shows buffer cache hit ratio dropping from 99% to 82% after a new dashboard launches. What does that imply about the working set, and what two fixes would you test first?
 <details><summary>Answer</summary>
 
-First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+The working set no longer fits comfortably in the buffer pool, or the dashboard is scanning pages that evict hotter OLTP pages. First inspect the dashboard queries with `EXPLAIN` and add/select better indexes so it reads fewer pages. Second separate workload pressure: cache/materialize dashboard results, move analytics to a replica, or increase buffer memory if the host has headroom. The invariant is simple: the buffer pool helps only when reused pages stay resident long enough to be reused.
 </details>
 
-**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+**Challenge 2 (Design):** Dirty pages improve write throughput, but they create recovery risk. Why does checkpoint frequency trade off normal latency against crash recovery time?
 <details><summary>Answer</summary>
 
-Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+Frequent checkpoints flush dirty pages sooner, so crash recovery replays less WAL. The cost is more background I/O during normal operation, which can compete with foreground reads/writes and create latency spikes. Infrequent checkpoints reduce steady-state flushing pressure, but a crash must replay a longer WAL range. The design goal is not "checkpoint always" or "checkpoint never"; it is to smooth writeback while bounding recovery time.
 </details>
 
 
@@ -271,16 +271,16 @@ If corruption happens during the data file write, it recovers the clean copy fro
 
 🔬 **Section Challenge — Part 6.3: Buffer Pool Advanced Architecture**
 
-**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+**Challenge 1 (Reasoning):** InnoDB tracks free pages, recently used pages, and dirty pages separately. Why is one single LRU list not enough for a production buffer pool?
 <details><summary>Answer</summary>
 
-First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+Different page states need different decisions. Free pages can be reused immediately. Clean cold pages can be evicted cheaply. Dirty pages cannot be evicted until flushed, because memory contains changes not yet durable in data files. A single LRU list would hide whether the eviction candidate is cheap or expensive. Separate lists let the engine choose victims, schedule background flushes, and avoid blocking a foreground query on a surprise dirty-page write.
 </details>
 
-**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+**Challenge 2 (Design):** Why does InnoDB use a doublewrite buffer even though it already has WAL?
 <details><summary>Answer</summary>
 
-Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+WAL records logical/redo changes, but it does not by itself guarantee that a partially written database page is physically readable. If a 16KB page is torn during a power failure, the page image can be corrupt. The doublewrite buffer writes a clean full-page copy to a safe sequential area first, then writes the real page. On recovery, InnoDB can restore the clean page image and then apply WAL. WAL solves lost changes; doublewrite solves torn pages.
 </details>
 
 
@@ -310,5 +310,4 @@ A: Run EXPLAIN ANALYZE. Common causes:
    4. Too many rows returned → check WHERE predicates
    5. Lock contention → check for long-running transactions
 ```
-
 

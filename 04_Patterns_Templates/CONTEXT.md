@@ -11,6 +11,7 @@ Own reusable coding patterns, templates, trigger maps, and constraint-based sele
 - Show brute force to optimized rewrite.
 - Include "works when" and "breaks when".
 - Keep templates practical and language-friendly.
+- When linking open-source implementations, extract the invariant and translate it to the local pattern; do not paste large source code.
 
 ## Boundaries
 

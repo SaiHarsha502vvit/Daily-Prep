@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous Chapter](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05d_Graphs_Advanced_Algos.md)
+**Navigation**: [< Previous Chapter](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05d_Graphs_Advanced_Algos.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — BFS/DFS decision framework and cycle detection
 
 ---
@@ -182,16 +182,7 @@ DFS = "Exists? / Cycles / Components"   → Stack/Recursion → O(V+E)
 🔬 **Section Challenge — Complete Understanding of Graphs**
 
 **Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-<details><summary>Answer</summary>
 
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
 
 ## Graph Representations
@@ -230,17 +221,14 @@ ADJACENCY MATRIX (For dense graphs):
 
 🔬 **Section Challenge — Graph Representations**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Representation Tradeoff):** A social network has 10^9 users (vertices), each with average 200 friends (edges). **Who** chooses adjacency list vs. adjacency matrix? **When** would a matrix be appropriate? **What** is the exact memory cost of each for this graph?
+
 <details><summary>Answer</summary>
 
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+**Adjacency List for this graph:** 10^9 users × 200 friends × 8 bytes (pointer) = ~1.6 TB — large but feasible with distributed storage. Each `List<Integer>` per vertex stores only EXISTING edges. **Adjacency Matrix:** 10^9 × 10^9 = 10^18 bits minimum = 125 petabytes. Completely infeasible. **When matrix is appropriate:** Dense graphs where `E ≈ V²` (almost all vertex pairs connected), or when you need O(1) edge existence checks: `matrix[u][v] == 1`. Examples: small graphs (<1000 nodes), complete graphs, routing tables in SDN. **Rule of thumb:** Sparse (E << V²) → adjacency list. Dense (E ≈ V²) or small V → adjacency matrix. **Space complexity:** List = O(V + E). Matrix = O(V²). Add/remove edge: List O(degree), Matrix O(1). Check edge existence: List O(degree), Matrix O(1).
+
 </details>
 
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
 
 ## Graph Types
@@ -259,17 +247,14 @@ CONNECTED: All nodes reachable from any node
 
 🔬 **Section Challenge — Graph Types**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (DAG Cycle Detection):** You receive a directed graph that's SUPPOSED to be a DAG (dependency graph). **Who** detects the cycle? **When** does DFS detect a cycle in a directed graph differently than in an undirected graph? **What** makes a "back edge" the definitive cycle indicator?
+
 <details><summary>Answer</summary>
 
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+**Who detects:** DFS with a 3-color marking (WHITE=unvisited, GRAY=in current DFS path, BLACK=fully processed). **When DFS detects a directed cycle:** When it encounters a GRAY node (a node already in the current DFS call stack). A GRAY node means we've found a path from that node back to itself — a cycle. **Why undirected graphs differ:** In undirected graphs, `A-B` means both `A→B` and `B→A` edges exist. Seeing `B` from `A` when `B` is already visited doesn't mean a cycle — it's just the tree edge in reverse. You must track `parent` and only flag a cycle if the neighbor is visited AND is NOT the parent. **Back edge = cycle:** In DFS traversal, a "back edge" goes from a node to one of its ancestors in the DFS tree. In directed graphs: back edge = discovered gray ancestor = cycle. **Topological sort only works on DAGs** — cycle detection is the prerequisite check before topological sort.
+
 </details>
 
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
 
 # 🕸️ Part 6: Graph Traversals
@@ -399,7 +384,13 @@ public void dfsIterative(int start, List<List<Integer>> graph) {
 
 🔬 **Section Challenge — DFS (Depth-First Search)**
 
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+**Challenge 1 (DFS Stack Overflow Risk):** DFS on a linked-list-shaped graph of 10^6 nodes (each node connected to next). **Who** throws `StackOverflowError`? **When** does recursive DFS fail vs. iterative DFS? **What** stack size would Java need to not overflow?
+
+<details><summary>Answer</summary>
+
+**Who throws:** The JVM's recursive DFS call. A linked-list graph causes DFS to recurse 10^6 levels deep. Each Java stack frame uses ~200-500 bytes. 10^6 × 200 bytes = 200 MB of stack. Default JVM thread stack size is 512KB-1MB → `StackOverflowError` at ~5000-8000 depth. **When recursive DFS fails:** Any graph with depth > ~8000 nodes in Java's default stack. Binary trees are typically safe (log2(10^9) = 30 levels). Graphs can have arbitrary depth. **When iterative DFS succeeds:** Always. Iterative DFS uses an explicit `Deque<Node>` on the HEAP (not call stack). Heap can hold hundreds of MB. The iterative version is equivalent to recursive DFS but uses heap memory. **Java stack size:** Pass `-Xss200m` to JVM to get 200MB stack per thread. This is memory-wasteful — better to use iterative DFS. **Rule:** For graph algorithms on arbitrary graphs in production, always use iterative BFS/DFS.
+
+</details>
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
@@ -486,7 +477,13 @@ public int shortestPath(int start, int end, List<List<Integer>> graph) {
 
 🔬 **Section Challenge — BFS (Breadth-First Search)**
 
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+**Challenge 1 (BFS Completeness Guarantee):** BFS visits nodes in level-order (all nodes at distance `d` before distance `d+1`). **Who** guarantees BFS finds the SHORTEST path in unweighted graphs? **When** does this guarantee NOT hold?
+
+<details><summary>Answer</summary>
+
+**Who guarantees it:** The FIFO queue property. When BFS dequeues node `u` (at distance `d`), it has already processed ALL nodes at distances 0 through `d-1`. Each neighbor of `u` is enqueued at distance `d+1`. This means the FIRST time BFS reaches a node is via the shortest path. **Formal proof:** By induction. At step 0: source is at distance 0. At step k: if all nodes at distance <= k are correctly labeled, neighbors of k-distance nodes are correctly labeled k+1. The first time a node is visited = shortest distance. **When this guarantee does NOT hold:** (1) **Weighted graphs:** BFS treats each edge as weight 1. A longer BFS path `A → B → C` with weights 1+1=2 beats a direct `A → C` path with weight 3. But if edges have different weights, BFS might take `A → B → C` (total cost 10) instead of `A → C` (cost 2). Use Dijkstra for weighted graphs. (2) **Negative edge weights:** Even Dijkstra fails. Use Bellman-Ford.
+
+</details>
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
@@ -538,17 +535,14 @@ private boolean dfsHasCycle(int node, int parent,
 
 🔬 **Section Challenge — In Undirected Graph**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (BFS Connected Components):** An undirected graph has 5 vertices: `{0,1,2,3,4}` with edges `{0-1, 1-2, 3-4}`. **Who** counts the connected components? **When** does BFS miss a component? **What** is the correct BFS algorithm to count ALL components?
+
 <details><summary>Answer</summary>
 
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+**Who counts:** The outer loop that starts BFS from each unvisited node. With edges `{0-1, 1-2, 3-4}`: Component 1 = `{0, 1, 2}`, Component 2 = `{3, 4}`, Component 3 = `{vertex 5 if isolated}`. Answer = 2 components. **When BFS misses a component:** If you only call BFS once from node 0, BFS visits `{0, 1, 2}` but never sees `{3, 4}` because they're disconnected. **Correct algorithm:** Outer loop over ALL vertices: `for (int i = 0; i < n; i++) { if (!visited[i]) { components++; bfs(i); } }`. Each BFS call marks all vertices in ONE component as visited. The outer loop counts how many separate BFS calls were needed = number of components. **Use cases:** LC 323 (Number of Connected Components), LC 200 (Number of Islands uses DFS/BFS grid-based connected components). Union-Find is an alternative that handles dynamic edge additions.
+
 </details>
 
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
 
 ## In Directed Graph
@@ -592,17 +586,14 @@ private boolean dfsHasCycleDirected(int node, List<List<Integer>> graph, int[] c
 
 🔬 **Section Challenge — In Directed Graph**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Topological Sort Method Comparison):** A directed dependency graph has 5 courses. **Who** detects a cycle: DFS-based topological sort or Kahn's BFS algorithm? **When** does each method have an advantage? **What** does Kahn's algorithm return when a cycle exists?
+
 <details><summary>Answer</summary>
 
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+**Both detect cycles:** DFS detects via back-edge (a GRAY neighbor = cycle). Kahn's BFS detects when the final result size < total vertices (some vertices were never added because their in-degree never reached 0). **DFS-based topological sort:** Uses 3-color marking. Post-order: when a node is fully explored, push to a stack. Stack's reverse order = topological order. Detects cycles when a gray ancestor is found. **Kahn's BFS (in-degree based):** Initialize queue with all nodes of in-degree 0. Dequeue, process, reduce neighbors' in-degrees. If a neighbor hits in-degree 0, enqueue it. **Advantage of DFS:** Naturally handles post-order traversal (dependency resolution order). **Advantage of Kahn's:** Easier to understand, naturally handles level-order processing, explicitly produces the topological order (not reversed). **What Kahn's returns on cycle:** The result list will have fewer elements than total vertices. The cycle participants never reach in-degree 0 — they're never enqueued — they're missing from the result. This is the cycle detection mechanism.
+
 </details>
 
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 
 
 # 🔄 Part 8: Topological Sort
@@ -777,16 +768,17 @@ HARD:
 
 🔬 **Section Challenge — Graphs**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Dijkstra Correctness):** Dijkstra's algorithm uses a greedy choice: always expand the unvisited node with the smallest known distance. **Who** proves this greedy choice is safe? **When** does Dijkstra give WRONG answers?
+
 <details><summary>Answer</summary>
 
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-</details>
+**Who proves it safe:** The "no shorter path" invariant. When Dijkstra dequeues node `u` with distance `d[u]`, ALL paths to `u` through unprocessed nodes have length >= `d[u]` (because edge weights are non-negative and unprocessed nodes have distance >= `d[u]`). So `d[u]` is already the shortest path — relaxing it further is impossible. This is the exchange argument: any other path to `u` must pass through a node with distance >= `d[u]` then add at least 0 weight. **When Dijkstra gives WRONG answers:** **Negative edge weights.** If edge `u→v` has weight -5, a path `source→u→v` might be shorter than `source→v` even after we've "finalized" `v`. Since negative weights can create shortcuts discovered after a node is dequeued, Dijkstra's invariant breaks. **Fix:** Bellman-Ford handles negative edges in O(VE). For negative cycles (where shortest path is `-∞`), Bellman-Ford detects them. Dijkstra is O((V+E)logV) with a binary heap — faster but requires non-negative weights.
 
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
 </details>
+> [!NOTE]
+> **Open Source Reference: Dijkstra & PriorityQueue**
+> * [cp-algorithms/dijkstra](https://cp-algorithms.com/graph/dijkstra.html) -> **Invariant:** Always expands the minimum-distance unvisited node; requires non-negative edge weights.
+> * [OpenJDK PriorityQueue](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java) -> **Local rewrite:** Dijkstra in Java heavily relies on `PriorityQueue`. Remember that Java's `PriorityQueue.remove(Object)` is O(N), so we don't update existing nodes in the queue — we just insert the new shorter distance and ignore the old one when we pop it (lazy deletion).
+> * **Constraint warning:** If the graph has negative weights, Dijkstra's greedy invariant breaks; use Bellman-Ford instead.
 
 

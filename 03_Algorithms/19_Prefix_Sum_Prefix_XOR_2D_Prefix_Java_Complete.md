@@ -37,11 +37,15 @@ For XOR:
 
 🔬 **Section Challenge — 2. 1D Prefix Sum (Java)**
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+**Challenge 1 (Sentinel vs Non-Sentinel):** `sum(l, r) = prefix[r+1] - prefix[l]` with sentinel. vs. `sum(l, r) = prefix[r] - prefix[l-1]` without sentinel. **Who** causes the `ArrayIndexOutOfBoundsException`? **When** does the non-sentinel form fail? **What** index does the sentinel form use for `l=0`?
+
 <details><summary>Answer</summary>
 
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+**Who causes the exception:** The non-sentinel form `prefix[l-1]` when `l=0` → `prefix[-1]` → `ArrayIndexOutOfBoundsException`. This is why every prefix sum challenge has an edge case: "handle when the subarray starts from index 0." **Sentinel form fix:** `prefix[0] = 0`, `prefix[i+1] = prefix[i] + arr[i]`. Query: `prefix[r+1] - prefix[l]`. When `l=0`: `prefix[r+1] - prefix[0] = prefix[r+1] - 0 = prefix[r+1]`. No special case needed. The sentinel shifts all indices by 1 and provides a clean zero baseline. **When non-sentinel is acceptable:** Only if you add an explicit `if (l == 0) return prefix[r]` check. Every competitive programmer has forgotten this check at least once — sentinel form is strictly safer. **Space difference:** Sentinel requires `prefix[n+1]`. Non-sentinel requires `prefix[n]`. Pick sentinel every time for simplicity.
+
 </details>
+
+
 
 
 ## 2.1 Construction
@@ -107,22 +111,30 @@ Interview script:
 
 🔬 **Section Challenge — 3. Prefix Sum + HashMap**
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+**Challenge 1 (HashMap off-by-one: map.put(0,1)):** You build prefix sum + HashMap to count subarrays with sum=k. You initialize `map.put(0, 1)`. **Who** does this extra entry represent? **When** is it needed? **What** specific subarrays are missed without it?
+
 <details><summary>Answer</summary>
 
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+**Who it represents:** The virtual "prefix sum before any elements" = prefix[0] = 0. In the HashMap, `map.get(prefix[i] - k)` looks for previous prefix sums equal to `prefix[i] - k`. If `prefix[i] == k` (the subarray from index 0 to i has sum exactly k), then we need `map.get(prefix[i] - k) = map.get(0) = 1`. Without `map.put(0, 1)`, this lookup returns null/0 — the subarray `arr[0..i]` is missed. **When needed:** EVERY time the problem asks for subarrays starting at index 0 that satisfy the condition. Input `[3, -3, 1]`, k=0: subarray `[3, -3]` from index 0 to 1, prefix=0 at i=2. Without initialization: missed. With initialization: counted. **What specific subarrays are missed:** Any subarray starting at index 0 whose sum equals k. This is always a bug, not an edge case. `map.put(0, 1)` is MANDATORY for prefix+HashMap problems. Always write it first.
+
 </details>
+
+
 
 
 ## 4. Prefix XOR (Java)
 
 🔬 **Section Challenge — 4. Prefix XOR (Java)**
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+**Challenge 1 (XOR Self-Inverse Property):** Prefix XOR uses `xor[l..r] = prefix[r+1] ^ prefix[l]`. **Who** makes XOR self-inverse? **When** does `a ^ a = 0` apply to reverse the prefix operation? **What** happens if you try `xor[l..r] = prefix[r] - prefix[l-1]` (subtraction instead of XOR)?
+
 <details><summary>Answer</summary>
 
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+**Who makes XOR self-inverse:** The mathematical property of XOR. For any value `a`: `a ^ a = 0` (self-cancellation) and `a ^ 0 = a` (identity). So `prefix[r] ^ prefix[l-1]` gives `(arr[0] ^ ... ^ arr[r]) ^ (arr[0] ^ ... ^ arr[l-1])`. The overlapping terms `arr[0]...arr[l-1]` cancel: `x ^ x = 0`. Only `arr[l] ^ ... ^ arr[r]` remains. **When `a ^ a = 0` applies:** Always. Unlike subtraction, XOR doesn't need a numeric inverse (-a). XOR is its own inverse. **Subtraction disaster:** `prefix[r] - prefix[l-1]` computes NUMERIC difference, not XOR range. Example: `arr = [1, 2, 3]`. `xorPrefix = [0, 1, 3, 0]`. `xor(0,2) = 0^1^2^3=0`. With subtraction: `prefix[3] - prefix[0] = 0`. But `xor(1,2) = 2^3=1`. XOR: `prefix[3] ^ prefix[1] = 0^1=1`. Subtraction: `prefix[3]-prefix[1] = 0-1=-1`. WRONG. XOR's inverse is XOR itself — never use arithmetic.
+
 </details>
+
+
 
 
 ## 4.1 Construction and range xor
@@ -153,7 +165,13 @@ public static int rangeXor(int[] px, int l, int r) {
 
 🔬 **Section Challenge — 5. Prefix XOR + HashMap Patterns**
 
-**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+**Challenge 1 (XOR HashMap Equal Subarray Count):** Problem: count subarrays where XOR equals k. You use `map.get(prefix[i] ^ k)`. **Who** tracks previous XOR values? **When** does `prefix[i] ^ k` not exist in the map? **What** does `map.put(0, 1)` represent here?
+
+<details><summary>Answer</summary>
+
+**Who tracks previous XOR values:** The HashMap `Map<Integer, Integer>` mapping `(prefix XOR value → count of times seen)`. At each index i, we look up `prefix[i] ^ k` in the map. If found, all previous positions where prefix XOR = `prefix[i] ^ k` form subarrays with XOR = k (because `(prefix[i]) ^ (prefix[j]) = k` → `xor(j+1..i) = k`). **When `prefix[i] ^ k` not in map:** The count is 0 — no subarray ending at i has XOR equal to k. **What `map.put(0, 1)` represents:** The empty prefix before index 0. If `prefix[i] = k` (entire subarray from 0 to i XORs to k), we need `map.get(prefix[i] ^ k) = map.get(0) = 1`. Without this, subarrays starting at index 0 are missed. Same logic as prefix-sum HashMap initialization. **Key pattern:** Any prefix + HashMap problem requires `map.put(identity_element, 1)` where identity = 0 for sum, 0 for XOR.
+
+</details>
 <details><summary>Answer</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
@@ -231,10 +249,12 @@ public final class SubarraysDivByK {
 
 🔬 **Section Challenge — 6. Prefix with Modulo (Very Important)**
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+**Challenge 1 (Prefix Modulo Negative Pitfall):** Count subarrays with sum divisible by k using prefix mod. `prefix % k` can be negative in Java. **Who** causes the wrong count? **When** does `-1 % 5 = -1` instead of `4`? **What** is the fix?
+
 <details><summary>Answer</summary>
 
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+**Who causes wrong count:** Java's `%` operator returns negative results when the dividend is negative. `-1 % 5 = -1` in Java (Python returns `4`). In prefix modulo, if prefix sum is negative: `prefix[i] = -1, k = 5`. `prefix[i] % k = -1`. Looking up `map.get(-1)` misses entries stored under key `4` (the mathematically equivalent positive remainder). Two subarrays with remainders `4` and `-1` SHOULD be counted together (both represent remainder 4 modulo 5), but the HashMap lookup misses them. **When it occurs:** Any array with negative values + modulo prefix. Arrays of all positive values are safe. **The fix:** `int rem = (int)((prefix % k + k) % k)`. This normalizes any negative remainder to its positive equivalent. `-1 % 5 = -1`, then `(-1 + 5) % 5 = 4`. Now both subarrays are stored/retrieved under key `4`. Always apply this fix in Java prefix modulo problems — the code in the example above shows `(prefix % k + k) % k`.
+
 </details>
 
 
@@ -242,7 +262,13 @@ public final class SubarraysDivByK {
 
 🔬 **Section Challenge — 7. 2D Prefix Sum (Matrix)**
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+**Challenge 1 (2D Prefix Inclusion-Exclusion Signs):** `query(r1,c1,r2,c2) = S[r2][c2] - S[r1-1][c2] - S[r2][c1-1] + S[r1-1][c1-1]`. **Who** proves the `+` on the last term? **When** is the `+` term zero? **What** happens if you write `-` instead of `+`?
+
+<details><summary>Answer</summary>
+
+**Who proves the `+`:** Inclusion-exclusion principle. `S[r2][c2]` includes the entire rectangle from (0,0) to (r2,c2). `S[r1-1][c2]` subtracts top rows. `S[r2][c1-1]` subtracts left columns. But the top-left rectangle `S[r1-1][c1-1]` was SUBTRACTED TWICE (once by each of the two subtract terms). So we ADD it back once. **When `+` term is zero:** When `r1=0` or `c1=0` (query starts at the first row or column). `S[-1][*] = 0` by the sentinel convention. So `S[r1-1][c1-1] = S[-1][*] = 0`. The `+0` term contributes nothing. **What happens with `-` instead of `+`:** You subtract `S[r1-1][c1-1]` three times total instead of one. The top-left rectangle sum is OVER-subtracted. The query returns a value that's `2 * S[r1-1][c1-1]` too small. This is the most common bug in 2D prefix sum (LC 304 Number of Submatrix That Sum to Target). The `+ - - +` sign pattern MUST be memorized.
+
+</details>
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
@@ -274,7 +300,13 @@ public static long[][] build2DPrefix(int[][] mat) {
 
 🔬 **Section Challenge — 7.1 Build matrix prefix**
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+**Challenge 1 (2D Prefix Memory Layout):** Your 2D prefix sum array `S[R+1][C+1]` for an R×C matrix. **Who** decides the extra row/column? **When** does `S[i][j] += S[i][j-1]` in the build phase cause an incorrect result? **What** is the correct build order?
+
+<details><summary>Answer</summary>
+
+**Who decides extra row/column:** The sentinel convention. `S` has dimensions `[R+1][C+1]`. `S[0][*] = 0` (row sentinel), `S[*][0] = 0` (column sentinel). This avoids bounds checking for `r1=0` or `c1=0` queries. **Incorrect build order:** If you do row-only prefix first (`S[i][j] += S[i][j-1]`) then column-only (`S[i][j] += S[i-1][j]`), it works correctly. But if you try to do BOTH in one pass: `S[i][j] += S[i-1][j] + S[i][j-1] - S[i-1][j-1]` during build, it's the standard approach. **Correct build:** Standard 2D prefix build iterates `i` then `j`. For each cell: `S[i][j] = arr[i-1][j-1] + S[i-1][j] + S[i][j-1] - S[i-1][j-1]`. The subtraction prevents double-counting the top-left corner (same inclusion-exclusion as the query). Do NOT use two separate passes — the single-pass formula is O(RC) and correct. **Off-by-one trap:** `arr[i-1][j-1]` because `arr` is 0-indexed while `S` is 1-indexed with sentinel. Always map carefully.
+
+</details>
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
@@ -317,7 +349,13 @@ This pattern ($|A \cup B| = |A| + |B| - |A \cap B|$, or in our case $\text{Total
 
 🔬 **Section Challenge — 8. 2D Prefix Use Cases**
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+**Challenge 1 (2D Prefix Use-Case: Query Range):** Problem: given matrix M of size R×C, answer Q queries `(r1,c1,r2,c2)` = sum of submatrix. You get `r1 > r2` in some queries. **Who** validates query bounds? **When** should you clamp vs. throw? **What** is the total time complexity for building prefix and answering Q queries?
+
+<details><summary>Answer</summary>
+
+**Who validates bounds:** The caller or the query function itself. Constraints like `0 <= r1 <= r2 < R` are guaranteed by most LeetCode problems (they're stated in constraints). In production code, you MUST validate: `if (r1 > r2 || c1 > c2) return 0;` (empty rectangle). If `r1 < 0`, clamp to 0. **When to clamp vs. throw:** Clamping to 0 is correct for sum queries — an invalid or empty rectangle has sum 0. Throwing is appropriate for application-level bugs (the caller passed bad coordinates). In competitive programming: always clamp; invalid queries are undefined per problem statement. **Total time complexity:** Build phase: O(R×C) — one pass over all cells. Each query: O(1) — four array accesses + arithmetic. For Q queries after build: O(R×C + Q). Compare to naive: O(R×C) build + O(R×C) per query = O(R×C + Q×R×C). With large Q and many queries, 2D prefix reduces Q×R×C to just Q — massive speedup.
+
+</details>
 <details><summary>Answer</summary>
 
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.

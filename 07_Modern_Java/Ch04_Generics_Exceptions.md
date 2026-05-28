@@ -924,7 +924,9 @@ try {
 The `try` block's exception propagates (it's the 'primary' exception). The `close()` exception is SUPPRESSED — attached via `addSuppressed()`. Retrieve it with `e.getSuppressed()`. This is the opposite of old `try/finally` where the `finally` exception would REPLACE the original (swallowing it silently). Always use try-with-resources for `Closeable` resources — never try/finally.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 InputStream in = new FileInputStream(f);
 try { process(in); } catch(IOException e) { } finally { in.close(); }
 ```

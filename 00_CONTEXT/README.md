@@ -9,8 +9,9 @@ This folder is the persistent memory layer for future agents. It is designed to 
 3. Folder `CONTEXT.md` - local writing style and risks.
 4. `00_CONTEXT/FILE_REGISTRY.md` - generated inventory of active Markdown files.
 5. `00_CONTEXT/DECISIONS.md` - permanent repo decisions.
-6. `00_CONTEXT/CONTAMINATION_GUARDS.md` - known wrong-domain copy patterns to avoid.
-7. `00_CONTEXT/CHANGE_JOURNAL.md` - recent context-changing work.
+6. `00_CONTEXT/PEDAGOGY_STANDARDS.md` - teaching, challenge, and source-reference standards.
+7. `00_CONTEXT/CONTAMINATION_GUARDS.md` - known wrong-domain copy patterns to avoid.
+8. `00_CONTEXT/CHANGE_JOURNAL.md` - recent context-changing work.
 
 ## Core Idea
 
@@ -19,6 +20,13 @@ Do not rely on a single chat transcript to remember the repo. The repo carries i
 - Human context: maps, decisions, folder notes, update protocol.
 - Machine context: generated file registry and hash manifest.
 - Freshness checks: a script detects files changed since the last registry update.
+
+## Agent Quick Start (Codex/Antigravity/etc.)
+
+If you are a newly spawned agent, immediately run this check to see what you missed:
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check
+```
 
 ## Commands
 

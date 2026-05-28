@@ -2,6 +2,7 @@
 
 ---
 
+```yaml
         app: backend
     ports:
         - name: http
@@ -2227,5 +2228,4 @@ In the overlay filesystem, modifying a file in a lower layer creates a COPY in t
 
 `COPY`: copies files/directories from build context to image. Simple and explicit. `ADD`: everything COPY does PLUS: auto-extracts tar archives (`.tar.gz`), fetches remote URLs (HTTP/HTTPS). Best practice: always use `COPY` unless you specifically need tar extraction. `ADD`'s URL feature is dangerous (no checksum validation, downloads at build time) and breaks reproducibility. Use `RUN curl | tar xz` instead for remote archives.
 </details>
-
 

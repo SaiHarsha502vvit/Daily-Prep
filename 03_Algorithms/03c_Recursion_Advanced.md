@@ -177,7 +177,9 @@ public void sumArray(int[] arr, int index) {
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -349,7 +351,9 @@ public List<List<Integer>> subsetsCascade(int[] nums) {
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -595,7 +599,9 @@ private void helper(String num, int target, int index,
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -668,7 +674,9 @@ public int fib(int n) {
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -764,7 +772,9 @@ Example: Check if tree is balanced
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -893,7 +903,9 @@ public long factorial(int n) {
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -1045,7 +1057,9 @@ class Parser {
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -1238,7 +1252,9 @@ Function<Integer, Integer> factorial = new Function<>() {
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -1259,6 +1275,7 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 │                                                                                 │
 │ TECHNIQUE 1: PRUNING - Cut branches that can't lead to solution                 │
 │ ─────────────────────────────────────────────────────────────────               │
+```
 
 ```java
 // N-Queens with intelligent pruning
@@ -1627,7 +1644,9 @@ List<Integer> vals = foldTree(root, new ArrayList<>(), (list, val) -> {
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -1708,7 +1727,9 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -1791,7 +1812,9 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -1868,7 +1891,9 @@ _Recursion is not about memorizing - it's about TRUSTING!_ 🔄
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -1956,7 +1981,9 @@ Every backtracking problem is recursion + choice/undo. Master the base first.
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -2035,7 +2062,9 @@ Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -2044,4 +2073,3 @@ Why and what are the 3 fixes?
 
 Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
 </details>
-

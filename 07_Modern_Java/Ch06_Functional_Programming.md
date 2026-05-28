@@ -522,17 +522,20 @@ IntStream rangeClosed = IntStream.rangeClosed(1, 10);  // 1 to 10
 
 🔬 **Section Challenge — Creating Streams**
 
-**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+**Challenge 1 (Stream Source Types):** `Arrays.stream(intArr)` vs `Stream.of(intArr)` for `int[]`. **Who** returns an `IntStream`? **When** does `Stream.of(intArr)` give you `Stream<int[]>` (one element)? **What** is the correct way to get a range stream `[0, n)`?
+
 <details><summary>Answer</summary>
 
-Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+**Who returns IntStream:** `Arrays.stream(int[])` returns `IntStream` (specialized primitive stream, no boxing). `Stream.of(int[])` returns `Stream<int[]>` — treats the entire `int[]` as a SINGLE element of type `int[]`. To iterate elements: you must call `Stream.of(arr).flatMapToInt(Arrays::stream)` or just use `Arrays.stream(arr)`. **When Stream.of gives Stream<int[]>:** Always for primitive arrays. `Stream.of(new int[]{1,2,3}).count()` = 1 (one array, not three integers). `Arrays.stream(new int[]{1,2,3}).count()` = 3. **Correct range stream:** `IntStream.range(0, n)` generates `[0, 1, ..., n-1]` (exclusive end). `IntStream.rangeClosed(0, n)` generates `[0, 1, ..., n]` (inclusive). Use `.boxed()` to convert `IntStream` to `Stream<Integer>` when needed for collectors. **Primitive stream operations:** `IntStream`, `LongStream`, `DoubleStream` have `sum()`, `average()`, `min()`, `max()` built in — no lambda needed. Boxing `Stream<Integer>` for arithmetic wastes memory; use primitive streams.
+
 </details>
 
-**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-<details><summary>Answer</summary>
 
-`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-</details>
+📎 **Reference Anchor:** [OpenJDK `ReferencePipeline.java`](https://github.com/openjdk/jdk/blob/jdk-21-ga/src/java.base/share/classes/java/util/stream/ReferencePipeline.java#L165-L220)  
+**Invariant learned:** The `StatelessOp` and `StatefulOp` inner classes represent lazy intermediate operations. No element traversal occurs until a terminal operation calls `evaluate()`. Each op wraps the previous as a linked chain — the pipeline is built top-down but executed bottom-up.  
+**Local rewrite:** See Challenge 1 (Stream Source Types) — `Arrays.stream(int[])` returns a specialized `IntPipeline`, not a `ReferencePipeline`. Primitive pipelines skip boxing overhead via direct `Spliterator.OfInt`.  
+**Constraint warning:** This is OpenJDK's implementation. GraalVM's native image compiles stream pipelines at build time (partial evaluation). The laziness model holds, but profiling data may differ from JVM runtime.
+
 
 
 ## Intermediate Operations (Transform Stream)
@@ -583,17 +586,15 @@ numbers.stream()
 
 🔬 **Section Challenge — Intermediate Operations (Transform Stream)**
 
-**Challenge 1 (Reasoning):** `list.stream().filter().map().collect()` — at which point does data actually start flowing through the pipeline?
+**Challenge 1 (flatMap for Nested Collections):** You have `List<List<String>> nested`. **Who** flattens it? **When** is `flatMap` necessary vs `map`? **What** is the difference between `stream().flatMap(Collection::stream)` and `stream().map(List::stream)`?
+
 <details><summary>Answer</summary>
 
-Not until `collect()` (or any terminal operation). `filter()` and `map()` are LAZY — they build a pipeline description but process nothing. When the terminal operation is called, the pipeline pulls elements through lazily: one element passes through the entire pipeline before the next is processed. This means: early termination with `findFirst()` is O(1) if the first element matches, not O(N).
+**Who flattens:** `flatMap`. It maps each element to a stream, then FLATTENS those streams into one stream. `nested.stream().flatMap(Collection::stream)` — each inner `List<String>` becomes a stream, all merged into one `Stream<String>`. **When flatMap is necessary:** Any time each element maps to ZERO-OR-MORE results (one-to-many). Splitting sentences into words: `sentences.stream().flatMap(s -> Arrays.stream(s.split(" ")))`. File lines to words: `lines.stream().flatMap(line -> Stream.of(line.split(" ")))`. Optional chain: `Optional<Optional<String>>` — `opt.flatMap(Function.identity())` flattens to `Optional<String>`. **`flatMap` vs `map` difference:** `map(List::stream)` returns `Stream<Stream<String>>` (nested streams). Each element is mapped to a stream but NOT merged. You'd need to iterate streams of streams. `flatMap(Collection::stream)` returns `Stream<String>` (merged). **Empty streams:** `flatMap` handles empty inner streams gracefully. If some sublists are null, add `.filter(Objects::nonNull)` before `flatMap`.
+
 </details>
 
-**Challenge 2 (Bug Hunt):** You call `stream.filter(...).collect(...)` twice on the same stream. What happens?
-<details><summary>Answer</summary>
 
-`IllegalStateException: stream has already been operated upon or closed`. Streams are single-use. Once a terminal operation is called, the stream is consumed. Fix: create a new stream from the source each time, or collect to a `List` first and stream the list repeatedly.
-</details>
 
 
 ## Terminal Operations (Produce Result)
@@ -940,7 +941,13 @@ int max = numbers.stream()
 
 🔬 **Section Challenge — Example 1: Find Max Element**
 
-**Challenge 1 (Reasoning):** In Java Functional Programming, what is the core difference between a `Supplier<T>` and a `Function<T, R>`?
+**Challenge 1 (Stream reduce vs max Terminal):** `list.stream().reduce(Integer.MIN_VALUE, Integer::max)` vs `list.stream().max(Comparator.naturalOrder()).orElse(Integer.MIN_VALUE)`. **Who** is more expressive? **When** does `reduce` return a different result than `max` for an EMPTY stream? **What** is the type difference?
+
+<details><summary>Answer</summary>
+
+**Who is more expressive:** `max(Comparator.naturalOrder())` — semantically clear ("I want the maximum"). `reduce` with `Integer::max` is a manual implementation of max. **When reduce vs max differ on EMPTY stream:** `reduce(identity, accumulator)` returns the IDENTITY value on empty stream: `reduce(Integer.MIN_VALUE, Integer::max)` returns `Integer.MIN_VALUE` (not empty). `max(comparator)` returns `Optional.empty()` on empty stream, forcing explicit handling. `max` is safer because it forces you to handle the empty case via `Optional`. **Type difference:** `stream.reduce(identity, f)` returns `T` (never null, never Optional). `stream.reduce(f)` (without identity) returns `Optional<T>`. `stream.max(comparator)` returns `Optional<T>`. **When to use reduce:** Custom aggregations that have no dedicated collector: sum of squares `reduce(0, (acc, x) -> acc + x*x)`. Concatenation with separator (better to use `Collectors.joining`). String building of complex results. **Performance:** `reduce` is sequential-friendly. `collect` is parallelism-friendly (uses mutable containers). For parallel streams, prefer `collect` over `reduce` for mutable accumulation.
+
+</details>
 <details><summary>Answer</summary>
 
 Input requirements. A `Function<T, R>` represents a transformation. It takes exactly one argument of type `T` and returns a result of type `R` (e.g., taking an `Integer` ID and returning a `User` object). A `Supplier<T>` takes zero arguments and generates a result of type `T` (e.g., generating a random UUID or fetching the current timestamp). It is essentially a factory method.

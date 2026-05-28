@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch33_SB_Web_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch35_SB_Lombok_DTOs.md)
+**Navigation**: [< Previous](Ch33_SB_Web_Part3.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch35_SB_Lombok_DTOs.md)
 
 # 🌱 SPRING BOOT COMPLETE GUIDE - Part 4: Data Access, Web, Security & Testing
 
@@ -153,7 +153,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 🔬 **Section Challenge — Jdbc Vs Jpa Comparison**
 
-**Challenge 1 (Reasoning):** N+1 query problem — explain with a concrete JPA example and show the fix.
+**Challenge 1 (Connection Pool Exhaustion):** Your service uses JDBC with HikariCP default pool size (10 connections). Under 20 concurrent requests, some requests hang indefinitely. **Who** is waiting? **When** does the connection timeout? **What** two config properties fix pool sizing?
+
+<details><summary>Answer</summary>
+
+**Who is waiting:** The 11th-20th concurrent requests. Each request acquires a JDBC connection from HikariCP's pool. With 10 connections, the first 10 requests proceed. Requests 11-20 BLOCK waiting for a free connection in the pool. **When it times out:** After `spring.datasource.hikari.connection-timeout` milliseconds (default 30,000ms = 30 seconds). If no connection becomes available within 30s, `SQLTransientConnectionException: Unable to acquire JDBC Connection` is thrown. **Two config properties:** (1) `spring.datasource.hikari.maximum-pool-size=50` — increase the pool for I/O-bound services (DB connections are cheap relative to I/O wait time). (2) `spring.datasource.hikari.connection-timeout=5000` — fail fast (5s) rather than letting the caller hang for 30s. **Sizing formula:** `pool_size = (core_count * 2) + effective_spindle_count` (HikariCP's recommendation for OLTP). For a 4-core server: (4 * 2) + 1 = 9 connections. BUT: if your service has many concurrent threads, size for concurrent users, not CPU count. Monitor `hikari.connections.active` via Actuator metrics.
+
+</details>
 <details><summary>Answer</summary>
 
 ```java
@@ -263,7 +269,13 @@ public class Address {
 
 🔬 **Section Challenge — Chapter 2: Entity Mapping**
 
-**Challenge 1 (Reasoning):** In Spring Security, why must you always prefix role names with `ROLE_` when using `hasRole('ADMIN')` in `@PreAuthorize`?
+**Challenge 1 (@OneToMany Fetch Type Trap):** You have `@OneToMany(fetch = FetchType.EAGER) List<Order> orders` on `User`. You load 100 users. **Who** fires how many SQL queries? **When** does EAGER fetching cause `OutOfMemoryError`? **What** is the production-safe pattern?
+
+<details><summary>Answer</summary>
+
+**Who fires how many SQL queries:** The JPA EntityManager via Hibernate. With EAGER fetch on `@OneToMany`, Hibernate loads ALL orders for EVERY user immediately. This fires: 1 query for `SELECT * FROM users` + 100 queries for `SELECT * FROM orders WHERE user_id = ?` = **101 queries** (classic N+1). But with JOIN FETCH, just 1 query. **When EAGER causes OOM:** If a User has 10,000 orders and you load 100 users, Hibernate loads 1,000,000 Order objects into the first-level cache (EntityManager session). The Hibernate session holds all these in memory until the session closes. High-traffic APIs can fill heap quickly. **Production-safe pattern:** (1) Always use `FetchType.LAZY` on `@OneToMany` (it's actually the JPA default, but Hibernate's default for `@OneToMany` is LAZY anyway). (2) Use `JOIN FETCH` only in specific JPQL queries where you need the collection: `SELECT DISTINCT u FROM User u JOIN FETCH u.orders WHERE u.id IN :ids`. (3) Use `@EntityGraph` on repository methods to declare which associations to fetch per use case — different queries can fetch different associations.
+
+</details>
 <details><summary>Answer</summary>
 
 Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
@@ -574,7 +586,13 @@ public class UserService {
 
 🔬 **Section Challenge — Chapter 4: Spring Data JPA Repositories**
 
-**Challenge 1 (Reasoning):** In Spring Security, why must you always prefix role names with `ROLE_` when using `hasRole('ADMIN')` in `@PreAuthorize`?
+**Challenge 1 (Derived Query Ambiguity):** You add `List<User> findByFirstNameAndLastName(String first, String last)` to your repository. Spring Data JPA auto-generates the query. **Who** parses the method name? **When** does the derived query break? **What** happens with `findByFirstNameOrLastNameAndActive(boolean active)`?
+
+<details><summary>Answer</summary>
+
+**Who parses the method name:** Spring Data JPA's `PartTree` parser in `QueryCreator`. It splits the method name at AND/OR/Between/LessThan/etc. keywords and maps each part to an entity field. `findByFirstNameAndLastName` → `WHERE first_name = ? AND last_name = ?`. **When derived queries break:** (1) Method name exceeds ~50 chars — becomes unreadable and unmaintainable. (2) Field doesn't exist on the entity — startup exception `No property 'firstName' found for type User` (Spring Data validates at startup, not at query time). (3) Navigation path typo: `findByAddress_CityName` vs `findByAddressCityName`. **`findByFirstNameOrLastNameAndActive` ambiguity:** This is `WHERE first_name=? OR (last_name=? AND active=?)` — AND binds more tightly than OR in Spring Data's parser (same as standard Java operator precedence). This is a SILENT LOGIC BUG — you may intend `(first_name=? OR last_name=?) AND active=?` but get different results. **Fix:** Use `@Query("SELECT u FROM User u WHERE (u.firstName = ?1 OR u.lastName = ?2) AND u.active = ?3")` for any OR+AND combination. Derived queries are only safe for simple, unambiguous predicates.
+
+</details>
 <details><summary>Answer</summary>
 
 Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
@@ -686,7 +704,13 @@ public class OrderService {
 
 🔬 **Section Challenge — Chapter 5: Transaction Management**
 
-**Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+**Challenge 1 (REQUIRES_NEW Gotcha):** `ServiceA.processOrder()` is `@Transactional`. It calls `ServiceB.logAudit()` which is `@Transactional(propagation = REQUIRES_NEW)`. `processOrder()` throws a `RuntimeException` after `logAudit()` returns. **Who** rolls back? **What** is the audit log state after the failure? **When** does this pattern cause data inconsistency?
+
+<details><summary>Answer</summary>
+
+**Who rolls back:** Only `ServiceA`'s transaction. `processOrder()` throws → its transaction (T1) rolls back: the order is NOT saved. `logAudit()` ran in its OWN transaction (T2, `REQUIRES_NEW` suspended T1). T2 COMMITTED when `logAudit()` returned successfully, BEFORE the exception in `processOrder()`. T2's commit is INDEPENDENT of T1. **Audit log state:** The audit log entry IS COMMITTED and visible in the DB even though the order was rolled back. **When this causes data inconsistency:** This is the classic OUTBOX PROBLEM. You have a committed audit entry saying "Order 123 processed" but Order 123 doesn't exist (rolled back). This creates a phantom audit record. **When to use REQUIRES_NEW:** When the inner operation MUST commit regardless of the outer transaction (e.g., logging failures, rate limit counters, sending emails via a transactional outbox). You ACCEPT that the inner and outer are independent. **When NOT to use:** When you need atomicity between the inner and outer operation. If audit logs must only exist when the order exists — use the SAME transaction (default REQUIRED propagation) and log AFTER the business operation succeeds.
+
+</details>
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
@@ -843,7 +867,13 @@ public record ErrorResponse(String message, List<String> errors) {}
 
 🔬 **Section Challenge — Chapter 6: Building REST APIs**
 
-**Challenge 1 (Reasoning):** In Spring Security, why must you always prefix role names with `ROLE_` when using `hasRole('ADMIN')` in `@PreAuthorize`?
+**Challenge 1 (HTTP Idempotency):** Your `POST /api/orders` creates an order. A network timeout causes the client to retry the same request. **Who** creates duplicate orders? **When** is POST non-idempotent by definition? **What** pattern prevents duplicates?
+
+<details><summary>Answer</summary>
+
+**Who creates duplicates:** The server. `POST` is NOT idempotent by the HTTP spec. If the first request succeeded (order created, 201 returned) but the network dropped the response before the client received it, the client retries. The server sees a NEW `POST` request and creates another order. The server has no way to know this is a retry without extra logic. **When POST is non-idempotent:** By design. `POST /api/orders` creates a resource — calling it N times should (per HTTP semantics) create N resources. Compare: `PUT /api/orders/123` IS idempotent — calling it N times with the same body results in the same state. **Idempotency key pattern:** Client generates a unique `Idempotency-Key: uuid-abc-123` header. Server stores `(idempotency_key, response)` in a key-value store (Redis/DB) for e.g., 24 hours. On retry: server finds the key — returns the SAME stored response without creating a duplicate. Stripe, PayPal, and most payment APIs use this pattern. **Spring implementation:** `@PostMapping` handler checks: `String key = request.getHeader("Idempotency-Key"); if (redisCache.hasKey(key)) return cachedResponse; // else process and store`.
+
+</details>
 <details><summary>Answer</summary>
 
 Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.
@@ -1195,7 +1225,13 @@ class UserRepositoryTest {
 
 🔬 **Section Challenge — Chapter 8: Testing Spring Boot Applications**
 
-**Challenge 1 (Reasoning):** In Spring Security, why must you always prefix role names with `ROLE_` when using `hasRole('ADMIN')` in `@PreAuthorize`?
+**Challenge 1 (@MockBean vs @SpyBean):** You use `@MockBean UserRepository userRepo` in a `@SpringBootTest`. **Who** replaces the real bean? **When** does `@SpyBean` prevent you from bypassing real logic? **What** is the precise behavioral difference in a test?
+
+<details><summary>Answer</summary>
+
+**Who replaces:** `@MockBean` creates a FULL MOCKITO MOCK and registers it in the Spring `ApplicationContext`, replacing any existing `UserRepository` bean. ALL methods return null/0/empty by default unless stubbed. **`@SpyBean` behavior:** `@SpyBean` creates a MOCKITO SPY that WRAPS the real bean. Real methods are called by default UNLESS explicitly stubbed. A spy is useful when you want to verify that a real method was called without changing its behavior, or stub only specific methods while letting others run normally. **Precise behavioral difference:** `@MockBean UserRepository repo` — `repo.findById(1L)` returns `Optional.empty()` unless you `when(repo.findById(1L)).thenReturn(Optional.of(user))`. `@SpyBean UserRepository repo` — `repo.findById(1L)` calls the REAL database. To stub: `doReturn(Optional.of(user)).when(repo).findById(1L)` (must use `doReturn` syntax for spies, NOT `when(...).thenReturn` — `when` would call the real method during stubbing setup). **When to use which:** `@MockBean` for external dependencies (Stripe, email service, external APIs). `@SpyBean` for internal services where you want real behavior but need to verify or override specific method calls.
+
+</details>
 <details><summary>Answer</summary>
 
 Hardcoded framework convention. `hasRole('ADMIN')` internally calls a method that automatically prepends the `ROLE_` prefix before checking the `GrantedAuthority` list. If your database simply stores `ADMIN`, the check `ROLE_ADMIN == ADMIN` will fail, and access will be denied. You must either store authorities as `ROLE_ADMIN` in the database, or use `hasAuthority('ADMIN')` instead, which performs an exact string match without adding prefixes.

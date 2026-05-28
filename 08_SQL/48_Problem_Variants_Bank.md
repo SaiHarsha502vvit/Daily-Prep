@@ -330,16 +330,16 @@ Pool size 10 handles 10x burst. Pool size 50 is wasteful (unused connections con
 
 🔬 **Section Challenge — E. Connection & Pool Variants**
 
-**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+**Challenge 1 (Reasoning):** Using Little's Law, why can a pool of 10 connections handle 200 requests/sec when average DB time is 5ms, but fail badly when DB time becomes 500ms?
 <details><summary>Answer</summary>
 
-First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+Little's Law says required concurrency is roughly `L = lambda * W`. At 200 req/s and 5ms DB time, `L = 200 * 0.005 = 1` connection on average; a pool of 10 has burst headroom. At 500ms, `L = 200 * 0.5 = 100` connections. A pool of 10 queues requests, timeouts rise, and latency compounds. The constraint that changed is service time, not request rate.
 </details>
 
-**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+**Challenge 2 (Design):** A network blip leaves connections half-open and the pool thinks they are still active. What database/pool guardrails reduce the blast radius?
 <details><summary>Answer</summary>
 
-Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+Enable connection keepalive/validation so dead sockets are detected before checkout, set reasonable connection and query timeouts, use max lifetime so old connections are recycled, and monitor active vs idle pool counts. On the database side, set idle transaction timeouts and inspect server-side wait events. The goal is fast failure and replacement of bad connections instead of silently pinning pool capacity.
 </details>
 
 

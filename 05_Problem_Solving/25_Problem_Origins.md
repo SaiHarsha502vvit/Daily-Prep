@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
+**Navigation**: [< Previous](03_Strings.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Arrays.md)
 
 # 🌍 Real-World Problem Origins: Where DSA Concepts Were Born
 
@@ -662,7 +662,13 @@ RESULT:
 
 🔬 **Section Challenge — BFS - Breadth First Search**
 
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+**Challenge 1 (BFS Level Tracking):** BFS finds shortest path in unweighted graphs via FIFO queue. But how do you track the CURRENT LEVEL (distance from source)? The queue doesn't mark level boundaries. **Who** tracks levels? **What** is the most concise way to know when you've finished one level?
+
+<details><summary>Answer</summary>
+
+**Who tracks levels:** You must explicitly track level boundaries. Three approaches: (1) **Size snapshot:** At the start of each level, take `int size = queue.size()`. Process exactly `size` nodes — they are all at the current level. After processing `size` nodes, increment `level`. (2) **Null sentinel:** Enqueue `null` after each level. When you dequeue `null`, increment level and enqueue another `null` (if queue is non-empty). Less clean but sometimes seen in older code. (3) **Two queues:** `currentLevel` and `nextLevel`. Process all of `currentLevel`, then swap to `nextLevel`. **Most concise (size snapshot):** `while (!queue.isEmpty()) { int size = queue.size(); for (int i = 0; i < size; i++) { Node node = queue.poll(); /* process */ for (Node child : node.children) queue.offer(child); } level++; }`. **When level tracking is used:** Word Ladder (LC 127), Minimum Depth of Binary Tree (LC 111), Rotting Oranges (LC 994). Any "minimum steps" problem where answer = BFS level count.
+
+</details>
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
@@ -750,7 +756,13 @@ THIS IS HOW:
 
 🔬 **Section Challenge — DFS - Depth First Search**
 
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+**Challenge 1 (DFS Call Stack Depth Analysis):** DFS on a tree of height h uses h recursive frames. **Who** determines the maximum DFS stack depth? **When** does recursive DFS on a tree of 10^6 nodes crash in Java? **What** is the iterative alternative?
+
+<details><summary>Answer</summary>
+
+**Who determines max depth:** The tree's height. Balanced BST: O(log n) depth = log2(10^6) = 20. Safe. Skewed tree (linked-list shaped): O(n) depth = 10^6. Crashes. **When Java recursive DFS crashes:** Default JVM stack: 512KB-1MB. Each DFS frame uses ~200-500 bytes. 10^6 frames × 200 bytes = 200MB of stack. Crashes at depth ~5000-10000. Skewed trees and graphs with long chains trigger this. **Iterative DFS with explicit stack:** `Deque<Node> stack = new ArrayDeque<>(); stack.push(root); while (!stack.isEmpty()) { Node node = stack.pop(); /* process */ if (node.right != null) stack.push(node.right); if (node.left != null) stack.push(node.left); }`. Uses heap memory (no stack limit). Equivalent to pre-order traversal. **Why left pushed after right:** Stack is LIFO. Push right first, then left — left is popped first, maintaining pre-order (root, left, right) traversal order. **Production rule:** For arbitrary depth graphs (not just trees), always use iterative DFS with explicit stack to avoid StackOverflowError.
+
+</details>
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
@@ -891,7 +903,13 @@ THIS IS WHY:
 
 🔬 **Section Challenge — Binary Search Tree**
 
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+**Challenge 1 (BST Search Path Comparison):** A BST stores `[50, 30, 70, 20, 40, 60, 80]`. Search for 40. **Who** traces the path? **When** does BST search degrade to O(n)? **What** property guarantees O(log n) on average?
+
+<details><summary>Answer</summary>
+
+**Path trace for 40:** Root=50. 40 < 50 → go left. Node=30. 40 > 30 → go right. Node=40. Found! Path: 50 → 30 → 40. 2 comparisons (O(log n) for this balanced tree). **When BST degrades to O(n):** Inserting sorted data `[1,2,3,4,5]` into a plain BST creates a right-skewed tree (effectively a linked list). Search for 5 takes 4 comparisons — O(n). This is the worst case. **What guarantees O(log n):** The BALANCE property. A BST is balanced when the height difference between left and right subtrees is bounded (e.g., ≤1 in AVL trees, ≤2h in Red-Black trees). Java's `TreeMap` uses a Red-Black tree — guarantees O(log n) for all operations. **BST vs Binary Search (array):** Array binary search: O(log n) but O(n) for insert/delete. BST: O(log n) for all three (search/insert/delete) in a balanced tree. **BST property:** Left subtree < root < right subtree for every node. This invariant is what enables divide-and-conquer search without examining every element.
+
+</details>
 <details><summary>Answer</summary>
 
 lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
@@ -969,7 +987,13 @@ THIS IS WHY:
 
 🔬 **Section Challenge — HashMap Collision Resolution**
 
-**Challenge 1 (Reasoning):** You insert 1000 entries into a HashMap with default capacity 16. How many resize operations happen?
+**Challenge 1 (Open Addressing vs Chaining):** HashMap collision resolution: chaining uses `LinkedList/TreeMap` per bucket. Open addressing uses probing (linear, quadratic, double hashing). **Who** uses which in Java? **When** does chaining outperform open addressing? **What** is the load factor threshold where Java HashMap converts a chain to a tree?
+
+<details><summary>Answer</summary>
+
+**Who uses which:** Java 8+ `HashMap` uses chaining (with an upgrade). Each bucket is initially a `LinkedList` (singly linked using `HashMap.Entry`). When a single bucket's chain length reaches 8 AND total capacity >= 64, the chain converts to a `TreeMap` (Red-Black tree) — `O(n)` chain becomes `O(log n)` tree search. **When chaining outperforms open addressing:** High load factors (>0.7). Open addressing with linear probing suffers "primary clustering" — filled slots clump together, making probes longer. Chaining degrades gracefully: even at load factor 1.0, average chain length is 1 (by Poisson distribution). Chaining also handles deletions cleanly (no "tombstone" markers needed). **Java HashMap's load factor threshold:** `TREEIFY_THRESHOLD = 8` for chain → tree conversion. `UNTREEIFY_THRESHOLD = 6` for tree → chain reversion (after removal). `MIN_TREEIFY_CAPACITY = 64` (the capacity must be at least 64 before treeification — below 64, HashMap just resizes instead). **Default load factor:** 0.75 — chosen to balance memory vs time. At 0.75, ~22% of buckets empty (good probe locality) while memory waste is minimal.
+
+</details>
 <details><summary>Answer</summary>
 
 Resize threshold = capacity × 0.75. Resizes at: 12 (16→32), 24 (32→64), 48 (64→128), 96 (128→256), 192 (256→512), 384 (512→1024). Total: 6 resizes. Each resize copies all entries to new bucket array. Pre-sizing: `new HashMap<>(1334)` (1000/0.75 ≈ 1334 → next power of 2 = 2048) avoids all resizes.
@@ -1028,7 +1052,13 @@ THIS BECAME:
 
 🔬 **Section Challenge — Two Sum - The Classic**
 
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+**Challenge 1 (Two Sum: HashMap vs Two-Pointer Tradeoff):** Two Sum can be solved with: (A) `HashMap<value, index>` in O(n) time, O(n) space, or (B) sort + two-pointer in O(n log n) time, O(1) space (if returning indices is not required). **Who** picks which approach? **When** does approach B fail? **What** is the key constraint difference?
+
+<details><summary>Answer</summary>
+
+**Who picks:** The interviewer's constraint or the problem variant. **Approach A (HashMap):** Add each element's value → index to map. For each element, check if `target - nums[i]` is in map. O(n) time, O(n) space. Returns actual indices. Works on any array (sorted or not). **Approach B (Two-Pointer):** Sort the array. Use `lo` and `hi` pointers. If `arr[lo] + arr[hi] == target`, found. If sum < target, `lo++`. If sum > target, `hi--`. O(n log n) sort + O(n) scan = O(n log n) total. O(1) extra space. **When approach B FAILS:** When you need to return the ORIGINAL indices (not values). Sorting destroys the original indices. You'd need to store index mappings, negating the space benefit. **When approach B is PREFERRED:** LC 167 (Two Sum II — Input Array Is Sorted): already sorted, no extra space needed. Any problem where you only need values, not indices. **Key constraint:** "Return indices" → HashMap approach. "Return values only" on sorted array → two-pointer. The two-pointer technique generalizes to 3Sum, 4Sum by adding outer loops.
+
+</details>
 <details><summary>Answer</summary>
 
 The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.

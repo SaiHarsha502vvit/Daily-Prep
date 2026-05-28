@@ -10,6 +10,7 @@ Teach how to think: pattern triggers, reasoning ladders, debugging mental models
 - Constraint overrides.
 - Mental checklists.
 - Short examples that train instinct.
+- Source-reading loops may link open-source repos, but must explain the invariant and the decision rule.
 
 ## Boundaries
 

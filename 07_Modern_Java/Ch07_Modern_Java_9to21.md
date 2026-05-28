@@ -226,10 +226,10 @@ if (obj instanceof String s && s.length() > 5) {
 
 🔬 **Section Challenge — instanceof Pattern Matching (Java 16)**
 
-**Challenge 1 (Reasoning):** What is the fundamental architectural shift introduced by Virtual Threads (Project Loom) in Java 21 compared to traditional OS Threads?
+**Challenge 1 (Diagnostic - What/Where/Why):** You write `if (!(obj instanceof String s)) { return; } System.out.println(s.length());` and the compiler accepts it. **What** is this feature called? **Where** is the variable `s` in scope, and **Why** does the compiler allow access to `s` after the `if` block?
 <details><summary>Answer</summary>
 
-Decoupling from OS Threads. A traditional Java `Thread` is a 1:1 wrapper around a heavy Operating System thread (taking 1MB of memory and heavy context switching). Virtual Threads are lightweight entities managed entirely by the JVM. Millions of Virtual Threads are multiplexed onto a small pool of Carrier (OS) Threads. When a Virtual Thread blocks on I/O (e.g., waiting for a database), the JVM instantly unmounts it and mounts a different Virtual Thread onto the Carrier, achieving massive concurrency without thread exhaustion.
+**What it is:** Pattern Matching for `instanceof` (Java 16) combined with flow typing. **Where it is in scope:** The variable `s` is in scope anywhere the compiler can mathematically prove that the `instanceof` check must have evaluated to `true`. **Why it works:** Because the `if` block contains a `return` statement for the `false` condition (`!`), the code *after* the `if` block can only be reached if `obj` was indeed a `String`. Flow typing recognizes this and keeps `s` in scope for the rest of the method.
 </details>
 
 
@@ -291,10 +291,10 @@ double area(Shape shape) {
 
 🔬 **Section Challenge — Switch Expressions (Java 14) + Pattern Matching (Java 21)**
 
-**Challenge 1 (Reasoning):** What is the fundamental architectural shift introduced by Virtual Threads (Project Loom) in Java 21 compared to traditional OS Threads?
+**Challenge 1 (Bug Hunt - Why/What/How):** You add a new subclass `Pentagon` to a `sealed interface Shape`. Suddenly, a switch expression over `Shape` in another class fails to compile. **Why** did this happen? **What** safety feature triggered this error, and **How** do you fix it without adding a `default` case?
 <details><summary>Answer</summary>
 
-Decoupling from OS Threads. A traditional Java `Thread` is a 1:1 wrapper around a heavy Operating System thread (taking 1MB of memory and heavy context switching). Virtual Threads are lightweight entities managed entirely by the JVM. Millions of Virtual Threads are multiplexed onto a small pool of Carrier (OS) Threads. When a Virtual Thread blocks on I/O (e.g., waiting for a database), the JVM instantly unmounts it and mounts a different Virtual Thread onto the Carrier, achieving massive concurrency without thread exhaustion.
+**Why it happened:** The switch expression was previously exhaustive over all known shapes. By adding `Pentagon`, the switch no longer handles all possible cases. **What safety feature:** Exhaustiveness checking. Because `Shape` is a sealed type, the compiler knows exactly how many implementations exist. Switch expressions *must* be exhaustive (handle all possible inputs). **How to fix:** You must add a `case Pentagon p -> ...` to the switch expression. Do NOT add a `default` case, as that defeats the compiler's ability to warn you when future shapes are added!
 </details>
 
 
@@ -332,10 +332,10 @@ String describe(Object obj) {
 
 🔬 **Section Challenge — Record Patterns — Destructuring (Java 21)**
 
-**Challenge 1 (Reasoning):** What is the fundamental architectural shift introduced by Virtual Threads (Project Loom) in Java 21 compared to traditional OS Threads?
+**Challenge 1 (Diagnostic - Who/What/How):** You have a nested record structure: `record Box(Item item)` and `record Item(String name)`. You want to extract the name directly in an `if` statement. **Who** unwraps the nested objects? **What** syntax makes this possible in Java 21, and **How** do you write the condition?
 <details><summary>Answer</summary>
 
-Decoupling from OS Threads. A traditional Java `Thread` is a 1:1 wrapper around a heavy Operating System thread (taking 1MB of memory and heavy context switching). Virtual Threads are lightweight entities managed entirely by the JVM. Millions of Virtual Threads are multiplexed onto a small pool of Carrier (OS) Threads. When a Virtual Thread blocks on I/O (e.g., waiting for a database), the JVM instantly unmounts it and mounts a different Virtual Thread onto the Carrier, achieving massive concurrency without thread exhaustion.
+**Who unwraps:** The JVM pattern matcher natively destructures the records. **What syntax:** Record Patterns (finalized in Java 21), which allow nested destructuring. **How to write it:** You write the pattern exactly like the constructor structure: `if (obj instanceof Box(Item(String name))) { System.out.println(name); }`. The compiler safely checks both `instanceof Box` and `instanceof Item`, and binds the inner `name` to a local variable in one step.
 </details>
 
 
@@ -524,10 +524,10 @@ user.getAddress().getCity().toUpperCase();
 
 🔬 **Section Challenge — Helpful NullPointerExceptions (Java 14)**
 
-**Challenge 1 (Reasoning):** What is the fundamental architectural shift introduced by Virtual Threads (Project Loom) in Java 21 compared to traditional OS Threads?
+**Challenge 1 (Trace - What/Why/Where):** You get a `NullPointerException` on `a.b.c()`. In Java 8, the stack trace only gives the line number. In Java 14+, the message says exactly that `b` is null. **What** is this feature called? **Why** couldn't Java 8 do this, and **Where** does the JVM gather this detailed information?
 <details><summary>Answer</summary>
 
-Decoupling from OS Threads. A traditional Java `Thread` is a 1:1 wrapper around a heavy Operating System thread (taking 1MB of memory and heavy context switching). Virtual Threads are lightweight entities managed entirely by the JVM. Millions of Virtual Threads are multiplexed onto a small pool of Carrier (OS) Threads. When a Virtual Thread blocks on I/O (e.g., waiting for a database), the JVM instantly unmounts it and mounts a different Virtual Thread onto the Carrier, achieving massive concurrency without thread exhaustion.
+**What it is:** Helpful NullPointerExceptions (JEP 358). **Why Java 8 couldn't:** Previous JVMs only threw an NPE when the hardware generated a SIGSEGV (segmentation fault) at a specific memory address, mapped back to a bytecode index (BCI) and line number. The JVM didn't track *which* variable at that line caused the fault. **Where it gathers it:** When a SIGSEGV occurs now, the JVM inspects the exact bytecode instruction at the BCI. If it's `getfield` or `invokevirtual`, it traces backward in the bytecode to determine exactly which local variable or field was pushed onto the operand stack right before the fault, enabling the precise error message.
 </details>
 
 

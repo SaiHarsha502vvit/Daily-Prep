@@ -489,10 +489,9 @@ $$ LANGUAGE plpgsql;
 
 🔬 **Section Challenge — Security Checklist**
 
-**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+**Challenge 1 (Reasoning):** A service uses prepared statements, but logs full SQL with parameter values on every failed login. What security problem remains, and how do you fix it without losing debuggability?
 <details><summary>Answer</summary>
 
-JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+Parameterized queries prevent injection, but full parameter logging can leak passwords, tokens, emails, reset codes, tenant IDs, and sensitive filters into log storage. Fix by logging query shape, operation name, correlation ID, duration, row count, and sanitized parameter metadata such as lengths or hashes. Redact secrets at the logging layer, restrict log access, and keep database errors generic for users while preserving enough internal context to debug.
 </details>
-
 

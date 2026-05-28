@@ -188,10 +188,10 @@ synchronized(obj) {
 
 🔬 **Section Challenge — 2. The Mark Word: 64 Bits That Control Everything**
 
-**Challenge 1 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
+**Challenge 1 (Diagnostic - Who/What/When):** A developer implements a custom caching framework that calls `System.identityHashCode(obj)` on every object before caching it. They notice that the application's synchronization performance severely degrades. **Who** controls the lock state? **What** did the hash code call overwrite, and **When** does the JVM now escalate the lock?
 <details><summary>Answer</summary>
 
-Object Header and Padding (Alignment). Every Java object has a 12-byte Object Header (Mark Word + Klass Pointer). If you add a 1-byte `boolean` field, the total size is 13 bytes. However, modern CPUs fetch memory in 8-byte chunks. To ensure fast CPU access, the JVM pads all objects to a multiple of 8 bytes (8-byte alignment). Therefore, the 13 bytes are padded with 3 bytes of empty space, resulting in a 16-byte object footprint for a single boolean.
+**Who controls lock state:** The Mark Word in the object header. **What was overwritten:** The identity hash code and the thread ID for biased locking share the exact same bits in the Mark Word. By computing the identity hash code, the JVM irreversibly writes that hash into those bits, making the object permanently ineligible for biased locking. **When it escalates:** The very next time a thread tries to `synchronized` on that object, the JVM must skip biased locking and immediately escalate to a lightweight (thin) lock (or a fat lock if contended), causing a performance drop.
 </details>
 
 
@@ -445,10 +445,10 @@ Object Header and Padding (Alignment). Every Java object has a 12-byte Object He
 
 🔬 **Section Challenge — 5. Lock Escalation: Biased → Thin → Fat**
 
-**Challenge 1 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
+**Challenge 1 (Diagnostic - What/Where/Why):** Two threads repeatedly contend for a `synchronized` block on the same object. The JVM escalates the lock. **What** state does the lock enter? **Where** does the object's Mark Word now point, and **Why** does this state persist even after the threads finish?
 <details><summary>Answer</summary>
 
-Object Header and Padding (Alignment). Every Java object has a 12-byte Object Header (Mark Word + Klass Pointer). If you add a 1-byte `boolean` field, the total size is 13 bytes. However, modern CPUs fetch memory in 8-byte chunks. To ensure fast CPU access, the JVM pads all objects to a multiple of 8 bytes (8-byte alignment). Therefore, the 13 bytes are padded with 3 bytes of empty space, resulting in a 16-byte object footprint for a single boolean.
+**What state:** It enters the "Fat Lock" (heavyweight monitor) state. **Where it points:** The Mark Word changes to point to a heavyweight `ObjectMonitor` object allocated in native memory (C++ level), which interfaces with the OS mutex/thread-parking primitives. **Why it persists:** Lock escalation is a one-way street in traditional JVMs. Once an object's lock inflates to a Fat Lock due to contention, it remains a Fat Lock for the rest of that object's lifetime to avoid the massive overhead of repeatedly inflating and deflating the monitor.
 </details>
 
 
@@ -631,10 +631,10 @@ System.out.println(((Child) obj).x);  // 20 (Child's x — need cast!)
 
 🔬 **Section Challenge — 7. Method Hiding vs Overriding: The Static Method Freeze Moment**
 
-**Challenge 1 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
+**Challenge 1 (Bug Hunt - Who/What/How):** A junior developer writes a static `getInstance()` method in a `Vehicle` parent class and a static `getInstance()` method in a `Car` child class. They call `Vehicle v = new Car(); v.getInstance();` expecting the `Car` version. **Who** actually executes? **What** bytecode instruction makes this happen, and **How** should this be fixed?
 <details><summary>Answer</summary>
 
-Object Header and Padding (Alignment). Every Java object has a 12-byte Object Header (Mark Word + Klass Pointer). If you add a 1-byte `boolean` field, the total size is 13 bytes. However, modern CPUs fetch memory in 8-byte chunks. To ensure fast CPU access, the JVM pads all objects to a multiple of 8 bytes (8-byte alignment). Therefore, the 13 bytes are padded with 3 bytes of empty space, resulting in a 16-byte object footprint for a single boolean.
+**Who executes:** The `Vehicle.getInstance()` method executes. This is Method Hiding, not Overriding. **What bytecode:** The compiler generates an `invokestatic` instruction, which binds *statically* at compile-time to the declared type of the reference (`Vehicle`), completely ignoring the runtime object type (`Car`). **How to fix:** Static methods cannot be polymorphic. If you need polymorphic behavior based on the object type, you must use an instance method. If it must be a factory, use the Factory/Builder pattern or pass a `Class<T>` token.
 </details>
 
 
@@ -789,10 +789,10 @@ sealed interface Shape permits Circle, Rectangle, Triangle {
 
 🔬 **Section Challenge — 8. Best Java Design Strategies: Building Robust Structures**
 
-**Challenge 1 (Reasoning):** Why does a simple `boolean` field (1 bit of data) in a Java object actually consume 16 bytes of memory in the JVM?
+**Challenge 1 (Design - Why/How/What):** A developer wants to use a `User` object as a key in a `HashMap`. **Why** must the object be immutable? **How** should defensive copying be applied if `User` contains a `Date` field, and **What** happens if the `Date` is modified after insertion?
 <details><summary>Answer</summary>
 
-Object Header and Padding (Alignment). Every Java object has a 12-byte Object Header (Mark Word + Klass Pointer). If you add a 1-byte `boolean` field, the total size is 13 bytes. However, modern CPUs fetch memory in 8-byte chunks. To ensure fast CPU access, the JVM pads all objects to a multiple of 8 bytes (8-byte alignment). Therefore, the 13 bytes are padded with 3 bytes of empty space, resulting in a 16-byte object footprint for a single boolean.
+**Why immutable:** A `HashMap` relies on the key's `hashCode()` remaining constant. If the object changes and its hash code changes, it will be lost in the wrong hash bucket forever. **How to copy:** The constructor must `new Date(date.getTime())` to clone the incoming date, and the getter must return a clone, preventing external mutation. **What happens:** If the `Date` mutates after insertion (and the hash code depends on it), future `map.get(user)` calls will look in the wrong bucket and return `null`, causing a severe memory leak as the original entry can never be retrieved or removed.
 </details>
 
 

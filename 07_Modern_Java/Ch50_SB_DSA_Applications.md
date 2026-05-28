@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch43_SB_Auth_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch51_SB_Industry_Projects.md)
+**Navigation**: [< Previous](Ch43_SB_Auth_Security.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch51_SB_Industry_Projects.md)
 
 # 🧮 SPRING BOOT MASTERY - Part 12: DSA in Spring Boot Applications
 
@@ -142,7 +142,13 @@ Sliding Window      │ • Rate limiting
 
 🔬 **Section Challenge — Dsa Usage In Spring Boot Applications**
 
-**Challenge 1 (Reasoning):** Why is a Trie (Prefix Tree) vastly superior to a standard relational SQL `LIKE 'prefix%'` query for implementing an auto-complete search bar?
+**Challenge 1 (HashMap LRU Eviction in Spring Cache):** Spring's `@Cacheable` with a `ConcurrentHashMap` backend doesn't evict entries. **Who** provides LRU eviction? **When** is Caffeine cache superior to a simple `HashMap`? **What** is the Caffeine `maximumSize` + `expireAfterWrite` configuration in Spring Boot?
+
+<details><summary>Answer</summary>
+
+**Who provides LRU eviction:** Caffeine (or Ehcache, Redis). `ConcurrentHashMap` has no size limit — it grows unboundedly until OOM. Caffeine maintains an approximate LRU policy using TinyLFU (frequency + recency). **When Caffeine is superior:** Any production cache (user profiles, product catalog, translated strings). `HashMap` is unbounded — memory leak risk. Caffeine: O(1) amortized get/put with eviction, expiry, and size limits. **Caffeine + Spring Boot configuration:** `spring.cache.type=caffeine`. `spring.cache.caffeine.spec=maximumSize=10000,expireAfterWrite=5m`. Or programmatic: `@Bean CacheManager cacheManager() { return new CaffeineCacheManager("users") {{ setCaffeine(Caffeine.newBuilder().maximumSize(10000).expireAfterWrite(5, MINUTES)); } }`. **`expireAfterWrite` vs `expireAfterAccess`:** `expireAfterWrite` — entry expires N time after it was written (good for time-sensitive data like stock prices). `expireAfterAccess` — expires N time after last access (good for session data, evicts unused entries first). Use `refreshAfterWrite` to refresh asynchronously in background without blocking reads.
+
+</details>
 <details><summary>Answer</summary>
 
 Algorithmic complexity. A SQL `LIKE 'prefix%'` query (even if indexed) requires B-Tree range scans that degrade severely as the dataset grows into millions of strings. A Trie stores characters hierarchically. Finding all words that start with "app" takes `O(L + R)` time, where `L` is the length of the prefix (3) and `R` is the number of matching results. It is essentially an instant `O(1)` pointer traversal in memory, perfectly suited for real-time keystroke matching.
@@ -281,7 +287,13 @@ public class RateLimitFilter extends OncePerRequestFilter {
 
 🔬 **Section Challenge — Chapter 2: Rate Limiting with Sliding Window**
 
-**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+**Challenge 1 (Rate Limiter: In-Memory vs Redis for Distributed Systems):** A sliding window rate limiter using `ConcurrentHashMap` works per-JVM instance. **Who** fails when you have 3 app instances? **When** do you need Redis? **What** is the Redis Lua script pattern for atomic rate limiting?
+
+<details><summary>Answer</summary>
+
+**Who fails:** The in-memory rate limiter per instance. With 3 instances behind a load balancer, each instance has its own `ConcurrentHashMap`. User A can make 100 requests to instance-1, 100 to instance-2, 100 to instance-3 = 300 total requests. Each instance allows 100, total limit 100 is violated. **When you need Redis:** ANY horizontally scaled application (multiple pods/instances). Redis is shared across all instances. All rate limit counters are centralized. **Redis sliding window Lua script (atomic):** `local current = redis.call('INCR', KEYS[1]); if current == 1 then redis.call('EXPIRE', KEYS[1], ARGV[1]); end; if current > tonumber(ARGV[2]) then return 0; end; return 1;`. Executed atomically by Redis — no race conditions between check and increment. **Spring Boot + Redis rate limiting:** Use Spring's `RateLimiter` via Redis + Lua. Or use `spring-cloud-gateway`'s `RequestRateLimiter` filter with `RedisRateLimiter` (built-in token bucket algorithm). **Token bucket vs sliding window:** Token bucket allows bursts (up to bucket size). Sliding window is smoother (counts requests in last N seconds). Use token bucket for APIs with natural burst patterns; sliding window for strict enforcement.
+
+</details>
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
@@ -731,11 +743,19 @@ public class DeliveryController {
 
 🔬 **Section Challenge — Chapter 5: Shortest Path for Delivery Routing**
 
-**Challenge 1 (Reasoning):** Why is a Trie (Prefix Tree) vastly superior to a standard relational SQL `LIKE 'prefix%'` query for implementing an auto-complete search bar?
+**Challenge 1 (Dijkstra vs BFS for Delivery Routing):** A delivery routing API must find the shortest path between two addresses. **Who** uses Dijkstra vs BFS? **When** does BFS produce a WRONG shortest path in a road network? **What** graph representation stores road weights?
+
 <details><summary>Answer</summary>
 
-Algorithmic complexity. A SQL `LIKE 'prefix%'` query (even if indexed) requires B-Tree range scans that degrade severely as the dataset grows into millions of strings. A Trie stores characters hierarchically. Finding all words that start with "app" takes `O(L + R)` time, where `L` is the length of the prefix (3) and `R` is the number of matching results. It is essentially an instant `O(1)` pointer traversal in memory, perfectly suited for real-time keystroke matching.
-</details>
+**Who uses Dijkstra:** Applications where road segments have DIFFERENT travel times (weights). A road network is a weighted graph. BFS finds the path with fewest EDGES, not least TOTAL WEIGHT. **When BFS produces wrong results:** Road A→C is 1 step but takes 2 hours (highway construction). Road A→B→C is 2 steps but takes 20 minutes. BFS picks A→C (fewest hops). Dijkstra picks A→B→C (minimum total time). Any road network with non-uniform edge weights — BFS gives wrong results. **Graph representation for weights:** Adjacency list with `Map<String, List<int[]>>` where `int[] = {neighborId, travelTimeMinutes}`. Or a `Map<String, Map<String, Integer>>` for O(1) edge weight lookup. **Spring Boot delivery routing pattern:** Store road graph in Redis (precomputed shortest paths for common city pairs). Recalculate via Dijkstra for custom routes. Cache results `@Cacheable("routes")`. For real-time: integrate with Google Maps Distance Matrix API or HERE Routing API. **A* over Dijkstra:** A* uses a heuristic (straight-line distance to destination) to reduce nodes explored. For GPS navigation: A* is 10-100x faster than Dijkstra on large road graphs while guaranteeing optimal routes (admissible heuristic).
+
+
+📎 **Reference Anchor:** [cp-algorithms: Dijkstra's Algorithm](https://cp-algorithms.com/graph/dijkstra.html)  
+**Invariant learned:** Dijkstra's correctness relies on the **greedy choice property**: once a node is extracted from the min-heap (distance finalized), its shortest distance will NEVER be improved. This only holds when all edge weights are non-negative. Negative weights violate this — use Bellman-Ford instead.  
+**Local rewrite:** See the `DeliveryRouteService.findShortestPath()` above. The PriorityQueue uses `double[]` pairs `{distance, nodeIndex}` because Java's `PriorityQueue` doesn't support node priority updates natively — instead, duplicate entries are pushed and ignored via the `visited` set check.  
+**Constraint warning:** Road graph with traffic weights changing in real-time — static Dijkstra becomes stale. Use A* with a time-aware heuristic or re-run Dijkstra on weight change events (incremental graph updates). For negative-weight edges (rare in routing but possible with bidirectional cost modeling), switch to Bellman-Ford.
+
+
 
 
 ## Chapter 6: Task Scheduler with Priority Queue
@@ -1109,8 +1129,12 @@ public class LeaderboardController {
 `TreeMap` use cases: range queries (`subMap`, `headMap`, `tailMap`), ordered iteration, `floorKey`/`ceilingKey`. Cost: every operation is O(log N) vs O(1) avg for HashMap. For 1M entries: HashMap ~1μs, TreeMap ~20μs per operation. Use TreeMap ONLY when sorted order is required — not as a default.
 </details>
 
+📎 **Reference Anchor:** [OpenJDK `TreeMap.java`](https://github.com/openjdk/jdk/blob/jdk-21-ga/src/java.base/share/classes/java/util/TreeMap.java#L281-L340)  
+**Invariant learned:** TreeMap is backed by a Red-Black Tree. `put`, `get`, `remove` are all O(log N) guaranteed. The key comparison uses `Comparator` (if provided) or `Comparable`. The `reverseOrder()` comparator in `LeaderboardService` flips the comparison so highest score is first when iterating.  
+**Local rewrite:** The `scoreToUsers: TreeMap<Long, Set<String>>` uses `Collections.reverseOrder()` so `.entrySet()` iterates from highest to lowest score. This is equivalent to `NavigableMap.descendingMap()`. For `getRank()`, each `entry.getValue().size()` is the count of users tied at that score level — O(K) where K is the number of distinct score levels.  
+**Constraint warning:** For real-time leaderboards with millions of users, a `synchronized(lock)` block on every score update is a bottleneck. Production systems use Redis `ZADD`/`ZRANK`/`ZRANGE` (sorted sets backed by a skip list) instead of Java in-memory TreeMap — Redis provides atomic leaderboard operations distributed across instances.
 
-## Chapter 8: Organization Hierarchy with Tree Traversal
+
 
 ```java
 // ═══════════════════════════════════════════════════════════════════════════════

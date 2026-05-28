@@ -260,6 +260,7 @@ ACCESS MODIFIER SCOPE:
 │ public       │ ✔     │ ✔      │ ✔          │ ✔      │
 └──────────────┴───────┴─────────┴────────────┴─────────┘
 ```
+```java
 // WITHOUT ENCAPSULATION:
 class BankAccountBad {
     public double balance;  // Anyone can mess with this!
@@ -1253,5 +1254,4 @@ For each, think about:
 ---
 
 _OOP is about managing complexity through smart organization!_
-
 

@@ -2,6 +2,7 @@
 
 ---
 
+```java
     private int port;
     private String username;
     private String password;

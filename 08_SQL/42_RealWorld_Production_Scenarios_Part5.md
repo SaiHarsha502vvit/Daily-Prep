@@ -205,24 +205,22 @@ ORDER BY duration DESC;
 
 ### Spring Boot Fix
 
-```yaml
-
-
 🔬 **Section Challenge — Scenario 103: HikariCP Connection Pool Exhausted**
 
-**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+**Challenge 1 (Reasoning):** `pg_stat_activity` shows many sessions in `idle in transaction` for 30+ seconds. Why can this exhaust HikariCP even if CPU and database I/O look normal?
 <details><summary>Answer</summary>
 
-First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+A connection is checked out until the transaction ends. `idle in transaction` means the application is not actively querying, but it is still holding the connection and transaction resources. Hikari sees the connection as busy, so new requests wait until `connection-timeout` and fail. This is a capacity problem caused by connection hold time, not CPU saturation. Fix the code path that keeps transactions open and add leak detection / transaction timeout as guardrails.
 </details>
 
-**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+**Challenge 2 (Design):** The team wants to raise `maximum-pool-size` from 10 to 100. What must you check before doing that, and why can a bigger pool make the incident worse?
 <details><summary>Answer</summary>
 
-Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+Check database `max_connections`, CPU, memory per backend, lock contention, average query time, and p95 connection hold time. A larger pool can push more concurrent work into the database than it can execute, increasing lock waits, context switching, memory pressure, and queueing inside the database. The real fix is often shorter transactions, no external HTTP inside transactions, indexes, batching, and fail-fast timeouts. Pool size is a throttle, not a magic throughput multiplier.
 </details>
 
 
+```yaml
 # application.yml — tune HikariCP
 spring:
   datasource:

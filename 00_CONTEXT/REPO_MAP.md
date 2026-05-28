@@ -10,6 +10,7 @@ Purpose: make future agents understand the repo shape before touching files.
 | `00_TEXTBOOK_PREFACE.md` | Reading order, prerequisites, and course framing. |
 | `AGENTS.md` | Mandatory operating manual for future agents. |
 | `AGENT_HANDOFF.md` | Older handoff snapshot. Useful history, but do not treat counts as authoritative. |
+| `tools/update_context.ps1` | Generates `FILE_REGISTRY.md` and `CONTEXT_MANIFEST.json`. Run with `-Mode check` or `-Mode update`. |
 
 ## Active Modules
 
@@ -22,7 +23,7 @@ Purpose: make future agents understand the repo shape before touching files.
 | `05_Problem_Solving` | Practice problem families by pattern/topic. | Keep it problem-oriented, not pure theory. |
 | `06_OOP_Design` | OOP, SOLID, design patterns, LLD, system design fundamentals. | Do not turn into Spring-specific content unless comparing design to implementation. |
 | `07_Modern_Java` | Java, JVM, Spring Boot, JPA, security, testing, distributed Java services. | Keep Java/Spring content here; avoid frontend/SQL-only challenges unless bridging. |
-| `08_SQL` | SQL foundations, joins, windows, CTEs, analytics, internals, production scenarios. | Keep examples database-first. |
+| `08_SQL` | SQL foundations, joins, windows, CTEs, analytics, internals, production scenarios. | Keep examples database-first. Note: some SQL interview synthesis files live in `20_Interview_Mastery` (e.g., `18_SQL_Foundations_Commands_Operators_Functions.md`). |
 | `09_Career_Reference` | DSA guides, behavioral prep, project/career reference. | Keep practical interview/career synthesis here. |
 | `10_Enterprise_Systems` | ERP, DDD, finance/order/inventory systems, enterprise workflows. | Keep business process and production system context central. |
 | `12_Daily_Practice` | Daily practice plans and problem drills. | Keep content actionable and session-sized. |
@@ -49,4 +50,24 @@ Purpose: make future agents understand the repo shape before touching files.
 
 ## Archive Boundary
 
-`_archive` contains historical material. Do not update it during normal work unless the user explicitly asks.
+`_archive` contains historical material from earlier iterations of the study system. It is preserved for reference but should not be updated during normal work. Rules:
+
+- Do not update `_archive` files unless the user explicitly asks.
+- Do not copy content from `_archive` into active modules without user review.
+- If `_archive` content contradicts an active module, the active module is correct.
+- The file registry excludes `_archive` from its active file count.
+
+## Agent Quick Start
+
+For any agent entering this repo:
+
+```powershell
+# 1. Check freshness
+powershell -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check
+
+# 2. If stale, inspect listed files first
+# 3. Read 00_CONTEXT/DECISIONS.md, CONTAMINATION_GUARDS.md, PEDAGOGY_STANDARDS.md
+# 4. Read the local folder CONTEXT.md for the area you are editing
+# 5. After editing, regenerate
+powershell -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update
+```

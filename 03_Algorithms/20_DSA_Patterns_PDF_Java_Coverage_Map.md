@@ -71,7 +71,9 @@ Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sor
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -226,4 +228,3 @@ A closure is a function that retains a reference to its lexical environment (the
 ## 6. Final Interview Positioning (What to Say)
 
 "I maintain pattern-specific Java templates: prefix family, trie/xor family, graph traversals, and DP states. For each new problem, I first identify invariant and data shape, then map to known template, and finally optimize edge handling and complexity."
-

@@ -24,6 +24,33 @@ Detailed table: [Constraint-Based Pattern Selection](../04_Patterns_Templates/25
 
 ---
 
+## Source-Reading Loop
+
+When a problem feels solved by brute force but you cannot choose the right DS/Algo yet, use this loop:
+
+```text
+1. Write the brute-force loop.
+2. Circle the repeated operation.
+3. Name the needed operation: query, update, min, max, kth, predecessor, connectivity, shortest path.
+4. Match that operation to a data structure.
+5. Check one strong open-source implementation to learn the invariant.
+6. Rewrite a small version for the problem constraints.
+```
+
+Examples:
+
+| Brute Force Pain | Operation Needed | DS/Algo Upgrade | Reference Anchor |
+|------------------|------------------|-----------------|------------------|
+| recompute range sum per query | prefix/range sum | prefix sum or Fenwick | [AtCoder Fenwick](https://github.com/atcoder/ac-library/blob/master/atcoder/fenwicktree.hpp) |
+| update ranges and query ranges | lazy propagation | lazy segment tree | [AtCoder lazy segtree](https://github.com/atcoder/ac-library/blob/master/atcoder/lazysegtree.hpp) |
+| keep top K while scanning | min/max boundary | heap | [OpenJDK PriorityQueue](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java) |
+| shortest path with weights | minimum distance extraction | Dijkstra + heap | [cp-algorithms](https://github.com/cp-algorithms/cp-algorithms) |
+| contest template feels too long | tested minimal snippet | simplify state/invariant | [KACTL](https://github.com/kth-competitive-programming/kactl/tree/main/content) |
+
+Open-source code should answer: "what invariant is this implementation protecting?" If you cannot say the invariant, you are copying, not learning.
+
+---
+
 ## 🔑 The Master Signal → Pattern Table
 
 > For each problem, find the strongest matching signal. That's your starting pattern.
@@ -199,4 +226,3 @@ Q5: Does the sub-problem repeat?
 - 9–15: You're building the pattern library
 - 16–20: Interview-ready
 - 21–25: You ARE the pattern library 🔥
-

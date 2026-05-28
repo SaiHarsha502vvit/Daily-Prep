@@ -46,3 +46,15 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mo
 - Do not treat old chat context as more authoritative than repo files.
 - Do not remove user content to make context cleaner.
 - Do not silently move content across domains.
+
+## When Another Agent Is Active
+
+If a Codex agent, another Antigravity session, or any other agent is editing the repo concurrently:
+
+1. Run `tools/update_context.ps1 -Mode check` before starting any edit batch.
+2. Stale files = recently changed by the other agent. Inspect before touching.
+3. Edit your file batch, then run `tools/update_context.ps1 -Mode update` before the next batch.
+4. This ensures the other agent's next check reflects your changes too.
+5. If two agents edit the same file concurrently, the second writer wins. Avoid this by claiming distinct file batches.
+
+The manifest timestamp is the ownership signal. The stale report is the coordination protocol.

@@ -2,6 +2,7 @@
 
 ---
 
+```java
             .map(targetUser -> 
                 targetUser.getOrganizationId().equals(currentUser.getOrganizationId())
             )

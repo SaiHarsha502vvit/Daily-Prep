@@ -2,6 +2,7 @@
 
 ---
 
+```java
     // Transaction example
     @Transactional
     public Mono<Void> transferData(Long fromUserId, Long toUserId) {

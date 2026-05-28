@@ -3,6 +3,7 @@
 
 ---
 
+```java
         if (!visited[u]) {
             List<Integer> scc = new ArrayList<>();
             dfs2(u, radj, visited, scc);
@@ -1138,5 +1139,4 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
 </details>
-
 

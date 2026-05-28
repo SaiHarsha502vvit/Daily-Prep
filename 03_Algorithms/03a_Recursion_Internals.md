@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03b_Recursion_Fundamentals.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](03b_Recursion_Fundamentals.md)
 🧠 **Mental Model**: See [Recursion Tree Thinking](../14_Mental_Models/01_Recursion_Tree_Thinking.md) — call stack visualization and trust-the-recursion framework
 
 ---
@@ -17,7 +17,9 @@
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -333,7 +335,9 @@ void permute(int[] nums, List<Integer> curr, boolean[] used) {
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -445,7 +449,9 @@ int result = sumTrampoline(100000, 0).get();  // No stack overflow!
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```

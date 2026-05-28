@@ -16,6 +16,22 @@
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
+### Open-Source Implementation Anchors
+
+Use these as design references, not as code to paste:
+
+| Source | What To Study | Interview Translation |
+|--------|---------------|-----------------------|
+| [OpenJDK LinkedList.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedList.java) | production doubly linked list, `first`/`last`, `size`, iterator mutation safety | understand node rewiring and why random access is not the point |
+| [Linux list.h](https://github.com/torvalds/linux/blob/master/include/linux/list.h) | intrusive linked-list style and pointer discipline | learn that deleting/inserting is pointer surgery; preserve `next` before rewiring |
+
+Mental check:
+
+```text
+If the open-source code has many API concerns, extract the invariant only.
+For interview linked lists, the invariant is usually: never lose the rest of the list.
+```
+
 ### 🧠 Deep Intuition — Why Pointer Techniques Are Essential for Linked Lists
 
 With arrays, finding the middle element is trivial: `arr[arr.length / 2]` — O(1). With linked lists, you can't do this because there's no index. You don't even know the length without traversing the entire list first. Fast/slow pointers solve this **without needing to know the length**.
@@ -283,10 +299,10 @@ COMMON MISTAKES:
 
 🔬 **Section Challenge — 📊 COMPLEXITY SUMMARY**
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+**Challenge 1 (Constraint Rewrite):** A linked list has `N = 2e5` nodes. Your recursive reversal is logically correct, but Java crashes with stack overflow. What constraint broke the approach, and how do you rewrite it?
 <details><summary>Answer</summary>
 
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+The broken constraint is recursion depth. Recursive reversal uses one call frame per node, so `N = 2e5` creates `O(N)` stack usage and can overflow the Java call stack. Rewrite with the iterative 3-pointer pattern: `prev`, `curr`, `next`. Before changing `curr.next`, store `next = curr.next`; then reverse the link, advance `prev = curr`, `curr = next`. Time stays `O(N)`, but auxiliary space becomes `O(1)`. The invariant is: every step keeps one pointer to the already-reversed prefix and one pointer to the unreversed suffix.
 </details>
 
 
@@ -356,5 +372,4 @@ COMMON MISTAKES:
 
 ---
 [← 11 Stack+Monotonic](11_Stack_Plus_MonotonicPattern.md) | [13 Tree+DFS/BFS →](13_Tree_Plus_DFS_BFS.md)
-
 

@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](Ch42_SB_HTTP_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch50_SB_DSA_Applications.md)
+**Navigation**: [< Previous](Ch42_SB_HTTP_Deep_Dive.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](Ch50_SB_DSA_Applications.md)
 
 # 🔐 SPRING BOOT MASTERY - Part 11: Authentication & Authorization
 
@@ -196,11 +196,18 @@ JWT: stateless — any service can validate without a DB call (verify signature 
 
 🔬 **Section Challenge — Chapter 3: JWT (JSON Web Token) Explained**
 
-**Challenge 1 (Reasoning):** In OAuth2 (e.g., logging in with Google), why does the client application receive an Authorization Code first, instead of directly receiving the Access Token?
+**Challenge 1 (JWT Signature Verification Flow):** A JWT arrives in the `Authorization: Bearer <token>` header. **Who** verifies the signature? **When** is the token considered valid? **What** happens if the secret key changes on the server between token issuance and verification?
+
 <details><summary>Answer</summary>
 
-Security against token interception (Authorization Code Flow). If the Authorization Server sent the Access Token directly via the browser redirect URL (Implicit Flow), it would be exposed in browser history, proxy logs, and vulnerable to interception. By returning a short-lived Authorization Code, the client application's secure backend server can exchange it for the real Access Token directly via a secure, back-channel HTTPS POST request, ensuring the Access Token never touches the vulnerable browser URL.
+**Who verifies:** The Spring Security `JwtAuthenticationConverter` or `JwtDecoder` bean (from `spring-security-oauth2-resource-server`). It extracts the three parts: header + payload + signature. Recomputes HMAC-SHA256(base64(header) + "." + base64(payload), secretKey). Compares with the provided signature. **When valid:** (1) Signature matches (not tampered). (2) `exp` claim is in the future (not expired). (3) `iss` claim matches expected issuer. (4) `aud` claim matches expected audience (if configured). **If secret key changes:** ALL existing tokens become INVALID. The signature verification fails because the server can't reproduce the original signature with the new key. ALL users are effectively logged out. **Solution for key rotation:** Use asymmetric JWT (RSA/EC): private key signs, public key verifies. Rotate ONLY the private key. Old tokens signed with old private key are still verifiable with the old PUBLIC key until they expire. Use `/.well-known/jwks.json` endpoint to publish current public keys (JWKS — JSON Web Key Set). Resource servers fetch current public keys dynamically.
+
 </details>
+
+📎 **Reference Anchor:** [jjwt `DefaultJwtParser.java`](https://github.com/jwtk/jjwt/blob/0.12.6/impl/src/main/java/io/jsonwebtoken/impl/DefaultJwtParser.java#L380-L450)  
+**Invariant learned:** The parser re-signs `base64(header).base64(payload)` with the local secret and compares against the provided signature using a **constant-time comparison** (`MessageDigest.isEqual`) to prevent timing attacks. If the local secret rotates, the re-signed value will never match the original signature.  
+**Local rewrite:** The `JwtService` above calls `Jwts.parser().verifyWith(getSigningKey()).build().parseSignedClaims(token)` — this delegates directly to jjwt's `DefaultJwtParser`. The `verifyWith()` call sets the expected signing key; `parseSignedClaims()` validates all three checks: signature, `exp`, `nbf`.  
+**Constraint warning:** jjwt uses HMAC-SHA256 by default (symmetric — same key signs and verifies). For a **resource server** that should only verify (not sign), use asymmetric RSA/EC. With jjwt: sign with `Keys.keyPairFor(SignatureAlgorithm.RS256)`, verify with the public key only.
 
 
 ## Jwt Structure
@@ -957,10 +964,12 @@ public class SecuredController {
 
 🔬 **Section Challenge — Chapter 6: Method-Level Security**
 
-**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+**Challenge 1 (@PreAuthorize vs @PostAuthorize):** `@PreAuthorize("#id == authentication.principal.id")` vs `@PostAuthorize("returnObject.ownerId == authentication.principal.id")`. **Who** checks authorization? **When** is `@PostAuthorize` necessary? **What** happens to the database write if `@PostAuthorize` fails?
+
 <details><summary>Answer</summary>
 
-JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+**Who checks:** Spring Security's method security proxy. `@PreAuthorize` runs BEFORE the method body. `@PostAuthorize` runs AFTER the method body with access to `returnObject`. **When `@PostAuthorize` is necessary:** When the authorization decision depends on the RETURN VALUE. Example: `@PostAuthorize("returnObject.ownerId == authentication.principal.id")` on `findDocument(Long id)` — you don't know the document's owner UNTIL you load it from the database. You must load first, THEN check ownership. **What happens to database write if @PostAuthorize fails:** The method EXECUTES (including DB writes, side effects). The return value is checked AFTER completion. If unauthorized: throws `AccessDeniedException`. BUT any DB changes already committed are NOT rolled back (unless wrapped in `@Transactional` which gets rolled back by the exception). **@PostAuthorize + @Transactional:** If both are present, transaction commits after method, THEN `@PostAuthorize` checks. If `@PostAuthorize` throws, the transaction is already committed. Solution: Use `@PreAuthorize` with a repository check, or ensure the transaction rollbacks via `@Transactional(rollbackFor = AccessDeniedException.class)`. **Best practice:** Prefer `@PreAuthorize` for data access control. Use `@PostAuthorize` sparingly and only when pre-check is impossible.
+
 </details>
 
 
@@ -1189,11 +1198,18 @@ The controller should express the rule, not implement it. Keep row-level authori
 
 🔬 **Section Challenge — Chapter 8: Testing in Postman**
 
-**Challenge 1 (Reasoning):** In OAuth2 (e.g., logging in with Google), why does the client application receive an Authorization Code first, instead of directly receiving the Access Token?
+**Challenge 1 (JWT Expiry and Refresh Token Pattern):** Access token expires in 15 minutes. **Who** issues a new one? **When** should the client use the refresh token? **What** is the security risk if refresh tokens never expire?
+
 <details><summary>Answer</summary>
 
-Security against token interception (Authorization Code Flow). If the Authorization Server sent the Access Token directly via the browser redirect URL (Implicit Flow), it would be exposed in browser history, proxy logs, and vulnerable to interception. By returning a short-lived Authorization Code, the client application's secure backend server can exchange it for the real Access Token directly via a secure, back-channel HTTPS POST request, ensuring the Access Token never touches the vulnerable browser URL.
+**Who issues a new access token:** The Authorization Server (your Spring Boot auth service, or Keycloak, Auth0). The client sends the refresh token to `/oauth/token` (or `/auth/refresh`) with `grant_type=refresh_token`. The server validates the refresh token, issues a new access token (and optionally rotates the refresh token). **When the client uses the refresh token:** When the API returns `401 Unauthorized`. The client should: (1) Try the original request. (2) On `401`, silently call the refresh endpoint. (3) Retry the original request with the new access token. (4) If refresh fails (refresh token expired): redirect to login. **Security risk of non-expiring refresh tokens:** If a refresh token is stolen (XSS, MITM, log leak), the attacker can generate access tokens INDEFINITELY. No expiry = permanent compromise until the user changes password or the token is explicitly revoked. **Best practices:** Refresh token rotation (issue new refresh token on each use, invalidate old one). Short-lived access tokens (15-60 min). Refresh tokens stored in `httpOnly` cookies (not localStorage — XSS safe). Refresh token families (if a reused refresh token is detected, invalidate the entire family). Absolute max lifetime: force re-login after 30 days regardless.
+
 </details>
+
+
+## Chapter 9: OAuth2 / Social Login
+
+
 
 
 # 📌 Section 4: Other Auth Methods
@@ -1366,11 +1382,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
 🔬 **Section Challenge — Chapter 9: OAuth2 / Social Login**
 
-**Challenge 1 (Reasoning):** In OAuth2 (e.g., logging in with Google), why does the client application receive an Authorization Code first, instead of directly receiving the Access Token?
+**Challenge 1 (OAuth2 Scopes and Resource Server Token Validation):** Your Spring Boot API is an OAuth2 Resource Server. A client sends an access token with scope `read:users`. **Who** validates the scope? **When** does Spring Security auto-reject the request? **What** annotation enforces scope-based access on a method?
+
 <details><summary>Answer</summary>
 
-Security against token interception (Authorization Code Flow). If the Authorization Server sent the Access Token directly via the browser redirect URL (Implicit Flow), it would be exposed in browser history, proxy logs, and vulnerable to interception. By returning a short-lived Authorization Code, the client application's secure backend server can exchange it for the real Access Token directly via a secure, back-channel HTTPS POST request, ensuring the Access Token never touches the vulnerable browser URL.
+**Who validates the scope:** Spring Security's `JwtAuthenticationConverter` + `SecurityFilterChain`. The JWT is decoded, scopes extracted from the `scope` or `scp` claim. A `JwtGrantedAuthoritiesConverter` maps each scope to an authority: `read:users` → `SCOPE_read:users`. **When Spring Security auto-rejects:** If the endpoint requires `hasAuthority('SCOPE_write:users')` and the token only has `SCOPE_read:users`, the security filter returns `403 Forbidden`. The request is rejected BEFORE reaching the controller. **Annotation for scope-based method access:** `@PreAuthorize("hasAuthority('SCOPE_read:users')")` on the method. Or configure in `SecurityFilterChain`: `.requestMatchers("/users/**").hasAuthority("SCOPE_read:users")`. **JWT scope claim format varies:** Auth0: `"scope": "read:users write:orders"` (space-separated string). Okta/Keycloak: `"scp": ["read:users", "write:orders"]` (array). Spring's `JwtGrantedAuthoritiesConverter` handles both. **Resource server setup:** `spring.security.oauth2.resourceserver.jwt.jwk-set-uri=https://auth-server/.well-known/jwks.json`. Spring fetches public keys automatically and validates signatures without storing tokens locally.
+
 </details>
+
+
 
 
 ## Chapter 10: API Key Authentication

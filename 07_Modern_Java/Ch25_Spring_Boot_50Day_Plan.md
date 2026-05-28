@@ -399,10 +399,10 @@ Both load orders + customers in ONE query (JOIN). Always check Hibernate's SQL l
 
 🔬 **Section Challenge — Week 4: Security + Auth**
 
-**Challenge 1 (Reasoning):** JWT vs session cookies — what are the tradeoffs for a distributed microservices architecture?
+**Challenge 1 (Diagnostic - Who/What/Where):** A developer adds a new `/api/v1/public` endpoint but it returns 401 Unauthorized. **Who** intercepts this request before it reaches the controller? **Where** in the configuration must this be fixed, and **What** is the exact method call needed in Spring Security 6.x to allow unauthenticated access?
 <details><summary>Answer</summary>
 
-JWT: stateless — any service can validate without a DB call (verify signature with public key). No sticky sessions needed. Downside: can't invalidate a token before expiry (no server-side state). Session cookies: stateful — easy to invalidate (delete session). But: need a shared session store (Redis) for multi-instance deployments, or sticky sessions (load balancer routing). Microservices: JWT wins for scalability. Add a token blacklist (Redis) if revocation is needed.
+**Who intercepts:** The `DelegatingFilterProxy` which hands off to the `SecurityFilterChain` (specifically the `AuthorizationFilter` in Spring Security 6). **Where to fix:** In your `@Configuration` class that defines the `SecurityFilterChain` bean. **What to call:** You must configure the `authorizeHttpRequests` customizer to permit the endpoint: `.requestMatchers("/api/v1/public/**").permitAll()`. If this is missing, the default rule (`anyRequest().authenticated()`) blocks it.
 </details>
 
 

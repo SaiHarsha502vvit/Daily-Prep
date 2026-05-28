@@ -786,7 +786,13 @@ public void processOrder(Order order) {
 
 🔬 **Section Challenge — 5. How @Autowired Works — The Full Resolution Chain**
 
-**Challenge 1 (Reasoning):** What happens if two Spring Beans have a Circular Dependency (A depends on B, and B depends on A) and both use Constructor Injection?
+**Challenge 1 (Ambiguity Resolution):** You have two beans implementing `PaymentService`: `StripePaymentService` and `PaypalPaymentService`. You inject `@Autowired PaymentService service`. **Who** resolves the ambiguity? **When** does it fail vs. succeed? **What** are the three resolution strategies Spring uses in order?
+
+<details><summary>Answer</summary>
+
+**Who resolves:** Spring's `DefaultListableBeanFactory` during dependency injection. **Resolution order:** (1) **Type match** — finds all beans implementing `PaymentService`. If exactly one → inject it. If zero → `NoSuchBeanDefinitionException`. If more than one → ambiguity. (2) **Name match** — Spring checks if any bean's name matches the field/parameter name (`service` → looks for a bean named `service`). (3) **@Primary** — if one bean is annotated `@Primary`, it wins. (4) **@Qualifier** — `@Qualifier("stripePaymentService")` explicitly names the winner. **When it fails:** If 2+ beans match type AND none are `@Primary` AND no `@Qualifier` provided AND field name doesn't match any bean name → `NoUniqueBeanDefinitionException` at startup. **When it succeeds without annotation:** If the field is named exactly `stripePaymentService`, Spring's name-match step finds it — this is fragile and breaks on rename. Always prefer `@Qualifier` or `@Primary` for clarity.
+
+</details>
 <details><summary>Answer</summary>
 
 The application fails to start with a `BeanCurrentlyInCreationException`. Spring cannot instantiate Bean A without first having a fully constructed Bean B, but it cannot construct Bean B without Bean A. This creates an unresolvable deadlock. If you use Field or Setter injection, Spring can bypass this by instantiating both objects first (using empty constructors) and injecting the references afterward. However, Constructor Injection strictly enforces dependency resolution at creation time, exposing poor architectural design.
@@ -1028,7 +1034,13 @@ flowchart TD
 
 🔬 **Section Challenge — 6. How Proxies Work — CGLIB vs JDK Dynamic Proxy Internal Mechanics**
 
-**Challenge 1 (Reasoning):** What happens if two Spring Beans have a Circular Dependency (A depends on B, and B depends on A) and both use Constructor Injection?
+**Challenge 1 (CGLIB Final Class):** You annotate `final class OrderService` with `@Transactional`. **Who** fails at startup? **When** does the failure happen? **What** is the exact error and the two correct fixes?
+
+<details><summary>Answer</summary>
+
+**Who fails:** Spring's CGLIB proxy generator (`Enhancer`). CGLIB works by creating a SUBCLASS of your bean class. `final` classes cannot be subclassed in Java → `Cannot subclass final class`. **When:** At Spring `ApplicationContext` startup, during the BeanFactory post-processing phase when proxies are created. NOT at the method call. **Exact error:** `org.springframework.aop.framework.AopConfigException: Could not generate CGLIB subclass of class [final class OrderService]: ... Cannot subclass final class`. **Fix 1 (Remove final):** Remove the `final` keyword from the class. This is the standard fix — Spring beans should not be `final` if they need proxying. **Fix 2 (Introduce interface):** Extract an `OrderService` interface, make the class implement it. Switch `proxyTargetClass=false` to use JDK Dynamic Proxy (which wraps the interface, not subclasses the class). JDK proxies work with `final` classes as long as the interface is not final. **Production note:** IntelliJ/Spring Boot Kotlin apps: Kotlin classes are `final` by default. Use the `kotlin-spring` compiler plugin which auto-opens Spring-annotated classes.
+
+</details>
 <details><summary>Answer</summary>
 
 The application fails to start with a `BeanCurrentlyInCreationException`. Spring cannot instantiate Bean A without first having a fully constructed Bean B, but it cannot construct Bean B without Bean A. This creates an unresolvable deadlock. If you use Field or Setter injection, Spring can bypass this by instantiating both objects first (using empty constructors) and injecting the references afterward. However, Constructor Injection strictly enforces dependency resolution at creation time, exposing poor architectural design.
@@ -1302,7 +1314,13 @@ public class DataSourceAutoConfiguration {
 
 🔬 **Section Challenge — 8. How Auto-Configuration Works — spring.factories to Bean**
 
-**Challenge 1 (Reasoning):** What happens if two Spring Beans have a Circular Dependency (A depends on B, and B depends on A) and both use Constructor Injection?
+**Challenge 1 (Condition Ordering):** Two auto-configurations define a `DataSource` bean. `MyDataSourceAutoConfig` has `@ConditionalOnMissingBean(DataSource.class)`. Your app also defines a `DataSource` bean manually. **Who** decides which bean wins? **When** is the condition evaluated? **What** determines evaluation order?
+
+<details><summary>Answer</summary>
+
+**Who decides:** Spring's `@ConditionalOnMissingBean` evaluation engine during `ConfigurationClassPostProcessor` phase. **When evaluated:** During the `ApplicationContext` refresh, after ALL `@Configuration` classes are parsed but BEFORE beans are instantiated. The condition checks the bean definition registry — if a `DataSource` bean definition already exists (from your `@Configuration` class), the condition is FALSE and `MyDataSourceAutoConfig`'s `DataSource` is skipped. **What determines evaluation order:** `@AutoConfigureOrder`, `@AutoConfigureBefore`, `@AutoConfigureAfter` annotations on the auto-configuration class. Your app's `@Configuration` classes are always processed BEFORE auto-configurations. So: user beans → `@Primary` auto-configs → regular auto-configs → fallback auto-configs. **Practical rule:** `@ConditionalOnMissingBean` on auto-config beans = "only create this if the user hasn't provided their own." This is how `spring-boot-autoconfigure` provides sensible defaults while letting you override them — just define your own bean.
+
+</details>
 <details><summary>Answer</summary>
 
 The application fails to start with a `BeanCurrentlyInCreationException`. Spring cannot instantiate Bean A without first having a fully constructed Bean B, but it cannot construct Bean B without Bean A. This creates an unresolvable deadlock. If you use Field or Setter injection, Spring can bypass this by instantiating both objects first (using empty constructors) and injecting the references afterward. However, Constructor Injection strictly enforces dependency resolution at creation time, exposing poor architectural design.
@@ -1384,7 +1402,13 @@ The application fails to start with a `BeanCurrentlyInCreationException`. Spring
 
 🔬 **Section Challenge — 9. How @ComponentScan Works — Classpath Scanning Algorithm**
 
-**Challenge 1 (Reasoning):** What happens if two Spring Beans have a Circular Dependency (A depends on B, and B depends on A) and both use Constructor Injection?
+**Challenge 1 (Package Boundary):** Your `@SpringBootApplication` is in `com.example`. You create a service in `com.utils.HelperService` with `@Service`. **Who** misses it? **When** does the scan boundary matter? **What** are two ways to include the out-of-package bean?
+
+<details><summary>Answer</summary>
+
+**Who misses it:** `@ComponentScan` with default settings only scans the package of the class annotated with `@SpringBootApplication` and all its sub-packages. `com.utils` is NOT a sub-package of `com.example` → `HelperService` is never registered as a bean. **When it matters:** At startup — `NoSuchBeanDefinitionException` when something tries to `@Autowired HelperService`. **Fix 1 (Extend scan):** `@ComponentScan(basePackages = {"com.example", "com.utils"})` — explicitly add the extra package. **Fix 2 (Import directly):** `@Import(HelperService.class)` on your main class — registers the specific class as a bean without scanning its entire package. **Production recommendation:** Keep all your application code under one root package (e.g., `com.example.*`). Only use `@Import` or custom scan for third-party library integration. Moving `@SpringBootApplication` to a higher package (`com`) is an anti-pattern — it scans too broadly including Spring's own internal packages.
+
+</details>
 <details><summary>Answer</summary>
 
 The application fails to start with a `BeanCurrentlyInCreationException`. Spring cannot instantiate Bean A without first having a fully constructed Bean B, but it cannot construct Bean B without Bean A. This creates an unresolvable deadlock. If you use Field or Setter injection, Spring can bypass this by instantiating both objects first (using empty constructors) and injecting the references afterward. However, Constructor Injection strictly enforces dependency resolution at creation time, exposing poor architectural design.
@@ -1455,7 +1479,13 @@ public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata)
 
 🔬 **Section Challenge — 10. How Profiles & @Conditional Work — The Decision Engine**
 
-**Challenge 1 (Reasoning):** What happens if two Spring Beans have a Circular Dependency (A depends on B, and B depends on A) and both use Constructor Injection?
+**Challenge 1 (Profile Misfire):** You have `@Profile("prod") @Service class EmailService`. In test, `spring.profiles.active=test`. A test autowires `EmailService`. **Who** throws? **When**? **What** is the standard fix for test environments needing a stub?
+
+<details><summary>Answer</summary>
+
+**Who throws:** Spring's `ApplicationContext` when the test tries to start. **When:** During context initialization — `EmailService` is not registered (because `prod` profile is inactive), so `@Autowired EmailService` fails with `NoSuchBeanDefinitionException`. **Fix 1 (@Profile on stub):** Create `@Profile("test") @Service class StubEmailService implements EmailService` — active in `test`, not in `prod`. **Fix 2 (@MockBean in Spring test):** `@MockBean EmailService emailService` in the test class — Spring Test auto-creates a Mockito mock and registers it as the bean. The `@Profile` class is bypassed entirely. **Fix 3 (@ConditionalOnMissingBean):** Change `EmailService` to `@ConditionalOnMissingBean(EmailService.class)` — if a test provides a mock, the real service is skipped. **The deeper lesson:** `@Profile` is a hard boundary — the bean does NOT exist in other profiles. If you need a fallback, either define a stub for the other profile or use `@ConditionalOnProperty` with a default, which is more flexible than profile boundaries.
+
+</details>
 <details><summary>Answer</summary>
 
 The application fails to start with a `BeanCurrentlyInCreationException`. Spring cannot instantiate Bean A without first having a fully constructed Bean B, but it cannot construct Bean B without Bean A. This creates an unresolvable deadlock. If you use Field or Setter injection, Spring can bypass this by instantiating both objects first (using empty constructors) and injecting the references afterward. However, Constructor Injection strictly enforces dependency resolution at creation time, exposing poor architectural design.
@@ -1573,7 +1603,13 @@ class B {
 
 🔬 **Section Challenge — 11. How Spring Resolves Circular Dependencies**
 
-**Challenge 1 (Reasoning):** What happens if two Spring Beans have a Circular Dependency (A depends on B, and B depends on A) and both use Constructor Injection?
+**Challenge 1 (Third-Bean Fix):** `ServiceA` (constructor) depends on `ServiceB` (constructor) which depends on `ServiceA`. Spring throws `BeanCurrentlyInCreationException`. **Who** breaks the cycle? **What** is the third-bean refactor pattern? **When** is `@Lazy` appropriate vs. the refactor?
+
+<details><summary>Answer</summary>
+
+**Why constructor injection can't resolve it:** Spring's three-level cache (singletonObjects, earlySingletonObjects, singletonFactories) allows FIELD/SETTER injection to use partially constructed beans (early reference). Constructor injection requires the dependency to be FULLY CONSTRUCTED before `new ServiceA(serviceB)` can be called — impossible if B also needs A fully constructed first. **Third-bean refactor:** Extract the shared logic into a `SharedUtilService`. `ServiceA` depends on `SharedUtilService`. `ServiceB` depends on `SharedUtilService`. Neither A nor B depends on each other. The cycle is broken. This is the architecturally correct fix — cycles indicate a design problem where responsibilities should be separated. **When @Lazy is appropriate:** `@Lazy` on one constructor parameter (`@Autowired ServiceA(@Lazy ServiceB b)`) — Spring injects a proxy for B instead of the real B. The real B is only created on first use. Appropriate for: optional dependencies, heavy initialization beans where you want to defer construction. NOT appropriate for: core business logic where you're hiding a real circular dependency. `@Lazy` hides the problem without fixing the design.
+
+</details>
 <details><summary>Answer</summary>
 
 The application fails to start with a `BeanCurrentlyInCreationException`. Spring cannot instantiate Bean A without first having a fully constructed Bean B, but it cannot construct Bean B without Bean A. This creates an unresolvable deadlock. If you use Field or Setter injection, Spring can bypass this by instantiating both objects first (using empty constructors) and injecting the references afterward. However, Constructor Injection strictly enforces dependency resolution at creation time, exposing poor architectural design.
@@ -1658,7 +1694,13 @@ The application fails to start with a `BeanCurrentlyInCreationException`. Spring
 
 🔬 **Section Challenge — 12. How Spring MVC Processes a Request — All 14 Steps**
 
-**Challenge 1 (Reasoning):** What happens if two Spring Beans have a Circular Dependency (A depends on B, and B depends on A) and both use Constructor Injection?
+**Challenge 1 (Handler Not Found):** A `GET /api/users/123` request arrives. **Who** returns 404? **When** in the 14-step flow does it happen? **What** is the difference between a 404 from "no handler found" vs. 404 from a `@ResponseStatus(NOT_FOUND)` thrown inside the handler?
+
+<details><summary>Answer</summary>
+
+**Who returns 404 for no handler:** `DispatcherServlet`'s `HandlerMapping` phase (step 2 of 14). If no `HandlerMapping` finds a handler for `GET /api/users/123`, `DispatcherServlet` checks `throwExceptionIfNoHandlerFound` (default false). If false, it tries to find a default handler (static resource handler). If none found, sends 404 response directly via `response.sendError(404)` — bypassing `@ControllerAdvice`. **When in 14 steps:** After step 2 (HandlerMapping), before step 3 (HandlerAdapter). The response is committed directly — `@ExceptionHandler` and `@ControllerAdvice` are NOT invoked. **Difference from handler-thrown 404:** When your `@GetMapping` method throws `ResponseStatusException(HttpStatus.NOT_FOUND)` or a `@ResponseStatus(NOT_FOUND)` exception, the flow COMPLETES through all 14 steps to step 12 (HandlerExceptionResolver). `@ControllerAdvice @ExceptionHandler` IS invoked. You can customize the error body. **Production fix for no-handler 404:** Set `spring.mvc.throw-exception-if-no-handler-found=true` + `spring.web.resources.add-mappings=false` → converts no-handler 404 to `NoHandlerFoundException` which CAN be caught by `@ControllerAdvice`.
+
+</details>
 <details><summary>Answer</summary>
 
 The application fails to start with a `BeanCurrentlyInCreationException`. Spring cannot instantiate Bean A without first having a fully constructed Bean B, but it cannot construct Bean B without Bean A. This creates an unresolvable deadlock. If you use Field or Setter injection, Spring can bypass this by instantiating both objects first (using empty constructors) and injecting the references afterward. However, Constructor Injection strictly enforces dependency resolution at creation time, exposing poor architectural design.
@@ -1761,7 +1803,13 @@ The application fails to start with a `BeanCurrentlyInCreationException`. Spring
 
 🔬 **Section Challenge — 13. The Entire Spring Ecosystem — How Pieces Fit Together**
 
-**Challenge 1 (Reasoning):** What happens if two Spring Beans have a Circular Dependency (A depends on B, and B depends on A) and both use Constructor Injection?
+**Challenge 1 (Startup-to-Shutdown Trace):** Trace the lifecycle of the entire Spring ecosystem from `main()` to graceful shutdown. **Who** starts first? **When** do beans become available for injection? **What** happens to in-flight HTTP requests during shutdown?
+
+<details><summary>Answer</summary>
+
+**Startup sequence:** (1) `SpringApplication.run()` creates `ApplicationContext`. (2) `Environment` + `PropertySources` loaded. (3) `ApplicationContextInitializers` run. (4) `BeanDefinitionReader` scans `@ComponentScan` packages. (5) `BeanFactoryPostProcessors` run (`ConfigurationClassPostProcessor` processes `@Configuration`). (6) `BeanPostProcessors` registered. (7) Singleton beans instantiated (in dependency order). (8) `@Autowired` dependencies injected. (9) `@PostConstruct` methods called. (10) `ApplicationReadyEvent` fired. (11) Embedded Tomcat starts → HTTP traffic accepted. **When beans available for injection:** After step 8 — `@Autowired` completes. But `@PostConstruct` (step 9) runs after injection, so beans may not be "ready" until step 9 completes. **Graceful shutdown:** `SIGTERM` received → Spring Boot 2.3+ triggers `GracefulShutdown`. Tomcat stops accepting NEW connections. In-flight requests: given a configurable grace period (`server.shutdown.timeout`, default 30s) to complete. After timeout, forcibly terminated. `@PreDestroy` beans called in REVERSE creation order. `ApplicationContext` closed. **Key:** HTTP traffic is drained before beans are destroyed — ensuring no `NullPointerException` on half-destroyed services.
+
+</details>
 <details><summary>Answer</summary>
 
 The application fails to start with a `BeanCurrentlyInCreationException`. Spring cannot instantiate Bean A without first having a fully constructed Bean B, but it cannot construct Bean B without Bean A. This creates an unresolvable deadlock. If you use Field or Setter injection, Spring can bypass this by instantiating both objects first (using empty constructors) and injecting the references afterward. However, Constructor Injection strictly enforces dependency resolution at creation time, exposing poor architectural design.

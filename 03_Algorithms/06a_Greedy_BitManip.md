@@ -153,7 +153,9 @@ For factorial(1000): ~35,000 cycles in overhead alone!
 An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
 </details>
 
-**Challenge 2 (Bug Hunt):** ```java
+**Challenge 2 (Bug Hunt):**
+
+```java
 void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
 fib(50) // takes forever
 ```
@@ -365,4 +367,3 @@ If your problem can be mapped to finding the maximum-weight independent set of a
 
 ### Why Greedy Fails (Not a Matroid):
 - **0/1 Knapsack:** Let capacity be 10kg. Suppose $A=\{6kg\}$ and $B=\{5kg, 5kg\}$. Both sets are valid (weight $\le 10$). Notice $|A| = 1$ and $|B| = 2$, so $|A| < |B|$. According to the Matroid Exchange Property, we should be able to take a 5kg item from $B$ and add it to $A$ to get a valid set. But $\{6kg\} \cup \{5kg\} = 11kg$, which exceeds capacity and is INVALID. The exchange property fails! Therefore, the knapsack problem does not form a matroid, and the greedy algorithm is doomed to fail, requiring Dynamic Programming instead.
-

@@ -356,6 +356,12 @@ WINDOW w AS (PARTITION BY dept_id ORDER BY salary DESC);
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
 </details>
 
+> [!NOTE]
+> **Open Source Reference: Window Aggregation Engine**
+> * [postgres/nodeWindowAgg.c](https://github.com/postgres/postgres/blob/master/src/backend/executor/nodeWindowAgg.c) -> **Invariant:** The executor groups tuples into partitions, caching them in a `tuplestore`. It evaluates window functions over the defined frame boundaries without reducing the input row count.
+> * **Local rewrite:** While `GROUP BY` routes tuples to an aggregator that emits a single result row per group (destroying base row visibility), the `WindowAgg` node buffers the partition, evaluates the aggregate or ranking function, and emits the result appended to *every* original row.
+> * **Constraint warning:** Because it requires sorting and buffering (often spilling to disk if `work_mem` is exceeded), window functions are expensive on large partitions. Always define the narrowest `PARTITION BY` possible and filter with `WHERE` *before* the window function runs.
+
 **Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
 <details><summary>Answer</summary>
 

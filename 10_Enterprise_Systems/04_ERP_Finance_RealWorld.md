@@ -2,6 +2,7 @@
 
 ---
 
+```java
 public void bulkInsertOrders(List<Order> orders) {
     int batchSize = 500;
 
@@ -1116,5 +1117,4 @@ _This document is part of your journey. Come back to it when you need direction.
 ---
 
 **Navigation**: [< Previous](03_ERP_Finance_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_RealWorld_Problems_DSA.md)
-
 

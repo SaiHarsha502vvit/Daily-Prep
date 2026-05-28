@@ -2,6 +2,7 @@
 
 ---
 
+```java
 @WebMvcTest(UserController.class)
 @Import(SecurityConfig.class)
 class SecuredControllerTest {

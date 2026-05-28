@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](12_Backtracking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Mixed_Competitive.md)
+**Navigation**: [< Previous](12_Backtracking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Mixed_Competitive.md)
 
 **Problems 13/14** | [Prev](12_Backtracking.md) | [Index](../00_MASTER_INDEX.md) | [Next](14_Mixed_Competitive.md)
 
@@ -75,7 +75,13 @@ solutions to subproblems
 
 🔬 **Section Challenge — Greedy Fundamentals**
 
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+**Challenge 1 (Greedy Proof):** Activity Selection sorts by end time. **Who** proves this is optimal? **What** is the "exchange argument" proof technique, and how does it apply to this problem?
+
+<details><summary>Answer</summary>
+
+**Exchange argument proof:** Assume an optimal solution OPT doesn't always choose the activity with the earliest end time. Let OPT choose activity B first (with later end time), and our greedy chooses activity A (earlier end time). We can SWAP A for B in OPT: since A ends earlier, everything that was compatible with B is also compatible with A — swapping doesn't reduce the count. By repeating this exchange for every non-greedy choice, we transform OPT into the greedy solution without losing any activities. Therefore greedy is optimal. **Key insight:** This proof technique works whenever the greedy choice is "at least as good" as any alternative — we don't need to know OPT, we just show we can transform any OPT into greedy without degrading it.
+
+</details>
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
@@ -88,7 +94,13 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 🔬 **Section Challenge — PART 0: WHY Greedy — The Algorithm That Feels Like Cheating (But Isn't)**
 
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+**Challenge 1 (Greedy Failure Condition):** Coin change with denominations `[1, 5, 6]` and target `10`. Greedy picks 6 first, then 1+1+1+1 = 5 coins. Optimal is 5+5 = 2 coins. **Who** breaks the greedy? **What** property of the coin system allows greedy to fail? **When** does greedy ALWAYS work for coin change?
+
+<details><summary>Answer</summary>
+
+**Who breaks greedy:** The `6` denomination. After picking `6`, you need 4 more — which requires four `1`s (5 total). But `5+5=10` is optimal (2 coins). **What property allows failure:** The denominations don't have the "greedy-choice property" for this target. Greedy works on coin systems where each denomination is an exact multiple of smaller ones (e.g., `[1, 5, 25, 100]` — US coins). In that case, a bigger coin is always worth more combinations. With `[1, 5, 6]`, `6` is not a multiple of `5` — the domains overlap non-uniformly. **When greedy ALWAYS works:** When denominations are a canonical coin system (each larger denomination = integer multiple of the next smaller). US coins, EU coins work. Also when there's a formal proof via exchange argument for the specific denomination set. **General solution:** Coin change is a DP problem (LC 322). DP is O(amount * #coins) and handles all denomination sets correctly.
+
+</details>
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
@@ -122,7 +134,13 @@ Jump Game I            │ Palindrome Partitioning min cuts
 
 🔬 **Section Challenge — Why Greedy Problems Are Tricky (And Important)**
 
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+**Challenge 1 (Why Greedy Is Tricky):** LC 55 (Jump Game) and LC 45 (Jump Game II) look identical but one uses greedy and one "requires" DP. Both are actually solvable with greedy. **Who** defines the greedy choice in Jump Game II? **When** does the local choice (extend reach maximally) guarantee global minimum jumps?
+
+<details><summary>Answer</summary>
+
+**Greedy choice in Jump Game II:** At each position, we track `currentEnd` (the farthest we can reach with the current number of jumps) and `farthest` (the farthest we can reach if we make one more jump from any position seen so far). When we reach `currentEnd`, we MUST make one more jump — we set `currentEnd = farthest` (the furthest reachable in one more jump). **Who defines it:** The implicit interval structure. Each jump "covers" a range. We want to cover `[0, n-1]` with minimum intervals where each interval `[i, i+nums[i]]` overlaps the previous. **Why local maximizes global:** At the point where we must jump (position = `currentEnd`), choosing the jump that extends reach the farthest is always optimal. Taking a shorter jump would only restrict future options. This is the "greedy interval covering" proof: always extend coverage greedily. **Time complexity:** O(n) greedy vs O(n²) naive DP — greedy wins both correctness and efficiency.
+
+</details>
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
@@ -734,7 +752,13 @@ public int candy(int[] ratings) {
 
 🔬 **Section Challenge — 12.2 Array Greedy**
 
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+**Challenge 1 (Array Greedy — Gas Station):** LC 134: circular gas station. You can complete a circuit if `sum(gas) >= sum(cost)`. **Who** finds the start station? **What** is the greedy insight that makes O(n) possible without trying all starts?
+
+<details><summary>Answer</summary>
+
+**Greedy insight:** If you start at station `i` and run out of gas at station `j`, you CANNOT start at any station between `i` and `j`. Why? If starting at `i` fails at `j`, starting at any `k` between `i` and `j` means you SKIP the gas from stations `i` to `k-1`. Since those stations weren't enough to get you to `j+1` even WITH their gas contribution, having LESS gas from `k` onward certainly fails. **The algorithm:** Scan once. Track `total = sum(gas[i] - cost[i])` and `tank = current tank running balance`. If `tank < 0`, reset: set `start = i+1`, reset `tank = 0`. After full scan: if `total >= 0`, `start` is the answer (guaranteed unique). If `total < 0`, no solution. **Who finds the start:** The O(n) single-pass scan, resetting whenever we'd go negative. The key guarantee: if a solution exists, the last reset point is always the valid start. **This is greedy** because we make a local decision ("this station can't be the start") that permanently eliminates it without backtracking.
+
+</details>
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
@@ -853,7 +877,13 @@ public int leastInterval(char[] tasks, int n) {
 
 🔬 **Section Challenge — 12.3 String Greedy**
 
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+**Challenge 1 (String Greedy — Task Scheduler):** LC 621: Task Scheduler. Tasks A-Z with cooldown n. **Who** determines the minimum time? **What** greedy choice maximizes CPU utilization?
+
+<details><summary>Answer</summary>
+
+**Greedy choice:** Always schedule the task with the HIGHEST remaining frequency. After each task, wait for cooldown before scheduling the same task again. Fill idle slots with the next most frequent tasks. **Formula (no simulation needed):** `time = max(n_tasks, (max_freq - 1) * (n + 1) + count_max_freq)`. Where `max_freq` = frequency of most common task, `count_max_freq` = number of tasks with that frequency, `n` = cooldown. **Why:** The most frequent task creates "mandatory idle" slots: you need `(max_freq - 1)` cooldown gaps of size `n`. Each gap can be filled with other tasks. If total tasks exceed the formula (many different tasks fill all gaps), no idle time is needed. **Who determines minimum:** The most frequent task acts as the bottleneck. All other tasks either fill gaps or extend beyond the minimum frame. **Example:** Tasks `[A=3, B=3, C=2]`, n=2. `max_freq=3`, `count_max=2`. Answer = `max(8, (3-1)*(2+1)+2) = max(8, 8) = 8`. Sequence: `A B C A B C A B`.
+
+</details>
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
@@ -952,7 +982,13 @@ public int maxProfit(int[] prices) {
 
 🔬 **Section Challenge — 12.4 Math Greedy**
 
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+**Challenge 1 (Math Greedy — Digit Maximization):** Given non-negative integer `n`, remove `k` digits to make the largest possible number. **Who** makes the greedy choice? **What** local decision guarantees the globally maximum result?
+
+<details><summary>Answer</summary>
+
+**Greedy choice:** To maximize, we want the LARGEST possible digit in each position from left to right. Use a monotonic decreasing stack: scan digits left to right. While the stack is non-empty AND top of stack < current digit AND we still have removals left — pop the stack (remove that digit). Push the current digit. **Why this is locally optimal = globally optimal:** If digit `d[i]` > `d[i-1]` (current digit is larger than the previous), removing `d[i-1]` gives us a larger leading digit in that position. A larger leading digit is ALWAYS better than any combination of smaller digits later. **Example:** `n = 1432219`, `k = 3`. Stack trace: push 1, push 4 (4>1, push), pop 4 and push 3? No — 3<4, push 3. Push 2... pop 3 (3>2, remove count=1), pop 4... wait: scan: `1 4 3 2 2 1 9`. On seeing `9`: pop `1` (k--), pop `2` (k--), pop `2` (k--). Result: `4 3 9` → `439`. **Who makes the choice:** A monotonic decreasing stack scan, O(n). Remove the smallest-place digit when a larger digit appears to its right.
+
+</details>
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
@@ -1006,7 +1042,13 @@ Sorting by end time: greedily picking the interval that ends earliest leaves max
 
 🔬 **Section Challenge — 🌍 Real-World Applications of Greedy Algorithms**
 
-**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+**Challenge 1 (Huffman Coding Greedy):** Huffman coding uses a greedy algorithm to build a prefix-free encoding tree. **Who** proves that always merging the two lowest-frequency nodes is optimal? **What** property makes prefix-free codes possible?
+
+<details><summary>Answer</summary>
+
+**Who proves it optimal:** Exchange argument. In any optimal code tree, the two symbols with lowest frequency must be deepest (assigned longest codes). Swapping shallower symbols with the two lowest-frequency symbols into deeper positions reduces or maintains total weighted path length. Therefore always merging the two lowest first is optimal. **Greedy algorithm:** Min-heap of (frequency, node). Pop two minimums, merge into parent with combined frequency, push back. Repeat until one node. This is O(n log n) with a heap. **Prefix-free property:** In the Huffman tree, codes are only assigned to LEAF nodes. Since no leaf is an ancestor of another leaf, no code is a prefix of another. Bit strings are read left (0) / right (1) until a leaf is reached — unambiguous decoding. **Why greedy works here:** The cost function (sum of frequency * depth) has "optimal substructure" — an optimal tree for n symbols contains optimal sub-trees for any subset. Combined with the greedy-choice property (always merge cheapest pair), this guarantees global optimality. Huffman is one of the few greedy algorithms with a formal optimality proof.
+
+</details>
 <details><summary>Answer</summary>
 
 Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.

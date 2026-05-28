@@ -63,3 +63,39 @@ Reason: stale means the file changed after the last context snapshot.
 For "what files exist and what are their titles/signals," use `00_CONTEXT/FILE_REGISTRY.md`.
 
 Reason: it is generated from the current filesystem and avoids stale manual counts.
+
+## D009 - Open-Source References Are Learning Anchors
+
+Open-source repositories may be linked from guides when they improve reasoning, implementation quality, or production understanding. Use them as anchors:
+
+- Link the source.
+- Explain the invariant or design choice.
+- Translate the idea into the repo's Java/DSA/interview style.
+- Avoid copying large implementations into the notes.
+- Mention when the source code's language, API, or production concerns do not match the problem constraints.
+
+Reason: the owner wants future agents to enrich guides with strong real implementations while preserving explanation quality and avoiding blind copy-paste.
+
+## D010 - Technical Pedagogy Standards Are Mandatory
+
+Future agents must use `00_CONTEXT/PEDAGOGY_STANDARDS.md` when adding, repairing, or reviewing learning content.
+
+Reason: the repo should teach reasoning consistently across models and agents, especially during parallel cleanup work.
+
+## D011 - Parallel Agent File Locking Via Stale Check
+
+Before editing any file while another agent is active, run `tools/update_context.ps1 -Mode check`. If a file appears in the stale report, inspect it before editing. Do not blindly overwrite concurrent changes. Report the conflict instead.
+
+The repo is the shared communication channel between agents. Do not use chat transcripts to coordinate file ownership.
+
+Reason: multiple agents (Antigravity, Codex, or others) may run simultaneously on the same repository. The stale check reveals recently changed files without requiring explicit file locks.
+
+## D012 - Open-Source References Use Stable Permalink Commits
+
+When linking open-source implementations, always use a stable permalink (commit SHA or tagged release URL), not a `main`/`master` HEAD URL.
+
+Examples:
+- ✅ `https://github.com/openjdk/jdk/blob/jdk-21-ga/src/java.base/share/classes/java/util/HashMap.java#L274`
+- ❌ `https://github.com/openjdk/jdk/blob/main/src/java.base/share/classes/java/util/HashMap.java#L274`
+
+Reason: HEAD links rot within weeks. Stable permalink commits preserve the exact code the guide explains, even after upstream rewrites.

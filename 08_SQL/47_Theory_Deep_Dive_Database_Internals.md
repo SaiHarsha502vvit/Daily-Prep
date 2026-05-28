@@ -534,16 +534,16 @@ SIZING:
 
 🔬 **Section Challenge — T6: Buffer Pool & Memory**
 
-**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+**Challenge 1 (Reasoning):** Buffer cache hit ratio is 99.5%, but p95 latency is still high. Why can a high hit ratio be misleading?
 <details><summary>Answer</summary>
 
-First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+A high hit ratio means most page reads are served from memory, but it says nothing about CPU-heavy plans, lock waits, sort/hash spill, connection pool waits, or a small number of expensive disk reads on critical requests. It can also hide that one endpoint scans many cached pages and burns CPU. Pair hit ratio with `EXPLAIN ANALYZE`, wait events, temp file/spill metrics, lock metrics, and query latency percentiles.
 </details>
 
-**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+**Challenge 2 (Design):** Why is "increase shared_buffers" not always the best answer when disk reads are high?
 <details><summary>Answer</summary>
 
-Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+More buffer memory helps only if the workload has reusable pages and the host has memory headroom. If the real issue is missing indexes, bad join order, sequential scans, or one-time analytics queries, a larger cache just stores waste. It may also starve the OS page cache or increase checkpoint pressure. First reduce pages read per query; then size memory for the remaining working set.
 </details>
 
 

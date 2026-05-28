@@ -19,6 +19,15 @@
 | 08 | [Security Fundamentals](08_Security_Fundamentals.md) | ~1400 | Month 6 → Forever | One breach = career damage |
 | 09 | [System Design Foundations](09_System_Design.md) | ~1500 | Year 1 → Forever | How to build things that scale |
 | 10 | [Developer Tools & Productivity](10_Dev_Tools_Productivity.md) | ~1200 | Day 1 → Forever | Work smarter, not harder |
+| 11 | [Production Code Practices](11_Production_Code_Practices.md) | ~300 | Year 1 → Forever | Code outside a tutorial context |
+| 12 | [Monitoring & Observability](12_Monitoring_Observability.md) | ~200 | Year 1 → Forever | You can't fix what you can't see |
+| 13 | [Agile & Scrum](13_Agile_Scrum.md) | ~520 | Day 1 → Forever | How tech teams actually operate |
+| 14 | [Code Review Practices](14_Code_Review_Practices.md) | ~450 | Month 3 → Forever | Writing code with team synergy |
+| 15 | [Cloud Services Guide](15_Cloud_Services_Guide.md) | ~490 | Year 1 → Forever | Moving from local to the cloud |
+| 16 | [IaC & Terraform](16_IaC_Terraform.md) | ~670 | Year 2 → Forever | Infrastructure that scales reliably |
+| 17 | [Servers, Ports, Networking](17_Servers_Ports_Networking.md) | ~540 | Month 1 → Forever | The plumbing of the internet |
+| 18 | [Backend & Cloud Integration](18_Backend_Cloud_Integration.md) | ~390 | Year 1 → Forever | Designing robust distributed systems |
+| 19 | [Concurrency Models & Coroutines](19_Concurrency_Models_Coroutines.md) | ~660 | Year 2 → Forever | Scaling CPU execution efficiently |
 
 ---
 

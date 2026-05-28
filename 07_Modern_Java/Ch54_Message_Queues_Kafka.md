@@ -42,11 +42,6 @@ How production systems communicate asynchronously — from simple queues to stre
 
 ## Part 2: Queue Types — Point-to-Point vs Pub/Sub
 
-```
-POINT-TO-POINT (Work Queue):
-  Producer ──→ [Queue] ──→ Consumer A   (only ONE consumer gets each message)
-                       ──→ Consumer B
-  Use case: Task distribution (each email sent once)
 ```text
 POINT-TO-POINT (Work Queue):
                              +---> [Consumer A] (Only one gets the message)
@@ -318,4 +313,3 @@ Don't store current state — **store all events as the source of truth**.
 
 
 → **Guarantee**: If the DB is updated, the event **WILL** be published (eventually).
-

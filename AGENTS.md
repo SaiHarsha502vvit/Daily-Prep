@@ -9,9 +9,10 @@ Before editing any content file:
 1. Read this file.
 2. Read `00_CONTEXT/README.md`.
 3. Read `00_CONTEXT/REPO_MAP.md`.
-4. Read the nearest folder `CONTEXT.md` for the area you will edit.
-5. Look up target files in `00_CONTEXT/FILE_REGISTRY.md`.
-6. Run:
+4. Read `00_CONTEXT/PEDAGOGY_STANDARDS.md`.
+5. Read the nearest folder `CONTEXT.md` for the area you will edit.
+6. Look up target files in `00_CONTEXT/FILE_REGISTRY.md`.
+7. Run:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check

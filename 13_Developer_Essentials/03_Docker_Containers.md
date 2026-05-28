@@ -1,4 +1,4 @@
-﻿# 🐳 Docker & Containers — Complete Guide
+# 🐳 Docker & Containers — Complete Guide
 
 **Navigation**: [< Linux CLI](02_Linux_CLI_Shell.md) | [Index](00_INDEX.md) | [Next: CI/CD >](04_CICD_Pipelines.md)
 
@@ -531,3 +531,8 @@ The JDK includes: `javac` (compiler), `jdb` (debugger), `jcmd`/`jmap`/`jstack` (
 Docker builds images **layer by layer**, and each layer is **cached**. If a layer's input hasn't changed, Docker reuses the cached result instead of re-executing it. Dependencies (`pom.xml`) change rarely — maybe once a week when you add a new library. Source code (`src/`) changes on every commit. By copying `pom.xml` FIRST and resolving dependencies, Docker creates a cached layer containing all downloaded JARs (~200-500MB). On subsequent builds where only `src/` changed, Docker skips the dependency download entirely (cache hit on layers 1-2) and only rebuilds from `COPY src/` onward. **If reversed** (`COPY . .` then `RUN mvn dependency:resolve`), ANY change to ANY file (even a one-line code fix) invalidates the COPY layer, which invalidates ALL subsequent layers — forcing a full `mvn dependency:resolve` on every build. This turns a 10-second rebuild into a 3-5 minute rebuild. **The general rule:** In Dockerfiles, order instructions from **least frequently changing to most frequently changing**. This is called **layer cache optimization** and is the single most impactful Docker performance technique.
 </details>
 
+> [!NOTE]
+> **Open Source Reference: Docker Layer Caching (BuildKit)**
+> * [moby/buildkit](https://github.com/moby/buildkit) -> **Invariant:** Layer invalidation cascades downwards. A change in layer $N$ invalidates layers $N$ through the end of the Dockerfile.
+> * **Local rewrite:** While the standard `COPY pom.xml` trick caches dependencies as an image layer, BuildKit's `RUN --mount=type=cache,target=/root/.m2` mounts a persistent compiler cache directory directly into the build container, skipping dependency downloads even if the `pom.xml` layer itself is invalidated.
+> * **Constraint warning:** BuildKit cache mounts are build-time only. They are not persisted in the final image, and they don't share cache automatically across distributed CI runners without explicit registry cache-export configuration.

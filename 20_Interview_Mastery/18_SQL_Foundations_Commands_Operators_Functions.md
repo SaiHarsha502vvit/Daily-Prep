@@ -306,7 +306,13 @@ SELECT * FROM t1 WHERE name LIKE '_h%';
 
 🔬 **Section Challenge — 5.5 `LIKE` with wildcards**
 
-**Challenge 1 (Reasoning):** `void process(List<? extends Number> list)` — can you call `list.add(3.14)`? Why or why not?
+**Challenge 1 (LIKE Pattern Matching Performance):** `SELECT * FROM users WHERE name LIKE '%john%'`. **Who** can't use an index? **When** does `LIKE 'john%'` perform better? **What** is the production alternative for full-text search?
+
+<details><summary>Answer</summary>
+
+**Who can't use an index:** The leading wildcard `%john%`. SQL indexes store values in sorted order. A leading `%` means "match anything before john" — the database must scan every row to find matches. No B-tree index can help (you'd need to check ALL rows). **When LIKE 'john%' uses an index:** A TRAILING wildcard `LIKE 'john%'` can use a B-tree index because the search starts from the known prefix `john`. The index lookup starts at `john` and reads forward until the prefix no longer matches. **Production alternative:** Full-text search indexes. MySQL: `MATCH(name) AGAINST('john' IN NATURAL LANGUAGE MODE)` with `FULLTEXT INDEX(name)`. PostgreSQL: `name @@ to_tsquery('john')` with `GIN` index on `to_tsvector('english', name)`. These tokenize text and build inverted indexes — O(1) lookup regardless of position. For applications at scale: Elasticsearch with fuzzy search handles complex patterns without scanning every row.
+
+</details>
 <details><summary>Answer</summary>
 
 No. The compiler doesn't know the actual type — it could be `List<Integer>`, `List<Float>`, or `List<Double>`. Adding a `Double` to a `List<Integer>` would violate type safety. `? extends T` is read-only: you can `get()` as `Number`, but `add()` is forbidden (except null).
@@ -730,7 +736,13 @@ SELECT ROUND(25.678, 2);
 
 🔬 **Section Challenge — 11.2 Math functions**
 
-**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+**Challenge 1 (FLOOR vs ROUND vs CEIL):** `SELECT ROUND(2.5), ROUND(2.45, 1), FLOOR(-2.1), CEIL(-2.1)`. **Who** rounds toward zero? **When** does `ROUND(2.5)` return different results in different databases? **What** is the banker's rounding rule?
+
+<details><summary>Answer</summary>
+
+**Results in most databases:** `ROUND(2.5) = 3` (rounds up), `ROUND(2.45, 1) = 2.5` (one decimal), `FLOOR(-2.1) = -3` (toward negative infinity), `CEIL(-2.1) = -2` (toward positive infinity). **Who rounds toward zero:** `TRUNCATE(2.9) = 2` (removes decimal, moves toward zero). Not same as FLOOR for positives (same result) but differs for negatives: `TRUNCATE(-2.9) = -2`, `FLOOR(-2.9) = -3`. **When ROUND(2.5) returns different results:** PostgreSQL uses "banker's rounding" (round half to even): `ROUND(2.5) = 2`, `ROUND(3.5) = 4` (rounds to nearest even). MySQL always rounds 0.5 up: `ROUND(2.5) = 3`. This difference can cause subtle discrepancies in financial calculations. **Banker's rounding rule (IEEE 754):** Round 0.5 to the nearest EVEN number. Reduces statistical bias in repeated rounding. Used in scientific computing and Java's `RoundingMode.HALF_EVEN`. **Production tip:** For financial data, use `DECIMAL(precision, scale)` not `FLOAT`. Apply rounding consistently. Store raw values and round only for display.
+
+</details>
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
@@ -758,7 +770,13 @@ SELECT DATEDIFF('2026-03-13', '2026-03-01');
 
 🔬 **Section Challenge — 11.3 Date functions**
 
-**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+**Challenge 1 (DATEDIFF vs Interval Arithmetic):** `DATEDIFF('2025-03-01', '2025-02-01')` in MySQL returns 28. But `'2025-03-01'::date - '2025-02-01'::date` in PostgreSQL also returns 28. **Who** handles DST transitions? **When** is DATEDIFF unsafe for time-sensitive calculations? **What** is the interval arithmetic alternative?
+
+<details><summary>Answer</summary>
+
+**Who handles DST:** Neither `DATEDIFF` nor date subtraction accounts for DST — they work with calendar days only. March 8 to March 9 in a DST-observing timezone is actually 23 real hours (clocks spring forward), but `DATEDIFF` returns 1. **When DATEDIFF is unsafe:** Any calculation involving timezones where DST transitions occur. Booking systems ("room available for 3 days"), subscription billing ("charge after 30 days"), expiry calculations. **Date arithmetic in different databases:** MySQL: `DATEDIFF(date2, date1)` (day difference), `TIMESTAMPDIFF(HOUR, ts1, ts2)` (hour difference). PostgreSQL: `date2 - date1` returns `interval` or integer days. `EXTRACT(EPOCH FROM (ts2 - ts1)) / 3600` for precise hours. **Interval arithmetic:** `'2025-02-01'::date + INTERVAL '1 month'` = `'2025-03-01'`. Note: `+ INTERVAL '1 month'` on `'2025-01-31'` = `'2025-02-28'` (not March 2) — PostgreSQL clamps to end of month. **Production pattern for expiry:** Store as `created_at + INTERVAL '30 days' > NOW()` or store explicit `expires_at` timestamp computed at write time.
+
+</details>
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
@@ -896,7 +914,13 @@ Avoid when:
 
 🔬 **Section Challenge — 14) CTE and Window Functions as Readability + Power Tools**
 
-**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+**Challenge 1 (CTE vs Subquery Performance):** `WITH cte AS (SELECT ...) SELECT * FROM cte WHERE ...` vs `SELECT * FROM (SELECT ...) sq WHERE ...`. **Who** materializes the result? **When** does a CTE hurt performance? **What** is the PostgreSQL CTE materialization flag?
+
+<details><summary>Answer</summary>
+
+**Who materializes:** Depends on the database. PostgreSQL pre-14: CTEs are ALWAYS materialized (executed once, result stored in temp table). PostgreSQL 14+: CTEs are inlined by default (treated as subquery, can be optimized). MySQL: CTEs are inlined (re-evaluated per reference). SQL Server: CTEs are inlined (like a view macro). **When a CTE hurts performance (PostgreSQL pre-14):** Materialized CTEs prevent the optimizer from pushing WHERE predicates into the CTE. `WITH cte AS (SELECT * FROM orders) SELECT * FROM cte WHERE id = 5` — the CTE scans ALL orders, materializes all rows, THEN filters to id=5. A subquery would push the `id=5` predicate inside. **PostgreSQL CTE materialization flag (14+):** `WITH cte AS MATERIALIZED (SELECT ...)` forces materialization. `WITH cte AS NOT MATERIALIZED (SELECT ...)` forces inlining. Use `MATERIALIZED` when the CTE result is used multiple times (avoids re-execution). Use `NOT MATERIALIZED` when the optimizer needs predicate pushdown. **Best practice:** Use CTEs for readability. In performance-critical code, test with `EXPLAIN ANALYZE` to see if the CTE is materialized or inlined.
+
+</details>
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
@@ -949,7 +973,13 @@ FROM t1;
 
 🔬 **Section Challenge — 14.2 Ranking window functions**
 
-**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+**Challenge 1 (RANK vs DENSE_RANK vs ROW_NUMBER):** Three employees have salaries: Alice=90k, Bob=90k, Carol=70k. **Who** gets rank 2 with `RANK()`, `DENSE_RANK()`, and `ROW_NUMBER()`?
+
+<details><summary>Answer</summary>
+
+**ROW_NUMBER():** Sequential with no ties. Alice=1, Bob=2, Carol=3 (or Alice=2, Bob=1 depending on ORDER BY tie-breaking — non-deterministic for ties without a tiebreaker column). **RANK():** Ties get the SAME rank, next rank skips. Alice=1, Bob=1, Carol=3. No rank 2 exists. The gap "1,1,3" represents "two people tied for 1st." **DENSE_RANK():** Ties get the same rank, NO gap. Alice=1, Bob=1, Carol=2. Dense = no missing numbers. **When to use each:** `ROW_NUMBER()` — de-duplication (latest record per user: `WHERE rn=1`), pagination. `RANK()` — sports-style leaderboards (tied gold medals, next is bronze). `DENSE_RANK()` — percentile bands (top 3 salary grades, no gaps). **Interview gotcha:** `SELECT * FROM (SELECT *, RANK() OVER (ORDER BY salary DESC) r FROM emp) t WHERE r = 2` — returns Carol (70k) but not Alice or Bob (both rank 1, skip 2). `DENSE_RANK()` would return Alice and Bob at rank 2. Know which one to use for "2nd highest salary."
+
+</details>
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
@@ -986,7 +1016,13 @@ FROM t1;
 
 🔬 **Section Challenge — 14.3 Value window functions**
 
-**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+**Challenge 1 (LAG and LEAD for Period Comparisons):** `LAG(revenue, 1) OVER (PARTITION BY product ORDER BY month)` returns the previous month's revenue. **Who** computes the value? **When** does `LAG` return NULL? **What** is the default value syntax and the common MoM growth calculation?
+
+<details><summary>Answer</summary>
+
+**Who computes it:** The SQL window function engine. `LAG(expr, offset, default)` looks back `offset` rows within the window partition. No self-join needed. **When LAG returns NULL:** When `offset` exceeds the number of preceding rows in the partition. For the first row in each `PRODUCT` group (no previous month): `LAG(revenue, 1)` returns NULL. **Default value syntax:** `LAG(revenue, 1, 0) OVER (PARTITION BY product ORDER BY month)` — returns 0 instead of NULL for the first row. Or: `COALESCE(LAG(revenue, 1) OVER (...), 0)`. **MoM growth calculation:** `(revenue - LAG(revenue, 1) OVER (PARTITION BY product ORDER BY month)) / NULLIF(LAG(revenue, 1) OVER (...), 0) * 100 AS growth_pct`. `NULLIF(..., 0)` prevents division by zero when previous month = 0. **LEAD:** Same as LAG but looks FORWARD. Useful for: time-to-next-event, churn prediction ("days until customer churned"). `LEAD(order_date, 1) OVER (PARTITION BY customer ORDER BY order_date) AS next_order_date`. **Performance:** Window functions scan the ordered partition once. Much faster than correlated subqueries that re-execute per row.
+
+</details>
 <details><summary>Answer</summary>
 
 Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.

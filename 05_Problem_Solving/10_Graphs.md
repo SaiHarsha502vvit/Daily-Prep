@@ -323,7 +323,13 @@ void dfs(int[][] grid, int r, int c, boolean[][] visited) {
 
 🔬 **Section Challenge — PART 0: WHY Graph Problems & How to Think About Them**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Graph Representation Selection):** You model a road navigation system. 100,000 cities (nodes), average 4 connections (edges) per city. **Who** selects adjacency list? **When** would you use adjacency matrix? **What** is the memory cost difference?
+
+<details><summary>Answer</summary>
+
+**Who selects adjacency list:** The developer, based on the edge-to-vertex ratio. 100k cities × 4 connections = 400k edges. **Adjacency list memory:** O(V + E) = O(100k + 400k) = 500k entries (each as an integer). ~2 MB. **Adjacency matrix memory:** O(V²) = 100k × 100k = 10^10 entries. 10 billion bits = 1.25 GB minimum. Impossible. **When adjacency matrix:** Dense graphs (E ≈ V²), very small V (<1000 nodes), or O(1) edge existence checks needed frequently. Flight connectivity between 50 airports: 50×50 = 2500 entries — matrix is fine. **Directed vs undirected:** In adjacency list for undirected graph, each edge `u-v` appears TWICE: once in `adj[u]` and once in `adj[v]`. Total entries = 2E. For directed graph: E entries (each directed edge stored once). **Weighted edges:** Adjacency list stores `List<int[]>` where `int[] = {neighbor, weight}`. Matrix stores `int[V][V]` with weight values (0 = no edge, but 0 can be a valid weight — use `Integer.MAX_VALUE` for no edge).
+
+</details>
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
@@ -772,7 +778,13 @@ public void wallsAndGates(int[][] rooms) {
 
 🔬 **Section Challenge — 9.1 Graph Traversal (BFS/DFS)**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (BFS Iterative vs DFS Recursive Template):** For graph traversal, BFS uses a queue. DFS can be recursive or iterative (explicit stack). **Who** should use recursive DFS? **When** does iterative DFS differ from recursive DFS in traversal ORDER? **What** visited-tracking mechanism is required for graphs (not needed for trees)?
+
+<details><summary>Answer</summary>
+
+**Who uses recursive DFS:** Code that processes tree-like graphs with bounded depth (depth < ~5000). Interview solutions where clarity matters. NOT production code on arbitrary graphs (StackOverflow risk). **Iterative DFS vs recursive DFS order:** Iterative DFS using a stack processes nodes differently than recursive DFS. If you push all neighbors left-to-right, the LAST pushed is processed first (LIFO stack). To match recursive DFS order exactly, push neighbors RIGHT-TO-LEFT. This is a subtle, common interview gotcha. **Visited tracking (graph vs tree):** Trees have no cycles — no visited tracking needed. Graphs can have cycles — without a `boolean[] visited` array, DFS loops infinitely. Mark visited BEFORE or IMMEDIATELY AFTER pushing/enqueueing a node. Marking AFTER processing (at the visit site) leaves a window where duplicate work occurs in multi-path graphs. **BFS visited timing:** Mark `visited[neighbor] = true` when ENQUEUEING (not when dequeuing). Otherwise, in dense graphs, the same node gets enqueued multiple times before it's ever dequeued, causing O(E) enqueue operations instead of O(V).
+
+</details>
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
@@ -1000,7 +1012,13 @@ private int find(int[] parent, int x) {
 
 🔬 **Section Challenge — 9.2 Graph Cycle Detection**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Undirected vs Directed Cycle Detection):** `isCyclic(graph)` for undirected graph uses visited + parent tracking. For directed graph, it uses 3-color (WHITE/GRAY/BLACK). **Who** uses which method? **When** does the undirected method give a FALSE POSITIVE on a directed graph?
+
+<details><summary>Answer</summary>
+
+**Who uses parent tracking (undirected):** DFS with `dfs(node, parent)`. A cycle exists if a neighbor is VISITED AND is NOT the parent. The parent check prevents treating the edge you came from as a "back edge." **Who uses 3-color (directed):** DFS with `state[node] = 0/1/2`. A cycle exists if we reach a GRAY (state=1) node — a node currently on the DFS path. **False positive on directed graph:** Consider `A→B` and `C→B` (two separate directed paths to B). If you apply the undirected algorithm (with parent tracking) to this as if it's undirected, you'd see B visited from both A and C, and might flag it as a cycle (B already visited, C is not A's parent). But there is NO directed cycle. Directed graphs require the GRAY-node check to detect back edges (true directed cycles). **A directed graph's back edge:** An edge from a node to one of its current DFS ancestors. NOT all "already visited" edges are cycles in directed graphs — cross edges and forward edges don't create cycles. Only back edges do. This is why gray (currently on stack) is the cycle indicator, not black (fully processed).
+
+</details>
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
@@ -1803,7 +1821,13 @@ private boolean bfs(int[][] graph, int[] colors, int start) {
 
 🔬 **Section Challenge — 9.5 Advanced Graph Problems**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Union-Find Path Compression + Rank):** Union-Find with both path compression AND union by rank. **Who** provides which speedup? **When** does Union-Find degrade to O(n) per operation without these optimizations? **What** is the amortized complexity with both?
+
+<details><summary>Answer</summary>
+
+**Who provides which speedup:** Path compression: `find()`. When finding the root, set every traversed node's parent DIRECTLY to root. Future finds are O(1). Union by rank: `union()`. Always attach the shorter tree under the taller tree. Keeps tree height O(log n) instead of O(n). **Without optimizations:** Union-Find is essentially a tree of parent pointers. In the worst case (union in sorted order, no rank), the tree degenerates into a linked list of height n. Each `find()` takes O(n). For n operations: O(n²). **With path compression only:** O(log n) amortized per operation. **With union by rank only:** O(log n) worst case per operation. **With BOTH:** O(α(n)) amortized per operation. α(n) is the inverse Ackermann function. For all practical n (n < 10^80), α(n) ≤ 4. Effectively O(1) amortized. **Interview trace:** `union(1,2), union(2,3), union(3,4)` without rank → chain 1→2→3→4. `find(1)` traverses 3 hops. With path compression: after `find(1)`, all nodes point directly to root 4. Next `find(1)`: 1 hop. This is the path compression effect — the tree flattens itself as you use it.
+
+</details>
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
@@ -2099,7 +2123,13 @@ private void dfs2(List<List<Integer>> graph, boolean[] visited, int node) {
 
 🔬 **Section Challenge — 9.6 HackerEarth & Codeforces Graph Problems**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Dijkstra Priority Queue Choice):** You implement Dijkstra's with `PriorityQueue<int[]>` (min-heap). A node's distance gets updated. You add a NEW entry with the shorter distance (lazy deletion). **Who** processes the stale entry? **When** does lazy deletion cause correctness issues? **What** is the memory tradeoff vs `TreeSet`?
+
+<details><summary>Answer</summary>
+
+**Who processes the stale entry:** Your code. When dequeuing a node, check if the dequeued distance equals the current known best: `if (dist > d[node]) continue;`. This skips stale (outdated) entries. The lazy deletion pattern inserts multiple entries for the same node; the first (smallest distance) dequeue processes the correct one, subsequent are skipped. **When lazy deletion causes correctness issues:** Never — if you add the `dist > d[node]` check. Without this check, stale entries are processed and may update `d[neighbor]` with WORSE distances. The neighbors' distances would be correct only if you always take min, but processing stale entries wastes time. **Memory tradeoff vs `TreeSet`:** `PriorityQueue` (lazy deletion): O(E) total entries (one per edge relaxation). Can't decrease-key, so you insert duplicates. Memory = O(E). `TreeSet` (or Fibonacci heap): supports true decrease-key. O(V) entries (exactly one per vertex). Memory = O(V). For sparse graphs (E ≈ V): both are similar. For dense graphs: lazy PQ has O(E) entries = O(V²). `TreeSet` stays O(V). **Standard interview approach:** Use `PriorityQueue` with lazy deletion. It's simpler to implement and O((V+E)logE) which simplifies to O((V+E)logV) for most graphs.
+
+</details>
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
@@ -2160,7 +2190,13 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 
 🔬 **Section Challenge — 🌍 Real-World Applications of Graph Algorithms**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Real-World Graph Algorithm Selection):** A ride-sharing app needs: (A) shortest route between two GPS points, (B) detect if a driver is driving in circles, (C) find all reachable restaurants within 2km. **Who** selects which algorithm? **What** graph algorithm solves each?
+
+<details><summary>Answer</summary>
+
+**(A) Shortest route (GPS navigation) → Dijkstra's Algorithm (or A*).** Road weights = travel time/distance. Dijkstra finds shortest path by total weight. A* improves Dijkstra with a heuristic (straight-line distance to destination) to explore fewer nodes. Production GPS uses bidirectional Dijkstra or Contraction Hierarchies for sub-millisecond routing on 100M+ node road graphs. **(B) Detect driver driving in circles → Cycle Detection (DFS/Floyd's).** Model the route as a directed graph: each intersection = node, each turn = directed edge. DFS with a 3-color marker detects if the driver revisits a node in the current path. Floyd's tortoise-hare is used on the coordinates sequence if modeled as a linked list. **(C) Find all reachable restaurants within 2km → BFS with distance cutoff.** Start from driver's location, BFS through road network. Stop expanding neighbors when distance exceeds 2km. All nodes visited = reachable restaurants. This is a BFS "level-limited" search. Multi-source BFS (start from ALL restaurants simultaneously) can find which driver is closest to each restaurant. **Who selects:** The software architect, based on: Is the graph weighted? (Dijkstra). Is it directional? (directed DFS). Is the search space bounded? (BFS cutoff). Does it need to scale to millions of nodes? (A*, Contraction Hierarchies).
+
+</details>
 <details><summary>Answer</summary>
 
 BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.

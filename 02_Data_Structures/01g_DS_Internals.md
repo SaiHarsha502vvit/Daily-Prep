@@ -354,8 +354,14 @@ Bitwise AND is 1 CPU cycle; integer modulo (division) is 20-80 cycles. For this 
 Hash-DoS attack (CVE-2011-4858): strings like `"Aa"` and `"BB"` have identical hashCodes (2112). An attacker constructs thousands of such colliding keys as HTTP parameters. All entries pile into ONE bucket → every `HashMap.get()` becomes O(n) → server CPU spikes → denial of service. Java 8's defense: when a bucket chain reaches length 8 (and table size ≥ 64), it converts the chain to a Red-Black Tree. Worst-case lookup drops from O(n) to O(log n). It converts back to a list when the bucket shrinks below 6 entries (hysteresis prevents oscillation between list and tree).
 </details>
 
+📎 **Reference Anchor:** [OpenJDK `HashMap.java` — `hash()` and `TREEIFY_THRESHOLD`](https://github.com/openjdk/jdk/blob/jdk-21-ga/src/java.base/share/classes/java/util/HashMap.java#L274-L340)  
+**Invariant learned:** `TREEIFY_THRESHOLD = 8` is chosen using the **Poisson distribution**: under a good hash function with load factor 0.75, the probability of a bucket having ≥ 8 entries is ~0.00000006 (6 in 100 million). The `hash()` spreading function (`h ^ (h >>> 16)`) folds high bits into low bits so that keys differing only in high bits don't all land in bucket 0.  
+**Local rewrite:** See Challenge 1 (bucket index via `hash & (n-1)`) above. The Java source comment in `HashMap.java` line 287 explicitly cites Poisson distribution — this is why the threshold is 8 and not 4 or 16.  
+**Constraint warning:** This is the OpenJDK HotSpot implementation. Android's `java.util.HashMap` (ART runtime) uses a different internal layout. The Poisson-distribution reasoning only holds for **uniformly distributed** hash functions. If you override `hashCode()` to return a constant, every entry collides — treeification fires immediately at 8 entries regardless of table size.
+
 
 ## Hashmap.Get() - Cpu Instruction Level
+
 
 Integer age = map.get("Alice");
 

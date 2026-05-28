@@ -131,7 +131,13 @@ s = s.toUpperCase(); // NOW s points to the NEW "HELLO" string
 
 🔬 **Section Challenge — 2. String Immutability — Why and How**
 
-**Challenge 1 (Reasoning):** If you need to concatenate strings in a tight loop 10,000 times, why is using `+` (`str += "a"`) catastrophic compared to `StringBuilder.append("a")`?
+**Challenge 1 (String Immutability + intern()):** `String s = new String("hello"); s.intern();` **Who** decides where the string is stored after `intern()`? **When** does `intern()` save memory vs. waste it? **What** does `s == "hello"` return before and after calling `intern()`?
+
+<details><summary>Answer</summary>
+
+**Who decides:** `String.intern()` checks the string pool (implemented as a `HashTable` in native JVM memory). If the pool already contains an equal string, `intern()` returns that pool reference. If not, adds the string to the pool and returns it. **Before `intern()`:** `s` is a heap object (`new String("hello")`), distinct from the pool literal `"hello"`. `s == "hello"` is `false` (different references). **After `s = s.intern()`:** `s` now points to the pool reference. `s == "hello"` is `true` (same pool reference). But note: `intern()` returns the canonical, you must REASSIGN: `s = s.intern()`. Just calling `s.intern()` without assignment changes nothing. **When `intern()` saves memory:** When processing millions of repeated strings (e.g., log parsing, city names from CSV). `intern()` deduplicates into pool. **When it wastes memory:** For unique strings (UUIDs, user inputs). The pool is not GC'd in the same way as the heap — filling it with unique strings causes JVM native memory pressure (PermGen in Java 7, Metaspace in Java 8+).
+
+</details>
 <details><summary>Answer</summary>
 
 Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
@@ -186,7 +192,13 @@ String s = "Name: " + name + " Age: " + age;
 
 🔬 **Section Challenge — 3. String Concatenation — The Performance Trap**
 
-**Challenge 1 (Reasoning):** If you need to concatenate strings in a tight loop 10,000 times, why is using `+` (`str += "a"`) catastrophic compared to `StringBuilder.append("a")`?
+**Challenge 1 (Compile-Time vs Runtime Concatenation):** `String a = "hello" + " world";` vs `String x = "hello"; String b = x + " world";`. **Who** performs the concatenation? **When** does the JVM avoid creating a `StringBuilder`? **What** is the bytecode difference?
+
+<details><summary>Answer</summary>
+
+**Who concatenates at compile time:** The Java COMPILER. `"hello" + " world"` is a compile-time constant expression (both operands are string literals). The compiler folds them into `"hello world"` in the .class file. Zero runtime allocation. **Who concatenates at runtime:** `x + " world"` where `x` is a runtime variable. In Java 8, compiled to `new StringBuilder(x).append(" world").toString()`. In Java 9+, compiled to `invokedynamic StringConcatFactory` (even more efficient — avoids StringBuilder intermediate object by using JVM string concatenation templates). **When JVM avoids StringBuilder (Java 9+):** Always for simple concatenations via `invokedynamic`. The JVM can even use unsafe buffer tricks to build the final string directly without intermediate objects. **Bytecode difference:** Compile-time: `LDC "hello world"` (single constant). Runtime: `INVOKEDYNAMIC makeConcatWithConstants` or `StringBuilder` chain. Use `javap -c MyClass.class` to observe this directly.
+
+</details>
 <details><summary>Answer</summary>
 
 Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
@@ -259,7 +271,13 @@ Each `+=` creates a NEW String object: copies all existing chars + appends new c
 
 🔬 **Section Challenge — 5. Compact Strings (Java 9+)**
 
-**Challenge 1 (Reasoning):** If you need to concatenate strings in a tight loop 10,000 times, why is using `+` (`str += "a"`) catastrophic compared to `StringBuilder.append("a")`?
+**Challenge 1 (Compact Strings Java 9+):** Java 9 introduced Compact Strings. A `String` containing `"hello"` (all ASCII) uses `byte[]` internally. A string containing `"café"` (has é, non-ASCII) uses `byte[]` with 2 bytes per char. **Who** decides which encoding is used? **When** does this create a subtle performance issue in `charAt()`? **What** is the JVM flag to disable it?
+
+<details><summary>Answer</summary>
+
+**Who decides:** The `String` constructor. During construction, Java checks if ALL characters fit in LATIN-1 (0-255). If yes, uses `LATIN1` coder (1 byte per char, `coder=0`). If any character is outside LATIN-1, uses `UTF16` (2 bytes per char, `coder=1`). **The coder field:** Every `String` has a `byte coder` field. `0=LATIN1`, `1=UTF16`. This flag controls how all `String` operations work internally. **`charAt()` performance:** `charAt(i)` for LATIN1: `value[i] & 0xFF` (single array access). For UTF16: `StringUTF16.charAt(value, i)` which accesses `value[i*2]` and `value[i*2+1]`. This is still fast, but the branching on `coder` adds a tiny overhead. In tight loops over long strings, this can matter. **When it creates issues:** Mixing LATIN1 and UTF16 strings — concatenating them promotes the result to UTF16 even if only one character triggers it. Logging frameworks that build strings with Unicode arrows or emoji force UTF16 for the entire buffer. **JVM flag to disable:** `-XX:-CompactStrings` reverts to Java 8 behavior (all strings use `char[]` / 2 bytes each). Almost never needed in production.
+
+</details>
 <details><summary>Answer</summary>
 
 Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.
@@ -345,7 +363,13 @@ String.format("Name: %s", name); // Formatted string
 
 🔬 **Section Challenge — 7. Common String Methods — Cheat Sheet**
 
-**Challenge 1 (Reasoning):** If you need to concatenate strings in a tight loop 10,000 times, why is using `+` (`str += "a"`) catastrophic compared to `StringBuilder.append("a")`?
+**Challenge 1 (substring() Memory Sharing):** In Java 6, `"hello world".substring(0, 5)` returned a `String` that shared the underlying `char[]` with the original. Java 7+ changed this. **Who** caused the Java 6 memory leak? **When** did this become a production OOM issue? **What** did Java 7 change?
+
+<details><summary>Answer</summary>
+
+**Who caused the leak:** Java 6's `String` class. Internally, `String` had fields `char[] value`, `int offset`, `int count`. `substring()` created a new `String` object but reused the SAME `char[]` (with different offset/count). **When it caused OOM:** Consider parsing a 10MB log line: `logLine.substring(0, 10)`. The 10-character result held a reference to the full 10MB `char[]`. The original `logLine` reference could be GC'd, but the `char[]` was kept alive by the substring. If you stored millions of substrings in a cache, you'd hold millions of 10MB arrays — OOM. **What Java 7u6 changed:** `substring()` now COPIES the relevant portion into a NEW `char[]`. No sharing. `"hello world".substring(0, 5)` creates a fresh `char[5]` containing `{'h','e','l','l','o'}`. The original `char[]` becomes unreachable. **Performance tradeoff:** Copying costs O(n) time and space per substring. The old sharing was O(1). But correctness (no memory leaks) outweighs performance. **Modern workaround if sharing needed:** `java.nio.CharBuffer` allows views over shared character sequences.
+
+</details>
 <details><summary>Answer</summary>
 
 Immutability Allocation Thrashing. Strings in Java are immutable. Every time you use `+`, the JVM creates a brand new `StringBuilder`, copies the old string into it, appends the new character, and creates a brand new `String` object. Looping this 10,000 times creates 10,000 discarded StringBuilder and String objects, choking the JVM's Garbage Collector. Using a single `StringBuilder` pre-allocates an internal character array that simply expands as needed, completely avoiding garbage creation.

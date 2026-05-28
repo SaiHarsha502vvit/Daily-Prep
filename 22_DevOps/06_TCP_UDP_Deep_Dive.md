@@ -735,7 +735,6 @@ echo "net.ipv4.tcp_fin_timeout = 15" >> /etc/sysctl.conf
 sudo sysctl -p  # reload
 ```
 
-`````
 🔬 **Section Challenge — Linux Network Stack Internals**
 
 **Challenge 1 (Kernel Space vs User Space):** Explain exactly how a network packet (an HTTP Request) travels from the physical Network Interface Card (NIC) hardware into your Node.js or Python application. Be specific about hardware interrupts, Ring Buffers, the Kernel Space network stack, and the transition into User Space. Why are operations like `sendfile()` or Zero-Copy crucial for high-performance servers?

@@ -1,7 +1,8 @@
-﻿**Navigation**: [< Previous Chapter](Ch61_SB_Microservices_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch61_SB_Microservices_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
+```yaml
 # Config Server application.yml
 server:
   port: 8888

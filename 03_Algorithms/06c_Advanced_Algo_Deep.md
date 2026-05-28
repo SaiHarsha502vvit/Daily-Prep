@@ -2,6 +2,7 @@
 
 ---
 
+```text
 ✗ Coin change with unusual denominations
 ✗ 0/1 Knapsack (need DP)
 ✗ Problems requiring backtracking

@@ -541,8 +541,6 @@ RULE: Only CI/CD applies. Humans don't run apply.
 
 ### GitHub Actions Example
 
-```
-
 🔬 **Section Challenge — CI/CD for Infrastructure**
 
 **Challenge 1 (Reasoning):** A GitHub Actions pipeline runs `terraform apply -auto-approve` triggered on every push to `main`. A developer pushes a commit with a typo in an RDS config. What production failure scenarios does this create, and what pipeline change prevents them?

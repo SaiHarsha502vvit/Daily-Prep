@@ -32,6 +32,7 @@ What is not visible in source can still be deterministically explained by runtim
 Treat every section as: mechanism -> trade-off -> failure mode -> tuning strategy.
 
 
+```java
 public class MoneyDeserializer extends JsonDeserializer<BigDecimal> {
     
     @Override
@@ -400,17 +401,20 @@ spring:
 
 🔬 **Section Challenge — F.4 Common Connection Pool Problems**
 
-**Challenge 1 (Reasoning):** `String a = "hello"; String b = "hello"; a == b` — true or false? What about `new String("hello") == "hello"`?
+**Challenge 1 (Connection Leak Trace — Who/When/What):** A Spring service method manually calls `dataSource.getConnection()` inside a loop but never calls `close()`. The app runs fine for 10 minutes, then every new request hangs for 30 seconds before throwing `SQLTransientConnectionException`. **Who** is holding the connections? **When** does HikariCP give up? **What** single config property would have caught this in logs 28 minutes earlier?
 <details><summary>Answer</summary>
 
-First: `true` — string literals are interned in the string pool; same literal = same reference. Second: `false` — `new String(...)` always creates a new object on the heap, bypassing the pool. Always use `.equals()` for string comparison. `String.intern()` can explicitly add a string to the pool.
+**Who is holding?** Each loop iteration borrowed a connection and never returned it. HikariCP treats a borrowed connection as "in use" until `close()` (or `try-with-resources`) is called. With a pool of 10, after 10 loop invocations all connections are permanently borrowed (leaked). **When does HikariCP give up?** After `connectionTimeout` (default 30,000ms / 30s). New threads wait in a queue; after 30s they throw `SQLTransientConnectionException: Connection is not available, request timed out after 30000ms`. **What config catches it early?** `spring.datasource.hikari.leak-detection-threshold=2000` — if any connection is held for > 2s without being returned, HikariCP logs a WARN with the full stack trace of where the connection was borrowed. This would have printed the leak location on the first invocation, not after 10 minutes of degradation.
+
 </details>
 
-**Challenge 2 (Design):** Why is `String` immutable in Java and what problems would mutable strings cause?
+**Challenge 2 (Pool Exhaustion vs Leak — Who/When/What):** Pool exhaustion and connection leak both result in `SQLTransientConnectionException`. **What** is the diagnostic difference in HikariCP metrics? **When** should you increase pool size vs fix a leak?
 <details><summary>Answer</summary>
 
-Security: strings are used as HashMap keys, class names, file paths. If mutable, a key could change after insertion, corrupting the HashMap. Thread safety: immutable objects are inherently thread-safe (no synchronization needed). String pool: only possible because strings don't change — two vars safely share the same interned object. Caching hashCode: `String` caches its hashCode (first call computes, subsequent calls return cached) — only safe because the string never changes.
+**Diagnostic difference:** `HikariPoolMXBean.getThreadsAwaitingConnection()` > 0 with `getActiveConnections() == maximumPoolSize` → exhaustion (all connections legitimately in use but more requests are coming). `getActiveConnections() == maximumPoolSize` with low actual request concurrency → leak (connections never returned). Enable `leak-detection-threshold` to confirm: if warnings fire with stack traces pointing to the same location, it's a leak. **When to increase pool size:** When `getThreadsAwaitingConnection()` spikes during legitimate traffic peaks AND connections are returned normally. **Never** increase pool size to mask a leak — it just delays the inevitable by extending the leak window.
+
 </details>
+
 
 
 # SECTION G: CLASSLOADING - HOW YOUR CODE RUNS
@@ -476,17 +480,20 @@ Security: strings are used as HashMap keys, class names, file paths. If mutable,
 
 🔬 **Section Challenge — G.1 Classloader Hierarchy**
 
-**Challenge 1 (Reasoning):** Why does `Error` extend `Throwable` separately from `Exception`? When should you catch `Error`?
+**Challenge 1 (Parent Delegation Trace — Who/When/What):** Your app references `org.springframework.web.bind.annotation.RestController`. **Who** loads this class? **When** in the JVM startup does the first load happen? **What** would cause `ClassNotFoundException` for this annotation even with the correct Spring JAR on the classpath?
 <details><summary>Answer</summary>
 
-`Error` represents JVM-level failures: `OutOfMemoryError`, `StackOverflowError`, `VirtualMachineError`. These indicate unrecoverable states. You should almost NEVER catch `Error` — the JVM state is undefined. Only exception: top-level handlers that log the error before terminating gracefully (`catch(Throwable t)` in shutdown hooks). Never catch `Error` in normal application code.
+**Who loads it:** The Application ClassLoader (system classloader). It first delegates to Platform ClassLoader, which delegates to Bootstrap ClassLoader. Neither of those have Spring on their classpath, so the class bubbles back down to Application ClassLoader, which finds it in the Spring JAR on the classpath. **When is the first load?** The first time any class in the JVM references `@RestController` — typically during `ApplicationContext` startup when Spring component-scans and reads annotations via reflection. **What causes CNFE even with JAR present?** Most common: Spring JAR is in `<scope>provided</scope>` and you're running the JAR standalone (Tomcat not included). Or the JAR is on the compile classpath but excluded from the fat JAR (check `spring-boot-maven-plugin`'s `<excludes>`). Or you're testing with a custom ClassLoader that doesn't delegate to the parent (common in OSGi, Tomcat web apps with isolated class spaces).
+
 </details>
 
-**Challenge 2 (Bug Hunt):** `catch(Exception e) { log(e.getMessage()); }` — name 3 things wrong with this.
+**Challenge 2 (ClassCastException Mystery):** You load a class `UserService` from two different plugins at runtime. Casting `plugin1UserService` to the `UserService` type throws `ClassCastException` — even though both are `UserService`. **Who** is the culprit? **What** rule explains this?
 <details><summary>Answer</summary>
 
-1) `e.getMessage()` returns null for some exceptions (NPE, CCE) → NullPointerException in the logger! Use `log(e)` instead to print full stack. 2) Swallowing `Exception` catches runtime bugs (NPE, illegal arg) that should crash/bubble — silent failure is worse than loud failure. 3) No re-throw or meaningful handling — caller has no idea the operation failed.
+**Who is culprit:** Two different `ClassLoader` instances, each loading their own copy of `UserService.class`. **The rule:** Java class identity = (binary name) + (classloader). A class loaded by `ClassLoaderA` is a DIFFERENT type than the same class loaded by `ClassLoaderB`, even if the `.class` bytecode is byte-for-byte identical. The JVM `instanceof` and cast checks compare classloader identity, not bytecode. **Fix pattern:** Move the shared `UserService` interface to a parent classloader that both plugins share. Plugins load their own implementations; the interface lives in the shared parent — both sides reference the same classloader's definition. This is how Tomcat's `WebAppClassLoader` isolation works: servlet API in parent, app code in isolated child.
+
 </details>
+
 
 
 ## G.2 Parent Delegation Model
@@ -697,11 +704,20 @@ user1 = (User) user2;  // ClassCastException!
 
 🔬 **Section Challenge — H.2 Dependency Scopes**
 
-**Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+**Challenge 1 (Scope Trace — Who/When/What):** A `mysql-connector-java` JDBC driver is declared in `pom.xml` with `<scope>runtime</scope>`. **Who** is allowed to use it? **When** does it appear on the classpath? **What** breaks if you change it to `<scope>compile</scope>`?
 <details><summary>Answer</summary>
 
-Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
+**Who can use it:** Only your application at runtime. With `runtime` scope, the driver is NOT on the compile-time classpath — source code cannot reference `com.mysql.cj.jdbc.Driver` directly. **When it appears:** During `mvn test` (test classpath includes runtime) and when running the packaged JAR. It is absent during `mvn compile`. **What breaks if changed to compile:** Nothing functionally — the driver still loads at runtime. But you now CAN accidentally write code that directly imports MySQL-specific classes, coupling your code to a specific vendor. `runtime` scope enforces the abstraction: use `java.sql.DataSource` (compile-time), let the JDBC driver SPI auto-register itself at runtime. **Transitive difference:** `compile` scope propagates to dependents. `runtime` does NOT — dependents don't get the JDBC driver on their compile classpath either, which is the correct behavior for drivers.
+
 </details>
+
+**Challenge 2 (Scope Design):** Why is Lombok declared with `<scope>provided</scope>` in some projects? Why does it still need to be `<scope>compile</scope>` in others?
+<details><summary>Answer</summary>
+
+**Provided scope for Lombok:** Lombok runs as an annotation processor at compile time — it generates getter/setter/builder code directly into `.class` files. The Lombok JAR itself is NOT needed at runtime (the generated code is already in your `.class` files). So `provided` is technically correct: present at compile time, absent from the packaged JAR. **But why compile scope in practice?** Some build toolchains (Gradle, certain IDEs without annotation processor config) need `compile` scope to activate the processor correctly. Spring Initializr generates `<scope>provided</scope>` which is the precise correct scope. `<optional>true</optional>` further prevents transitive propagation.
+
+</details>
+
 
 
 ## H.3 Transitive Dependencies
@@ -805,11 +821,20 @@ mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind
 
 🔬 **Section Challenge — H.4 Dependency Conflicts**
 
-**Challenge 1 (Reasoning):** Constructor injection vs field injection (`@Autowired` on field) — which is better and why?
+**Challenge 1 (Conflict Trace — Who/When/What):** Your app uses `spring-boot-starter-web` and explicitly adds `jackson-databind:2.12.0`. Maven resolves to `2.15.2` (from the BOM). **Who** wins? **When** does Maven's nearest-wins rule fire? **What** command shows you the final resolved tree?
 <details><summary>Answer</summary>
 
-Constructor injection is better: (1) Dependencies explicit — you can't create object without them. (2) Immutable — field can be `final`. (3) Testable — inject mocks via constructor, no Spring context needed. (4) Detects circular deps at startup, not at first use. Field injection: shorter code but: hidden dependencies, can't be `final`, requires Spring for test setup, circular deps detected late. Spring itself recommends constructor injection since v4.
+**Who wins:** The explicitly declared version wins — `jackson-databind:2.12.0` — because Maven's nearest-wins rule selects the dependency closest to the root `pom.xml` in the dependency graph. Your explicit declaration is at depth 1; the BOM's transitive is at depth 2. **When nearest-wins fires:** During the dependency resolution phase (`mvn dependency:resolve`). If two declarations are at the same depth, the first one declared wins. **Command to see result:** `mvn dependency:tree -Dincludes=com.fasterxml.jackson.core:jackson-databind` — shows only the Jackson subtree with the winning version and why others were omitted. Or `mvn dependency:tree -Dverbose` to see ALL candidates including those omitted due to conflict. **Problem with this:** Spring Boot 3.x requires Jackson 2.15+. Pinning to 2.12.0 will cause `ClassNotFoundException` or `NoSuchMethodError` at runtime when Spring tries to use newer Jackson APIs.
+
 </details>
+
+**Challenge 2 (Bug Hunt):** `mvn dependency:tree` shows two versions of the same library: `[INFO] +- com.example:lib:jar:1.0.0:compile` and `[INFO] | \- com.example:lib:jar:2.0.0:compile (omitted for conflict)`. The app crashes with `NoSuchMethodError` at runtime. **Who** caused this? **What** is the fix?
+<details><summary>Answer</summary>
+
+**Who caused it:** The code (or a transitive dependency) calls a method present in `lib:2.0.0` but absent in `lib:1.0.0` (the resolved winner). Maven selected 1.0.0 (nearest-wins), but the calling code was compiled against 2.0.0. **Fix:** Add an explicit `<dependencyManagement>` entry: `<dependency><groupId>com.example</groupId><artifactId>lib</artifactId><version>2.0.0</version></dependency>` — this forces all transitive references to resolve to 2.0.0. Never use `<exclusion>` to drop a transitive dep without re-adding the correct version explicitly, as that causes `ClassNotFoundException` instead.
+
+</details>
+
 
 
 # SECTION I: HTTP FUNDAMENTALS - BELOW THE FRAMEWORK

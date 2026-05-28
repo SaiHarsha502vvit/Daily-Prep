@@ -1,7 +1,8 @@
-﻿**Navigation**: [< Previous Chapter](Ch44_SB_Caching_Scheduling.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](Ch44_SB_Caching_Scheduling.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
+```yaml
 # application.yml
 springdoc:
     api-docs:
