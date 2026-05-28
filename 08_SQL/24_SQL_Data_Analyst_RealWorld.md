@@ -1,6 +1,6 @@
-﻿**Navigation**: [< Previous](23_SQL_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](23_SQL_Deep_Reasoning.md) | [Back to Index](../00_MASTER_INDEX.md)
 
-# Chapter 24 — SQL for Data Analysts: Real-World Patterns That Get You Hired
+# Chapter 24 � SQL for Data Analysts: Real-World Patterns That Get You Hired
 
 **"Knowing SELECT and JOIN makes you a developer who queries databases. Knowing cohort analysis, funnel queries, retention curves, and A/B testing SQL makes you a DATA ANALYST. This chapter bridges the gap."**
 
@@ -32,18 +32,18 @@ Developer: "Get me user #42's orders"
 Analyst:   "Show me Week-1 retention for users who signed
 up in January vs February, segmented by plan type"
 
-Developer: SELECT → WHERE → JOIN → done
-Analyst:   WITH → WINDOW → CASE → GROUP BY → HAVING → layers
+Developer: SELECT ? WHERE ? JOIN ? done
+Analyst:   WITH ? WINDOW ? CASE ? GROUP BY ? HAVING ? layers
 
 Developer thinks in ROWS (fetch this record)
 Analyst thinks in GROUPS and TRENDS (what's the pattern?)
 
 KEY TOOLS FOR ANALYSTS:
-→ CTEs (WITH clause) — readable multi-step queries
-→ Window functions — calculations across related rows
-→ CASE WHEN — pivoting and conditional aggregation
-→ Date functions — time-based grouping and comparison
-→ Self-joins — comparing current vs historical data
+? CTEs (WITH clause) � readable multi-step queries
+? Window functions � calculations across related rows
+? CASE WHEN � pivoting and conditional aggregation
+? Date functions � time-based grouping and comparison
+? Self-joins � comparing current vs historical data
 
 
 ### Sample Schema (used throughout this chapter)
@@ -98,25 +98,25 @@ CREATE TABLE experiments (
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  WHAT IS COHORT ANALYSIS?                                        ║
-║                                                                  ║
-║  A "cohort" = a group of users who share a common trait          ║
-║  Usually: "signed up in the same month"                          ║
-║                                                                  ║
-║  You track each cohort OVER TIME:                                ║
-║                                                                  ║
-║  Cohort      │ Month 0  │ Month 1  │ Month 2  │ Month 3  │       ║
-║  ────────────┼──────────┼──────────┼──────────┼──────────┤       ║
-║  Jan signup  │ 1000     │ 400 (40%)│ 250 (25%)│ 200 (20%)│       ║
-║  Feb signup  │ 1200     │ 540 (45%)│ 360 (30%)│          │       ║
-║  Mar signup  │ 800      │ 400 (50%)│          │          │       ║
-║                                                                  ║
-║  WHAT THIS TELLS YOU:                                            ║
-║  → "Users signing up later months have BETTER retention"         ║
-║  → "We lose 50-60% of users in first month — fix onboarding!"    ║
-║  → "Month-3 retention stabilizes around 20% — our core users"    ║
-╚══════════════════════════════════════════════════════════════════╝
++------------------------------------------------------------------+
+�  WHAT IS COHORT ANALYSIS?                                        �
+�                                                                  �
+�  A "cohort" = a group of users who share a common trait          �
+�  Usually: "signed up in the same month"                          �
+�                                                                  �
+�  You track each cohort OVER TIME:                                �
+�                                                                  �
+�  Cohort      � Month 0  � Month 1  � Month 2  � Month 3  �       �
+�  ------------+----------+----------+----------+----------�       �
+�  Jan signup  � 1000     � 400 (40%)� 250 (25%)� 200 (20%)�       �
+�  Feb signup  � 1200     � 540 (45%)� 360 (30%)�          �       �
+�  Mar signup  � 800      � 400 (50%)�          �          �       �
+�                                                                  �
+�  WHAT THIS TELLS YOU:                                            �
+�  ? "Users signing up later months have BETTER retention"         �
+�  ? "We lose 50-60% of users in first month � fix onboarding!"    �
+�  ? "Month-3 retention stabilizes around 20% � our core users"    �
++------------------------------------------------------------------+
 ```
 
 
@@ -197,20 +197,20 @@ WHAT IS A FUNNEL?
 
 Users flow through a sequence of steps:
 
-┌────────────────────────────────┐
-│    Visit Homepage (10,000)     │  100%
-│  ┌──────────────────────────┐  │
-│  │  View Product (6,000)    │  │  60% (40% dropped off!)
-│  │  ┌────────────────────┐  │  │
-│  │  │ Add to Cart (2,000)│  │  │  33% of viewers
-│  │  │  ┌──────────────┐  │  │  │
-│  │  │  │ Purchase(800)│  │  │  │  40% of add-to-cart
-│  │  │  └──────────────┘  │  │  │  8% overall conversion!
-│  │  └────────────────────┘  │  │
-│  └──────────────────────────┘  │
-└────────────────────────────────┘
++--------------------------------+
+�    Visit Homepage (10,000)     �  100%
+�  +--------------------------+  �
+�  �  View Product (6,000)    �  �  60% (40% dropped off!)
+�  �  +--------------------+  �  �
+�  �  � Add to Cart (2,000)�  �  �  33% of viewers
+�  �  �  +--------------+  �  �  �
+�  �  �  � Purchase(800)�  �  �  �  40% of add-to-cart
+�  �  �  +--------------+  �  �  �  8% overall conversion!
+�  �  +--------------------+  �  �
+�  +--------------------------+  �
++--------------------------------+
 
-The biggest drop happens Homepage→Product (40% lost).
+The biggest drop happens Homepage?Product (40% lost).
 Fix THAT step for maximum impact!
 ```
 
@@ -341,24 +341,24 @@ GROUP BY c.cohort_month, cs.cohort_size;
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  A/B TESTING WITH SQL                                            ║
-║                                                                  ║
-║  Goal: "Did changing the button color increase purchases?"       ║
-║                                                                  ║
-║  Control (A):   Old blue button → 10,000 users                   ║
-║  Treatment (B): New green button → 10,000 users                  ║
-║                                                                  ║
-║  Metrics to compare:                                             ║
-║  → Conversion rate (% who purchased)                             ║
-║  → Revenue per user                                              ║
-║  → Average order value                                           ║
-║                                                                  ║
-║  STATISTICAL RIGOR:                                              ║
-║  → Sample size: enough users to detect meaningful difference     ║
-║  → Significance: p-value or confidence interval                  ║
-║  → Segment analysis: does the effect hold across all groups?     ║
-╚══════════════════════════════════════════════════════════════════╝
++------------------------------------------------------------------+
+�  A/B TESTING WITH SQL                                            �
+�                                                                  �
+�  Goal: "Did changing the button color increase purchases?"       �
+�                                                                  �
+�  Control (A):   Old blue button ? 10,000 users                   �
+�  Treatment (B): New green button ? 10,000 users                  �
+�                                                                  �
+�  Metrics to compare:                                             �
+�  ? Conversion rate (% who purchased)                             �
+�  ? Revenue per user                                              �
+�  ? Average order value                                           �
+�                                                                  �
+�  STATISTICAL RIGOR:                                              �
+�  ? Sample size: enough users to detect meaningful difference     �
+�  ? Significance: p-value or confidence interval                  �
+�  ? Segment analysis: does the effect hold across all groups?     �
++------------------------------------------------------------------+
 ```
 
 
@@ -396,7 +396,7 @@ ORDER BY variant;
 -- variant    | users  | converters | conv_rate | rev/user | AOV   | orders
 -- control    | 10000  | 800        | 8.00%     | $12.50   | $156  | 900
 -- treatment  | 10000  | 960        | 9.60%     | $15.20   | $158  | 1080
--- → Treatment has 20% higher conversion! But is it statistically significant?
+-- ? Treatment has 20% higher conversion! But is it statistically significant?
 ```
 
 ### Segmented A/B Analysis
@@ -420,7 +420,7 @@ ORDER BY u.plan_type, e.variant;
 
 -- Might reveal: treatment helps free users (+30%)
 -- but HURTS premium users (-5%)
--- → Decision: roll out only for free users
+-- ? Decision: roll out only for free users
 ```
 
 ---
@@ -433,26 +433,26 @@ ORDER BY u.plan_type, e.variant;
 ### Deep Reasoning
 
 ```
-╔══════════════════════════════════════════════════════════════════╗
-║  RFM = Recency, Frequency, Monetary                              ║
-║                                                                  ║
-║  Score each customer on 3 dimensions (1-5 each):                 ║
-║                                                                  ║
-║  Recency:   How RECENTLY did they purchase?                      ║
-║             (5 = this week, 1 = 6+ months ago)                   ║
-║                                                                  ║
-║  Frequency:  How OFTEN do they purchase?                         ║
-║             (5 = 50+ orders, 1 = 1 order)                        ║
-║                                                                  ║
-║  Monetary:   How much do they SPEND?                             ║
-║             (5 = top 20%, 1 = bottom 20%)                        ║
-║                                                                  ║
-║  SEGMENTS:                                                       ║
-║  RFM = 555  → Champions (best customers — reward them!)          ║
-║  RFM = 511  → New customers (high recency, low frequency)        ║
-║  RFM = 155  → At risk (were big spenders, haven't been back)     ║
-║  RFM = 111  → Lost (haven't bought recently, rarely, cheaply)    ║
-╚══════════════════════════════════════════════════════════════════╝
++------------------------------------------------------------------+
+�  RFM = Recency, Frequency, Monetary                              �
+�                                                                  �
+�  Score each customer on 3 dimensions (1-5 each):                 �
+�                                                                  �
+�  Recency:   How RECENTLY did they purchase?                      �
+�             (5 = this week, 1 = 6+ months ago)                   �
+�                                                                  �
+�  Frequency:  How OFTEN do they purchase?                         �
+�             (5 = 50+ orders, 1 = 1 order)                        �
+�                                                                  �
+�  Monetary:   How much do they SPEND?                             �
+�             (5 = top 20%, 1 = bottom 20%)                        �
+�                                                                  �
+�  SEGMENTS:                                                       �
+�  RFM = 555  ? Champions (best customers � reward them!)          �
+�  RFM = 511  ? New customers (high recency, low frequency)        �
+�  RFM = 155  ? At risk (were big spenders, haven't been back)     �
+�  RFM = 111  ? Lost (haven't bought recently, rarely, cheaply)    �
++------------------------------------------------------------------+
 ```
 
 
@@ -513,7 +513,7 @@ ORDER BY total_spend DESC;
 
 
 
-🔬 **Section Challenge — 6. Customer Segmentation & RFM Analysis**
+?? **Section Challenge � 6. Customer Segmentation & RFM Analysis**
 
 **Challenge 1 (Reasoning):** In RFM segmentation, why do recency, frequency, and monetary value need separate scores instead of one raw `total_spend` sort?
 <details><summary>Trace, Reasoning & Debug</summary>
@@ -682,22 +682,22 @@ ORDER BY order_date;
 ### Window Functions Cheat Sheet for Analysts
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│  FUNCTION              │  PURPOSE                    │  EXAMPLE     │
-│ ───────────────────────┼─────────────────────────────┼────────      │
-│  ROW_NUMBER()          │  Sequential rank (no ties)  │  Top N       │
-│  RANK()                │  Rank with gaps (1,2,2,4)   │  Leaderboard │
-│  DENSE_RANK()          │  Rank no gaps (1,2,2,3)     │  Percentile  │
-│  NTILE(n)              │  Divide into n equal groups  │  Quartiles  │
-│  LAG(col, n)           │  Previous row value          │  Change     │
-│  LEAD(col, n)          │  Next row value              │  Forecast   │
-│  FIRST_VALUE(col)      │  First in window             │  Baseline   │
-│  LAST_VALUE(col)       │  Last in window              │  Latest     │
-│  SUM() OVER()          │  Running total              │  Cumulative  │
-│  AVG() OVER(ROWS...)   │  Moving average             │  Smoothing   │
-│  PERCENT_RANK()        │  Percentile (0-1 range)     │  Distribution│
-│  CUME_DIST()           │  Cumulative distribution    │  Percentile  │
-└─────────────────────────────────────────────────────────────────────┘
++---------------------------------------------------------------------+
+�  FUNCTION              �  PURPOSE                    �  EXAMPLE     �
+� -----------------------+-----------------------------+--------      �
+�  ROW_NUMBER()          �  Sequential rank (no ties)  �  Top N       �
+�  RANK()                �  Rank with gaps (1,2,2,4)   �  Leaderboard �
+�  DENSE_RANK()          �  Rank no gaps (1,2,2,3)     �  Percentile  �
+�  NTILE(n)              �  Divide into n equal groups  �  Quartiles  �
+�  LAG(col, n)           �  Previous row value          �  Change     �
+�  LEAD(col, n)          �  Next row value              �  Forecast   �
+�  FIRST_VALUE(col)      �  First in window             �  Baseline   �
+�  LAST_VALUE(col)       �  Last in window              �  Latest     �
+�  SUM() OVER()          �  Running total              �  Cumulative  �
+�  AVG() OVER(ROWS...)   �  Moving average             �  Smoothing   �
+�  PERCENT_RANK()        �  Percentile (0-1 range)     �  Distribution�
+�  CUME_DIST()           �  Cumulative distribution    �  Percentile  �
++---------------------------------------------------------------------+
 ```
 
 
@@ -754,15 +754,11 @@ ORDER BY ds.day;
 
 
 
-🔬 **Section Challenge — 9. Advanced Window Functions for Analytics**
+?? **Section Challenge � 9. Advanced Window Functions for Analytics**
 
-**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
-<details><summary>Answer</summary>
 
-Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
-</details>
 
-**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` � show with an example where they produce different results.
 <details><summary>Answer</summary>
 
 Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
