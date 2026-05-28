@@ -13,6 +13,7 @@
 | **Start Today's Practice** | [Daily Practice Index](12_Daily_Practice/00_DAILY_PRACTICE_INDEX.md) |
 | Textbook Reading Order | [00_TEXTBOOK_PREFACE.md](00_TEXTBOOK_PREFACE.md) |
 | 76-Day Study Calendar | [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) |
+| **1-Hour SDET Daily Path** | [01_Getting_Started/03_SDET_1Hour_Daily_Path.md](01_Getting_Started/03_SDET_1Hour_Daily_Path.md) |
 | DSA Guide (Foundations) | [09_Career_Reference/07_DSA_Guide_Foundations.md](09_Career_Reference/07_DSA_Guide_Foundations.md) |
 | **Data Structures (11 chapters)** | [→ Jump to section](#data-structures-11-chapters) |
 | **Algorithms (32+ chapters)** | [→ Jump to section](#algorithms-32-chapters) |
@@ -476,6 +477,17 @@ Daily-Prep/
 │       ├── challenge_3_css_stacking/    → Stacking contexts, GPU compositing, modal data flow block
 │       ├── challenge_4_stale_closure/   → V8 closure scope on heap, Fiber state queue, polling with stale params
 │       └── challenge_5_deep_immutability/ → Heap pointers, React.memo skip, nested spread, state→JSON→DTO→SQL
+│
+├── 21_SDET_Playwright_Automation/     (4 chapter files — Automation mastery 🤖 NEW!)
+│   ├── 00_SDET_Foundations_Mindset.md   → 🆕 SDET vs QA, Testing Pyramid, Idempotency, Flakiness
+│   ├── 01_Playwright_TS_Basics.md       → 🆕 Promises, async/await, BrowserContext vs Page architecture
+│   ├── 02_Enterprise_Locators_XPath.md  → 🆕 XPath axes, handling generic <div> soup, Shadow DOM
+│   └── 03_Browser_Console_Scripting.md  → 🆕 DOM traversal scripts, Click-to-XPath, extracting React state
+│
+├── 22_Advanced_API_Testing/             (3 chapter files — Backend testing 🔌 NEW!)
+│   ├── 01_API_Testing_Foundations.md    → 🆕 REST vs SOAP, HTTP methods, Playwright request context
+│   ├── 02_Complex_JSON_and_SOAP.md      → 🆕 Deep JSON traversal, Optional Chaining, XML to JSON parsing
+│   └── 03_Enterprise_Headers_Auth.md    → 🆕 Correlation IDs, OAuth2, global setup, Playwright API mocking
 │
 ├── 20_Interview_Mastery/                (10 files — cross-domain capstone 🏆 NEW!)
 │   ├── 00_INDEX.md                      → Reading order, connections map, 10-day study schedule

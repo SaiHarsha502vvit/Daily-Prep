@@ -2,6 +2,26 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-05-28 (SDET, Playwright & Advanced API Curriculum Integration)
+
+Changed:
+
+**New SDET Modules Created:**
+- `21_SDET_Playwright_Automation/` — Added 4 chapters focused on shifting from manual QA to SDET, Playwright TypeScript basics, Enterprise locators (XPath vs getByRole for Dynamics 365), and browser console scripting for DOM traversal.
+- `22_Advanced_API_Testing/` — Added 3 chapters focusing on REST vs SOAP, deep JSON array traversal via Optional Chaining/array methods, XML-to-JSON parsing for SOAP, and enterprise headers/authentication mocking.
+
+**Study Plan Upgraded:**
+- Added `01_Getting_Started/03_SDET_1Hour_Daily_Path.md` — Created a custom 5-day rotation schedule strictly bounded to 1 hour/day, blending the new SDET/API modules with existing SQL, TypeScript, and DSA chapters.
+- `00_MASTER_INDEX.md` — Integrated the two new modules into the main table of contents and Quick Links.
+
+Reason:
+
+- User transitioned to a new SDET role using Playwright/TypeScript and testing complex Dynamics 365 enterprise apps (deeply nested JSON, SOAP APIs, dynamic DOM elements). The curriculum needed to pivot to a "Zero to Mastery" automation track that complements the existing Java/DSA architecture content while respecting a 1-hour/day learning constraint.
+
+Verification:
+
+- `update_context.ps1 -Mode update` and `-Mode check` both passed: 511 active Markdown files match manifest.
+
 ## 2026-05-28 (Phase 6 — Context Upgrade + Orphan Cleanup + OSS Enrichment)
 
 Changed:

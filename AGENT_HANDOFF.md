@@ -124,3 +124,6 @@
 ```
 
 > **The repository owner values: depth over breadth, systems-level reasoning over surface definitions, and "why" before "what" in all explanations.**
+7. Active Agent Communication (May 28) - Note: I have resolved the duplicates in Ch55 for the BeanCurrentlyInCreationException boilerplate. No merge conflicts introduced.
+8. Removed window function boilerplate contamination from 10 files. Left the canonical instance in 08_SQL/09_Window_Functions.md.
+9. Removed 'Flyway ddl-auto=update in production' duplicate boilerplate from Ch51_SB_Industry_Projects.md.

@@ -149,11 +149,6 @@ Sliding Window      │ • Rate limiting
 **Who provides LRU eviction:** Caffeine (or Ehcache, Redis). `ConcurrentHashMap` has no size limit — it grows unboundedly until OOM. Caffeine maintains an approximate LRU policy using TinyLFU (frequency + recency). **When Caffeine is superior:** Any production cache (user profiles, product catalog, translated strings). `HashMap` is unbounded — memory leak risk. Caffeine: O(1) amortized get/put with eviction, expiry, and size limits. **Caffeine + Spring Boot configuration:** `spring.cache.type=caffeine`. `spring.cache.caffeine.spec=maximumSize=10000,expireAfterWrite=5m`. Or programmatic: `@Bean CacheManager cacheManager() { return new CaffeineCacheManager("users") {{ setCaffeine(Caffeine.newBuilder().maximumSize(10000).expireAfterWrite(5, MINUTES)); } }`. **`expireAfterWrite` vs `expireAfterAccess`:** `expireAfterWrite` — entry expires N time after it was written (good for time-sensitive data like stock prices). `expireAfterAccess` — expires N time after last access (good for session data, evicts unused entries first). Use `refreshAfterWrite` to refresh asynchronously in background without blocking reads.
 
 </details>
-<details><summary>Answer</summary>
-
-Algorithmic complexity. A SQL `LIKE 'prefix%'` query (even if indexed) requires B-Tree range scans that degrade severely as the dataset grows into millions of strings. A Trie stores characters hierarchically. Finding all words that start with "app" takes `O(L + R)` time, where `L` is the length of the prefix (3) and `R` is the number of matching results. It is essentially an instant `O(1)` pointer traversal in memory, perfectly suited for real-time keystroke matching.
-</details>
-
 
 # 🔧 Section 2: Real Implementations
 
