@@ -120,11 +120,6 @@ Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff a
 **Who reads it:** The load balancer or Kubernetes liveness/readiness probes. During blue-green: route traffic to new (green) instance ONLY when health = `UP`. **When it turns UP after startup:** After all `@PostConstruct` methods complete, all beans are initialized, and all `HealthIndicator` beans report healthy. DB connectivity is checked by `DataSourceHealthIndicator` — executes a validation query against the DataSource. If DB is unreachable, status = `DOWN`. **What delays readiness:** Kubernetes distinguishes `livenessProbe` (is the app alive? kill and restart if not) and `readinessProbe` (is the app ready for traffic? route to it only if ready). Spring Boot 2.3+ supports `management.endpoint.health.probes.enabled=true` which exposes `/actuator/health/liveness` and `/actuator/health/readiness` separately. Set `initialDelaySeconds: 30` in readinessProbe to allow warm-up. **Spring Boot readiness state:** `ApplicationAvailability` bean tracks `ReadinessState`. During startup: `REFUSING_TRAFFIC`. After context refresh: `ACCEPTING_TRAFFIC`. Custom readiness: implement `ReadinessStateChangedEvent` listener or check cache warm-up completion.
 
 </details>
-<details><summary>Answer</summary>
-
-Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
-</details>
-
 
 # 🏗️ Section 2: Industry — Level Project Ideas (free to Build)
 
@@ -366,11 +361,6 @@ public class SlackNotificationSender implements NotificationSender {
 **Who prevents infinite retries:** AWS SQS combined with your retry policy. Each failed `receiveMessage` increments the message's `ApproximateReceiveCount`. **When a message moves to DLQ:** When `ApproximateReceiveCount` exceeds `maxReceiveCount` (configured on the source queue). If `maxReceiveCount=3`, after 3 failed processing attempts, SQS moves the message to the Dead Letter Queue automatically. **`maxReceiveCount` setting:** Configured in SQS queue properties: `RedrivePolicy: { deadLetterTargetArn: "arn:aws:sqs:...dlq", maxReceiveCount: 3 }`. **Spring Boot SQS listener pattern:** `@SqsListener(value = "notifications-queue") void processNotification(NotificationMessage msg) { notificationService.send(msg); }`. If `send()` throws, Spring acknowledges NOTHING — message becomes visible again for retry. After 3 fails: moves to DLQ. **DLQ monitoring:** Set up CloudWatch alarm on `ApproximateNumberOfMessagesVisible` on the DLQ. Alert when > 0. Have a separate consumer process DLQ messages with human review or special handling. **Spring @Async + retry:** Alternatively use `spring-retry` with `@Retryable(maxAttempts=3, backoff=@Backoff(delay=1000, multiplier=2))` for exponential backoff.
 
 </details>
-<details><summary>Answer</summary>
-
-Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
-</details>
-
 
 ## Project 2: 📊 Feature Flag & A/B Testing System
 
@@ -659,11 +649,6 @@ public class CheckoutController {
 **Who determines eligibility:** The feature flag evaluation engine. For percentage rollout, two approaches: (1) **Random**: `Math.random() < 0.10` per request — simple but inconsistent. Same user may see the feature sometimes and not others (UI flickering). (2) **Consistent hash**: `hash(userId + featureName) % 100 < 10` — same user ALWAYS gets the same result for a given feature. Stable user experience. **When consistent hashing is necessary:** Any feature with persistent UI state, A/B testing attribution (user must stay in same variant for the test to be valid), or gradual database migrations (user must consistently hit new code path). **Consistent hashing implementation:** `int bucket = Math.abs((userId + flagKey).hashCode()) % 100; return bucket < rolloutPercentage;`. Use SHA-256 for uniform distribution: `MessageDigest.getInstance("SHA-256").digest((userId + flagKey).getBytes())` — take first 4 bytes as int. **Spring Boot feature flag pattern:** Use `Togglz`, `LaunchDarkly`, or custom `@FeatureFlag` annotation backed by a `Map<String, FeatureConfig>` loaded from database or config server. `@ConditionalOnFeature("newCheckout") @GetMapping("/checkout")` — route-level feature flags.
 
 </details>
-<details><summary>Answer</summary>
-
-Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
-</details>
-
 
 ## Project 3: 📈 Real-Time Analytics Dashboard
 
@@ -1338,11 +1323,6 @@ public class WorkflowEngine {
 **Who coordinates with 2PC (Two-Phase Commit):** A distributed transaction coordinator (XA coordinator). Phase 1: coordinator asks all services "can you commit?" All must respond YES. Phase 2: coordinator sends COMMIT. If any service fails in phase 1: all receive ABORT. **Who coordinates with Saga:** The services themselves (choreography) or a dedicated orchestrator (orchestration). Each step is a local transaction. No global lock. **When Saga is preferred over 2PC:** Microservices architectures (2PC requires all services to hold locks during coordination — latency spike, deadlock risk across service boundaries). Long-running transactions (2PC keeps DB locks for seconds/minutes — unacceptable). High scalability requirements. **What a compensating transaction is:** A business-level undo. If PaymentService charges $100 and then InventoryService fails, Saga runs a compensating transaction: `PaymentService.refund($100)`. Not a DB rollback — a NEW transaction that reverses the effect. **Compensating tx limitations:** Non-reversible actions (email sent, physical shipment) can't be compensated. Design sagas to handle "forward recovery" (retry until success) for such steps. **Spring + Saga:** Use Axon Framework or Eventuate Tram for saga orchestration with Spring Boot.
 
 </details>
-<details><summary>Answer</summary>
-
-Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
-</details>
-
 
 ## Project 5: 🗓️ Resource Scheduling & Booking System
 
@@ -1648,11 +1628,6 @@ public record BookingResult(Long bookingId, BookingStatus status, Long waitlistI
 **Who detects the conflict with optimistic locking:** The database version check on commit. Optimistic locking assumes conflicts are RARE. Each row has a `version` column. User A reads room (version=5), User B reads room (version=5). User A commits: `UPDATE room SET booked=true, version=6 WHERE id=1 AND version=5` (succeeds). User B commits: `UPDATE room SET booked=true, version=6 WHERE id=1 AND version=5` (0 rows updated — version mismatch). JPA throws `OptimisticLockException`. User B's transaction rolls back. **When pessimistic locking causes deadlocks:** Thread A locks Room 101 then Room 102. Thread B locks Room 102 then Room 101. Circular lock dependency — deadlock. Both threads wait forever (until timeout). Pessimistic locking holds DB row locks for the ENTIRE transaction duration. Under high concurrency, transactions queue up and throughput drops. **JPA annotations:** Optimistic: `@Version private int version;` field on entity. JPA automatically manages version checking. Pessimistic: `@Lock(LockModeType.PESSIMISTIC_WRITE)` on repository method — adds `SELECT ... FOR UPDATE` (exclusive row lock). **Booking system recommendation:** Optimistic locking for rooms booked infrequently (low collision probability). Show user a friendly error message on `OptimisticLockException`. Re-try or redirect to next available slot.
 
 </details>
-<details><summary>Answer</summary>
-
-Zero Control and Lock Contention. `ddl-auto=update` calculates the schema diff at startup and blindly fires `ALTER TABLE` statements. On a table with 50 million rows, adding a column with a default value can lock the entire table for minutes or hours, causing total application downtime. Furthermore, it cannot handle complex migrations like splitting a column or migrating data. Production systems must use controlled, versioned migration tools like Flyway or Liquibase, and heavy table alterations must be done using online schema change tools (like gh-ost).
-</details>
-
 
 # 🏗️ More Project Ideas
 
