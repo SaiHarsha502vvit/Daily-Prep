@@ -1,25 +1,25 @@
-# 42. Polling & Async Data Patterns — The Right Way to Wait for Slow APIs
+﻿# 42. Polling & Async Data Patterns â€” The Right Way to Wait for Slow APIs
 
-**Navigation**: [← Chapter 41: GraphQL & WebSocket](41_GraphQL_WebSocket_Testing.md) | [Index](00_INDEX.md) | [→ Chapter 43: Real-World War Stories](43_Real_World_SDET_War_Stories.md)
+**Navigation**: [â† Chapter 41: GraphQL & WebSocket](41_GraphQL_WebSocket_Testing.md) | [Index](00_INDEX.md) | [â†’ Chapter 43: Real-World War Stories](43_Real_World_SDET_War_Stories.md)
 
 **Cross-links:**
-- [`15_CrossSite_Pattern5_UI_API_Side_Effects.md`](15_CrossSite_Pattern5_UI_API_Side_Effects.md) — expect.poll in side-effect verification
-- [`26_Flakiness_Diagnosis_and_Fixing.md`](26_Flakiness_Diagnosis_and_Fixing.md) — waitForTimeout as flakiness root cause
-- [`23_APIUtils_HTTP_Library.md`](23_APIUtils_HTTP_Library.md) — API client patterns
+- [`15_CrossSite_Pattern5_UI_API_Side_Effects.md`](15_CrossSite_Pattern5_UI_API_Side_Effects.md) â€” expect.poll in side-effect verification
+- [`26_Flakiness_Diagnosis_and_Fixing.md`](26_Flakiness_Diagnosis_and_Fixing.md) â€” waitForTimeout as flakiness root cause
+- [`23_APIUtils_HTTP_Library.md`](23_APIUtils_HTTP_Library.md) â€” API client patterns
 
 ---
 
 ## 5W1H
 
-- **WHAT**: Every technique Playwright and TypeScript provide for waiting on slow, asynchronous operations — report generation (10 min), email delivery (3 min), payment processing (30 sec to 2 min), background jobs, real-time WebSocket updates — WITHOUT using `waitForTimeout`, `for` loops, or arbitrary sleeps.
-- **WHY**: The `for`-loop-with-sleep pattern (see Section 1) is the single most common source of flaky, slow, unmaintainable enterprise test suites. Every test that has `await page.waitForTimeout(60000)` is lying to you — it either sleeps too long (wastes minutes) or too short (causes false failures).
+- **WHAT**: Every technique Playwright and TypeScript provide for waiting on slow, asynchronous operations â€” report generation (10 min), email delivery (3 min), payment processing (30 sec to 2 min), background jobs, real-time WebSocket updates â€” WITHOUT using `waitForTimeout`, `for` loops, or arbitrary sleeps.
+- **WHY**: The `for`-loop-with-sleep pattern (see Section 1) is the single most common source of flaky, slow, unmaintainable enterprise test suites. Every test that has `await page.waitForTimeout(60000)` is lying to you â€” it either sleeps too long (wastes minutes) or too short (causes false failures).
 - **WHO**: Every SDET who has ever written a loop to "poll until the status changes." This chapter gives you the professional replacement.
-- **WHEN**: Any time an API or UI operation is asynchronous — the trigger fires immediately but the result appears after an unpredictable delay.
+- **WHEN**: Any time an API or UI operation is asynchronous â€” the trigger fires immediately but the result appears after an unpredictable delay.
 - **HOW**: By understanding the full hierarchy of Playwright waiting primitives, building a typed `pollUntil()` utility, and applying each tool to the right scenario.
 
 ---
 
-## 1. The Problem — Why "Sleep and Hope" Fails
+## 1. The Problem â€” Why "Sleep and Hope" Fails
 
 ### The Real-World Scenario
 
@@ -36,16 +36,16 @@ The test must verify that after clicking Pay, the citation shows PAID.
 The total wait time is unpredictable: 30 seconds minimum, 2 minutes maximum.
 ```
 
-### The BAD Pattern (for-loop + waitForTimeout) — What People Actually Write
+### The BAD Pattern (for-loop + waitForTimeout) â€” What People Actually Write
 
 ```typescript
-// ❌ ANTI-PATTERN — for-loop with sleep
+// âŒ ANTI-PATTERN â€” for-loop with sleep
 // Seen in real enterprise test suites from multiple companies
 
 test('Citation payment flow', async ({ page, citationsClient }) => {
   await paymentForm.submitPayment();
 
-  // "Wait for status to change" — the wrong way
+  // "Wait for status to change" â€” the wrong way
   let status = '';
   let attempts = 0;
 
@@ -71,7 +71,7 @@ test('Citation payment flow', async ({ page, citationsClient }) => {
 Problem 1: WASTES TIME even when result is fast
   Payment processes in 35 seconds.
   Loop sleeps at 36s, 37s, 38s, ... 119s = 84 extra seconds wasted.
-  In a suite with 20 payment tests: 84s × 20 = 28 minutes wasted.
+  In a suite with 20 payment tests: 84s Ã— 20 = 28 minutes wasted.
 
 Problem 2: NO DESCRIPTIVE ERROR on timeout
   When the loop exits at 120 iterations without PAID:
@@ -80,12 +80,12 @@ Problem 2: NO DESCRIPTIVE ERROR on timeout
 
 Problem 3: HIDES REAL ERRORS
   If the API returns 500 on attempt 15, the loop swallows the error.
-  `citation.status` is undefined → loop continues silently.
+  `citation.status` is undefined â†’ loop continues silently.
   The test times out instead of reporting the 500.
 
 Problem 4: NOT USING PLAYWRIGHT'S RETRY ENGINE
   expect() at the end does not retry.
-  If status is PROCESSING at loop exit → immediate failure.
+  If status is PROCESSING at loop exit â†’ immediate failure.
   No Playwright-level auto-retry, no timeout propagation.
 
 Problem 5: VARIABLE INTERVAL IS INFLEXIBLE
@@ -106,13 +106,13 @@ Problem 7: RACE CONDITION ON ASSERTION
 
 Problem 8: BRITTLE TO API ERRORS
   HTTP 429 (rate limit), 503 (service unavailable)?
-  The loop has no special handling — it retries silently.
+  The loop has no special handling â€” it retries silently.
   Or it throws and the test fails with a confusing error.
 ```
 
 ---
 
-## 2. The Right Tool — `expect.poll()`
+## 2. The Right Tool â€” `expect.poll()`
 
 `expect.poll()` is Playwright's built-in polling assertion. It is the official, documented replacement for all polling patterns.
 
@@ -136,12 +136,12 @@ await expect.poll(
 
 ```
 1. Calls your function immediately (attempt 1)
-2. If assertion passes → done ✅
-3. If assertion fails → wait intervals[0] milliseconds → try again (attempt 2)
-4. If assertion fails → wait intervals[1] milliseconds → try again (attempt 3)
-5. If assertion fails → wait intervals[2] milliseconds → try again (attempt 4)
-6. Once intervals array is exhausted → repeat the LAST interval forever
-7. If timeout is reached → throw with your message + last received value
+2. If assertion passes â†’ done âœ…
+3. If assertion fails â†’ wait intervals[0] milliseconds â†’ try again (attempt 2)
+4. If assertion fails â†’ wait intervals[1] milliseconds â†’ try again (attempt 3)
+5. If assertion fails â†’ wait intervals[2] milliseconds â†’ try again (attempt 4)
+6. Once intervals array is exhausted â†’ repeat the LAST interval forever
+7. If timeout is reached â†’ throw with your message + last received value
 
 Key difference from for-loop:
 - Stops IMMEDIATELY when condition is met (no wasted sleep)
@@ -150,10 +150,10 @@ Key difference from for-loop:
 - Integrates with test retries and trace viewer
 ```
 
-### Pattern 1 — Poll API Response Status
+### Pattern 1 â€” Poll API Response Status
 
 ```typescript
-// ✅ CORRECT: Payment status via API polling
+// âœ… CORRECT: Payment status via API polling
 await expect.poll(
   async () => {
     const citation = await citationsClient.getById(citationId);
@@ -162,25 +162,25 @@ await expect.poll(
   {
     message:   `Citation ${citationId} never reached PAID status. Check payment gateway logs.`,
     timeout:   120_000,                          // 2 minute max
-    intervals: [1000, 2000, 5000, 10000],        // 1s → 2s → 5s → 10s → 10s → 10s...
+    intervals: [1000, 2000, 5000, 10000],        // 1s â†’ 2s â†’ 5s â†’ 10s â†’ 10s â†’ 10s...
   }
 ).toBe('PAID');
 ```
 
 **What happens with this pattern:**
 ```
-T+0s:  First check → PENDING   (payment just triggered)
-T+1s:  Second check → PENDING  (still processing)
-T+3s:  Third check → PROCESSING (gateway picked it up)
-T+8s:  Fourth check → PAID    ✅ DONE — test continues immediately
+T+0s:  First check â†’ PENDING   (payment just triggered)
+T+1s:  Second check â†’ PENDING  (still processing)
+T+3s:  Third check â†’ PROCESSING (gateway picked it up)
+T+8s:  Fourth check â†’ PAID    âœ… DONE â€” test continues immediately
 Total: 8 seconds, not 120 seconds
 ```
 
-### Pattern 2 — Poll UI State That Reflects Async API
+### Pattern 2 â€” Poll UI State That Reflects Async API
 
 ```typescript
-// ✅ CORRECT: Wait for UI badge to reflect the backend status change
-// The UI polls the backend every 30 seconds — we need to wait for it to refresh
+// âœ… CORRECT: Wait for UI badge to reflect the backend status change
+// The UI polls the backend every 30 seconds â€” we need to wait for it to refresh
 
 // Option A: Reload the page and check (for non-real-time UIs)
 await expect.poll(
@@ -212,10 +212,10 @@ await expect.poll(
 ).toBe('PAID');
 ```
 
-### Pattern 3 — Poll For a Complex Condition (boolean)
+### Pattern 3 â€” Poll For a Complex Condition (boolean)
 
 ```typescript
-// ✅ CORRECT: Wait for email delivery + open tracking
+// âœ… CORRECT: Wait for email delivery + open tracking
 // Email delivery can take 30 seconds to 5 minutes
 
 await expect.poll(
@@ -236,17 +236,17 @@ await expect.poll(
   },
   {
     message:   `Payment confirmation email never delivered for citation ${citationId}`,
-    timeout:   300_000,      // 5 minutes — realistic email delivery window
+    timeout:   300_000,      // 5 minutes â€” realistic email delivery window
     intervals: [5000, 10000, 30000, 60000],  // aggressive early, relaxed later
   }
 ).toBe(true);
 ```
 
-### Pattern 4 — Poll And Get the Value (not just assert)
+### Pattern 4 â€” Poll And Get the Value (not just assert)
 
 ```typescript
-// ✅ CORRECT: Wait for report to be READY, then download it
-// The reportId comes from a 202 response, status goes PENDING → GENERATING → READY
+// âœ… CORRECT: Wait for report to be READY, then download it
+// The reportId comes from a 202 response, status goes PENDING â†’ GENERATING â†’ READY
 
 let finalReport: Report | null = null;
 
@@ -258,7 +258,7 @@ await expect.poll(
     if (report.status === 'FAILED') {
       throw new Error(`Report ${reportId} FAILED: ${report.errorMessage}`);
       // Throwing inside expect.poll() STOPS polling and fails the test immediately
-      // Don't throw on retryable states — only on permanent failures
+      // Don't throw on retryable states â€” only on permanent failures
     }
 
     return report.status;
@@ -270,16 +270,16 @@ await expect.poll(
   }
 ).toBe('READY');
 
-// Now use finalReport safely — it's the last value returned by the poll function
+// Now use finalReport safely â€” it's the last value returned by the poll function
 expect(finalReport!.downloadUrl).toBeTruthy();
 const reportContent = await downloadAndRead(finalReport!.downloadUrl);
 expect(reportContent.pageCount).toBeGreaterThan(0);
 ```
 
-### Pattern 5 — Poll With Progressive Logging
+### Pattern 5 â€” Poll With Progressive Logging
 
 ```typescript
-// ✅ CORRECT: Verbose polling with progress logging (good for long operations)
+// âœ… CORRECT: Verbose polling with progress logging (good for long operations)
 
 let attemptCount = 0;
 let lastStatus = '';
@@ -290,9 +290,9 @@ await expect.poll(
     const citation = await citationsClient.getById(citationId);
     const status = citation.status;
 
-    // Log progress on status changes (not every poll — too noisy)
+    // Log progress on status changes (not every poll â€” too noisy)
     if (status !== lastStatus) {
-      console.log(`[Poll attempt ${attemptCount}] ${citationId}: ${lastStatus || 'START'} → ${status}`);
+      console.log(`[Poll attempt ${attemptCount}] ${citationId}: ${lastStatus || 'START'} â†’ ${status}`);
       lastStatus = status;
     }
 
@@ -308,21 +308,21 @@ await expect.poll(
 
 ---
 
-## 3. `page.waitForResponse()` — Network-Level Precision
+## 3. `page.waitForResponse()` â€” Network-Level Precision
 
 `waitForResponse()` is different from `expect.poll()`. It intercepts the **exact moment** an API call completes, not after. Use it when you trigger an action and want to capture the response.
 
 ### When to Use
 
 ```
-expect.poll()         → polling AFTER an action has started (background jobs)
-waitForResponse()     → capturing the response AT THE MOMENT an action fires
+expect.poll()         â†’ polling AFTER an action has started (background jobs)
+waitForResponse()     â†’ capturing the response AT THE MOMENT an action fires
 ```
 
 ### Pattern: Capture API Response at Click Time
 
 ```typescript
-// ✅ CORRECT: Capture the exact payment POST response
+// âœ… CORRECT: Capture the exact payment POST response
 const [paymentApiResponse] = await Promise.all([
   page.waitForResponse(
     response =>
@@ -349,7 +349,7 @@ await expect.poll(
 ### Pattern: Verify the Request Was Actually Sent
 
 ```typescript
-// ✅ CORRECT: Assert that clicking a button triggers the expected API call
+// âœ… CORRECT: Assert that clicking a button triggers the expected API call
 const requestPromise = page.waitForRequest(
   request =>
     request.url().includes('/api/v2/notifications/send') &&
@@ -369,7 +369,7 @@ expect(requestBody.type).toBe('PAYMENT_REMINDER');
 ### Pattern: Wait for ALL Related API Calls
 
 ```typescript
-// ✅ CORRECT: A single UI action triggers 3 API calls — wait for all
+// âœ… CORRECT: A single UI action triggers 3 API calls â€” wait for all
 const apiCallPromises = [
   page.waitForResponse(r => r.url().includes('/api/citations') && r.status() === 200),
   page.waitForResponse(r => r.url().includes('/api/notifications') && r.status() === 202),
@@ -387,12 +387,12 @@ expect(auditResponse.status()).toBe(201);
 
 ---
 
-## 4. `page.waitForFunction()` — DOM-Level JavaScript Conditions
+## 4. `page.waitForFunction()` â€” DOM-Level JavaScript Conditions
 
 Use when you need to evaluate a JavaScript expression in the browser context to determine when to proceed.
 
 ```typescript
-// ✅ CORRECT: Wait for React component's state to settle (not just DOM visibility)
+// âœ… CORRECT: Wait for React component's state to settle (not just DOM visibility)
 const element = await page.waitForFunction(
   () => {
     const statusEl = document.querySelector('[data-testid="payment-status"]');
@@ -406,7 +406,7 @@ const element = await page.waitForFunction(
   }
 );
 
-// element is a JSHandle<string> — the return value from the browser function
+// element is a JSHandle<string> â€” the return value from the browser function
 const statusText = await element.jsonValue();  // 'PAID'
 expect(statusText).toBe('PAID');
 ```
@@ -414,25 +414,25 @@ expect(statusText).toBe('PAID');
 ### `polling` Options for waitForFunction
 
 ```typescript
-// polling: 'raf'    → runs on every animation frame (~60 times/second)
+// polling: 'raf'    â†’ runs on every animation frame (~60 times/second)
 //                     BEST for: waiting for CSS animations to settle, immediate DOM changes
 //                     WARNING: very CPU intensive for long waits
 
-// polling: number   → runs every N milliseconds
+// polling: number   â†’ runs every N milliseconds
 //                     BEST for: API status polling, background job checking
-//                     Example: polling: 5000 → check every 5 seconds
+//                     Example: polling: 5000 â†’ check every 5 seconds
 
-// Default: 100ms    → if not specified
+// Default: 100ms    â†’ if not specified
 ```
 
 ---
 
-## 5. The `pollUntil()` Utility — Your Custom Enterprise Polling Library
+## 5. The `pollUntil()` Utility â€” Your Custom Enterprise Polling Library
 
 When `expect.poll()` isn't enough (you need custom retry logic, error classification, or detailed logging), build a typed utility:
 
 ```typescript
-// utils/polling.ts — Enterprise polling utility for complex async scenarios
+// utils/polling.ts â€” Enterprise polling utility for complex async scenarios
 
 export interface PollOptions<T> {
   /** Human-readable description for error messages and logs */
@@ -527,9 +527,9 @@ export async function pollUntil<T>(
       lastError = error;
       const shouldRetry = options.isRetryableError?.(error) ?? false;
       if (!shouldRetry) {
-        throw error;  // Non-retryable error — propagate immediately
+        throw error;  // Non-retryable error â€” propagate immediately
       }
-      // Retryable error — log and continue
+      // Retryable error â€” log and continue
       console.warn(`[pollUntil] Attempt ${attempt}: retryable error: ${error}`);
     }
 
@@ -546,7 +546,7 @@ export async function pollUntil<T>(
   }
 }
 
-// ─── Convenience helpers ───────────────────────────────────────────────────────
+// â”€â”€â”€ Convenience helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 /**
  * Poll until an API returns a specific status value.
@@ -626,12 +626,12 @@ expect(notification.metadata.citationId).toBe(citationId);
 
 ---
 
-## 6. Five Real Enterprise Scenarios — Applied Patterns
+## 6. Five Real Enterprise Scenarios â€” Applied Patterns
 
 ### Scenario A: Payment Processing (30s to 2 minutes)
 
 ```typescript
-test('Citation payment — full flow with polling', async ({
+test('Citation payment â€” full flow with polling', async ({
   page, citationsClient, paymentsClient, dbClient, account
 }) => {
   const testStart = new Date();
@@ -725,7 +725,7 @@ test('Generate monthly citations report', async ({ request, account }) => {
   expect(triggerResponse.status()).toBe(202);
   const { reportId } = await triggerResponse.json() as { reportId: string };
 
-  // Poll until READY — can take up to 10 minutes
+  // Poll until READY â€” can take up to 10 minutes
   let completedReport: ReportResponse;
 
   await expect.poll(
@@ -735,7 +735,7 @@ test('Generate monthly citations report', async ({ request, account }) => {
       });
       const body = await report.json() as ReportResponse;
 
-      // Permanent failure — stop polling, fail the test
+      // Permanent failure â€” stop polling, fail the test
       if (body.status === 'FAILED') {
         throw new Error(`Report generation FAILED: ${body.errorMessage}`);
       }
@@ -778,7 +778,7 @@ const mailosaurClient = new Mailosaur(process.env.MAILOSAUR_API_KEY!);
 const MAILOSAUR_SERVER_ID = process.env.MAILOSAUR_SERVER_ID!;
 
 test('Welcome email sent after registration', async ({ page }) => {
-  // Register a new user — email goes to Mailosaur test inbox
+  // Register a new user â€” email goes to Mailosaur test inbox
   const testEmail = `user-${Date.now()}@${MAILOSAUR_SERVER_ID}.mailosaur.net`;
 
   await registrationPage.register({ email: testEmail, name: 'Test User' });
@@ -791,11 +791,11 @@ test('Welcome email sent after registration', async ({ page }) => {
         const message = await mailosaurClient.messages.findOne(
           MAILOSAUR_SERVER_ID,
           { sentTo: testEmail, subject: 'Welcome to CitationsCRM' },
-          { timeout: 1000 }  // Mailosaur's own short timeout — we wrap it in expect.poll
+          { timeout: 1000 }  // Mailosaur's own short timeout â€” we wrap it in expect.poll
         );
         return message?.id ?? null;
       } catch {
-        return null;  // Not found yet — keep polling
+        return null;  // Not found yet â€” keep polling
       }
     },
     {
@@ -859,7 +859,7 @@ test('Payment status updates in real-time via WebSocket', async ({ page }) => {
     {
       message:   'WebSocket STATUS_UPDATE message for PAID never received',
       timeout:   120_000,
-      intervals: [500, 1000, 2000],  // WebSocket is real-time — poll frequently
+      intervals: [500, 1000, 2000],  // WebSocket is real-time â€” poll frequently
     }
   ).toBe(true);
 
@@ -871,19 +871,19 @@ test('Payment status updates in real-time via WebSocket', async ({ page }) => {
 ### Scenario E: File Processing Queue (variable duration)
 
 ```typescript
-test('Upload citation evidence — file processing', async ({ page, evidenceClient }) => {
+test('Upload citation evidence â€” file processing', async ({ page, evidenceClient }) => {
   // Upload a PDF evidence file
   await page.locator('[data-testid="evidence-upload"]').setInputFiles('./test-data/evidence.pdf');
   await page.locator('[data-testid="upload-btn"]').click();
 
-  // Capture the upload response (immediate — 202 Accepted with fileId)
+  // Capture the upload response (immediate â€” 202 Accepted with fileId)
   const [uploadResponse] = await Promise.all([
     page.waitForResponse(r => r.url().includes('/api/evidence') && r.status() === 202),
     page.locator('[data-testid="upload-btn"]').click(),
   ]);
   const { fileId } = await uploadResponse.json() as { fileId: string };
 
-  // Poll for processing completion — time varies with file size
+  // Poll for processing completion â€” time varies with file size
   // Small files: 5 seconds. Large files (50MB+): 5 minutes.
   const processedFile = await pollUntil(
     async () => {
@@ -901,7 +901,7 @@ test('Upload citation evidence — file processing', async ({ page, evidenceClie
       timeout:     300_000,  // 5 minutes max
       intervals:   [2000, 5000, 15000, 30000],
       onProgress:  (attempt, elapsed, lastVal) => {
-        console.log(`File ${fileId}: attempt ${attempt} (${Math.round(elapsed/1000)}s) — ${JSON.stringify(lastVal)}`);
+        console.log(`File ${fileId}: attempt ${attempt} (${Math.round(elapsed/1000)}s) â€” ${JSON.stringify(lastVal)}`);
       },
       isRetryableError: err => err instanceof NetworkError || err instanceof TimeoutError,
     }
@@ -921,75 +921,75 @@ Every official Playwright method for handling asynchronous operations:
 ### The Priority Hierarchy
 
 ```
-PRIORITY 1 — Playwright Auto-Retry Assertions (use these first)
-  await expect(locator).toHaveText('value')     → retries until text matches
-  await expect(locator).toBeVisible()           → retries until visible
-  await expect(locator).toHaveValue('val')      → retries until input has value
-  await expect(locator).toHaveCount(n)          → retries until count matches
-  await expect(locator).toHaveAttribute(a, v)   → retries until attribute matches
-  await expect(page).toHaveURL('pattern')       → retries until URL matches
+PRIORITY 1 â€” Playwright Auto-Retry Assertions (use these first)
+  await expect(locator).toHaveText('value')     â†’ retries until text matches
+  await expect(locator).toBeVisible()           â†’ retries until visible
+  await expect(locator).toHaveValue('val')      â†’ retries until input has value
+  await expect(locator).toHaveCount(n)          â†’ retries until count matches
+  await expect(locator).toHaveAttribute(a, v)   â†’ retries until attribute matches
+  await expect(page).toHaveURL('pattern')       â†’ retries until URL matches
   All of these: retry for expect.timeout (default 5s, configurable)
 
-PRIORITY 2 — expect.poll() (when PRIORITY 1 doesn't apply)
+PRIORITY 2 â€” expect.poll() (when PRIORITY 1 doesn't apply)
   await expect.poll(async () => value, opts).toBe(expected)
-  → For: API status, email delivery, background jobs, anything not in the DOM
+  â†’ For: API status, email delivery, background jobs, anything not in the DOM
 
-PRIORITY 3 — page.waitForResponse/Request (capture at action time)
+PRIORITY 3 â€” page.waitForResponse/Request (capture at action time)
   await page.waitForResponse(predicate, { timeout })
   await page.waitForRequest(predicate, { timeout })
-  → For: asserting API calls are made when a button is clicked
+  â†’ For: asserting API calls are made when a button is clicked
 
-PRIORITY 4 — page.waitForURL (navigation)
+PRIORITY 4 â€” page.waitForURL (navigation)
   await page.waitForURL('**/dashboard', { timeout })
-  → For: waiting for full page navigation (MPA) or hash changes (SPA)
+  â†’ For: waiting for full page navigation (MPA) or hash changes (SPA)
 
-PRIORITY 5 — page.waitForFunction (custom DOM condition)
+PRIORITY 5 â€” page.waitForFunction (custom DOM condition)
   await page.waitForFunction(fn, { timeout, polling })
-  → For: complex JavaScript conditions in the browser that no locator can express
+  â†’ For: complex JavaScript conditions in the browser that no locator can express
 
-PRIORITY 6 — locator.waitFor({ state }) (specific element state)
+PRIORITY 6 â€” locator.waitFor({ state }) (specific element state)
   await locator.waitFor({ state: 'attached' | 'detached' | 'visible' | 'hidden', timeout })
-  → For: specific lifecycle events on known elements
+  â†’ For: specific lifecycle events on known elements
 
-PRIORITY 7 — page.waitForEvent (browser events)
+PRIORITY 7 â€” page.waitForEvent (browser events)
   await page.waitForEvent('download' | 'popup' | 'dialog', { timeout })
   context.waitForEvent('page', { timeout })
-  → For: browser-level events (file downloads, new tabs, dialogs)
+  â†’ For: browser-level events (file downloads, new tabs, dialogs)
 
-PRIORITY 8 — page.waitForLoadState (navigation lifecycle)
+PRIORITY 8 â€” page.waitForLoadState (navigation lifecycle)
   await page.waitForLoadState('domcontentloaded' | 'load' | 'networkidle', { timeout })
-  → For: MPA (multi-page apps) navigation completion
-  → WARNING: 'networkidle' unreliable for SPAs with background polling
+  â†’ For: MPA (multi-page apps) navigation completion
+  â†’ WARNING: 'networkidle' unreliable for SPAs with background polling
 
-NEVER — page.waitForTimeout
-  await page.waitForTimeout(ms)  ← BANNED except in last-resort debugging
+NEVER â€” page.waitForTimeout
+  await page.waitForTimeout(ms)  â† BANNED except in last-resort debugging
 ```
 
 ### Complete API Reference Table
 
 | Method | Returns | Auto-retry | Best for | Avoid when |
 |---|---|---|---|---|
-| `expect(locator).toHaveText(v)` | void (throws) | ✅ Yes | UI text appears | Text is already there (use `textContent()`) |
-| `expect(locator).toBeVisible()` | void (throws) | ✅ Yes | Element appears | Checking element state (use `isVisible()`) |
-| `expect(locator).toHaveCount(n)` | void (throws) | ✅ Yes | Number of elements | Complex counting logic |
-| `expect.poll(fn, opts)` | void (throws) | ✅ Yes | Any async value | Simple DOM assertions |
-| `page.waitForResponse(pred)` | `Promise<Response>` | ❌ No | Capturing API calls | Background jobs (use expect.poll) |
-| `page.waitForRequest(pred)` | `Promise<Request>` | ❌ No | Verifying API sent | Long-running ops |
-| `page.waitForURL(url)` | `Promise<void>` | ❌ No | Page navigation | SPA tab clicks |
-| `page.waitForFunction(fn)` | `Promise<JSHandle>` | ❌ No | Custom DOM/JS condition | Simple assertions |
-| `locator.waitFor({state})` | `Promise<void>` | ❌ No | Element lifecycle | Text content (use toHaveText) |
-| `page.waitForEvent(evt)` | `Promise<event>` | ❌ No | Downloads, new tabs, dialogs | API status |
-| `page.waitForLoadState(s)` | `Promise<void>` | ❌ No | MPA navigation | SPA navigation |
-| `page.waitForTimeout(ms)` | `Promise<void>` | ❌ No | Debugging ONLY | **All production use** |
+| `expect(locator).toHaveText(v)` | void (throws) | âœ… Yes | UI text appears | Text is already there (use `textContent()`) |
+| `expect(locator).toBeVisible()` | void (throws) | âœ… Yes | Element appears | Checking element state (use `isVisible()`) |
+| `expect(locator).toHaveCount(n)` | void (throws) | âœ… Yes | Number of elements | Complex counting logic |
+| `expect.poll(fn, opts)` | void (throws) | âœ… Yes | Any async value | Simple DOM assertions |
+| `page.waitForResponse(pred)` | `Promise<Response>` | âŒ No | Capturing API calls | Background jobs (use expect.poll) |
+| `page.waitForRequest(pred)` | `Promise<Request>` | âŒ No | Verifying API sent | Long-running ops |
+| `page.waitForURL(url)` | `Promise<void>` | âŒ No | Page navigation | SPA tab clicks |
+| `page.waitForFunction(fn)` | `Promise<JSHandle>` | âŒ No | Custom DOM/JS condition | Simple assertions |
+| `locator.waitFor({state})` | `Promise<void>` | âŒ No | Element lifecycle | Text content (use toHaveText) |
+| `page.waitForEvent(evt)` | `Promise<event>` | âŒ No | Downloads, new tabs, dialogs | API status |
+| `page.waitForLoadState(s)` | `Promise<void>` | âŒ No | MPA navigation | SPA navigation |
+| `page.waitForTimeout(ms)` | `Promise<void>` | âŒ No | Debugging ONLY | **All production use** |
 
 ---
 
-## 8. The Anti-Pattern Hall of Shame — Real Code from Real Codebases
+## 8. The Anti-Pattern Hall of Shame â€” Real Code from Real Codebases
 
 ### Anti-Pattern 1: The Sleeping Loop
 
 ```typescript
-// ❌ The original sin — seen in 70% of enterprise test suites
+// âŒ The original sin â€” seen in 70% of enterprise test suites
 let status = 'PENDING';
 while (status !== 'PAID') {
   await page.waitForTimeout(5000);  // sleeps BEFORE checking (always wastes 5s minimum)
@@ -1000,7 +1000,7 @@ while (status !== 'PAID') {
 ```
 
 ```typescript
-// ✅ Fixed
+// âœ… Fixed
 await expect.poll(
   async () => (await citationsClient.getById(citationId)).status,
   { message: `Citation ${citationId} stuck`, timeout: 120_000, intervals: [5000, 10000] }
@@ -1010,14 +1010,14 @@ await expect.poll(
 ### Anti-Pattern 2: The Safety Sleep After Every Action
 
 ```typescript
-// ❌ "Just to be safe" — seen everywhere
+// âŒ "Just to be safe" â€” seen everywhere
 await page.click('#saveBtn');
 await page.waitForTimeout(3000);  // "the page usually takes 2-3 seconds to save"
 await expect(page.locator('.success')).toBeVisible();
 ```
 
 ```typescript
-// ✅ Fixed — Playwright's toBeVisible() already waits
+// âœ… Fixed â€” Playwright's toBeVisible() already waits
 await page.click('#saveBtn');
 await expect(page.locator('.success')).toBeVisible({ timeout: 15_000 });
 ```
@@ -1025,32 +1025,32 @@ await expect(page.locator('.success')).toBeVisible({ timeout: 15_000 });
 ### Anti-Pattern 3: Reading textContent() Without Waiting
 
 ```typescript
-// ❌ Reads text immediately — might be empty during two-phase render
+// âŒ Reads text immediately â€” might be empty during two-phase render
 await page.goto(`/citations/${citationId}`);
 const status = await page.locator('[data-testid="status"]').textContent();
-expect(status).toBe('PAID');  // fails 40% of the time — element exists but empty
+expect(status).toBe('PAID');  // fails 40% of the time â€” element exists but empty
 ```
 
 ```typescript
-// ✅ Fixed — wait for the text THEN read
+// âœ… Fixed â€” wait for the text THEN read
 await page.goto(`/citations/${citationId}`);
 await expect(page.locator('[data-testid="status"]')).toHaveText('PAID', { timeout: 30_000 });
 // OR: if you need the value for something else:
 await expect(page.locator('[data-testid="status"]')).not.toHaveText('', { timeout: 30_000 });
 const status = await page.locator('[data-testid="status"]').textContent();
-// NOW reading textContent is safe — you know it's populated
+// NOW reading textContent is safe â€” you know it's populated
 ```
 
 ### Anti-Pattern 4: `networkidle` on SPAs
 
 ```typescript
-// ❌ Hangs indefinitely on apps with background heartbeat requests
+// âŒ Hangs indefinitely on apps with background heartbeat requests
 await page.goto('/dashboard');
-await page.waitForLoadState('networkidle');  // D365 polls CDS every 30s → never idle
+await page.waitForLoadState('networkidle');  // D365 polls CDS every 30s â†’ never idle
 ```
 
 ```typescript
-// ✅ Fixed — wait for specific content that proves the page is ready
+// âœ… Fixed â€” wait for specific content that proves the page is ready
 await page.goto('/dashboard');
 await expect(page.locator('[data-testid="dashboard-grid"]')).toBeVisible({ timeout: 30_000 });
 await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30_000 });
@@ -1059,15 +1059,15 @@ await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30_000 });
 ### Anti-Pattern 5: Using `waitForNavigation()` in React/SPA
 
 ```typescript
-// ❌ Hangs forever — SPAs don't trigger browser navigation events
+// âŒ Hangs forever â€” SPAs don't trigger browser navigation events
 await Promise.all([
-  page.waitForNavigation(),         // times out — React router changes URL without navigation
+  page.waitForNavigation(),         // times out â€” React router changes URL without navigation
   page.click('[role="tab"][name="Payments"]'),
 ]);
 ```
 
 ```typescript
-// ✅ Fixed — wait for URL hash change AND content
+// âœ… Fixed â€” wait for URL hash change AND content
 await page.click('[role="tab"][name="Payments"]');
 await page.waitForURL('**#payments', { timeout: 10_000 });
 await expect(page.locator('.payments-panel')).toBeVisible();
@@ -1076,7 +1076,7 @@ await expect(page.locator('.payments-panel')).toBeVisible();
 ### Anti-Pattern 6: The Missing `await` on expect.poll
 
 ```typescript
-// ❌ Missing await — poll runs but test doesn't wait for it
+// âŒ Missing await â€” poll runs but test doesn't wait for it
 expect.poll(
   async () => citationsClient.getById(id).then(c => c.status),
   { timeout: 60_000 }
@@ -1085,8 +1085,8 @@ expect.poll(
 ```
 
 ```typescript
-// ✅ Fixed
-await expect.poll(   // <— must await
+// âœ… Fixed
+await expect.poll(   // <â€” must await
   async () => citationsClient.getById(id).then(c => c.status),
   { timeout: 60_000 }
 ).toBe('PAID');
@@ -1095,7 +1095,7 @@ await expect.poll(   // <— must await
 ### Anti-Pattern 7: Not Throwing on Permanent Failures
 
 ```typescript
-// ❌ Polls for 10 minutes even when the job has permanently FAILED
+// âŒ Polls for 10 minutes even when the job has permanently FAILED
 await expect.poll(
   async () => {
     const job = await jobsClient.getStatus(jobId);
@@ -1107,7 +1107,7 @@ await expect.poll(
 ```
 
 ```typescript
-// ✅ Fixed — throw on permanent failure states
+// âœ… Fixed â€” throw on permanent failure states
 await expect.poll(
   async () => {
     const job = await jobsClient.getStatus(jobId);
@@ -1117,21 +1117,21 @@ await expect.poll(
   },
   { timeout: 600_000 }
 ).toBe('COMPLETED');
-// Fails IMMEDIATELY when FAILED — doesn't waste 10 minutes
+// Fails IMMEDIATELY when FAILED â€” doesn't waste 10 minutes
 ```
 
 ### Anti-Pattern 8: Fixed Timeout That's Wrong for All Environments
 
 ```typescript
-// ❌ 5 seconds works locally, fails in CI (network latency to staging API)
+// âŒ 5 seconds works locally, fails in CI (network latency to staging API)
 await expect.poll(
   async () => citationsClient.getById(id).then(c => c.status),
-  { timeout: 5_000 }  // 5s total — staging API call alone takes 800ms
-).toBe('PAID');       // Only 6 attempts possible → fails in CI
+  { timeout: 5_000 }  // 5s total â€” staging API call alone takes 800ms
+).toBe('PAID');       // Only 6 attempts possible â†’ fails in CI
 ```
 
 ```typescript
-// ✅ Fixed — timeout accounts for environment variance
+// âœ… Fixed â€” timeout accounts for environment variance
 const TIMEOUT_MS = process.env.CI
   ? 120_000   // CI: staging API is slow, payment processing might be slow
   : 30_000;   // Local: fast local API, fast response
@@ -1147,9 +1147,9 @@ await expect.poll(
 
 ---
 
-## 🏋️ Practice Questions
+## ðŸ‹ï¸ Practice Questions
 
-### Q1. [Write It] — Invoice PDF Generation
+### Q1. [Write It] â€” Invoice PDF Generation
 
 An API endpoint `POST /api/invoices` returns `202 { invoiceId }`. The invoice is generated asynchronously. `GET /api/invoices/{id}` returns `{ status: 'PENDING' | 'GENERATING' | 'READY' | 'FAILED', downloadUrl?: string, errorMessage?: string }`.
 
@@ -1182,7 +1182,7 @@ test('Invoice PDF is generated and downloadable', async ({ request, account }) =
       const body = await resp.json() as { status: string; errorMessage?: string; downloadUrl?: string };
       invoiceData = body;
 
-      // Permanent failure — stop polling immediately
+      // Permanent failure â€” stop polling immediately
       if (body.status === 'FAILED') {
         throw new Error(`Invoice generation FAILED: ${body.errorMessage}`);
       }
@@ -1215,7 +1215,7 @@ test('Invoice PDF is generated and downloadable', async ({ request, account }) =
 
 ---
 
-### Q2. [MCQ] — Timeout Debugging
+### Q2. [MCQ] â€” Timeout Debugging
 
 Your `expect.poll()` test is failing in CI 20% of the time with timeout errors. The test polls an email service that occasionally takes 90 seconds to deliver. Your current timeout is 60 seconds. Which TWO changes fix this without making the test artificially slow?
 
@@ -1235,9 +1235,9 @@ E) Add retry: 3 to playwright.config.ts
 
 **B is wrong**: Changing intervals doesn't extend the total timeout. Polling less frequently actually means you might detect the email slower.
 
-**C is wrong**: `waitForTimeout` inside a poll function is the anti-pattern we're replacing. The poll function should be fast — just make the API call. The waiting/interval is handled by expect.poll.
+**C is wrong**: `waitForTimeout` inside a poll function is the anti-pattern we're replacing. The poll function should be fast â€” just make the API call. The waiting/interval is handled by expect.poll.
 
-**E is partially helpful**: Retries catch intermittent failures but mask the root cause. It's not a fix — it's a band-aid. Fix the timeout first.
+**E is partially helpful**: Retries catch intermittent failures but mask the root cause. It's not a fix â€” it's a band-aid. Fix the timeout first.
 
 The combined correct answer:
 ```typescript
@@ -1254,7 +1254,7 @@ await expect.poll(
 
 ---
 
-### Q3. [Spot the Bug] — What's Wrong Here?
+### Q3. [Spot the Bug] â€” What's Wrong Here?
 
 ```typescript
 // Scenario: polling payment status
@@ -1281,19 +1281,19 @@ expect(paymentStatus, 'Payment must complete').toBe('COMPLETED');
 
 Find all bugs.
 
-<details><summary>Answer — 6 Bugs</summary>
+<details><summary>Answer â€” 6 Bugs</summary>
 
 **Bug 1: No timeout enforcement**
 If the API consistently returns 'PENDING' (e.g., payment is stuck), this loops for 120 seconds without ever stopping earlier. No outer timeout.
 
 **Bug 2: FAILED is treated the same as COMPLETED**
-Both `break` out of the loop. Then `expect(paymentStatus).toBe('COMPLETED')` fails. But the error says "Expected 'COMPLETED' but got 'FAILED'" — no context about WHY it failed, no payment error message.
+Both `break` out of the loop. Then `expect(paymentStatus).toBe('COMPLETED')` fails. But the error says "Expected 'COMPLETED' but got 'FAILED'" â€” no context about WHY it failed, no payment error message.
 
 **Bug 3: No descriptive failure message**
 `expect(paymentStatus).toBe('COMPLETED')` gives no information about which payment, how many attempts, or what the last status was.
 
 **Bug 4: Sleep BEFORE checking on next iteration**
-The order is: GET → check → sleep → GET → check. On the last iteration (i=119), it sleeps 1 second unnecessarily after deciding to loop again — but then times out before the next GET.
+The order is: GET â†’ check â†’ sleep â†’ GET â†’ check. On the last iteration (i=119), it sleeps 1 second unnecessarily after deciding to loop again â€” but then times out before the next GET.
 
 **Bug 5: API errors are silently swallowed**
 If `request.get()` returns 503 or throws a network error, `body.status` is undefined. `paymentStatus` becomes `'undefined'`, the loop continues, and you get no information about the transient failure.
@@ -1326,4 +1326,131 @@ await expect.poll(
 
 ---
 
+**Navigation**: [â† Chapter 41: GraphQL & WebSocket](41_GraphQL_WebSocket_Testing.md) | [Index](00_INDEX.md) | [â†’ Chapter 43: Real-World War Stories](43_Real_World_SDET_War_Stories.md)
+
+## 🏋️ Practice Challenges
+
+### Challenge 1 [MCQ] — `expect.poll` vs Custom `while` Loop
+
+What is the primary advantage of Playwright's `expect.poll` over writing your own `while (Date.now() < timeout)` loop with `await page.waitForTimeout(1000)`?
+
+A) `expect.poll` runs in a separate Node.js thread, avoiding event loop blocking.
+B) `expect.poll` respects the test's global timeout, automatically logs the retries in the Playwright HTML report, and terminates cleanly without leaving dangling promises if the test times out.
+C) `expect.poll` can intercept database queries directly.
+D) `expect.poll` is just syntactic sugar; there is no functional difference.
+
+<details><summary>Answer</summary>
+
+**B** — Playwright's `expect.poll` integrates with the test runner's timeout and reporting engine. 
+
+If you write a custom `while` loop:
+1. If the test times out while your loop is sleeping, the `waitForTimeout` promise might dangle, causing the test runner to hang or report confusing teardown errors.
+2. The HTML report just shows a massive block of `page.waitForTimeout` calls with no context.
+3. `expect.poll` shows exactly what was being polled, what the intermediate values were, and handles the intervals (which you can configure) automatically.
+
+</details>
+
+---
+
+### Challenge 2 [Spot the Bug — Polling Scope]
+
+```typescript
+test('Wait for citation status to become PAID', async ({ citationsClient }) => {
+  const citationId = 'CIT-001';
+  
+  // Fetch the citation once
+  const citation = await citationsClient.getById(citationId);
+
+  // Poll until the status is PAID
+  await expect.poll(async () => {
+    return citation.status;
+  }, { timeout: 10000 }).toBe('PAID');
+});
+```
+
+Why will this polling block either pass instantly or timeout every single time without ever detecting the change?
+
+<details><summary>Answer</summary>
+
+**Bug**: The API call `citationsClient.getById(citationId)` is made **outside** the polling block. The `citation` variable is captured in the closure, so the polling function simply returns the exact same string (`'PENDING'`) over and over again without ever making a new network request.
+
+**Fix**: The state-fetching logic must be *inside* the polling function.
+
+```typescript
+  await expect.poll(async () => {
+    // Make the network request inside the poll loop
+    const latestCitation = await citationsClient.getById(citationId);
+    return latestCitation.status;
+  }, { timeout: 10000 }).toBe('PAID');
+```
+
+</details>
+
+---
+
+### Challenge 3 [Write It Yourself — Webhook Receipt]
+
+Write an `expect.poll` block that queries a `webhookClient.getRecent(userId)` endpoint. It should wait up to 15 seconds, polling every 2 seconds, until the array returned by the API contains an event with `type === 'PAYMENT_CONFIRMED'`. Return `true` if found, `false` otherwise.
+
+<details><summary>Answer</summary>
+
+```typescript
+test('Payment triggers webhook', async ({ webhookClient, account }) => {
+  // ... trigger payment ...
+
+  await expect.poll(async () => {
+    const events = await webhookClient.getRecent(account.userId);
+    return events.some(e => e.type === 'PAYMENT_CONFIRMED');
+  }, { 
+    timeout: 15000, 
+    intervals: [2000] // poll every 2 seconds
+  }).toBe(true);
+});
+```
+
+**SDE Insight**: Notice how returning a boolean makes the assertion clean (`.toBe(true)`). You could also return the array and use `.toContainEqual(expect.objectContaining(...))`, which provides better error messages if it fails!
+
+</details>
+
+---
+
+### Challenge 4 [Architecture Decision — Polling vs WebSockets]
+
+Your frontend dashboard uses a WebSocket to receive live updates when a report generation finishes. 
+When writing the E2E test to verify report generation, should you:
+1. `expect.poll` the backend REST API `/reports/status` to see if it's done?
+2. Intercept and wait for the WebSocket frame in the browser?
+
+<details><summary>Answer</summary>
+
+**2. Wait for the WebSocket frame.**
+
+If you are writing an **End-to-End** test, your goal is to verify the user experience. If you bypass the UI and poll the backend API, you prove the backend works, but you haven't proven that the frontend WebSocket connection successfully received the message and updated the DOM.
+
+Use Playwright's `page.waitForEvent('websocket')` and `ws.waitForEvent('framereceived')`, or simply wait for the DOM element to update (which implicitly waits for the WebSocket). Polling the API should be reserved for background processes that *don't* have a direct UI push mechanism.
+
+</details>
+
+---
+
+### Challenge 5 [MCQ — Caching interference]
+
+You have an `expect.poll` block waiting for an API resource state to change. The backend logs show the database updated instantly, but your test polls for 30 seconds and fails. What is the most likely architectural cause?
+
+A) `expect.poll` is executing too fast, causing the Node event loop to crash.
+B) The API endpoint is returning a cached `304 Not Modified` or hitting a CDN/Redis cache because the test client isn't sending cache-busting headers.
+C) Playwright `request` context cannot make more than 5 requests to the same endpoint.
+D) The database is locked by the test runner.
+
+<details><summary>Answer</summary>
+
+**B** — Caching interference. 
+
+When you aggressively poll a `GET` endpoint, intermediate caches (CDN, API Gateway, or Redis) or the browser cache might serve the old value until the cache TTL expires. 
+
+**Fix**: When polling APIs in tests, ensure the API client sends headers like `Cache-Control: no-cache` or appends a cache-busting query parameter (e.g., `?timestamp=${Date.now()}`), assuming the API respects them.
+
+</details>
+
+---
 **Navigation**: [← Chapter 41: GraphQL & WebSocket](41_GraphQL_WebSocket_Testing.md) | [Index](00_INDEX.md) | [→ Chapter 43: Real-World War Stories](43_Real_World_SDET_War_Stories.md)

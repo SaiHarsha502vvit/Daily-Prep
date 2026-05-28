@@ -1,104 +1,104 @@
-# 40. Security Test Automation — OWASP Top 10, ZAP & Auth Testing
+﻿# 40. Security Test Automation â€” OWASP Top 10, ZAP & Auth Testing
 
-**Navigation**: [← Chapter 39: Accessibility Testing](39_Accessibility_Testing_axe_core.md) | [Index](00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](41_GraphQL_WebSocket_Testing.md)
+**Navigation**: [â† Chapter 39: Accessibility Testing](39_Accessibility_Testing_axe_core.md) | [Index](00_INDEX.md) | [â†’ Chapter 41: GraphQL & WebSocket Testing](41_GraphQL_WebSocket_Testing.md)
 
 **Open-Source Tools Referenced:**
-- **OWASP ZAP** — https://github.com/zaproxy/zaproxy (Apache 2.0) — the world's most widely used web security scanner
-- **OWASP ZAP Automation Framework** — https://www.zaproxy.org/docs/automate/automation-framework/
-- **jwt-decode** — https://github.com/auth0/jwt-decode (MIT) — JWT inspection without verification
+- **OWASP ZAP** â€” https://github.com/zaproxy/zaproxy (Apache 2.0) â€” the world's most widely used web security scanner
+- **OWASP ZAP Automation Framework** â€” https://www.zaproxy.org/docs/automate/automation-framework/
+- **jwt-decode** â€” https://github.com/auth0/jwt-decode (MIT) â€” JWT inspection without verification
 
 **Online References:**
-- https://owasp.org/Top10/ — OWASP Top 10 2021 (the authoritative list)
-- https://owasp.org/www-project-web-security-testing-guide/ — OWASP Web Security Testing Guide (WSTG)
-- https://cheatsheetseries.owasp.org/ — OWASP Cheat Sheet Series
-- https://portswigger.net/web-security — PortSwigger Web Security Academy (free, interactive)
-- https://www.zaproxy.org/docs/ — ZAP documentation
+- https://owasp.org/Top10/ â€” OWASP Top 10 2021 (the authoritative list)
+- https://owasp.org/www-project-web-security-testing-guide/ â€” OWASP Web Security Testing Guide (WSTG)
+- https://cheatsheetseries.owasp.org/ â€” OWASP Cheat Sheet Series
+- https://portswigger.net/web-security â€” PortSwigger Web Security Academy (free, interactive)
+- https://www.zaproxy.org/docs/ â€” ZAP documentation
 
 **Cross-references (this repo):**
-- [`19_Console_Scripts_Security.md`](19_Advanced_Console_Scripts_Security.md) — Ch19 console-based security scripts
-- [`31_API_Mocking_page_route.md`](31_API_Mocking_page_route.md) — page.route() for testing auth rejection
+- [`19_Console_Scripts_Security.md`](19_Advanced_Console_Scripts_Security.md) â€” Ch19 console-based security scripts
+- [`31_API_Mocking_page_route.md`](31_API_Mocking_page_route.md) â€” page.route() for testing auth rejection
 
 ---
 
 ## 5W1H
 
-- **WHAT**: Automated testing that verifies your application resists common security vulnerabilities — from Playwright-based auth enforcement tests to full OWASP ZAP scanner integration.
+- **WHAT**: Automated testing that verifies your application resists common security vulnerabilities â€” from Playwright-based auth enforcement tests to full OWASP ZAP scanner integration.
 - **WHY**: The OWASP Top 10 represents the most critical web security risks. Enterprise portals handling financial data (citations, payments) are high-value targets. A single IDOR vulnerability (accessing another customer's citation) is a GDPR breach. A missing auth check is a data leak. Automated security tests catch these at the PR level, not in a penetration test 6 months later.
-- **WHO**: All SDETs — not just security specialists. 70% of security testing is methodical validation that can be automated.
+- **WHO**: All SDETs â€” not just security specialists. 70% of security testing is methodical validation that can be automated.
 - **WHEN**: Security tests run in CI on every PR (fast subset) and nightly (full ZAP scan).
-- **HOW**: Three layers — (1) Playwright auth enforcement tests, (2) IDOR/privilege escalation tests, (3) OWASP ZAP for automated vulnerability scanning.
+- **HOW**: Three layers â€” (1) Playwright auth enforcement tests, (2) IDOR/privilege escalation tests, (3) OWASP ZAP for automated vulnerability scanning.
 
 ---
 
-## 1. OWASP Top 10 — What You're Testing Against
+## 1. OWASP Top 10 â€” What You're Testing Against
 
 From [owasp.org/Top10](https://owasp.org/Top10/) (2021 version):
 
 ```
-A01 — Broken Access Control     (was #5, now #1 — most prevalent)
-  → Can user A see user B's data?
-  → Can a customer access admin endpoints?
-  → Test: IDOR checks, role-based access enforcement
+A01 â€” Broken Access Control     (was #5, now #1 â€” most prevalent)
+  â†’ Can user A see user B's data?
+  â†’ Can a customer access admin endpoints?
+  â†’ Test: IDOR checks, role-based access enforcement
 
-A02 — Cryptographic Failures    (was #3)
-  → Are passwords hashed? Are tokens short-lived?
-  → Is sensitive data in URLs or logs?
-  → Test: response body scanning, localStorage inspection
+A02 â€” Cryptographic Failures    (was #3)
+  â†’ Are passwords hashed? Are tokens short-lived?
+  â†’ Is sensitive data in URLs or logs?
+  â†’ Test: response body scanning, localStorage inspection
 
-A03 — Injection                 (was #1 for decades)
-  → SQL injection, XSS, template injection
-  → Test: input validation with malicious payloads
+A03 â€” Injection                 (was #1 for decades)
+  â†’ SQL injection, XSS, template injection
+  â†’ Test: input validation with malicious payloads
 
-A04 — Insecure Design           (new in 2021)
-  → Missing rate limiting, missing MFA for sensitive operations
-  → Test: brute force simulation, rate limit verification
+A04 â€” Insecure Design           (new in 2021)
+  â†’ Missing rate limiting, missing MFA for sensitive operations
+  â†’ Test: brute force simulation, rate limit verification
 
-A05 — Security Misconfiguration
-  → Verbose error messages, debug endpoints exposed
-  → Test: check error responses don't leak stack traces
+A05 â€” Security Misconfiguration
+  â†’ Verbose error messages, debug endpoints exposed
+  â†’ Test: check error responses don't leak stack traces
 
-A06 — Vulnerable Components
-  → npm audit, Dependabot alerts
-  → Test: dependency scanning in CI
+A06 â€” Vulnerable Components
+  â†’ npm audit, Dependabot alerts
+  â†’ Test: dependency scanning in CI
 
-A07 — Auth and Session Failures (was #2 Broken Auth)
-  → Session tokens not invalidated after logout
-  → Weak token entropy
-  → Test: logout + reuse token attempt
+A07 â€” Auth and Session Failures (was #2 Broken Auth)
+  â†’ Session tokens not invalidated after logout
+  â†’ Weak token entropy
+  â†’ Test: logout + reuse token attempt
 
-A08 — Software and Data Integrity Failures (new)
-  → Unsigned updates, insecure deserialization
-  → Less directly testable at SDET level
+A08 â€” Software and Data Integrity Failures (new)
+  â†’ Unsigned updates, insecure deserialization
+  â†’ Less directly testable at SDET level
 
-A09 — Logging and Monitoring Failures
-  → Are security events being logged?
-  → Test: verify audit log entries after sensitive operations
+A09 â€” Logging and Monitoring Failures
+  â†’ Are security events being logged?
+  â†’ Test: verify audit log entries after sensitive operations
 
-A10 — Server-Side Request Forgery (SSRF) (new)
-  → App fetches external URLs without validation
-  → Test: inject internal URLs in user-supplied fields
+A10 â€” Server-Side Request Forgery (SSRF) (new)
+  â†’ App fetches external URLs without validation
+  â†’ Test: inject internal URLs in user-supplied fields
 ```
 
 ---
 
-## 2. Layer 1 — Auth Enforcement Tests (Playwright)
+## 2. Layer 1 â€” Auth Enforcement Tests (Playwright)
 
 The most impactful security tests an SDET can write: verify that unauthenticated and unauthorised users cannot access protected resources.
 
 ```typescript
 // tests/specs/security/auth-enforcement.spec.ts
-// These tests use NO storageState — they test what unauthenticated users see
+// These tests use NO storageState â€” they test what unauthenticated users see
 
 import { test, expect } from '@playwright/test';  // NOT the custom fixtures
 
 test.describe('Authentication Enforcement @security @auth', () => {
 
-  // No storageState — these tests are genuinely unauthenticated
+  // No storageState â€” these tests are genuinely unauthenticated
 
   // OWASP A07: Auth and Session Failures
   test('Unauthenticated user is redirected to login', async ({ page }) => {
     await page.goto('/citations');
-    // Should redirect to login — not show the citations page
+    // Should redirect to login â€” not show the citations page
     await expect(page).toHaveURL(/\/login|\/auth|\/signin/, { timeout: 10_000 });
     // And: no citation data should be visible
     await expect(page.locator('.citation-data')).toHaveCount(0);
@@ -106,7 +106,7 @@ test.describe('Authentication Enforcement @security @auth', () => {
 
   test('API returns 401 without Authorization header', async ({ request }) => {
     const response = await request.get(`${process.env.API_BASE_URL}/api/v2/citations`);
-    // Must return 401 — not 200, not 403, not 500
+    // Must return 401 â€” not 200, not 403, not 500
     expect(response.status()).toBe(401);
     // Must NOT leak data in the error body
     const body = await response.json();
@@ -125,7 +125,7 @@ test.describe('Authentication Enforcement @security @auth', () => {
     expect(response.status()).toBe(401);
 
     const body = await response.json();
-    // The error must say token expired — not a generic error (helps clients handle it)
+    // The error must say token expired â€” not a generic error (helps clients handle it)
     expect(JSON.stringify(body)).toMatch(/expired|token|invalid/i);
   });
 
@@ -149,7 +149,7 @@ test.describe('Authentication Enforcement @security @auth', () => {
     await page.click('[data-testid="logout-btn"]');
     await page.waitForURL('**/login', { timeout: 10_000 });
 
-    // Step 3: Try using the old token — must fail
+    // Step 3: Try using the old token â€” must fail
     const { request } = await import('@playwright/test');
     const apiContext = await (await import('@playwright/test')).request.newContext();
     const response = await apiContext.get(`${process.env.API_BASE_URL}/api/v2/citations`, {
@@ -158,9 +158,9 @@ test.describe('Authentication Enforcement @security @auth', () => {
 
     // After logout, the server must invalidate the token
     // Acceptable: 401 (server-side blacklist) or still valid if using short-lived stateless JWT
-    // For stateless JWT — at minimum, verify the token expires soon (< 15 minutes from now)
+    // For stateless JWT â€” at minimum, verify the token expires soon (< 15 minutes from now)
     if (response.status() === 200) {
-      // Stateless JWT — verify it will expire soon
+      // Stateless JWT â€” verify it will expire soon
       const { jwtDecode } = await import('jwt-decode');
       const decoded = jwtDecode<{ exp: number }>(token!);
       const expiresIn = (decoded.exp * 1000) - Date.now();
@@ -177,7 +177,7 @@ test.describe('Authentication Enforcement @security @auth', () => {
 
 ---
 
-## 3. Layer 2 — IDOR Tests (Broken Access Control)
+## 3. Layer 2 â€” IDOR Tests (Broken Access Control)
 
 **IDOR** (Insecure Direct Object Reference) is the #1 web vulnerability (OWASP A01). It occurs when a user can access another user's data by guessing or enumerating an ID.
 
@@ -186,7 +186,7 @@ test.describe('Authentication Enforcement @security @auth', () => {
 // These tests need TWO accounts: customer A and customer B
 // Each has their own citation, and neither should see the other's
 
-test.describe('IDOR — Broken Access Control @security @a01', () => {
+test.describe('IDOR â€” Broken Access Control @security @a01', () => {
 
   let customerAToken: string;
   let customerBToken: string;
@@ -212,10 +212,10 @@ test.describe('IDOR — Broken Access Control @security @a01', () => {
     const response = await authenticatedRequest(request, 'CUSTOMER_B').get(
       `/api/v2/citations/${customerACitationId}`
     );
-    // Must return 403 (Forbidden) or 404 (hide existence) — NOT 200
+    // Must return 403 (Forbidden) or 404 (hide existence) â€” NOT 200
     expect([403, 404], `Customer B should not access Customer A's citation`).toContain(response.status());
     if (response.status() === 200) {
-      // Definitely a vulnerability — fail with detail
+      // Definitely a vulnerability â€” fail with detail
       throw new Error(`[CRITICAL SECURITY] IDOR: Customer B read Customer A's citation ${customerACitationId}`);
     }
   });
@@ -259,15 +259,15 @@ test.describe('IDOR — Broken Access Control @security @a01', () => {
 
 ---
 
-## 4. Layer 3 — Input Validation (Injection Prevention)
+## 4. Layer 3 â€” Input Validation (Injection Prevention)
 
 ```typescript
-// OWASP A03: Injection — test that malicious inputs are sanitised
+// OWASP A03: Injection â€” test that malicious inputs are sanitised
 // Reference: https://owasp.org/www-community/attacks/xss/
 
-test.describe('Input Validation — Injection Prevention @security @a03', () => {
+test.describe('Input Validation â€” Injection Prevention @security @a03', () => {
 
-  // XSS payloads — source: OWASP XSS Cheat Sheet
+  // XSS payloads â€” source: OWASP XSS Cheat Sheet
   // https://cheatsheetseries.owasp.org/cheatsheets/XSS_Filter_Evasion_Cheat_Sheet.html
   const xssPayloads = [
     '<script>document.title="XSS"</script>',
@@ -295,16 +295,16 @@ test.describe('Input Validation — Injection Prevention @security @a03', () => 
 
       await page.waitForLoadState('networkidle', { timeout: 5_000 });
 
-      // If an alert dialog appeared → XSS succeeded → test fails
+      // If an alert dialog appeared â†’ XSS succeeded â†’ test fails
       expect(dialogMessages, `XSS payload triggered alert: ${payload}`).toHaveLength(0);
 
-      // If document title changed → XSS succeeded
+      // If document title changed â†’ XSS succeeded
       const title = await page.title();
       expect(title, `XSS payload changed page title`).not.toBe('XSS');
     });
   }
 
-  // SQL injection — the API must handle these without 500 errors or data leakage
+  // SQL injection â€” the API must handle these without 500 errors or data leakage
   // Reference: https://owasp.org/www-community/attacks/SQL_Injection
   const sqlPayloads = [
     "' OR '1'='1",
@@ -339,14 +339,14 @@ test.describe('Input Validation — Injection Prevention @security @a03', () => 
 
 ---
 
-## 5. Layer 4 — OWASP ZAP Automated Scanner
+## 5. Layer 4 â€” OWASP ZAP Automated Scanner
 
 **OWASP ZAP** ([zaproxy.org](https://www.zaproxy.org/)) is the world's most popular open-source web security scanner. It runs as a proxy and actively tests for vulnerabilities.
 
 ### Docker-Based ZAP Scan (CI-Friendly)
 
 ```yaml
-# .github/workflows/security.yml — nightly security scan
+# .github/workflows/security.yml â€” nightly security scan
 name: Security Scan (OWASP ZAP)
 
 on:
@@ -381,28 +381,28 @@ jobs:
 ### ZAP Rules Configuration (`.zap/rules.tsv`)
 
 ```
-# .zap/rules.tsv — configure alert thresholds
+# .zap/rules.tsv â€” configure alert thresholds
 # Format: <alertId>  <threshold>  <strength>
 # Threshold: IGNORE | WARN | FAIL
 # Strength:  DEFAULT | LOW | MEDIUM | HIGH | INSANE
 
-10020	WARN	DEFAULT    # X-Frame-Options missing (warn — D365 sets this differently)
-10021	FAIL	HIGH       # X-Content-Type-Options missing (fail — must be fixed)
+10020	WARN	DEFAULT    # X-Frame-Options missing (warn â€” D365 sets this differently)
+10021	FAIL	HIGH       # X-Content-Type-Options missing (fail â€” must be fixed)
 10038	FAIL	HIGH       # Content Security Policy missing
 10035	FAIL	HIGH       # Strict-Transport-Security missing
 10016	FAIL	HIGH       # Web Browser XSS Protection missing
-10023	WARN	DEFAULT    # Information Disclosure — debug error messages
+10023	WARN	DEFAULT    # Information Disclosure â€” debug error messages
 40018	FAIL	HIGH       # SQL injection
 40012	FAIL	HIGH       # XSS reflected
 40014	FAIL	HIGH       # XSS persistent
-40019	IGNORE	DEFAULT  # SQL injection — MySQL specific (not your DB)
+40019	IGNORE	DEFAULT  # SQL injection â€” MySQL specific (not your DB)
 ```
 
 ### Programmatic ZAP with Node.js Client
 
 ```typescript
 // scripts/run-zap-scan.ts
-// Run ZAP programmatically — gives more control than the GitHub Action
+// Run ZAP programmatically â€” gives more control than the GitHub Action
 // ZAP NodeJS client: https://github.com/zaproxy/zap-nodejs-api
 
 import ZapClient from 'zaproxy';
@@ -456,7 +456,7 @@ async function runZapScan(): Promise<void> {
   if (highRisk.length > 0) {
     console.error('\nHigh-risk vulnerabilities:');
     highRisk.forEach((a: { name: string; url: string; description: string }) =>
-      console.error(`  → ${a.name} at ${a.url}: ${a.description}`)
+      console.error(`  â†’ ${a.name} at ${a.url}: ${a.description}`)
     );
     process.exit(1);
   }
@@ -478,7 +478,7 @@ async function waitForZapScan(zap: ZapClient, type: 'spider' | 'ascan', scanId: 
 
 ---
 
-## 6. Security Response Headers — Automated Check
+## 6. Security Response Headers â€” Automated Check
 
 ```typescript
 // tests/specs/security/security-headers.spec.ts
@@ -528,7 +528,7 @@ test.describe('Security Response Headers @security @headers', () => {
       `${process.env.API_BASE_URL}/api/v2/citations/INVALID-ID-FORMAT-${'x'.repeat(1000)}`
     );
 
-    // Any error is acceptable — but stack trace must not leak
+    // Any error is acceptable â€” but stack trace must not leak
     if (!response.ok()) {
       const body = await response.text();
       // These strings indicate a stack trace is leaking
@@ -544,9 +544,9 @@ test.describe('Security Response Headers @security @headers', () => {
 
 ---
 
-## 🏋️ Practice Challenges
+## ðŸ‹ï¸ Practice Challenges
 
-### Challenge 1 [Scenario] — IDOR in the Wild
+### Challenge 1 [Scenario] â€” IDOR in the Wild
 
 A citation has `citationId: 'CIT-10042'`. A logged-in customer tries `GET /api/v2/citations/CIT-10041` (someone else's citation, sequential ID). The API returns 200 with the other customer's full details.
 
@@ -554,9 +554,9 @@ Write the test that catches this. What OWASP category? What is the correct HTTP 
 
 <details><summary>Answer</summary>
 
-**OWASP A01 — Broken Access Control (IDOR — Insecure Direct Object Reference)**
+**OWASP A01 â€” Broken Access Control (IDOR â€” Insecure Direct Object Reference)**
 
-Correct response: **403** (Forbidden — you're authenticated but not authorised) or **404** (hide existence — preferred for privacy, doesn't leak "this ID exists").
+Correct response: **403** (Forbidden â€” you're authenticated but not authorised) or **404** (hide existence â€” preferred for privacy, doesn't leak "this ID exists").
 
 The test:
 ```typescript
@@ -579,12 +579,12 @@ test('IDOR: customer cannot read another customer citation via sequential ID', a
   // Must NOT return 200 with another customer's data
   if (response.status() === 200) {
     const body = await response.json();
-    // If the returned data belongs to a different customer → IDOR confirmed
+    // If the returned data belongs to a different customer â†’ IDOR confirmed
     if (body.customerId !== account.userId) {
       throw new Error(`[CRITICAL A01] IDOR: accessed citation ${otherId} belonging to ${body.customerId}`);
     }
   } else {
-    // 403 or 404 → correct behaviour
+    // 403 or 404 â†’ correct behaviour
     expect([403, 404]).toContain(response.status());
   }
 });
@@ -594,11 +594,146 @@ test('IDOR: customer cannot read another customer citation via sequential ID', a
 ---
 
 **Key References:**
-- [owasp.org/Top10](https://owasp.org/Top10/) — OWASP Top 10 2021
-- [zaproxy.org](https://www.zaproxy.org/) — ZAP official site
-- [github.com/zaproxy/zaproxy](https://github.com/zaproxy/zaproxy) — ZAP source (Apache 2.0)
-- [portswigger.net/web-security](https://portswigger.net/web-security) — Free interactive security labs
-- [securityheaders.com](https://securityheaders.com/) — Free security header scanner
+- [owasp.org/Top10](https://owasp.org/Top10/) â€” OWASP Top 10 2021
+- [zaproxy.org](https://www.zaproxy.org/) â€” ZAP official site
+- [github.com/zaproxy/zaproxy](https://github.com/zaproxy/zaproxy) â€” ZAP source (Apache 2.0)
+- [portswigger.net/web-security](https://portswigger.net/web-security) â€” Free interactive security labs
+- [securityheaders.com](https://securityheaders.com/) â€” Free security header scanner
 
 ---
-**Navigation**: [← Chapter 39: Accessibility Testing](39_Accessibility_Testing_axe_core.md) | [Index](00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](41_GraphQL_WebSocket_Testing.md)
+**Navigation**: [â† Chapter 39: Accessibility Testing](39_Accessibility_Testing_axe_core.md) | [Index](00_INDEX.md) | [â†’ Chapter 41: GraphQL & WebSocket Testing](41_GraphQL_WebSocket_Testing.md)
+
+### Challenge 2 [Write It Yourself — XSS Payload Injection]
+
+Write a Playwright test that verifies a text input field is immune to Stored XSS. The test should submit `<script>alert('xss')</script>` as a note on a citation, then view the citation and assert that the script is rendered safely as text, not executed as HTML.
+
+<details><summary>Answer</summary>
+
+```typescript
+test('Citation notes sanitize XSS payloads', async ({ page }) => {
+  const xssPayload = `<script>alert('xss-test')</script>`;
+  
+  // 1. Submit the payload
+  await page.goto('/citations/new');
+  await page.fill('#notes', xssPayload);
+  await page.click('#saveBtn');
+  
+  // 2. Verify no unexpected dialog opens during navigation/rendering
+  page.on('dialog', dialog => {
+    expect(dialog.message(), 'XSS payload executed!').not.toContain('xss-test');
+    dialog.dismiss();
+  });
+  
+  // 3. Navigate to the view page where the payload is rendered
+  await page.waitForURL('**/citations/*');
+  
+  // 4. Assert the exact text is present in the DOM (Playwright's text engine ignores HTML tags
+  // if they were rendered as actual DOM elements, but finds them if they were escaped to &lt;script&gt;)
+  const noteContent = await page.locator('.citation-notes').innerText();
+  expect(noteContent).toBe(xssPayload);
+  
+  // 5. Assert it's NOT in the innerHTML as an active script tag
+  const innerHtml = await page.locator('.citation-notes').innerHTML();
+  expect(innerHtml).toContain('&lt;script&gt;');
+});
+```
+
+**SDE Principle**: Defense in depth. The SDET verifies that the frontend correctly escapes the payload (`&lt;`), preventing execution.
+
+</details>
+
+---
+
+### Challenge 3 [Spot the Bug — Flawed IDOR Verification]
+
+```typescript
+test('User cannot delete another user’s citation', async ({ request, accountA, accountB }) => {
+  // Account A creates a citation
+  const citation = await request.post('/api/citations', {
+    headers: { Authorization: `Bearer ${accountA.token}` },
+    data: { amount: 100 }
+  });
+  const id = (await citation.json()).id;
+
+  // Account B attempts to delete it
+  const deleteRes = await request.delete(`/api/citations/${id}`, {
+    headers: { Authorization: `Bearer ${accountA.token}` }  // ← BUG IS HERE
+  });
+
+  expect(deleteRes.status()).toBe(403);
+});
+```
+
+Why is this a false positive security test?
+
+<details><summary>Answer</summary>
+
+**Bug**: The deletion request accidentally uses `accountA.token` instead of `accountB.token`.
+
+Because `accountA` created the citation, `accountA` *is* allowed to delete it. But wait — the test expects a 403! 
+If the API is correctly implemented, `accountA` deleting their own citation returns `204 No Content` or `200 OK`. The test will fail (Expected 403, got 204). 
+
+However, if the API is *broken* and prevents owners from deleting their own items (a functional bug), the API returns 403, and the security test *passes*!
+
+**Fix**: The attacker (Account B) must use their own token to attempt the unauthorized action.
+```typescript
+  const deleteRes = await request.delete(`/api/citations/${id}`, {
+    headers: { Authorization: `Bearer ${accountB.token}` }  // Correctly testing Account B's access
+  });
+```
+
+</details>
+
+---
+
+### Challenge 4 [MCQ — SQL Injection in API]
+
+You send `customerId: "USR-001' OR '1'='1"` to the API search endpoint. The API returns a `200 OK` and exactly ONE record belonging to USR-001. What does this mean?
+
+A) The API is vulnerable to SQL injection because it returned a 200 OK.
+B) The API is vulnerable because `' OR '1'='1` bypassed the authentication.
+C) The API is secure because it treated the payload as a literal string and found the exact matching user ID, rather than executing the boolean logic to return all users.
+D) The test is inconclusive because SQL injection can only be tested on login forms.
+
+<details><summary>Answer</summary>
+
+**C** — The API is secure (likely using parameterized queries/Prepared Statements).
+
+If the API were vulnerable, injecting `' OR '1'='1` into `SELECT * FROM citations WHERE customer_id = '[INPUT]'` would result in `WHERE customer_id = 'USR-001' OR '1'='1'`, which is always true. This would return **all records** in the database.
+
+Because it returned only ONE record (the exact literal match, if it happened to exist, or likely zero records in a real scenario because no user ID actually contains those SQL characters), it proves the database driver safely escaped the quote marks: `WHERE customer_id = 'USR-001\' OR \'1\'=\'1'`.
+
+</details>
+
+---
+
+### Challenge 5 [Architecture Decision — Shift-Left Security]
+
+Your team has a suite of 50 security tests (XSS, IDOR, SQLi) using Playwright API requests. Where should these run in the CI/CD pipeline?
+
+A) On every PR before merging, alongside unit tests.
+B) In a nightly cron job against the production environment.
+C) After merging to `main`, deployed to a Staging environment, run as a blocking gate before Production.
+D) Manually triggered by the security team once a month.
+
+<details><summary>Answer</summary>
+
+**C** — Run in a Staging/Integration environment before production deployment.
+
+Why not A? Security tests often require complex state setup (multiple users interacting) and a real database (to test SQLi properly). Running them on every PR can be too slow and flaky if developers are using mocked local environments.
+Why not B? Nightly production runs are good for monitoring, but injecting SQLi and XSS payloads into a Production database is extremely dangerous and pollutes live data.
+Why not D? Manual is too slow; the goal of DevSecOps is automation.
+
+By running as a blocking gate in Staging, you catch vulnerabilities *before* they reach production, in a safe environment that accurately reflects the production database architecture.
+
+</details>
+
+---
+
+**Key References:**
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/)
+- [Playwright Network Interception](https://playwright.dev/docs/network)
+- [PortSwigger Web Security Academy](https://portswigger.net/web-security)
+
+---
+**Navigation**: [← Chapter 39: Accessibility Testing](39_Accessibility_Testing_axe_core.md) | [Index](00_INDEX.md) | [→ Chapter 41: GraphQL & WebSockets](41_GraphQL_WebSocket_Testing.md)

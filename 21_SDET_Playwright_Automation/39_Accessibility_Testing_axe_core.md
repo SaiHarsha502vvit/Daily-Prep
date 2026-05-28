@@ -1,62 +1,62 @@
-# 39. Accessibility Testing — axe-core, WCAG 2.1, and Automated A11y
+﻿# 39. Accessibility Testing â€” axe-core, WCAG 2.1, and Automated A11y
 
-**Navigation**: [← Chapter 38: Contract Testing](38_Contract_Testing_Pact.md) | [Index](00_INDEX.md) | [→ Chapter 40: Security Test Automation](40_Security_Testing_OWASP.md)
+**Navigation**: [â† Chapter 38: Contract Testing](38_Contract_Testing_Pact.md) | [Index](00_INDEX.md) | [â†’ Chapter 40: Security Test Automation](40_Security_Testing_OWASP.md)
 
 **Open-Source Tools Referenced:**
-- **axe-core** — https://github.com/dequelabs/axe-core (MPL 2.0) — the world's leading accessibility testing engine, by Deque Systems
-- **@axe-core/playwright** — https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright (MPL 2.0)
-- **axe-html-reporter** — https://github.com/lpelypenko/axe-html-reporter (MIT) — beautiful HTML reports
+- **axe-core** â€” https://github.com/dequelabs/axe-core (MPL 2.0) â€” the world's leading accessibility testing engine, by Deque Systems
+- **@axe-core/playwright** â€” https://github.com/dequelabs/axe-core-npm/tree/develop/packages/playwright (MPL 2.0)
+- **axe-html-reporter** â€” https://github.com/lpelypenko/axe-html-reporter (MIT) â€” beautiful HTML reports
 
 **Online References:**
-- https://www.w3.org/WAI/WCAG21/quickref/ — WCAG 2.1 Quick Reference (W3C)
-- https://dequeuniversity.com/rules/axe/ — axe rule descriptions (Deque University)
-- https://web.dev/accessibility/ — Google's accessibility guide
-- https://a11y.coffee/ — Community accessibility guide
+- https://www.w3.org/WAI/WCAG21/quickref/ â€” WCAG 2.1 Quick Reference (W3C)
+- https://dequeuniversity.com/rules/axe/ â€” axe rule descriptions (Deque University)
+- https://web.dev/accessibility/ â€” Google's accessibility guide
+- https://a11y.coffee/ â€” Community accessibility guide
 
 **Cross-references (this repo):**
-- [`../../15_React_Frontend`](../../15_React_Frontend) — ARIA attributes in React components
-- [`../../18_CSS_Complete`](../../18_CSS_Complete) — Focus styles, colour contrast CSS
+- [`../../15_React_Frontend`](../../15_React_Frontend) â€” ARIA attributes in React components
+- [`../../18_CSS_Complete`](../../18_CSS_Complete) â€” Focus styles, colour contrast CSS
 
 ---
 
 ## 5W1H
 
-- **WHAT**: Automated checking of web pages against the WCAG 2.1 (Web Content Accessibility Guidelines) standard — finding missing ARIA labels, inadequate colour contrast, keyboard trap issues, and dozens of other problems that prevent disabled users from using your application.
+- **WHAT**: Automated checking of web pages against the WCAG 2.1 (Web Content Accessibility Guidelines) standard â€” finding missing ARIA labels, inadequate colour contrast, keyboard trap issues, and dozens of other problems that prevent disabled users from using your application.
 - **WHY**: (1) Legal: WCAG 2.1 Level AA is legally required in the UK (Equality Act 2010), EU (EN 301 549), and US (ADA, Section 508). Enterprise portals that are inaccessible expose organisations to legal action. (2) Practical: 1 in 5 people in the UK have a disability. (3) SEO: Screen reader accessibility overlaps with search crawler accessibility.
-- **WHO**: Every SDET. Accessibility is not optional — it's part of quality.
+- **WHO**: Every SDET. Accessibility is not optional â€” it's part of quality.
 - **WHEN**: After functional tests are green. Run in CI on every PR. Block PRs that introduce new failures.
 - **HOW**: `@axe-core/playwright` injects the axe engine into the page and returns violations. You assert `violations.length === 0` (or filter to specific impact levels).
 
 ---
 
-## 1. The WCAG Framework — What You're Testing Against
+## 1. The WCAG Framework â€” What You're Testing Against
 
 From [w3.org/WAI/WCAG21](https://www.w3.org/WAI/WCAG21/quickref/):
 
 ```
 WCAG 2.1 has 4 principles (POUR):
-  P — Perceivable:   Users can perceive all content
-  O — Operable:      Users can operate all UI
-  U — Understandable: Content is understandable
-  R — Robust:        Works with assistive technologies
+  P â€” Perceivable:   Users can perceive all content
+  O â€” Operable:      Users can operate all UI
+  U â€” Understandable: Content is understandable
+  R â€” Robust:        Works with assistive technologies
 
 Each principle has guidelines. Each guideline has success criteria at 3 levels:
-  A   — minimum level (must meet)
-  AA  — standard level (legally required in UK/EU/US for enterprise)
-  AAA — highest level (enhanced, aspirational)
+  A   â€” minimum level (must meet)
+  AA  â€” standard level (legally required in UK/EU/US for enterprise)
+  AAA â€” highest level (enhanced, aspirational)
 
 Most organisations target AA.
 
 Key WCAG 2.1 AA rules you'll encounter:
-  1.1.1 Non-text Content (A)     → Images must have alt text
-  1.3.1 Info and Relationships   → Table headers with scope
-  1.4.3 Colour Contrast (AA)     → 4.5:1 ratio for normal text
-  1.4.11 Non-text Contrast (AA)  → 3:1 for UI components
-  2.1.1 Keyboard (A)             → All functionality via keyboard
-  2.4.3 Focus Order (A)          → Logical tab order
-  2.4.7 Focus Visible (AA)       → Focus ring must be visible
-  3.1.1 Language of Page (A)     → lang attribute on <html>
-  4.1.2 Name, Role, Value (A)    → Form elements must have labels
+  1.1.1 Non-text Content (A)     â†’ Images must have alt text
+  1.3.1 Info and Relationships   â†’ Table headers with scope
+  1.4.3 Colour Contrast (AA)     â†’ 4.5:1 ratio for normal text
+  1.4.11 Non-text Contrast (AA)  â†’ 3:1 for UI components
+  2.1.1 Keyboard (A)             â†’ All functionality via keyboard
+  2.4.3 Focus Order (A)          â†’ Logical tab order
+  2.4.7 Focus Visible (AA)       â†’ Focus ring must be visible
+  3.1.1 Language of Page (A)     â†’ lang attribute on <html>
+  4.1.2 Name, Role, Value (A)    â†’ Form elements must have labels
 ```
 
 ---
@@ -71,13 +71,13 @@ npm install --save-dev @axe-core/playwright
 npm install --save-dev axe-html-reporter
 
 # Check versions (axe-core updates its rule database regularly):
-npm show @axe-core/playwright version   # → e.g., 4.9.1
-npm show axe-core version               # → e.g., 4.9.1
+npm show @axe-core/playwright version   # â†’ e.g., 4.9.1
+npm show axe-core version               # â†’ e.g., 4.9.1
 ```
 
 ---
 
-## 3. The Axe Fixture — Auto-Run A11y on Every Page
+## 3. The Axe Fixture â€” Auto-Run A11y on Every Page
 
 ```typescript
 // fixtures/accessibility.fixture.ts
@@ -149,7 +149,7 @@ export const test = base.extend<AccessibilityFixtures>({
           `[${v.impact?.toUpperCase()}] ${v.id}: ${v.description}\n` +
           `  Help: ${v.helpUrl}\n` +
           v.nodes.slice(0, 3).map(n =>
-            `  → ${n.target.join(', ')}: ${n.failureSummary}`
+            `  â†’ ${n.target.join(', ')}: ${n.failureSummary}`
           ).join('\n')
         ).join('\n\n');
 
@@ -176,7 +176,7 @@ import { test, expect } from '../../fixtures';
 
 test.describe('Accessibility @a11y @wcag', () => {
 
-  test('Citation search page — no WCAG 2.1 AA violations', async ({
+  test('Citation search page â€” no WCAG 2.1 AA violations', async ({
     page,
     assertA11y,
   }) => {
@@ -190,14 +190,14 @@ test.describe('Accessibility @a11y @wcag', () => {
     });
   });
 
-  test('Citation creation form — all form fields are labelled', async ({
+  test('Citation creation form â€” all form fields are labelled', async ({
     page,
     runA11y,
   }) => {
     await page.goto('/citations/new');
 
     const results = await runA11y({
-      // Only test form-labelling rules — specific assertion
+      // Only test form-labelling rules â€” specific assertion
       runOnly: ['label', 'label-content-name-mismatch', 'select-name', 'form-field-multiple-labels'],
     });
 
@@ -205,7 +205,7 @@ test.describe('Accessibility @a11y @wcag', () => {
     expect(results.violations, formatViolations(results.violations)).toHaveLength(0);
   });
 
-  test('Citation detail page — screen reader accessible', async ({
+  test('Citation detail page â€” screen reader accessible', async ({
     page,
     runA11y,
     testCitation,
@@ -213,7 +213,7 @@ test.describe('Accessibility @a11y @wcag', () => {
     await page.goto(`/citations/${testCitation.citationId}`);
 
     const results = await runA11y({
-      // Focus on ARIA rules — critical for screen readers
+      // Focus on ARIA rules â€” critical for screen readers
       tags: ['cat.aria', 'wcag2a', 'wcag2aa'],
     });
 
@@ -235,7 +235,7 @@ test.describe('Accessibility @a11y @wcag', () => {
 // Helper: format violations for readable error messages
 function formatViolations(violations: import('axe-core').Result[]): string {
   return violations.map(v =>
-    `• [${v.impact}] ${v.id}: ${v.description}\n` +
+    `â€¢ [${v.impact}] ${v.id}: ${v.description}\n` +
     `  Rule: https://dequeuniversity.com/rules/axe/${v.id}\n` +
     `  Nodes: ${v.nodes.map(n => n.target.join(', ')).join(' | ')}`
   ).join('\n\n');
@@ -248,7 +248,7 @@ function formatViolations(violations: import('axe-core').Result[]): string {
 test('Citation form is fully keyboard navigable', async ({ page }) => {
   await page.goto('/citations/new');
 
-  // Tab through all form fields — verify focus moves correctly
+  // Tab through all form fields â€” verify focus moves correctly
   const focusableElements = page.locator(':focus-visible');
 
   await page.keyboard.press('Tab');
@@ -265,9 +265,9 @@ test('Citation form is fully keyboard navigable', async ({ page }) => {
   const activeTag = await page.evaluate(() => document.activeElement?.tagName.toLowerCase());
   expect(['button', 'input[type="submit"]']).toContain(activeTag);
 
-  // Tab once more — focus should NOT get trapped
+  // Tab once more â€” focus should NOT get trapped
   await page.keyboard.press('Tab');
-  // If focus is now outside the form → no keyboard trap ✅
+  // If focus is now outside the form â†’ no keyboard trap âœ…
 });
 
 test('Modal closes on Escape key', async ({ page }) => {
@@ -316,7 +316,7 @@ test('Colour contrast meets WCAG AA (4.5:1 for normal text)', async ({ page, run
 
 ---
 
-## 5b. `aria-live` Region Testing — Dynamic Content Announcements
+## 5b. `aria-live` Region Testing â€” Dynamic Content Announcements
 
 Screen readers use `aria-live` regions to announce dynamic content changes. Test that these regions work correctly:
 
@@ -361,7 +361,7 @@ test('Loading spinner has aria-label for screen readers', async ({ page }) => {
 
   const spinner = page.locator('.ms-Spinner, [role="progressbar"]').first();
   if (await spinner.isVisible()) {
-    // Spinner must have either aria-label or aria-labelledby — otherwise screen reader says nothing
+    // Spinner must have either aria-label or aria-labelledby â€” otherwise screen reader says nothing
     const ariaLabel     = await spinner.getAttribute('aria-label');
     const ariaLabeledBy = await spinner.getAttribute('aria-labelledby');
     expect(
@@ -408,10 +408,10 @@ test('D365 CommandBar buttons are accessible', async ({ page }) => {
   }
 });
 
-// The D365/Fluent UI components that commonly fail axe — document as known exclusions:
+// The D365/Fluent UI components that commonly fail axe â€” document as known exclusions:
 // These are Microsoft Fluent UI issues, not your app's issues:
 const fluentUIKnownAxeExclusions = [
-  '.ms-CommandBar-overflowButton',  // overflow "..." button — aria-label missing in some Fluent versions
+  '.ms-CommandBar-overflowButton',  // overflow "..." button â€” aria-label missing in some Fluent versions
   '.ms-Spinner',                    // spinner lacks aria-label in older Fluent UI
   '.ms-DetailsHeader-checkTooltip', // checkbox tooltip in grid headers
   '[data-icon-name]',               // icon-only buttons without text in some Fluent versions
@@ -450,10 +450,10 @@ async function generateA11yReport(allResults: AxeResults[]): Promise<void> {
 
 ---
 
-## 6. Axe in CI — Fail Fast, Notify Clearly
+## 6. Axe in CI â€” Fail Fast, Notify Clearly
 
 ```yaml
-# .github/workflows/playwright.yml — add accessibility job
+# .github/workflows/playwright.yml â€” add accessibility job
 accessibility-tests:
   runs-on: ubuntu-latest
   steps:
@@ -476,12 +476,12 @@ accessibility-tests:
         path: |
           playwright-report/
           accessibility-report/
-        retention-days: 60  # keep longer — compliance evidence
+        retention-days: 60  # keep longer â€” compliance evidence
 ```
 
 ---
 
-## 7. The A11y Debt Strategy — Start Where You Are
+## 7. The A11y Debt Strategy â€” Start Where You Are
 
 Most enterprise apps have existing accessibility violations. Don't try to fix everything at once:
 
@@ -491,18 +491,18 @@ Most enterprise apps have existing accessibility violations. Don't try to fix ev
 // This prevents "new violations" from being hidden by existing noise.
 
 export const KnownViolations = {
-  // Format: ruleId → number of known occurrences → review date
+  // Format: ruleId â†’ number of known occurrences â†’ review date
   'color-contrast': {
     count: 12,
     ticket: 'TICKET-8821',
     reviewDate: '2026-07-01',
-    reason: 'D365 Fluent UI theme — waiting for Microsoft update',
+    reason: 'D365 Fluent UI theme â€” waiting for Microsoft update',
   },
   'region': {
     count: 4,
     ticket: 'TICKET-8900',
     reviewDate: '2026-06-01',
-    reason: 'Legacy JSP pages — refactor in progress',
+    reason: 'Legacy JSP pages â€” refactor in progress',
   },
 } as const;
 
@@ -511,7 +511,7 @@ async function assertA11yWithDebtTracking(results: AxeResults): Promise<void> {
   for (const violation of results.violations) {
     const known = KnownViolations[violation.id as keyof typeof KnownViolations];
     if (known) {
-      // Violation is known — check count hasn't grown
+      // Violation is known â€” check count hasn't grown
       if (violation.nodes.length > known.count) {
         throw new Error(
           `[A11y Debt] '${violation.id}' violation COUNT GREW: ` +
@@ -519,9 +519,9 @@ async function assertA11yWithDebtTracking(results: AxeResults): Promise<void> {
           `Ticket: ${known.ticket}. NEW violations were introduced.`
         );
       }
-      console.warn(`[A11y Debt] Known: ${violation.id} (${violation.nodes.length}/${known.count}) — ${known.ticket}`);
+      console.warn(`[A11y Debt] Known: ${violation.id} (${violation.nodes.length}/${known.count}) â€” ${known.ticket}`);
     } else {
-      // Unknown violation — fail immediately
+      // Unknown violation â€” fail immediately
       throw new Error(`[A11y] NEW violation: ${violation.id}: ${violation.description}`);
     }
   }
@@ -532,20 +532,20 @@ async function assertA11yWithDebtTracking(results: AxeResults): Promise<void> {
 
 ---
 
-## 🏋️ Practice Challenges
+## ðŸ‹ï¸ Practice Challenges
 
-### Challenge 1 [MCQ] — Which axe Rule?
+### Challenge 1 [MCQ] â€” Which axe Rule?
 
 A D365 form has an input for "Customer Name" with a visible label next to it, but the `<input>` has no `id`, `for`, `aria-label`, or `aria-labelledby`. Which axe rule fires?
 
-A) `color-contrast` — the label text has insufficient contrast  
-B) `label` — form input has no associated label  
-C) `region` — form is not wrapped in a landmark region  
-D) `aria-required-attr` — input is missing required ARIA attribute  
+A) `color-contrast` â€” the label text has insufficient contrast  
+B) `label` â€” form input has no associated label  
+C) `region` â€” form is not wrapped in a landmark region  
+D) `aria-required-attr` â€” input is missing required ARIA attribute  
 
 <details><summary>Answer</summary>
 
-**B** — `label` rule (WCAG 1.3.1, 4.1.2). The `label` element must be programmatically associated with its input using `for`/`id` pairing, or `aria-label`, or `aria-labelledby`. A visible label with no programmatic connection is invisible to screen readers. The user hears "edit text" — no indication of what to type.
+**B** â€” `label` rule (WCAG 1.3.1, 4.1.2). The `label` element must be programmatically associated with its input using `for`/`id` pairing, or `aria-label`, or `aria-labelledby`. A visible label with no programmatic connection is invisible to screen readers. The user hears "edit text" â€” no indication of what to type.
 
 Fix options:
 ```html
@@ -565,10 +565,10 @@ Fix options:
 ---
 
 **Key References:**
-- [github.com/dequelabs/axe-core](https://github.com/dequelabs/axe-core) — axe-core engine (MPL 2.0)
-- [dequeuniversity.com/rules/axe](https://dequeuniversity.com/rules/axe/) — every rule explained
-- [w3.org/WAI/WCAG21/quickref](https://www.w3.org/WAI/WCAG21/quickref/) — WCAG 2.1 quick reference
-- [web.dev/accessibility](https://web.dev/accessibility/) — Google accessibility guide
+- [github.com/dequelabs/axe-core](https://github.com/dequelabs/axe-core) â€” axe-core engine (MPL 2.0)
+- [dequeuniversity.com/rules/axe](https://dequeuniversity.com/rules/axe/) â€” every rule explained
+- [w3.org/WAI/WCAG21/quickref](https://www.w3.org/WAI/WCAG21/quickref/) â€” WCAG 2.1 quick reference
+- [web.dev/accessibility](https://web.dev/accessibility/) â€” Google accessibility guide
 
 ---
 
@@ -577,7 +577,7 @@ Fix options:
 Your page has this markup for a search filter dropdown:
 ```html
 <div class="dropdown-container">
-  <div class="dropdown-toggle" onclick="toggleDropdown()">Filter by Status ▼</div>
+  <div class="dropdown-toggle" onclick="toggleDropdown()">Filter by Status â–¼</div>
   <ul class="dropdown-menu" style="display:none">
     <li onclick="selectStatus('PAID')">Paid</li>
     <li onclick="selectStatus('PENDING')">Pending</li>
@@ -623,9 +623,9 @@ Your app has 47 axe violations. Your manager says "fix them all this sprint." Wh
 - 47 violations likely span multiple teams/components. You can't own all of them.
 - Some violations are in third-party libraries (D365 Fluent UI, Microsoft components) that YOU cannot fix.
 - Fixing all 47 at once risks introducing new bugs while rushing.
-- Not all violations have the same user impact — a `color-contrast` violation on a low-traffic page is less urgent than a `label` violation on the main login form.
+- Not all violations have the same user impact â€” a `color-contrast` violation on a low-traffic page is less urgent than a `label` violation on the main login form.
 
-**Proposed approach — A11y Debt Strategy:**
+**Proposed approach â€” A11y Debt Strategy:**
 
 1. **Triage by impact**: Separate `critical` + `serious` (fix immediately) from `moderate` + `minor` (schedule).
 
@@ -635,7 +635,95 @@ Your app has 47 axe violations. Your manager says "fix them all this sprint." Wh
 
 4. **Freeze the count**: Add the `assertA11yWithDebtTracking` function to CI. This doesn't block on existing violations but DOES block if any violation COUNT GROWS. This prevents regression while you fix the backlog.
 
-5. **Set milestones**: Critical violations → 1 sprint. Serious → 1 quarter. Moderate → 6 months.
+5. **Set milestones**: Critical violations â†’ 1 sprint. Serious â†’ 1 quarter. Moderate â†’ 6 months.
+</details>
+
+### Challenge 4 [Write It Yourself — Custom axe Configuration]
+
+Your application uses a third-party chat widget (`#vendor-chat-iframe`) that has terrible color contrast. You cannot fix it because it's vendor code. Write an `AxeBuilder` Playwright test that analyzes the page but entirely ignores the `#vendor-chat-iframe` element, AND globally disables the `color-contrast` rule just in case.
+
+<details><summary>Answer</summary>
+
+```typescript
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+
+test('Dashboard is accessible except for vendor widgets', async ({ page }) => {
+  await page.goto('/dashboard');
+  
+  const accessibilityScanResults = await new AxeBuilder({ page })
+    // 1. Ignore the specific element entirely (all rules)
+    .exclude('#vendor-chat-iframe')
+    
+    // 2. Disable a specific rule globally across the whole page
+    .disableRules(['color-contrast'])
+    
+    // 3. Only run WCAG 2.1 AA rules
+    .withTags(['wcag21aa'])
+    
+    .analyze();
+
+  expect(accessibilityScanResults.violations).toEqual([]);
+});
+```
+
+**SDE Principle**: Tooling pragmatism. In the real world, "zero violations" is hard when relying on third-party integrations. Building surgical exclusions prevents your team from turning off the *entire* a11y test suite out of frustration.
+
+</details>
+
+---
+
+### Challenge 5 [Spot the Bug — Timing and A11y]
+
+```typescript
+test('Citation detail modal is accessible', async ({ page }) => {
+  await page.goto('/citations');
+  
+  // Click the row to open the modal
+  await page.click('.citation-row:has-text("CIT-001")');
+  
+  // Run axe immediately
+  const results = await new AxeBuilder({ page }).analyze();
+  
+  expect(results.violations).toEqual([]);
+});
+```
+
+The test consistently passes locally but randomly fails in CI, or it passes in CI but misses glaring accessibility violations in the modal. Why?
+
+<details><summary>Answer</summary>
+
+**Bug**: Axe analyzes the DOM *at the exact millisecond* it is invoked. 
+
+When you `page.click()`, Playwright fires the click event. But the React/Vue modal might take 100ms to animate in, fetch data, and render its content. If you run `AxeBuilder` instantly, axe scans the page *before the modal is fully visible in the DOM*. 
+
+It passes because it's scanning the background page, completely missing the modal.
+
+**Fix**: Always wait for the specific UI state to settle before running axe.
+
+```typescript
+test('Citation detail modal is accessible', async ({ page }) => {
+  await page.goto('/citations');
+  
+  await page.click('.citation-row:has-text("CIT-001")');
+  
+  // Wait for the modal animation to finish and content to render
+  await page.waitForSelector('.modal-content', { state: 'visible' });
+  
+  // Optional: if the modal loads data, wait for the data
+  await expect(page.locator('.modal-amount')).toContainText('£');
+  
+  // NOW analyze the settled DOM
+  const results = await new AxeBuilder({ page })
+    .include('.modal-content') // Optimization: only scan the modal!
+    .analyze();
+  
+  expect(results.violations).toEqual([]);
+});
+```
+
+**SDE Insight**: The DOM is highly mutable. Accessibility scanning, like visual regression testing, requires orchestrating the test runner to wait for exact application states before asserting.
+
 </details>
 
 ---

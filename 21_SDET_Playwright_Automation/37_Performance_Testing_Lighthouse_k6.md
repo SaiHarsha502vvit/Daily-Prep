@@ -1,35 +1,35 @@
-# 37. Performance Testing — Core Web Vitals, Lighthouse & Response Time Assertions
+﻿# 37. Performance Testing â€” Core Web Vitals, Lighthouse & Response Time Assertions
 
-**Navigation**: [← Chapter 36: TypeScript Type System](36_TypeScript_Type_System_Mastery.md) | [Index](00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](38_Contract_Testing_Pact.md)
+**Navigation**: [â† Chapter 36: TypeScript Type System](36_TypeScript_Type_System_Mastery.md) | [Index](00_INDEX.md) | [â†’ Chapter 38: Contract Testing with Pact](38_Contract_Testing_Pact.md)
 
 **Open-Source Tools Referenced:**
-- **Lighthouse CI** — https://github.com/GoogleChrome/lighthouse-ci (Apache 2.0)
-- **@playwright/test** — built-in performance timing APIs
-- **k6** — https://github.com/grafana/k6 (AGPL 3.0) — load testing
-- **web-vitals** — https://github.com/GoogleChrome/web-vitals (Apache 2.0)
+- **Lighthouse CI** â€” https://github.com/GoogleChrome/lighthouse-ci (Apache 2.0)
+- **@playwright/test** â€” built-in performance timing APIs
+- **k6** â€” https://github.com/grafana/k6 (AGPL 3.0) â€” load testing
+- **web-vitals** â€” https://github.com/GoogleChrome/web-vitals (Apache 2.0)
 
 **Online References:**
-- https://web.dev/vitals/ — Google's Core Web Vitals explainer
-- https://playwright.dev/docs/api/class-tracing — Playwright tracing API
-- https://github.com/GoogleChrome/lighthouse-ci/blob/main/docs/getting-started.md — LHCI Getting Started
+- https://web.dev/vitals/ â€” Google's Core Web Vitals explainer
+- https://playwright.dev/docs/api/class-tracing â€” Playwright tracing API
+- https://github.com/GoogleChrome/lighthouse-ci/blob/main/docs/getting-started.md â€” LHCI Getting Started
 
 **Cross-references (this repo):**
-- [`../../14_Mental_Models/09_Complexity_Intuition.md`](../../14_Mental_Models/09_Complexity_Intuition.md) — O(n) thinking applies to load test design
-- [`25_CICD_Integration_GitHub_Azure.md`](25_CICD_Integration_GitHub_Azure.md) — Where to run LHCI in CI pipeline
+- [`../../14_Mental_Models/09_Complexity_Intuition.md`](../../14_Mental_Models/09_Complexity_Intuition.md) â€” O(n) thinking applies to load test design
+- [`25_CICD_Integration_GitHub_Azure.md`](25_CICD_Integration_GitHub_Azure.md) â€” Where to run LHCI in CI pipeline
 
 ---
 
 ## 5W1H
 
-- **WHAT**: Measuring and asserting on how fast your application loads and responds — not just whether it works, but whether it works *fast enough* for users.
-- **WHY**: A page that takes 8 seconds to load in D365 after a form save might pass all functional tests but fail all users. Google's 2021 Core Web Vitals update made performance a search ranking factor — enterprise portals need to meet LCP < 2.5s, FID < 100ms, CLS < 0.1. Without automation, regressions sneak in silently.
+- **WHAT**: Measuring and asserting on how fast your application loads and responds â€” not just whether it works, but whether it works *fast enough* for users.
+- **WHY**: A page that takes 8 seconds to load in D365 after a form save might pass all functional tests but fail all users. Google's 2021 Core Web Vitals update made performance a search ranking factor â€” enterprise portals need to meet LCP < 2.5s, FID < 100ms, CLS < 0.1. Without automation, regressions sneak in silently.
 - **WHO**: SDETs on teams where performance is part of the Definition of Done. Also: any SDET wanting to work on frontend-heavy apps.
 - **WHEN**: After functional coverage is solid (same rule as visual regression). Don't measure performance on an unstable page.
-- **HOW**: Three layers — (1) Playwright response time assertions, (2) Navigation Timing API via `page.evaluate()`, (3) Lighthouse CI for full audit.
+- **HOW**: Three layers â€” (1) Playwright response time assertions, (2) Navigation Timing API via `page.evaluate()`, (3) Lighthouse CI for full audit.
 
 ---
 
-## 1. Layer 1 — API Response Time Assertions (Playwright Built-in)
+## 1. Layer 1 â€” API Response Time Assertions (Playwright Built-in)
 
 The simplest performance assertion: measure how long an API call takes.
 
@@ -38,7 +38,7 @@ The simplest performance assertion: measure how long an API call takes.
 
 test('Citation API responds within SLA', async ({ request, account }) => {
 
-  // Measure: start timer → call → stop timer
+  // Measure: start timer â†’ call â†’ stop timer
   const start = Date.now();
   const response = await request.get(
     `${process.env.API_BASE_URL}/api/v2/citations/CIT-001`,
@@ -49,14 +49,14 @@ test('Citation API responds within SLA', async ({ request, account }) => {
   // Assert correctness
   expect(response.status()).toBe(200);
 
-  // Assert performance — SLA from your API contract
+  // Assert performance â€” SLA from your API contract
   expect(duration, `GET /citations response time exceeded SLA`).toBeLessThan(500); // 500ms SLA
 
   // Report for visibility (even when passing)
   console.log(`[Perf] GET /citations: ${duration}ms (SLA: 500ms)`);
 });
 
-// Parameterised — test all critical endpoints
+// Parameterised â€” test all critical endpoints
 const slaTable = [
   { name: 'List citations',    path: '/api/v2/citations',          slaMs: 500 },
   { name: 'Get citation',      path: '/api/v2/citations/CIT-001',  slaMs: 200 },
@@ -80,7 +80,7 @@ for (const { name, path, slaMs } of slaTable) {
 
 ---
 
-## 2. Layer 2 — Browser Navigation Timing API
+## 2. Layer 2 â€” Browser Navigation Timing API
 
 The [Navigation Timing API](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_timing_API) gives you precise browser-side metrics. Access it via `page.evaluate()`:
 
@@ -90,7 +90,7 @@ The [Navigation Timing API](https://developer.mozilla.org/en-US/docs/Web/API/Nav
 // Spec: https://www.w3.org/TR/navigation-timing-2/
 
 export interface NavigationTimingMetrics {
-  // Time to first byte (server processing + network) — most affected by backend speed
+  // Time to first byte (server processing + network) â€” most affected by backend speed
   ttfb: number;
   // DOM fully parsed and sub-resources loaded
   domContentLoaded: number;
@@ -115,19 +115,19 @@ export async function captureNavigationTiming(page: Page): Promise<NavigationTim
   });
 }
 
-// The Core Web Vitals — require web-vitals library (or measure via PerformanceObserver)
+// The Core Web Vitals â€” require web-vitals library (or measure via PerformanceObserver)
 export interface CoreWebVitals {
-  // Largest Contentful Paint — when the largest image/text is painted
+  // Largest Contentful Paint â€” when the largest image/text is painted
   // Target: < 2500ms (good), < 4000ms (needs improvement), > 4000ms (poor)
   // Source: https://web.dev/lcp/
   lcp: number;
 
-  // Cumulative Layout Shift — visual stability (elements jumping around)
+  // Cumulative Layout Shift â€” visual stability (elements jumping around)
   // Target: < 0.1 (good), < 0.25 (needs improvement), > 0.25 (poor)
   // Source: https://web.dev/cls/
   cls: number;
 
-  // Interaction to Next Paint (successor to FID) — responsiveness
+  // Interaction to Next Paint (successor to FID) â€” responsiveness
   // Target: < 200ms (good), < 500ms (needs improvement), > 500ms (poor)
   // Source: https://web.dev/inp/
   inp: number;
@@ -150,7 +150,7 @@ export async function captureCoreWebVitals(page: Page): Promise<CoreWebVitals> {
         if (collected >= 3) resolve(vitals as CoreWebVitals);
       };
 
-      // @ts-ignore — webVitals is injected globally by the script tag
+      // @ts-ignore â€” webVitals is injected globally by the script tag
       webVitals.onLCP((metric: { value: number }) => { vitals.lcp = metric.value; collected++; checkDone(); });
       webVitals.onCLS((metric: { value: number }) => { vitals.cls = metric.value; collected++; checkDone(); });
       webVitals.onINP((metric: { value: number }) => { vitals.inp = metric.value; collected++; checkDone(); });
@@ -198,7 +198,7 @@ test('Citation search page meets performance budget @performance', async ({ page
 
 ---
 
-## 3. Layer 3 — Lighthouse CI (Full Automated Audit)
+## 3. Layer 3 â€” Lighthouse CI (Full Automated Audit)
 
 **Lighthouse CI** ([github.com/GoogleChrome/lighthouse-ci](https://github.com/GoogleChrome/lighthouse-ci)) runs the full Lighthouse audit in CI and fails the build when scores drop below your thresholds.
 
@@ -210,10 +210,10 @@ npm install --save-dev @lhci/cli
 npm install -g @lhci/cli
 ```
 
-### Configuration — `lighthouserc.js`
+### Configuration â€” `lighthouserc.js`
 
 ```javascript
-// lighthouserc.js — at project root
+// lighthouserc.js â€” at project root
 // Full config reference: https://github.com/GoogleChrome/lighthouse-ci/blob/main/docs/configuration.md
 
 module.exports = {
@@ -224,7 +224,7 @@ module.exports = {
         `${process.env.APP_BASE_URL}/citations/new`,
         `${process.env.APP_BASE_URL}/dashboard`,
       ],
-      numberOfRuns: 3,  // take 3 measurements, use median → more stable results
+      numberOfRuns: 3,  // take 3 measurements, use median â†’ more stable results
       settings: {
         // Authenticate using a stored cookie or localStorage state
         // For apps requiring login:
@@ -242,16 +242,16 @@ module.exports = {
       // Fail CI if any score drops below these thresholds
       // Scoring reference: https://developer.chrome.com/docs/lighthouse/performance/performance-scoring/
       assertions: {
-        'categories:performance':         ['error', { minScore: 0.75 }],  // ≥75
-        'categories:accessibility':       ['error', { minScore: 0.90 }],  // ≥90
-        'categories:best-practices':      ['warn',  { minScore: 0.85 }],  // ≥85 (warning only)
+        'categories:performance':         ['error', { minScore: 0.75 }],  // â‰¥75
+        'categories:accessibility':       ['error', { minScore: 0.90 }],  // â‰¥90
+        'categories:best-practices':      ['warn',  { minScore: 0.85 }],  // â‰¥85 (warning only)
 
         // Individual metric thresholds:
-        'first-contentful-paint':         ['error', { maxNumericValue: 2000 }],  // ≤2s
-        'largest-contentful-paint':       ['error', { maxNumericValue: 2500 }],  // ≤2.5s
-        'cumulative-layout-shift':        ['error', { maxNumericValue: 0.1 }],   // ≤0.1
-        'interactive':                    ['error', { maxNumericValue: 5000 }],  // ≤5s TTI
-        'speed-index':                    ['warn',  { maxNumericValue: 3400 }],  // ≤3.4s
+        'first-contentful-paint':         ['error', { maxNumericValue: 2000 }],  // â‰¤2s
+        'largest-contentful-paint':       ['error', { maxNumericValue: 2500 }],  // â‰¤2.5s
+        'cumulative-layout-shift':        ['error', { maxNumericValue: 0.1 }],   // â‰¤0.1
+        'interactive':                    ['error', { maxNumericValue: 5000 }],  // â‰¤5s TTI
+        'speed-index':                    ['warn',  { maxNumericValue: 3400 }],  // â‰¤3.4s
 
         // D365-specific: these often fail out of the box; track them as warnings first
         'render-blocking-resources':      ['warn',  { maxLength: 5 }],
@@ -320,7 +320,7 @@ jobs:
 
 ---
 
-## 4. Layer 4 — Load Testing with k6
+## 4. Layer 4 â€” Load Testing with k6
 
 For **concurrent user load testing** (not Playwright's domain), use [k6](https://github.com/grafana/k6) (open source, AGPL 3.0, by Grafana Labs):
 
@@ -332,7 +332,7 @@ winget install k6
 
 ```javascript
 // tests/load/citation-search.k6.js
-// k6 script — NOT TypeScript, k6 uses ES6 JS
+// k6 script â€” NOT TypeScript, k6 uses ES6 JS
 // Docs: https://k6.io/docs/using-k6/http-requests/
 
 import http from 'k6/http';
@@ -344,7 +344,7 @@ const errorRate = new Rate('errors');
 const citationSearchDuration = new Trend('citation_search_duration', true);
 
 export const options = {
-  // Ramp up: 0→50 users over 1min, hold 3min, ramp down
+  // Ramp up: 0â†’50 users over 1min, hold 3min, ramp down
   stages: [
     { duration: '1m',  target: 50  },   // ramp up
     { duration: '3m',  target: 50  },   // sustain load
@@ -353,7 +353,7 @@ export const options = {
     { duration: '1m',  target: 0   },   // ramp down
   ],
 
-  // Pass/fail thresholds — CI will fail if these are breached
+  // Pass/fail thresholds â€” CI will fail if these are breached
   thresholds: {
     'http_req_duration':         ['p(95)<500'],   // 95% of requests under 500ms
     'citation_search_duration':  ['p(99)<1000'],  // 99% of searches under 1s
@@ -404,9 +404,9 @@ k6 run tests/load/citation-search.k6.js --out json=load-test-results.json
 
 ---
 
-## 5. Performance Budget — The Contract
+## 5. Performance Budget â€” The Contract
 
-Define your performance budget explicitly — it's a contract between engineering and product:
+Define your performance budget explicitly â€” it's a contract between engineering and product:
 
 ```typescript
 // config/performance-budget.ts
@@ -422,14 +422,14 @@ export const PerformanceBudget = {
       search: { p50: 400, p95: 1000, p99: 3000 },
     },
     notification: {
-      send:   { p50: 500, p95: 2000, p99: 5000 },  // async — higher tolerance
+      send:   { p50: 500, p95: 2000, p99: 5000 },  // async â€” higher tolerance
     },
   },
   ui: {
     citationsPage: {
-      lcp: 2500,    // ms — Google "good" threshold
-      cls: 0.1,     // score — Google "good" threshold
-      inp: 200,     // ms — Google "good" threshold
+      lcp: 2500,    // ms â€” Google "good" threshold
+      cls: 0.1,     // score â€” Google "good" threshold
+      inp: 200,     // ms â€” Google "good" threshold
       ttfb: 600,    // ms
     },
   },
@@ -443,7 +443,7 @@ export const PerformanceBudget = {
 
 ---
 
-## 5b. Resource Timing API — Find the Slow Asset
+## 5b. Resource Timing API â€” Find the Slow Asset
 
 The Navigation Timing API tells you about the page load overall. The Resource Timing API pinpoints which specific resource is slow:
 
@@ -486,7 +486,7 @@ test('No resource takes over 1s to load on citations page', async ({ page }) => 
   if (slowResources.length > 0) {
     // Format for readable test failure message:
     const formatted = slowResources.map(r =>
-      `  [${r.type}] ${r.name.split('/').pop()} — ${r.duration}ms, ${(r.size / 1024).toFixed(0)}KB`
+      `  [${r.type}] ${r.name.split('/').pop()} â€” ${r.duration}ms, ${(r.size / 1024).toFixed(0)}KB`
     ).join('\n');
     throw new Error(`${slowResources.length} slow resource(s) found:\n${formatted}`);
   }
@@ -506,7 +506,7 @@ test('Repeated citation searches do not leak memory', async ({ page }) => {
 
   // Capture baseline memory (Chrome-only: performance.memory is non-standard)
   const baselineMemoryMB = await page.evaluate(() => {
-    // performance.memory is Chrome-only — check feature support
+    // performance.memory is Chrome-only â€” check feature support
     const mem = (performance as any).memory;
     if (!mem) return null;
     return mem.usedJSHeapSize / 1024 / 1024;
@@ -535,14 +535,14 @@ test('Repeated citation searches do not leak memory', async ({ page }) => {
   // A growth of more than 50MB after 20 cycles is a likely memory leak
   expect(
     growthMB,
-    `Memory grew by ${growthMB.toFixed(1)}MB after 20 search cycles — possible memory leak`
+    `Memory grew by ${growthMB.toFixed(1)}MB after 20 search cycles â€” possible memory leak`
   ).toBeLessThan(50);
 });
 ```
 
 ---
 
-## 5d. k6 Scenario Patterns — Beyond Simple Ramping
+## 5d. k6 Scenario Patterns â€” Beyond Simple Ramping
 
 ```javascript
 // tests/load/citation-scenarios.k6.js
@@ -550,7 +550,7 @@ test('Repeated citation searches do not leak memory', async ({ page }) => {
 
 export const options = {
   scenarios: {
-    // Scenario 1: Constant load — baseline performance measurement
+    // Scenario 1: Constant load â€” baseline performance measurement
     constant_load: {
       executor:    'constant-vus',
       vus:         20,
@@ -558,7 +558,7 @@ export const options = {
       tags:        { scenario: 'constant' },
     },
 
-    // Scenario 2: Ramping — find the breaking point
+    // Scenario 2: Ramping â€” find the breaking point
     ramp_to_limit: {
       executor:    'ramping-vus',
       startVUs:    0,
@@ -572,7 +572,7 @@ export const options = {
       tags:        { scenario: 'ramp' },
     },
 
-    // Scenario 3: Spike — sudden burst (simulates end-of-month processing)
+    // Scenario 3: Spike â€” sudden burst (simulates end-of-month processing)
     spike: {
       executor:    'ramping-vus',
       stages: [
@@ -585,7 +585,7 @@ export const options = {
       tags:        { scenario: 'spike' },
     },
 
-    // Scenario 4: Soak — extended low load (find memory leaks and connection pool exhaustion)
+    // Scenario 4: Soak â€” extended low load (find memory leaks and connection pool exhaustion)
     soak: {
       executor:    'constant-vus',
       vus:         10,
@@ -606,7 +606,7 @@ export const options = {
 
 ---
 
-## 🏋️ Practice Challenges
+## ðŸ‹ï¸ Practice Challenges
 
 ### Challenge 1 [Write It Yourself]
 
@@ -616,7 +616,7 @@ Write a Playwright test that:
 3. Asserts TTFB < 600ms and full load < 3000ms
 4. Attaches all three metrics as test annotations (visible in Playwright HTML report)
 
-### Challenge 2 [MCQ] — Which Tool for Which Problem?
+### Challenge 2 [MCQ] â€” Which Tool for Which Problem?
 
 Match the tool to the use case:
 
@@ -631,19 +631,19 @@ Match the tool to the use case:
 
 | Use case | Tool |
 |---|---|
-| Verify LCP < 2.5s in CI | **Lighthouse CI** (`@lhci/cli`) — runs full Lighthouse audit |
-| 100 concurrent users, p95 < 500ms | **k6** — load testing tool for concurrent scenarios |
-| Single API call within 200ms | **Playwright `request`** with `Date.now()` timing — built-in |
-| Full accessibility + performance score | **Lighthouse CI** — produces scores for all categories |
+| Verify LCP < 2.5s in CI | **Lighthouse CI** (`@lhci/cli`) â€” runs full Lighthouse audit |
+| 100 concurrent users, p95 < 500ms | **k6** â€” load testing tool for concurrent scenarios |
+| Single API call within 200ms | **Playwright `request`** with `Date.now()` timing â€” built-in |
+| Full accessibility + performance score | **Lighthouse CI** â€” produces scores for all categories |
 </details>
 
 ---
 
 **Key References:**
-- [web.dev/vitals](https://web.dev/vitals/) — Google's Core Web Vitals guide
-- [github.com/GoogleChrome/lighthouse-ci](https://github.com/GoogleChrome/lighthouse-ci) — LHCI source + docs
-- [k6.io/docs](https://k6.io/docs/) — k6 documentation
-- [MDN Navigation Timing](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_timing_API) — browser timing spec
+- [web.dev/vitals](https://web.dev/vitals/) â€” Google's Core Web Vitals guide
+- [github.com/GoogleChrome/lighthouse-ci](https://github.com/GoogleChrome/lighthouse-ci) â€” LHCI source + docs
+- [k6.io/docs](https://k6.io/docs/) â€” k6 documentation
+- [MDN Navigation Timing](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_timing_API) â€” browser timing spec
 
 ---
 
@@ -653,7 +653,7 @@ Your k6 run produces this output:
 ```
 citation_search_duration..... avg=1247ms min=823ms med=1089ms max=4821ms p(90)=1890ms p(95)=2340ms p(99)=4100ms
 http_req_failed.............. 3.2%
-Errors...................... ✓ 0.00%
+Errors...................... âœ“ 0.00%
 ```
 
 Your thresholds are: `citation_search_duration p(95)<1000` and `http_req_failed rate<0.01`. What does this output tell you, and what do you report to the team?
@@ -662,24 +662,24 @@ Your thresholds are: `citation_search_duration p(95)<1000` and `http_req_failed 
 
 **Two threshold violations:**
 
-1. `p(95) = 2340ms` — threshold is `<1000ms`. The 95th percentile is more than 2× over the SLA. This means 1 in 20 users experienced a search taking over 2.3 seconds.
+1. `p(95) = 2340ms` â€” threshold is `<1000ms`. The 95th percentile is more than 2Ã— over the SLA. This means 1 in 20 users experienced a search taking over 2.3 seconds.
 
-2. `http_req_failed = 3.2%` — threshold is `<1%`. Over 3% of all HTTP requests failed (likely 5xx errors or timeouts). This is a reliability issue, not just a performance issue.
+2. `http_req_failed = 3.2%` â€” threshold is `<1%`. Over 3% of all HTTP requests failed (likely 5xx errors or timeouts). This is a reliability issue, not just a performance issue.
 
 **What to report:**
 ```
-Load Test Results — Citation Search API
-Status:       FAILED ❌
+Load Test Results â€” Citation Search API
+Status:       FAILED âŒ
 Date:         2026-05-28
 Load:         [as configured]
 
 Violations:
-  ● citation_search_duration p(95): 2340ms (SLA: <1000ms) — 2.3× over threshold
-  ● http_req_failed: 3.2% (SLA: <1%) — 3× over threshold
+  â— citation_search_duration p(95): 2340ms (SLA: <1000ms) â€” 2.3Ã— over threshold
+  â— http_req_failed: 3.2% (SLA: <1%) â€” 3Ã— over threshold
 
 Observations:
-  - Median (p50) = 1089ms: average users see ~1s response — borderline acceptable
-  - p(99) = 4100ms: tail latency is severe — some users see >4s
+  - Median (p50) = 1089ms: average users see ~1s response â€” borderline acceptable
+  - p(99) = 4100ms: tail latency is severe â€” some users see >4s
   - 3.2% failure rate: investigate error logs for 5xx and timeouts
 
 Recommended actions:
@@ -700,7 +700,7 @@ Your team proposes: "Let's run Lighthouse CI on every PR to block merges if the 
 
 **Risks of blocking all PRs on Lighthouse score:**
 
-1. **Flaky by nature**: Lighthouse scores vary ±5 points between runs even on the same build. A PR that scores 74 on run 1 and 78 on run 2 causes unnecessary re-runs and team frustration.
+1. **Flaky by nature**: Lighthouse scores vary Â±5 points between runs even on the same build. A PR that scores 74 on run 1 and 78 on run 2 causes unnecessary re-runs and team frustration.
 
 2. **Wrong scope**: Lighthouse runs against a built app. Most PRs don't touch performance-sensitive code. Blocking all PRs creates friction without adding signal.
 
@@ -718,6 +718,65 @@ assertions:
 ```
 
 This way: LCP or CLS regressions block the PR (they're real user experience regressions). The composite score is a warning only. Add `numberOfRuns: 3` and use the median to reduce flakiness.
+</details>
+
+---
+
+**Key References:**
+- [web.dev/vitals](https://web.dev/vitals/) â€” Google's Core Web Vitals guide
+- [github.com/GoogleChrome/lighthouse-ci](https://github.com/GoogleChrome/lighthouse-ci) â€” LHCI source + docs
+- [k6.io/docs](https://k6.io/docs/) â€” k6 documentation
+- [MDN Navigation Timing](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_timing_API) â€” browser timing spec
+
+---
+**Navigation**: [â† Chapter 36: TypeScript Type System](36_TypeScript_Type_System_Mastery.md) | [Index](00_INDEX.md) | [â†’ Chapter 38: Contract Testing with Pact](38_Contract_Testing_Pact.md)
+
+### Challenge 5 [Spot the Bug — Lighthouse Test Flow]
+
+```typescript
+test('Dashboard performance meets Lighthouse budgets', async ({ page }) => {
+  // 1. Authenticate and go to dashboard
+  await page.goto('/login');
+  await page.fill('#user', 'admin');
+  await page.fill('#pass', 'secret');
+  await page.click('#loginBtn');
+  
+  // 2. We are now navigating to the dashboard... run Lighthouse immediately!
+  await playAudit({
+    page: page,
+    thresholds: { performance: 90 },
+    port: 9222,
+  });
+});
+```
+
+Why does this test produce wildly inconsistent performance scores or sometimes fail completely?
+
+<details><summary>Answer</summary>
+
+**Bug**: The test triggers `playAudit` *immediately* after clicking the login button. The browser is in the middle of navigating to the dashboard, loading resources, and hydrating React. Lighthouse might start its trace while the page is still blank, mid-redirect, or half-loaded.
+
+**Fix**: Always wait for the network to idle and the target page to fully render before starting a performance audit on that specific view. Or, if you are auditing the *transition*, you must orchestrate the trace differently. For a static page audit:
+
+```typescript
+  await page.click('#loginBtn');
+  
+  // 1. Wait for URL to change to dashboard
+  await page.waitForURL('**/dashboard');
+  
+  // 2. Wait for the heavy UI components to finish rendering
+  await page.waitForSelector('.dashboard-chart-loaded', { state: 'visible' });
+  
+  // NOW run the audit
+  await playAudit({
+    page: page,
+    thresholds: { performance: 90 },
+    port: 9222,
+  });
+```
+
+**SDE Principle**: Performance measurement requires a stable initial state. If you measure during unpredictable state transitions (like authentication redirects), your metrics become noisy and useless.
+
 </details>
 
 ---

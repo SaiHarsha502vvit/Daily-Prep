@@ -1,47 +1,47 @@
-# 41. GraphQL & WebSocket Testing with Playwright
+﻿# 41. GraphQL & WebSocket Testing with Playwright
 
-**Navigation**: [← Chapter 40: Security Testing](40_Security_Testing_OWASP.md) | [Index](00_INDEX.md)
+**Navigation**: [â† Chapter 40: Security Testing](40_Security_Testing_OWASP.md) | [Index](00_INDEX.md)
 
 **Open-Source Tools Referenced:**
-- **graphql-request** — https://github.com/jasonkuhrt/graphql-request (MIT) — minimal GraphQL client
-- **graphql** — https://github.com/graphql/graphql-js (MIT) — the GraphQL reference implementation
-- **@graphql-codegen/cli** — https://github.com/dotansimha/graphql-code-generator (MIT) — auto-generate TypeScript types from schema
-- **Faker.js** — https://github.com/faker-js/faker (MIT) — realistic test data generation
+- **graphql-request** â€” https://github.com/jasonkuhrt/graphql-request (MIT) â€” minimal GraphQL client
+- **graphql** â€” https://github.com/graphql/graphql-js (MIT) â€” the GraphQL reference implementation
+- **@graphql-codegen/cli** â€” https://github.com/dotansimha/graphql-code-generator (MIT) â€” auto-generate TypeScript types from schema
+- **Faker.js** â€” https://github.com/faker-js/faker (MIT) â€” realistic test data generation
 
 **Online References:**
-- https://graphql.org/learn/ — GraphQL official spec
-- https://spec.graphql.org/ — GraphQL specification (the actual spec, not just docs)
-- https://playwright.dev/docs/network — Playwright network interception
-- https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API — MDN WebSocket API
+- https://graphql.org/learn/ â€” GraphQL official spec
+- https://spec.graphql.org/ â€” GraphQL specification (the actual spec, not just docs)
+- https://playwright.dev/docs/network â€” Playwright network interception
+- https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API â€” MDN WebSocket API
 
 **Cross-references (this repo):**
-- [`../../16_JavaScript/`](../../16_JavaScript/) — Promises, async/await — critical for WebSocket event handling
-- [`31_API_Mocking_page_route.md`](31_API_Mocking_page_route.md) — `page.route()` used for GraphQL mocking
+- [`../../16_JavaScript/`](../../16_JavaScript/) â€” Promises, async/await â€” critical for WebSocket event handling
+- [`31_API_Mocking_page_route.md`](31_API_Mocking_page_route.md) â€” `page.route()` used for GraphQL mocking
 
 ---
 
-## 5W1H — GraphQL
+## 5W1H â€” GraphQL
 
 - **WHAT**: GraphQL is a query language for APIs where the *client* specifies exactly what data it needs, rather than the server defining fixed endpoints. One URL (`/graphql`), many operations.
-- **WHY**: Many modern enterprise apps (Shopify, GitHub, Atlassian) use GraphQL. D365's newer APIs expose GraphQL. The testing approach is fundamentally different from REST — you test operations, not URLs.
+- **WHY**: Many modern enterprise apps (Shopify, GitHub, Atlassian) use GraphQL. D365's newer APIs expose GraphQL. The testing approach is fundamentally different from REST â€” you test operations, not URLs.
 - **HOW**: Send a `POST` to `/graphql` with a `query` or `mutation` in the body. Parse the `data` and `errors` from the response.
 
-## 5W1H — WebSockets
+## 5W1H â€” WebSockets
 
-- **WHAT**: WebSocket is a persistent, bidirectional connection between browser and server — real-time data without polling. Used for live notifications, chat, collaborative editing, live dashboard updates.
+- **WHAT**: WebSocket is a persistent, bidirectional connection between browser and server â€” real-time data without polling. Used for live notifications, chat, collaborative editing, live dashboard updates.
 - **WHY**: If your CRM has "live updates" (e.g., citation status changes appear instantly without refresh), it's using WebSockets. Playwright can intercept and assert on WebSocket messages.
 - **HOW**: `page.on('websocket', handler)` captures WebSocket connections. `ws.on('framereceived', handler)` captures incoming messages.
 
 ---
 
-## PART 1 — GraphQL Testing
+## PART 1 â€” GraphQL Testing
 
 ### 1. Understanding GraphQL vs REST
 
 ```
 REST:
-  GET  /api/v2/citations/CIT-001         → returns ALL citation fields (overfetch)
-  GET  /api/v2/users/USR-001             → separate request (underfetch → N+1 problem)
+  GET  /api/v2/citations/CIT-001         â†’ returns ALL citation fields (overfetch)
+  GET  /api/v2/users/USR-001             â†’ separate request (underfetch â†’ N+1 problem)
 
 GraphQL (one request, client specifies fields):
   POST /graphql
@@ -51,7 +51,7 @@ GraphQL (one request, client specifies fields):
         citationId
         status
         amount
-        customer {       ← nested — no second request needed
+        customer {       â† nested â€” no second request needed
           userId
           name
           email
@@ -67,7 +67,7 @@ Testing difference:
            Also: assert on 'errors' array (GraphQL returns 200 even for errors!)
 ```
 
-### 2. The Critical GraphQL Testing Difference — Errors in 200 Responses
+### 2. The Critical GraphQL Testing Difference â€” Errors in 200 Responses
 
 ```typescript
 // GraphQL ALWAYS returns HTTP 200, even for errors.
@@ -75,8 +75,8 @@ Testing difference:
 
 // A broken response looks like:
 {
-  "data": null,                          // ← data is null
-  "errors": [                            // ← errors are HERE
+  "data": null,                          // â† data is null
+  "errors": [                            // â† errors are HERE
     {
       "message": "Citation not found",
       "locations": [{ "line": 2, "column": 3 }],
@@ -91,11 +91,11 @@ Testing difference:
   "data": {
     "citation": { "citationId": "CIT-001", "status": "PENDING" }
   }
-  // no 'errors' field — or errors: []
+  // no 'errors' field â€” or errors: []
 }
 
 // WRONG assertion (passes even on error):
-expect(response.status()).toBe(200);  // ← always true, tells you nothing
+expect(response.status()).toBe(200);  // â† always true, tells you nothing
 
 // CORRECT assertion:
 const body = await response.json();
@@ -152,7 +152,7 @@ export class GraphQLClient {
     return result;
   }
 
-  // Throws if any GraphQL errors are present — use for "must succeed" calls
+  // Throws if any GraphQL errors are present â€” use for "must succeed" calls
   async mustQuery<T>(query: string, variables?: Record<string, unknown>): Promise<T> {
     const result = await this.query<T>(query, variables);
     if (result.errors?.length) {
@@ -170,7 +170,7 @@ export class GraphQLClient {
   static fromRequest(request: APIRequestContext, baseUrl: string, token: string): GraphQLClient {
     // Returns a client that uses Playwright's request interceptor
     // This means page.route() can mock GraphQL responses in UI tests
-    return new GraphQLClient(baseUrl, token);  // simplified — full impl uses request
+    return new GraphQLClient(baseUrl, token);  // simplified â€” full impl uses request
   }
 }
 ```
@@ -181,7 +181,7 @@ export class GraphQLClient {
 // tests/specs/graphql/citations.graphql.spec.ts
 
 // Define queries as named constants (not inline strings)
-// This mirrors production code — queries are usually in .graphql files
+// This mirrors production code â€” queries are usually in .graphql files
 const GET_CITATION = `
   query GetCitation($id: ID!) {
     citation(id: $id) {
@@ -267,7 +267,7 @@ test.describe('GraphQL API Tests @graphql', () => {
   test('Query: Non-existent citation returns GraphQL error (not HTTP error)', async ({ account }) => {
     const client = new GraphQLClient(process.env.API_BASE_URL!, account.accessToken);
 
-    // Use query() not mustQuery() — we EXPECT an error
+    // Use query() not mustQuery() â€” we EXPECT an error
     const result = await client.query(GET_CITATION, { id: 'CIT-NONEXISTENT' });
 
     // HTTP: 200 (always for GraphQL)
@@ -312,7 +312,7 @@ test.describe('GraphQL API Tests @graphql', () => {
 ### 5. Mocking GraphQL in UI Tests
 
 ```typescript
-// UI tests that depend on a GraphQL backend — mock it with page.route()
+// UI tests that depend on a GraphQL backend â€” mock it with page.route()
 
 test('Citations list renders correctly', async ({ page }) => {
   // Mock the GraphQL endpoint (it's always the same URL)
@@ -359,7 +359,7 @@ test('Citations list renders correctly', async ({ page }) => {
 
 ---
 
-## PART 2 — WebSocket Testing
+## PART 2 â€” WebSocket Testing
 
 ### 6. Capturing WebSocket Messages
 
@@ -397,7 +397,7 @@ test('Live citation status update received via WebSocket', async ({
     });
   });
 
-  // Navigate — WebSocket connection is established by the app
+  // Navigate â€” WebSocket connection is established by the app
   await page.goto('/citations/CIT-001');
   await page.waitForLoadState('networkidle');
 
@@ -482,9 +482,9 @@ test('Application reconnects WebSocket after network interruption', async ({ pag
   expect(connectionEvents).toContain('connected');
 
   // Simulate network interruption using Playwright's network conditions
-  await context.setOffline(true);   // ← go offline
+  await context.setOffline(true);   // â† go offline
   await page.waitForTimeout(2000);   // wait for disconnect to be detected
-  await context.setOffline(false);  // ← come back online
+  await context.setOffline(false);  // â† come back online
 
   // App should automatically reconnect within 10 seconds
   await expect.poll(
@@ -497,7 +497,7 @@ test('Application reconnects WebSocket after network interruption', async ({ pag
 ### 8. Generating Realistic Test Data with Faker.js
 
 ```typescript
-// For GraphQL tests that need realistic data volumes — use Faker.js
+// For GraphQL tests that need realistic data volumes â€” use Faker.js
 // Source: https://github.com/faker-js/faker (MIT)
 
 import { faker } from '@faker-js/faker';
@@ -523,10 +523,10 @@ test('GraphQL pagination handles 100 citations correctly', async ({ account }) =
 
   // Create 100 citations with realistic varied data
   const payloads = Array.from({ length: 100 }, () => generateCitationInput());
-  // Bulk create via API (not one-by-one — too slow)
+  // Bulk create via API (not one-by-one â€” too slow)
   // Your real implementation would batch these
 
-  // Then verify pagination: 10 pages × 10 results = 100 total
+  // Then verify pagination: 10 pages Ã— 10 results = 100 total
   const allIds = new Set<string>();
   let cursor: string | null = null;
 
@@ -549,9 +549,9 @@ test('GraphQL pagination handles 100 citations correctly', async ({ account }) =
 
 ---
 
-## 🏋️ Practice Challenges
+## ðŸ‹ï¸ Practice Challenges
 
-### Challenge 1 [MCQ] — GraphQL Error Handling
+### Challenge 1 [MCQ] â€” GraphQL Error Handling
 
 After calling `createCitation` mutation, the response is:
 ```json
@@ -561,7 +561,7 @@ What is the HTTP status code? What is the correct assertion?
 
 <details><summary>Answer</summary>
 
-**HTTP 200** — GraphQL always returns 200, even for errors. The error is in the body.
+**HTTP 200** â€” GraphQL always returns 200, even for errors. The error is in the body.
 
 Correct assertions:
 ```typescript
@@ -572,17 +572,17 @@ expect(result.errors).toBeDefined();
 expect(result.errors![0].extensions?.code).toBe('VALIDATION_ERROR');
 expect(result.data?.createCitation).toBeNull();
 
-// WRONG — this would always pass:
+// WRONG â€” this would always pass:
 expect(httpStatus).toBe(200);  // always true, tells you nothing
 ```
 </details>
 
-### Challenge 2 [Design] — WebSocket Test Fixture
+### Challenge 2 [Design] â€” WebSocket Test Fixture
 
 Design a `webSocketMessages` fixture that:
 1. Subscribes to all WebSocket messages for the duration of a test
-2. Provides `waitForMessage(predicate, timeout)` — polls until a message matching the predicate arrives
-3. Provides `getAll()` — returns all received messages so far
+2. Provides `waitForMessage(predicate, timeout)` â€” polls until a message matching the predicate arrives
+3. Provides `getAll()` â€” returns all received messages so far
 4. Automatically cleans up listener after test
 
 <details><summary>Answer</summary>
@@ -643,11 +643,139 @@ test('Citation update arrives via WebSocket', async ({ page, webSocketMessages, 
 ---
 
 **Key References:**
-- [graphql.org/learn](https://graphql.org/learn/) — Official GraphQL tutorial
-- [github.com/jasonkuhrt/graphql-request](https://github.com/jasonkuhrt/graphql-request) — graphql-request (MIT)
-- [github.com/faker-js/faker](https://github.com/faker-js/faker) — Faker.js (MIT)
-- [playwright.dev/docs/network](https://playwright.dev/docs/network) — Playwright network + WebSocket docs
+- [graphql.org/learn](https://graphql.org/learn/) â€” Official GraphQL tutorial
+- [github.com/jasonkuhrt/graphql-request](https://github.com/jasonkuhrt/graphql-request) â€” graphql-request (MIT)
+- [github.com/faker-js/faker](https://github.com/faker-js/faker) â€” Faker.js (MIT)
+- [playwright.dev/docs/network](https://playwright.dev/docs/network) â€” Playwright network + WebSocket docs
 - [MDN WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
 
 ---
-**Navigation**: [← Chapter 40: Security Testing](40_Security_Testing_OWASP.md) | [Index](00_INDEX.md)
+**Navigation**: [â† Chapter 40: Security Testing](40_Security_Testing_OWASP.md) | [Index](00_INDEX.md)
+
+### Challenge 3 [Spot the Bug — GraphQL Aliases]
+
+```typescript
+const query = `
+  query GetComparedCitations {
+    firstCitation: getCitation(id: "CIT-001") { amount }
+    secondCitation: getCitation(id: "CIT-002") { amount }
+  }
+`;
+
+test('Compare citation amounts', async ({ request }) => {
+  const response = await request.post('/graphql', { data: { query } });
+  const json = await response.json();
+  
+  // Bug is on this line:
+  expect(json.data.getCitation[0].amount).toBeGreaterThan(json.data.getCitation[1].amount);
+});
+```
+
+What is the property access error in this test?
+
+<details><summary>Answer</summary>
+
+**Bug**: In GraphQL, when you use **aliases** (`firstCitation: getCitation(...)`), the response JSON keys match the *aliases*, not the original resolver names. 
+
+The API response looks like this:
+```json
+{
+  "data": {
+    "firstCitation": { "amount": 150 },
+    "secondCitation": { "amount": 75 }
+  }
+}
+```
+
+There is no `json.data.getCitation` array. The test will crash with `Cannot read properties of undefined (reading '0')`.
+
+**Fix**: Assert on the alias names:
+```typescript
+expect(json.data.firstCitation.amount).toBeGreaterThan(json.data.secondCitation.amount);
+```
+
+**SDE Insight**: Aliases are a powerful GraphQL feature to fetch the same entity multiple times in one round-trip, but your test assertions must dynamically map to the requested alias shape.
+
+</details>
+
+---
+
+### Challenge 4 [Write It Yourself — WebSocket Connection Waiting]
+
+Write a Playwright test snippet that connects to `wss://api.example.com/stream`, sends a JSON payload `{"action": "subscribe", "channel": "citations"}`, and successfully waits for the server to reply with a frame containing `"status": "connected"`.
+
+<details><summary>Answer</summary>
+
+```typescript
+test('WebSocket subscription flow', async ({ page }) => {
+  // 1. Wait for the WebSocket connection to be established by the browser
+  const wsPromise = page.waitForEvent('websocket');
+  
+  // (Assuming the app initiates the WS connection on page load)
+  await page.goto('/live-dashboard');
+  const ws = await wsPromise;
+
+  // 2. Wait for the specific response frame from the server
+  const frameReceivedPromise = ws.waitForEvent('framereceived', {
+    predicate: (frame) => {
+      const payload = frame.payload().toString();
+      return payload.includes('"status": "connected"');
+    }
+  });
+
+  // (Assuming the browser sends the subscribe message automatically, 
+  // or we inject JS to send it. For direct testing, you might use a Node WS client, 
+  // but in Playwright we intercept browser WS traffic).
+  
+  // 3. Await the specific frame
+  const frame = await frameReceivedPromise;
+  expect(frame.payload().toString()).toContain('connected');
+});
+```
+
+**Note**: Playwright's `ws.waitForEvent` allows you to test real-time browser behaviors without manually adding `setTimeout` loops.
+
+</details>
+
+---
+
+### Challenge 5 [MCQ — Over-fetching vs Under-fetching]
+
+Why did modern enterprise teams move from REST to GraphQL for mobile and frontend aggregation layers, and how does this impact SDET API tests?
+
+A) GraphQL is faster because it uses WebSockets instead of HTTP.
+B) GraphQL solves over-fetching (getting 50 fields when the UI only needs 3) and under-fetching (requiring 4 separate REST calls to render one page). SDETs now test specific field projections rather than static JSON shapes.
+C) GraphQL automatically encrypts payloads, making it more secure than REST.
+D) GraphQL runs entirely in the browser, eliminating the need for backend testing.
+
+<details><summary>Answer</summary>
+
+**B** — GraphQL solves the data-fetching efficiency problem. 
+
+In REST, `/api/users/1` returns a fixed schema. If the mobile app only needs `firstName`, it still downloads 5KB of unused data (Over-fetching). If the app also needs the user's citations, it must make a second call to `/api/users/1/citations` (Under-fetching).
+
+GraphQL allows the client to declare exactly what it needs in a single request:
+```graphql
+query {
+  user(id: 1) {
+    firstName
+    citations {
+      amount
+    }
+  }
+}
+```
+
+**SDET Impact**: Instead of writing one test per endpoint, SDETs write tests that validate the *Graph Resolver* boundaries, ensuring that deeply nested queries don't crash the database (N+1 query problems) and that authorization is enforced per-field, not just per-endpoint.
+
+</details>
+
+---
+
+**Key References:**
+- [GraphQL Official Docs](https://graphql.org/learn/)
+- [Playwright WebSocket Testing](https://playwright.dev/docs/network#websockets)
+- [Apollo Client Testing](https://www.apollographql.com/docs/react/development-testing/testing/)
+
+---
+**Navigation**: [← Chapter 40: Security Test Automation](40_Security_Testing_OWASP.md) | [Index](00_INDEX.md) | [→ Chapter 42: Polling & Async Data](42_Polling_Async_Data_Patterns.md)

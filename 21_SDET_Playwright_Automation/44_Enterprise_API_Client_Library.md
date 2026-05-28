@@ -1230,3 +1230,189 @@ The 20/80 rule: 20% of fields carry 80% of the validation value. Start with IDs,
 ---
 
 **Navigation**: [← Chapter 43: Real-World War Stories](43_Real_World_SDET_War_Stories.md) | [Index](00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](45_Complete_Playwright_API_Reference.md)
+
+## 🏋️ Practice Challenges
+
+### Challenge 1 [MCQ] — Why hide raw Playwright `request` behind a facade?
+
+What is the primary architectural benefit of wrapping Playwright's `APIRequestContext` inside an `ApiClient` class instead of calling `request.post()` directly in spec files?
+
+A) It speeds up the test execution because classes run faster than raw function calls.
+B) It centralizes endpoint URLs, payload construction, header injection, and response parsing, keeping spec files strictly focused on business logic assertions.
+C) It prevents Playwright from logging the API calls.
+D) It allows the tests to bypass network proxies.
+
+<details><summary>Answer</summary>
+
+**B** — Centralization and Separation of Concerns. 
+When URLs or headers change, you update one class, not 50 spec files. Specs remain readable, containing only the *intent* of the test.
+
+</details>
+
+---
+
+### Challenge 2 [Spot the Bug — Silent failure in API Error Wrapper]
+
+```typescript
+class ApiClient {
+  async get(url: string) {
+    const response = await this.request.get(url);
+    if (!response.ok()) {
+      console.error(`API failed: ${response.status()}`);
+      return null;
+    }
+    return response.json();
+  }
+}
+
+// In test:
+const data = await client.get('/api/config');
+expect(data.theme).toBe('dark');
+```
+
+What is the danger of this error handling pattern?
+
+<details><summary>Answer</summary>
+
+**Bug**: Returning `null` on an HTTP error is a classic anti-pattern. 
+If the API returns a 500 Internal Server Error, `data` becomes `null`. The test then attempts `data.theme`, throwing `TypeError: Cannot read properties of null (reading 'theme')`. 
+
+The test fails with a generic JavaScript error instead of telling the developer *why* it failed (the 500 error).
+
+**Fix**: Throw a descriptive error containing the HTTP status and response body.
+```typescript
+    if (!response.ok()) {
+      const body = await response.text();
+      throw new Error(`API GET ${url} failed with ${response.status()}: ${body}`);
+    }
+```
+This forces the test to fail immediately at the API step, putting the exact HTTP error in the CI logs.
+
+</details>
+
+---
+
+### Challenge 3 [Write It Yourself — Generic Retry Interceptor]
+
+Write a `requestWithRetry` wrapper method inside your `ApiClient` that takes a closure (e.g., `() => this.request.get(url)`), executes it, and if it returns a 502, 503, or 504 status code, retries it up to 3 times with a 1-second delay.
+
+<details><summary>Answer</summary>
+
+```typescript
+  private async requestWithRetry(
+    operation: () => Promise<APIResponse>, 
+    maxRetries = 3
+  ): Promise<APIResponse> {
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      const response = await operation();
+      
+      // If success or a non-retryable error (like 400 or 404), return immediately
+      if (![502, 503, 504].includes(response.status())) {
+        return response;
+      }
+      
+      if (attempt === maxRetries) {
+        return response; // Out of retries, return the failing response
+      }
+      
+      console.warn(`Attempt ${attempt} failed with ${response.status()}. Retrying...`);
+      // Wait 1 second before next attempt (using a standard Promise-based delay)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+    throw new Error('Unreachable');
+  }
+
+  // Usage:
+  async get(url: string) {
+    const response = await this.requestWithRetry(() => this.request.get(url));
+    // ... proceed with response.ok() check
+  }
+```
+
+</details>
+
+---
+
+### Challenge 4 [Architecture — Centralizing Auth Headers]
+
+Where is the most secure and maintainable place to inject an Authorization token into the `ApiClient` so that every method (`get`, `post`, `put`) uses it automatically?
+
+A) Pass the token as a parameter to every method: `client.get('/url', token)`.
+B) Pass the token into the `ApiClient` constructor and store it as a private readonly class property.
+C) Read the token from `process.env.TOKEN` inside the `get()` method.
+D) Put the token in a global variable.
+
+<details><summary>Answer</summary>
+
+**B** — Passing the token into the constructor via a Playwright fixture.
+
+```typescript
+// Client class
+export class ApiClient {
+  constructor(private request: APIRequestContext, private token: string) {}
+  
+  async get(url: string) {
+    return this.request.get(url, { headers: { Authorization: `Bearer ${this.token}` } });
+  }
+}
+
+// Fixture setup
+export const test = base.extend<{ apiClient: ApiClient }>({
+  apiClient: async ({ request, loginToken }, use) => {
+    // Inject the isolated, test-specific token into the client
+    const client = new ApiClient(request, loginToken);
+    await use(client);
+  }
+});
+```
+
+This ensures the client is perfectly encapsulated, thread-safe (no global variables), and DRY (don't repeat the header in every test).
+
+</details>
+
+---
+
+### Challenge 5 [Spot the Bug — Generics turning into `any`]
+
+```typescript
+class ApiClient {
+  async get<T>(url: string): Promise<T> {
+    const response = await this.request.get(url);
+    return response.json();
+  }
+}
+
+// In test:
+const user = await client.get<User>('/api/users/1');
+```
+
+While this looks like excellent TypeScript, what false sense of security does `response.json()` returning `T` give you at runtime?
+
+<details><summary>Answer</summary>
+
+**Bug**: TypeScript types are erased at compile time. `response.json()` returns an `any` at runtime. By casting it to `Promise<T>`, you are telling TypeScript "trust me, the API returned the `User` shape." 
+
+If the API actually returned `{ error: "User not found" }`, TypeScript won't catch it, and the test will crash later when you try to access `user.firstName`.
+
+**SDE Fix**: To achieve true runtime type safety, you must parse the response through a schema validator like Zod.
+
+```typescript
+import { z } from 'zod';
+
+class ApiClient {
+  async get<T>(url: string, schema: z.ZodSchema<T>): Promise<T> {
+    const response = await this.request.get(url);
+    const json = await response.json();
+    
+    // Throws a clear runtime error if the API payload doesn't match the expected type
+    return schema.parse(json); 
+  }
+}
+
+// In test:
+const user = await client.get('/api/users/1', UserSchema);
+```
+</details>
+
+---
+**Navigation**: [← Chapter 43: Real-World War Stories](43_Real_World_SDET_War_Stories.md) | [Index](00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](45_Complete_Playwright_API_Reference.md)

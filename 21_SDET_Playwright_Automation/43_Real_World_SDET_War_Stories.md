@@ -1238,3 +1238,157 @@ await expect(page.locator('[data-testid="status"]')).toHaveText('PAID', { timeou
 ---
 
 **Navigation**: [← Chapter 42: Polling Patterns](42_Polling_Async_Data_Patterns.md) | [Index](00_INDEX.md) | [→ Chapter 44: Enterprise API Client Library](44_Enterprise_API_Client_Library.md)
+
+## 🏋️ Practice Challenges
+
+### Challenge 1 [Spot the Bug — The "Randomly Passing" ElementHandle]
+
+```typescript
+test('Click dynamic loading button', async ({ page }) => {
+  await page.goto('/dashboard');
+  
+  // Wait for the button to appear in DOM
+  const button = await page.$('.dynamic-btn');
+  
+  // ... test does some other things for 2 seconds ...
+  
+  // Click the button
+  await button?.click();
+});
+```
+
+Why is `ElementHandle` (`page.$`) considered an anti-pattern in modern Playwright, and what exact failure does this code cause if the React app re-renders the button during the 2-second wait?
+
+<details><summary>Answer</summary>
+
+**Bug**: `page.$` captures a point-in-time reference to a specific DOM node. If React/Vue re-renders the component, the old DOM node is destroyed and a new one replaces it. When `button.click()` fires, Playwright throws an error: `Element is detached from DOM`.
+
+**Fix**: Use `Locator` (`page.locator('.dynamic-btn')`). Locators are strict and lazily evaluated. When you call `locator.click()`, Playwright queries the DOM *at that exact moment*, automatically handling re-renders.
+
+</details>
+
+---
+
+### Challenge 2 [Architecture — The 429 Too Many Requests War Story]
+
+Your team runs 50 Playwright workers in CI against a shared Staging environment. Every afternoon, tests start failing randomly with `429 Too Many Requests` or `502 Bad Gateway` from the Staging API.
+
+What is the architectural root cause, and what is the proper SDET solution?
+
+A) Playwright is too fast. You should add `await page.waitForTimeout(2000)` before every API call.
+B) The Staging environment is accurately simulating production rate limits, but the test suite's burst traffic (50 workers × 10 requests/sec = 500 RPS) exceeds the limit. The solution is to whitelist the CI IP in the API Gateway or spin up isolated ephemeral environments for CI runs.
+C) The tests are creating infinite loops.
+D) The API client lacks a try-catch block.
+
+<details><summary>Answer</summary>
+
+**B** — Shared Staging environments are almost always the bottleneck for parallel automation.
+Adding timeouts (A) ruins your CI pipeline speed. The enterprise solution is either IP whitelisting for CI (if testing functionality, not rate limiting), or migrating to Ephemeral Environments (where each PR gets its own isolated database and API instance, meaning zero collision and zero rate limiting).
+
+</details>
+
+---
+
+### Challenge 3 [Write It Yourself — The Timezone Boundary Bug]
+
+Your CI runs in UTC. Developers are in India (IST, UTC+5:30). A test selects "Today" on a calendar widget. At 1:00 AM IST (which is 7:30 PM UTC the previous day), the test fails because the API rejects the date as "in the past."
+
+Write the Playwright configuration setting to force the browser context to use a specific timezone (e.g., `Asia/Kolkata`), ensuring local and CI executions match.
+
+<details><summary>Answer</summary>
+
+```typescript
+// playwright.config.ts
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  use: {
+    // Forces the browser to use a specific timezone, regardless of the host OS
+    timezoneId: 'Asia/Kolkata',
+    
+    // Optional but related: forcing locale for date formats
+    locale: 'en-IN',
+  },
+});
+```
+
+**War Story**: Unset timezones cause "Timezone Boundary Flakiness." A test passes all day, then consistently fails during a 5-hour window every night depending on the delta between the CI server's UTC clock and the developer's local timezone assumption. Force `timezoneId` to neutralize this.
+
+</details>
+
+---
+
+### Challenge 4 [MCQ — The Stale Test Data War Story]
+
+A test logs in and asserts `expect(userName).toBe('John Doe')`. Six months later, another developer renames the user in the database to 'Johnathan Doe' while testing a bug manually. The automation suite fails on the `main` branch. 
+
+What core test data principle was violated?
+
+A) Manual testing should not be allowed in Staging.
+B) Tests should never assert on names, only IDs.
+C) The test relied on shared, pre-existing state instead of creating its own isolated state (Arrange-Act-Assert).
+D) The database should be read-only.
+
+<details><summary>Answer</summary>
+
+**C** — The test violated the rule of independent test data. 
+If a test needs a user named 'John Doe', the test (or its fixture) must *create* that user via API at the start of the test, and ideally delete it at the end. Relying on seeded data in a shared environment guarantees that the data will eventually be mutated by humans or other tests, leading to brittle, unpredictable suites.
+
+</details>
+
+---
+
+### Challenge 5 [Spot the Bug — The Shared Browser Context War Story]
+
+```typescript
+import { test, chromium, Browser } from '@playwright/test';
+
+let browser: Browser;
+
+test.beforeAll(async () => {
+  browser = await chromium.launch();
+});
+
+test('Test A', async () => {
+  const page = await browser.newPage();
+  await page.goto('/admin'); // redirects to login
+  await page.fill('#user', 'admin');
+  await page.fill('#pass', 'secret');
+  await page.click('#loginBtn');
+  // ... verify admin
+});
+
+test('Test B', async () => {
+  const page = await browser.newPage();
+  await page.goto('/customer'); 
+  // Fails! The page expects to be logged out, but the session is active!
+});
+```
+
+Why does Test B inherit Test A's logged-in state, and how do you fix it?
+
+<details><summary>Answer</summary>
+
+**Bug**: `browser.newPage()` creates pages within the *same default browser context*. Cookies and LocalStorage are scoped to the Context, not the Page. Test A set the auth cookie, so Test B (running sequentially or in parallel in the same worker) gets the cookie.
+
+**Fix**: Always use Playwright's built-in `page` fixture, which automatically creates an isolated `BrowserContext` for every single test.
+
+```typescript
+test('Test A', async ({ page }) => {
+  // page is already isolated in its own context
+  await page.goto('/admin');
+  // ...
+});
+
+test('Test B', async ({ page }) => {
+  // This page has zero cookies. Completely fresh.
+  await page.goto('/customer');
+});
+```
+
+**War Story**: Manually managing `chromium.launch()` in `beforeAll` is a hangover from Puppeteer/Selenium. Playwright's greatest strength is sub-millisecond Context isolation via fixtures. Use them!
+
+</details>
+
+---
+**Navigation**: [← Chapter 42: Polling Patterns](42_Polling_Async_Data_Patterns.md) | [Index](00_INDEX.md) | [→ Chapter 44: Enterprise API Client Library](44_Enterprise_API_Client_Library.md)
