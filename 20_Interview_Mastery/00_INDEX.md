@@ -21,7 +21,17 @@
 | 07 | [Design Patterns Interview Guide](07_Design_Patterns_Interview_Guide.md) | When/why/how for each pattern — creational, structural, behavioral with Java code, SOLID, anti-patterns, 2 solved design problems |
 | 08 | [Problem Decomposition Framework](08_Problem_Decomposition_Framework.md) | Break ANY problem into solvable pieces — universal 4-step process, 10 worked cross-domain decompositions (DSA + SQL + System Design + OOP) |
 | 09 | [Mock Interview Simulations](09_Mock_Interview_Simulations.md) | Practice everything — 6 complete mock interviews (DSA, SQL, System Design, OOP, Mixed), self-evaluation rubric, 30-day schedule |
-| 10 | [🔥 Elite Cross-Domain Rounds](10_Elite_Cross_Domain_Rounds.md) | **Staff-Engineer level.** 8 real-world scenarios that demand simultaneous reasoning across DSA + Spring Boot + SDET: Rate Limiter, N+1 Detective, Kafka Idempotency, Circuit Breaker FSM, Keyset Pagination, Distributed Lock, Cache Invalidation Race, API Versioning Contract |
+| 10 | [🔥 Elite Cross-Domain Rounds](10_Elite_Cross_Domain_Rounds.md) | **Staff-Engineer level.** 8 real-world scenarios across DSA + Spring Boot + SDET: Rate Limiter, N+1 Detective, Kafka Idempotency, Circuit Breaker FSM, Keyset Pagination, Distributed Lock, Cache Invalidation Race, API Versioning Contract |
+
+### Progressive Learning Series (Basics → Problem-Solving → Similar Challenges)
+
+| # | File | Domain Pair | Topics |
+|---|------|-------------|--------|
+| 11 | [SDET × DSA Progressive](11_SDET_Plus_DSA_Progressive.md) | SDET + DSA | Sliding Window/Polling, HashMap/Dedup, Topological Sort/Test Order, Binary Search/Bisect, Heap/Prioritisation, Exponential Backoff, Frequency Map/Flakiness |
+| 12 | [Spring Boot × DSA Progressive](12_SpringBoot_Plus_DSA_Progressive.md) | Spring Boot + DSA | Topological Sort/Beans, Linked List/Filter Chain, LRU Cache/JPA L2C, Graph/Security Rules, Sliding Window/Rate Limiting, FSM/Bean Lifecycle |
+| 13 | [SDET × Spring Boot Progressive](13_SDET_Plus_SpringBoot_Progressive.md) | SDET + Spring Boot | Testing Pyramid, @WebMvcTest vs @DataJpaTest, MockMvc vs WebTestClient, WireMock, EmbeddedKafka, Testcontainers, Spring Security Testing |
+| 14 | [🔬 Challenge Deep Dives](14_Challenge_Deep_Dives.md) | All pairs | **Point-by-point** explanations — every line, every decision, every alternative, every pitfall. 3 deep dives (SDET×DSA, SpringBoot×DSA, SDET×SpringBoot) with 6 worked challenges + interview narration scripts |
+
 
 ### Problem Banks (5W+H Logic-First Explanations)
 

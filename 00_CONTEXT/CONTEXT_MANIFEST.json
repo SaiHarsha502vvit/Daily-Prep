@@ -1,8 +1,8 @@
 ﻿{
     "schemaVersion":  1,
-    "generatedAt":  "2026-05-30T00:02:49.4898142+05:30",
+    "generatedAt":  "2026-05-30T00:22:39.5558060+05:30",
     "repoRoot":  "E:\\Dev_World\\04_Practice\\Daily-Prep",
-    "activeFileCount":  561,
+    "activeFileCount":  565,
     "files":  [
                   {
                       "path":  ".github/agents/diagram-audit.agent.md",
@@ -10039,10 +10039,10 @@
                       "folder":  "20_Interview_Mastery",
                       "title":  "20 â€” Interview Mastery: The Cross-Domain Capstone",
                       "role":  "Module index and local navigation",
-                      "sha256":  "95a1053df8b8ffec57e35c7612e45689cbd0712f88e69f6952535f4adfb44e38",
-                      "shortHash":  "95a1053df8b8",
-                      "bytes":  10014,
-                      "headings":  5,
+                      "sha256":  "da70850f378892aab3f78dd25149a1de2356848e946659dd186c60f7052d9070",
+                      "shortHash":  "da70850f3788",
+                      "bytes":  11155,
+                      "headings":  6,
                       "codeFences":  2,
                       "codeFencesBalanced":  true,
                       "challengeCount":  0,
@@ -10426,6 +10426,32 @@
                                        ]
                   },
                   {
+                      "path":  "20_Interview_Mastery/11_SDET_Plus_DSA_Progressive.md",
+                      "folder":  "20_Interview_Mastery",
+                      "title":  "11. SDET Ã— DSA â€” From Basics to Elite",
+                      "role":  "Interview synthesis, final prep, scenarios, and problem explanation",
+                      "sha256":  "75bb653aeb32abc9027cc7f1cb9af45c32357ca14fb31a3b17fb61d0b60e353f",
+                      "shortHash":  "75bb653aeb32",
+                      "bytes":  40248,
+                      "headings":  49,
+                      "codeFences":  78,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "details",
+                                           "constraints",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "typescript",
+                                           "dsa/algo",
+                                           "devops",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
                       "path":  "20_Interview_Mastery/12_DSA_Problems_Trees_Graphs_Trie_UnionFind.md",
                       "folder":  "20_Interview_Mastery",
                       "title":  "File 12 â€” DSA Problems: Trees, Graphs, Trie \u0026 Union-Find",
@@ -10444,6 +10470,32 @@
                                            "code-heavy",
                                            "css",
                                            "dsa/algo",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
+                      "path":  "20_Interview_Mastery/12_SpringBoot_Plus_DSA_Progressive.md",
+                      "folder":  "20_Interview_Mastery",
+                      "title":  "12. Spring Boot Ã— DSA â€” The Algorithms Inside the Framework",
+                      "role":  "Interview synthesis, final prep, scenarios, and problem explanation",
+                      "sha256":  "6667d4feb0f379dbb83cc1818d0c09aa5c7f45496d831ceedbae0b6cebc8c4a2",
+                      "shortHash":  "6667d4feb0f3",
+                      "bytes":  34807,
+                      "headings":  41,
+                      "codeFences":  66,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "details",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "typescript",
+                                           "css",
+                                           "dsa/algo",
+                                           "devops",
                                            "enterprise"
                                        ]
                   },
@@ -10468,6 +10520,57 @@
                                            "sql",
                                            "css",
                                            "dsa/algo",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
+                      "path":  "20_Interview_Mastery/13_SDET_Plus_SpringBoot_Progressive.md",
+                      "folder":  "20_Interview_Mastery",
+                      "title":  "13. SDET Ã— Spring Boot â€” Testing Spring Boot Applications End-to-End",
+                      "role":  "Interview synthesis, final prep, scenarios, and problem explanation",
+                      "sha256":  "0859ef9e10a0b633ab052b110e07db6c2cc63b778eb4e1abf02cac588bec25e0",
+                      "shortHash":  "0859ef9e10a0",
+                      "bytes":  47396,
+                      "headings":  42,
+                      "codeFences":  66,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "details",
+                                           "constraints",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "react",
+                                           "dsa/algo",
+                                           "devops",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
+                      "path":  "20_Interview_Mastery/14_Challenge_Deep_Dives.md",
+                      "folder":  "20_Interview_Mastery",
+                      "title":  "14. Challenge Deep Dives â€” Point-by-Point Explanations",
+                      "role":  "Interview synthesis, final prep, scenarios, and problem explanation",
+                      "sha256":  "f65d413c209c2607481ed92ca11ff790e9b15da9eda88737c396dba17a27d597",
+                      "shortHash":  "f65d413c209c",
+                      "bytes":  50570,
+                      "headings":  26,
+                      "codeFences":  50,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "details",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "typescript",
+                                           "dsa/algo",
+                                           "devops",
                                            "enterprise"
                                        ]
                   },
