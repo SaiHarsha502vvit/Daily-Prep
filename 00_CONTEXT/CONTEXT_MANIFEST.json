@@ -1,8 +1,8 @@
 ﻿{
     "schemaVersion":  1,
-    "generatedAt":  "2026-05-30T00:34:48.6747091+05:30",
+    "generatedAt":  "2026-05-30T00:51:11.2103793+05:30",
     "repoRoot":  "E:\\Dev_World\\04_Practice\\Daily-Prep",
-    "activeFileCount":  568,
+    "activeFileCount":  570,
     "files":  [
                   {
                       "path":  ".github/agents/diagram-audit.agent.md",
@@ -13213,6 +13213,51 @@
                       "styleSignals":  [
                                            "5W1H",
                                            "devops"
+                                       ]
+                  },
+                  {
+                      "path":  "23_Mobile_Dev_And_Testing/01_Playwright_vs_Appium_Full_Comparison.md",
+                      "folder":  "23_Mobile_Dev_And_Testing",
+                      "title":  "01. Playwright vs Appium â€” Full Comparison",
+                      "role":  "Active repository Markdown content",
+                      "sha256":  "202b37149b7218da18c2300c4599e224e44b44fe35a5b135f9479a25321a46b5",
+                      "shortHash":  "202b37149b72",
+                      "bytes":  46385,
+                      "headings":  34,
+                      "codeFences":  52,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "details",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "typescript",
+                                           "react",
+                                           "css",
+                                           "dsa/algo",
+                                           "devops",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
+                      "path":  "23_Mobile_Dev_And_Testing/CONTEXT.md",
+                      "folder":  "23_Mobile_Dev_And_Testing",
+                      "title":  "Context: 23_Mobile_Dev_And_Testing",
+                      "role":  "Folder-level agent context and writing boundaries",
+                      "sha256":  "57bfea9042fe4aa89e915b280ba77ac6669a17e9b457f2f6e4c8f7217702be6a",
+                      "shortHash":  "57bfea9042fe",
+                      "bytes":  2361,
+                      "headings":  5,
+                      "codeFences":  0,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "5W1H",
+                                           "react",
+                                           "enterprise"
                                        ]
                   },
                   {
