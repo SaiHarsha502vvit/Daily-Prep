@@ -21,6 +21,7 @@
 | 07 | [Design Patterns Interview Guide](07_Design_Patterns_Interview_Guide.md) | When/why/how for each pattern — creational, structural, behavioral with Java code, SOLID, anti-patterns, 2 solved design problems |
 | 08 | [Problem Decomposition Framework](08_Problem_Decomposition_Framework.md) | Break ANY problem into solvable pieces — universal 4-step process, 10 worked cross-domain decompositions (DSA + SQL + System Design + OOP) |
 | 09 | [Mock Interview Simulations](09_Mock_Interview_Simulations.md) | Practice everything — 6 complete mock interviews (DSA, SQL, System Design, OOP, Mixed), self-evaluation rubric, 30-day schedule |
+| 10 | [🔥 Elite Cross-Domain Rounds](10_Elite_Cross_Domain_Rounds.md) | **Staff-Engineer level.** 8 real-world scenarios that demand simultaneous reasoning across DSA + Spring Boot + SDET: Rate Limiter, N+1 Detective, Kafka Idempotency, Circuit Breaker FSM, Keyset Pagination, Distributed Lock, Cache Invalidation Race, API Versioning Contract |
 
 ### Problem Banks (5W+H Logic-First Explanations)
 
@@ -103,7 +104,9 @@
 | Day 19 | DSA range-query essentials | File 21 (Prefix Sum, Prefix XOR, 2D Prefix unified) |
 | Day 20 | Coverage audit + final revision | File 22 (PDF topic map + quick revision routes) |
 
-> **After Day 20**: Follow the 30-day mock interview schedule in File 09 for continued practice.
+| Day 21 | **Elite Cross-Domain Rounds** | File 10 — pick 2 rounds per session, answer all 3 parts (A/B/C) without peeking at answers |
+
+> **After Day 21**: Revisit File 09 mock simulations and File 10 Elite Rounds in rotation. Aim to narrate Part A, write Part B from memory, and critique Part C against the reference answer.
 
 ---
 
