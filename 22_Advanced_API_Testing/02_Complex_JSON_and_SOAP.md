@@ -1,10 +1,10 @@
-# 02. Handling Complex JSON and SOAP in TypeScript
+﻿# 02. Handling Complex JSON and SOAP in TypeScript
 
-**Navigation**: [← Previous: API Testing Foundations](01_API_Testing_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next: Enterprise Headers & Auth →](03_Enterprise_Headers_Auth.md)
+**Navigation**: [â† Previous: API Testing Foundations](01_API_Testing_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next: Enterprise Headers & Auth â†’](03_Enterprise_Headers_Auth.md)
 
 ---
 
-## 5W1H — Why This Chapter?
+## 5W1H â€” Why This Chapter?
 
 * **WHAT**: Parsing, traversing, and validating massive, deeply nested JSON responses and SOAP XML envelopes using TypeScript.
 * **WHY**: Enterprise APIs (like Dynamics 365) rarely return flat objects. They return arrays inside objects inside arrays. If you don't know how to navigate them, your tests will crash with `Cannot read properties of undefined`.
@@ -172,7 +172,7 @@ Instead, SDETs use **JSON Schema Validation** (via the `ajv` library).
 
 ---
 
-## 🏋️ Practice & Interview Questions
+## ðŸ‹ï¸ Practice & Interview Questions
 
 **Q1.** Why is using hardcoded indexes (like `response.data[0]`) a bad practice in API testing?
 <details><summary>Answer</summary>
@@ -190,6 +190,195 @@ The code will throw a `TypeError: Cannot read properties of null (reading 'profi
 <details><summary>Answer</summary>
 
 Playwright cannot parse XML natively. You must use `response.text()` to get the raw XML string, pass it through an external library like `fast-xml-parser` to convert it into a JSON object, and then perform your standard `expect()` assertions on the resulting JSON.
+</details>
+
+
+---
+
+## 🏋️ Practice Challenges
+
+### Challenge 1 [MCQ] — Optional Chaining Evaluation
+
+```typescript
+const result = response?.data?.contacts?.[0]?.details?.email;
+```
+
+`response` is a valid object, `data` is `null`. What is the value of `result`?
+
+A) `TypeError: Cannot read properties of null`  
+B) `undefined`  
+C) `null`  
+D) `""`
+
+<details><summary>Answer</summary>
+
+**B — `undefined`**.
+
+Optional chaining (`?.`) short-circuits at the first `null` or `undefined` value in the chain and returns `undefined` — it does NOT propagate the `null` from `data`. So `null?.contacts` evaluates to `undefined`, and the rest of the chain is never evaluated.
+
+This is distinct from standard property access:
+```typescript
+response.data.contacts   // TypeError if data is null
+response?.data?.contacts // undefined if data is null
+```
+
+In tests: always check for `undefined` explicitly when guarding on optional paths:
+```typescript
+expect(result).toBeDefined(); // fails clearly if chain short-circuited
+```
+
+</details>
+
+---
+
+### Challenge 2 [Spot the Bug — Array Order Dependency]
+
+```typescript
+const response = await citationsClient.search({ customerId: 'USR-001' });
+const body = await response.json();
+
+// Assert the most recent citation is the first item
+expect(body.data[0].status).toBe('PENDING');
+expect(body.data[0].amount).toBe(150);
+```
+
+The test passes for 3 months then randomly fails. What is the root cause?
+
+<details><summary>Answer</summary>
+
+**Root cause**: The test relies on array ordering from the API but never requests a sort order. When a second citation for USR-001 is created in another test (or by the fixture), the API may return the new citation first — breaking the hardcoded `[0]` assumption.
+
+**Fix**: Search for the specific item by a stable property:
+```typescript
+const citations = body.data as CitationApiResponse[];
+const pendingCitation = citations.find(c => c.status === 'PENDING' && c.amount === 150);
+
+expect(pendingCitation, 'Expected a PENDING citation with amount 150').toBeDefined();
+expect(pendingCitation!.customerId).toBe('USR-001');
+```
+
+Or, if ordering is required, assert the API returns results in a known order by explicitly requesting `?sortBy=createdAt&sortOrder=desc` and verifying the header guarantee.
+
+</details>
+
+---
+
+### Challenge 3 [Write It Yourself — Deep Nested Extraction]
+
+Given this citation API response structure:
+
+```typescript
+const body = {
+  status: 'success',
+  data: {
+    account: {
+      userId: 'USR-001',
+      citations: [
+        { id: 'CIT-001', type: 'PARKING', payments: [{ amount: 75, status: 'PARTIAL' }] },
+        { id: 'CIT-002', type: 'SPEEDING', payments: [{ amount: 150, status: 'PAID' }] },
+        { id: 'CIT-003', type: 'PARKING', payments: [] },
+      ]
+    }
+  }
+};
+```
+
+Write TypeScript that extracts the total payment amount across all PARKING citations only, handling the empty `payments` case.
+
+<details><summary>Answer</summary>
+
+```typescript
+const citations = body?.data?.account?.citations ?? [];
+
+const parkingTotal = citations
+  .filter(c => c.type === 'PARKING')
+  .flatMap(c => c.payments)          // flatten [[75], []] → [75]
+  .reduce((sum, p) => sum + p.amount, 0);
+
+expect(parkingTotal).toBe(75);
+// PARKING: CIT-001 (75) + CIT-003 (0 payments) = 75
+```
+
+**Key methods**:
+- `.filter` — selects PARKING citations only
+- `.flatMap` — maps to payments arrays AND flattens one level (empty arrays contribute nothing)
+- `.reduce` — sums amounts, starting at 0 (handles the empty-after-filter case)
+
+The `?? []` guard prevents `.filter` from crashing if the chain returns `undefined`.
+
+</details>
+
+---
+
+### Challenge 4 [MCQ] — XML Namespace Navigation
+
+After parsing this SOAP response with `fast-xml-parser`:
+```xml
+<soap:Envelope xmlns:soap="...">
+  <soap:Body>
+    <m:GetPriceResponse xmlns:m="http://dynamics.com/prices">
+      <m:Price>19.99</m:Price>
+    </m:GetPriceResponse>
+  </soap:Body>
+</soap:Envelope>
+```
+
+How do you access the `Price` value in the parsed JavaScript object?
+
+A) `parsed.Envelope.Body.GetPriceResponse.Price`  
+B) `parsed['soap:Envelope']['soap:Body']['m:GetPriceResponse']['m:Price']`  
+C) `parsed.price`  
+D) `parsed.Envelope['m:Price']`
+
+<details><summary>Answer</summary>
+
+**B** — `fast-xml-parser` preserves namespace prefixes (`soap:`, `m:`) as part of the key names. The resulting JavaScript object keys are literally `'soap:Envelope'`, `'soap:Body'`, etc.
+
+This is why SOAP response navigation requires bracket notation — the colons in namespace prefixes make dot notation invalid JavaScript.
+
+**Practical tip**: for deeply nested SOAP responses, print `JSON.stringify(parsed, null, 2)` in the test to map the full key hierarchy before writing assertions.
+
+</details>
+
+---
+
+### Challenge 5 [Spot the Bug — AJV Schema Mismatch]
+
+```typescript
+// JSON Schema for citation
+const schema = {
+  type: 'object',
+  properties: {
+    citationId: { type: 'string' },
+    amount: { type: 'number' },
+    status: { type: 'string' },
+  },
+  required: ['citationId', 'amount', 'status']
+};
+
+// API returns:
+const body = { citationId: 'CIT-001', amount: '150.00', status: 'PENDING' };
+// amount is a string "150.00" — not a number!
+
+const validate = ajv.compile(schema);
+const valid = validate(body);
+expect(valid).toBe(true);  // ← What happens?
+```
+
+Does the test pass or fail? Why does this matter for SDET work?
+
+<details><summary>Answer</summary>
+
+**The test FAILS** — `valid` is `false`.
+
+AJV's `{ type: 'number' }` strictly rejects the string `"150.00"`. The validate errors array will contain: `"amount must be number"`.
+
+**Why this matters**: APIs sometimes change a field's data type between versions (e.g., `amount` changes from `number` to `string` to support arbitrary precision). Without schema validation, a test like `expect(body.amount).toBeGreaterThan(100)` would fail with `TypeError: Cannot compare string with number` — a confusing error far removed from the root cause.
+
+Schema validation catches **contract breaking at the field-type level** and produces a clear error: `"amount must be number"`.
+
+**The fix**: either enable AJV's `coerceTypes: true` option (not recommended for strict testing), or alert the team that the API broke the type contract.
+
 </details>
 
 ---

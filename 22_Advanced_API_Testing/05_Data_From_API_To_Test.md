@@ -1,16 +1,16 @@
-# 05. Data From API To Test — The Bridge Pattern
+﻿# 05. Data From API To Test â€” The Bridge Pattern
 
-**Navigation**: [← Previous: APIUtils & Factory Pattern](04_API_Utils_Factory_Pattern.md) | [Index](../00_MASTER_INDEX.md) | [Next: DB Testing SQL Bridge →](06_DB_Testing_SQL_Bridge.md)
+**Navigation**: [â† Previous: APIUtils & Factory Pattern](04_API_Utils_Factory_Pattern.md) | [Index](../00_MASTER_INDEX.md) | [Next: DB Testing SQL Bridge â†’](06_DB_Testing_SQL_Bridge.md)
 
 **Cross-links:**
-- [`21_SDET/07_test_step_E2E_Architecture.md`](../21_SDET_Playwright_Automation/07_test_step_E2E_Architecture.md) — Data Accumulator pattern in E2E tests
-- [`17_TypeScript/02_TS_Advanced_Types.md`](../17_TypeScript/02_TS_Advanced_Types.md) — Typed interfaces for response bodies
+- [`21_SDET/07_test_step_E2E_Architecture.md`](../21_SDET_Playwright_Automation/07_test_step_E2E_Architecture.md) â€” Data Accumulator pattern in E2E tests
+- [`17_TypeScript/02_TS_Advanced_Types.md`](../17_TypeScript/02_TS_Advanced_Types.md) â€” Typed interfaces for response bodies
 
 ---
 
-## 5W1H — Why This Chapter?
+## 5W1H â€” Why This Chapter?
 
-- **WHAT**: How to correctly extract data from an API response, store it in a typed TypeScript structure, and use it in subsequent test steps — including UI interactions, further API calls, and DB verification.
+- **WHAT**: How to correctly extract data from an API response, store it in a typed TypeScript structure, and use it in subsequent test steps â€” including UI interactions, further API calls, and DB verification.
 - **WHY**: The most common SDET mistake is accessing response data unsafely (no type checking, no null guards) or storing it in variables that get corrupted by parallel test execution. Both create flaky tests that are hard to debug.
 - **WHO**: SDETs who fetch data from APIs in early test steps and need it available later in the same test.
 - **WHEN**: In any test with more than 2 steps where Step N uses data from Step 1.
@@ -18,10 +18,10 @@
 
 ---
 
-## 1. The Core Problem — Unsafe Data Extraction
+## 1. The Core Problem â€” Unsafe Data Extraction
 
 ```typescript
-// ❌ DANGEROUS — no type safety, no null protection
+// âŒ DANGEROUS â€” no type safety, no null protection
 const response = await request.post('/api/citations/search', { data: payload });
 const body = await response.json(); // type: any
 
@@ -32,7 +32,7 @@ const citationId = body.citations[0].citationId;
 ```
 
 ```typescript
-// ✅ SAFE — typed + null-guarded
+// âœ… SAFE â€” typed + null-guarded
 interface Citation {
   citationId: string;
   status: 'PAID' | 'PENDING' | 'OVERDUE' | 'DISPUTED';
@@ -50,19 +50,19 @@ interface CitationSearchResponse {
 
 const response = await request.post('/api/citations/search', { data: payload });
 const body: CitationSearchResponse = await response.json();
-//           ↑ TypeScript now enforces the shape
+//           â†‘ TypeScript now enforces the shape
 
 const citationId = body?.citations?.[0]?.citationId ?? null;
-// Optional chaining: returns null if any part is missing — never throws
+// Optional chaining: returns null if any part is missing â€” never throws
 // TypeScript knows citationId is: string | null
 ```
 
 ---
 
-## 2. Your `getCitationIdFromDateRangeResponse` — Full Analysis
+## 2. Your `getCitationIdFromDateRangeResponse` â€” Full Analysis
 
 ```typescript
-// Your function — analysed:
+// Your function â€” analysed:
 export async function getCitationIdFromDateRangeResponse(
   request: APIRequestContext,
   daysBefore: number,
@@ -109,7 +109,7 @@ export async function getFirstCitationFromDateRange(
 // Add a filter parameter:
 export async function getFirstCitationByStatus(
   request: APIRequestContext,
-  status: Citation['status'], // ← TypeScript: only 'PAID' | 'PENDING' | 'OVERDUE' | 'DISPUTED'
+  status: Citation['status'], // â† TypeScript: only 'PAID' | 'PENDING' | 'OVERDUE' | 'DISPUTED'
   daysBefore = 30,
   daysAfter = 0,
   testInfo?: TestInfo
@@ -121,14 +121,14 @@ export async function getFirstCitationByStatus(
 
 ---
 
-## 3. Type-Safe Response Interfaces — Build These First
+## 3. Type-Safe Response Interfaces â€” Build These First
 
 Before writing any API function, define the TypeScript interface. This forces you to understand the API contract.
 
 ```typescript
 // interfaces/ApiResponses.ts
 
-// ─── Citation API ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Citation API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface Citation {
   citationId: string;
   status: 'PAID' | 'PENDING' | 'OVERDUE' | 'DISPUTED';
@@ -137,7 +137,7 @@ export interface Citation {
   vehicleId: string;
   issueDate: string;          // ISO date string: '2024-01-15'
   dueDate: string;
-  history?: CitationHistoryEntry[];  // optional — not always returned
+  history?: CitationHistoryEntry[];  // optional â€” not always returned
 }
 
 export interface CitationHistoryEntry {
@@ -155,7 +155,7 @@ export interface CitationSearchResponse {
   hasNextPage: boolean;
 }
 
-// ─── Customer API ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Customer API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface Customer {
   customerId: string;
   firstName: string;
@@ -173,7 +173,7 @@ export interface Address {
   zip: string;
 }
 
-// ─── Complex nested response (real enterprise shape) ───────────────────────
+// â”€â”€â”€ Complex nested response (real enterprise shape) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export interface OrderDetailsResponse {
   order: {
     orderId: string;
@@ -211,21 +211,21 @@ Real enterprise APIs return deeply nested objects. Here is how to extract safely
 // Given this complex response:
 const body: OrderDetailsResponse = await response.json();
 
-// ❌ UNSAFE chains:
+// âŒ UNSAFE chains:
 const customerId = body.order.customer.customerId;              // throws if order is null
 const firstPaymentAmount = body.order.payments[0].amount;      // throws if payments is empty
 const firstDiscount = body.order.lineItems[0].discounts[0].code; // throws at MULTIPLE points
 
-// ✅ SAFE with optional chaining:
+// âœ… SAFE with optional chaining:
 const customerId = body?.order?.customer?.customerId ?? 'UNKNOWN';
 const firstPaymentAmount = body?.order?.payments?.[0]?.amount ?? 0;
 const firstDiscount = body?.order?.lineItems?.[0]?.discounts?.[0]?.code ?? 'NO_DISCOUNT';
 
-// ✅ Extracting arrays with type safety:
+// âœ… Extracting arrays with type safety:
 const allPaymentAmounts: number[] = body?.order?.payments?.map(p => p.amount) ?? [];
 const paidItems = body?.order?.lineItems?.filter(item => item.quantity > 0) ?? [];
 
-// ✅ Using find() to locate a specific item:
+// âœ… Using find() to locate a specific item:
 const bankTransfer = body?.order?.payments?.find(p => p.method === 'BANK_TRANSFER');
 if (bankTransfer) {
   console.log(`Bank transfer amount: ${bankTransfer.amount}`);
@@ -234,7 +234,7 @@ if (bankTransfer) {
 
 ---
 
-## 5. Storing Multiple IDs — Working With Arrays
+## 5. Storing Multiple IDs â€” Working With Arrays
 
 Sometimes you need to fetch multiple records and use each one in a test step:
 
@@ -286,7 +286,7 @@ await test.step('Verify paid citation count in UI summary', async () => {
 
 ---
 
-## 6. The API → UI Bridge — Using API Data in UI Steps
+## 6. The API â†’ UI Bridge â€” Using API Data in UI Steps
 
 The most common E2E pattern: **get data from API, use it in the UI, verify the UI matches the API**.
 
@@ -332,7 +332,7 @@ await test.step('Read citation details from UI result row', async () => {
   data.uiCitationAmount = await resultRow.locator('[data-col="amount"]').textContent();
 });
 
-// Step 6: Cross-verify — API data matches UI data
+// Step 6: Cross-verify â€” API data matches UI data
 await test.step('Verify UI displays data matching the API response', async () => {
   expect(data.uiCitationStatus?.trim()).toBe(data.citation!.status);
   expect(data.uiCitationAmount?.replace(/[^0-9.]/g, '')).toBe(
@@ -343,19 +343,19 @@ await test.step('Verify UI displays data matching the API response', async () =>
 
 ---
 
-## 7. Parameterised Tests — Running Against Multiple APIs
+## 7. Parameterised Tests â€” Running Against Multiple APIs
 
 Your codebase tests the same citation search against 3 APIs (IVR, ASD, NW). Use `test.each()`:
 
 ```typescript
-// test.each — run the same test with different parameters
+// test.each â€” run the same test with different parameters
 const apiTestCases = [
   { apiType: ApiType.IVRAPI, endpoint: endpoints.IVRAPI_CITATION_SEARCH, name: 'IVR API' },
   { apiType: ApiType.ASDAPI, endpoint: endpoints.ASDAPI_CITATION_SEARCH, name: 'ASD API' },
   { apiType: ApiType.NWAPI,  endpoint: endpoints.NWAPI_CITATION_SEARCH,  name: 'NW API' },
 ] as const;
 
-test.describe('Citation search — all API endpoints', () => {
+test.describe('Citation search â€” all API endpoints', () => {
 
   for (const { apiType, endpoint, name } of apiTestCases) {
     test(`Citation search via ${name}`, async ({ request, account }) => {
@@ -392,7 +392,7 @@ export function validateCitationResponse(body: unknown): body is CitationSearchR
   const b = body as Record<string, unknown>;
   return Array.isArray(b.citations) && typeof b.totalCount === 'number';
 }
-// Usage: if (validateCitationResponse(body)) { body.citations... } ← typed!
+// Usage: if (validateCitationResponse(body)) { body.citations... } â† typed!
 
 // Deep validation with Playwright's expect
 export async function assertCitationSearchResponse(
@@ -416,7 +416,7 @@ export async function assertCitationSearchResponse(
 
 ---
 
-## 🏋️ Practice Challenges
+## ðŸ‹ï¸ Practice Challenges
 
 **Challenge 1 (Optional Chaining):** An API sometimes returns:
 - `{ data: { orders: [{ id: 'ORD-1', payment: { amount: 150 } }] } }`
@@ -430,7 +430,7 @@ Write a single safe expression to extract the first order's payment amount, retu
 ```typescript
 const amount = body?.data?.orders?.[0]?.payment?.amount ?? 0;
 ```
-The `?.` handles null/undefined at each step. The `??` provides the default when the final result is null or undefined (including when `amount` is `0`, use `?? 0` carefully — `??` only triggers on null/undefined, not on `0`, which is correct here since `0` is a valid amount in some cases, but `0` as a default makes sense if amount is absent).
+The `?.` handles null/undefined at each step. The `??` provides the default when the final result is null or undefined (including when `amount` is `0`, use `?? 0` carefully â€” `??` only triggers on null/undefined, not on `0`, which is correct here since `0` is a valid amount in some cases, but `0` as a default makes sense if amount is absent).
 </details>
 
 **Challenge 2 (Type Safety):** Your function signature is:
@@ -449,7 +449,7 @@ async function getCitation(
   api: ApiType,              // enum: IVRAPI | ASDAPI | NWAPI
   citationId: string,
   testInfo?: TestInfo        // optional
-): Promise<Citation | null> { // returns typed Citation or null — never any
+): Promise<Citation | null> { // returns typed Citation or null â€” never any
   // implementation...
 }
 ```
@@ -463,11 +463,11 @@ const citationIds = ['CIT-001', 'CIT-002', 'CIT-003', 'CIT-004', 'CIT-005'];
 
 for (const citationId of citationIds) {
   test(`PAID status displays correctly for ${citationId}`, async ({ page, request }) => {
-    // 1. Fetch from API — verify it's PAID
+    // 1. Fetch from API â€” verify it's PAID
     const body = await fetchCitationDetails(request, ApiType.IVRAPI, citationId);
     expect(body?.citations?.[0]?.status).toBe('PAID');
     
-    // 2. Search in UI — verify UI shows PAID
+    // 2. Search in UI â€” verify UI shows PAID
     await page.fill('#citationSearch', citationId);
     await page.click('#searchButton');
     await expect(page.locator('[data-col="status"]').first()).toHaveText('PAID');
@@ -475,6 +475,112 @@ for (const citationId of citationIds) {
 }
 // Creates 5 named tests, can run in parallel
 ```
+</details>
+
+
+---
+
+### Challenge 4 [Spot the Bug — Shared Mutable State Between Tests]
+
+```typescript
+// fixtures/citations.fixture.ts
+let citationId: string;  // ← module-level mutable state
+
+export const test = base.extend({
+  createdCitation: async ({ request }, use) => {
+    const res = await request.post('/api/citations', { data: { amount: 100 } });
+    citationId = (await res.json()).id;  // stored in module-level var
+    await use(citationId);
+  }
+});
+
+// Worker 1: test A sets citationId = 'CIT-001'
+// Worker 2: test B simultaneously sets citationId = 'CIT-002'
+// Worker 1: test A now reads citationId and gets 'CIT-002' ← WRONG
+```
+
+Why does this cause subtle data corruption in parallel runs, and what is the correct fix?
+
+<details><summary>Answer</summary>
+
+**Root cause**: `citationId` is a module-level variable. In a Playwright multi-worker setup, Node.js workers are separate processes so the module variable isn't actually shared across *workers*. However, if tests within the **same worker** are running sequentially and the fixture doesn't clean up properly, subsequent tests in that worker inherit the previous test's `citationId`.
+
+More critically: this pattern breaks if `createdCitation` is called twice in the same test or fixture chain — the second call silently overwrites `citationId`.
+
+**Fix**: Store the fixture data inside the fixture closure — never in module-level mutable state:
+```typescript
+export const test = base.extend<{ createdCitation: string }>({
+  createdCitation: async ({ request }, use) => {
+    const res = await request.post('/api/citations', { data: { amount: 100 } });
+    const { id } = await res.json();
+    // 'id' is scoped to this fixture invocation — safe, isolated, parallel-proof
+    await use(id);
+    // Teardown: clean up after ourselves
+    await request.delete(`/api/citations/${id}`);
+  }
+});
+```
+
+Each test gets its own fresh `id` in its own fixture scope. No mutation, no leakage.
+
+</details>
+
+---
+
+### Challenge 5 [MCQ — Data Accumulator Pattern]
+
+You are writing a multi-step E2E test:
+1. Create a customer via POST `/api/customers` → get `customerId`
+2. Create a citation for that customer via POST `/api/citations` → get `citationId`
+3. Process payment via POST `/api/payments` → need both `customerId` + `citationId`
+4. Verify notification via GET `/api/notifications?userId=X` → need `customerId`
+
+What is the cleanest way to pass `customerId` and `citationId` through all 4 steps?
+
+A) Use `let` variables declared at the top of the test function and mutate them in each step.  
+B) Chain Promises and pass data through `.then()` callbacks.  
+C) Use a typed accumulator object declared once and progressively populated inside the test body.  
+D) Store them in `process.env` so all steps can access them.
+
+<details><summary>Answer</summary>
+
+**C** — A typed accumulator object:
+
+```typescript
+test('Full citation payment flow', async ({ request }) => {
+  // Accumulator: typed, mutable within this test scope only
+  const testData: {
+    customerId?: string;
+    citationId?: string;
+    paymentRef?: string;
+  } = {};
+
+  // Step 1
+  const customerRes = await request.post('/api/customers', { data: { name: 'Test User' } });
+  testData.customerId = (await customerRes.json()).id;
+
+  // Step 2
+  const citationRes = await request.post('/api/citations', {
+    data: { customerId: testData.customerId, amount: 150 }
+  });
+  testData.citationId = (await citationRes.json()).id;
+
+  // Step 3
+  const paymentRes = await request.post('/api/payments', {
+    data: { citationId: testData.citationId, amount: 150 }
+  });
+  testData.paymentRef = (await paymentRes.json()).reference;
+
+  // Step 4 — verify
+  const notifRes = await request.get(`/api/notifications?userId=${testData.customerId}`);
+  const body = await notifRes.json();
+  expect(body.notifications.some((n: any) => n.reference === testData.paymentRef)).toBe(true);
+});
+```
+
+Why not A? `let` works but is syntactically noisier and doesn't type-check the shape of accumulated data.  
+Why not D? `process.env` is global, not test-scoped — it leaks between parallel workers.
+
 </details>
 
 ---

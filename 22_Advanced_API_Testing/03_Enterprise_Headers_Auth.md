@@ -1,10 +1,10 @@
-# 03. Enterprise Headers, Auth, and Interception
+﻿# 03. Enterprise Headers, Auth, and Interception
 
-**Navigation**: [← Previous: Complex JSON & SOAP](02_Complex_JSON_and_SOAP.md) | [Index](../00_MASTER_INDEX.md)
+**Navigation**: [â† Previous: Complex JSON & SOAP](02_Complex_JSON_and_SOAP.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
-## 5W1H — Why This Chapter?
+## 5W1H â€” Why This Chapter?
 
 * **WHAT**: Handling complex HTTP headers, OAuth2 flows, and intercepting network traffic using Playwright.
 * **WHY**: Enterprise APIs (Dynamics 365, Salesforce) reject your requests immediately if you don't provide the exact combination of Authentication tokens, Accept headers, and Correlation IDs. Furthermore, sometimes you need to mock an API response to test a UI edge case.
@@ -123,7 +123,7 @@ test('UI should show an error banner when the API fails', async ({ page }) => {
 
 ---
 
-## 🏋️ Practice & Interview Questions
+## ðŸ‹ï¸ Practice & Interview Questions
 
 **Q1.** What is the difference between the `Accept` header and the `Content-Type` header?
 <details><summary>Answer</summary>
@@ -141,6 +141,181 @@ UI logins are slow, repetitive, and susceptible to flakiness caused by network l
 <details><summary>Answer</summary>
 
 Use Playwright's network interception (`page.route()`). Intercept the search API call and use `route.fulfill()` to return a `200 OK` status with an empty array `[]` as the JSON body. Then assert that the "No Results Found" graphic becomes visible in the UI.
+</details>
+
+
+---
+
+## 🏋️ Practice Challenges
+
+### Challenge 1 [MCQ] — OAuth2 Token vs Session Cookie
+
+Your enterprise system supports two auth mechanisms: OAuth2 Bearer tokens for machine-to-machine API calls, and Session cookies for browser-based UI sessions. In Playwright tests, which should you use for API request fixtures vs browser page fixtures?
+
+A) Bearer tokens for both — cookies are legacy  
+B) Session cookies for both — Playwright's `storageState` is optimized for cookies  
+C) Bearer tokens in `request` fixtures; `storageState` (cookies) in `page` fixtures  
+D) Always re-authenticate per test regardless of mechanism
+
+<details><summary>Answer</summary>
+
+**C** — Use the right mechanism for the right layer:
+
+- **API `request` fixtures**: use Bearer tokens. They are stateless, easily injected via `Authorization: Bearer ${token}`, and work across workers without cookie domain concerns.
+- **Browser `page` fixtures**: use `storageState` to inject the session cookie. This allows the browser to skip the login page entirely.
+
+```typescript
+// playwright.config.ts
+projects: [
+  { name: 'api-tests',    use: { extraHTTPHeaders: { Authorization: `Bearer ${token}` } } },
+  { name: 'browser-tests', use: { storageState: 'auth.json' } },   // session cookie injected
+]
+```
+
+Mixing them creates maintenance problems: if you use cookies for API calls, you must manage cookie expiry and domain scoping; if you use Bearer tokens in the browser, you need custom headers on every navigation.
+
+</details>
+
+---
+
+### Challenge 2 [Spot the Bug — `x-correlation-id` Hardcoded]
+
+```typescript
+const response = await request.get('/api/citations', {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'x-correlation-id': 'TEST-12345',   // ← hardcoded
+    'Accept': 'application/json',
+  }
+});
+```
+
+Your CI runs 8 parallel workers. Each worker sends this request. What problem does the hardcoded correlation ID cause in your Splunk/Datadog logs?
+
+<details><summary>Answer</summary>
+
+**All 8 parallel test workers send the same `x-correlation-id: TEST-12345`**. In Splunk, when you search for `x-correlation-id=TEST-12345` to debug a failure, you get log entries from all 8 workers interleaved — making it impossible to trace which specific worker's request caused the failure.
+
+**Fix**: generate a unique ID per test run:
+```typescript
+import { randomUUID } from 'crypto';
+
+const response = await request.get('/api/citations', {
+  headers: {
+    'Authorization': `Bearer ${token}`,
+    'x-correlation-id': `test-${randomUUID()}`,  // unique per request
+    'Accept': 'application/json',
+  }
+});
+```
+
+Better still, inject the test title into the correlation ID so the log entry is self-describing:
+```typescript
+'x-correlation-id': `test-${testInfo.title.replace(/\s+/g, '-')}-${Date.now()}`
+```
+
+</details>
+
+---
+
+### Challenge 3 [Write It Yourself — Route Interception for Token Expiry]
+
+Write a Playwright test that simulates an expired Bearer token scenario: intercept any request to `**/api/**`, respond with a `401 Unauthorized`, and assert that the UI shows a `"Session expired. Please log in again."` message.
+
+<details><summary>Answer</summary>
+
+```typescript
+test('UI shows session-expired message on 401', async ({ page }) => {
+  // Intercept ALL requests to the API and return 401
+  await page.route('**/api/**', async (route) => {
+    await route.fulfill({
+      status: 401,
+      contentType: 'application/json',
+      body: JSON.stringify({ error: 'TOKEN_EXPIRED', message: 'Token has expired' })
+    });
+  });
+
+  // Navigate — the page will fire API calls which all return 401
+  await page.goto('/dashboard');
+
+  // Assert the UI shows the correct user-facing error
+  await expect(
+    page.getByText('Session expired. Please log in again.')
+  ).toBeVisible({ timeout: 5000 });
+
+  // Assert that the page does NOT show any data (since all API calls failed)
+  await expect(page.locator('.citation-table')).not.toBeVisible();
+});
+```
+
+**Why `page.route` pattern over faking the token?**  
+Generating an intentionally expired JWT is complex (requires time manipulation). Intercepting at the network layer is simpler, faster, and tests exactly what you want: the UI's response to a 401, regardless of HOW it occurred.
+
+</details>
+
+---
+
+### Challenge 4 [MCQ] — `page.route` vs `page.unroute`
+
+After using `page.route('**/api/**', handler)` in a test to mock API responses, the next test in the same worker fails because the API mock is still active. Why?
+
+A) `page.route` handlers persist across tests by default when tests share a browser context  
+B) `page.route` handlers are automatically cleared between tests in isolated contexts  
+C) `page.route` only affects the first matching request  
+D) Workers share route handlers globally
+
+<details><summary>Answer</summary>
+
+**B is the expected behavior** when using Playwright's built-in `page` fixture — each test gets an isolated `BrowserContext` and `Page`, so routes do NOT persist.
+
+**But if you're seeing persistence**, the likely cause is that tests are inadvertently sharing a `BrowserContext` (e.g., the team manually called `browser.newPage()` instead of using the `page` fixture, placing both pages in the same context).
+
+The fix for manual context sharing:
+```typescript
+// Option 1: Always use the page fixture (recommended)
+test('...', async ({ page }) => { /* isolated context */ });
+
+// Option 2: If using manual contexts, unroute explicitly after the test
+await page.unroute('**/api/**', handler);
+// OR clear all routes:
+await page.unrouteAll();
+```
+
+</details>
+
+---
+
+### Challenge 5 [Architecture — Service-to-Service Auth]
+
+Your test suite needs to call Service A, which internally calls Service B. Service B is authenticated with mTLS (mutual TLS client certificates). The SDET doesn't have access to the client certificate. What are the two architecturally sound approaches?
+
+<details><summary>Answer</summary>
+
+**Approach 1 — Test at the Service A boundary only (recommended for integration tests)**
+
+Don't test through Service A → B directly. In integration tests, mock Service B at the network level:
+```typescript
+await page.route('**/service-b/**', route =>
+  route.fulfill({ status: 200, body: JSON.stringify(serviceBMockResponse) })
+);
+```
+Test what Service A does with Service B's response — without needing the mTLS cert.
+
+**Approach 2 — Use a service account with elevated access (for E2E/contract tests)**
+
+In staging, provision a dedicated service account that is whitelisted to bypass or hold the mTLS cert. The SDET team never handles the cert directly; the DevOps/platform team stores it in CI secrets and injects it:
+
+```typescript
+// playwright.config.ts (injected by CI)
+clientCertificates: [{
+  origin: 'https://service-b.internal',
+  pfxPath: process.env.CLIENT_CERT_PFX_PATH!,
+  passphrase: process.env.CLIENT_CERT_PASSPHRASE!,
+}]
+```
+
+**SDE principle**: SDETs should not own security credentials. They should consume them via CI secrets injection. mTLS cert management is a platform/DevSecOps concern.
+
 </details>
 
 ---

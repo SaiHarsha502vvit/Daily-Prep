@@ -1,9 +1,9 @@
-# 32. SDET Interview Preparation — Framework Design, Technical Questions & Behavioral
+﻿# 32. SDET Interview Preparation â€” Framework Design, Technical Questions & Behavioral
 
-**Navigation**: [← Chapter 31: API Mocking](31_API_Mocking_page_route.md) | [Index](00_INDEX.md)
+**Navigation**: [â† Chapter 31: API Mocking](31_API_Mocking_page_route.md) | [Index](00_INDEX.md)
 
 **Cross-links:**
-- All chapters — this chapter synthesises the entire curriculum into interview-ready answers
+- All chapters â€” this chapter synthesises the entire curriculum into interview-ready answers
 
 ---
 
@@ -20,19 +20,19 @@ This chapter gives you the exact answer framework for each type.
 
 ---
 
-## SECTION 1 — Framework Design Questions
+## SECTION 1 â€” Framework Design Questions
 
 ### "Design an automation framework for a 5-application enterprise CRM system"
 
 This is the most common SDET system design question. Use the **LADDER** framework:
 
 ```
-L — Layer structure
-A — Authentication strategy
-D — Data management
-D — Driver / browser configuration
-E — Error handling and reporting
-R — Running in CI
+L â€” Layer structure
+A â€” Authentication strategy
+D â€” Data management
+D â€” Driver / browser configuration
+E â€” Error handling and reporting
+R â€” Running in CI
 ```
 
 **Full answer:**
@@ -40,17 +40,17 @@ R — Running in CI
 ```
 Layer Structure:
   tests/
-  ├── fixtures/         → test.extend, account, clients
-  ├── pages/            → POM files per page, component POMs
-  ├── clients/          → one client class per API service
-  ├── config/           → environments.ts, endpoints.ts
-  ├── data/
-  │   ├── headers/      → HeadersCrm.ts, HeadersNotifications.ts
-  │   ├── payloads/     → PayloadsCitation.ts, PayloadsUser.ts
-  │   └── enums/        → CitationStatus, UserRole
-  ├── types/            → API response interfaces, DB row types
-  ├── utils/            → TestId, DateUtils, APIUtils, TestDataManager
-  └── specs/            → test files, organised by feature area
+  â”œâ”€â”€ fixtures/         â†’ test.extend, account, clients
+  â”œâ”€â”€ pages/            â†’ POM files per page, component POMs
+  â”œâ”€â”€ clients/          â†’ one client class per API service
+  â”œâ”€â”€ config/           â†’ environments.ts, endpoints.ts
+  â”œâ”€â”€ data/
+  â”‚   â”œâ”€â”€ headers/      â†’ HeadersCrm.ts, HeadersNotifications.ts
+  â”‚   â”œâ”€â”€ payloads/     â†’ PayloadsCitation.ts, PayloadsUser.ts
+  â”‚   â””â”€â”€ enums/        â†’ CitationStatus, UserRole
+  â”œâ”€â”€ types/            â†’ API response interfaces, DB row types
+  â”œâ”€â”€ utils/            â†’ TestId, DateUtils, APIUtils, TestDataManager
+  â””â”€â”€ specs/            â†’ test files, organised by feature area
 
 Authentication:
   - globalSetup runs once, logs in per role, saves storageState
@@ -58,7 +58,7 @@ Authentication:
   - Token refresh: worker fixture checks expiry before use
 
 Data Management:
-  - Every test creates its own data via API (not via UI — faster)
+  - Every test creates its own data via API (not via UI â€” faster)
   - TestDataManager tracks and cleans up in try/finally
   - Unique IDs: AUTO-timestamp-random prevents parallel collision
   - Strategy 2 (worker-scoped) for expensive reference data
@@ -93,42 +93,42 @@ CI:
 Strategy depends on whether they share a domain:
 
 Same domain SSO (e.g., all *.company.com):
-  → Single storageState includes the cross-domain cookie
-  → Navigate to any sub-app → already authenticated
-  → One globalSetup per role
+  â†’ Single storageState includes the cross-domain cookie
+  â†’ Navigate to any sub-app â†’ already authenticated
+  â†’ One globalSetup per role
 
 Different domain SSO (e.g., company.com + partner.org):
-  → Dual browser context (Ch13)
-  → adminContext.newContext({ storageState: 'admin-state.json' })
-  → customerContext.newContext({ storageState: 'customer-state.json' })
-  → Each context holds its own cookie store
+  â†’ Dual browser context (Ch13)
+  â†’ adminContext.newContext({ storageState: 'admin-state.json' })
+  â†’ customerContext.newContext({ storageState: 'customer-state.json' })
+  â†’ Each context holds its own cookie store
 
 OAuth/SAML flows:
-  → globalSetup performs the full OAuth dance once
-  → Saves the resulting session cookies
-  → Tests load the saved state — never see the OAuth redirect
-  → If token expires: worker fixture detects expiry and re-runs the OAuth flow
+  â†’ globalSetup performs the full OAuth dance once
+  â†’ Saves the resulting session cookies
+  â†’ Tests load the saved state â€” never see the OAuth redirect
+  â†’ If token expires: worker fixture detects expiry and re-runs the OAuth flow
 ```
 
 ---
 
-## SECTION 2 — Technical Deep-Dives
+## SECTION 2 â€” Technical Deep-Dives
 
 ### "Why do Playwright locators not query the DOM when created?"
 
 ```
-Locators are lazy — they describe WHERE to find an element, not the element itself.
+Locators are lazy â€” they describe WHERE to find an element, not the element itself.
 page.locator('.ms-DetailsList') creates an object that says:
   "when asked, look for an element matching '.ms-DetailsList'"
 
 The DOM is NOT queried until you call an action:
-  .click()           → queries DOM, waits up to expect.timeout, clicks
-  .fill()            → queries DOM, waits, fills
-  .textContent()     → queries DOM, returns text
-  expect(l).toBeVisible() → retries the query repeatedly until visible or timeout
+  .click()           â†’ queries DOM, waits up to expect.timeout, clicks
+  .fill()            â†’ queries DOM, waits, fills
+  .textContent()     â†’ queries DOM, returns text
+  expect(l).toBeVisible() â†’ retries the query repeatedly until visible or timeout
 
 Why this matters:
-  1. POMs can be constructed before the page loads — locators are just descriptions
+  1. POMs can be constructed before the page loads â€” locators are just descriptions
   2. Locators are never stale (no "stale element reference" like Selenium)
      Each action re-queries the DOM
   3. Multiple calls to .click() on the same locator each query the DOM fresh
@@ -141,8 +141,8 @@ The race:
   Time 0ms:  await page.click('#openInNewTab')
   Time 5ms:  browser fires the 'page' event (new tab opened)
   Time 10ms: await context.waitForEvent('page')
-             ← the event already fired 5ms ago — listener missed it
-             ← waitForEvent hangs until timeout
+             â† the event already fired 5ms ago â€” listener missed it
+             â† waitForEvent hangs until timeout
 
 Why it's a race:
   page.click() is async but the new tab can open before
@@ -164,30 +164,30 @@ Playwright runs tests in parallel across N worker processes.
 By default, each test gets its OWN instance of every fixture (test scope).
 
 With scope: 'worker':
-  The fixture is created ONCE per worker — not once per test.
+  The fixture is created ONCE per worker â€” not once per test.
   All tests in that worker share the same fixture instance.
 
 Example: account fixture (auth token)
-  Without scope: 'worker' — 40 tests = 40 login API calls = ~120 seconds overhead
-  With scope: 'worker'    — 4 workers = 4 login API calls = ~12 seconds overhead
+  Without scope: 'worker' â€” 40 tests = 40 login API calls = ~120 seconds overhead
+  With scope: 'worker'    â€” 4 workers = 4 login API calls = ~12 seconds overhead
 
 When to use worker scope:
-  ✅ Authentication tokens (expensive, safe to share if tests only read)
-  ✅ Pre-created reference data (a company record all tests read from)
-  ✅ HTTP client connections (reuse connection pool)
+  âœ… Authentication tokens (expensive, safe to share if tests only read)
+  âœ… Pre-created reference data (a company record all tests read from)
+  âœ… HTTP client connections (reuse connection pool)
 
 When NOT to use worker scope:
-  ❌ Data that individual tests MODIFY — Test A modifies it, Test B reads stale data
-  ❌ Page objects (page fixture is test-scoped by definition)
+  âŒ Data that individual tests MODIFY â€” Test A modifies it, Test B reads stale data
+  âŒ Page objects (page fixture is test-scoped by definition)
 ```
 
 ---
 
-## SECTION 3 — Behavioral Questions
+## SECTION 3 â€” Behavioral Questions
 
 ### "Tell me about a flaky test you fixed"
 
-**The STAR format (Situation → Task → Action → Result):**
+**The STAR format (Situation â†’ Task â†’ Action â†’ Result):**
 
 ```
 Situation:
@@ -199,14 +199,14 @@ Task:
   "I was asked to investigate and fix it within the sprint."
 
 Action:
-  "I started by collecting evidence — ran it 20 times with trace enabled.
+  "I started by collecting evidence â€” ran it 20 times with trace enabled.
    I opened the Playwright Trace Viewer on a failing run and found that
    at exactly 08.105s, the assertion for status = 'DISPUTED' fired.
    But the PATCH request that changes the status didn't complete until 09.200s.
    A full 1.1 seconds after the assertion.
 
    Diagnosis: Type 1 flakiness (timing). The test was waiting for the D365 spinner
-   to hide, then immediately asserting on the field value — but D365 hides the
+   to hide, then immediately asserting on the field value â€” but D365 hides the
    spinner when the save request FIRES, not when it COMPLETES.
 
    Fix: I replaced:
@@ -216,12 +216,12 @@ Action:
      await expect(spinner).toHaveCount(0, { timeout: 45000 })
      await expect(statusField).toHaveText('DISPUTED', { timeout: 30000 })
 
-   The second expect() retries for 30 seconds — the 1.1 second gap is
+   The second expect() retries for 30 seconds â€” the 1.1 second gap is
    well within that window."
 
 Result:
   "After the fix, the test ran 200 times without a single failure across 3 days of CI.
-   I also documented the pattern in our internal wiki — 'D365 two-phase render' —
+   I also documented the pattern in our internal wiki â€” 'D365 two-phase render' â€”
    and a junior SDET found and fixed the same pattern in 4 other tests the same week."
 ```
 
@@ -232,7 +232,7 @@ Result:
 ```
 Situation:
   "A sprint was ending and the product owner wanted to mark a feature
-   'done' — the manual test had passed. But our automated regression
+   'done' â€” the manual test had passed. But our automated regression
    suite wasn't passing for this feature."
 
 Task:
@@ -257,7 +257,7 @@ Result:
 
 ---
 
-## SECTION 4 — Live Coding Challenges
+## SECTION 4 â€” Live Coding Challenges
 
 ### Challenge: "Write a POM for this login form in 10 minutes"
 
@@ -280,7 +280,7 @@ import { type Page, type Locator, expect } from '@playwright/test';
 export class LoginPage {
   readonly page: Page;
 
-  // All locators declared as readonly — lazy, no DOM queries in constructor
+  // All locators declared as readonly â€” lazy, no DOM queries in constructor
   readonly usernameInput: Locator;
   readonly passwordInput: Locator;
   readonly loginButton: Locator;
@@ -289,7 +289,7 @@ export class LoginPage {
 
   constructor(page: Page) {
     this.page = page;
-    // Use stable selectors — ID is most stable
+    // Use stable selectors â€” ID is most stable
     this.usernameInput    = page.locator('#username');
     this.passwordInput    = page.locator('#password');
     this.loginButton      = page.locator('#loginBtn');
@@ -337,14 +337,14 @@ await expect(page).toHaveURL('/dashboard');
 ### Challenge: "Find the bug in this fixture"
 
 ```typescript
-// Given — what's wrong?
+// Given â€” what's wrong?
 export const test = base.extend({
   citationData: async ({ request }, use) => {
     const response = await request.post('/api/v2/citations', {
       data: { customerId: 'USR-001', amount: 150, status: 'PENDING' }
     });
     const citation = await response.json();
-    use(citation);   // ← bug
+    use(citation);   // â† bug
     await request.delete(`/api/v2/citations/${citation.citationId}`);
   }
 });
@@ -359,11 +359,11 @@ Three bugs:
    the teardown (delete) fires before the test has a chance to use the fixture.
    Fix: await use(citation)
 
-2. No error handling on the delete — if the test fails and the citation
+2. No error handling on the delete â€” if the test fails and the citation
    is in a non-deleteable state, the delete throws and masks the real test failure.
    Fix: wrap delete in try/catch
 
-3. No auth headers on the API calls — the request object needs the Bearer token
+3. No auth headers on the API calls â€” the request object needs the Bearer token
    from the account fixture. Without it, all calls return 401.
    Fix: inject account fixture, pass token in headers
 
@@ -374,7 +374,7 @@ Fixed version:
       data: { customerId: account.userId, amount: 150, status: 'PENDING' }
     });
     const citation = await response.json();
-    await use(citation);   // ← awaited
+    await use(citation);   // â† awaited
     try {
       await request.delete(`/api/v2/citations/${citation.citationId}`,
         { headers: { 'Authorization': `Bearer ${account.accessToken}` } }
@@ -387,7 +387,7 @@ Fixed version:
 
 ---
 
-## SECTION 5 — Questions to Ask the Interviewer
+## SECTION 5 â€” Questions to Ask the Interviewer
 
 These show you think at a senior level:
 
@@ -418,44 +418,44 @@ Team:
   "Is there a test framework documentation site, or is knowledge tribal?"
 ```
 
-**Why these questions matter:** They show you've thought beyond execution to framework ownership, team process, and long-term maintenance — which is what separates SDET from manual QA.
+**Why these questions matter:** They show you've thought beyond execution to framework ownership, team process, and long-term maintenance â€” which is what separates SDET from manual QA.
 
 ---
 
-## Summary Card — Print Before Any Interview
+## Summary Card â€” Print Before Any Interview
 
 ```
 When asked "walk me through your framework":
-  → LADDER: Layer → Auth → Data → Driver → Error → Running in CI
+  â†’ LADDER: Layer â†’ Auth â†’ Data â†’ Driver â†’ Error â†’ Running in CI
 
 When asked "how do you handle parallel test isolation":
-  → TestId unique IDs + TestDataManager + worker-scoped fixtures
+  â†’ TestId unique IDs + TestDataManager + worker-scoped fixtures
 
 When asked "what is a Playwright locator":
-  → Lazy descriptor, queries DOM only at action/assertion time, never stale
+  â†’ Lazy descriptor, queries DOM only at action/assertion time, never stale
 
 When asked "why do POMs initialize before test.step()":
-  → TypeScript closure scope: steps can't access variables from other step closures
+  â†’ TypeScript closure scope: steps can't access variables from other step closures
 
 When asked "how do you fix flaky tests":
-  → Classify (9 types) → Trace Viewer evidence → type-specific fix → 50 repeats
+  â†’ Classify (9 types) â†’ Trace Viewer evidence â†’ type-specific fix â†’ 50 repeats
 
 When asked "when would you mock an API":
-  → Error state testing (401, 500) / empty states / removing third-party flakiness
-  → NOT for integration tests or when backend is what's being validated
+  â†’ Error state testing (401, 500) / empty states / removing third-party flakiness
+  â†’ NOT for integration tests or when backend is what's being validated
 
 When asked "what is the biggest risk in test automation":
-  → False confidence — tests that always pass because they mock the wrong things,
+  â†’ False confidence â€” tests that always pass because they mock the wrong things,
     have insufficient assertions, or test the wrong layer
 ```
 
 ---
 
-## SECTION 6 — DSA Questions SDETs Actually Get Asked
+## SECTION 6 â€” DSA Questions SDETs Actually Get Asked
 
 Companies that hire SDETs at SDE level expect algorithmic coding. These are the patterns that appear most frequently.
 
-### Pattern 1 — Find Missing/Duplicate in Test Data
+### Pattern 1 â€” Find Missing/Duplicate in Test Data
 
 ```
 Problem: Given a list of citation IDs ["CIT-001","CIT-003","CIT-004"], find the missing
@@ -476,11 +476,11 @@ const missing     = findMissingIds(expectedIds, actualIds);
 expect(missing, `These citations are missing from API response: ${missing.join(',')}`).toHaveLength(0);
 
 // Time: O(n)  Space: O(n)
-// Why this instead of nested loops O(n²): test suites with 10,000 records
-// need efficient data comparison — O(n²) becomes 100M operations.
+// Why this instead of nested loops O(nÂ²): test suites with 10,000 records
+// need efficient data comparison â€” O(nÂ²) becomes 100M operations.
 ```
 
-### Pattern 2 — Group/Aggregate Test Results
+### Pattern 2 â€” Group/Aggregate Test Results
 
 ```
 Problem: You have an array of test results [{status:'PASS'}, {status:'FAIL'}, {status:'PASS'}, ...]
@@ -521,7 +521,7 @@ function groupByIterator<T, K extends keyof T>(items: T[], key: K): Record<strin
 }
 ```
 
-### Pattern 3 — Detect Duplicate Records in API Response
+### Pattern 3 â€” Detect Duplicate Records in API Response
 
 ```
 Problem: Verify that GET /api/citations returns no duplicate citation IDs.
@@ -552,7 +552,7 @@ const maxDupe = [...freq.entries()].reduce((max, curr) => curr[1] > max[1] ? cur
 console.log(`Most duplicated: ${maxDupe[0]} appeared ${maxDupe[1]} times`);
 ```
 
-### Pattern 4 — Sliding Window for Performance Metrics
+### Pattern 4 â€” Sliding Window for Performance Metrics
 
 ```
 Problem: Your API tests collect response times. Find the maximum average 
@@ -560,7 +560,7 @@ response time across any consecutive window of K requests.
 ```
 
 ```typescript
-// Sliding window — O(n) time, O(1) space
+// Sliding window â€” O(n) time, O(1) space
 function maxAverageWindow(responseTimes: number[], windowSize: number): number {
   if (windowSize > responseTimes.length) throw new Error('Window too large');
 
@@ -585,7 +585,7 @@ expect(maxAvgRt, 'Worst 10-request average must be under 2000ms').toBeLessThan(2
 
 ---
 
-## SECTION 7 — More Live Coding Challenges
+## SECTION 7 â€” More Live Coding Challenges
 
 ### Challenge: "Write a custom `expect.extend` matcher"
 
@@ -593,14 +593,14 @@ expect(maxAvgRt, 'Worst 10-request average must be under 2000ms').toBeLessThan(2
 // Scenario: You want to assert that an API response looks like a valid citation.
 // You write this assertion in 20+ tests. Extract it as a custom matcher.
 
-// ❌ Duplicated in every test:
+// âŒ Duplicated in every test:
 const citation = await response.json();
 expect(citation.citationId).toMatch(/^CIT-/);
 expect(citation.status).toBeOneOf(['PENDING', 'PAID', 'OVERDUE', 'DISPUTED']);
 expect(citation.amount).toBeGreaterThan(0);
 expect(citation.customerId).toBeTruthy();
 
-// ✅ Custom matcher:
+// âœ… Custom matcher:
 // utils/matchers.ts
 import { expect as baseExpect } from '@playwright/test';
 
@@ -625,7 +625,7 @@ export function createExpect() {
       }
 
       return {
-        message: () => `Citation validation failed:\n${errors.map(e => `  • ${e}`).join('\n')}`,
+        message: () => `Citation validation failed:\n${errors.map(e => `  â€¢ ${e}`).join('\n')}`,
         pass: errors.length === 0,
       };
     },
@@ -634,7 +634,7 @@ export function createExpect() {
 
 export const expect = createExpect();
 
-// Usage in tests — re-export expect from your matchers file:
+// Usage in tests â€” re-export expect from your matchers file:
 import { expect } from '../utils/matchers';
 
 test('Citation API returns valid citation shape', async ({ citationsClient }) => {
@@ -644,9 +644,9 @@ test('Citation API returns valid citation shape', async ({ citationsClient }) =>
 ```
 
 **What makes this answer excellent:**
-1. Returns `{ message, pass }` — required by Playwright's matcher contract
-2. Collects ALL errors (not just the first one) — better failure messages
-3. `message` formats errors clearly — instantly debuggable
+1. Returns `{ message, pass }` â€” required by Playwright's matcher contract
+2. Collects ALL errors (not just the first one) â€” better failure messages
+3. `message` formats errors clearly â€” instantly debuggable
 4. Exportable and reusable across the entire test suite
 
 ---
@@ -718,7 +718,7 @@ const notif = await withRetry(
 
 ---
 
-## SECTION 8 — The SDE Bridge: What SDET Interviews at SDE Level Expect
+## SECTION 8 â€” The SDE Bridge: What SDET Interviews at SDE Level Expect
 
 If you're targeting SDE roles or senior SDET roles at product companies (FAANG-tier, Atlassian, JetBrains, etc.), the bar is higher than "knows Playwright." These are the additional dimensions evaluated:
 
@@ -730,10 +730,10 @@ If you're targeting SDE roles or senior SDET roles at product companies (FAANG-t
 Expected answer components:
 
 1. OWNERSHIP MODEL
-   - Who writes unit tests? → developers (TDD)
-   - Who writes integration tests? → developers + SDETs jointly
-   - Who owns E2E tests? → SDET team owns framework, features teams write tests
-   - Who reviews test quality? → SDET team in PRs
+   - Who writes unit tests? â†’ developers (TDD)
+   - Who writes integration tests? â†’ developers + SDETs jointly
+   - Who owns E2E tests? â†’ SDET team owns framework, features teams write tests
+   - Who reviews test quality? â†’ SDET team in PRs
 
 2. TEST DATA AT SCALE
    - Per-test synthetic data: factory functions + unique IDs
@@ -742,9 +742,9 @@ Expected answer components:
    - Data governance: GDPR compliance (no real PII in test data)
 
 3. CI/CD INTEGRATION
-   - PR gate: unit + integration tests (<5 min) — blocks merge
-   - Post-merge: E2E smoke suite (15 min) — alerts on failure
-   - Nightly: full regression suite (60 min, sharded × 8)
+   - PR gate: unit + integration tests (<5 min) â€” blocks merge
+   - Post-merge: E2E smoke suite (15 min) â€” alerts on failure
+   - Nightly: full regression suite (60 min, sharded Ã— 8)
    - Canary deployment: smoke tests against production subset
 
 4. OBSERVABILITY
@@ -774,7 +774,7 @@ What reviewers look for:
    - Dependency Inversion: tests depend on POM interfaces, not implementations
 
 2. TypeScript generics:
-   // Generic API client — not repetitive per resource type
+   // Generic API client â€” not repetitive per resource type
    class ApiClient<TResource> {
      async getById(id: string): Promise<TResource> { ... }
      async create(data: Partial<TResource>): Promise<TResource> { ... }
@@ -796,50 +796,103 @@ What reviewers look for:
 
 ---
 
-## SECTION 9 — The Day-Before Checklist
+## SECTION 9 â€” The Day-Before Checklist
 
 Print this and run through it the evening before any SDET interview:
 
 ```
 FRAMEWORK DESIGN (can you draw the folder structure from memory?):
-  □ tests/fixtures/ → test.extend, account, apiClient fixtures
-  □ tests/pages/ → POM hierarchy (Page → Component)
-  □ tests/clients/ → one class per API service
-  □ tests/data/ → headers, payloads, enums, types
-  □ playwright.config.ts → projects, retries, workers, storageState
+  â–¡ tests/fixtures/ â†’ test.extend, account, apiClient fixtures
+  â–¡ tests/pages/ â†’ POM hierarchy (Page â†’ Component)
+  â–¡ tests/clients/ â†’ one class per API service
+  â–¡ tests/data/ â†’ headers, payloads, enums, types
+  â–¡ playwright.config.ts â†’ projects, retries, workers, storageState
 
 PLAYWRIGHT INTERNALS (can you explain in 30 seconds?):
-  □ Locator vs Element — lazy, never stale, re-queries each time
-  □ BrowserContext — why it's the isolation unit
-  □ CDP — how actions reach the browser (WebSocket messages)
-  □ Auto-retry — how expect(locator).toHaveText() works
-  □ Promise.all — why it's required for race-condition-free new tabs
-  □ Actionability checks — visible + stable + enabled + receives events
+  â–¡ Locator vs Element â€” lazy, never stale, re-queries each time
+  â–¡ BrowserContext â€” why it's the isolation unit
+  â–¡ CDP â€” how actions reach the browser (WebSocket messages)
+  â–¡ Auto-retry â€” how expect(locator).toHaveText() works
+  â–¡ Promise.all â€” why it's required for race-condition-free new tabs
+  â–¡ Actionability checks â€” visible + stable + enabled + receives events
 
 DATA MANAGEMENT (the hardest part in senior interviews):
-  □ Unique test data → timestamp/UUID + worker index
-  □ Test isolation → each test creates/cleans its own data
-  □ Worker-scoped fixtures → account login (once per worker, not per test)
-  □ TestDataManager → try/finally cleanup pattern
+  â–¡ Unique test data â†’ timestamp/UUID + worker index
+  â–¡ Test isolation â†’ each test creates/cleans its own data
+  â–¡ Worker-scoped fixtures â†’ account login (once per worker, not per test)
+  â–¡ TestDataManager â†’ try/finally cleanup pattern
 
-BEHAVIORAL STORY (STAR format — 2 minutes each):
-  □ "I fixed a flaky test" → D365 two-phase render, timing diagnosis, 200 runs proof
-  □ "I pushed back on a deadline" → automated test found real bug, proposed limited rollout
-  □ "I built something from scratch" → describe your best framework contribution
+BEHAVIORAL STORY (STAR format â€” 2 minutes each):
+  â–¡ "I fixed a flaky test" â†’ D365 two-phase render, timing diagnosis, 200 runs proof
+  â–¡ "I pushed back on a deadline" â†’ automated test found real bug, proposed limited rollout
+  â–¡ "I built something from scratch" â†’ describe your best framework contribution
 
 SDE BRIDGE (if targeting SDE-level):
-  □ DSA patterns: Set for O(n) dedup, sliding window for metrics
-  □ TypeScript generics: ApiClient<T>, typed DB rows
-  □ SOLID applied to test code: single responsibility POM, open/closed fixture
-  □ Scale thinking: 50 engineers, CI at scale, flakiness tracking, ownership model
+  â–¡ DSA patterns: Set for O(n) dedup, sliding window for metrics
+  â–¡ TypeScript generics: ApiClient<T>, typed DB rows
+  â–¡ SOLID applied to test code: single responsibility POM, open/closed fixture
+  â–¡ Scale thinking: 50 engineers, CI at scale, flakiness tracking, ownership model
 
 QUESTIONS TO ASK:
-  □ "What is your current pass rate in CI?"
-  □ "How do you handle test data cleanup?"
-  □ "Are SDETs involved in sprint planning?"
-  □ "What's the ratio of automated to manual tests?"
+  â–¡ "What is your current pass rate in CI?"
+  â–¡ "How do you handle test data cleanup?"
+  â–¡ "Are SDETs involved in sprint planning?"
+  â–¡ "What's the ratio of automated to manual tests?"
 ```
 
 ---
-**Navigation**: [← Chapter 31: API Mocking](31_API_Mocking_page_route.md) | [Index](00_INDEX.md)
+**Navigation**: [â† Chapter 31: API Mocking](31_API_Mocking_page_route.md) | [Index](00_INDEX.md)
 
+
+### Challenge: "Diagnose this CI failure without running the suite locally"
+
+The interviewer pastes a failing CI log:
+
+```
+FAIL tests/citations/create-citation.spec.ts
+  ✗ Create citation and verify notification
+    Error: Timeout 30000ms exceeded.
+    =========================== logs ===========================
+    waiting for locator('.notification-badge').toHaveText('1')
+    ============================================================
+    
+Worker process exited with code 1
+```
+
+Walk through exactly how you would diagnose this from the log alone.
+
+<details><summary>Answer</summary>
+
+**Step 1 — What the error means precisely:**  
+`Timeout 30000ms exceeded` on `locator('.notification-badge').toHaveText('1')` means Playwright polled the element for 30 seconds and the text never became `'1'`. The test stepped past the API call, but the UI state didn't update.
+
+**Step 2 — Four root-cause hypotheses, ordered by likelihood:**
+
+| # | Hypothesis | Signal |
+|---|---|---|
+| 1 | Notification is async; the badge updates via WebSocket/polling but the service was slow or dead in CI | Check: was the notifications service healthy in CI? Was the WS connection established? |
+| 2 | Race condition — assertion fires before the badge re-renders (React batching) | Check: does the badge animate? Is there a loading spinner that hides it during update? |
+| 3 | Test data isolation failure — another test left stale badge count of `0` and this test's notification didn't fire | Check: does the test create its own isolated user with a fresh account? |
+| 4 | The `.notification-badge` selector changed in a recent PR | Check: last 24h commits to the frontend |
+
+**Step 3 — What I'd ask the interviewer next:**  
+"Is there a Playwright trace zip attached to this CI run? With the trace I can see the DOM state at every step including the exact millisecond the timeout occurred."
+
+**Step 4 — What the fix looks like:**  
+```typescript
+// Before: fragile — no guard that badge exists before checking text
+await expect(page.locator('.notification-badge')).toHaveText('1');
+
+// After: ensure badge is visible first, THEN check text
+await expect(page.locator('.notification-badge')).toBeVisible();
+await expect(page.locator('.notification-badge')).toHaveText('1');
+// Or, if WebSocket driven, wait for the WS frame first, then assert UI
+```
+
+**The SDE insight the interviewer is looking for:**  
+You read logs systematically, isolate hypotheses by likelihood, know where to find more evidence (trace files), and can propose a targeted fix — rather than saying "I'll re-run it and see."
+
+</details>
+
+---
+**Navigation**: [← Chapter 31: API Mocking](31_API_Mocking_page_route.md) | [Index](00_INDEX.md)
