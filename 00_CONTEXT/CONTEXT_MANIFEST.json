@@ -1,8 +1,8 @@
 ﻿{
     "schemaVersion":  1,
-    "generatedAt":  "2026-05-30T00:22:39.5558060+05:30",
+    "generatedAt":  "2026-05-30T00:34:48.6747091+05:30",
     "repoRoot":  "E:\\Dev_World\\04_Practice\\Daily-Prep",
-    "activeFileCount":  565,
+    "activeFileCount":  568,
     "files":  [
                   {
                       "path":  ".github/agents/diagram-audit.agent.md",
@@ -10039,9 +10039,9 @@
                       "folder":  "20_Interview_Mastery",
                       "title":  "20 â€” Interview Mastery: The Cross-Domain Capstone",
                       "role":  "Module index and local navigation",
-                      "sha256":  "da70850f378892aab3f78dd25149a1de2356848e946659dd186c60f7052d9070",
-                      "shortHash":  "da70850f3788",
-                      "bytes":  11155,
+                      "sha256":  "020f2014db017568e969489852e82fdf569a5648e3756985539c3d607e1d922f",
+                      "shortHash":  "020f2014db01",
+                      "bytes":  12146,
                       "headings":  6,
                       "codeFences":  2,
                       "codeFencesBalanced":  true,
@@ -10430,11 +10430,11 @@
                       "folder":  "20_Interview_Mastery",
                       "title":  "11. SDET Ã— DSA â€” From Basics to Elite",
                       "role":  "Interview synthesis, final prep, scenarios, and problem explanation",
-                      "sha256":  "75bb653aeb32abc9027cc7f1cb9af45c32357ca14fb31a3b17fb61d0b60e353f",
-                      "shortHash":  "75bb653aeb32",
-                      "bytes":  40248,
-                      "headings":  49,
-                      "codeFences":  78,
+                      "sha256":  "6af6d9f5cba513f72f65d225b6b9a9224f033355d0d114ae2aff7786ecb9c89f",
+                      "shortHash":  "6af6d9f5cba5",
+                      "bytes":  52997,
+                      "headings":  55,
+                      "codeFences":  88,
                       "codeFencesBalanced":  true,
                       "challengeCount":  0,
                       "styleSignals":  [
@@ -10597,6 +10597,31 @@
                                        ]
                   },
                   {
+                      "path":  "20_Interview_Mastery/15_Quick_Reference_Cards.md",
+                      "folder":  "20_Interview_Mastery",
+                      "title":  "15. Quick Reference Cards â€” Open This Before Every Interview",
+                      "role":  "Interview synthesis, final prep, scenarios, and problem explanation",
+                      "sha256":  "ca2ea6d90025b86fea86041ff882295c941ca3b4105c7efd29c05b0a5dbd72be",
+                      "shortHash":  "ca2ea6d90025",
+                      "bytes":  23582,
+                      "headings":  17,
+                      "codeFences":  12,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "typescript",
+                                           "react",
+                                           "dsa/algo",
+                                           "devops",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
                       "path":  "20_Interview_Mastery/15_SQL_Problems_Foundations_Intermediate.md",
                       "folder":  "20_Interview_Mastery",
                       "title":  "File 15 â€” SQL Problems: Foundations, Joins \u0026 Aggregations",
@@ -10614,6 +10639,30 @@
                                            "5W1H",
                                            "code-heavy",
                                            "sql",
+                                           "dsa/algo",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
+                      "path":  "20_Interview_Mastery/16_Anti_Pattern_Gallery.md",
+                      "folder":  "20_Interview_Mastery",
+                      "title":  "16. Anti-Pattern Gallery â€” Wrong Code and Why It Fails",
+                      "role":  "Interview synthesis, final prep, scenarios, and problem explanation",
+                      "sha256":  "f0896f7aede1448918c3d3996e42c8e9e972ab732691bb23db8550cac06fe99a",
+                      "shortHash":  "f0896f7aede1",
+                      "bytes":  35939,
+                      "headings":  62,
+                      "codeFences":  60,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "typescript",
+                                           "react",
                                            "dsa/algo",
                                            "enterprise"
                                        ]
@@ -10637,6 +10686,31 @@
                                            "code-heavy",
                                            "sql",
                                            "dsa/algo",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
+                      "path":  "20_Interview_Mastery/17_Production_Incident_Lessons.md",
+                      "folder":  "20_Interview_Mastery",
+                      "title":  "Production Incident Lessons",
+                      "role":  "Interview synthesis, final prep, scenarios, and problem explanation",
+                      "sha256":  "6acd314c5a7cd0dc3d4a3ede3e1cd38fdd8d0e5c6acbfea466b3f281a4b99a7d",
+                      "shortHash":  "6acd314c5a7c",
+                      "bytes":  48482,
+                      "headings":  45,
+                      "codeFences":  68,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "constraints",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "typescript",
+                                           "dsa/algo",
+                                           "devops",
                                            "enterprise"
                                        ]
                   },

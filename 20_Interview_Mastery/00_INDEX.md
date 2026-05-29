@@ -30,7 +30,10 @@
 | 11 | [SDET × DSA Progressive](11_SDET_Plus_DSA_Progressive.md) | SDET + DSA | Sliding Window/Polling, HashMap/Dedup, Topological Sort/Test Order, Binary Search/Bisect, Heap/Prioritisation, Exponential Backoff, Frequency Map/Flakiness |
 | 12 | [Spring Boot × DSA Progressive](12_SpringBoot_Plus_DSA_Progressive.md) | Spring Boot + DSA | Topological Sort/Beans, Linked List/Filter Chain, LRU Cache/JPA L2C, Graph/Security Rules, Sliding Window/Rate Limiting, FSM/Bean Lifecycle |
 | 13 | [SDET × Spring Boot Progressive](13_SDET_Plus_SpringBoot_Progressive.md) | SDET + Spring Boot | Testing Pyramid, @WebMvcTest vs @DataJpaTest, MockMvc vs WebTestClient, WireMock, EmbeddedKafka, Testcontainers, Spring Security Testing |
-| 14 | [🔬 Challenge Deep Dives](14_Challenge_Deep_Dives.md) | All pairs | **Point-by-point** explanations — every line, every decision, every alternative, every pitfall. 3 deep dives (SDET×DSA, SpringBoot×DSA, SDET×SpringBoot) with 6 worked challenges + interview narration scripts |
+| 14 | [🔬 Challenge Deep Dives](14_Challenge_Deep_Dives.md) | All pairs | **Point-by-point** explanations — every line, every decision, every alternative, every pitfall. 3 deep dives with 6 worked challenges + interview narration scripts |
+| 15 | [⚡ Quick Reference Cards](15_Quick_Reference_Cards.md) | All pairs | **Open 30 min before interview.** 10 cards: decision trees (test slice / HTTP client / cache strategy / rate limiting), DSA complexity cheat sheet, Spring Boot + SDET keyword activators, 5-point answer framework, one-line definitions |
+| 16 | [💀 Anti-Pattern Gallery](16_Anti_Pattern_Gallery.md) | All pairs | **10 wrong-code examples with WHY they fail.** Thread.sleep, over-mocking, fixed-window rate limiter, EAGER loading, shared test state, @SpringBootTest misuse, missing @Cache on collections, skipping error paths, circular beans, wrong CountDownLatch count |
+| 17 | [🚨 Production Incident Lessons](17_Production_Incident_Lessons.md) | All pairs | **5 real incident stories.** The Boundary Attack (rate limiter), The Ghost Cache (stale JPA data), The Kafka Déjà Vu (duplicate emails), The Cascade (N+1 under load), The Immortal Lock (distributed deadlock). Each includes alert → investigation → fix → the test that would have caught it |
 
 
 ### Problem Banks (5W+H Logic-First Explanations)

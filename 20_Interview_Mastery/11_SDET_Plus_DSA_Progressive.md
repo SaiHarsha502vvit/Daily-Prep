@@ -22,6 +22,7 @@
 5. [Heap → Test Suite Prioritisation](#5-heap--test-suite-prioritisation)
 6. [Exponential Backoff → Retry-Safe API Test Design](#6-exponential-backoff--retry-safe-api-test-design)
 7. [Frequency Map → Flaky Test Statistical Detection](#7-frequency-map--flaky-test-statistical-detection)
+8. [Segment Tree → Performance Metric Range Queries](#8-segment-tree--performance-metric-range-queries)
 
 ---
 
@@ -1185,6 +1186,309 @@ function worstDayOfWeek(results: CIRunResult[]): string {
 ```
 
 **Real insight**: Monday failures after weekend deploys, Friday failures after code freeze rushes — frequency maps across time dimensions reveal systemic patterns invisible to individual test views.
+
+</details>
+
+---
+
+## 8. Segment Tree → Performance Metric Range Queries
+
+### 🧠 Foundation — What is a Segment Tree?
+
+A Segment Tree is a binary tree where:
+- Each **leaf** holds a single value (e.g. one API response time measurement)
+- Each **internal node** holds the result of combining its children (e.g. the `min`, `max`, or `sum` of a range)
+
+```
+Array:  [45, 89, 12, 67, 34, 156, 23, 78]
+Index:   0   1   2   3   4    5   6   7
+
+Segment tree for RANGE MINIMUM:
+
+                   [0..7] min=12
+                  /              \
+          [0..3] min=12      [4..7] min=23
+          /       \           /       \
+      [0..1]   [2..3]     [4..5]   [6..7]
+      min=45   min=12     min=34   min=23
+      /   \    /   \      /   \    /   \
+    [45] [89] [12] [67] [34] [156] [23] [78]
+```
+
+**Why this matters**:
+- Brute force range min/max query: O(n) — scan every element in range
+- Segment tree range query: O(log n) — traverse only the relevant nodes
+- When you run 10,000 performance metric queries per minute, O(log n) vs O(n) is the difference between 14 operations and 10,000
+
+---
+
+### 🔍 The Real-World SDET Problem
+
+Your performance test captures API response times every 100ms for 10 minutes → **6,000 data points**. Your assertions need:
+1. What was the **maximum** response time between minute 3 and minute 7?
+2. How many data points in that range **exceeded 200ms** (the SLA threshold)?
+3. After each new data point arrives, update the tree and re-query in real time
+
+Brute force: 6,000 scans per query × many assertions = too slow to run inline.
+Segment tree: build once in O(n log n), query any range in O(log n).
+
+---
+
+### 🗺️ How to Think About It
+
+```
+Step 1: Identify your "combination" operation
+  → Range MAX: the maximum value in any range (SLA breach detection)
+  → Range SUM: total of values in range (error count)
+  → Range MIN: minimum (best-case response time)
+  → Can combine multiple: each node stores {min, max, sum, count}
+
+Step 2: Build — O(n log n)
+  → Start at leaves (individual data points)
+  → Each parent = combine(left child, right child)
+
+Step 3: Query a range [l, r] — O(log n)
+  → If node range is fully inside [l,r]: return node's stored value
+  → If node range is fully outside [l,r]: return identity (∞ for min, -∞ for max, 0 for sum)
+  → If partial overlap: recurse into both children, combine results
+
+Step 4: Update a single value — O(log n)
+  → Update the leaf
+  → Propagate change upward to root (O(log n) nodes updated)
+```
+
+---
+
+### ✍️ The Solution
+
+```typescript
+// Segment tree storing {min, max, sum, count} per range
+// Perfect for performance test assertions
+
+interface RangeStats {
+  min: number;
+  max: number;
+  sum: number;
+  count: number;
+}
+
+class PerformanceSegmentTree {
+  private readonly n: number;
+  private readonly tree: RangeStats[];
+
+  constructor(data: number[]) {
+    this.n = data.length;
+    // Tree size: 4 * n is always sufficient (safe upper bound)
+    this.tree = new Array(4 * this.n).fill(null).map(() => ({
+      min: Infinity, max: -Infinity, sum: 0, count: 0
+    }));
+    this.build(data, 1, 0, this.n - 1);
+    // node index 1 = root (1-indexed for clean parent/child math: children of i = 2i, 2i+1)
+  }
+
+  private combine(a: RangeStats, b: RangeStats): RangeStats {
+    return {
+      min: Math.min(a.min, b.min),
+      max: Math.max(a.max, b.max),
+      sum: a.sum + b.sum,
+      count: a.count + b.count,
+    };
+  }
+
+  private build(data: number[], node: number, start: number, end: number): void {
+    if (start === end) {
+      // Leaf node: single data point
+      this.tree[node] = { min: data[start], max: data[start], sum: data[start], count: 1 };
+      return;
+    }
+    const mid = Math.floor((start + end) / 2);
+    this.build(data, 2 * node, start, mid);       // build left child
+    this.build(data, 2 * node + 1, mid + 1, end); // build right child
+    this.tree[node] = this.combine(this.tree[2 * node], this.tree[2 * node + 1]);
+    // ↑ Each parent = combination of its children
+  }
+
+  // Query range [l, r] for combined stats
+  query(l: number, r: number): RangeStats {
+    return this._query(1, 0, this.n - 1, l, r);
+  }
+
+  private _query(node: number, start: number, end: number, l: number, r: number): RangeStats {
+    if (r < start || end < l) {
+      // Completely outside query range — return identity values
+      return { min: Infinity, max: -Infinity, sum: 0, count: 0 };
+    }
+    if (l <= start && end <= r) {
+      // Completely inside query range — return stored value directly
+      return this.tree[node];
+    }
+    // Partial overlap — recurse into both halves
+    const mid = Math.floor((start + end) / 2);
+    const leftResult  = this._query(2 * node,     start,   mid, l, r);
+    const rightResult = this._query(2 * node + 1, mid + 1, end, l, r);
+    return this.combine(leftResult, rightResult);
+  }
+
+  // Update a single data point (e.g. new measurement arrives)
+  update(index: number, newValue: number): void {
+    this._update(1, 0, this.n - 1, index, newValue);
+  }
+
+  private _update(node: number, start: number, end: number, index: number, value: number): void {
+    if (start === end) {
+      // Found the leaf — update it
+      this.tree[node] = { min: value, max: value, sum: value, count: 1 };
+      return;
+    }
+    const mid = Math.floor((start + end) / 2);
+    if (index <= mid) this._update(2 * node,     start,   mid, index, value);
+    else              this._update(2 * node + 1, mid + 1, end, index, value);
+    // After updating the leaf, recompute this node from children
+    this.tree[node] = this.combine(this.tree[2 * node], this.tree[2 * node + 1]);
+  }
+}
+
+// ── Usage in a performance test ──────────────────────────────────────────────
+
+test('API response times stay within SLA across all load phases', async ({ request }) => {
+  const responseTimes: number[] = [];
+
+  // Collect 6,000 measurements (100ms intervals × 10 minutes)
+  for (let i = 0; i < 6000; i++) {
+    const start = Date.now();
+    await request.get('/api/citations');
+    responseTimes.push(Date.now() - start);
+    await new Promise(r => setTimeout(r, 100));
+  }
+
+  // Build segment tree once: O(n log n)
+  const tree = new PerformanceSegmentTree(responseTimes);
+
+  // Minute 0-2: warmup phase [indices 0-1799]
+  const warmup = tree.query(0, 1799);
+  expect(warmup.max).toBeLessThan(500);
+  // "During warmup, worst response was under 500ms"
+
+  // Minute 3-7: peak load phase [indices 1800-4199]
+  const peak = tree.query(1800, 4199);
+  expect(peak.max).toBeLessThan(300); // stricter SLA during peak
+  expect(peak.sum / peak.count).toBeLessThan(150); // avg < 150ms
+  // O(log 6000) ≈ 13 operations — not 2,400 scans!
+
+  // Minute 8-10: cooldown phase [indices 4200-5999]
+  const cooldown = tree.query(4200, 5999);
+  expect(cooldown.max).toBeLessThan(200);
+  // Cooldown should recover to healthy baselines
+
+  // Count SLA breaches across entire run
+  // Note: for count-of-threshold-exceeding, a different structure is needed
+  // (segment tree stores max, not count-above-threshold)
+  // Use a filter for this specific query:
+  const slaBreaches = responseTimes.slice(1800, 4200).filter(t => t > 300).length;
+  const slaBreachRate = slaBreaches / 2400;
+  expect(slaBreachRate, 'SLA breach rate during peak').toBeLessThan(0.01); // < 1%
+});
+```
+
+**Complexity breakdown**:
+- Build tree: O(n log n) — done ONCE
+- Each range query (max, min, sum, count): O(log n)
+- Each point update: O(log n)
+- Compare to brute force per query: O(n)
+
+For 6,000 data points and 20 assertions: segment tree = 20 × 13 = 260 operations. Brute force = 20 × 6,000 = 120,000 operations.
+
+---
+
+### 🎯 Similar Challenges
+
+**Challenge A**: Your load test captures 10,000 HTTP response codes (200, 404, 500, 503) sequentially. You need to find: in any given 1-minute window (600 data points), what was the maximum consecutive sequence of 5xx errors? A segment tree alone can't answer this directly — which data structure would you ADD to help, and why?
+
+<details><summary>Answer — Point by Point</summary>
+
+```typescript
+// What you need: "maximum consecutive sequence of 5xx errors in range [l, r]"
+// This is NOT a simple range max — it requires knowing:
+//   1. Prefix 5xx length (consecutive 5xx from the left edge of the node)
+//   2. Suffix 5xx length (consecutive 5xx at the right edge of the node)
+//   3. Max internal 5xx sequence (the answer for that node's full range)
+
+// Each segment tree node stores:
+interface ConsecutiveStats {
+  total: number;      // total elements in this segment
+  prefixOnes: number; // consecutive 5xx from LEFT edge
+  suffixOnes: number; // consecutive 5xx from RIGHT edge
+  maxOnes: number;    // maximum consecutive 5xx sequence in this range
+  allOnes: boolean;   // true if ENTIRE range is 5xx (needed for merging)
+}
+
+function combine5xx(left: ConsecutiveStats, right: ConsecutiveStats): ConsecutiveStats {
+  // The max consecutive could span the boundary:
+  // left-suffix + right-prefix = cross-boundary streak
+  const crossBoundary = left.suffixOnes + right.prefixOnes;
+
+  return {
+    total: left.total + right.total,
+    prefixOnes: left.allOnes ? left.total + right.prefixOnes : left.prefixOnes,
+    // ↑ If left is ALL 5xx, prefix extends into right
+    suffixOnes: right.allOnes ? right.total + left.suffixOnes : right.suffixOnes,
+    maxOnes: Math.max(left.maxOnes, right.maxOnes, crossBoundary),
+    // ↑ The answer is the max of: left's internal max, right's internal max,
+    //   OR the streak that crosses the boundary
+    allOnes: left.allOnes && right.allOnes,
+  };
+}
+```
+
+**Why this matters**: standard range-max segment trees store a scalar. For "maximum consecutive sequence" you need a COMPOSITE value per node. The key insight is that you can ALWAYS design a segment tree by defining what `combine(left, right)` does — the tree structure is the same; what changes is the information stored.
+
+This exact pattern appears in: maximum subarray problems, longest consecutive sequence problems, and run-length encoding queries — all solved with the same "prefix/suffix/max-internal/all-one" composite node.
+
+</details>
+
+---
+
+**Challenge B**: You collect 1,000 API response times. You need to query: "how many data points in range [l, r] are below the P50 threshold?" P50 is dynamic — it changes as you collect more data. Design the approach. (Hint: a Merge Sort Tree or Persistent Segment Tree can answer count-of-values-below-threshold in O(log² n), but explain the simpler O(n) fallback first and when the complex structure is worth it.)
+
+<details><summary>Answer — Point by Point</summary>
+
+```typescript
+// Simple approach: O(n) per query — acceptable for ≤ 20 queries on 1,000 points
+function countBelowThreshold(data: number[], l: number, r: number, threshold: number): number {
+  return data.slice(l, r + 1).filter(v => v < threshold).length;
+  // O(r - l + 1) per query — fine for small datasets or infrequent queries
+}
+
+// When is this NOT enough?
+// - 1,000,000 data points AND thousands of threshold queries per second
+// - THEN you need a Merge Sort Tree:
+//   Each segment tree node stores its elements SORTED
+//   Binary search within the node gives count-below in O(log n)
+//   Total: O(log² n) per query instead of O(n)
+//   Build cost: O(n log n) space and time
+
+// For interview purposes, articulate the trade-off:
+console.log(`
+  Simple O(n) per query:
+    Pro: trivially simple to implement and test
+    Con: 1,000 queries × 1,000,000 data points = 10^9 operations → 10+ seconds
+
+  Merge Sort Tree O(log² n) per query:
+    Pro: handles millions of queries efficiently
+    Con: complex to implement, O(n log n) space
+
+  Practical SDET choice: O(n) for performance assertions (≤ 100 queries)
+                         Pre-compute percentiles for dynamic P50 (O(n log n) once)
+`);
+
+// The percentile pre-computation approach for dynamic P50:
+const sorted = [...data].sort((a, b) => a - b);
+const p50 = sorted[Math.floor(sorted.length * 0.5)];
+// Now p50 is computed — use O(n) query or binary search on sorted array
+const countBelowP50 = sorted.filter(v => v < p50).length; // ≈ 50% by definition
+```
+
+**The interview answer**: for most SDET use cases (≤ 10,000 data points, ≤ 100 queries), O(n) per query is fine. For high-frequency streaming metrics at scale, a merge sort tree or a pre-sorted structure with binary search delivers O(log n) to O(log² n). Always state WHEN the complexity difference matters — interviewers reward pragmatic reasoning.
 
 </details>
 

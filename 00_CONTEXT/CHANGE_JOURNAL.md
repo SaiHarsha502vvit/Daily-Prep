@@ -1,6 +1,56 @@
-﻿# Change Journal
+# Change Journal
 
 Add short entries when context, structure, or domain boundaries change.
+
+## 2026-05-30 — 20_Interview_Mastery: 17_Production_Incident_Lessons.md created
+
+Changed:
+
+- Added `20_Interview_Mastery/17_Production_Incident_Lessons.md` — 5 production incident stories teaching technical concepts through narrative (1113 lines).
+  - Incident 1: "The Boundary Attack" — Fixed-window vs sliding-window rate limiting (DSA + Spring Boot, P2).
+  - Incident 2: "The Ghost Cache" — READ_ONLY vs READ_WRITE cache strategy + missing collection annotation (Spring Boot + DSA, P1).
+  - Incident 3: "The Kafka Déjà Vu" — At-least-once delivery + Redis SETNX idempotency (Spring Boot + SDET, P2).
+  - Incident 4: "The Cascade" — N+1 problem under load; O(N) round-trips; @EntityGraph fix (Spring Boot + DSA, P1).
+  - Incident 5: "The Immortal Lock" — Distributed lock without lease; Redisson tryLock fix (Spring Boot + DSA, P1).
+  - Summary table: all 5 incidents, bug type, domain, what would have caught it.
+  - Interview usage guide: opening pattern, signal, when to use each incident.
+
+Reason:
+
+- Engineers remember stories far better than abstract concepts. Each incident follows alert → investigation timeline → root cause deep-dive → fix → test → what this teaches → interview connection format.
+  Context check passed (fresh) before creation.
+
+Verification:
+
+- Fence parity: Fences=68 EVEN-OK, Lines=1113.
+- `update_context.ps1 -Mode update` completed: 568 active Markdown files registered.
+- `update_context.ps1 -Mode check` passed: Context fresh.
+
+## 2026-05-30 — 20_Interview_Mastery: 15_Quick_Reference_Cards.md created
+
+Changed:
+
+- Added `20_Interview_Mastery/15_Quick_Reference_Cards.md` — 10-card pre-interview cheat-sheet (410 lines).
+  - Card 1: Test slice annotation decision tree + reference table.
+  - Card 2: MockMvc vs WebTestClient vs TestRestTemplate decision tree + API comparison table.
+  - Card 3: JPA L2C cache strategy decision tree + write-behaviour table.
+  - Card 4: Rate limiting algorithm decision tree + comparison table.
+  - Card 5: DSA complexity table (11 structures, SDET/Spring Boot use column).
+  - Card 6: Spring Boot interview keyword activator (6 topics, exact phrases).
+  - Card 7: SDET interview keyword activator (5 topics, exact phrases).
+  - Card 8: 5-point answer framework + worked rate-limiter example with code.
+  - Card 9: Common latency numbers table + rationale section.
+  - Card 10: One-line rapid-fire definitions (10 terms).
+
+Reason:
+
+- Pre-interview reference file requested. Dense, scannable, ASCII decision trees.
+  Context check passed (fresh) before creation.
+
+Verification:
+
+- Fence parity: Fences=12 EVEN-OK, Lines=410.
+- `update_context.ps1 -Mode update` completed: 567 active Markdown files registered.
 
 ## 2026-05-28 (SDET, Playwright & Advanced API Curriculum Integration)
 
