@@ -29,29 +29,29 @@ Before you pick a testing tool, you need to understand what KIND of app you are 
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                     MOBILE APP TYPES                                  │
+│                     MOBILE APP TYPES                                 │
 ├──────────────────┬───────────────────────┬───────────────────────────┤
 │   NATIVE APP     │    HYBRID APP         │    MOBILE WEB APP         │
 ├──────────────────┼───────────────────────┼───────────────────────────┤
-│ Written in       │ Web app wrapped in     │ Website running in        │
-│ platform-native  │ a native shell         │ mobile browser            │
-│ language         │ (WebView inside)       │ (Chrome/Safari)           │
-│                  │                        │                           │
-│ Android → Kotlin │ Capacitor, Ionic,      │ Your React/Vue/HTML       │
-│ iOS → Swift      │ React Native (partly)  │ site on phone             │
-│ Flutter → Dart   │ Cordova, PhoneGap      │                           │
+│ Written in       │ Web app wrapped in    │ Website running in        │
+│ platform-native  │ a native shell        │ mobile browser            │
+│ language         │ (WebView inside)      │ (Chrome/Safari)           │
+│                  │                       │                           │
+│ Android → Kotlin │ Capacitor, Ionic,     │ Your React/Vue/HTML       │
+│ iOS → Swift      │ React Native (partly) │ site on phone             │
+│ Flutter → Dart   │ Cordova, PhoneGap     │                           │
 ├──────────────────┼───────────────────────┼───────────────────────────┤
-│ UI built with    │ UI built with HTML/    │ UI is pure HTML/CSS/JS    │
-│ native widgets   │ CSS but wrapped in     │ rendered by browser       │
-│ (View, Widget,   │ native container       │                           │
-│ UIView)          │                        │                           │
-├──────────────────┼───────────────────────┼───────────────────────────┤
-│ Test with:       │ Test with:             │ Test with:                │
-│ Espresso (And)   │ Playwright (WebView)   │ Playwright ✅             │
-│ XCUITest (iOS)   │ + Appium (native shell)│ (best choice)             │
-│ Flutter test     │                        │                           │
-│ Appium (all)     │                        │                           │
-└──────────────────┴───────────────────────┴───────────────────────────┘
+│ UI built with    │ UI built with HTML/   │ UI is pure HTML/CSS/JS    │
+│ native widgets   │ CSS but wrapped in    │ rendered by browser       │
+│ (View, Widget,   │ native container      │                           │
+│ UIView)          │                       │                           │
+├──────────────────┼──────────────────────-┼───────────────────────────┤
+│ Test with:       │Test with:             │ Test with:                │
+│ Espresso (And)   │Playwright (WebView)   │ Playwright ✅            │
+│ XCUITest (iOS)   │+ Appium (native shell)│ (best choice)             │
+│ Flutter test     │                       │                           │
+│ Appium (all)     │                       │                           │
+└──────────────────┴──────────────────────-┴───────────────────────────┘
 ```
 
 ### Why Does This Matter?
@@ -298,12 +298,12 @@ On iOS the equivalent would be `By.accessibilityId("loginButton")` — using the
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                    ARCHITECTURE COMPARISON                               │
+│                    ARCHITECTURE COMPARISON                              │
 ├──────────────────────────────┬──────────────────────────────────────────┤
-│           PLAYWRIGHT         │              APPIUM                       │
+│           PLAYWRIGHT         │              APPIUM                      │
 ├──────────────────────────────┼──────────────────────────────────────────┤
-│ Protocol: CDP (WebSocket)    │ Protocol: HTTP (WebDriver W3C REST)       │
-│                              │                                           │
+│ Protocol: CDP (WebSocket)    │ Protocol: HTTP (WebDriver W3C REST)      │
+│                              │                                          │
 │ No server needed — connects  │ Requires Appium server running on port   │
 │ directly to browser process  │ 4723 (or Appium Grid for parallel)       │
 ├──────────────────────────────┼──────────────────────────────────────────┤
@@ -314,25 +314,25 @@ On iOS the equivalent would be `By.accessibilityId("loginButton")` — using the
 │                              │ appium driver install uiautomator2       │
 │                              │ appium driver install xcuitest           │
 ├──────────────────────────────┼──────────────────────────────────────────┤
-│ Test language: TypeScript,   │ Test language: Java, Python, JS,        │
+│ Test language: TypeScript,   │ Test language: Java, Python, JS,         │
 │ JavaScript, Python, Java,    │ Ruby, C#, any language with HTTP         │
 │ C#, Go, .NET                 │ client                                   │
 ├──────────────────────────────┼──────────────────────────────────────────┤
-│ Startup speed: ~200ms        │ Startup speed: 15-60 seconds            │
-│ (browser already running)    │ (installs app, boots device/simulator)  │
+│ Startup speed: ~200ms        │ Startup speed: 15-60 seconds             │
+│ (browser already running)    │ (installs app, boots device/simulator)   │
 ├──────────────────────────────┼──────────────────────────────────────────┤
-│ Selectors: CSS, XPath,       │ Selectors: Resource ID, XPath,          │
-│ text, role, test-id          │ Accessibility ID, class name,           │
+│ Selectors: CSS, XPath,       │ Selectors: Resource ID, XPath,           │
+│ text, role, test-id          │ Accessibility ID, class name,            │
 │                              │ Android UiSelector, iOS Class Chain      │
 ├──────────────────────────────┼──────────────────────────────────────────┤
-│ Network interception: YES    │ Network interception: Limited           │
-│ page.route(), HAR recording  │ (requires proxy setup, no native CDP)   │
+│ Network interception: YES    │ Network interception: Limited            │
+│ page.route(), HAR recording  │ (requires proxy setup, no native CDP)    │
 ├──────────────────────────────┼──────────────────────────────────────────┤
-│ Auto-wait: YES               │ Auto-wait: Limited                      │
-│ Built into every action      │ Implicit/explicit waits, manual polling │
+│ Auto-wait: YES               │ Auto-wait: Limited                       │
+│ Built into every action      │ Implicit/explicit waits, manual polling  │
 ├──────────────────────────────┼──────────────────────────────────────────┤
-│ Debugging: Playwright UI     │ Debugging: Appium Inspector,            │
-│ Mode, trace viewer, codegen  │ screenshots, Appium Desktop             │
+│ Debugging: Playwright UI     │ Debugging: Appium Inspector,             │
+│ Mode, trace viewer, codegen  │ screenshots, Appium Desktop              │
 └──────────────────────────────┴──────────────────────────────────────────┘
 ```
 
@@ -357,13 +357,13 @@ This is the most important table in this file. When an interviewer asks "why did
 │ CAPABILITY                           │   PLAYWRIGHT     │   APPIUM         │
 ├──────────────────────────────────────┼──────────────────┼──────────────────┤
 │ Test mobile website in Chrome        │ ✅ Best-in-class │ ✅ Slower       │
-│ Test mobile website in Safari/iOS    │ ✅ WebKit engine │ ✅ Via Safari    │
+│ Test mobile website in Safari/iOS    │ ✅ WebKit engine │ ✅ Via Safari   │
 │ Emulate any phone viewport           │ ✅ Built-in      │ ❌ Not purpose  │
 │ Intercept network requests           │ ✅ page.route()  │ ⚠️ Via proxy    │
 │ Mock API responses in tests          │ ✅ Native        │ ⚠️ Workaround   │
 │ Test native Android UI               │ ❌ Cannot        │ ✅ UIAutomator2 │
 │ Test native iOS UI                   │ ❌ Cannot        │ ✅ XCUITest     │
-│ Test native Flutter UI               │ ❌ Cannot        │ ✅ Flutter driver│
+│ Test native Flutter UI               │ ❌ Cannot        │ ✅Flutter driver│
 │ Test Android WebView content         │ ✅ Via CDP       │ ✅ WEBVIEW ctx  │
 │ Simulate touch gestures              │ ✅ Built-in      │ ✅ Actions API  │
 │ Take screenshots                     │ ✅ Fast          │ ✅ Slower       │
@@ -396,29 +396,29 @@ This is the most important table in this file. When an interviewer asks "why did
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│                  Food Delivery App                        │
+│                  Food Delivery App                       │
 ├──────────────────────────────────────────────────────────┤
-│  ZONE 1: Native screens                                   │
-│  - Login (native buttons, text fields)                    │
-│  - Restaurant list (RecyclerView — native list)           │
-│  - Cart (native UI)                                       │
-│  - Checkout (native forms)                                │
-│  TOOL: Appium + UIAutomator2                              │
+│  ZONE 1: Native screens                                  │
+│  - Login (native buttons, text fields)                   │
+│  - Restaurant list (RecyclerView — native list)          │
+│  - Cart (native UI)                                      │
+│  - Checkout (native forms)                               │
+│  TOOL: Appium + UIAutomator2                             │
 ├──────────────────────────────────────────────────────────┤
-│  ZONE 2: WebView (Google Maps tracking)                   │
-│  - Map embedded as WebView fragment                       │
-│  - HTML buttons overlaid on map                           │
-│  TOOL: Playwright via playwright-android OR               │
-│         Appium with context switch to WEBVIEW             │
+│  ZONE 2: WebView (Google Maps tracking)                  │
+│  - Map embedded as WebView fragment                      │
+│  - HTML buttons overlaid on map                          │
+│  TOOL: Playwright via playwright-android OR              │
+│         Appium with context switch to WEBVIEW            │
 ├──────────────────────────────────────────────────────────┤
-│  ZONE 3: API layer (order service, restaurant service)    │
-│  - REST APIs behind the app                               │
-│  - Test order creation, payment, status updates           │
-│  TOOL: Playwright request API or direct HTTP (Postman/k6) │
+│  ZONE 3: API layer (order service, restaurant service)   │
+│  - REST APIs behind the app                              │
+│  - Test order creation, payment, status updates          │
+│ TOOL: Playwright request API or direct HTTP (Postman/k6) │
 ├──────────────────────────────────────────────────────────┤
-│  ZONE 4: Push notifications                               │
-│  - Device-level notification tray                         │
-│  TOOL: Appium (can interact with notification drawer)     │
+│ ZONE 4: Push notifications                               │
+│ - Device-level notification tray                         │
+│ TOOL: Appium (can interact with notification drawer)     │
 └──────────────────────────────────────────────────────────┘
 ```
 
@@ -788,8 +788,8 @@ This is the hardest part of Appium — selectors are different from CSS/XPath on
 │ Class Name          │ By.className("android.widget.Button")    │
 │                     │ Bad: finds ALL buttons, not unique       │
 ├─────────────────────┼──────────────────────────────────────────┤
-│ UiAutomator         │ new UiSelector().text("Login")          │
-│ (Android only)      │   .className("android.widget.Button")   │
+│ UiAutomator         │ new UiSelector().text("Login")           │
+│ (Android only)      │   .className("android.widget.Button")    │
 │                     │ Powerful for chained conditions          │
 ├─────────────────────┼──────────────────────────────────────────┤
 │ iOS Class Chain     │ **/XCUIElementTypeButton[`label == 'OK'`]│

@@ -1,8 +1,8 @@
 ﻿{
     "schemaVersion":  1,
-    "generatedAt":  "2026-05-30T00:51:11.2103793+05:30",
+    "generatedAt":  "2026-05-30T06:16:03.6178944+05:30",
     "repoRoot":  "E:\\Dev_World\\04_Practice\\Daily-Prep",
-    "activeFileCount":  570,
+    "activeFileCount":  572,
     "files":  [
                   {
                       "path":  ".github/agents/diagram-audit.agent.md",
@@ -13220,9 +13220,9 @@
                       "folder":  "23_Mobile_Dev_And_Testing",
                       "title":  "01. Playwright vs Appium â€” Full Comparison",
                       "role":  "Active repository Markdown content",
-                      "sha256":  "202b37149b7218da18c2300c4599e224e44b44fe35a5b135f9479a25321a46b5",
-                      "shortHash":  "202b37149b72",
-                      "bytes":  46385,
+                      "sha256":  "599ea3d3165c6d043982248cbc6d0de51a2fa5c8c32893a55157dc122856faf3",
+                      "shortHash":  "599ea3d3165c",
+                      "bytes":  46351,
                       "headings":  34,
                       "codeFences":  52,
                       "codeFencesBalanced":  true,
@@ -13238,6 +13238,59 @@
                                            "react",
                                            "css",
                                            "dsa/algo",
+                                           "devops",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
+                      "path":  "23_Mobile_Dev_And_Testing/02_Android_Native_Dev_And_Testing.md",
+                      "folder":  "23_Mobile_Dev_And_Testing",
+                      "title":  "02. Android Native â€” Development Concepts + Complete Testing Stack",
+                      "role":  "Active repository Markdown content",
+                      "sha256":  "0ae7aaded57dc1f2f42064e5fa139be2594b0e290acdd3e7c85658d7aaff402c",
+                      "shortHash":  "0ae7aaded57d",
+                      "bytes":  61962,
+                      "headings":  50,
+                      "codeFences":  76,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "details",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "typescript",
+                                           "react",
+                                           "css",
+                                           "dsa/algo",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
+                      "path":  "23_Mobile_Dev_And_Testing/03_iOS_Native_Dev_And_Testing.md",
+                      "folder":  "23_Mobile_Dev_And_Testing",
+                      "title":  "03. iOS Native â€” Development Concepts + Complete Testing Stack",
+                      "role":  "Active repository Markdown content",
+                      "sha256":  "ab85feee634df03d653030f8b2b8026e2452e5dafa287a312ffe11246e5d332b",
+                      "shortHash":  "ab85feee634d",
+                      "bytes":  69869,
+                      "headings":  55,
+                      "codeFences":  96,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "details",
+                                           "constraints",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "typescript",
+                                           "react",
+                                           "css",
                                            "devops",
                                            "enterprise"
                                        ]
