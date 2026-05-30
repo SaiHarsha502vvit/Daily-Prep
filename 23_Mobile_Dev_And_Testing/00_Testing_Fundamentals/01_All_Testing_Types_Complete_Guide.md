@@ -108,21 +108,21 @@ The Testing Pyramid is the most important concept in test strategy. It tells you
 
 ### The Anti-Pattern: The Testing Ice Cream Cone
 
-```text
+```
 WRONG — "Ice Cream Cone" (what bad projects look like):
 
-                          /───────────────────────────────────\
-                      /           Manual Testing            \  ← Too much
-                     /───────────────────────────────────────\
-                 /         E2E Automated Tests             \  ← Too many
-                /──────────────────────────────────────────\
-            /           Integration Tests                 \  ← Some
-          /────────────────────────────────────────────\
-      /                 Unit Tests                      \  ← Too few
-     /_______________________________________________\
+          /─────────────────────────────────\
+         /         Manual Testing            \  ← Too much
+        /──────────────────────────────────── \
+       /          E2E Automated Tests          \  ← Too many
+      /──────────────────────────────────────   \
+     /         Integration Tests                 \  ← Some
+    /──────────────────────────────────────────   \
+   /               Unit Tests                      \  ← Too few
+  / ________________________________________________\
 
 Result: Slow CI, fragile tests, developers avoid running tests,
-          bugs discovered late, expensive to fix.
+        bugs discovered late, expensive to fix.
 ```
 
 If your project has 500 E2E tests and 50 unit tests, you have an ice cream cone. The tests take hours to run, developers stop running them, and bugs accumulate.
@@ -138,11 +138,11 @@ Unit testing verifies the **smallest testable piece of code** in complete isolat
 ```
 REAL SYSTEM:                        UNIT TEST:
 ┌──────────────────────────────┐    ┌──────────────────────────────┐
-│ PaymentViewModel             │    │ PaymentViewModel              │
-│   calls PaymentRepository    │    │   calls MockRepository        │
-│   calls AnalyticsService     │    │   calls MockAnalytics         │
-│   calls NavigationService    │    │   calls MockNavigation        │
-│   reads from Database        │    │   reads from InMemoryDB       │
+│ PaymentViewModel             │    │ PaymentViewModel             │
+│   calls PaymentRepository    │    │   calls MockRepository       │
+│   calls AnalyticsService     │    │   calls MockAnalytics        │
+│   calls NavigationService    │    │   calls MockNavigation       │
+│   reads from Database        │    │   reads from InMemoryDB      │
 └──────────────────────────────┘    └──────────────────────────────┘
      Real dependencies                   All replaced with fakes
      = slow, unpredictable               = fast, deterministic

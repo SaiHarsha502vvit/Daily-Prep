@@ -1,8 +1,8 @@
 ﻿{
     "schemaVersion":  1,
-    "generatedAt":  "2026-05-30T06:16:03.6178944+05:30",
+    "generatedAt":  "2026-05-30T06:34:39.1399716+05:30",
     "repoRoot":  "E:\\Dev_World\\04_Practice\\Daily-Prep",
-    "activeFileCount":  572,
+    "activeFileCount":  575,
     "files":  [
                   {
                       "path":  ".github/agents/diagram-audit.agent.md",
@@ -13216,6 +13216,55 @@
                                        ]
                   },
                   {
+                      "path":  "23_Mobile_Dev_And_Testing/00_Testing_Fundamentals/01_All_Testing_Types_Complete_Guide.md",
+                      "folder":  "23_Mobile_Dev_And_Testing",
+                      "title":  "All Testing Types â€” Complete Guide",
+                      "role":  "Active repository Markdown content",
+                      "sha256":  "f364fc2e26a3fee2a520fe481e8f3036fe1d986dc96c2a649b5f28aa4cdf3e71",
+                      "shortHash":  "f364fc2e26a3",
+                      "bytes":  50615,
+                      "headings":  102,
+                      "codeFences":  82,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "details",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "javascript",
+                                           "typescript",
+                                           "react",
+                                           "css",
+                                           "dsa/algo",
+                                           "devops",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
+                      "path":  "23_Mobile_Dev_And_Testing/00_Testing_Fundamentals/02_Smoke_Sanity_Regression_Deep_Dive.md",
+                      "folder":  "23_Mobile_Dev_And_Testing",
+                      "title":  "Smoke, Sanity, and Regression Testing â€” Deep Dive",
+                      "role":  "Active repository Markdown content",
+                      "sha256":  "08ead067648ce4915dec04f9760ef4bdbeb3a2a28e19b67ce36f0829c73a98d9",
+                      "shortHash":  "08ead067648c",
+                      "bytes":  42952,
+                      "headings":  54,
+                      "codeFences":  66,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "details",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "typescript",
+                                           "dsa/algo",
+                                           "devops",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
                       "path":  "23_Mobile_Dev_And_Testing/01_Playwright_vs_Appium_Full_Comparison.md",
                       "folder":  "23_Mobile_Dev_And_Testing",
                       "title":  "01. Playwright vs Appium â€” Full Comparison",
@@ -13291,6 +13340,33 @@
                                            "typescript",
                                            "react",
                                            "css",
+                                           "devops",
+                                           "enterprise"
+                                       ]
+                  },
+                  {
+                      "path":  "23_Mobile_Dev_And_Testing/04_Flutter_Dev_And_Testing.md",
+                      "folder":  "23_Mobile_Dev_And_Testing",
+                      "title":  "04. Flutter â€” Development Concepts + Complete Testing Stack",
+                      "role":  "Active repository Markdown content",
+                      "sha256":  "121ffd53ca09ac0f3cc9094fc4e66d62bd6133ce2fa533cabf21584b12ea5679",
+                      "shortHash":  "121ffd53ca09",
+                      "bytes":  66994,
+                      "headings":  51,
+                      "codeFences":  86,
+                      "codeFencesBalanced":  true,
+                      "challengeCount":  0,
+                      "styleSignals":  [
+                                           "details",
+                                           "5W1H",
+                                           "code-heavy",
+                                           "java/spring",
+                                           "sql",
+                                           "javascript",
+                                           "typescript",
+                                           "react",
+                                           "css",
+                                           "dsa/algo",
                                            "devops",
                                            "enterprise"
                                        ]

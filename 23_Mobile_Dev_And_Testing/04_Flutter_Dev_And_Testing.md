@@ -74,7 +74,7 @@ ANDROID NATIVE:                     FLUTTER ON ANDROID:
 │  │ Android View │  │              │  │ Flutter View │  │ ← One fullscreen
 │  │ System       │  │              │  │ (a Surface)  │  │   OpenGL canvas
 │  │  (draws your │  │              │  │              │  │
-│  │   buttons,   │  │              │  │🎨 Flutter   │  │
+│  │   buttons,   │  │              │  │ 🎨 Flutter   │  │
 │  │   text, etc) │  │              │  │ engine draws │  │
 │  └──────────────┘  │              │  │ EVERYTHING   │  │
 └────────────────────┘              │  └──────────────┘  │
@@ -567,10 +567,10 @@ StatefulWidget first inserted into tree
           Widget in tree — interactive
                │
     ┌──────────┴──────────┐
-    │    setState called   │  ← data changes
-    │         │            │
-    │         ▼            │
-    │      build()         │  ← rebuilt with new state
+    │    setState called  │  ← data changes
+    │         │           │
+    │         ▼           │
+    │      build()        │  ← rebuilt with new state
     └─────────────────────┘
                │
     Parent changes the widget configuration
@@ -1256,14 +1256,14 @@ Flutter has an extra testing layer compared to Android/iOS:
                      / E2E \       ← Appium Flutter Driver (few, cross-platform)
                     /       \
                    /─────────\
-                  / Integration\   ← integration_test package (device tests)
+                  /Integration\   ← integration_test package (device tests)
                  /    Tests    \
                 /───────────────\
                /  Widget Tests   \  ← flutter_test widget pump (no real device)
-              /                  \
-             /────────────────────\
-            /    Unit Tests        \ ← Pure Dart logic tests (fastest)
-           /_______________________ \
+              /                   \
+             /──────────────────── \
+            /    Unit Tests         \ ← Pure Dart logic tests (fastest)
+           / _______________________ \
 ```
 
 | Layer | Tool | Runs On | Speed | Cost |
@@ -1806,7 +1806,7 @@ This is the Flutter equivalent of Android's `contentDescription` / iOS's `access
 │ Screen unit                  │ Widget            │ Activity     │ UIViewController│
 │ Local state                  │ setState          │ ViewModel    │ @State          │
 │ Shared state (simple)        │ Provider          │ ViewModel    │ @EnvironmentObj │
-│ Shared state (enterprise)    │ BLoC / Riverpod   │ Hilt + MVI  │ TCA / Redux     │
+│ Shared state (enterprise)    │ BLoC / Riverpod   │ Hilt + MVI   │ TCA / Redux     │
 │ Navigation                   │ go_router         │ Jetpack Nav  │ NavigationStack │
 │ Unit tests                   │ flutter_test      │ JUnit 5      │ XCTest          │
 │ Widget/UI tests              │ WidgetTester      │ Espresso     │ XCUITest        │
