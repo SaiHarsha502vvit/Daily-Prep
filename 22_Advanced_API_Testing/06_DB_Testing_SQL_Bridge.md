@@ -1,21 +1,21 @@
-﻿# 06. DB Testing â€” The SQL Bridge
+﻿# 06. DB Testing — The SQL Bridge
 
 **Navigation**: [â† Previous: Data From API To Test](05_Data_From_API_To_Test.md) | [Index](../00_MASTER_INDEX.md)
 
 **Cross-links:**
-- [`08_SQL/07_JOINs_Complete.md`](../08_SQL/07_JOINs_Complete.md) â€” JOIN patterns for verification queries
-- [`08_SQL/08_Subqueries_CTEs.md`](../08_SQL/08_Subqueries_CTEs.md) â€” CTEs for multi-table verifications
-- [`08_SQL/13_Transactions_ACID.md`](../08_SQL/13_Transactions_ACID.md) â€” Transactions for DB teardown
-- [`21_SDET/06_Custom_Fixtures_Architecture.md`](../21_SDET_Playwright_Automation/06_Custom_Fixtures_Architecture.md) â€” The `yield` fixture teardown pattern
+- [`08_SQL/07_JOINs_Complete.md`](../08_SQL/07_JOINs_Complete.md) — JOIN patterns for verification queries
+- [`08_SQL/08_Subqueries_CTEs.md`](../08_SQL/08_Subqueries_CTEs.md) — CTEs for multi-table verifications
+- [`08_SQL/13_Transactions_ACID.md`](../08_SQL/13_Transactions_ACID.md) — Transactions for DB teardown
+- [`21_SDET/06_Custom_Fixtures_Architecture.md`](../21_SDET_Playwright_Automation/06_Custom_Fixtures_Architecture.md) — The `yield` fixture teardown pattern
 
 ---
 
-## 5W1H â€” Why This Chapter?
+## 5W1H — Why This Chapter?
 
-- **WHAT**: How to connect from Playwright tests directly to a SQL database, write verification queries, and clean up test data â€” covering both SQL Server (mssql) and PostgreSQL (pg).
+- **WHAT**: How to connect from Playwright tests directly to a SQL database, write verification queries, and clean up test data — covering both SQL Server (mssql) and PostgreSQL (pg).
 - **WHY**: APIs can return cached or incorrect data. The database is the ONLY source of truth. DB verification is the difference between knowing your feature works and hoping it works.
 - **WHO**: SDETs who currently verify test results only through the API or UI, and want to add a DB layer for bulletproof validation.
-- **WHEN**: For critical data paths â€” create, update, delete, financial transactions â€” where incorrect data persistence has real consequences.
+- **WHEN**: For critical data paths — create, update, delete, financial transactions — where incorrect data persistence has real consequences.
 - **HOW**: By building the DB connection fixture, writing SDET-grade JOIN queries, and integrating DB verification into your existing multi-step test patterns.
 
 ---
@@ -24,10 +24,10 @@
 
 Three scenarios where API + UI verification is NOT enough:
 
-### Scenario 1 â€” The Cache Problem
+### Scenario 1 — The Cache Problem
 ```
-Test:  POST /api/citations  â†’ creates citation â†’ returns 201 with citationId: 'CIT-999'
-Test:  GET  /api/citations/CIT-999 â†’ returns { status: 'PAID' } âœ… test passes
+Test:  POST /api/citations  → creates citation → returns 201 with citationId: 'CIT-999'
+Test:  GET  /api/citations/CIT-999 → returns { status: 'PAID' } ✅ test passes
 
 Reality: The write hit the CACHE, not the database.
          The citation was never persisted.
@@ -36,10 +36,10 @@ Reality: The write hit the CACHE, not the database.
          You have a production incident.
 
 DB check would have revealed: SELECT * FROM Citations WHERE citation_id = 'CIT-999'
-â†’ 0 rows returned. Test would have failed. Bug would have been caught.
+→ 0 rows returned. Test would have failed. Bug would have been caught.
 ```
 
-### Scenario 2 â€” The Partial Write
+### Scenario 2 — The Partial Write
 ```
 API call creates a Customer record with 3 related records (address, phone, preferences).
 API returns 201. UI shows the customer correctly.
@@ -47,10 +47,10 @@ But: the preferences record failed to write (DB constraint violation).
 API silently swallowed the error. UI reads preferences from defaults.
 
 DB check: SELECT * FROM CustomerPreferences WHERE customer_id = 'C-001'
-â†’ 0 rows. Bug caught.
+→ 0 rows. Bug caught.
 ```
 
-### Scenario 3 â€” The Amount Mismatch
+### Scenario 3 — The Amount Mismatch
 ```
 Payment of $150.00 processed.
 API returns: { payment: { amount: 150.00 } }
@@ -58,15 +58,15 @@ UI shows: "$150.00"
 DB stores: 15000 (stored as cents, but application bug caused 100x multiplication)
 
 DB check: SELECT amount FROM Payments WHERE payment_id = 'PAY-001'
-â†’ 15000. Expected 150 or 15000 depending on the schema.
+→ 15000. Expected 150 or 15000 depending on the schema.
 Type mismatch bugs are only caught by reading the raw DB value.
 ```
 
 ---
 
-## 2. Connecting From Playwright â€” The Setup
+## 2. Connecting From Playwright — The Setup
 
-### SQL Server (your enterprise environment â€” `mssql` package)
+### SQL Server (your enterprise environment — `mssql` package)
 
 ```bash
 # Install once in your Playwright project:
@@ -116,7 +116,7 @@ export const test = base.extend<{}, DBFixtures>({
 export { expect } from '@playwright/test';
 ```
 
-### PostgreSQL (for non-Microsoft environments â€” `pg` package)
+### PostgreSQL (for non-Microsoft environments — `pg` package)
 
 ```typescript
 import { Pool } from 'pg';
@@ -157,7 +157,7 @@ test('Citation is persisted to DB after API creation', async ({ request, db }) =
   await test.step('Verify citation record in database', async () => {
     const result = await db.request()
       .input('citationId', sql.NVarChar(50), citationId)
-      //      â†‘ parameterised query â€” NEVER string concatenate (SQL injection risk!)
+      //      ↑ parameterised query — NEVER string concatenate (SQL injection risk!)
       .query(`
         SELECT 
           citation_id,
@@ -187,7 +187,7 @@ test('Citation is persisted to DB after API creation', async ({ request, db }) =
 > ```typescript
 > // âŒ NEVER:
 > .query(`SELECT * FROM Citations WHERE citation_id = '${citationId}'`)
-> // âœ… ALWAYS:
+> // ✅ ALWAYS:
 > .input('citationId', sql.NVarChar, citationId)
 > .query(`SELECT * FROM Citations WHERE citation_id = @citationId`)
 > ```
@@ -248,7 +248,7 @@ await test.step('DB: Verify no duplicate citations for this vehicle on this date
       HAVING COUNT(*) > 1
     `);
 
-  // If any rows returned: duplicates exist â€” data integrity bug
+  // If any rows returned: duplicates exist — data integrity bug
   expect(result.recordset).toHaveLength(0);
 });
 ```
@@ -256,7 +256,7 @@ await test.step('DB: Verify no duplicate citations for this vehicle on this date
 ### Scenario: Verify Payment Chain (3 Tables)
 
 ```typescript
-await test.step('DB: Verify full payment chain (citation â†’ payment â†’ receipt)', async () => {
+await test.step('DB: Verify full payment chain (citation → payment → receipt)', async () => {
   const result = await db.request()
     .input('citationId', sql.NVarChar, data.citationId)
     .query(`
@@ -284,7 +284,7 @@ await test.step('DB: Verify full payment chain (citation â†’ payment â†�
   // Payment amount matches
   expect(row.payment_amount).toBe(data.expectedPaymentAmount);
   
-  // Receipt was generated (LEFT JOIN â€” might be null if receipt service failed)
+  // Receipt was generated (LEFT JOIN — might be null if receipt service failed)
   expect(row.receipt_id, 'Receipt not generated for payment').not.toBeNull();
 });
 ```
@@ -334,7 +334,7 @@ await test.step('DB: Verify recent citation payment history via CTE', async () =
 
 ---
 
-## 6. DB Teardown â€” Cleaning Up After Tests
+## 6. DB Teardown — Cleaning Up After Tests
 
 Two patterns for teardown: fixture-based (preferred) and explicit in the test.
 
@@ -377,7 +377,7 @@ test.afterEach(async ({ db }, testInfo) => {
 
   try {
     const request = new sql.Request(transaction);
-    // Delete in correct order (foreign key constraints â€” child before parent)
+    // Delete in correct order (foreign key constraints — child before parent)
     await request.input('testRunId', sql.NVarChar, testInfo.testId)
       .query(`DELETE FROM Receipts WHERE payment_id IN (
                 SELECT payment_id FROM Payments WHERE test_run_id = @testRunId
@@ -399,7 +399,7 @@ test.afterEach(async ({ db }, testInfo) => {
 
 ---
 
-## 7. Two-Strategy Verification â€” API + DB Together
+## 7. Two-Strategy Verification — API + DB Together
 
 Your confirmed approach: verify BOTH the API response AND the DB state.
 
@@ -505,13 +505,13 @@ const result = await db.request()
 The parameterised approach escapes special characters automatically and is not structurally alterable by the input value.
 </details>
 
-**Challenge 3 (Teardown Design):** Your test creates: 1 Customer record â†’ 3 Citation records â†’ 1 Payment record. There are foreign key constraints: Citations reference Customers (customer_id FK), Payments reference Citations (citation_id FK). In what ORDER must you delete records, and why?
+**Challenge 3 (Teardown Design):** Your test creates: 1 Customer record → 3 Citation records → 1 Payment record. There are foreign key constraints: Citations reference Customers (customer_id FK), Payments reference Citations (citation_id FK). In what ORDER must you delete records, and why?
 <details><summary>Answer</summary>
 
-Delete in reverse dependency order â€” child records before parent records:
-1. `DELETE FROM Payments WHERE citation_id IN (...)` â€” Payments depend on Citations
-2. `DELETE FROM Citations WHERE customer_id = @customerId` â€” Citations depend on Customers
-3. `DELETE FROM Customers WHERE customer_id = @customerId` â€” Customer is the root
+Delete in reverse dependency order — child records before parent records:
+1. `DELETE FROM Payments WHERE citation_id IN (...)` — Payments depend on Citations
+2. `DELETE FROM Citations WHERE customer_id = @customerId` — Citations depend on Customers
+3. `DELETE FROM Customers WHERE customer_id = @customerId` — Customer is the root
 
 If you delete the Customer first, the DB will throw a FK constraint violation (Citations still reference it). The rule: always delete the most-dependent (leaf) tables first, work up to the root (parent) table last.
 </details>

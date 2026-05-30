@@ -2,6 +2,54 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-05-30 — 21_SDET_Playwright_Automation: 01_Environment_Setup_and_First_Test.md created
+
+Changed:
+
+- Added `21_SDET_Playwright_Automation/01_Environment_Setup_and_First_Test.md` — the Day Zero setup chapter that every other chapter in the module assumes is complete.
+  - 5W1H scoped to readers who have not yet run `npm init playwright@latest`.
+  - Section 1: Node.js install — check command, download link, verify, why Node.js is needed.
+  - Section 2: VS Code + Playwright Extension, ESLint, Prettier — what the extension sidebar and Pick Locator button actually do.
+  - Section 3: `npm init playwright@latest` — CLI prompts walk-through, generated project structure table, one-sentence purpose for each file.
+  - Section 4: Three run modes (headless, headed, single file) — real passing and failing output; `npx playwright show-report`.
+  - Section 5: Inspector (`--debug`) — step panel, DOM panel, locator highlighting, `page.pause()` usage, Pick Locator button.
+  - Section 6: Codegen — what it does, ❌ three reasons not to paste output as-is (fragile selectors, no POM, no await), ✅ how to use it as a locator explorer.
+  - Section 7: First real test from scratch — `playwright.dev` navigation + assertion; line-by-line commentary explaining async, CDP, retrying assertions, and locator selection hierarchy table.
+  - Section 8: Where to go next (bullet list only).
+  - 3 Practice Challenges: MCQ (Inspector vs headed), Spot the Bug (codegen output with 4 problems), Write it yourself (the-internet.herokuapp.com login).
+  - Navigation header + footer matching the requested format.
+
+Reason:
+
+- Every existing chapter assumes `npm init playwright@latest` has been run. This file fills that genuine gap for anyone starting from zero.
+
+Verification:
+
+- `update_context.ps1 -Mode update` completed: 588 active Markdown files registered.
+- `update_context.ps1 -Mode check` passed: Context fresh.
+
+## 2026-05-30 — 21_SDET_Playwright_Automation: 00_Start_Here.md created
+
+Changed:
+
+- Added `21_SDET_Playwright_Automation/00_Start_Here.md` — navigation-only module entry point (no teaching content).
+  - One-paragraph intro scoped to working SDETs on D365/JSP/ASPX, not beginners.
+  - Prerequisites table: JS (`16_JavaScript/`), TS (`17_TypeScript/`), Testing Fundamentals (`00_Testing_Fundamentals/`), env setup.
+  - Environment Setup one-liner pointing to `01_Environment_Setup_and_First_Test.md`.
+  - 4 reading paths by background: new to automation / D365 job starter / interview prep / senior SDET architect.
+  - Full file map table (all 44+ chapters + quizzes + new files) sourced from `00_INDEX.md`.
+  - Cross-module links section: API Testing, TypeScript, DevOps/CI, SQL/DB, DSA (SDET→SDE bridge).
+  - Also noted: context was stale due to `00_Testing_Fundamentals/` files moving from `23_Mobile_Dev_And_Testing/` to `21_SDET_Playwright_Automation/` and new Android chapters added; this file was not affected by those moves.
+
+Reason:
+
+- Module needed a navigation anchor that lets readers find the right reading path without re-reading the full index.
+
+Verification:
+
+- Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update`.
+- Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check`.
+
 ## 2026-05-30 — 20_Interview_Mastery: 17_Production_Incident_Lessons.md created
 
 Changed:
@@ -57,12 +105,12 @@ Verification:
 Changed:
 
 **New SDET Modules Created:**
-- `21_SDET_Playwright_Automation/` â€” Added 4 chapters focused on shifting from manual QA to SDET, Playwright TypeScript basics, Enterprise locators (XPath vs getByRole for Dynamics 365), and browser console scripting for DOM traversal.
-- `22_Advanced_API_Testing/` â€” Added 3 chapters focusing on REST vs SOAP, deep JSON array traversal via Optional Chaining/array methods, XML-to-JSON parsing for SOAP, and enterprise headers/authentication mocking.
+- `21_SDET_Playwright_Automation/` — Added 4 chapters focused on shifting from manual QA to SDET, Playwright TypeScript basics, Enterprise locators (XPath vs getByRole for Dynamics 365), and browser console scripting for DOM traversal.
+- `22_Advanced_API_Testing/` — Added 3 chapters focusing on REST vs SOAP, deep JSON array traversal via Optional Chaining/array methods, XML-to-JSON parsing for SOAP, and enterprise headers/authentication mocking.
 
 **Study Plan Upgraded:**
-- Added `01_Getting_Started/03_SDET_1Hour_Daily_Path.md` â€” Created a custom 5-day rotation schedule strictly bounded to 1 hour/day, blending the new SDET/API modules with existing SQL, TypeScript, and DSA chapters.
-- `00_MASTER_INDEX.md` â€” Integrated the two new modules into the main table of contents and Quick Links.
+- Added `01_Getting_Started/03_SDET_1Hour_Daily_Path.md` — Created a custom 5-day rotation schedule strictly bounded to 1 hour/day, blending the new SDET/API modules with existing SQL, TypeScript, and DSA chapters.
+- `00_MASTER_INDEX.md` — Integrated the two new modules into the main table of contents and Quick Links.
 
 Reason:
 
@@ -72,28 +120,28 @@ Verification:
 
 - `update_context.ps1 -Mode update` and `-Mode check` both passed: 511 active Markdown files match manifest.
 
-## 2026-05-28 (Phase 6 â€” Context Upgrade + Orphan Cleanup + OSS Enrichment)
+## 2026-05-28 (Phase 6 — Context Upgrade + Orphan Cleanup + OSS Enrichment)
 
 Changed:
 
 **Context System Upgrades (`00_CONTEXT/`):**
-- `PEDAGOGY_STANDARDS.md` â€” Added concrete OSS reference format template (D009+D012), `Repo Cleanliness Standard` section (no orphaned answers, no double `<details>`, consistent challenge titles), expanded Parallel Agent Coordination with Codex-specific notes, expanded Final Quality Checklist.
-- `REPO_MAP.md` â€” Added `tools/update_context.ps1` root file row, SQL location clarification (some files in `20_Interview_Mastery`), expanded `_archive` rules (4 rules), added `Agent Quick Start` powershell block.
-- `UPDATE_PROTOCOL.md` â€” Added `When Another Agent Is Active` section with 5-step Codex coordination protocol.
+- `PEDAGOGY_STANDARDS.md` — Added concrete OSS reference format template (D009+D012), `Repo Cleanliness Standard` section (no orphaned answers, no double `<details>`, consistent challenge titles), expanded Parallel Agent Coordination with Codex-specific notes, expanded Final Quality Checklist.
+- `REPO_MAP.md` — Added `tools/update_context.ps1` root file row, SQL location clarification (some files in `20_Interview_Mastery`), expanded `_archive` rules (4 rules), added `Agent Quick Start` powershell block.
+- `UPDATE_PROTOCOL.md` — Added `When Another Agent Is Active` section with 5-step Codex coordination protocol.
 
 **Orphan Cleanup (boilerplate answer blocks removed after prior challenge replacements):**
-- `07_Modern_Java/Ch06_Functional_Programming.md` â€” Removed 2 orphaned "Not until collect()" boilerplate answers from Creating Streams and Intermediate Ops sections.
-- `07_Modern_Java/Ch43_SB_Auth_Security.md` â€” Removed 4 orphaned OAuth2 authorization-code and JWT-vs-session answer blocks from JWT, Pre/PostAuthorize, OAuth2, and API-key sections.
-- `07_Modern_Java/Ch50_SB_DSA_Applications.md` â€” Removed 1 orphaned Trie/LIKE% answer block from Dijkstra routing section.
-- `07_Modern_Java/Ch19_JVM_Object_Model.md` â€” Sanitized 4 duplicate boolean memory layout challenges with domain-appropriate 5W1H challenges.
-- `07_Modern_Java/Ch07_Modern_Java_9to21.md` â€” Sanitized 4 duplicate virtual threads challenges with domain-appropriate 5W1H challenges.
-- `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` â€” Reviewed ExecutorService usage (verified clean).
+- `07_Modern_Java/Ch06_Functional_Programming.md` — Removed 2 orphaned "Not until collect()" boilerplate answers from Creating Streams and Intermediate Ops sections.
+- `07_Modern_Java/Ch43_SB_Auth_Security.md` — Removed 4 orphaned OAuth2 authorization-code and JWT-vs-session answer blocks from JWT, Pre/PostAuthorize, OAuth2, and API-key sections.
+- `07_Modern_Java/Ch50_SB_DSA_Applications.md` — Removed 1 orphaned Trie/LIKE% answer block from Dijkstra routing section.
+- `07_Modern_Java/Ch19_JVM_Object_Model.md` — Sanitized 4 duplicate boolean memory layout challenges with domain-appropriate 5W1H challenges.
+- `07_Modern_Java/Ch07_Modern_Java_9to21.md` — Sanitized 4 duplicate virtual threads challenges with domain-appropriate 5W1H challenges.
+- `13_Developer_Essentials/19_Concurrency_Models_Coroutines.md` — Reviewed ExecutorService usage (verified clean).
 
 **Open-Source Reference Anchors added (D009+D012 format):**
-- `02_Data_Structures/01g_DS_Internals.md` â€” OpenJDK `HashMap.java` Poisson distribution / TREEIFY_THRESHOLD constant anchor after the HashMap.Put() Deep Dive challenge.
-- `07_Modern_Java/Ch06_Functional_Programming.md` â€” OpenJDK `ReferencePipeline.java` StatelessOp/StatefulOp chain laziness anchor after Creating Streams section.
-- `07_Modern_Java/Ch43_SB_Auth_Security.md` â€” jjwt `DefaultJwtParser.java` constant-time signature comparison anchor after JWT Signature Verification challenge.
-- `07_Modern_Java/Ch50_SB_DSA_Applications.md` â€” cp-algorithms Dijkstra (greedy choice + negative-weight constraint) anchor and OpenJDK `TreeMap.java` Red-Black Tree (reverseOrder, rank count) anchor.
+- `02_Data_Structures/01g_DS_Internals.md` — OpenJDK `HashMap.java` Poisson distribution / TREEIFY_THRESHOLD constant anchor after the HashMap.Put() Deep Dive challenge.
+- `07_Modern_Java/Ch06_Functional_Programming.md` — OpenJDK `ReferencePipeline.java` StatelessOp/StatefulOp chain laziness anchor after Creating Streams section.
+- `07_Modern_Java/Ch43_SB_Auth_Security.md` — jjwt `DefaultJwtParser.java` constant-time signature comparison anchor after JWT Signature Verification challenge.
+- `07_Modern_Java/Ch50_SB_DSA_Applications.md` — cp-algorithms Dijkstra (greedy choice + negative-weight constraint) anchor and OpenJDK `TreeMap.java` Red-Black Tree (reverseOrder, rank count) anchor.
 
 Reason:
 
@@ -161,18 +209,18 @@ Verification:
 - Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update`.
 - Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check`.
 
-## 2026-05-26 (Phase 5 Systematic Deduplication â€” Batch 1)
+## 2026-05-26 (Phase 5 Systematic Deduplication — Batch 1)
 
 Changed:
 
-- `Ch22_Java_Deep_Reasoning.md` â€” 5 duplicate `new String("hello") == "hello"` blocks replaced: Integer cache boundary, final three meanings, autoboxing loop penalty, fail-fast iterator, default method diamond.
-- `Ch55_Spring_Internals.md` â€” 8 duplicate `BeanCurrentlyInCreationException` boilerplate blocks replaced: @Autowired ambiguity resolution, CGLIB final class failure, @ConditionalOnMissingBean ordering, @ComponentScan package boundary, @Profile misfire, third-bean circular dependency fix, DispatcherServlet 404 flow, startup-to-shutdown lifecycle trace.
-- `Ch58_SB_Deep_Reasoning.md` â€” 10 cross-domain contaminations replaced (JWT, @Async proxy bypass, JS Promise.all, SQL T1/T2 anomaly) with section-specific Spring Boot challenges: Filter vs Interceptor selection, @SpringBootApplication without @EnableAutoConfiguration, AutoConfiguration negative match debug, @Transactional private method, IoC test pain, constructor injection immutability, request-scoped prototype, 401 vs 403 filter trace, property source priority order, @Async thread pool exhaustion.
-- `Ch53_SB_Distributed_Tracing.md` â€” 4 duplicate `Trace ID vs Span ID` blocks replaced: Kafka header propagation break, tail-based vs head-based sampling, Zipkin slow-span cs/sr timing analysis, TestObservationRegistry assertion.
-- `Ch34_SB_Security_Part4.md` â€” 6 wrong-domain blocks replaced: JDBC HikariCP connection pool exhaustion, @OneToMany EAGER N+1 + OOM, Spring Data derived query OR/AND ambiguity, @Transactional REQUIRES_NEW outbox problem, HTTP POST idempotency key pattern, @MockBean vs @SpyBean behavioral difference.
-- `13_Greedy.md` â€” 7 duplicate `interval scheduling sort by end time` blocks replaced: exchange argument proof, coin change greedy failure condition, Jump Game II greedy choice, gas station O(n) circular reset, Task Scheduler formula, digit maximization monotonic stack, Huffman coding prefix-free property.
-- `03b_Recursion_Fundamentals.md` â€” 7 duplicate `Stack<State> replaces call stack` blocks replaced: factorial stack memory cost, binary recursion O(n) tree visit, tail recursion in Java (no TCO), mutual recursion base case completeness, merge sort auxiliary space, linked list reversal pointer order, tree traversal order selection (pre/in/post).
-- `05c_Graphs_Fundamentals.md` â€” 7 duplicate `BFS unweighted shortest path` + 2 binary-search contaminations replaced: adjacency list vs matrix memory, DAG cycle detection 3-color, DFS stack overflow risk, BFS completeness guarantee proof, connected components BFS outer loop, topological sort DFS vs Kahn's, Dijkstra correctness and negative edge failure.
+- `Ch22_Java_Deep_Reasoning.md` — 5 duplicate `new String("hello") == "hello"` blocks replaced: Integer cache boundary, final three meanings, autoboxing loop penalty, fail-fast iterator, default method diamond.
+- `Ch55_Spring_Internals.md` — 8 duplicate `BeanCurrentlyInCreationException` boilerplate blocks replaced: @Autowired ambiguity resolution, CGLIB final class failure, @ConditionalOnMissingBean ordering, @ComponentScan package boundary, @Profile misfire, third-bean circular dependency fix, DispatcherServlet 404 flow, startup-to-shutdown lifecycle trace.
+- `Ch58_SB_Deep_Reasoning.md` — 10 cross-domain contaminations replaced (JWT, @Async proxy bypass, JS Promise.all, SQL T1/T2 anomaly) with section-specific Spring Boot challenges: Filter vs Interceptor selection, @SpringBootApplication without @EnableAutoConfiguration, AutoConfiguration negative match debug, @Transactional private method, IoC test pain, constructor injection immutability, request-scoped prototype, 401 vs 403 filter trace, property source priority order, @Async thread pool exhaustion.
+- `Ch53_SB_Distributed_Tracing.md` — 4 duplicate `Trace ID vs Span ID` blocks replaced: Kafka header propagation break, tail-based vs head-based sampling, Zipkin slow-span cs/sr timing analysis, TestObservationRegistry assertion.
+- `Ch34_SB_Security_Part4.md` — 6 wrong-domain blocks replaced: JDBC HikariCP connection pool exhaustion, @OneToMany EAGER N+1 + OOM, Spring Data derived query OR/AND ambiguity, @Transactional REQUIRES_NEW outbox problem, HTTP POST idempotency key pattern, @MockBean vs @SpyBean behavioral difference.
+- `13_Greedy.md` — 7 duplicate `interval scheduling sort by end time` blocks replaced: exchange argument proof, coin change greedy failure condition, Jump Game II greedy choice, gas station O(n) circular reset, Task Scheduler formula, digit maximization monotonic stack, Huffman coding prefix-free property.
+- `03b_Recursion_Fundamentals.md` — 7 duplicate `Stack<State> replaces call stack` blocks replaced: factorial stack memory cost, binary recursion O(n) tree visit, tail recursion in Java (no TCO), mutual recursion base case completeness, merge sort auxiliary space, linked list reversal pointer order, tree traversal order selection (pre/in/post).
+- `05c_Graphs_Fundamentals.md` — 7 duplicate `BFS unweighted shortest path` + 2 binary-search contaminations replaced: adjacency list vs matrix memory, DAG cycle detection 3-color, DFS stack overflow risk, BFS completeness guarantee proof, connected components BFS outer loop, topological sort DFS vs Kahn's, Dijkstra correctness and negative edge failure.
 
 Reason:
 
@@ -180,43 +228,43 @@ Reason:
 
 Contamination families identified and logged in CONTAMINATION_GUARDS.md:
 
-- `new String("hello") == "hello"` â€” stamped into Ch22 sections 4, 7, 9, 10, 12.
-- `BeanCurrentlyInCreationException` circular dependency â€” stamped into Ch55 sections 5-13.
-- `@Async proxy bypass` / `JWT vs session cookies` / `Promise.all` / `T1/T2 balance UPDATE` â€” mixed contamination stamped into Ch58 sections 1-12.
-- `Trace ID vs Span ID` â€” stamped into Ch53 sections 8, 9, 11, 12.
-- `ROLE_ prefix hasRole convention` + `N+1 JPA` + `T1/T2` â€” stamped into Ch34 sections JDBC, Entity, Repository, Transaction, REST, Testing.
-- `interval scheduling sort by end time` â€” stamped 7Ã— into 13_Greedy sections.
-- `Stack<State> replaces call stack` â€” stamped 7Ã— into 03b sections.
-- `BFS finds shortest path in unweighted graphs` + `binary search [1,3,5,7,9]` â€” stamped into 05c sections.
+- `new String("hello") == "hello"` — stamped into Ch22 sections 4, 7, 9, 10, 12.
+- `BeanCurrentlyInCreationException` circular dependency — stamped into Ch55 sections 5-13.
+- `@Async proxy bypass` / `JWT vs session cookies` / `Promise.all` / `T1/T2 balance UPDATE` — mixed contamination stamped into Ch58 sections 1-12.
+- `Trace ID vs Span ID` — stamped into Ch53 sections 8, 9, 11, 12.
+- `ROLE_ prefix hasRole convention` + `N+1 JPA` + `T1/T2` — stamped into Ch34 sections JDBC, Entity, Repository, Transaction, REST, Testing.
+- `interval scheduling sort by end time` — stamped 7× into 13_Greedy sections.
+- `Stack<State> replaces call stack` — stamped 7× into 03b sections.
+- `BFS finds shortest path in unweighted graphs` + `binary search [1,3,5,7,9]` — stamped into 05c sections.
 
 Verification:
 
 - Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update`.
 - Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check`.
 
-## 2026-05-28 (Phase 5 Systematic Deduplication â€” Batch 2)
+## 2026-05-28 (Phase 5 Systematic Deduplication — Batch 2)
 
 Changed:
 
-- `19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md` â€” 8 prefix-zero duplicates replaced: sentinel vs non-sentinel ArrayIndexOutOfBounds, HashMap put(0,1) for index-0 subarray miss, XOR self-inverse property, XOR HashMap count, negative modulo pitfall in Java (prefix % k + k) % k, 2D inclusion-exclusion PIE signs, 2D row-major memory layout, 2D use-case area query complexity.
-- `Ch02_Strings_Immutability.md` â€” 4 concat-loop duplicates replaced (sections 2, 3, 5, 7): intern() pool vs heap OOM, compile-time vs runtime concat with invokedynamic, Compact Strings LATIN1/UTF16 coder field, substring() memory sharing Java 6 vs 7 OOM fix.
-- `Ch03_Enums_Records_Sealed.md` â€” 6 Record DTO duplicates replaced (sections 5, 7, 11, PART3, 13, 16): enum singleton JVM class-loading thread safety, enum compiler output + values() defensive copy + == safety, Record + Jackson @JsonCreator fix, sealed class permits enforcement at compile + JVM level, pattern matching switch exhaustiveness checker, non-sealed payment domain model.
-- `Ch05_DateTime_Regex.md` â€” 6 LocalDateTime duplicates replaced (sections 5, 6, 8, 9, 10, 12): Duration vs Period DST skip pitfall, DateTimeFormatter immutability + RFC_1123_DATE_TIME, ReDoS catastrophic backtracking + possessive quantifiers, Matcher.find() vs matches() full-string semantics, capturing group back-reference $1 vs \\1 confusion, String.replaceAll() with user input ReDoS risk.
-- `Ch13_Networking_NIO.md` â€” 6 NIO vs IO duplicates replaced (sections 2, 3, 6, 8, 9, 10): blocking socket C10K thread model, ServerSocket accept() SocketException shutdown pattern, ByteBuffer flip() position/limit semantics + silent write-0 bug, Selector OP_WRITE CPU spin bug, non-blocking partial write retry strategy, SSL/TLS PKIX path building failure diagnosis.
-- `10_Graphs.md` â€” 6 BFS duplicates replaced (sections PART0, 9.1, 9.2, 9.5, 9.6, Real-World): adjacency list vs matrix memory calculation, BFS iterative vs recursive traversal order difference + visited timing, undirected vs directed cycle detection false positive, Union-Find path compression + rank amortized O(Î±(n)), Dijkstra lazy deletion stale-entry pattern, real-world algorithm selection (GPS/cycle/reachability).
-- `25_Problem_Origins.md` â€” 5 binary-search/two-pointer/HashMap cross-domain contaminations replaced: BFS level tracking (size snapshot pattern), DFS call stack depth StackOverflow risk + iterative fix, BST search path trace + degeneration condition, open addressing vs chaining (Java HashMap treeify threshold), Two Sum HashMap vs sort+two-pointer constraint difference.
-- `02_Code_Templates.md` â€” 1 sliding window duplicate fixed: variable window section replaced with while-loop shrink condition + LC 76 Minimum Window Substring logic.
+- `19_Prefix_Sum_Prefix_XOR_2D_Prefix_Java_Complete.md` — 8 prefix-zero duplicates replaced: sentinel vs non-sentinel ArrayIndexOutOfBounds, HashMap put(0,1) for index-0 subarray miss, XOR self-inverse property, XOR HashMap count, negative modulo pitfall in Java (prefix % k + k) % k, 2D inclusion-exclusion PIE signs, 2D row-major memory layout, 2D use-case area query complexity.
+- `Ch02_Strings_Immutability.md` — 4 concat-loop duplicates replaced (sections 2, 3, 5, 7): intern() pool vs heap OOM, compile-time vs runtime concat with invokedynamic, Compact Strings LATIN1/UTF16 coder field, substring() memory sharing Java 6 vs 7 OOM fix.
+- `Ch03_Enums_Records_Sealed.md` — 6 Record DTO duplicates replaced (sections 5, 7, 11, PART3, 13, 16): enum singleton JVM class-loading thread safety, enum compiler output + values() defensive copy + == safety, Record + Jackson @JsonCreator fix, sealed class permits enforcement at compile + JVM level, pattern matching switch exhaustiveness checker, non-sealed payment domain model.
+- `Ch05_DateTime_Regex.md` — 6 LocalDateTime duplicates replaced (sections 5, 6, 8, 9, 10, 12): Duration vs Period DST skip pitfall, DateTimeFormatter immutability + RFC_1123_DATE_TIME, ReDoS catastrophic backtracking + possessive quantifiers, Matcher.find() vs matches() full-string semantics, capturing group back-reference $1 vs \\1 confusion, String.replaceAll() with user input ReDoS risk.
+- `Ch13_Networking_NIO.md` — 6 NIO vs IO duplicates replaced (sections 2, 3, 6, 8, 9, 10): blocking socket C10K thread model, ServerSocket accept() SocketException shutdown pattern, ByteBuffer flip() position/limit semantics + silent write-0 bug, Selector OP_WRITE CPU spin bug, non-blocking partial write retry strategy, SSL/TLS PKIX path building failure diagnosis.
+- `10_Graphs.md` — 6 BFS duplicates replaced (sections PART0, 9.1, 9.2, 9.5, 9.6, Real-World): adjacency list vs matrix memory calculation, BFS iterative vs recursive traversal order difference + visited timing, undirected vs directed cycle detection false positive, Union-Find path compression + rank amortized O(α(n)), Dijkstra lazy deletion stale-entry pattern, real-world algorithm selection (GPS/cycle/reachability).
+- `25_Problem_Origins.md` — 5 binary-search/two-pointer/HashMap cross-domain contaminations replaced: BFS level tracking (size snapshot pattern), DFS call stack depth StackOverflow risk + iterative fix, BST search path trace + degeneration condition, open addressing vs chaining (Java HashMap treeify threshold), Two Sum HashMap vs sort+two-pointer constraint difference.
+- `02_Code_Templates.md` — 1 sliding window duplicate fixed: variable window section replaced with while-loop shrink condition + LC 76 Minimum Window Substring logic.
 
 Contamination families identified (new in Batch 2):
 
-- `concat tight loop 10,000 times` â€” stamped 4Ã— into Ch02 sections 2, 3, 5, 7.
-- `Record vastly superior to class for DTOs` â€” stamped 6Ã— into Ch03 sections 5, 7, 11, PART3, 13, 16.
-- `java.util.Date replaced by java.time` â€” stamped 6Ã— into Ch05 sections 5, 6, 8, 9, 10, 12.
-- `NIO vastly superior to traditional IO` â€” stamped 6Ã— into Ch13 sections 2, 3, 6, 8, 9, 10.
-- `BFS finds shortest path in unweighted graphs` â€” stamped 6Ã— into 10_Graphs sections.
-- `binary search on [1,3,5,7,9] with target=6` â€” stamped 3Ã— into 25_Problem_Origins (BFS, DFS, BST sections).
+- `concat tight loop 10,000 times` — stamped 4× into Ch02 sections 2, 3, 5, 7.
+- `Record vastly superior to class for DTOs` — stamped 6× into Ch03 sections 5, 7, 11, PART3, 13, 16.
+- `java.util.Date replaced by java.time` — stamped 6× into Ch05 sections 5, 6, 8, 9, 10, 12.
+- `NIO vastly superior to traditional IO` — stamped 6× into Ch13 sections 2, 3, 6, 8, 9, 10.
+- `BFS finds shortest path in unweighted graphs` — stamped 6× into 10_Graphs sections.
+- `binary search on [1,3,5,7,9] with target=6` — stamped 3× into 25_Problem_Origins (BFS, DFS, BST sections).
 
-Verified-clean files (all challenges unique â€” not boilerplate):
+Verified-clean files (all challenges unique — not boilerplate):
 
 - `12_Backtracking.md` (9 unique), `01g_DS_Internals.md` (9), `15_LinkedList.md` (7), `Ch65_OS_Fundamentals.md` (7), `03_Docker_Containers.md` (7), `03_DSA_Pattern_Recognition_Engine.md` (8), `21_Prefix_PrefixXOR_2DPrefix_CheatSheet.md` (10), `01_TS_Foundations.md` (8), `Ch04_Generics_Exceptions.md` (6).
 
@@ -226,7 +274,7 @@ Reason:
 
 Verification:
 
-- Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update`. (Completed â€” 503 files registered.)
+- Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update`. (Completed — 503 files registered.)
 - Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check`.
 
 ## 2026-05-26 (Previous Work)

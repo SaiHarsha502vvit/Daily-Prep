@@ -1,8 +1,8 @@
-﻿**JavaScript Chapter 4/7** | [â† Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next â†’ DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
+﻿**JavaScript Chapter 4/7** | [â† Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
 
-# Async JavaScript â€” Event Loop, Promises & Async/Await
+# Async JavaScript — Event Loop, Promises & Async/Await
 
-## 5W1H â€” Why This Chapter?
+## 5W1H — Why This Chapter?
 
 
 WHAT: How JS handles asynchronous operations despite being
@@ -10,7 +10,7 @@ SINGLE-THREADED. Event loop, callbacks, promises, async.
 
 WHY:  Every web app does async: API calls, file reads, timers,
 user events, animations. Without understanding async, you
-WILL have bugs â€” race conditions, callback hell, unhandled
+WILL have bugs — race conditions, callback hell, unhandled
 promise rejections, stale closures in React.
 
 WHO:  Every developer. Frontend (fetch, events), Backend (DB,
@@ -26,52 +26,52 @@ the call stack when the stack is empty.
 
 ---
 
-## 1. The Event Loop â€” The Core Mental Model
+## 1. The Event Loop — The Core Mental Model
 
 ### 5W1H: WHY is JS Single-Threaded?
 
 
 WHY single-threaded?
 JS was designed for the DOM. If two threads modified the same
-DOM element simultaneously â†’ race condition â†’ crash/corruption.
+DOM element simultaneously → race condition → crash/corruption.
 One thread = no data races on the DOM. Simpler mental model.
 
 BUT HOW does it handle async then?
-The EVENT LOOP â€” JS's secret weapon.
+The EVENT LOOP — JS's secret weapon.
 
 
 ```
 THE EVENT LOOP ARCHITECTURE:
 
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚  YOUR JS CODE                                            â”‚
-â”‚  â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”      â”‚
-â”‚  â”‚  CALL STACK  â”‚    â”‚  WEB APIs (browser) or     â”‚      â”‚
-â”‚  â”‚              â”‚    â”‚  C++ APIs (Node)            â”‚     â”‚
-â”‚  â”‚ â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â” â”‚    â”‚                              â”‚    â”‚
-â”‚  â”‚ â”‚ func3()  â”‚ â”‚    â”‚  â€¢ setTimeout/setInterval    â”‚    â”‚
-â”‚  â”‚ â”‚ func2()  â”‚ â”‚    â”‚  â€¢ fetch / XMLHttpRequest    â”‚    â”‚
-â”‚  â”‚ â”‚ func1()  â”‚ â”‚    â”‚  â€¢ addEventListener          â”‚    â”‚
-â”‚  â”‚ â”‚ global   â”‚ â”‚    â”‚  â€¢ geolocation               â”‚    â”‚
-â”‚  â”‚ â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜ â”‚    â”‚  â€¢ FileReader                â”‚    â”‚
-â”‚  â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜    â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜      â”‚
-â”‚         â–²                          â”‚                     â”‚
-â”‚         â”‚                          â–¼                     â”‚
-â”‚         â”‚              â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”         â”‚
-â”‚         â”‚              â”‚  CALLBACK QUEUES      â”‚         â”‚
-â”‚         â”‚              â”‚                                 â”‚
-â”‚    EVENT LOOP          â”‚  Microtask Queue:     â”‚         â”‚
-â”‚    (checks if          â”‚  Promise.then()        â”‚        â”‚
-â”‚     stack is           â”‚  queueMicrotask()      â”‚        â”‚
-â”‚     empty, then        â”‚  MutationObserver      â”‚        â”‚
-â”‚     moves next         â”‚                        â”‚        â”‚
-â”‚     task to stack)     â”‚  Macrotask Queue:     â”‚         â”‚
-â”‚         â”‚              â”‚  setTimeout()          â”‚        â”‚
-â”‚         â”‚              â”‚  setInterval()         â”‚        â”‚
-â”‚         â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”‚  I/O callbacks         â”‚        â”‚
-â”‚                        â”‚  UI rendering          â”‚        â”‚
-â”‚                        â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜         â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌──────────────────────────────────────────────────────────â”
+│  YOUR JS CODE                                            │
+│  ┌──────────────â”    ┌────────────────────────────â”      │
+│  │  CALL STACK  │    │  WEB APIs (browser) or     │      │
+│  │              │    │  C++ APIs (Node)            │     │
+│  │ ┌──────────â” │    │                              │    │
+│  │ │ func3()  │ │    │  • setTimeout/setInterval    │    │
+│  │ │ func2()  │ │    │  • fetch / XMLHttpRequest    │    │
+│  │ │ func1()  │ │    │  • addEventListener          │    │
+│  │ │ global   │ │    │  • geolocation               │    │
+│  │ └──────────┘ │    │  • FileReader                │    │
+│  └──────────────┘    └─────────────┬──────────────┘      │
+│         ▲                          │                     │
+│         │                          ▼                     │
+│         │              ┌───────────────────────â”         │
+│         │              │  CALLBACK QUEUES      │         │
+│         │              │                                 │
+│    EVENT LOOP          │  Microtask Queue:     │         │
+│    (checks if          │  Promise.then()        │        │
+│     stack is           │  queueMicrotask()      │        │
+│     empty, then        │  MutationObserver      │        │
+│     moves next         │                        │        │
+│     task to stack)     │  Macrotask Queue:     │         │
+│         │              │  setTimeout()          │        │
+│         │              │  setInterval()         │        │
+│         └──────────────│  I/O callbacks         │        │
+│                        │  UI rendering          │        │
+│                        └───────────────────────┘         │
+└──────────────────────────────────────────────────────────┘
 
 CRITICAL RULE:
 Microtasks ALWAYS run before macrotasks.
@@ -79,48 +79,48 @@ After each macrotask, ALL pending microtasks run first.
 ```
 
 
-### The Event Loop in Action â€” Step by Step
+### The Event Loop in Action — Step by Step
 
 ```javascript
-console.log("1");                          // Sync â†’ call stack
+console.log("1");                          // Sync → call stack
 
-setTimeout(() => console.log("2"), 0);     // Macro â†’ macrotask queue
+setTimeout(() => console.log("2"), 0);     // Macro → macrotask queue
 
-Promise.resolve().then(() => console.log("3")); // Micro â†’ microtask queue
+Promise.resolve().then(() => console.log("3")); // Micro → microtask queue
 
-console.log("4");                          // Sync â†’ call stack
+console.log("4");                          // Sync → call stack
 
 // OUTPUT: 1, 4, 3, 2
 // WHY?
 // 1. "1" runs immediately (sync)
-// 2. setTimeout REGISTERS callback â†’ macrotask queue (even with 0ms!)
-// 3. Promise.then REGISTERS callback â†’ microtask queue
+// 2. setTimeout REGISTERS callback → macrotask queue (even with 0ms!)
+// 3. Promise.then REGISTERS callback → microtask queue
 // 4. "4" runs immediately (sync)
-// 5. Stack is empty â†’ event loop checks microtasks first â†’ "3"
-// 6. No more microtasks â†’ check macrotasks â†’ "2"
+// 5. Stack is empty → event loop checks microtasks first → "3"
+// 6. No more microtasks → check macrotasks → "2"
 ```
 
 ```
-â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
-â•‘  STEP-BY-STEP TRACE:                                                 â•‘
-â•‘                                                                      â•‘
-â•‘  CALL STACK          MICROTASK Q     MACROTASK Q    OUTPUT           â•‘
-â•‘  â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€       â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€      â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€     â”€â”€â”€â”€â”€â”€           â•‘
-â•‘  log("1")            []              []             "1"              â•‘
-â•‘  setTimeout(cb,0)    []              [cbâ†’"2"]       "1"              â•‘
-â•‘  Promise.then(cb)    [cbâ†’"3"]        [cbâ†’"2"]       "1"              â•‘
-â•‘  log("4")            [cbâ†’"3"]        [cbâ†’"2"]       "1","4"          â•‘
-â•‘  â† stack empty â†’                                                     â•‘
-â•‘  cbâ†’"3"              []              [cbâ†’"2"]       "1","4","3"      â•‘
-â•‘  â† microtasks done â†’                                                 â•‘
-â•‘  cbâ†’"2"              []              []             "1","4","3","2"  â•‘
-â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
+║  STEP-BY-STEP TRACE:                                                 ║
+║                                                                      ║
+║  CALL STACK          MICROTASK Q     MACROTASK Q    OUTPUT           ║
+║  ─────────────       ──────────      ──────────     ──────           ║
+║  log("1")            []              []             "1"              ║
+║  setTimeout(cb,0)    []              [cb→"2"]       "1"              ║
+║  Promise.then(cb)    [cb→"3"]        [cb→"2"]       "1"              ║
+║  log("4")            [cb→"3"]        [cb→"2"]       "1","4"          ║
+║  â† stack empty →                                                     ║
+║  cb→"3"              []              [cb→"2"]       "1","4","3"      ║
+║  â† microtasks done →                                                 ║
+║  cb→"2"              []              []             "1","4","3","2"  ║
+╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
 
 ---
 
-## 2. Callbacks â€” The Old Way
+## 2. Callbacks — The Old Way
 
 ```javascript
 // WHAT: Pass a function to be called LATER when the async operation finishes.
@@ -143,7 +143,7 @@ getUser(1, (err, user) => {
     getOrders(user.id, (err, orders) => {
         getOrderDetails(orders[0].id, (err, details) => {
             getShippingInfo(details.shippingId, (err, shipping) => {
-                // 4 levels deep â€” hard to read, hard to handle errors
+                // 4 levels deep — hard to read, hard to handle errors
                 console.log(shipping);
             });
         });
@@ -151,7 +151,7 @@ getUser(1, (err, user) => {
 });
 
 // WHY callback hell is bad:
-// 1. Pyramid of doom â€” indentation keeps growing
+// 1. Pyramid of doom — indentation keeps growing
 // 2. Error handling at every level
 // 3. Hard to refactor or add steps
 // 4. Can't use try/catch (async errors escape it)
@@ -160,7 +160,7 @@ getUser(1, (err, user) => {
 
 ---
 
-## 3. Promises â€” The Modern Foundation
+## 3. Promises — The Modern Foundation
 
 ### 5W1H: WHAT is a Promise?
 
@@ -174,18 +174,18 @@ WHY:  Promises solve callback hell with chaining (.then).
       They enable async/await (Chapter section 4).
 
 ANALOGY: A promise is like an order receipt at a restaurant.
-You place an order â†’ get a receipt (promise). Eventually:
-â€¢ Your food arrives (fulfilled) â†’ enjoy it (.then)
-â€¢ Kitchen is out of ingredients (rejected) â†’ handle it (.catch)
-â€¢ While waiting, you can do other things (non-blocking).
+You place an order → get a receipt (promise). Eventually:
+• Your food arrives (fulfilled) → enjoy it (.then)
+• Kitchen is out of ingredients (rejected) → handle it (.catch)
+• While waiting, you can do other things (non-blocking).
 
 STATES:
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”    resolve()    â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ PENDING  â”‚â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â†’â”‚ FULFILLED  â”‚
-â”‚          â”‚                 â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-â”‚          â”‚    reject()     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚          â”‚â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â†’â”‚ REJECTED   â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜                 â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌──────────â”    resolve()    ┌───────────â”
+│ PENDING  │───────────────→│ FULFILLED  │
+│          │                 └───────────┘
+│          │    reject()     ┌───────────â”
+│          │───────────────→│ REJECTED   │
+└──────────┘                 └───────────┘
 Once settled (fulfilled/rejected), a promise NEVER changes state.
 ```
 
@@ -207,7 +207,7 @@ const myPromise = new Promise((resolve, reject) => {
 myPromise
     .then(data => {
         console.log(data);       // "Data loaded!"
-        return data.toUpperCase(); // Return value â†’ next .then
+        return data.toUpperCase(); // Return value → next .then
     })
     .then(upper => {
         console.log(upper);      // "DATA LOADED!"
@@ -228,19 +228,19 @@ getUser(1)
     .catch(error => console.error(error)); // ONE catch for ALL!
 ```
 
-### Promise Static Methods â€” Parallel & Race Patterns
+### Promise Static Methods — Parallel & Race Patterns
 
 ```javascript
 const p1 = fetch("/api/users");
 const p2 = fetch("/api/products");
 const p3 = fetch("/api/orders");
 
-// Promise.all â€” Wait for ALL, fail if ANY fails
+// Promise.all — Wait for ALL, fail if ANY fails
 const [users, products, orders] = await Promise.all([p1, p2, p3]);
-// If ANY promise rejects â†’ entire Promise.all rejects immediately
+// If ANY promise rejects → entire Promise.all rejects immediately
 // USE: When you need ALL results and can't proceed without them.
 
-// Promise.allSettled â€” Wait for ALL, never fails
+// Promise.allSettled — Wait for ALL, never fails
 const results = await Promise.allSettled([p1, p2, p3]);
 // results = [
 //   { status: "fulfilled", value: ... },
@@ -249,7 +249,7 @@ const results = await Promise.allSettled([p1, p2, p3]);
 // ]
 // USE: When you want to know the status of each, regardless of failure.
 
-// Promise.race â€” First to settle (fulfill OR reject) wins
+// Promise.race — First to settle (fulfill OR reject) wins
 const fastest = await Promise.race([p1, p2, p3]);
 // USE: Timeout pattern:
 const withTimeout = Promise.race([
@@ -257,22 +257,22 @@ const withTimeout = Promise.race([
     new Promise((_, reject) => setTimeout(() => reject(new Error("Timeout")), 5000))
 ]);
 
-// Promise.any â€” First to FULFILL wins (ignores rejections)
+// Promise.any — First to FULFILL wins (ignores rejections)
 const first = await Promise.any([p1, p2, p3]);
-// If ALL reject â†’ AggregateError
+// If ALL reject → AggregateError
 // USE: Try multiple sources, use whichever responds first.
 ```
 
 ```
 PROMISE METHODS COMPARISON:
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Method            â”‚ Resolves   â”‚ Rejects    â”‚ Use Case        â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ Promise.all       â”‚ ALL fulfillâ”‚ ANY rejectsâ”‚ Need all resultsâ”‚
-â”‚ Promise.allSettledâ”‚ ALL settle â”‚ Never      â”‚ Check each      â”‚
-â”‚ Promise.race      â”‚ First done â”‚ First done â”‚ Timeout/fastest â”‚
-â”‚ Promise.any       â”‚ First win  â”‚ ALL reject â”‚ Multiple sourcesâ”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌───────────────────┬────────────┬────────────┬─────────────────â”
+│ Method            │ Resolves   │ Rejects    │ Use Case        │
+├───────────────────┼────────────┼────────────┼─────────────────┤
+│ Promise.all       │ ALL fulfill│ ANY rejects│ Need all results│
+│ Promise.allSettled│ ALL settle │ Never      │ Check each      │
+│ Promise.race      │ First done │ First done │ Timeout/fastest │
+│ Promise.any       │ First win  │ ALL reject │ Multiple sources│
+└───────────────────┴────────────┴────────────┴─────────────────┘
 ```
 
 
@@ -280,12 +280,12 @@ PROMISE METHODS COMPARISON:
 
 
 
-ðŸ”¬ **Section Challenge â€” 3. Promises â€” The Modern Foundation**
+🔬 **Section Challenge — 3. Promises — The Modern Foundation**
 
-**Challenge 1 (Reasoning):** `Promise.all([p1,p2,p3])` â€” p2 rejects. What happens to p1 and p3?
+**Challenge 1 (Reasoning):** `Promise.all([p1,p2,p3])` — p2 rejects. What happens to p1 and p3?
 <details><summary>Answer</summary>
 
-`Promise.all` rejects immediately when ANY promise rejects (fail-fast). p1 and p3 are still running â€” their promises continue executing, but their results are ignored. If they reject too, those rejections are also silently ignored (potential unhandled rejection warnings). Use `Promise.allSettled` to wait for ALL to complete regardless of success/failure, getting all results including errors.
+`Promise.all` rejects immediately when ANY promise rejects (fail-fast). p1 and p3 are still running — their promises continue executing, but their results are ignored. If they reject too, those rejections are also silently ignored (potential unhandled rejection warnings). Use `Promise.allSettled` to wait for ALL to complete regardless of success/failure, getting all results including errors.
 </details>
 
 **Challenge 2 (Design):** Implement `Promise.race` from scratch.
@@ -295,7 +295,7 @@ PROMISE METHODS COMPARISON:
 function race(promises) {
     return new Promise((resolve, reject) => {
         promises.forEach(p => Promise.resolve(p).then(resolve, reject));
-        // First to resolve OR reject wins â€” others are ignored
+        // First to resolve OR reject wins — others are ignored
     });
 }
 ```
@@ -303,22 +303,22 @@ Once the first promise settles, the outer promise is settled. Other promises con
 </details>
 
 
-## 4. Async/Await â€” The Clean Syntax
+## 4. Async/Await — The Clean Syntax
 
 ### 5W1H: WHY Async/Await?
 
 ```
-â•”â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•—
-â•‘  WHAT: Syntactic sugar over Promises. Makes async code LOOK and      â•‘
-â•‘        BEHAVE like synchronous code.                                 â•‘
-â•‘                                                                      â•‘
-â•‘  WHY:  .then chains are better than callbacks, but still messy       â•‘
-â•‘        for complex flows. async/await reads top-to-bottom.           â•‘
-â•‘                                                                      â•‘
-â•‘  HOW:  `async` marks a function as returning a Promise.              â•‘
-â•‘        `await` pauses execution until the Promise resolves.          â•‘
-â•‘        (The thread isn't blocked â€” other code can run!)              â•‘
-â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
+║  WHAT: Syntactic sugar over Promises. Makes async code LOOK and      ║
+║        BEHAVE like synchronous code.                                 ║
+║                                                                      ║
+║  WHY:  .then chains are better than callbacks, but still messy       ║
+║        for complex flows. async/await reads top-to-bottom.           ║
+║                                                                      ║
+║  HOW:  `async` marks a function as returning a Promise.              ║
+║        `await` pauses execution until the Promise resolves.          ║
+║        (The thread isn't blocked — other code can run!)              ║
+╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```
 
 
@@ -351,11 +351,11 @@ async function fetchUserData() {
 
 // PARALLEL with async/await (IMPORTANT!):
 async function fetchAll() {
-    // âŒ WRONG â€” runs sequentially (waits for each):
+    // âŒ WRONG — runs sequentially (waits for each):
     const users = await fetch("/api/users");
     const products = await fetch("/api/products"); // Waits for users first!
 
-    // âœ… RIGHT â€” runs in parallel:
+    // ✅ RIGHT — runs in parallel:
     const [users2, products2] = await Promise.all([
         fetch("/api/users"),
         fetch("/api/products")
@@ -405,7 +405,7 @@ if (!user) { /* handle */ }
 
 
 
-ðŸ”¬ **Section Challenge â€” 4. Async/Await â€” The Clean Syntax**
+🔬 **Section Challenge — 4. Async/Await — The Clean Syntax**
 
 **Challenge 1 (Reasoning):** `await Promise.all([fetch(a), fetch(b)])` vs `await fetch(a); await fetch(b)`. What's the performance difference?
 <details><summary>Answer</summary>
@@ -416,7 +416,7 @@ if (!user) { /* handle */ }
 **Challenge 2 (Bug Hunt):** An `async` function has `try { await doWork(); } catch(e) {}`. `doWork()` rejects. Is the rejection handled?
 <details><summary>Answer</summary>
 
-Yes â€” `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise â€” the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
+Yes — `await` unwraps the rejected promise and throws the rejection value as a synchronous error, which is caught by the `catch` block. Without `try/catch` around `await`: unhandled rejection. Without `await` (just `doWork()`): the rejection is a separate promise — the `try/catch` CANNOT catch it (it's asynchronous). Always `await` async calls if you want to catch their rejections synchronously.
 </details>
 
 
@@ -438,9 +438,9 @@ gen.next(); // { value: 2, done: false }
 gen.next(); // { value: 3, done: false }
 
 // WHY generators matter:
-// 1. Lazy evaluation â€” produce values on demand
-// 2. Iterator protocol â€” works with for...of
-// 3. Async generators â€” for streaming data
+// 1. Lazy evaluation — produce values on demand
+// 2. Iterator protocol — works with for...of
+// 3. Async generators — for streaming data
 
 // ASYNC GENERATOR: yield + async combined
 async function* fetchPages(url) {
@@ -460,7 +460,7 @@ for await (const page of fetchPages("/api/users")) {
 }
 ```
 
-### AbortController â€” Cancelling Async Operations
+### AbortController — Cancelling Async Operations
 
 ```javascript
 // WHAT: The ONLY standard way to cancel fetch requests.
@@ -502,20 +502,20 @@ useEffect(() => {
 
 
 
-## 6. Microtasks vs Macrotasks â€” Deep Dive
+## 6. Microtasks vs Macrotasks — Deep Dive
 
 ```javascript
 // MICROTASKS (higher priority):
-// â€¢ Promise.then/.catch/.finally callbacks
-// â€¢ queueMicrotask()
-// â€¢ MutationObserver callbacks
+// • Promise.then/.catch/.finally callbacks
+// • queueMicrotask()
+// • MutationObserver callbacks
 
 // MACROTASKS (lower priority):
-// â€¢ setTimeout / setInterval
-// â€¢ setImmediate (Node.js only)
-// â€¢ I/O operations
-// â€¢ UI rendering events
-// â€¢ requestAnimationFrame (between macro tasks, before paint)
+// • setTimeout / setInterval
+// • setImmediate (Node.js only)
+// • I/O operations
+// • UI rendering events
+// • requestAnimationFrame (between macro tasks, before paint)
 
 // THE RULE: After each macrotask, run ALL pending microtasks
 // before the next macrotask.
@@ -550,25 +550,25 @@ console.log("end");
 ```
 EVENT LOOP CYCLE:
 
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ 1. Execute ALL synchronous code in call stack           â”‚
-â”‚                â”‚                                        â”‚
-â”‚                â–¼                                        â”‚
-â”‚ 2. Drain ENTIRE microtask queue                         â”‚
-â”‚    (including microtasks added DURING this step!)       â”‚
-â”‚                â”‚                                        â”‚
-â”‚                â–¼                                        â”‚
-â”‚ 3. Pick ONE macrotask from macrotask queue              â”‚
-â”‚                â”‚                                        â”‚
-â”‚                â–¼                                        â”‚
-â”‚ 4. Drain ENTIRE microtask queue again                   â”‚
-â”‚                â”‚                                        â”‚
-â”‚                â–¼                                        â”‚
-â”‚ 5. Render/paint (if needed)                             â”‚
-â”‚                â”‚                                        â”‚
-â”‚                â–¼                                        â”‚
-â”‚ 6. Go to step 3 (next macrotask)                        â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌─────────────────────────────────────────────────────────â”
+│ 1. Execute ALL synchronous code in call stack           │
+│                │                                        │
+│                ▼                                        │
+│ 2. Drain ENTIRE microtask queue                         │
+│    (including microtasks added DURING this step!)       │
+│                │                                        │
+│                ▼                                        │
+│ 3. Pick ONE macrotask from macrotask queue              │
+│                │                                        │
+│                ▼                                        │
+│ 4. Drain ENTIRE microtask queue again                   │
+│                │                                        │
+│                ▼                                        │
+│ 5. Render/paint (if needed)                             │
+│                │                                        │
+│                ▼                                        │
+│ 6. Go to step 3 (next macrotask)                        │
+└─────────────────────────────────────────────────────────┘
 
 IMPLICATION: Microtasks can starve macrotasks!
 If microtasks keep adding more microtasks, setTimeout callbacks
@@ -652,37 +652,37 @@ await asyncPool(5, urls, url => fetch(url).then(r => r.json()));
 
 ```
 Q: What is the event loop?
-â†’ The mechanism that allows single-threaded JS to handle async.
+→ The mechanism that allows single-threaded JS to handle async.
   It checks if the call stack is empty, then moves tasks from
   queues (microtask first, then macrotask) to the stack.
 
 Q: Output? setTimeout(()=>log(1),0); Promise.resolve().then(()=>log(2)); log(3);
-â†’ 3, 2, 1 â€” sync first, then microtask (promise), then macrotask (timeout)
+→ 3, 2, 1 — sync first, then microtask (promise), then macrotask (timeout)
 
 Q: Difference between microtask and macrotask?
-â†’ Microtasks (promises, queueMicrotask) run BEFORE macrotasks
+→ Microtasks (promises, queueMicrotask) run BEFORE macrotasks
   (setTimeout, I/O). All microtasks drain before next macrotask.
 
 Q: Promise.all vs Promise.allSettled?
-â†’ .all: rejects immediately if ANY promise rejects.
+→ .all: rejects immediately if ANY promise rejects.
   .allSettled: waits for ALL, returns status of each.
 
 Q: What does async do to a function?
-â†’ Makes it return a Promise. Allows `await` inside.
+→ Makes it return a Promise. Allows `await` inside.
   The return value becomes the resolved value of the promise.
 
 Q: Can you cancel a fetch request?
-â†’ Yes, using AbortController. Pass its signal to fetch options.
+→ Yes, using AbortController. Pass its signal to fetch options.
   Call controller.abort() to cancel.
 
 Q: How to run async operations in parallel?
-â†’ Promise.all([promise1, promise2, promise3])
+→ Promise.all([promise1, promise2, promise3])
   NOT: await p1; await p2; (this runs sequentially!)
 ```
 
 
 ---
 
-[â† Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next â†’ DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
+[â† Previous: Objects & Prototypes](03_JS_Objects_Prototypes.md) | [Index](../00_MASTER_INDEX.md) | [Next → DOM & Browser APIs](05_JS_DOM_BrowserAPIs.md)
 
 ---

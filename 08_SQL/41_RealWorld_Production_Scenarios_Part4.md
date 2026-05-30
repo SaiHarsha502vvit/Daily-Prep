@@ -486,7 +486,7 @@ ALTER TABLE orders DROP COLUMN discount;
 
 ```sql
 -- PROBLEM: Customer names with accents become garbled
--- "José García" → "JosÃ© GarcÃ­a"
+-- "José García" → "José García"
 -- Cause: Reading as latin1 but data is actually UTF-8
 
 -- Step 1: Detect encoding issues

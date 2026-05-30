@@ -1,16 +1,16 @@
-﻿# 05. Data From API To Test â€” The Bridge Pattern
+﻿# 05. Data From API To Test — The Bridge Pattern
 
-**Navigation**: [â† Previous: APIUtils & Factory Pattern](04_API_Utils_Factory_Pattern.md) | [Index](../00_MASTER_INDEX.md) | [Next: DB Testing SQL Bridge â†’](06_DB_Testing_SQL_Bridge.md)
+**Navigation**: [â† Previous: APIUtils & Factory Pattern](04_API_Utils_Factory_Pattern.md) | [Index](../00_MASTER_INDEX.md) | [Next: DB Testing SQL Bridge →](06_DB_Testing_SQL_Bridge.md)
 
 **Cross-links:**
-- [`21_SDET/07_test_step_E2E_Architecture.md`](../21_SDET_Playwright_Automation/07_test_step_E2E_Architecture.md) â€” Data Accumulator pattern in E2E tests
-- [`17_TypeScript/02_TS_Advanced_Types.md`](../17_TypeScript/02_TS_Advanced_Types.md) â€” Typed interfaces for response bodies
+- [`21_SDET/07_test_step_E2E_Architecture.md`](../21_SDET_Playwright_Automation/07_test_step_E2E_Architecture.md) — Data Accumulator pattern in E2E tests
+- [`17_TypeScript/02_TS_Advanced_Types.md`](../17_TypeScript/02_TS_Advanced_Types.md) — Typed interfaces for response bodies
 
 ---
 
-## 5W1H â€” Why This Chapter?
+## 5W1H — Why This Chapter?
 
-- **WHAT**: How to correctly extract data from an API response, store it in a typed TypeScript structure, and use it in subsequent test steps â€” including UI interactions, further API calls, and DB verification.
+- **WHAT**: How to correctly extract data from an API response, store it in a typed TypeScript structure, and use it in subsequent test steps — including UI interactions, further API calls, and DB verification.
 - **WHY**: The most common SDET mistake is accessing response data unsafely (no type checking, no null guards) or storing it in variables that get corrupted by parallel test execution. Both create flaky tests that are hard to debug.
 - **WHO**: SDETs who fetch data from APIs in early test steps and need it available later in the same test.
 - **WHEN**: In any test with more than 2 steps where Step N uses data from Step 1.
@@ -18,10 +18,10 @@
 
 ---
 
-## 1. The Core Problem â€” Unsafe Data Extraction
+## 1. The Core Problem — Unsafe Data Extraction
 
 ```typescript
-// âŒ DANGEROUS â€” no type safety, no null protection
+// âŒ DANGEROUS — no type safety, no null protection
 const response = await request.post('/api/citations/search', { data: payload });
 const body = await response.json(); // type: any
 
@@ -32,7 +32,7 @@ const citationId = body.citations[0].citationId;
 ```
 
 ```typescript
-// âœ… SAFE â€” typed + null-guarded
+// ✅ SAFE — typed + null-guarded
 interface Citation {
   citationId: string;
   status: 'PAID' | 'PENDING' | 'OVERDUE' | 'DISPUTED';
@@ -50,19 +50,19 @@ interface CitationSearchResponse {
 
 const response = await request.post('/api/citations/search', { data: payload });
 const body: CitationSearchResponse = await response.json();
-//           â†‘ TypeScript now enforces the shape
+//           ↑ TypeScript now enforces the shape
 
 const citationId = body?.citations?.[0]?.citationId ?? null;
-// Optional chaining: returns null if any part is missing â€” never throws
+// Optional chaining: returns null if any part is missing — never throws
 // TypeScript knows citationId is: string | null
 ```
 
 ---
 
-## 2. Your `getCitationIdFromDateRangeResponse` â€” Full Analysis
+## 2. Your `getCitationIdFromDateRangeResponse` — Full Analysis
 
 ```typescript
-// Your function â€” analysed:
+// Your function — analysed:
 export async function getCitationIdFromDateRangeResponse(
   request: APIRequestContext,
   daysBefore: number,
@@ -121,14 +121,14 @@ export async function getFirstCitationByStatus(
 
 ---
 
-## 3. Type-Safe Response Interfaces â€” Build These First
+## 3. Type-Safe Response Interfaces — Build These First
 
 Before writing any API function, define the TypeScript interface. This forces you to understand the API contract.
 
 ```typescript
 // interfaces/ApiResponses.ts
 
-// â”€â”€â”€ Citation API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Citation API ──────────────────────────────────────────────────────────
 export interface Citation {
   citationId: string;
   status: 'PAID' | 'PENDING' | 'OVERDUE' | 'DISPUTED';
@@ -137,7 +137,7 @@ export interface Citation {
   vehicleId: string;
   issueDate: string;          // ISO date string: '2024-01-15'
   dueDate: string;
-  history?: CitationHistoryEntry[];  // optional â€” not always returned
+  history?: CitationHistoryEntry[];  // optional — not always returned
 }
 
 export interface CitationHistoryEntry {
@@ -155,7 +155,7 @@ export interface CitationSearchResponse {
   hasNextPage: boolean;
 }
 
-// â”€â”€â”€ Customer API â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Customer API ──────────────────────────────────────────────────────────
 export interface Customer {
   customerId: string;
   firstName: string;
@@ -173,7 +173,7 @@ export interface Address {
   zip: string;
 }
 
-// â”€â”€â”€ Complex nested response (real enterprise shape) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Complex nested response (real enterprise shape) ───────────────────────
 export interface OrderDetailsResponse {
   order: {
     orderId: string;
@@ -216,16 +216,16 @@ const customerId = body.order.customer.customerId;              // throws if ord
 const firstPaymentAmount = body.order.payments[0].amount;      // throws if payments is empty
 const firstDiscount = body.order.lineItems[0].discounts[0].code; // throws at MULTIPLE points
 
-// âœ… SAFE with optional chaining:
+// ✅ SAFE with optional chaining:
 const customerId = body?.order?.customer?.customerId ?? 'UNKNOWN';
 const firstPaymentAmount = body?.order?.payments?.[0]?.amount ?? 0;
 const firstDiscount = body?.order?.lineItems?.[0]?.discounts?.[0]?.code ?? 'NO_DISCOUNT';
 
-// âœ… Extracting arrays with type safety:
+// ✅ Extracting arrays with type safety:
 const allPaymentAmounts: number[] = body?.order?.payments?.map(p => p.amount) ?? [];
 const paidItems = body?.order?.lineItems?.filter(item => item.quantity > 0) ?? [];
 
-// âœ… Using find() to locate a specific item:
+// ✅ Using find() to locate a specific item:
 const bankTransfer = body?.order?.payments?.find(p => p.method === 'BANK_TRANSFER');
 if (bankTransfer) {
   console.log(`Bank transfer amount: ${bankTransfer.amount}`);
@@ -234,7 +234,7 @@ if (bankTransfer) {
 
 ---
 
-## 5. Storing Multiple IDs â€” Working With Arrays
+## 5. Storing Multiple IDs — Working With Arrays
 
 Sometimes you need to fetch multiple records and use each one in a test step:
 
@@ -286,7 +286,7 @@ await test.step('Verify paid citation count in UI summary', async () => {
 
 ---
 
-## 6. The API â†’ UI Bridge â€” Using API Data in UI Steps
+## 6. The API → UI Bridge — Using API Data in UI Steps
 
 The most common E2E pattern: **get data from API, use it in the UI, verify the UI matches the API**.
 
@@ -332,7 +332,7 @@ await test.step('Read citation details from UI result row', async () => {
   data.uiCitationAmount = await resultRow.locator('[data-col="amount"]').textContent();
 });
 
-// Step 6: Cross-verify â€” API data matches UI data
+// Step 6: Cross-verify — API data matches UI data
 await test.step('Verify UI displays data matching the API response', async () => {
   expect(data.uiCitationStatus?.trim()).toBe(data.citation!.status);
   expect(data.uiCitationAmount?.replace(/[^0-9.]/g, '')).toBe(
@@ -343,19 +343,19 @@ await test.step('Verify UI displays data matching the API response', async () =>
 
 ---
 
-## 7. Parameterised Tests â€” Running Against Multiple APIs
+## 7. Parameterised Tests — Running Against Multiple APIs
 
 Your codebase tests the same citation search against 3 APIs (IVR, ASD, NW). Use `test.each()`:
 
 ```typescript
-// test.each â€” run the same test with different parameters
+// test.each — run the same test with different parameters
 const apiTestCases = [
   { apiType: ApiType.IVRAPI, endpoint: endpoints.IVRAPI_CITATION_SEARCH, name: 'IVR API' },
   { apiType: ApiType.ASDAPI, endpoint: endpoints.ASDAPI_CITATION_SEARCH, name: 'ASD API' },
   { apiType: ApiType.NWAPI,  endpoint: endpoints.NWAPI_CITATION_SEARCH,  name: 'NW API' },
 ] as const;
 
-test.describe('Citation search â€” all API endpoints', () => {
+test.describe('Citation search — all API endpoints', () => {
 
   for (const { apiType, endpoint, name } of apiTestCases) {
     test(`Citation search via ${name}`, async ({ request, account }) => {
@@ -430,7 +430,7 @@ Write a single safe expression to extract the first order's payment amount, retu
 ```typescript
 const amount = body?.data?.orders?.[0]?.payment?.amount ?? 0;
 ```
-The `?.` handles null/undefined at each step. The `??` provides the default when the final result is null or undefined (including when `amount` is `0`, use `?? 0` carefully â€” `??` only triggers on null/undefined, not on `0`, which is correct here since `0` is a valid amount in some cases, but `0` as a default makes sense if amount is absent).
+The `?.` handles null/undefined at each step. The `??` provides the default when the final result is null or undefined (including when `amount` is `0`, use `?? 0` carefully — `??` only triggers on null/undefined, not on `0`, which is correct here since `0` is a valid amount in some cases, but `0` as a default makes sense if amount is absent).
 </details>
 
 **Challenge 2 (Type Safety):** Your function signature is:
@@ -449,7 +449,7 @@ async function getCitation(
   api: ApiType,              // enum: IVRAPI | ASDAPI | NWAPI
   citationId: string,
   testInfo?: TestInfo        // optional
-): Promise<Citation | null> { // returns typed Citation or null â€” never any
+): Promise<Citation | null> { // returns typed Citation or null — never any
   // implementation...
 }
 ```
@@ -463,11 +463,11 @@ const citationIds = ['CIT-001', 'CIT-002', 'CIT-003', 'CIT-004', 'CIT-005'];
 
 for (const citationId of citationIds) {
   test(`PAID status displays correctly for ${citationId}`, async ({ page, request }) => {
-    // 1. Fetch from API â€” verify it's PAID
+    // 1. Fetch from API — verify it's PAID
     const body = await fetchCitationDetails(request, ApiType.IVRAPI, citationId);
     expect(body?.citations?.[0]?.status).toBe('PAID');
     
-    // 2. Search in UI â€” verify UI shows PAID
+    // 2. Search in UI — verify UI shows PAID
     await page.fill('#citationSearch', citationId);
     await page.click('#searchButton');
     await expect(page.locator('[data-col="status"]').first()).toHaveText('PAID');

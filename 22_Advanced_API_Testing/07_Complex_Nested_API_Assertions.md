@@ -1,17 +1,17 @@
-﻿# 07. Complex Nested API Data â€” Assertion Strategies for Enterprise Responses
+﻿# 07. Complex Nested API Data — Assertion Strategies for Enterprise Responses
 
 **Navigation**: [â† Chapter 06: DB Testing](06_DB_SQL_API_Bridge.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
-- [`21_SDET/05_Data_From_API_To_Test.md`](../21_SDET_Playwright_Automation/05_Data_From_API_To_Test.md) â€” Typed interfaces, basic extraction
-- [`08_SQL/07_JOINs_Complete.md`](../08_SQL/07_JOINs_Complete.md) â€” Joining data from multiple sources
-- [`17_TypeScript/02_TS_Advanced_Types.md`](../17_TypeScript_Deep_Dive/02_TS_Advanced_Types.md) â€” Mapped/utility types for API shapes
+- [`21_SDET/05_Data_From_API_To_Test.md`](../21_SDET_Playwright_Automation/05_Data_From_API_To_Test.md) — Typed interfaces, basic extraction
+- [`08_SQL/07_JOINs_Complete.md`](../08_SQL/07_JOINs_Complete.md) — Joining data from multiple sources
+- [`17_TypeScript/02_TS_Advanced_Types.md`](../17_TypeScript_Deep_Dive/02_TS_Advanced_Types.md) — Mapped/utility types for API shapes
 
 ---
 
 ## 5W1H
 
-- **WHAT**: How to write assertions for the complex, nested, and inconsistently structured JSON responses that enterprise APIs return â€” beyond simple `expect(body.id).toBe('123')`.
+- **WHAT**: How to write assertions for the complex, nested, and inconsistently structured JSON responses that enterprise APIs return — beyond simple `expect(body.id).toBe('123')`.
 - **WHY**: Real APIs return arrays of arrays, nested objects, optional fields, mixed types, and OData envelopes. Naive assertions (checking index 0) break when order changes, and shallow assertions miss bugs in deeply nested data.
 - **WHO**: Every SDET testing REST APIs, OData/D365 APIs, or SOAP/XML legacy services.
 - **WHEN**: Every time an API response is more than 3 levels deep or contains arrays.
@@ -21,7 +21,7 @@
 
 ## 1. The 5 Real Enterprise Response Shapes
 
-### Shape 1 â€” Flat Object (Easy)
+### Shape 1 — Flat Object (Easy)
 
 ```json
 { "citationId": "CIT-001", "status": "PAID", "amount": 150.00 }
@@ -40,7 +40,7 @@ expect(body.status).toBe('PAID');
 expect(body.amount).toBe(150.00);
 ```
 
-### Shape 2 â€” Array of Objects (Most Common)
+### Shape 2 — Array of Objects (Most Common)
 
 ```json
 {
@@ -60,29 +60,29 @@ interface CitationsListResponse {
 
 const body = await response.json() as CitationsListResponse;
 
-// âœ… Exact count
+// ✅ Exact count
 expect(body.citations).toHaveLength(2);
 
-// âœ… Check one specific item by ID (not by index â€” order may change)
+// ✅ Check one specific item by ID (not by index — order may change)
 const citation001 = body.citations.find(c => c.id === 'CIT-001');
 expect(citation001).toBeDefined();
 expect(citation001!.status).toBe('PAID');
 
-// âœ… Partial object match â€” check that at least this object exists somewhere in the array
+// ✅ Partial object match — check that at least this object exists somewhere in the array
 expect(body.citations).toContainEqual(
   expect.objectContaining({ id: 'CIT-001', status: 'PAID' })
 );
 
-// âœ… Array contains ALL required items (order-independent)
+// ✅ Array contains ALL required items (order-independent)
 expect(body.citations.map(c => c.id)).toEqual(
   expect.arrayContaining(['CIT-001', 'CIT-002'])
 );
 
-// âœ… All items match a condition
+// ✅ All items match a condition
 expect(body.citations.every(c => c.amount > 0)).toBe(true);
 ```
 
-### Shape 3 â€” Array of Arrays (OData / D365)
+### Shape 3 — Array of Arrays (OData / D365)
 
 ```json
 {
@@ -108,7 +108,7 @@ expect(citations).toContainEqual(
 );
 ```
 
-### Shape 4 â€” Deeply Nested Object (Enterprise Reality)
+### Shape 4 — Deeply Nested Object (Enterprise Reality)
 
 ```json
 {
@@ -174,25 +174,25 @@ interface CustomerResponse {
 // Assertions on deeply nested data:
 const body = await response.json() as CustomerResponse;
 
-// âœ… Safe extraction with optional chaining (never throws on missing data)
+// ✅ Safe extraction with optional chaining (never throws on missing data)
 const primaryPhone = body.customer?.contact?.addresses?.[0]?.phones?.find(p => p.primary);
 expect(primaryPhone, 'Primary phone must exist').toBeDefined();
 expect(primaryPhone!.number).toMatch(/^\d{3}-\d{4}$/);
 
-// âœ… Verify nested array contains specific payment
+// ✅ Verify nested array contains specific payment
 const citation001 = body.customer.citations.find(c => c.id === 'CIT-001');
 expect(citation001).toBeDefined();
 expect(citation001!.payments).toContainEqual(
   expect.objectContaining({ id: 'PAY-001', amount: 150 })
 );
 
-// âœ… Verify counts at each level
+// ✅ Verify counts at each level
 expect(body.customer.citations).toHaveLength(1);
 expect(body.customer.citations[0].payments).toHaveLength(1);
 expect(body.customer.contact.addresses[0].phones).toHaveLength(1);
 ```
 
-### Shape 5 â€” Mixed: Array of Objects With Sub-Arrays
+### Shape 5 — Mixed: Array of Objects With Sub-Arrays
 
 ```json
 {
@@ -219,22 +219,22 @@ interface OrdersResponse { orders: Order[]; }
 
 const body = await response.json() as OrdersResponse;
 
-// âœ… Find specific order, check its items
+// ✅ Find specific order, check its items
 const order1 = body.orders.find(o => o.orderId === 'ORD-1');
 expect(order1).toBeDefined();
 expect(order1!.items).toHaveLength(1);
 expect(order1!.items[0].sku).toBe('A');
 
-// âœ… Verify discount in nested sub-array
+// ✅ Verify discount in nested sub-array
 expect(order1!.items[0].discounts).toContainEqual(
   expect.objectContaining({ code: 'SAVE10' })
 );
 
-// âœ… Verify empty case
+// ✅ Verify empty case
 const order2 = body.orders.find(o => o.orderId === 'ORD-2');
 expect(order2!.items).toHaveLength(0);
 
-// âœ… Verify ALL items in ALL orders have valid SKUs
+// ✅ Verify ALL items in ALL orders have valid SKUs
 const allSkus = body.orders.flatMap(o => o.items.map(i => i.sku));
 expect(allSkus.every(sku => /^[A-Z]/.test(sku))).toBe(true);
 ```
@@ -269,7 +269,7 @@ expect(obj.id).toEqual(expect.any(String));
 expect(obj.amount).toEqual(expect.any(Number));
 expect(obj.active).toEqual(expect.any(Boolean));
 
-// h. Combining matchers â€” powerful!
+// h. Combining matchers — powerful!
 expect(arr).toContainEqual(
   expect.objectContaining({
     id: expect.stringMatching(/^CIT-/),
@@ -346,7 +346,7 @@ expect.extend({
   },
 });
 
-// Usage in tests â€” reads like business requirements:
+// Usage in tests — reads like business requirements:
 const body = await response.json();
 for (const citation of body.citations) {
   expect(citation).toBeValidCitation();
@@ -359,15 +359,15 @@ expect(body.citations[0].payments[0]).toBeValidPayment(50); // minimum $50
 ## 4. Asserting Arrays in Unknown Order
 
 ```typescript
-// âŒ Wrong â€” assumes index 0 is always the oldest citation
+// âŒ Wrong — assumes index 0 is always the oldest citation
 expect(body.citations[0].id).toBe('CIT-001');
 
-// âœ… Correct â€” find by business key, then assert
+// ✅ Correct — find by business key, then assert
 const targetCitation = body.citations.find(c => c.id === 'CIT-001');
 expect(targetCitation, 'CIT-001 must exist in the response').toBeDefined();
 expect(targetCitation!.status).toBe('PAID');
 
-// âœ… Also correct â€” use toContainEqual which is order-independent
+// ✅ Also correct — use toContainEqual which is order-independent
 expect(body.citations).toContainEqual(
   expect.objectContaining({ id: 'CIT-001', status: 'PAID' })
 );
@@ -375,7 +375,7 @@ expect(body.citations).toContainEqual(
 
 ---
 
-## 5. Before/After Diffing â€” Testing Mutations
+## 5. Before/After Diffing — Testing Mutations
 
 ```typescript
 test('PATCH citation status: only status and updatedAt change', async ({ request }) => {
@@ -445,7 +445,7 @@ interface D365Contact {
 // Parse and assert:
 const body = await response.json() as ODataResponse<D365Contact>;
 
-// Total record count (from @odata.count â€” requires $count=true in request)
+// Total record count (from @odata.count — requires $count=true in request)
 if (body['@odata.count'] !== undefined) {
   expect(body['@odata.count']).toBeGreaterThan(0);
 }
@@ -513,7 +513,7 @@ test('SOAP: SearchCitation returns correct citation data', async ({ request }) =
 
 ## ðŸ‹ï¸ Practice Challenges
 
-### Challenge 1 [MCQ] â€” Correct Assertion for Order-Independent Array
+### Challenge 1 [MCQ] — Correct Assertion for Order-Independent Array
 
 An API returns `{ "items": [{ "id": "A" }, { "id": "B" }] }` but the order is not guaranteed. Which assertion correctly verifies both items are present?
 
@@ -524,9 +524,9 @@ D) `expect(body.items).toContainEqual({ id: 'A' });`
 
 <details><summary>Answer</summary>
 
-**B** â€” `toEqual(expect.arrayContaining([...]))` verifies BOTH items are present, in ANY order. 
+**B** — `toEqual(expect.arrayContaining([...]))` verifies BOTH items are present, in ANY order. 
 
-A = breaks if order changes. C = only checks for 'A', not 'B'. D = only checks for one item, and `toContainEqual` requires an exact match (not partial) â€” `{ id: 'A' }` matches `{ id: 'A' }` only if there are no other properties; if items have more fields like `{ id: 'A', name: 'Alpha' }` then you'd need `objectContaining`.
+A = breaks if order changes. C = only checks for 'A', not 'B'. D = only checks for one item, and `toContainEqual` requires an exact match (not partial) — `{ id: 'A' }` matches `{ id: 'A' }` only if there are no other properties; if items have more fields like `{ id: 'A', name: 'Alpha' }` then you'd need `objectContaining`.
 </details>
 
 ---
@@ -550,11 +550,11 @@ test('All citations are valid', async ({ request }) => {
 
 Three bugs:
 
-1. **`.toBeDefined()` is too weak** â€” if `citation.amount` is `0`, `undefined`, or `null`, the test still passes for `.toBeDefined()` because `toBeDefined()` only checks that the field EXISTS on the object (not that it's null or has a real value). Use `expect(citation.amount).toBeGreaterThan(0)`.
+1. **`.toBeDefined()` is too weak** — if `citation.amount` is `0`, `undefined`, or `null`, the test still passes for `.toBeDefined()` because `toBeDefined()` only checks that the field EXISTS on the object (not that it's null or has a real value). Use `expect(citation.amount).toBeGreaterThan(0)`.
 
-2. **No response status check** â€” if the API returns a 500 with `{ "error": "..." }`, `body.citations` is `undefined` and the `for` loop body never runs, so the test silently passes.
+2. **No response status check** — if the API returns a 500 with `{ "error": "..." }`, `body.citations` is `undefined` and the `for` loop body never runs, so the test silently passes.
 
-3. **No count assertion** â€” if `body.citations` is an empty array `[]`, the loop never runs and all assertions are skipped.
+3. **No count assertion** — if `body.citations` is an empty array `[]`, the loop never runs and all assertions are skipped.
 
 Fix:
 ```typescript

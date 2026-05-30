@@ -4,7 +4,7 @@
 
 ---
 
-## 5W1H â€” Why This Chapter?
+## 5W1H — Why This Chapter?
 
 * **WHAT**: Handling complex HTTP headers, OAuth2 flows, and intercepting network traffic using Playwright.
 * **WHY**: Enterprise APIs (Dynamics 365, Salesforce) reject your requests immediately if you don't provide the exact combination of Authentication tokens, Accept headers, and Correlation IDs. Furthermore, sometimes you need to mock an API response to test a UI edge case.

@@ -1,8 +1,8 @@
-**JavaScript Chapter 2/7** | [â† Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next â†’ Objects & Prototypes](03_JS_Objects_Prototypes.md)
+**JavaScript Chapter 2/7** | [â† Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
 
-# Functions & Closures â€” The Heart of JavaScript
+# Functions & Closures — The Heart of JavaScript
 
-## 5W1H â€” Why This Chapter?
+## 5W1H — Why This Chapter?
 
 
 WHAT: Functions are FIRST-CLASS citizens in JS. They can be
@@ -10,7 +10,7 @@ stored in variables, passed as arguments, returned from
 other functions. Closures emerge from this + lexical scope.
 
 WHY:  Closures power React hooks, event handlers, callbacks,
-module patterns, currying, memoization â€” everything.
+module patterns, currying, memoization — everything.
 "If you understand closures, you understand JS."
 
 WHO:  Every JS developer. Every React developer (useState IS
@@ -18,8 +18,8 @@ a closure). Every Node developer (callbacks are closures).
 
 WHEN: After understanding scope (Chapter 1).
 
-HOW:  Functions create scope â†’ inner functions remember outer
-scope â†’ that's a closure. It's that simple (and profound).
+HOW:  Functions create scope → inner functions remember outer
+scope → that's a closure. It's that simple (and profound).
 
 
 ---
@@ -28,7 +28,7 @@ scope â†’ that's a closure. It's that simple (and profound).
 
 ```javascript
 // DECLARATION: Hoisted FULLY. Can call before the line.
-greet("Harsha"); // âœ… Works!
+greet("Harsha"); // ✅ Works!
 function greet(name) {
     return `Hello ${name}`;
 }
@@ -52,13 +52,13 @@ const factorial = function fact(n) {
 
 ```
 WHEN TO USE WHICH:
-â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-â”‚ Type             â”‚ Best For                              â”‚
-â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
-â”‚ Declaration      â”‚ Main functions, utility functions     â”‚
-â”‚ Arrow (const)    â”‚ Callbacks, array methods, short fns   â”‚
-â”‚ Expression       â”‚ Conditional function assignment       â”‚
-â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
+┌──────────────────┬───────────────────────────────────────â”
+│ Type             │ Best For                              │
+├──────────────────┼───────────────────────────────────────┤
+│ Declaration      │ Main functions, utility functions     │
+│ Arrow (const)    │ Callbacks, array methods, short fns   │
+│ Expression       │ Conditional function assignment       │
+└──────────────────┴───────────────────────────────────────┘
 
 REASONING: Arrow functions are shorter but can't be used as
 constructors and don't have their own `this`. Declarations are
@@ -411,7 +411,7 @@ for (var i = 0; i < 3; i++) {
 
 
 
-ðŸ”¬ **Section Challenge — 4. Closures — The Most Important Concept**
+🔬 **Section Challenge — 4. Closures — The Most Important Concept**
 
 **Challenge 1 (Reasoning):** What is a closure and why can't garbage collection remove variables that are closed over?
 <details><summary>Answer</summary>
@@ -669,37 +669,37 @@ JavaScript has no tail-call optimization in practice (only Safari implements it)
 
 ```
 Q: What is a closure?
-â†’ A function that remembers variables from its outer scope even
+→ A function that remembers variables from its outer scope even
   after the outer function has returned.
 
 Q: Give a practical use of closures.
-â†’ Data privacy (module pattern), memoization, event handlers,
+→ Data privacy (module pattern), memoization, event handlers,
   React hooks (useState), factory functions.
 
 Q: What does `this` refer to in an arrow function?
-â†’ The `this` of the enclosing lexical scope. Arrow functions
+→ The `this` of the enclosing lexical scope. Arrow functions
   don't have their own `this`.
 
 Q: What's the difference between call, apply, and bind?
-â†’ call: invokes with `this` + individual args.
+→ call: invokes with `this` + individual args.
   apply: invokes with `this` + args as array.
   bind: returns new function with `this` locked (doesn't invoke).
 
 Q: What's the output? for (var i=0; i<3; i++) setTimeout(() => console.log(i), 0);
-â†’ 3, 3, 3 â€” because var is function-scoped, all closures share
+→ 3, 3, 3 — because var is function-scoped, all closures share
   the same i. Fix: use let.
 
 Q: What is currying?
-â†’ Transforming f(a, b) into f(a)(b). Each call returns a new
+→ Transforming f(a, b) into f(a)(b). Each call returns a new
   function until all args are received. Uses closures.
 
 Q: What is a higher-order function?
-â†’ A function that takes a function as argument or returns one.
+→ A function that takes a function as argument or returns one.
   Examples: map, filter, reduce, addEventListener.
 ```
 
 
 ---
 
-[â† Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next â†’ Objects & Prototypes](03_JS_Objects_Prototypes.md)
+[â† Previous: Foundations](01_JS_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next → Objects & Prototypes](03_JS_Objects_Prototypes.md)
 

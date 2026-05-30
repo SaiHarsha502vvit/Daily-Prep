@@ -1,10 +1,10 @@
 ﻿# 01. API Testing Foundations (REST & SOAP)
 
-**Navigation**: [Index](../00_MASTER_INDEX.md) | [Next: Complex JSON & SOAP â†’](02_Complex_JSON_and_SOAP.md)
+**Navigation**: [Index](../00_MASTER_INDEX.md) | [Next: Complex JSON & SOAP →](02_Complex_JSON_and_SOAP.md)
 
 ---
 
-## 5W1H â€” Why This Chapter?
+## 5W1H — Why This Chapter?
 
 * **WHAT**: The fundamental architecture of REST and SOAP APIs, and how to test them using Playwright.
 * **WHY**: Before you can handle deeply nested JSON arrays or complex authentication headers, you must understand how data travels over the network.
@@ -55,8 +55,8 @@ When your browser (or Playwright script) talks to an API, it sends a package of 
 ### The Response (What the server replies)
 1. **Status Code:** Was it successful? 
    * `2xx`: Success (e.g., `200 OK`, `201 Created`).
-   * `4xx`: Client Error â€” YOU messed up. (e.g., `400 Bad Request`, `401 Unauthorized`, `404 Not Found`).
-   * `5xx`: Server Error â€” THEY messed up. (e.g., `500 Internal Server Error`).
+   * `4xx`: Client Error — YOU messed up. (e.g., `400 Bad Request`, `401 Unauthorized`, `404 Not Found`).
+   * `5xx`: Server Error — THEY messed up. (e.g., `500 Internal Server Error`).
 2. **Headers:** Metadata (e.g., `Set-Cookie`).
 3. **Body:** The requested data (usually JSON or XML).
 

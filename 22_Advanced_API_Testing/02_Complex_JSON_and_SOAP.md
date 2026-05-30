@@ -1,10 +1,10 @@
 ﻿# 02. Handling Complex JSON and SOAP in TypeScript
 
-**Navigation**: [â† Previous: API Testing Foundations](01_API_Testing_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next: Enterprise Headers & Auth â†’](03_Enterprise_Headers_Auth.md)
+**Navigation**: [â† Previous: API Testing Foundations](01_API_Testing_Foundations.md) | [Index](../00_MASTER_INDEX.md) | [Next: Enterprise Headers & Auth →](03_Enterprise_Headers_Auth.md)
 
 ---
 
-## 5W1H â€” Why This Chapter?
+## 5W1H — Why This Chapter?
 
 * **WHAT**: Parsing, traversing, and validating massive, deeply nested JSON responses and SOAP XML envelopes using TypeScript.
 * **WHY**: Enterprise APIs (like Dynamics 365) rarely return flat objects. They return arrays inside objects inside arrays. If you don't know how to navigate them, your tests will crash with `Cannot read properties of undefined`.
