@@ -752,4 +752,19 @@ The open-pages list immediately tells you: "Was `data.newTabPage` ever set?" If 
 </details>
 
 ---
+
+## 📚 References & Further Reading
+
+### Official Documentation — Playwright
+- [Test Steps (`test.step`)](https://playwright.dev/docs/api/class-test#test-step) — API reference and best practices for creating visible steps in HTML reports
+- [Soft Assertions](https://playwright.dev/docs/test-assertions#soft-assertions) — Documentation on how soft assertions aggregate failures without stopping the test
+- [Test Timeouts](https://playwright.dev/docs/test-timeouts) — The timeout cascade: test, expect, action, and global timeouts
+
+### Advanced E2E Testing Strategies
+- [Handling Multiple Pages & Contexts](https://playwright.dev/docs/pages) — How to correctly handle new tabs, popup windows, and completely isolated browser contexts
+- [Global Setup and Teardown](https://playwright.dev/docs/test-global-setup-teardown) — Storing authentication state globally across tests to bypass UI login overhead
+- [Test Info API (`test.info()`)](https://playwright.dev/docs/api/class-testinfo) — How to programmatically attach screenshots, raw data, or diagnostic logs on failure
+
+---
+
 **Navigation**: [← Chapter 06: Custom Fixtures](./06_Custom_Fixtures_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 08: Browser Internals](./08_Browser_Internals_for_SDETs.md)

@@ -610,7 +610,84 @@ export class MasterSearchPage {
 
 ---
 
-## 11. POM Anti-Patterns Hall of Shame
+## 11. Real-World Enterprise War Stories: Modal Scoping & Traps
+
+When automating complex enterprise applications (like Dynamics 365, Salesforce, or ServiceNow) with modern React frontends, standard locator strategies often break down. Here are the most common real-world traps and exactly how to solve them.
+
+### War Story 1: The `.nth(1)` Modal Trap (A Classic D365 Issue)
+
+**The Scenario:**
+You are testing a flow in D365 where a modal pops up. You enter details, submit, and a "Success" modal appears with a "Close" button. However, there is *another* "Close" button in the background UI, outside the modal.
+A previous engineer wrote this in the POM:
+`closeButton = this.page.getByRole('button', { name: 'Close' })`
+And the test uses `await page.closeButton.nth(1).click()` to target the modal's button.
+
+**The Failure:**
+In a slightly different flow, the background "Close" button doesn't render. Now, the modal's button is the *only* one on the page. `nth(1)` (which asks for the second button) fails because there is only one button (at index `nth(0)`). The test crashes.
+
+**The Fix — Modal Scoping:**
+Never use `.nth()` to resolve component overlap. Instead, **scope the locator to the active component's container** (the modal/dialog).
+
+```typescript
+// ❌ The fragile nth() approach:
+this.closeButton = this.page.getByRole('button', { name: 'Close' });
+// await this.closeButton.nth(1).click();
+
+// ✅ The robust scoped approach (Playwright Filter):
+const activeModal = this.page.getByRole('dialog'); // Or .locator('.ms-Dialog') in Fluent UI
+this.modalCloseButton = activeModal.getByRole('button', { name: 'Close', exact: true });
+
+// ✅ The robust scoped approach (XPath):
+this.modalCloseButtonXPath = this.page.locator(
+  '//div[@role="dialog"]//button[normalize-space()="Close"]'
+);
+```
+By explicitly scoping to `getByRole('dialog')` (or the specific modal container class), Playwright completely ignores any buttons in the background layer. If the background button disappears, the test still works perfectly.
+
+### War Story 2: The Two-Phase Render "Empty Text" Trap
+
+**The Scenario:**
+D365 grids often load in two phases. Phase 1 renders the grid shell and empty cells. Phase 2 loads the data via XHR and fills the cells.
+Your POM has: `statusCell = this.page.locator('[data-col-id="status"]')`
+Your test checks: `const status = await statusCell.textContent(); expect(status).toBe('PAID');`
+
+**The Failure:**
+The test fails randomly in CI, reporting `Expected: "PAID", Received: ""`. The locator found the cell during Phase 1 before the data arrived.
+
+**The Fix — Auto-retrying Assertions:**
+```typescript
+// ❌ Fails if data is still loading
+const status = await statusCell.textContent();
+expect(status).toBe('PAID');
+
+// ✅ Waits for Phase 2 to complete automatically
+await expect(statusCell).toHaveText('PAID', { timeout: 15_000 });
+```
+
+### War Story 3: The "Save" vs "Save & Close" Ambiguity
+
+**The Scenario:**
+Fluent UI command bars often contain buttons with similar names. You want to click "Save", but there's also a "Save & Close" button.
+`await this.page.getByText('Save').click()`
+
+**The Failure:**
+Playwright throws a strict mode violation: `strict mode violation: resolved to 2 elements`.
+
+**The Fix — Exact Matching:**
+```typescript
+// ❌ Matches both "Save" and "Save & Close"
+this.saveBtn = this.page.getByText('Save');
+
+// ✅ Matches ONLY the exact word "Save"
+this.saveBtn = this.page.getByText('Save', { exact: true });
+
+// ✅ Or use aria-labels (Fluent UI usually sets these)
+this.saveBtn = this.page.locator('[aria-label="Save (CTRL+S)"]');
+```
+
+---
+
+## 12. POM Anti-Patterns Hall of Shame
 
 ```typescript
 // Anti-pattern 1: ‘God POM’ — one class for everything
@@ -663,7 +740,7 @@ export class TestFile {
 
 ---
 
-## 12. Fixture-Integrated POM — Modern Playwright Pattern
+## 13. Fixture-Integrated POM — Modern Playwright Pattern
 
 Rather than constructing POM objects manually in every test, expose them as fixtures:
 
@@ -819,4 +896,19 @@ await expect(citationPage.successBanner).toContainText('Citation submitted succe
 </details>
 
 ---
+
+## 📚 References & Further Reading
+
+### Official Documentation — Playwright
+- [Page Object Model (Playwright Docs)](https://playwright.dev/docs/pom) — Official documentation and simple examples of POM
+- [Fixtures in Playwright](https://playwright.dev/docs/test-fixtures) — How to pass POM objects automatically to tests via fixtures
+- [Locators and strict mode](https://playwright.dev/docs/locators) — Why exact matching and specific filters are critical for reliable POMs
+
+### Articles & Advanced Patterns
+- [Martin Fowler: Page Object](https://martinfowler.com/bliki/PageObject.html) — The original definition and intent of the Page Object pattern
+- [Component Object Model vs Page Object Model](https://playwright.dev/docs/pom) — Playwright's perspective on component-level vs page-level objects
+- [TypeScript `as const` assertions](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-3-4.html#const-assertions) — Why ARIA roles require `as const` in dictionaries
+
+---
+
 **Navigation**: [← Previous: JS/TS For Automation](../01_Foundations/04_JS_TS_For_Automation.md) | [Index](../../00_MASTER_INDEX.md) | [Next: Custom Fixtures →](./06_Custom_Fixtures_Architecture.md)

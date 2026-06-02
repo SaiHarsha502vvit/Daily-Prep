@@ -714,4 +714,117 @@ page.getByText('Submit')                    // also finds it
 </details>
 
 ---
+
+## 9. Locator Strategy Decision Tree — Which Approach to Use
+
+When you're staring at a DOM element and need to write a locator, run through this flowchart:
+
+```mermaid
+flowchart TD
+    Start["Need a locator for<br/>this element"] --> HasTestId{"Has data-testid<br/>or data-automation-id?"}
+    HasTestId -->|Yes| UseTestId["✅ Use getByTestId<br/>page.getByTestId('submit-btn')"]
+    HasTestId -->|No| HasRole{"Has unique ARIA<br/>role + accessible name?"}
+    HasRole -->|Yes| UseRole["✅ Use getByRole<br/>page.getByRole('button', { name: 'Save' })"]
+    HasRole -->|No| HasLabel{"Is a form field<br/>with a visible label?"}
+    HasLabel -->|Yes| UseLabel["✅ Use getByLabel<br/>page.getByLabel('Customer Email')"]
+    HasLabel -->|No| HasStableText{"Has stable,<br/>unique visible text?"}
+    HasStableText -->|Yes| UseText["✅ Use getByText<br/>page.getByText('No results found')"]
+    HasStableText -->|No| InShadow{"Inside a<br/>Shadow DOM?"}
+    InShadow -->|Yes| UseCSS["✅ Use CSS selector<br/>(auto-pierces shadow)<br/>page.locator('custom-el .btn')"]
+    InShadow -->|No| NeedAncestor{"Need to navigate UP<br/>or to siblings?"}
+    NeedAncestor -->|Yes| UseXPath["✅ Use XPath with axes<br/>//td[text()='CIT-001']/ancestor::tr//button"]
+    NeedAncestor -->|No| UseScoped["✅ Use scoped CSS<br/>from nearest stable ancestor<br/>container.locator('.target-class')"]
+
+    style UseTestId fill:#276749,stroke:#38a169,color:#fff
+    style UseRole fill:#276749,stroke:#38a169,color:#fff
+    style UseLabel fill:#276749,stroke:#38a169,color:#fff
+    style UseText fill:#276749,stroke:#38a169,color:#fff
+    style UseCSS fill:#2b6cb0,stroke:#3182ce,color:#fff
+    style UseXPath fill:#744210,stroke:#d69e2e,color:#fff
+    style UseScoped fill:#2b6cb0,stroke:#3182ce,color:#fff
+```
+
+**Key insight:** The top of the tree (green) gives you the most stable locators. The bottom (yellow) gives you the most powerful but most maintenance-heavy locators. Always try from the top down.
+
+---
+
+## 10. XPath Axes Deep Dive — Enterprise Real-World Use Cases
+
+Section 3 introduced XPath axes conceptually. Here are the real enterprise scenarios where each axis becomes necessary — when no simpler locator can do the job.
+
+| Axis | What It Does | D365 / Enterprise Use Case | Example XPath |
+|---|---|---|---|
+| `following-sibling::` | Moves to the next element at the same tree level | The input field has no ID, but its label does. Navigate from label → input. | `//label[text()='Amount']/following-sibling::input` |
+| `preceding-sibling::` | Moves to the previous element at the same tree level | The "Delete" button in a row, but you need the citation ID from the cell before it. | `//button[text()='Delete']/preceding-sibling::div[@data-col-id='citationId']` |
+| `ancestor::` | Moves UP to any ancestor matching the criteria | You found a cell with text "CIT-001" but need the entire row to click "Dispute". | `//div[text()='CIT-001']/ancestor::div[contains(@class,'ms-DetailsRow')]` |
+| `parent::` | Moves UP exactly one level | The Fluent UI `<input>` is wrapped in a `<div>` and you need the wrapper's `data-id`. | `//input[@aria-label='Status']/parent::div` |
+| `descendant::` | Moves DOWN into entire subtree | You have a form panel and need any input inside it, regardless of nesting depth. | `//div[@data-id='formSection_general']//input` (shorthand for `descendant::input`) |
+| `child::` | Moves to DIRECT children only (not grandchildren) | D365 grid where row `<div>` contains direct `<div>` cells — not nested ones. | `//div[contains(@class,'ms-DetailsRow')]/child::div[@data-col-id]` |
+
+### Real D365 Chain — Finding the "Approve" Button for a Specific Citation
+
+```typescript
+// Problem: The grid has 20 rows. You need to click "Approve" for CIT-007 specifically.
+// The "Approve" button has no unique identifier other than being in the same row as CIT-007.
+
+// XPath chain — read it step by step:
+const approveXPath = [
+  '//div[@data-testid="citations-grid"]',               // Step 1: scope to this grid
+  '//div[@data-col-id="citationId"]',                    // Step 2: find citation ID cells
+  '[normalize-space()="CIT-007"]',                       // Step 3: filter to the CIT-007 cell
+  '/ancestor::div[contains(@class,"ms-DetailsRow")]',    // Step 4: go UP to the full row
+  '//button[@data-automation-key="approve"]',            // Step 5: find Approve button in row
+].join('');
+
+await page.locator(approveXPath).click();
+
+// Equivalent Playwright filter (preferred when possible):
+const grid = page.locator('[data-testid="citations-grid"]');
+await grid
+  .locator('.ms-DetailsRow')
+  .filter({ has: page.locator('[data-col-id="citationId"]', { hasText: 'CIT-007' }) })
+  .locator('[data-automation-key="approve"]')
+  .click();
+```
+
+### When XPath Axes Are Necessary (CSS Cannot Do This)
+
+```typescript
+// 1. ANCESTOR TRAVERSAL — CSS has no "go up" capability
+// "Find the form that contains this error message"
+// XPath: //span[@class='error-message']/ancestor::form
+// CSS: impossible — CSS selectors only go DOWN the tree
+
+// 2. SIBLING NAVIGATION with conditions
+// "Find the input AFTER the label that says 'Customer'"
+// XPath: //label[text()='Customer']/following-sibling::input[1]
+// CSS: label ~ input (approximate, but cannot filter label by text)
+
+// 3. POSITIONAL among filtered siblings
+// "Find the second row that has PENDING status"
+// XPath: (//div[contains(@class,'ms-DetailsRow')]//div[@data-col-id='status' and text()='PENDING']/ancestor::div[contains(@class,'ms-DetailsRow')])[2]
+// CSS: no equivalent (nth-child doesn't filter by content first)
+```
+
+---
+
+## 📚 References & Further Reading
+
+### Official Documentation
+- [Playwright Locators Guide](https://playwright.dev/docs/locators) — Complete guide including `getByRole`, `getByTestId`, filtering, and Shadow DOM piercing
+- [Locator Class API](https://playwright.dev/docs/api/class-locator) — Every method available on a Playwright Locator object
+- [Playwright Best Practices](https://playwright.dev/docs/best-practices) — Official locator priority and anti-pattern guidance
+
+### W3C Standards
+- [XPath 3.1 Specification — W3C](https://www.w3.org/TR/xpath-31/) — The full XPath language standard; Section 3 covers Axes and path expressions
+- [ARIA Roles — W3C WAI-ARIA](https://www.w3.org/TR/wai-aria-1.2/#role_definitions) — Every ARIA role definition — understand what `getByRole` searches for
+- [Accessible Name Computation — W3C](https://www.w3.org/TR/accname-1.2/) — How browsers compute the "accessible name" that `getByRole({name})` matches against
+
+### Complementary Guides
+- [Testing Library Query Priority](https://testing-library.com/docs/queries/about/#priority) — The locator priority hierarchy that Playwright's `getByRole`-first strategy is modelled on
+- [MDN: XPath Reference](https://developer.mozilla.org/en-US/docs/Web/XPath) — Readable reference for all XPath functions and axes
+- [MDN: CSS Selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_selectors) — CSS selector syntax reference for non-XPath locators
+
+---
+
 **Navigation**: [← Playwright Basics](./01_Playwright_TS_Basics.md) | [Index](../00_INDEX.md) | [→ Browser Console Scripting](./03_Browser_Console_Scripting.md)

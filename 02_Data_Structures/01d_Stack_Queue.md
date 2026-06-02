@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous Chapter](01c_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01e_HashTable.md)
+**Navigation**: [< Previous Chapter](01c_LinkedList.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](01e_HashTable.md)
 
 ---
 
@@ -301,6 +301,37 @@ Same complexity but different behavior: DFS explores ONE component completely us
 </details>
 
 # 📬 Part 5: Queue
+
+### 5W1H: Deep Understanding of Queue
+
+```
+╔══════════════════════════════════════════════════════════════════════╗
+║  WHAT: A Queue is a FIFO (First In, First Out) data structure.       ║
+║        Elements enter at the BACK and leave from the FRONT.          ║
+║                                                                      ║
+║  WHY:  We need a way to manage resources fairly or process data      ║
+║        in the exact order it arrived. LIFO (Stack) is unfair for     ║
+║        scheduling; FIFO guarantees order preservation.               ║
+║                                                                      ║
+║  WHO:  Systems programmers, backend engineers handling requests,     ║
+║        and algorithm designers implementing BFS.                     ║
+║                                                                      ║
+║  WHEN: Use when order of arrival strictly dictates order of process. ║
+║        ✔ Task scheduling (printer spoolers, CPU run queues)          ║
+║        ✔ Breadth-First Search (level-by-level traversal)             ║
+║        ✔ Asynchronous data transfer (IO buffers, pipes)              ║
+║        ✘ When you need LIFO (use Stack)                              ║
+║                                                                      ║
+║  WHERE Queues appear in production:                                  ║
+║  • Thread pools (waiting tasks)                                      ║
+║  • Message brokers (Kafka, RabbitMQ)                                 ║
+║  • Network routers (packet queuing)                                  ║
+║                                                                      ║
+║  HOW:  Usually implemented via a Circular Array (for strict memory   ║
+║        bounds and O(1) performance) or a Linked List (for unbounded  ║
+║        growth).                                                      ║
+╚══════════════════════════════════════════════════════════════════════╝
+```
 
 ## 🧬 Nature & Behavior
 

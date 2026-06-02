@@ -1,4 +1,4 @@
-﻿# 29. Visual Regression Testing — `toHaveScreenshot()` in Enterprise Apps
+# 29. Visual Regression Testing — `toHaveScreenshot()` in Enterprise Apps
 
 **Navigation**: [â† Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md) | [Index](../00_INDEX.md) | [→ Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md)
 
@@ -21,22 +21,18 @@
 
 ## 1. How Screenshot Comparison Works — The Internals
 
-```
-First run (no baseline exists):
-  Playwright takes a screenshot → saves it as the BASELINE
-  Test is marked as PASSED (baseline created)
-  The .png file is committed to git
+### The Comparison Flow Visualised
 
-Subsequent runs:
-  Playwright takes a NEW screenshot
-  Pixel-by-pixel comparison: new vs baseline
-  If difference > threshold → test FAILS
-  Playwright generates a diff image showing exactly what changed
-
-When UI intentionally changes (new design):
-  Update baseline: npx playwright test --update-snapshots
-  Review the new baseline images
-  Commit the updated baseline to git
+```mermaid
+graph TD
+    A[Playwright toHaveScreenshot] --> B{Baseline Exists?}
+    B -->|No| C[Save as New Baseline]
+    B -->|Yes| D[Take New Screenshot]
+    D --> E[Run Pixelmatch Algorithm]
+    E --> F{Pixels Differ > Threshold?}
+    F -->|Yes| G[Test FAILS]
+    G --> H[Generate Diff Image Red Highlights]
+    F -->|No| I[Test PASSES]
 ```
 
 ### The Pixelmatch Algorithm — What Actually Happens

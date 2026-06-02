@@ -2,7 +2,29 @@
 
 ---
 
-# 📚 Part 2: Stack Variants
+# 📚 Advanced Data Structure Variants: Stacks, Queues, & Trees
+
+### 5W1H: Mastering Advanced Data Structure Variants
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: Advanced variants of standard Stacks, Queues, and Trees (e.g., Min    ║
+║        Stack, Monotonic Queue, AVL Trees) tailored for specialized problems. ║
+║                                                                              ║
+║  WHY:  Standard linear processing or sorting often hits O(N) or O(N log N)   ║
+║        bottlenecks. Advanced variants exploit structural invariants (like    ║
+║        monotonicity or self-balancing) to achieve O(1) or strict O(log N).   ║
+║                                                                              ║
+║  WHO:  Engineers optimizing latency-critical systems or solving hard algorithmic║
+║        interview questions (e.g., Sliding Window Maximum, LFU Cache).        ║
+║                                                                              ║
+║  WHEN: Use when naive structures fail constraints—such as needing O(1)       ║
+║        minimum retrieval (Min Stack) or O(1) sliding window extremes.        ║
+║                                                                              ║
+║  HOW:  By augmenting standard structures with parallel tracking (e.g., two   ║
+║        stacks), deque manipulation, or complex rotation algorithms.          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
 
 ## 2.1 Min Stack
 

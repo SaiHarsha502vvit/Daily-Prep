@@ -505,4 +505,108 @@ Which 20 UI tests, if broken, would cause a production incident? Automate those 
 
 ---
 
+## 8. Visual Mental Model — The SDET Role Map
+
+Understanding where you stand on the progression from Manual QA to engineering lets you target the right gaps.
+
+```mermaid
+graph TD
+    MQA["Manual QA<br/>Domain Knowledge<br/>Test cases & bug reports"] -->|"adds engineering:<br/>code, CI, frameworks"| SDET["SDET<br/>Engineering + Domain<br/>Test infrastructure & quality gates"]
+    SDET -->|"adds CS depth:<br/>algorithms, system design,<br/>architecture ownership"| SDE["SDE in Test / Staff SDET<br/>Pure Engineering + Strategy<br/>Quality architecture & org-wide systems"]
+
+    style MQA fill:#4a5568,stroke:#718096,color:#fff
+    style SDET fill:#2b6cb0,stroke:#3182ce,color:#fff
+    style SDE fill:#276749,stroke:#38a169,color:#fff
+```
+
+**What each transition requires:**
+
+| Transition | You Must Learn | You Must Stop Doing |
+|---|---|---|
+| Manual QA → SDET | TypeScript, Playwright, Git, CI/CD, POM design, API testing | Writing test cases in spreadsheets, manual execution, "it works on my machine" |
+| SDET → SDE in Test | Algorithms, system design, type systems, architectural patterns, cross-team framework ownership | Copy-pasting test patterns, avoiding code reviews, treating the test repo as "not real code" |
+
+---
+
+## 9. Anti-Patterns Catalogue — What Bad SDET Work Looks Like
+
+Every item below is something working SDETs do in production. Knowing these will save you months of debugging.
+
+| # | Anti-Pattern | What It Looks Like | Why It Fails | Fix |
+|---|---|---|---|---|
+| 1 | **Test-Order Dependency** | Test B relies on Test A creating data first. Tests pass locally in file order, fail in parallel CI. | Playwright runs tests in parallel across workers. No ordering guarantee exists. Workers don't share memory. | Each test creates ALL its own data via fixtures. No test reads another test's side effects. |
+| 2 | **Hardcoded Sleeps** | `await page.waitForTimeout(5000)` scattered throughout the test suite. CI runs take 45 minutes. | Sleeps are either too short (flaky on slow CI) or too long (waste minutes per test × hundreds of tests). They encode YOUR machine's timing, not the application's actual state. | `expect(locator).toBeVisible()`, `page.waitForURL()`, `page.waitForResponse()` — wait for observable state, not clock time. |
+| 3 | **Global Shared Test Accounts** | All 200 tests use `user: 'test-admin@company.com'`. Two workers log in simultaneously — cookie collision, 50% flakiness. | Shared accounts create race conditions: Worker 1 changes a setting, Worker 2 sees it mid-test. Password changes break everything. Session conflicts cause random 401s. | One unique account per worker (worker-scoped fixture). Account credentials stored in environment config, not hardcoded. |
+| 4 | **Assertion-Less Tests** | `test('Create citation', async () => { await page.goto(url); await form.fill(); await form.submit(); });` — no `expect()` anywhere. | The test passes even when the form submission silently fails. It tests "does the code run without throwing?" not "does the feature work correctly?" A 500 error from the server won't fail this test unless it causes a navigation error. | Every test must have at least one `expect()` that verifies business-meaningful state: `expect(statusBadge).toHaveText('PAID')`. |
+| 5 | **Testing Implementation, Not Behaviour** | `expect(page.locator('.css-1a2b3c.MuiButton-root')).toBeVisible()` — asserting on generated CSS class names. | The CSS class changes every build (CSS Modules, Styled Components). The test breaks even though the feature still works perfectly. You tested the framework's internal naming, not the user's experience. | Assert on behaviour: `expect(page.getByRole('button', { name: 'Save' })).toBeEnabled()`. Assert on visible text: `expect(heading).toHaveText('Citation Created')`. Never assert on generated class names. |
+| 6 | **Mega Test Files** | A single `spec.ts` file with 40 tests covering login, citations, payments, and admin. Takes 8 minutes. | One failure requires re-running all 40 tests. Can't parallelise within a file. Can't skip unrelated tests when only the login flow changed. Merge conflicts are constant. | One spec file per feature area. Max 8-10 tests per file. Group by business domain, not by "what I wrote this week." |
+| 7 | **Copy-Paste Locators** | The same `page.locator('[data-testid="citation-grid"]')` appears in 15 test files. Grid redesign breaks all 15. | Violates DRY (Don't Repeat Yourself). The fix for a locator change touches 15 files instead of 1. Review burden multiplies. | POM or Component Object: `citationsPage.grid` encapsulates the locator. Change it in one place, all 15 tests work. |
+
+---
+
+## 10. The SDET Interview Litmus Test — 5 Questions That Reveal Your Level
+
+These are the questions senior engineers ask to gauge whether a candidate truly understands quality engineering or just knows how to record and replay.
+
+### Q1: "What is a flaky test?"
+
+**Poor answer:** "A test that sometimes fails."
+
+**Great answer:** "A flaky test is a test whose result is **non-deterministic** — it produces different outcomes across runs without any application code changes. The four root cause categories are: (1) **timing dependence** — the test relies on hard sleeps or races against async operations, (2) **shared state** — multiple tests or workers read/write the same data, (3) **test-order dependence** — test B relies on test A's side effects, (4) **environment differences** — the test encodes assumptions about machine speed, network latency, or timezone. Flakiness is measured as failure rate: 3 failures in 20 runs = 15% flake rate. Above 5%, the test must be fixed or quarantined."
+
+---
+
+### Q2: "Why shouldn't you automate every manual test case as a UI test?"
+
+**Poor answer:** "Because UI tests are slow."
+
+**Great answer:** "Because the Testing Pyramid tells us that each test should live at the **lowest pyramid layer that can verify the behaviour**. A test that checks 'does the API correctly calculate a fine amount?' should be an API test (200ms, zero flakiness) not a UI test (15 seconds, locator and timing risk). UI tests should be reserved for verifying things only visible in a browser: rendering, navigation, and user interaction flows. If you put 300 tests in the UI layer, your CI takes 4 hours, flakiness hits 30%, and developers stop trusting the results. The correct approach is to classify the 300 cases by pyramid layer, push 60-70% down to API/unit, and keep only the critical user journeys as UI tests."
+
+---
+
+### Q3: "How do you make a test idempotent?"
+
+**Poor answer:** "Clean up data after the test."
+
+**Great answer:** "Idempotency requires two guarantees: **unique identity** and **reliable cleanup**. Unique identity means every test run creates data with a unique identifier (UUID or `worker-${workerId}-${timestamp}`) so that parallel runs never collide. Reliable cleanup means the test's fixture uses `try/finally` — the finally block deletes the data even if the test throws on line 3. Both together mean: run 100 times, serially or in parallel, and get the same result. I also ensure idempotency at the database level — if the test creates 'Citation A', the system should handle it gracefully whether 'Citation A' already exists or not."
+
+---
+
+### Q4: "Your test passes locally but fails in CI. What do you do?"
+
+**Poor answer:** "Increase the timeouts."
+
+**Great answer:** "I follow a systematic debugging pipeline. Step 1: check the CI trace (`npx playwright show-trace`) — this shows the exact page state at failure. Step 2: compare CI timing vs local — CI machines are slower (shared CPU, network latency), so a 5s timeout that works locally might need 15-30s in CI. Step 3: check for shared state — are parallel workers using the same test account or data? Step 4: reproduce locally with `--repeat-each=20` — if it fails even once locally, it's a race condition, not a CI issue. Step 5: check environment — is the staging server healthy? DNS issues? Expired certificates? The fix depends on the root cause: timing → increase timeout AND switch from `waitForTimeout` to state-based waits. Shared state → unique data per worker. Environment → add retry + environment health check in CI."
+
+---
+
+### Q5: "Explain the Page Object Model and when you'd choose NOT to use it."
+
+**Poor answer:** "POM is when you put locators in a separate file."
+
+**Great answer:** "The Page Object Model is a design pattern where each page (or significant component) of the application is represented by a class. The class encapsulates locators as private fields and exposes interactions as public methods. Tests call `citationsPage.searchByAmount(150)` — they never see raw locators. The benefit is maintainability: when a locator changes, you fix it in one class, not 30 tests.
+
+When I'd choose NOT to use it: (1) for a one-off test that will never be expanded — the overhead of creating a POM class isn't justified for a single test, (2) for visual regression or screenshot tests where the test is asserting on pixels, not interactions, (3) when the page is so dynamic that components are more useful than pages — in that case I'd use the **Component Object Model**, where each reusable UI component (grid, search panel, modal) has its own class, and page objects compose those components."
+
+---
+
+## 📚 References & Further Reading
+
+### Official Documentation
+- [Playwright Best Practices](https://playwright.dev/docs/best-practices) — Playwright's own guide to writing stable, reliable tests
+- [Playwright Test Assertions](https://playwright.dev/docs/test-assertions) — Auto-retrying vs one-shot assertions explained
+- [Playwright Test Retries](https://playwright.dev/docs/test-retries) — How retry mechanisms work and when to use them
+- [Playwright Trace Viewer](https://playwright.dev/docs/trace-viewer-intro) — Debug failed tests with full page state replay
+
+### Foundational Articles
+- [The Test Pyramid — Martin Fowler](https://martinfowler.com/bliki/TestPyramid.html) — The original description of the testing pyramid concept by the person who popularised it
+- [The Practical Test Pyramid — Ham Vocke](https://martinfowler.com/articles/practical-test-pyramid.html) — A modern, detailed walkthrough of each pyramid layer with real code examples
+- [Testing Library Query Priority](https://testing-library.com/docs/queries/about/#priority) — The semantic locator priority hierarchy that Playwright's `getByRole` strategy is based on
+
+### Books
+- *Succeeding with Agile* — Mike Cohn (2009) — Chapter 16 introduces the Testing Pyramid
+- *Software Engineering at Google* — Winters, Manshreck, Wright (2020) — Chapter 11 "Testing Overview" covers test flakiness, test size, and pyramid strategy at scale
+
+---
+
 **Navigation**: [Index](../00_INDEX.md) | [Next: Playwright & TypeScript Basics →](./01_Playwright_TS_Basics.md)

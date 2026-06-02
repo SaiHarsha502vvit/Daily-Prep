@@ -523,6 +523,104 @@ spec file (tests/specs/citations/create-citation.spec.ts)
 
 ---
 
+## 4. The Monorepo Structure & Shared Library Pattern
+
+As teams grow, you often end up with multiple Playwright projects testing different micro-frontends or services, all needing the same POMs, clients, and payloads.
+
+Instead of copying `clients/` and `pages/` into 5 different repositories, enterprise teams use a **Monorepo** structure.
+
+### Monorepo Architecture Visualised
+
+```mermaid
+graph TD
+    subgraph "Monorepo (packages/)"
+        subgraph "Shared Libraries"
+            CORE[core-test-utils<br/>(db, auth, reporters)]
+            API[shared-api-clients<br/>(axios, payloads)]
+            POM[shared-poms<br/>(login, navigation)]
+        end
+
+        subgraph "Test Projects"
+            CRM[CRM Tests<br/>(playwright.config.ts)]
+            BILL[Billing Tests<br/>(playwright.config.ts)]
+            CUST[Customer Portal Tests<br/>(playwright.config.ts)]
+        end
+    end
+
+    CRM --> CORE
+    CRM --> API
+    CRM --> POM
+    
+    BILL --> CORE
+    BILL --> API
+    
+    CUST --> CORE
+    CUST --> API
+    CUST --> POM
+```
+
+**The Shared Library Pattern:**
+Create an internal npm package (e.g., `@mycompany/test-core`) containing the setup code, generic helpers, API clients, and common page objects.
+
+```typescript
+// In CRM Tests: playwright.config.ts
+import { enterpriseConfig } from '@mycompany/test-core/config';
+
+export default {
+  ...enterpriseConfig, // Inherits workers, reporters, retries
+  testDir: './tests',
+};
+```
+
+```typescript
+// In CRM Tests: tests/login.spec.ts
+import { test, expect } from '@mycompany/test-core/fixtures';
+import { LoginPage } from '@mycompany/shared-poms';
+
+test('login to CRM', async ({ page, authAccount }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.login(authAccount.email, authAccount.password);
+});
+```
+
+---
+
+## 5. TSConfig Paths Strategy
+
+When your project gets deep, imports become unreadable:
+```typescript
+// ❌ BAD: "Relative path hell"
+import { PayloadsCitation } from '../../../../data/payloads/PayloadsCitation';
+import { CitationsApiClient } from '../../../../clients/CitationsApiClient';
+```
+
+**The Fix:** Use `tsconfig.json` paths to map root directories to `@` aliases.
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@data/*": ["data/*"],
+      "@clients/*": ["clients/*"],
+      "@pages/*": ["pages/*"],
+      "@fixtures/*": ["fixtures/*"]
+    }
+  }
+}
+```
+
+```typescript
+// ✅ GOOD: Absolute alias imports
+import { PayloadsCitation } from '@data/payloads/PayloadsCitation';
+import { CitationsApiClient } from '@clients/CitationsApiClient';
+```
+
+*Note: Playwright understands `tsconfig.json` paths automatically out of the box.*
+
+---
+
 ## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Why Endpoints Are Functions

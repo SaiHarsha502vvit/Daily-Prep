@@ -1,4 +1,4 @@
-﻿# 40. Security Test Automation — OWASP Top 10, ZAP & Auth Testing
+# 40. Security Test Automation — OWASP Top 10, ZAP & Auth Testing
 
 **Navigation**: [â† Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
 
@@ -78,6 +78,15 @@ A10 — Server-Side Request Forgery (SSRF) (new)
   → App fetches external URLs without validation
   → Test: inject internal URLs in user-supplied fields
 ```
+
+### The SDET's OWASP Checklist
+
+Not all OWASP Top 10 vulnerabilities are easily testable via automated scripts. Here is the SDET focus list:
+- [x] **A01 (Access Control)**: Write IDOR tests (Customer A tries to view Customer B's data).
+- [x] **A03 (Injection)**: Inject XSS and SQLi payloads into form fields and API parameters. Verify 200 OK (safe handling) or 400 Bad Request, NOT 500 Internal Error.
+- [x] **A05 (Security Misconfig)**: Assert that security response headers (HSTS, CSP, X-Frame-Options) are present.
+- [x] **A07 (Auth & Session)**: Verify unauthorized access redirects to login. Verify token invalidation on logout.
+- [x] **A09 (Logging)**: (If applicable) Use Playwright to trigger a failed login, then query the backend audit log API to assert the event was recorded.
 
 ---
 
@@ -171,6 +180,24 @@ test.describe('Authentication Enforcement @security @auth', () => {
 
     await context.close();
     await apiContext.dispose();
+  });
+
+  // OWASP A01/A07: Auth Bypass via Forced Browsing
+  test('Auth bypass: Forced browsing to private routes is blocked', async ({ browser }) => {
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+    // 1. Unauthenticated user navigates directly to a private dashboard route
+    const response = await page.goto('/dashboard');
+    
+    // 2. The app must intercept and redirect to login, OR return 401/403
+    await expect(page).toHaveURL(/.*login.*/);
+    
+    // 3. And crucially, no sensitive data should be leaked in the initial response HTML
+    const content = await page.content();
+    expect(content).not.toContain('Welcome, Customer');
+    
+    await context.close();
   });
 });
 ```
@@ -334,6 +361,25 @@ test.describe('Input Validation — Injection Prevention @security @a03', () => 
       }
     });
   }
+
+  // OWASP A01/A05: CSRF (Cross-Site Request Forgery) Verification
+  // Reference: https://owasp.org/www-community/attacks/csrf
+  test('CSRF: POST requests without valid anti-CSRF token are rejected', async ({ request, account }) => {
+    // Attempt state-changing operation without CSRF token header
+    const response = await request.post(
+      `${process.env.APP_BASE_URL}/api/v2/citations`,
+      {
+        headers: {
+          'Cookie': `session=${account.sessionCookie}`, // Has auth cookie
+          // MISSING: 'X-CSRF-Token': account.csrfToken
+        },
+        data: { amount: 100 }
+      }
+    );
+
+    // Should be rejected by anti-CSRF middleware
+    expect([403, 401], 'API must reject state changes missing CSRF tokens').toContain(response.status());
+  });
 });
 ```
 

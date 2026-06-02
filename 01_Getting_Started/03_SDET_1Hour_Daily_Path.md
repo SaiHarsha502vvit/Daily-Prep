@@ -164,3 +164,19 @@ const data = { citationId: null as string | null }; // typed accumulator
 // Step 1: data.citationId = body.citations[0].citationId;
 // Step 9: await page.fill('#input', data.citationId!);
 ```
+
+---
+
+## 🏋️ Practice Challenges
+
+**Challenge 1 (The 1-Hour Constraint):** You are 55 minutes into your 1-hour Thursday session (Database Testing). You are struggling to get a complex SQL `JOIN` to execute correctly in your Playwright test. What is the correct action to take at the 60-minute mark according to this methodology?
+<details><summary>Answer</summary>
+
+**Answer:** Stop immediately. Close the laptop. The goal is consistency and burnout prevention, not heroic single-session problem solving. Note your blockers (e.g., "SQL syntax error near INNER JOIN") so you can resume exactly where you left off next Thursday.
+</details>
+
+**Challenge 2 (Active Recall):** You just finished reading the chapter on Playwright POM patterns for Week 3. What is the very next thing you should do before the hour ends?
+<details><summary>Answer</summary>
+
+**Answer:** Hide the material and attempt to type out the core POM structure (e.g., a constructor initializing locators, or the lazy evaluation pattern) from memory. Passive reading without active recall is a waste of your 1-hour session.
+</details>

@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← TypeScript](05_React_TypeScript.md) | [Next: Testing →](07_React_Testing.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← TypeScript](05_React_TypeScript.md) | [Next: Testing →](07_React_Testing.md)
 
 ---
 
@@ -6,8 +6,17 @@
 
 ---
 
-## React Router v6
+## 5W1H — Why React Router?
 
+- **WHAT**: A library that maps URL paths (like `/users/123`) to React components.
+- **WHY**: Single Page Applications (SPAs) don't actually load new HTML pages from the server. React Router intercepts URL changes, prevents the browser from doing a full page refresh, and conditionally renders components instead.
+- **WHO**: Created by Remix Software (Ryan Florence and Michael Jackson), now maintained by Shopify.
+- **WHEN**: Whenever your app has multiple distinct "pages" or views that users should be able to bookmark, share via URL, or navigate using the browser's Back/Forward buttons.
+- **HOW**: By wrapping your app in a `<BrowserRouter>` and mapping `<Route>` paths to `element` props.
+
+---
+
+## React Router v6
 ```jsx
 import { BrowserRouter, Routes, Route, Link, Navigate, useParams, useNavigate, Outlet } from 'react-router-dom';
 

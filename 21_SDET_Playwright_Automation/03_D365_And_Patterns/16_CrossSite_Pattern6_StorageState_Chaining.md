@@ -59,6 +59,34 @@
 
 **What IS captured:** Cookies (all, including HttpOnly flags), localStorage per origin.
 
+### StorageState Internals Visualised
+
+```mermaid
+graph TD
+    subgraph "Playwright Context"
+        Ctx[BrowserContext]
+        Mem1[In-Memory Session]
+        Idx[IndexedDB]
+    end
+    
+    subgraph "storageState JSON"
+        JSON[(auth-state.json)]
+        C[Cookies Array]
+        LS[Origins / localStorage]
+    end
+    
+    Ctx -- "context.storageState()" --> JSON
+    Ctx --> Mem1
+    Ctx --> Idx
+    
+    JSON --> C
+    JSON --> LS
+    
+    style Mem1 fill:#fbb,stroke:#f00,stroke-dasharray: 5 5
+    style Idx fill:#fbb,stroke:#f00,stroke-dasharray: 5 5
+    style JSON fill:#bfb,stroke:#0f0
+```
+
 **What is NOT captured:**
 - `sessionStorage` (per-tab, not serializable across sessions)
 - `IndexedDB` (Playwright limitation)
@@ -357,6 +385,52 @@ test('admin accesses CRM portal without re-login', async ({ page }) => {
   await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30_000 });
   await expect(page.locator('.ms-Nav')).toBeVisible();
 });
+});
+```
+
+---
+
+## 4b. Multi-Tenant Chaining (The Enterprise Scenario)
+
+In B2B SaaS, you often have a single Auth portal, but multiple tenant-specific subdomains (e.g., `tenant1.crm.com`, `tenant2.crm.com`). To avoid logging in multiple times, you chain the storage state.
+
+```mermaid
+sequenceDiagram
+    participant Auth as auth.company.com
+    participant T1 as tenant1.crm.com
+    participant T2 as tenant2.crm.com
+    participant File as tenant1-state.json
+
+    Auth->>Auth: Login (Sets .company.com cookie)
+    Auth->>T1: Navigate
+    Note over T1: T1 reads .company.com cookie,<br/>authenticates, and sets T1 local storage
+    T1->>File: Save State (Contains Auth + T1)
+    
+    Note over File: This state CANNOT be used for T2!<br/>T2 needs its own local storage init.
+```
+
+To solve this, your `globalSetup` must explicitly visit the tenant URL after the Auth URL to initialize the tenant's specific local storage and sub-domain cookies before saving.
+
+```typescript
+// globalSetup.ts for Multi-Tenant
+const context = await browser.newContext();
+const page = await context.newPage();
+
+// 1. Core Auth
+await page.goto('https://auth.company.com');
+await page.fill('#user', 'admin');
+await page.fill('#pass', 'secret');
+await page.click('#login');
+
+// 2. Tenant 1 Init
+await page.goto('https://tenant1.crm.com/dashboard');
+await page.waitForLoadState('networkidle');
+await context.storageState({ path: 'auth-states/tenant1.json' });
+
+// 3. Tenant 2 Init (Re-using the same context!)
+await page.goto('https://tenant2.crm.com/dashboard');
+await page.waitForLoadState('networkidle');
+await context.storageState({ path: 'auth-states/tenant2.json' });
 ```
 
 ---

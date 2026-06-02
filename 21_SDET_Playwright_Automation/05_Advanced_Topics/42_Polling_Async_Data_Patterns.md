@@ -1,4 +1,4 @@
-﻿# 42. Polling & Async Data Patterns — The Right Way to Wait for Slow APIs
+# 42. Polling & Async Data Patterns — The Right Way to Wait for Slow APIs
 
 **Navigation**: [â† Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
 
@@ -133,6 +133,28 @@ await expect.poll(
 ```
 
 ### How `expect.poll()` Works Internally
+
+```mermaid
+sequenceDiagram
+    participant Test
+    participant PW as expect.poll() Engine
+    participant Fn as Your Async Function
+    
+    Test->>PW: Start Polling
+    
+    loop Every Interval (until timeout or success)
+        PW->>Fn: Execute Function
+        Fn-->>PW: Return Value
+        
+        alt Assertion Passes?
+            PW-->>Test: ✅ Success (Test Continues)
+        else Assertion Fails?
+            PW->>PW: Wait for next interval
+        end
+    end
+    
+    PW-->>Test: ❌ TimeoutError (Throws)
+```
 
 ```
 1. Calls your function immediately (attempt 1)
@@ -825,6 +847,16 @@ test('Welcome email sent after registration', async ({ page }) => {
 ```
 
 ### Scenario D: WebSocket Real-Time Updates (no polling needed)
+
+#### Polling vs WebSocket vs SSE Decision Tree
+
+```mermaid
+graph TD
+    A[Is the data real-time?] -->|No, background job| B[Polling expect.poll]
+    A -->|Yes, instant push| C{Does client send data?}
+    C -->|Yes, bi-directional| D[WebSocket]
+    C -->|No, server-to-client only| E[SSE Server-Sent Events]
+```
 
 ```typescript
 // When the backend sends STATUS_UPDATE via WebSocket, you don't need to poll

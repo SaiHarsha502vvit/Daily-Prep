@@ -1,5 +1,28 @@
 # TREES - Complete Guide
 
+### 5W1H: Mastering Trees
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: Tree data structures, their memory representations (heap layouts),    ║
+║        traversals (DFS, BFS), and common algorithmic patterns.               ║
+║                                                                              ║
+║  WHY:  Trees naturally model hierarchical data (DOM, file systems, orgs).    ║
+║        Understanding cache misses in pointer-based trees vs arrays, and the  ║
+║        call stack in recursion is vital for production-level optimization.   ║
+║                                                                              ║
+║  WHO:  Software engineers designing scalable hierarchical models or aiming   ║
+║        to master complex recursive traversal problems in interviews.         ║
+║                                                                              ║
+║  WHEN: Use trees when relationships are parent-child, not flat. Use specific ║
+║        traversals: Postorder for deletion/bottom-up, Inorder for BST sorted  ║
+║        access, Preorder for copying.                                         ║
+║                                                                              ║
+║  HOW:  By mastering recursion stacks, iterative stack conversions, and       ║
+║        recognizing when to pass data down (parameters) vs up (returns).      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
 ## From Binary Trees to Advanced Tree Algorithms
 
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — tree traversal patterns and parent-child reasoning

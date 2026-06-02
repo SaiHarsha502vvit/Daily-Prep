@@ -1,9 +1,35 @@
-﻿**Navigation**: [< Previous Chapter](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
 🧠 **Mental Model**: See [Complexity Intuition](../14_Mental_Models/09_Complexity_Intuition.md) — heap sort, counting sort, and non-comparison bounds
 
 ---
 
-# 📦 Part 7: Heap Sort
+# 📦 Advanced Sorting: Non-Comparison & Hybrid Algorithms
+
+### 5W1H: Mastering Advanced Sorting
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: Advanced sorting algorithms that either break the O(N log N) bound    ║
+║        using non-comparison techniques (Counting, Radix, Bucket) or combine  ║
+║        algorithms to exploit real-world data patterns (TimSort, Introsort).  ║
+║                                                                              ║
+║  WHY:  Real-world systems don't just sort random arrays. They sort bounded   ║
+║        integers, partially sorted logs, or enormous datasets where a generic ║
+║        QuickSort would be inefficient or unstable.                           ║
+║                                                                              ║
+║  WHO:  Engineers optimizing latency-critical pipelines, database indexes, or ║
+║        solving hard algorithmic challenges like "Sort colors in O(N)".       ║
+║                                                                              ║
+║  WHEN: Use when data has specific constraints (e.g., ages 0-120 → Counting   ║
+║        Sort), or when the language runtime needs a stable, adaptive sort     ║
+║        for object references (Java's TimSort).                               ║
+║                                                                              ║
+║  HOW:  By distributing elements into buckets/frequencies, sorting digits     ║
+║        iteratively, or detecting existing "runs" to minimize comparisons.    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+## Part 7: Heap Sort
 
 ## The Idea
 

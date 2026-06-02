@@ -1,4 +1,4 @@
-﻿> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Frontend_Debugging.md)
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_Frontend_Debugging.md)
 
 > **Frontend Integration Chapter 1/4** | [Index](../00_MASTER_INDEX.md) | [Next → Debugging](02_Frontend_Debugging.md)
 
@@ -765,6 +765,26 @@ Q: Server state vs client state?
   Use useState/useReducer — lives only in browser.
 ```
 
+
+---
+
+## 🏋️ Practice Challenges
+
+**Challenge 1 (State vs Derived State):** A junior developer stores `filteredUsers` in a `useState` and updates it via a `useEffect` whenever `users` or `searchQuery` changes. What are the two major bugs/inefficiencies this causes, and how do you fix it?
+<details><summary>Answer</summary>
+
+**The Bugs:** 
+1. **Stale State / Sync issues:** If the `users` array updates from the server, but the `useEffect` doesn't fire fast enough, the UI renders old data.
+2. **Double Renders:** Updating `users` triggers a render, which triggers the `useEffect`, which updates `filteredUsers`, triggering a *second* render.
+**The Fix:** Use derived state with `useMemo`. `const filteredUsers = useMemo(() => users.filter(...), [users, searchQuery]);`. This guarantees synchronization and avoids double-rendering.
+</details>
+
+**Challenge 2 (Animation unmounting):** You applied a CSS exit animation to a Modal, but the moment you click "Close", the modal instantly disappears without animating. Why does this happen, and what's the standard React pattern to fix it?
+<details><summary>Answer</summary>
+
+**Why:** React instantly removes the component from the DOM when `isOpen` becomes false. CSS animations need the element to stay in the DOM while the animation plays.
+**The Fix:** Use a "removing" state. When "Close" is clicked, set `isRemoving = true` (which triggers the CSS exit animation class), then use a `setTimeout` matching the animation duration to finally set `isOpen = false` and remove the DOM node.
+</details>
 
 ---
 

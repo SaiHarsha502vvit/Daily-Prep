@@ -962,5 +962,20 @@ jobs:
 </details>
 
 ---
+
+## 📚 References & Further Reading
+
+### Official Documentation — Playwright
+- [Parallelism and Sharding](https://playwright.dev/docs/test-parallel) — Official documentation on worker processes, `fullyParallel`, and serial mode
+- [Sharding Tests](https://playwright.dev/docs/test-sharding) — How to distribute test execution across multiple CI machines
+- [Annotations and Tags](https://playwright.dev/docs/test-annotations) — How to tag tests, conditionally skip tests, and attach metadata
+- [GitHub Actions Integration](https://playwright.dev/docs/ci-github) — Standard workflows, including how to merge sharded blob reports
+
+### Deep Dives
+- [Node.js Event Loop, Timers, and process.nextTick()](https://nodejs.org/en/docs/guides/event-loop-timers-and-nexttick) — How the single-threaded event loop powers multiple asynchronous Playwright actions within a single worker
+- [Playwright's "Merge Reports" Feature](https://playwright.dev/docs/test-sharding#merge-reports-cli) — How to combine multiple `blob` reports from sharded runs into a single HTML report
+
+---
+
 **Navigation**: [← Chapter 08: Browser Internals](./08_Browser_Internals_for_SDETs.md) | [Index](../00_INDEX.md) | [→ Chapter 10: Dynamics 365 CRM Testing](../03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md)
 

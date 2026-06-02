@@ -269,7 +269,30 @@ Production-grade workshop with complete POM + fixture architecture. Follow along
 
 ---
 
-## SECTION 4 — 10-Week Structured Practice Challenges
+## SECTION 4 — 10-Week Structured Practice Challenges (90-Day Roadmap)
+
+```mermaid
+gantt
+    title 90-Day SDET Mastery Roadmap
+    dateFormat  YYYY-MM-DD
+    axisFormat  %W
+    
+    section Foundation
+    Week 1: Login POM                :active,  w1, 2026-01-01, 7d
+    Week 2: Component Split          :         w2, after w1, 7d
+    Week 3: IFrames                  :         w3, after w2, 7d
+    
+    section Intermediate
+    Week 4: Dynamic Loading Wait     :         w4, after w3, 7d
+    Week 5: Typed API Suite          :         w5, after w4, 7d
+    Week 6: JSON Assertions          :         w6, after w5, 7d
+    Week 7: Web Tables CRUD          :         w7, after w6, 7d
+    
+    section Advanced
+    Week 8: Dual Context E2E         :         w8, after w7, 7d
+    Week 9: APIs + UI Side Effects   :         w9, after w8, 7d
+    Week 10: Security Test Suite     :         w10, after w9, 7d
+```
 
 Each challenge is designed to take exactly 1 hour (matches the daily path):
 

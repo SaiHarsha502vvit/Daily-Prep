@@ -20,27 +20,33 @@
 
 ---
 
-## 1. D365 DOM Anatomy — What You're Actually Working With
+## 1. D365 DOM Anatomy — The Unified Client Interface (UCI)
 
-### The Layer Stack
+Modern Dynamics 365 uses the **Unified Client Interface (UCI)**. Unlike legacy web clients, UCI is a single-page application (SPA) built entirely on React and Microsoft's Fluent UI. Understanding its internal structure is the key to reliable locators.
 
-D365 is NOT just a regular web page. It has layers:
+### The UCI Layer Stack
+
+D365 is NOT just a regular web page. The UCI architecture renders a deeply nested component tree with distinct boundaries:
 
 ```
 Browser Tab
 └── Main Page (https://crm.dynamics.com/*)
+    ├── App Header (.crmAppHeader) — App picker, Settings gear, User avatar
     ├── Top Navigation Bar (not inside an IFrame)
-    ├── CommandBar (the "Edit", "Save", "Delete" buttons — NOT inside IFrame)
+    ├── CommandBar (.ms-CommandBar) — "Edit", "Save", "Delete" (NOT inside IFrame)
     └── Main Content IFrame
-        └── (iframe src="/main.aspx#...")
-            ├── Entity Form (the actual CRM record form)
-            │   ├── Form Sections
-            │   ├── Sub-grids (tables of related records)
-            │   └── Quick View Forms
-            └── Dashboard (for dashboard pages)
+        └── (iframe src="/main.aspx#...") — The historical boundary
+            ├── Entity Form (.pa-EntityForm)
+            │   ├── Form Header (.pa-FormHeader) — Read-only summary fields
+            │   ├── Form Body (.pa-FormBody)
+            │   │   ├── Form Sections (.pa-FormSection)
+            │   │   ├── Sub-grids (tables of related records)
+            │   │   └── Quick View Forms
+            │   └── Form Footer (Save buttons on older forms)
+            └── Dashboard Pages
 ```
 
-**Practical impact:** If your locator works in the browser console on the main page but Playwright can't find it, the element is probably INSIDE the IFrame.
+**Practical impact:** If your locator works in the browser console on the main page but Playwright can't find it, the element is probably INSIDE the IFrame or blocked by a Shadow DOM boundary.
 
 ### The Frame Context Problem
 
@@ -672,6 +678,26 @@ await page.locator('[data-automation-key="telephone1.fieldControl-text-box-text"
 
 D365 uses Microsoft OAuth (Azure AD). Logging in through the UI every test is slow (15-30 seconds per login). The `storageState` approach lets you login once and reuse the session:
 
+```mermaid
+sequenceDiagram
+    participant Worker 1
+    participant Global Setup
+    participant Azure AD
+    participant D365
+
+    Note over Global Setup: Runs once before any tests
+    Global Setup->>Azure AD: POST /login (Credentials)
+    Azure AD-->>Global Setup: JWT Token & Cookies
+    Global Setup->>D365: Navigate with Auth Cookies
+    D365-->>Global Setup: Load D365 Shell
+    Global Setup->>Disk: Save cookies to d365-auth.json
+
+    Note over Worker 1: Tests start
+    Worker 1->>Disk: Read d365-auth.json
+    Worker 1->>D365: Browser loads with cookies injected
+    D365-->>Worker 1: Already Authenticated! (0s overhead)
+```
+
 ```typescript
 // global.setup.ts — runs ONCE before all tests
 import { chromium, expect } from '@playwright/test';
@@ -770,6 +796,34 @@ account: [async ({ request }, use) => {
 }, { scope: 'worker' }],
 // This token lasts 1 hour and can be refreshed programmatically.
 ```
+
+---
+
+## 11. War Story: The Multiple Modal Close Button Trap
+
+**The Scenario:**
+You are automating a D365 React component flow. A modal pops up to enter details. After submitting, a *second* "Success" modal appears over the first one. Your POM has this locator:
+```typescript
+readonly closeButton = this.page.getByRole('button', { name: 'Close' });
+```
+When you call `this.closeButton.nth(1).click()`, it works because the first modal has a Close button (index 0) and the second modal has a Close button (index 1).
+
+**The Trap:**
+A week later, you reuse the POM for a similar flow, but this time, the *first* modal doesn't have a close button! Now, `.nth(1)` targets a non-existent element and breaks the code. 
+
+**The Solution:**
+Never use `.nth()` to target UI elements that dynamically fluctuate in count across the DOM. `.nth()` depends on global DOM ordering, which is highly brittle in D365. 
+
+Instead, **scope locators to their parent container (the specific modal)**.
+
+```typescript
+// ✅ CORRECT: Find the specific modal first, then find the close button INSIDE it
+const successModal = this.page.locator('//div[contains(@class, "ms-Modal") and contains(., "successfully completed")]');
+const modalCloseButton = successModal.getByRole('button', { name: 'Close' });
+
+await modalCloseButton.click();
+```
+By anchoring to the specific modal's text or unique attributes, you guarantee you click the correct button regardless of how many other "Close" buttons exist in the background DOM.
 
 ---
 
@@ -876,4 +930,18 @@ With 4 workers and `scope: 'worker'`: only 4 logins needed instead of 80. So 76 
 </details>
 
 ---
+
+## 📚 References & Further Reading
+
+### Official Documentation
+- [Unified Client Interface (UCI) Overview](https://learn.microsoft.com/en-us/power-apps/maker/model-driven-apps/about-unified-interface) — Microsoft's documentation on the UCI architecture
+- [Playwright IFrames](https://playwright.dev/docs/frames) — Handling `frameLocator` contexts
+- [Fluent UI React Components](https://developer.microsoft.com/en-us/fluentui#/controls/web) — The component library powering D365; excellent for finding stable `.ms-*` classes
+- [Playwright `storageState`](https://playwright.dev/docs/auth) — Official guide on global setup and session reuse
+
+### Deep Dives
+- [Dynamics 365 Client API Reference](https://learn.microsoft.com/en-us/power-apps/developer/model-driven-apps/clientapi/reference) — Useful for building custom `page.evaluate()` console scripts to interact with the `Xrm` object
+
+---
+
 **Navigation**: [← Previous: Parallel Execution](../02_Core_Architecture/09_Parallel_Execution_Workers.md) | [Index](../00_INDEX.md) | [Master Index](../../00_MASTER_INDEX.md)

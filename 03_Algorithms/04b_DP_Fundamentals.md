@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous Chapter](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04c_DP_Advanced.md)
+**Navigation**: [< Previous Chapter](04a_DP_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](04c_DP_Advanced.md)
 🧠 **Mental Model**: See [DP State Thinking](../14_Mental_Models/02_DP_State_Thinking.md) — state definition, transitions, and tabulation strategy
 
 ---
@@ -30,7 +30,29 @@
 
 ---
 
-# 📌 Part 1: Understanding DP From Scratch
+# 📌 Dynamic Programming Fundamentals
+
+### 5W1H: Mastering DP Fundamentals
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: The core principles of Dynamic Programming: Overlapping Subproblems,  ║
+║        Optimal Substructure, State Definition, and the 5-step DP recipe.     ║
+║                                                                              ║
+║  WHY:  DP transforms exponential time O(2^N) brute-force recursive solutions ║
+║        into polynomial time O(N) or O(N^2) by trading space for time.        ║
+║                                                                              ║
+║  WHO:  Developers who need to solve optimization problems (max/min/count)    ║
+║        where decisions at each step affect future choices.                   ║
+║                                                                              ║
+║  WHEN: Use when a problem asks for the "best/max/min", requires making       ║
+║        choices at each step, AND those subproblems overlap (unlike D&C).     ║
+║                                                                              ║
+║  HOW:  By defining the state (e.g., dp[i]), identifying the recurrence       ║
+║        relation (e.g., dp[i] = dp[i-1] + dp[i-2]), and applying either       ║
+║        Memoization (Top-Down) or Tabulation (Bottom-Up).                     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
 
 ## What is Dynamic Programming?
 

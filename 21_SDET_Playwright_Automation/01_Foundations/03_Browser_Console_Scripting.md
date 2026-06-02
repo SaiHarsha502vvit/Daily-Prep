@@ -749,4 +749,300 @@ In test frameworks, `addInitScript` is typically called in fixtures (before any 
 </details>
 
 ---
+
+## 8. Performance Profiling from the Console — Measuring What Matters
+
+The Performance API is built into every browser and accessible from the console. SDETs use it to answer: "How long does this operation actually take?" — before writing k6 scripts or Lighthouse audits.
+
+### Performance Timing — Page Load Metrics
+
+```javascript
+// The browser tracks every navigation event with precise timestamps:
+const timing = performance.getEntriesByType('navigation')[0];
+console.table({
+  'DNS Lookup':           `${(timing.domainLookupEnd - timing.domainLookupStart).toFixed(0)}ms`,
+  'TCP Connect':          `${(timing.connectEnd - timing.connectStart).toFixed(0)}ms`,
+  'TLS Handshake':        `${(timing.requestStart - timing.secureConnectionStart).toFixed(0)}ms`,
+  'Time to First Byte':   `${(timing.responseStart - timing.requestStart).toFixed(0)}ms`,
+  'Content Download':     `${(timing.responseEnd - timing.responseStart).toFixed(0)}ms`,
+  'DOM Interactive':      `${(timing.domInteractive - timing.fetchStart).toFixed(0)}ms`,
+  'DOM Complete':         `${(timing.domComplete - timing.fetchStart).toFixed(0)}ms`,
+  'Total Load':           `${(timing.loadEventEnd - timing.fetchStart).toFixed(0)}ms`,
+});
+
+// Example output for a D365 citation list page:
+// DNS Lookup:           3ms
+// TCP Connect:          12ms
+// TLS Handshake:        45ms
+// Time to First Byte:   287ms     ← Server processing time
+// Content Download:     89ms
+// DOM Interactive:      1204ms    ← Page is interactive
+// DOM Complete:         3847ms    ← All resources loaded
+// Total Load:           3901ms
+```
+
+### PerformanceObserver — Watch Metrics in Real Time
+
+```javascript
+// Set up a watcher BEFORE the operation you want to measure:
+const observer = new PerformanceObserver((list) => {
+  for (const entry of list.getEntries()) {
+    console.log(`[Perf] ${entry.entryType}: ${entry.name} — ${entry.duration?.toFixed(0) ?? entry.startTime?.toFixed(0)}ms`);
+  }
+});
+
+// Watch for Largest Contentful Paint (LCP) — the most important Core Web Vital:
+observer.observe({ type: 'largest-contentful-paint', buffered: true });
+
+// Watch for Long Tasks (anything blocking the main thread for >50ms):
+observer.observe({ type: 'longtask', buffered: true });
+
+// Watch for Layout Shifts (CLS — content jumping around):
+observer.observe({ type: 'layout-shift', buffered: true });
+
+// Now navigate or interact — the observer logs each event
+// → [Perf] largest-contentful-paint: — 2340ms   (the main content appeared at 2.3s)
+// → [Perf] longtask: self — 847ms               (something blocked the thread for 847ms!)
+```
+
+### Using Performance Metrics in Playwright Tests
+
+```typescript
+test('Citation list loads within performance budget', async ({ page }) => {
+  await page.goto('/citations');
+  await expect(page.locator('.ms-DetailsList')).toBeVisible();
+
+  // Read the LCP (Largest Contentful Paint) from the browser:
+  const lcp = await page.evaluate(() => {
+    return new Promise<number>((resolve) => {
+      new PerformanceObserver((list) => {
+        const entries = list.getEntries();
+        const lastEntry = entries[entries.length - 1];
+        resolve(lastEntry.startTime);
+      }).observe({ type: 'largest-contentful-paint', buffered: true });
+
+      // If already fired, resolve immediately from existing entries:
+      const existing = performance.getEntriesByType('largest-contentful-paint');
+      if (existing.length > 0) {
+        resolve(existing[existing.length - 1].startTime);
+      }
+    });
+  });
+
+  console.log(`LCP: ${lcp.toFixed(0)}ms`);
+  expect(lcp, `LCP was ${lcp}ms — budget is 2500ms`).toBeLessThan(2500);
+});
+```
+
+---
+
+## 9. Memory Leak Detection — Finding the Invisible Failures
+
+Memory leaks are the bugs that never show up in a single test run but cause the app to crash after 30 minutes of use. SDETs who can detect memory leaks in their test suite are rare and extremely valuable.
+
+### Console Heap Snapshot Workflow
+
+```javascript
+// Step 1: Take a baseline snapshot
+// Chrome DevTools → Memory tab → Take heap snapshot
+// Note the total heap size (e.g., 12MB)
+
+// Step 2: Perform the suspected leaking operation 10 times
+// (e.g., open a citation form, fill it, save it, go back, repeat)
+
+// Step 3: Take another heap snapshot
+// Note the total heap size (e.g., 38MB after 10 iterations)
+
+// Step 4: If heap grew by more than 2x → you have a leak
+// Compare the two snapshots → look for objects that grew in count
+
+// Automated version — measure from console:
+async function measureHeap() {
+  // Force garbage collection (Chrome only, requires --js-flags="--expose-gc"):
+  if (window.gc) window.gc();
+
+  const usage = performance.memory;  // Chrome-only
+  return {
+    totalHeap: (usage.totalJSHeapSize / 1024 / 1024).toFixed(1) + 'MB',
+    usedHeap:  (usage.usedJSHeapSize  / 1024 / 1024).toFixed(1) + 'MB',
+    limit:     (usage.jsHeapSizeLimit / 1024 / 1024).toFixed(1) + 'MB',
+  };
+}
+console.table(await measureHeap());
+```
+
+### Memory Leak Detection in Playwright
+
+```typescript
+test('Citation form does not leak memory after repeated open/close', async ({ page }) => {
+  await page.goto('/citations');
+
+  // Take baseline
+  const baseline = await page.evaluate(() =>
+    (performance as any).memory?.usedJSHeapSize ?? 0
+  );
+
+  // Repeat the operation 10 times
+  for (let i = 0; i < 10; i++) {
+    await page.locator('[data-automation-key="createNew"]').click();
+    await expect(page.locator('#citationForm')).toBeVisible();
+    await page.locator('[data-automation-key="closeForm"]').click();
+    await expect(page.locator('#citationForm')).toBeHidden();
+  }
+
+  // Force GC via CDP (requires Chromium):
+  const client = await page.context().newCDPSession(page);
+  await client.send('HeapProfiler.collectGarbage');
+
+  // Take final measurement
+  const final = await page.evaluate(() =>
+    (performance as any).memory?.usedJSHeapSize ?? 0
+  );
+
+  const growthMB = (final - baseline) / 1024 / 1024;
+  console.log(`Memory growth after 10 iterations: ${growthMB.toFixed(1)}MB`);
+
+  // Budget: heap should not grow by more than 5MB after 10 iterations
+  expect(growthMB, `Memory grew by ${growthMB.toFixed(1)}MB — possible leak`).toBeLessThan(5);
+});
+```
+
+---
+
+## 10. CDP Direct Commands — The Power Beneath Playwright
+
+Playwright communicates with the browser via the Chrome DevTools Protocol (CDP). You can send CDP commands directly for operations that Playwright doesn't expose as high-level APIs.
+
+### Opening a CDP Session
+
+```typescript
+// Get a raw CDP session from Playwright:
+const client = await page.context().newCDPSession(page);
+
+// Now you can send ANY CDP command:
+// Full reference: https://chromedevtools.github.io/devtools-protocol/
+```
+
+### Network Throttling — Simulate Slow Connections
+
+```typescript
+// Simulate a 3G mobile connection:
+await client.send('Network.emulateNetworkConditions', {
+  offline: false,
+  downloadThroughput: (1.6 * 1024 * 1024) / 8,  // 1.6 Mbps
+  uploadThroughput:   (750 * 1024) / 8,            // 750 Kbps
+  latency: 300,                                    // 300ms RTT
+});
+
+// Test: does the app handle slow connections gracefully?
+await page.goto('/citations');
+await expect(page.locator('.ms-Spinner')).toBeVisible();  // loading spinner should appear
+await expect(page.locator('.ms-DetailsList')).toBeVisible({ timeout: 30_000 });
+
+// Reset to normal:
+await client.send('Network.emulateNetworkConditions', {
+  offline: false,
+  downloadThroughput: -1,  // unlimited
+  uploadThroughput: -1,
+  latency: 0,
+});
+```
+
+### CSS/JS Coverage — Find Unused Code
+
+```typescript
+// Start collecting CSS and JS coverage:
+await client.send('Profiler.enable');
+await client.send('Profiler.startPreciseCoverage', { callCount: true, detailed: true });
+await client.send('CSS.startRuleUsageTracking');
+
+await page.goto('/citations');
+await page.waitForLoadState('networkidle');
+
+// Get JS coverage:
+const { result: jsCoverage } = await client.send('Profiler.takePreciseCoverage');
+await client.send('Profiler.stopPreciseCoverage');
+
+// Get CSS coverage:
+const { ruleUsage: cssRules } = await client.send('CSS.stopRuleUsageTracking');
+
+// Analyze:
+const totalJS = jsCoverage.reduce((sum, script) => {
+  const used = script.functions.reduce((fSum, fn) =>
+    fSum + fn.ranges.reduce((rSum, r) => rSum + (r.endOffset - r.startOffset), 0), 0);
+  return sum + used;
+}, 0);
+console.log(`JS bytes executed: ${(totalJS / 1024).toFixed(0)}KB`);
+
+const usedCSS = cssRules.filter(r => r.used).length;
+const totalCSS = cssRules.length;
+console.log(`CSS rules: ${usedCSS}/${totalCSS} used (${((usedCSS/totalCSS)*100).toFixed(0)}%)`);
+```
+
+### Console Log Capture — Catch Browser Errors in Tests
+
+```typescript
+// Listen for ALL console messages from the browser:
+const consoleLogs: string[] = [];
+const consoleErrors: string[] = [];
+
+page.on('console', (msg) => {
+  if (msg.type() === 'error') {
+    consoleErrors.push(msg.text());
+  }
+  consoleLogs.push(`[${msg.type()}] ${msg.text()}`);
+});
+
+// Run your test...
+await page.goto('/citations');
+await page.locator('[data-automation-key="createNew"]').click();
+// ...
+
+// Assert: no unexpected console errors
+const unexpectedErrors = consoleErrors.filter(e =>
+  !e.includes('favicon.ico') &&          // ignore favicon 404
+  !e.includes('ResizeObserver') &&        // ignore benign resize warning
+  !e.includes('Third-party cookie')       // ignore Chrome warning
+);
+
+expect(unexpectedErrors, `Browser console had errors: ${unexpectedErrors.join('\n')}`).toHaveLength(0);
+```
+
+### CDP Command Reference for SDETs
+
+| CDP Domain | Command | SDET Use Case |
+|---|---|---|
+| `Network.emulateNetworkConditions` | Throttle bandwidth/latency | Test loading states on slow connections |
+| `HeapProfiler.collectGarbage` | Force garbage collection | Memory leak testing — clean up before measuring |
+| `Profiler.startPreciseCoverage` | Track JS code coverage | Identify dead code, measure test coverage |
+| `CSS.startRuleUsageTracking` | Track CSS rule usage | Find unused CSS, optimize bundle size |
+| `Emulation.setGeolocationOverride` | Fake GPS coordinates | Test location-based features |
+| `Emulation.setTimezoneOverride` | Fake timezone | Test timezone-dependent formatting |
+| `Input.dispatchMouseEvent` | Raw mouse events | Test drag-and-drop, canvas interactions |
+| `Page.captureScreenshot` | Screenshot with options | Visual regression with specific parameters |
+
+---
+
+## 📚 References & Further Reading
+
+### Official Documentation — Playwright
+- [Evaluating JavaScript — Playwright](https://playwright.dev/docs/evaluating) — `page.evaluate()` vs `page.addInitScript()` — when to use each
+- [Page.evaluate() API](https://playwright.dev/docs/api/class-page#page-evaluate) — Full API reference with argument passing, return values, and serialisation rules
+
+### Chrome DevTools Protocol
+- [CDP Protocol Reference](https://chromedevtools.github.io/devtools-protocol/) — Full specification for every CDP domain (Network, Profiler, HeapProfiler, CSS, Emulation)
+- [CDP Network Domain](https://chromedevtools.github.io/devtools-protocol/tot/Network/) — `emulateNetworkConditions`, request interception, and cache control
+- [CDP Profiler Domain](https://chromedevtools.github.io/devtools-protocol/tot/Profiler/) — JS code coverage and CPU profiling
+
+### MDN Web Docs — Browser APIs
+- [Performance API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/Performance_API) — Navigation timing, resource timing, and paint metrics
+- [PerformanceObserver — MDN](https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserver) — Real-time monitoring of LCP, Long Tasks, and Layout Shifts
+- [MutationObserver — MDN](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver) — Watch for DOM changes (the two-phase render detection technique)
+- [Console API — MDN](https://developer.mozilla.org/en-US/docs/Web/API/console) — `console.table()`, `console.trace()`, and other utility methods
+
+### Core Web Vitals
+- [Web Vitals — web.dev](https://web.dev/articles/vitals) — Official guide to LCP, FID/INP, and CLS metrics used in Section 8's performance budgets
+
+---
+
 **Navigation**: [← Enterprise Locators](./02_Enterprise_Locators_XPath.md) | [Index](../00_INDEX.md) | [→ JS/TS for Automation](./04_JS_TS_For_Automation.md)

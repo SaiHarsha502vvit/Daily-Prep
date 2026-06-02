@@ -648,4 +648,185 @@ The re-evaluation is actually a feature: if the element is replaced by a React r
 </details>
 
 ---
+
+## 10. Under the Hood — Why `await` Works in Playwright
+
+The ASCII diagram in Section 3 showed the CDP flow conceptually. Here is the precise sequence for every single Playwright action:
+
+```mermaid
+sequenceDiagram
+    participant Test as Your Test Code
+    participant PW as Playwright Node.js Process
+    participant WS as WebSocket Connection
+    participant Browser as Chromium Browser Process
+    participant DOM as Page DOM
+
+    Test->>PW: await page.click('#submit')
+    PW->>PW: Build CDP message<br/>{method: 'Input.dispatchMouseEvent'}
+    PW->>WS: Send CDP JSON over WebSocket
+    WS->>Browser: Forward message
+    Browser->>DOM: Execute click on element
+    DOM-->>Browser: Click event dispatched
+    Browser-->>WS: CDP response {result: {}}
+    WS-->>PW: Forward response
+    PW-->>Test: Promise resolves → await completes
+    Test->>Test: Next line of test code runs
+```
+
+**What this diagram teaches you:**
+
+1. **Every Playwright action is a network round-trip.** Your test code and the browser are in *separate OS processes*. They communicate over a WebSocket using the Chrome DevTools Protocol (CDP). This is fundamentally different from Selenium, where the driver injects JavaScript directly into the page.
+
+2. **`await` is not optional — it is mechanical.** Without `await`, your code sends the CDP message and immediately moves to the next line. The browser hasn't even received the message yet, let alone executed it. The assertion that follows will check the page *before* the click happened.
+
+3. **The latency varies.** On your machine, the round-trip is <1ms. On a CI server with shared CPU, it might be 10-50ms. On a remote browser grid, it might be 100-500ms. This is why timeouts that work locally can fail in CI.
+
+4. **Playwright batches intelligently.** When you write `await page.fill('#input', 'hello')`, Playwright sends multiple CDP commands (focus element, clear existing value, dispatch key events for each character) — but it handles the orchestration. You just see one `await`.
+
+---
+
+## 11. The Retryability Engine — How Playwright Auto-Waits
+
+This is the single most important thing to understand about Playwright's assertion model. There are **two completely different assertion systems** that look syntactically similar.
+
+### Auto-Retrying Assertions (Playwright-specific)
+
+```typescript
+// These ALL retry automatically until timeout:
+await expect(page.locator('.status')).toHaveText('PAID');        // re-polls ~every 100ms
+await expect(page.locator('.spinner')).toBeHidden();              // re-polls
+await expect(page.locator('.row')).toHaveCount(5);               // re-polls
+await expect(page).toHaveURL('**/dashboard');                     // re-polls
+await expect(page.locator('#btn')).toBeEnabled();                // re-polls
+await expect(page.locator('img')).toHaveAttribute('src', /logo/); // re-polls
+```
+
+**How the retry loop works internally:**
+
+```
+Step 1: Evaluate the locator → find element(s) in DOM
+Step 2: Check the condition (text matches? visible? count correct?)
+Step 3: Condition met? → resolve Promise → assertion PASSES ✅
+Step 4: Condition NOT met? → wait ~100ms → go to Step 1
+Step 5: Timeout reached (default 5000ms)? → throw AssertionError ❌
+```
+
+The key: **both the locator query AND the condition check are re-evaluated on every retry**. If the DOM changes between retries (React re-render, async data load), Playwright picks up the new state automatically.
+
+### One-Shot Methods (No retry)
+
+```typescript
+// These execute ONCE and return immediately:
+const text = await page.locator('.status').textContent();   // reads text NOW — no retry
+const visible = await page.locator('.btn').isVisible();     // checks visibility NOW — no retry
+const count = await page.locator('.row').count();            // counts NOW — no retry
+const checked = await page.locator('#agree').isChecked();   // checks NOW — no retry
+```
+
+### When to Use Which — The Decision Rule
+
+```typescript
+// WRONG — one-shot then immediate assertion (race condition):
+const statusText = await page.locator('.status').textContent();
+expect(statusText).toBe('PAID');  // if status is still 'PENDING', fails immediately
+
+// RIGHT — auto-retrying assertion (waits for state):
+await expect(page.locator('.status')).toHaveText('PAID');  // waits up to 5s for 'PAID'
+
+// THE EXCEPTION — use one-shot when you KNOW the value is already final:
+await expect(page.locator('.status')).toHaveText('PAID');  // first, WAIT for it
+const finalText = await page.locator('.status').textContent();  // THEN read the exact value
+// finalText is guaranteed to be 'PAID' here because the expect above already confirmed it
+```
+
+**Rule:** If you're checking a value that might still be changing → use `await expect(locator)`. If you need to read a value that's already been confirmed → use `await locator.textContent()`.
+
+### Customising Retry Behaviour
+
+```typescript
+// Increase timeout for slow operations (D365 form save):
+await expect(page.locator('.notification')).toBeVisible({ timeout: 30_000 });
+
+// Use expect.poll() for custom conditions that aren't locator-based:
+await expect.poll(async () => {
+  const response = await request.get('/api/citations/CIT-001');
+  const body = await response.json();
+  return body.status;
+}, {
+  message: 'Citation status should become PAID',
+  intervals: [500, 1000, 2000],  // poll every 500ms, then 1s, then 2s, then 2s...
+  timeout: 30_000,
+}).toBe('PAID');
+```
+
+---
+
+## 12. Locator vs ElementHandle — Why Locators Always Win
+
+Playwright has two ways to reference DOM elements. One is modern and resilient. The other is legacy and fragile.
+
+### ElementHandle (Legacy — Avoid)
+
+```typescript
+// ElementHandle is a DIRECT POINTER to a specific DOM node
+const handle = await page.$('#submit-btn');  // finds the node RIGHT NOW
+// handle points to: <button id="submit-btn">Save</button> at memory address 0x7f3a...
+
+// If React re-renders the form (component unmounts and remounts):
+// → The OLD <button> is destroyed (memory address 0x7f3a is freed)
+// → A NEW <button> is created (memory address 0x8b2c)
+// → handle STILL points to the destroyed node (0x7f3a)
+// → handle.click() → ERROR: "Element is detached from the DOM"
+```
+
+### Locator (Modern — Always Use)
+
+```typescript
+// Locator is a QUERY that re-runs every time you use it
+const locator = page.locator('#submit-btn');  // stores the query, NOT a node reference
+
+// First use:
+await locator.click();  // runs query → finds <button> at 0x7f3a → clicks it
+
+// React re-renders (old button destroyed, new button created):
+
+// Second use:
+await locator.click();  // runs query AGAIN → finds NEW <button> at 0x8b2c → clicks it
+// No error — locator found the new element automatically
+```
+
+### Why This Matters for D365 and React Apps
+
+D365 uses React (or a React-like framework) internally. Components re-render frequently:
+- Opening a form tab triggers re-render
+- Saving a record triggers re-render
+- Expanding a grid row triggers re-render
+- Two-phase render means the component renders twice in quick succession
+
+With ElementHandle, every re-render risks a "detached from DOM" error. With Locator, the query re-runs on every action and always finds the current element.
+
+**The only time you need ElementHandle:** When you're doing advanced CDP operations that require a direct node reference (e.g., `elementHandle.evaluateHandle()`). This is rare — most SDETs will never need it.
+
+---
+
+## 📚 References & Further Reading
+
+### Official Documentation — Playwright
+- [Playwright Locators Guide](https://playwright.dev/docs/locators) — Complete guide to locator types, best practices, and filtering
+- [Locator Class API](https://playwright.dev/docs/api/class-locator) — Every Locator method with signatures and examples
+- [Test Assertions](https://playwright.dev/docs/test-assertions) — Auto-retrying assertions vs one-shot — the most important distinction in Playwright
+- [Page Object Model (Playwright)](https://playwright.dev/docs/pom) — Playwright's official POM guidance
+- [Evaluating JavaScript](https://playwright.dev/docs/evaluating) — `page.evaluate()`, `page.addInitScript()`, and passing data between Node.js and the browser
+
+### Chrome DevTools Protocol
+- [CDP Protocol Reference](https://chromedevtools.github.io/devtools-protocol/) — Full specification of every CDP domain and command Playwright uses under the hood
+
+### MDN Web Docs
+- [Structured Clone Algorithm](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm) — How data is serialised between `page.evaluate()` and your Node.js test (explains why you can't pass functions or DOM nodes)
+
+### Articles
+- [Playwright Best Practices](https://playwright.dev/docs/best-practices) — Official guide to writing stable, maintainable tests
+
+---
+
 **Navigation**: [← Foundations](./00_SDET_Foundations_Mindset.md) | [Index](../00_INDEX.md) | [→ Enterprise Locators](./02_Enterprise_Locators_XPath.md)

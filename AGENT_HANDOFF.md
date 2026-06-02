@@ -84,9 +84,6 @@
 
 | Priority | Issue | Scope |
 |----------|-------|-------|
-| **P1** | 53 Java `ExecutorService` challenges in `13_Developer_Essentials/` | 18 files |
-| P2 | `13_Developer_Essentials/00_INDEX.md` missing Ch 11-19 | 1 file |
-| P2 | `10_Enterprise_Systems/00_INDEX.md` missing DDD + Distributed chapters | 1 file |
 | P3 | KIs needed for 15 remaining modules | Ongoing |
 
 ---

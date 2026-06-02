@@ -5,6 +5,29 @@
 
 # 🧮 Dynamic Programming & Memoization: Complete Guide
 
+### 5W1H: Mastering DP Internals
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: The physical mechanics of Dynamic Programming: DP table memory layout,║
+║        cache behavior (L1/L2 hits vs misses), state representation limits,   ║
+║        and the hardware differences between Tabulation and Memoization.      ║
+║                                                                              ║
+║  WHY:  Understanding memory architecture and CPU behavior explains why an    ║
+║        O(N²) DP might run 5x slower or hit memory limits depending purely on ║
+║        iteration order (row vs column) or object allocations.                ║
+║                                                                              ║
+║  WHO:  Engineers optimizing latency-sensitive DP algorithms, managing memory ║
+║        constraints in production, or debugging TLE/MLE in coding interviews. ║
+║                                                                              ║
+║  WHEN: Study this BEFORE writing complex 2D/3D DP tables. It teaches you     ║
+║        when to use rolling arrays, bitmasks, or coordinate compression.      ║
+║                                                                              ║
+║  HOW:  By analyzing DP arrays in physical memory, observing branch prediction║
+║        costs, and employing space optimization techniques like rolling arrays.║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
 ## From Recursion to Optimal Solutions
 
 ---

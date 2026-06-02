@@ -910,4 +910,250 @@ The `?.` chains safely stop at the first `null`/`undefined` and return `undefine
 </details>
 
 ---
+
+## Part 5 — Advanced TypeScript Patterns for SDET Work
+
+### 5.1 Discriminated Unions — Type-Safe Test Data Factories
+
+A discriminated union is a TypeScript pattern where a union of types shares a **common property** (the "discriminant") that tells TypeScript exactly which type you're working with. This is the pattern that makes test data factories bulletproof.
+
+```typescript
+// The discriminant is the 'status' field — each status has different allowed fields:
+
+interface PendingCitation {
+  status: 'PENDING';
+  citationId: string;
+  amount: number;
+  dueDate: string;
+  // No paidDate — pending citations haven't been paid
+}
+
+interface PaidCitation {
+  status: 'PAID';
+  citationId: string;
+  amount: number;
+  paidDate: string;      // required for paid
+  paymentMethod: string; // required for paid
+  // No dueDate — already resolved
+}
+
+interface DisputedCitation {
+  status: 'DISPUTED';
+  citationId: string;
+  amount: number;
+  disputeReason: string; // required for disputed
+  disputeDate: string;   // required for disputed
+}
+
+// The discriminated union — TypeScript knows ALL three shapes:
+type Citation = PendingCitation | PaidCitation | DisputedCitation;
+
+// WHY THIS MATTERS — TypeScript narrows automatically:
+function getResolutionDate(citation: Citation): string {
+  switch (citation.status) {
+    case 'PENDING':
+      return citation.dueDate;      // TS knows: PendingCitation → has dueDate
+    case 'PAID':
+      return citation.paidDate;     // TS knows: PaidCitation → has paidDate
+    case 'DISPUTED':
+      return citation.disputeDate;  // TS knows: DisputedCitation → has disputeDate
+    // No default needed — TypeScript knows all cases are handled (exhaustive check)
+  }
+}
+
+// Using it in a test data factory:
+class CitationFactory {
+  static pending(overrides?: Partial<PendingCitation>): PendingCitation {
+    return {
+      status: 'PENDING',
+      citationId: `CIT-${Date.now()}`,
+      amount: 150,
+      dueDate: '2025-12-31',
+      ...overrides,
+    };
+  }
+
+  static paid(overrides?: Partial<PaidCitation>): PaidCitation {
+    return {
+      status: 'PAID',
+      citationId: `CIT-${Date.now()}`,
+      amount: 200,
+      paidDate: new Date().toISOString(),
+      paymentMethod: 'CREDIT_CARD',
+      ...overrides,
+    };
+  }
+}
+
+// In a test:
+const citation = CitationFactory.pending({ amount: 500 });
+// TypeScript knows: citation.status is 'PENDING', citation.dueDate exists
+// TypeScript error: citation.paidDate — doesn't exist on PendingCitation ✅
+```
+
+---
+
+### 5.2 `AbortController` — Timeout Management for API Tests
+
+When making API calls in tests, you need to handle the case where the server doesn't respond. `AbortController` is the standard way to cancel a pending operation after a timeout.
+
+```typescript
+// Pattern 1: Abort a fetch after a custom timeout
+async function fetchWithTimeout(
+  url: string,
+  options: RequestInit = {},
+  timeoutMs: number = 10_000
+): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,  // connect the abort signal
+    });
+    return response;
+  } catch (error) {
+    if ((error as Error).name === 'AbortError') {
+      throw new Error(`Request to ${url} timed out after ${timeoutMs}ms`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeoutId);  // clean up the timer
+  }
+}
+
+// Pattern 2: Cancel parallel requests when one fails
+async function fetchFirstAvailable(urls: string[]): Promise<Response> {
+  const controller = new AbortController();
+
+  try {
+    // Race all URLs — first successful response wins
+    const response = await Promise.any(
+      urls.map(url => fetch(url, { signal: controller.signal }))
+    );
+    controller.abort();  // cancel remaining requests
+    return response;
+  } catch {
+    throw new Error('All endpoints failed');
+  }
+}
+
+// Pattern 3: In Playwright tests — abort a polling loop
+async function pollUntilStatus(
+  request: APIRequestContext,
+  citationId: string,
+  targetStatus: string,
+  timeoutMs: number = 30_000
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    const response = await request.get(`/api/citations/${citationId}`);
+    const body = await response.json();
+
+    if (body.status === targetStatus) {
+      return;  // success — status reached
+    }
+
+    // Wait 1 second before next poll
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+
+  throw new Error(
+    `Citation ${citationId} did not reach status '${targetStatus}' within ${timeoutMs}ms`
+  );
+}
+```
+
+---
+
+### 5.3 `Record<K, V>` and Mapped Types — The Patterns You See Everywhere
+
+```typescript
+// Record<K, V> — an object where all keys are type K and all values are type V
+// This is THE most common utility type in SDET codebases
+
+// Headers dictionary:
+const headers: Record<string, string> = {
+  'Content-Type': 'application/json',
+  'Authorization': `Bearer ${token}`,
+  'X-Request-Id': requestId,
+};
+
+// Endpoint map (from Section 3.7):
+const endpointMap: Record<ApiType, string> = {
+  ivrapi: '/api/ivr/citations/search',
+  asdapi: '/api/asd/citations/search',
+  nwapi:  '/api/nw/citations/search',
+};
+
+// Environment config:
+type Environment = 'dev' | 'staging' | 'prod';
+const baseUrls: Record<Environment, string> = {
+  dev:     'https://dev.crm.dynamics.com',
+  staging: 'https://staging.crm.dynamics.com',
+  prod:    'https://crm.dynamics.com',
+};
+
+// Partial<T> — make all fields optional (for test data overrides):
+interface Citation {
+  citationId: string;
+  status: string;
+  amount: number;
+}
+function createCitation(overrides: Partial<Citation> = {}): Citation {
+  return {
+    citationId: `CIT-${Date.now()}`,
+    status: 'PENDING',
+    amount: 100,
+    ...overrides,  // overrides replace defaults
+  };
+}
+createCitation({ amount: 500 });  // only override amount, keep defaults for rest
+
+// Pick<T, K> — select only specific fields:
+type CitationSummary = Pick<Citation, 'citationId' | 'status'>;
+// Result: { citationId: string; status: string }
+
+// Omit<T, K> — remove specific fields:
+type CitationWithoutId = Omit<Citation, 'citationId'>;
+// Result: { status: string; amount: number }
+```
+
+---
+
+## Part 6 — Async Pitfalls Diagnostic Table
+
+Every async bug in Playwright traces back to one of these patterns. Use this table when debugging.
+
+| Symptom | Root Cause | What's Happening | Fix |
+|---|---|---|---|
+| Test passes locally, fails in CI randomly | Missing `await` on a Playwright action | Without `await`, the action fires but your code proceeds immediately. On your fast machine the action completes quickly (race won). On slow CI it doesn't (race lost). | Add `await` before every `page.*` action and `expect()` assertion. |
+| All 5 iterations of a loop seem to run simultaneously | `forEach` + `async` callback | `forEach` doesn't understand Promises — it fires all callbacks without waiting. All 5 iterations race against each other. | Replace `forEach` with `for...of` loop. |
+| `expect(text).toBe('PAID')` fails with `''` | One-shot read on a loading element | `textContent()` returns the text at THIS INSTANT. If the element is still in Phase 1 (empty container, data loading), you get `''`. | Use `await expect(locator).toHaveText('PAID')` — this retries until the text matches. |
+| `Promise.all` errors out and you lose the other results | One Promise rejects, `Promise.all` short-circuits | `Promise.all` rejects as soon as ANY Promise rejects. The other Promises keep running but their results are lost. | Use `Promise.allSettled()` if you need results from all, even failures. |
+| New tab not captured after button click | `waitForEvent` registered AFTER the click | The new tab opened before the event listener was ready. The event was emitted and nobody was listening. | Use `Promise.all([context.waitForEvent('page'), button.click()])` — listener starts BEFORE the click. |
+| Test hangs forever, never completes | `await` on a Promise that never resolves | A `waitForResponse()` waiting for an API call that the app never makes. A `waitForSelector()` waiting for an element that doesn't exist. | Always set explicit timeouts: `{ timeout: 15_000 }`. Never `await` without a timeout safety net. |
+
+---
+
+## 📚 References & Further Reading
+
+### Official Documentation — JavaScript (MDN)
+- [Event Loop & Concurrency Model](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Event_loop) — The core mechanism behind JS async behavior
+- [Promise — MDN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) — Complete Promise API reference
+- [Promise.all() vs Promise.allSettled()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled) — When to use which for parallel test actions
+
+### Official Documentation — TypeScript
+- [TypeScript Handbook: Utility Types](https://www.typescriptlang.org/docs/handbook/utility-types.html) — `Partial`, `Pick`, `Omit`, `ReturnType`, etc.
+- [TypeScript Handbook: Discriminated Unions](https://www.typescriptlang.org/docs/handbook/2/narrowing.html#discriminated-unions) — The most powerful pattern for factory functions and API payloads
+- [Mapped Types](https://www.typescriptlang.org/docs/handbook/2/mapped-types.html) — Creating types dynamically from other types
+
+### Advanced Patterns
+- [AbortController — MDN](https://developer.mozilla.org/en-US/docs/Web/API/AbortController) — How to cancel async operations (useful for custom network polling)
+- [Playwright TypeScript Support](https://playwright.dev/docs/test-typescript) — Official guidance on TypeScript integration in Playwright
+
+---
+
 **Navigation**: [← Previous: Browser Console Scripting](./03_Browser_Console_Scripting.md) | [Index](../../00_MASTER_INDEX.md) | [Next: POM Architecture →](../02_Core_Architecture/05_POM_Architecture_Deep_Dive.md)

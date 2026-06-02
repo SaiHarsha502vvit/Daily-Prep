@@ -1,4 +1,4 @@
-﻿# 31. API Mocking with `page.route()` — Isolating Frontend Behaviour
+# 31. API Mocking with `page.route()` — Isolating Frontend Behaviour
 
 **Navigation**: [â† Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md) | [Index](../00_INDEX.md) | [→ Chapter 32: SDET Interview Prep](../06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md)
 
@@ -436,6 +436,37 @@ await page.unrouteAll({ behavior: 'ignoreErrors' });  // don't fail if routes we
 ## 6c. Internal Route Priority — The Routing Lifecycle
 
 Behind the scenes, Playwright maintains a stack of handlers.
+
+### The Routing Lifecycle Visualised
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant PW as Playwright Router (LIFO Stack)
+    participant H2 as Handler 2 (Newest)
+    participant H1 as Handler 1 (Oldest)
+    participant API as Real API
+
+    Browser->>PW: Request /api/data
+    
+    PW->>H2: Check Match?
+    alt Matches & calls route.fallback()
+        H2-->>PW: fallback (mutated request)
+        PW->>H1: Check Match?
+        alt Matches & calls route.fulfill()
+            H1-->>PW: fulfill (mock response)
+            PW-->>Browser: 200 OK (Mocked)
+        end
+    else Doesn't match H2
+        PW->>H1: Check Match?
+        alt Matches & calls route.continue()
+            H1->>API: Forward Request
+            API-->>H1: Real Response
+            H1-->>PW: continue
+            PW-->>Browser: 200 OK (Real)
+        end
+    end
+```
 
 1. **Registration Order**: When you define a route, it is pushed to the bottom of the stack.
 2. **Matching**: When a request occurs, Playwright iterates from the **bottom (newest) to the top (oldest)**.

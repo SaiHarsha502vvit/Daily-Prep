@@ -492,6 +492,52 @@ await Promise.all([
 
 ---
 
+## 7. Error Recovery Patterns in Sequential Flows
+
+In a long cross-website sequential flow, if Step 2 (Admin CRM) fails, Step 3 (Customer Portal) will also fail because the data (e.g., `data.userId`) was never created. Without proper error recovery, the test runner will still attempt Step 3, leading to confusing timeout errors.
+
+### Pattern 1: Fail Fast with `expect` on Critical Data
+
+Explicitly assert that the data accumulator has the necessary data before navigating.
+
+```typescript
+// Inside the test, immediately after collecting the data:
+expect(data.email, 'CRITICAL: User email was not generated in CRM').not.toBeNull();
+expect(data.tempPassword, 'CRITICAL: Temp password was not generated').not.toBeNull();
+
+// Now the test fails HERE with a clear message, rather than timing out 30 seconds later on the JSP login page.
+await customerPortal.loginWith(data.email!, data.tempPassword!);
+```
+
+### Pattern 2: Soft Assertions for Non-Critical Steps
+
+Use `expect.soft()` for verifications that shouldn't stop the flow. For example, if checking an analytics pixel fired, don't stop the multi-step business transaction.
+
+```typescript
+await test.step('Verify analytics pixel', async () => {
+  // Use soft so the test continues even if the analytics pixel fails
+  expect.soft(data.pixelFired).toBe(true);
+});
+```
+
+### Pattern 3: Conditional Teardown via Fixture
+
+If Step 2 creates a record, and Step 3 fails, you need to clean up the record created in Step 2. Use a fixture with a `use()` block to guarantee cleanup:
+
+```typescript
+// Fixture implementation:
+crossSiteData: async ({ request }, use) => {
+  const data: CrossSiteOnboardingData = { userId: null /* ... */ };
+  
+  await use(data); // Test runs here
+  
+  // Teardown ALWAYS runs, even if the test fails mid-flow
+  if (data.userId) {
+    await request.delete(`/api/users/${data.userId}`);
+  }
+}
+```
+
 ## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Data Transport
@@ -698,5 +744,17 @@ Works if: the portal has its own login form and the user's credentials work ther
 </details>
 
 ---
-**Navigation**: [← Chapter 10: D365 CRM Testing](./10_Dynamics365_CRM_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 12: New Tab Shared Context](./12_CrossSite_Pattern2_NewTab_SharedContext.md)
 
+## 📚 References & Further Reading
+
+### Official Documentation
+- [Playwright `test.step`](https://playwright.dev/docs/api/class-test#test-step) — Official API for organizing long sequential flows into logical, reportable chunks
+- [Soft Assertions](https://playwright.dev/docs/test-assertions#soft-assertions) — Guide on using `expect.soft()` to prevent non-critical failures from terminating the sequence
+- [Playwright Cookies API](https://playwright.dev/docs/api/class-browsercontext#browser-context-add-cookies) — How to manually transfer authentication between domain boundaries
+
+### Architecture Deep Dives
+- [Martin Fowler: Page Object Model](https://martinfowler.com/bliki/PageObject.html) — The definitive theory behind decoupling page structure from test logic (crucial when orchestrating multiple portals)
+
+---
+
+**Navigation**: [← Chapter 10: D365 CRM Testing](./10_Dynamics365_CRM_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 12: New Tab Shared Context](./12_CrossSite_Pattern2_NewTab_SharedContext.md)

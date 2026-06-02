@@ -6,6 +6,16 @@
 
 ---
 
+## 5W1H — Why Complex UI Patterns?
+
+- **WHAT**: Standardized combinations of React components, CSS, and state logic to solve recurring layout and interaction problems (e.g., Modals, Data Tables).
+- **WHY**: Without patterns, every developer reinvents the wheel. This leads to accessibility (a11y) failures, z-index wars, and fragile state management.
+- **WHO**: Frontend engineers bridging the gap between raw UI components and full application pages.
+- **WHEN**: Starting a new feature. Instead of asking "how do I build this?", you ask "which of the 10 patterns does this fit?".
+- **HOW**: By combining layout techniques (CSS Grid), accessibility APIs (ARIA), and React state (portals, refs) into cohesive, reusable structures.
+
+---
+
 ## Table of Contents
 
 1. [Dashboard Layout — Grid + Sidebar + Charts](#1-dashboard-layout--grid--sidebar--charts)
@@ -1042,6 +1052,23 @@ function SidebarLayout({ children }) {
   }
 }
 ```
+
+---
+
+## 🏋️ Practice Challenges
+
+**Challenge 1 (Z-Index and Modals):** A junior engineer creates a Modal component but places it directly inside the deeply-nested `<Header>` component. When it opens, it is cut off by the `<main>` container's `overflow: hidden`. How do you fix this without changing the layout CSS?
+<details><summary>Answer</summary>
+
+**The Fix:** Use a **React Portal**. `createPortal(modalElement, document.body)`.
+**Why:** The modal was trapped inside the stacking context and overflow boundaries of its parent (`<Header>`). A Portal physically renders the DOM nodes at the end of `document.body`, completely escaping the parent's CSS trap, while maintaining its logical position in the React tree (so context and events still bubble).
+</details>
+
+**Challenge 2 (Search Performance):** Your `SearchAutocomplete` component fetches results on every keystroke. Typing "laptop" sends 6 API requests. How do you prevent this?
+<details><summary>Answer</summary>
+
+Use a **Debounce Hook**. Wrap the raw input query: `const debouncedQuery = useDebounce(query, 300);` and trigger the API `useEffect` using `debouncedQuery` instead of `query`. This waits until the user stops typing for 300ms before firing a single API request.
+</details>
 
 ---
 

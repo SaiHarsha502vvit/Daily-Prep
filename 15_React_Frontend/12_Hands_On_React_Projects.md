@@ -7,8 +7,17 @@
 > **📂 Interactive Challenges Available**: Before reading the solutions below, try solving the 5 broken-code challenges yourself:
 > [19_Frontend_Integration/frontend_challenges/](../19_Frontend_Integration/frontend_challenges/) — each file contains the bug, hidden systems knowledge, AND real-world data flow explanations.
 
-## 🏗️ The 3 Classic React Hand-On Challenges
+## 5W1H — Why Hand-On Systems Challenges?
 
+- **WHAT**: Deep-dive exercises that force you to debug systemic issues in React (race conditions, memory leaks, rendering cascades) rather than just building UI.
+- **WHY**: Memorizing syntax gets you hired; fixing edge-case bugs keeps you hired. Most senior React interviews revolve around these exact scenarios.
+- **WHO**: Developers transitioning from building isolated components to orchestrating complex, asynchronous applications.
+- **WHEN**: When you understand the basic hooks (`useState`, `useEffect`) but struggle when combining them with network requests, large DOM trees, or global state.
+- **HOW**: By presenting a broken piece of code, analyzing the mechanical failure in the system, and implementing a robust, senior-level solution.
+
+---
+
+## 🏗️ The 3 Classic React Hand-On Challenges
 When moving from simple data capturing to medium-sized apps, you will face three specific state management traps:
 1. **Mutating Objects & Arrays** (The "Why isn't the UI changing?" problem)
 2. **Asynchronous Race Conditions** (The "Why did my search result revert?" problem)

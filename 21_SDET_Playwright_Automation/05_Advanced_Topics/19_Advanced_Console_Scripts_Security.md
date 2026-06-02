@@ -639,6 +639,67 @@ function testXSSOnInput(inputCSSSelector) {
 
 ---
 
+### Script 15: Console Error Aggregator (Playwright Fixture)
+
+In enterprise CI pipelines, a test might pass while the browser console throws silent JavaScript errors (e.g., React hydration failures or failed background API calls). To catch these, inject a console listener via a fixture that automatically fails the test or logs warnings if errors occur.
+
+```typescript
+// tests/fixtures/console-aggregator.ts
+import { test as base, expect } from '@playwright/test';
+
+type ConsoleMessageInfo = { type: string, text: string, location: string };
+
+export const test = base.extend<{ consoleErrors: ConsoleMessageInfo[] }>({
+  consoleErrors: async ({ page }, use) => {
+    const errors: ConsoleMessageInfo[] = [];
+
+    // Listen for console events
+    page.on('console', msg => {
+      if (msg.type() === 'error' || msg.type() === 'warning') {
+        errors.push({
+          type: msg.type(),
+          text: msg.text(),
+          location: msg.location().url || 'inline',
+        });
+      }
+    });
+
+    // Listen for uncaught page errors
+    page.on('pageerror', exception => {
+      errors.push({
+        type: 'uncaught_exception',
+        text: exception.message,
+        location: exception.stack?.split('\n')[1] || 'unknown',
+      });
+    });
+
+    await use(errors);
+
+    // Teardown: Evaluate aggregated errors
+    if (errors.length > 0) {
+      console.warn(`\n[Console Aggregator] Detected ${errors.length} console issues:`);
+      console.table(errors);
+      
+      // Optional: Fail the test if strict mode is enabled
+      // if (process.env.FAIL_ON_CONSOLE_ERROR === 'true') {
+      //   const severeErrors = errors.filter(e => e.type === 'uncaught_exception' || e.type === 'error');
+      //   expect(severeErrors.length, 'Page must not have severe console errors').toBe(0);
+      // }
+    }
+  }
+});
+```
+
+To use it, just include the `consoleErrors` fixture in any test to activate the silent monitoring:
+```typescript
+test('Dashboard loads without JS errors', async ({ page, consoleErrors }) => {
+  await page.goto('/dashboard');
+  // consoleErrors fixture monitors the background automatically!
+});
+```
+
+---
+
 ## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Cookie Security

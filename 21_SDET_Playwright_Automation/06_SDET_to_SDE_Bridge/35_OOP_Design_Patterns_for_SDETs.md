@@ -1,4 +1,4 @@
-﻿# 35. OOP Design Patterns Deep-Dive for SDETs
+# 35. OOP Design Patterns Deep-Dive for SDETs
 
 **Navigation**: [â† Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md) | [Index](../00_INDEX.md) | [→ Chapter 36: TypeScript Type System Mastery](./36_TypeScript_Type_System_Mastery.md)
 
@@ -212,6 +212,29 @@ In test code:
 
 **GoF definition**: "Define an interface for creating an object, but let subclasses decide which class to instantiate."
 
+```mermaid
+classDiagram
+    class PayloadFactory {
+        <<interface>>
+        +createCitation() CreateCitationPayload
+        +createUser() CreateUserPayload
+    }
+    class UKPayloadFactory {
+        +createCitation() CreateCitationPayload
+        +createUser() CreateUserPayload
+    }
+    class USPayloadFactory {
+        +createCitation() CreateCitationPayload
+        +createUser() CreateUserPayload
+    }
+    PayloadFactory <|.. UKPayloadFactory
+    PayloadFactory <|.. USPayloadFactory
+    class TestScript {
+        -factory: PayloadFactory
+    }
+    TestScript --> PayloadFactory: uses
+```
+
 **In test code — already implemented:**
 
 ```typescript
@@ -276,6 +299,33 @@ const factory: PayloadFactory = process.env.TEST_ENV === 'us'
 ## 3. Observer Pattern — Playwright's Event System
 
 **GoF definition**: "Define a one-to-many dependency between objects so that when one object changes state, all its dependents are notified automatically."
+
+```mermaid
+classDiagram
+    class Subject {
+        +on(event, observer)
+        +emit(event, data)
+    }
+    class Page {
+        +on(event, observer)
+        +emit(event, data)
+    }
+    class Observer {
+        <<interface>>
+        +update(data)
+    }
+    class ApiCallObserver {
+        -calls
+        +attach(Page)
+    }
+    class ErrorLogger {
+        +log(Error)
+    }
+    Subject <|-- Page
+    Observer <|.. ApiCallObserver
+    Observer <|.. ErrorLogger
+    Page o--> Observer: notifies
+```
 
 **In Playwright — `page.on()` IS the Observer pattern:**
 
@@ -361,6 +411,31 @@ observer.assertAllCallsUnder(500);  // all calls under 500ms (performance assert
 ## 4. Strategy Pattern — Seeding Strategies and Wait Strategies
 
 **GoF definition**: "Define a family of algorithms, encapsulate each one, and make them interchangeable."
+
+```mermaid
+classDiagram
+    class SeedingStrategy {
+        <<interface>>
+        +seed(data) SeedResult
+        +teardown(result)
+    }
+    class ApiSeedingStrategy {
+        -client: ApiClient
+        +seed(data) SeedResult
+        +teardown(result)
+    }
+    class DbSeedingStrategy {
+        -db: DbClient
+        +seed(data) SeedResult
+        +teardown(result)
+    }
+    SeedingStrategy <|.. ApiSeedingStrategy
+    SeedingStrategy <|.. DbSeedingStrategy
+    class TestDataManager {
+        -strategy: SeedingStrategy
+    }
+    TestDataManager o--> SeedingStrategy: uses
+```
 
 **In test code — seeding strategies (Ch28):**
 
@@ -456,6 +531,24 @@ abstract class BasePage {
 
 **GoF definition**: "Define the skeleton of an algorithm in the base class, letting subclasses fill in the specific steps."
 
+```mermaid
+classDiagram
+    class BaseApiClient {
+        +processResponse(response)*
+        +parseBody(response)*
+    }
+    class APIUtils {
+        +processResponse(response)
+        #parseBody(response)
+    }
+    class GraphQlUtils {
+        +processResponse(response)
+        #parseBody(response)
+    }
+    BaseApiClient <|-- APIUtils
+    BaseApiClient <|-- GraphQlUtils
+```
+
 **In `APIUtils` — already implemented:**
 
 ```typescript
@@ -498,6 +591,24 @@ The template is: **log → validate → parse → return**. The parsing step is 
 ## 6. Proxy Pattern — `page.route()` and the Managed Client
 
 **GoF definition**: "Provide a surrogate or placeholder for another object to control access to it."
+
+```mermaid
+classDiagram
+    class ClientInterface {
+        <<interface>>
+        +create(payload)
+    }
+    class RealClient {
+        +create(payload)
+    }
+    class ProxyClient {
+        -realClient: RealClient
+        +create(payload)
+    }
+    ClientInterface <|.. RealClient
+    ClientInterface <|.. ProxyClient
+    ProxyClient --> RealClient: delegates
+```
 
 ```typescript
 // page.route() IS a proxy:
@@ -542,6 +653,33 @@ citationsClient: async ({ request, account, testDataManager }, use) => {
 ## 7. Composite Pattern — The POM Hierarchy
 
 **GoF definition**: "Compose objects into tree structures to represent part-whole hierarchies."
+
+```mermaid
+classDiagram
+    class PageComponent {
+        <<interface>>
+        +waitForLoad()
+    }
+    class SearchInputComponent {
+        +waitForLoad()
+        +fill()
+    }
+    class SearchPanelComponent {
+        -customerSearch: SearchInputComponent
+        -citationSearch: SearchInputComponent
+        +waitForLoad()
+    }
+    class MasterSearchPage {
+        -searchPanel: SearchPanelComponent
+        -resultsGrid: ResultsGridComponent
+        +waitForLoad()
+    }
+    PageComponent <|.. SearchInputComponent
+    PageComponent <|.. SearchPanelComponent
+    PageComponent <|.. MasterSearchPage
+    SearchPanelComponent o--> SearchInputComponent: contains
+    MasterSearchPage o--> SearchPanelComponent: contains
+```
 
 ```typescript
 // Component (leaf and composite have the same interface):

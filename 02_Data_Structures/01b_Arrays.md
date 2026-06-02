@@ -6,6 +6,18 @@
 
 **🎯 Goal:** Understand what data structures are, why they exist, and develop the right mindset for mastering them.
 
+## 5W1H — Why This Chapter?
+
+> WHAT: The foundation of all data organization—Arrays and general data structure theory.
+>
+> WHY: Arrays are the primitive building block. Without understanding contiguous memory and O(1) index access, you cannot deeply understand why other structures (like Linked Lists or Trees) were invented to solve array limitations.
+>
+> WHO: Anyone beginning the journey into algorithms and memory management.
+>
+> WHEN: This is step one. Master this before moving to more complex dynamic structures.
+>
+> HOW: By understanding array memory layout, CPU cache locality, and foundational traversal and sub-array patterns.
+
 ---
 
 ## 📦 What Are Data Structures?

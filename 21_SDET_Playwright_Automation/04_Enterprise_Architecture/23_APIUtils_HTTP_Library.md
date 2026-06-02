@@ -1,4 +1,4 @@
-﻿# 23. APIUtils — Writing Your Team's HTTP Library
+# 23. APIUtils — Writing Your Team's HTTP Library
 
 **Navigation**: [â† Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md) | [Index](../00_INDEX.md) | [→ Chapter 24: Test Script Architecture](./24_Test_Script_Architecture.md)
 
@@ -55,6 +55,27 @@ const citation = await citationsClient.create(PayloadsCitation.pending({ custome
 ## 2. Two Patterns: Specific Client vs Generic APIUtils
 
 Teams use one of two approaches:
+
+### HTTP Client Architecture Visualised
+
+```mermaid
+graph TD
+    subgraph "Pattern A: Service Clients (Recommended)"
+        Test1[Spec File] --> ClientA[CitationsApiClient]
+        Test1 --> ClientB[NotificationsClient]
+        ClientA --> Util1[APIUtils]
+        ClientB --> Util1[APIUtils]
+    end
+
+    subgraph "Pattern B: Generic Wrapper"
+        Test2[Spec File] --> Util2[APIUtils]
+    end
+    
+    HTTP[Playwright request]
+    
+    Util1 --> HTTP
+    Util2 --> HTTP
+```
 
 ### Pattern A — Specific Client Per Service (Recommended for large suites)
 
@@ -235,6 +256,104 @@ export class APIUtils {
 
 ---
 
+## 3b. Advanced `APIUtils`: Retry with Exponential Backoff
+
+APIs in staging environments are inherently flaky. A 502 Bad Gateway or 503 Service Unavailable often resolves if retried 2 seconds later. `APIUtils` is the perfect place to add an exponential backoff retry mechanism.
+
+```typescript
+  // Inside APIUtils class
+
+  // Wrapper method for retries
+  private async executeWithRetry<T>(
+    operation: () => Promise<ApiResponse<T>>, 
+    maxRetries = 3
+  ): Promise<ApiResponse<T>> {
+    let attempt = 0;
+    
+    while (attempt < maxRetries) {
+      try {
+        const response = await operation();
+        // If it's a 5xx error, we WANT it to throw so we can catch and retry
+        if (response.status >= 500 && response.status <= 599) {
+            throw new Error(`Server Error: ${response.status}`);
+        }
+        return response;
+      } catch (error: any) {
+        attempt++;
+        if (attempt >= maxRetries) {
+          throw error; // Retries exhausted
+        }
+        
+        // Exponential backoff: 1s, 2s, 4s...
+        const delayMs = Math.pow(2, attempt - 1) * 1000;
+        console.warn(`[APIUtils] Retry ${attempt}/${maxRetries} after ${delayMs}ms due to: ${error.message}`);
+        await new Promise(res => setTimeout(res, delayMs));
+      }
+    }
+    throw new Error('Unreachable');
+  }
+
+  // Update HTTP methods to use the retry wrapper
+  async get<T = unknown>(url: string, options: RequestOptions = {}): Promise<ApiResponse<T>> {
+    return this.executeWithRetry(async () => {
+      const response = await this.request.get(url, {
+        headers: { ...this.defaultHeaders, ...options.headers },
+        timeout: options.timeoutMs ?? 30_000,
+      });
+      return this.processResponse<T>(response, 'GET', url, options);
+    }, options.retries ?? 3); // Allow custom retry count
+  }
+```
+
+---
+
+## 3c. Error Taxonomy & Normalisation
+
+Not all API errors are the same. A 401 means your token is dead, a 404 means the data is missing, and a 500 means the server crashed. `APIUtils` should categorize these errors so tests or fixtures can react accordingly.
+
+```typescript
+// utils/api-errors.ts
+export class ApiError extends Error {
+  constructor(public status: number, public url: string, message: string) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+export class AuthenticationError extends ApiError {
+  constructor(url: string, message: string) {
+    super(401, url, message);
+    this.name = 'AuthenticationError';
+  }
+}
+
+export class ServerError extends ApiError {
+  constructor(status: number, url: string, message: string) {
+    super(status, url, message);
+    this.name = 'ServerError';
+  }
+}
+```
+
+In `APIUtils.ts`, throw these specific errors:
+```typescript
+    if (!response.ok() && !ignoreStatuses.includes(status)) {
+      const body = await response.text();
+      const message = `[APIUtils] ${method} ${url} - ${status} ${response.statusText()}\n${body}`;
+      
+      if (status === 401 || status === 403) {
+        throw new AuthenticationError(url, message);
+      } else if (status >= 500) {
+        throw new ServerError(status, url, message);
+      } else {
+        throw new ApiError(status, url, message);
+      }
+    }
+```
+*Benefit*: Your fixtures can catch `AuthenticationError` specifically and attempt a token refresh mid-test!
+
+---
+
 ## 4. Building a Service Client ON TOP of APIUtils
 
 Pattern B clients extend or compose `APIUtils`:
@@ -382,19 +501,25 @@ export { expect };
 
 **The fixture injection chain:**
 
-```
-Playwright framework
-  provides: request (APIRequestContext)
-       ↓ injected into
-account fixture (worker-scoped)
-  provides: { accessToken, userId, email, role }
-       ↓ injected into
-citationsClient fixture (test-scoped)
-  constructs: new CitationsApiClient(request, account.accessToken)
-       ↓ injected into
-Your test function
-  receives: { page, citationsClient, notificationsClient, account }
-  NEVER sees: URLs, headers, raw JSON, HTTP status codes
+```mermaid
+flowchart TD
+    classDef playwright fill:#f3f4f6,stroke:#374151,stroke-width:2px
+    classDef fixture fill:#dbeafe,stroke:#2563eb,stroke-width:2px
+    classDef test fill:#dcfce7,stroke:#16a34a,stroke-width:2px
+
+    PW["Playwright Framework<br/>request: APIRequestContext"]:::playwright
+    
+    Acc["Worker Fixture<br/>account: AuthAccount"]:::fixture
+    
+    Cit["Test Fixture<br/>citationsClient: CitationsApiClient"]:::fixture
+    
+    Test["Test Spec<br/>receives: { citationsClient, account }"]:::test
+    
+    PW -->|injects request| Cit
+    Acc -->|injects account| Cit
+    
+    Acc -->|injects account| Test
+    Cit -->|injects citationsClient| Test
 ```
 
 ---

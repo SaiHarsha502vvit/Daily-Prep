@@ -1,4 +1,4 @@
-﻿# 33. SDET → SDE Thinking — CS Fundamentals That Make You a Better Test Engineer
+# 33. SDET → SDE Thinking — CS Fundamentals That Make You a Better Test Engineer
 
 **Navigation**: [â† Chapter 32: Interview Prep](./32_SDET_Interview_Prep.md) | [Index](../00_INDEX.md) | [→ Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md)
 
@@ -463,7 +463,74 @@ git bisect run npx playwright test tests/specs/citations/dispute.spec.ts --grep 
 
 ---
 
-## 10. The SDET→SDE Transition Mindset Map
+## 10. Concurrency → Test Race Conditions and Parallel Execution
+
+**The CS concept** (from concurrent programming):
+- Race conditions: when the behavior of a program depends on the relative timing of events
+- Shared mutable state: the root of concurrency bugs when multiple threads read/write the same memory
+- Thread Local Storage (TLS): giving each thread its own isolated memory to prevent collisions
+
+**How this maps to test automation:**
+
+```
+Test suites are highly concurrent distributed systems.
+You have:
+- Test Worker processes (Playwright parallel workers)
+- Browser render threads
+- Backend API servers
+- Database transaction managers
+
+A "flaky test" is almost always just a concurrency bug: an unhandled race condition between these systems.
+```
+
+**Shared Mutable State = Flaky Tests**
+
+```typescript
+// SDE Concurrent Programming Anti-pattern:
+// Two threads modifying the same global variable without a lock.
+
+// SDET Test Automation Anti-pattern:
+// Two parallel workers modifying the same test account.
+const customer = await getTestCustomer('cust-001');
+await citationsClient.create(customer.id, { amount: 100 });
+// If Worker 1 and Worker 2 run this simultaneously, Worker 2 might see
+// Worker 1's citation in the UI and assert the wrong total amount.
+```
+
+**Thread Local Storage = Worker-Scoped Fixtures**
+
+```typescript
+// SDE fix for shared state: Give each thread its own instance (TLS).
+// SDET fix: Give each worker its own isolated test account.
+
+// Playwright's scope: 'worker' IS Thread Local Storage.
+// Worker 1 gets account A. Worker 2 gets account B.
+// They run concurrently, but their state is completely isolated.
+```
+
+**Event Loop Race Conditions**
+
+```typescript
+// SDEs think about thread synchronization: "Thread A must wait for Thread B's signal."
+// SDETs think about Playwright event synchronization:
+
+// The classic race condition (from Ch12):
+await page.click('#openInNewTab');
+const newPage = await context.waitForEvent('page');
+// Race condition: if the new tab opens BEFORE waitForEvent is called, the event is missed.
+
+// Synchronization fix (Promise.all ensures listeners are attached before action triggers):
+const [newPage] = await Promise.all([
+  context.waitForEvent('page'),
+  page.click('#openInNewTab')
+]);
+```
+
+**CS insight**: Whenever you write a test, you must ask: "What happens if the API is slower than the UI render today?" or "What happens if another test runs this exact code at the exact same millisecond?" That is concurrent programming thinking.
+
+---
+
+## 11. The SDET→SDE Transition Mindset Map
 
 ```
 SDET Skill               →    SDE Equivalent

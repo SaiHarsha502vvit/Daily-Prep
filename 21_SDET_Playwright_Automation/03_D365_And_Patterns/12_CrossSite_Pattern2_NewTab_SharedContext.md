@@ -79,21 +79,28 @@ const newTab = await page.context().waitForEvent('page');
 
 **The race visualised:**
 
-```
-Timeline (wrong order):
-T=0ms  click() fires
-T=2ms  browser opens new tab → 'page' event fires RIGHT HERE
-T=3ms  waitForEvent() starts listening ← TOO LATE, already missed
-T=65000ms waitForEvent() timeout!
-```
+```mermaid
+sequenceDiagram
+    participant Test
+    participant Browser
+    participant Playwright
 
-```
-Timeline (correct order with Promise.all):
-T=0ms  Promise.all starts BOTH operations simultaneously
-T=0ms  waitForEvent() starts listening ← already listening
-T=0ms  click() fires
-T=2ms  browser opens new tab → 'page' event fires
-T=2ms  waitForEvent() catches it ← success!
+    Note over Test, Playwright: ❌ WRONG: Awaiting sequentially
+    Test->>Browser: await page.click()
+    Browser-->>Test: click complete
+    Browser->>Browser: Opens new tab
+    Browser->>Playwright: Emits 'page' event
+    Playwright-->>Playwright: Event missed (no listener yet)
+    Test->>Playwright: await waitForEvent('page')
+    Playwright-->>Test: ⏳ HANGS (timeout after 30s)
+    
+    Note over Test, Playwright: ✅ CORRECT: Promise.all
+    Test->>Playwright: Promise.all([ waitForEvent, click ])
+    Playwright->>Playwright: Registers listener immediately
+    Test->>Browser: click()
+    Browser->>Browser: Opens new tab
+    Browser->>Playwright: Emits 'page' event
+    Playwright-->>Test: ✅ Event caught, returns new Page object
 ```
 
 ### Why This Is a True Race
@@ -858,5 +865,58 @@ await agentTab.locator('#liveDataFeed').waitFor({ state: 'visible' });
 </details>
 
 ---
-**Navigation**: [← Chapter 11: Sequential Flow](./11_CrossSite_Pattern1_Sequential_Flow.md) | [Index](../00_INDEX.md) | [→ Chapter 13: Dual Browser Context](./13_CrossSite_Pattern3_Dual_BrowserContext.md)
 
+## 13. The SharePoint Redirect Pattern (A War Story)
+
+**The Scenario:**
+Enterprise apps often integrate with SharePoint. A user clicks "View Document" in D365, which opens a new tab to `company.sharepoint.com`. Because SharePoint uses Microsoft SSO, the user is authenticated, but SharePoint employs a notorious multi-redirect sequence before rendering the document.
+
+**The Trap:**
+```typescript
+const [sharepointTab] = await Promise.all([
+  context.waitForEvent('page'),
+  page.locator('text=View Document').click(),
+]);
+
+await sharepointTab.waitForLoadState('domcontentloaded'); // ❌ Flaky!
+await expect(sharepointTab.locator('.sp-DocumentViewer')).toBeVisible(); // ❌ Fails!
+```
+The `domcontentloaded` state fires on the *first* redirect page (an empty shell), not the final destination. The locator assertion then fails because the final app hasn't loaded yet.
+
+**The Solution:**
+Wait for the URL to stabilize onto the final destination route before asserting on the DOM.
+
+```typescript
+const [sharepointTab] = await Promise.all([
+  context.waitForEvent('page'),
+  page.locator('text=View Document').click(),
+]);
+
+// ✅ 1. Wait for the URL to reach the final SharePoint destination pattern
+// This handles the N-number of SSO redirects transparently
+await sharepointTab.waitForURL('**/sharepoint.com/**/Doc.aspx**', { timeout: 30000 });
+
+// ✅ 2. Now wait for the heavy SPA to load
+await sharepointTab.waitForLoadState('domcontentloaded');
+
+// ✅ 3. Finally, wait for the actual content
+await expect(sharepointTab.locator('.sp-DocumentViewer')).toBeVisible({ timeout: 20000 });
+```
+Never rely purely on `waitForLoadState` when SSO redirects are involved in a new tab.
+
+---
+
+## 📚 References & Further Reading
+
+### Official Documentation
+- [Playwright Pages (Tabs)](https://playwright.dev/docs/pages) — Official guide on handling multiple pages and tabs
+- [Playwright Events (`waitForEvent`)](https://playwright.dev/docs/events) — Detailed API for event listeners
+- [Playwright `waitForURL`](https://playwright.dev/docs/api/class-page#page-wait-for-url) — Handling redirects reliably
+
+### Deep Dives
+- [MDN: Window `postMessage()`](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) — How complex apps communicate between tabs (useful when testing real-time tab sync)
+- [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API) — The strict differences between `sessionStorage` and `localStorage` scopes across tabs
+
+---
+
+**Navigation**: [← Chapter 11: Sequential Flow](./11_CrossSite_Pattern1_Sequential_Flow.md) | [Index](../00_INDEX.md) | [→ Chapter 13: Dual Browser Context](./13_CrossSite_Pattern3_Dual_BrowserContext.md)

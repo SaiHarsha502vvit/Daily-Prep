@@ -1,4 +1,4 @@
-﻿**Navigation**: [< Previous](08_React_Performance.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous](08_React_Performance.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 # Chapter 9 — React Deep Reasoning: The Questions That Freeze People
 
@@ -6,8 +6,17 @@
 
 ---
 
-## Why This Chapter Exists
+## 5W1H — Why React Deep Reasoning?
 
+- **WHAT**: Understanding the underlying mechanics of React (Fiber, batching, synthetic events) rather than just memorizing APIs.
+- **WHY**: When standard components break, memory leaks occur, or UIs freeze, you cannot fix them without knowing *why* React chose to render.
+- **WHO**: Senior engineers who architect large-scale applications and conduct technical interviews.
+- **WHEN**: When transitioning from a mid-level feature developer to a senior systems architect.
+- **HOW**: By studying the React Fiber reconciliation algorithm, the Snapshot principle of state, and the true cost of memoization.
+
+---
+
+## Why This Chapter Exists
 
 THE FREEZE PATTERN IN REACT INTERVIEWS
 

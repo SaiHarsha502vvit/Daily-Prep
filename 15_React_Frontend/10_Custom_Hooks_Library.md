@@ -6,8 +6,17 @@
 
 ---
 
-## Table of Contents
+## 5W1H — Why Custom Hooks?
 
+- **WHAT**: JavaScript functions that start with `use` and call other hooks to encapsulate reusable stateful logic.
+- **WHY**: To prevent code duplication and the "wrapper hell" associated with legacy High-Order Components (HOCs). Hooks allow sharing logic without altering the component tree.
+- **WHO**: React developers extracting repeated logic (e.g., API calls, form handling, event listeners) across multiple components.
+- **WHEN**: Whenever you find yourself writing the same `useState` and `useEffect` combination in more than one component.
+- **HOW**: By composing built-in hooks (`useState`, `useEffect`, `useRef`) into a custom function and returning the relevant state and dispatcher.
+
+---
+
+## Table of Contents
 1. [useLocalStorage — Persistent State](#1-uselocalstorage--persistent-state)
 2. [useFetch — Data Fetching with Loading & Error](#2-usefetch--data-fetching-with-loading--error)
 3. [useDebounce — Debounced Values](#3-usedebounce--debounced-values)

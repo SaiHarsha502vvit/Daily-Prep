@@ -1,4 +1,4 @@
-﻿# 41. GraphQL & WebSocket Testing with Playwright
+# 41. GraphQL & WebSocket Testing with Playwright
 
 **Navigation**: [â† Chapter 40: Security Testing](./40_Security_Testing_OWASP.md) | [Index](../00_INDEX.md)
 
@@ -309,6 +309,51 @@ test.describe('GraphQL API Tests @graphql', () => {
 });
 ```
 
+### 4b. GraphQL Subscriptions (via WebSockets)
+
+GraphQL `subscription` operations allow the server to push updates to the client. Under the hood, this is almost always implemented via WebSockets (e.g., using `graphql-ws` protocol).
+
+```typescript
+// Testing a GraphQL subscription means testing the underlying WebSocket connection.
+// The payload format follows the graphql-ws specification.
+
+test('GraphQL Subscription: Citation updates are received live', async ({ page, citationsClient }) => {
+  const receivedData: any[] = [];
+
+  // Intercept the WebSocket connection to the GraphQL endpoint
+  page.on('websocket', (ws) => {
+    ws.on('framereceived', (frame) => {
+      if (frame.text) {
+        const msg = JSON.parse(frame.text);
+        // In graphql-ws, data payloads have type: 'next'
+        if (msg.type === 'next' && msg.payload?.data?.citationUpdated) {
+          receivedData.push(msg.payload.data.citationUpdated);
+        }
+      }
+    });
+  });
+
+  await page.goto('/dashboard');
+  
+  // Wait for the GQL subscription to be initialized by the client
+  await page.waitForTimeout(1000); 
+
+  // Trigger the mutation via API
+  await citationsClient.updateStatus('CIT-001', { status: 'PAID' });
+
+  // Assert that the subscription pushed the correct data to the client
+  await expect.poll(
+    () => receivedData.find(d => d.citationId === 'CIT-001'),
+    { timeout: 10_000 }
+  ).toBeTruthy();
+
+  const update = receivedData.find(d => d.citationId === 'CIT-001');
+  expect(update.status).toBe('PAID');
+});
+```
+
+---
+
 ### 5. Mocking GraphQL in UI Tests
 
 ```typescript
@@ -362,6 +407,26 @@ test('Citations list renders correctly', async ({ page }) => {
 ## PART 2 — WebSocket Testing
 
 ### 6. Capturing WebSocket Messages
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant Playwright
+    participant Server
+    
+    Browser->>Server: 1. Upgrade request (HTTP to WS)
+    Server->>Browser: 2. 101 Switching Protocols
+    Note over Browser,Server: WS Connection Established
+    
+    Playwright->>Playwright: page.on('websocket') fires
+    
+    Browser->>Server: 3. {"action": "subscribe"} (framesent)
+    Server->>Browser: 4. {"status": "connected"} (framereceived)
+    
+    Note over Server: Data changes in backend
+    Server->>Browser: 5. {"type": "UPDATED", "id": "123"}
+    Playwright->>Playwright: ws.on('framereceived') captures it
+```
 
 ```typescript
 // tests/specs/websocket/live-updates.spec.ts

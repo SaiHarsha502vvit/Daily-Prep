@@ -1,4 +1,4 @@
-﻿# 39. Accessibility Testing — axe-core, WCAG 2.1, and Automated A11y
+# 39. Accessibility Testing — axe-core, WCAG 2.1, and Automated A11y
 
 **Navigation**: [â† Chapter 38: Contract Testing](./38_Contract_Testing_Pact.md) | [Index](../00_INDEX.md) | [→ Chapter 40: Security Test Automation](./40_Security_Testing_OWASP.md)
 
@@ -58,6 +58,17 @@ Key WCAG 2.1 AA rules you'll encounter:
   3.1.1 Language of Page (A)     → lang attribute on <html>
   4.1.2 Name, Role, Value (A)    → Form elements must have labels
 ```
+
+### Axe Violation Severity Matrix
+
+Axe classifies violations into four impact levels. Understanding these is critical for triage:
+
+| Impact Level | Description | CI Strategy | Example Rules |
+|---|---|---|---|
+| **Critical** | Prevents users from accessing or operating the content entirely. | **BLOCK CI** | `aria-required-children`, `button-name`, `label` |
+| **Serious** | Causes significant frustration or forces users to find workarounds. | **BLOCK CI** | `color-contrast`, `duplicate-id-active`, `tabindex` |
+| **Moderate** | Annoying, but users can still accomplish their goals. | **WARN** / Add to backlog | `landmark-one-main`, `region` |
+| **Minor** | Small nitpicks or edge cases that don't severely impact usability. | **IGNORE** / Add to backlog | `css-orientation-lock`, `html-has-lang` |
 
 ---
 
@@ -418,6 +429,42 @@ const fluentUIKnownAxeExclusions = [
 ];
 // Use these in your AxeBuilder exclude() call for known Fluent UI violations
 // ALWAYS track these in KnownViolations with a Fluent UI version and expected fix date
+```
+
+---
+
+## 5d. Screen Reader Testing Patterns (Automated)
+
+While manual screen reader testing (VoiceOver on Mac, NVDA/JAWS on Windows) is essential for full compliance, Playwright's `getByRole` locator is an excellent automated proxy for screen reader perception.
+
+Screen readers do not see `<div class="btn">`. They see the Accessibility Tree, which consists of Roles, Names, and Values. Playwright's `getByRole` queries exactly this tree.
+
+```typescript
+test('Citation creation form is perceivable by screen readers', async ({ page }) => {
+  await page.goto('/citations/new');
+
+  // If these locators fail, a screen reader user CANNOT find these elements.
+  // This is much stronger than page.locator('.btn-primary')
+  
+  // 1. Headings (Navigation via 'H' key in NVDA)
+  await expect(page.getByRole('heading', { name: 'Create New Citation', level: 1 })).toBeVisible();
+
+  // 2. Form Fields (Navigation via 'F' key)
+  const customerInput = page.getByRole('textbox', { name: 'Customer ID' });
+  await customerInput.fill('USR-001');
+
+  // 3. Dropdowns/Comboboxes
+  const typeSelect = page.getByRole('combobox', { name: 'Citation Type' });
+  await typeSelect.selectOption('PARKING');
+
+  // 4. Buttons (Navigation via 'B' key)
+  const submitButton = page.getByRole('button', { name: 'Submit Citation' });
+  await expect(submitButton).toBeEnabled();
+  await submitButton.click();
+
+  // If a developer changes <button> to <div onClick="...">, `getByRole` will immediately fail, 
+  // catching the exact regression that would break screen reader navigation.
+});
 ```
 
 ---

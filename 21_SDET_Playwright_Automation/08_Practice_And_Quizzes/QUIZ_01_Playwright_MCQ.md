@@ -540,11 +540,232 @@ Use `objectContaining` when you only care about some properties (or when the API
 
 ---
 
+## Advanced Topics: CDP, API Mocking & Flakiness (Questions 26–40)
+
+### Q26 [HARD] — How do you use CDP (Chrome DevTools Protocol) to throttle network in Playwright?
+
+A) `await page.route('**/*', route => route.throttle({ download: 50 }))`  
+B) `await page.context().setNetworkConditions({ download: 50, upload: 50, latency: 100 })`  
+C) Create a CDPSession and send 'Network.emulateNetworkConditions'  
+D) Network throttling is not supported in Playwright  
+
+<details><summary>Answer</summary>
+
+**C** — Playwright doesn't have a built-in `setNetworkConditions` like Puppeteer. You must use a CDP session:
+```typescript
+const client = await page.context().newCDPSession(page);
+await client.send('Network.emulateNetworkConditions', {
+  offline: false,
+  downloadThroughput: 50 * 1024,
+  uploadThroughput: 50 * 1024,
+  latency: 100
+});
+```
+</details>
+
+---
+
+### Q27 [MEDIUM] — What is the fundamental difference between `page.route` and `request.get`?
+
+A) `page.route` makes HTTP requests, `request.get` intercepts them  
+B) `page.route` intercepts and modifies network traffic made by the browser; `request.get` initiates a new HTTP request from the Node.js test process  
+C) They do the same thing but `page.route` is for the UI and `request.get` is for API  
+D) `page.route` only works for GET requests  
+
+<details><summary>Answer</summary>
+
+**B** — `page.route` is a listener. It catches requests made by the webpage (e.g. `fetch()`, `<img>`, `<script>`) and allows you to fulfill, abort, or modify them. `request.get` (the `APIRequestContext`) acts as an HTTP client, sending a new HTTP request directly from the Node.js process (bypassing the browser entirely).
+</details>
+
+---
+
+### Q28 [EASY] — Why should you NOT use `Math.random()` to generate unique test data (like emails)?
+
+A) `Math.random()` is not cryptographically secure  
+B) It can generate duplicates, causing flaky test failures that are hard to reproduce  
+C) Playwright overrides `Math.random()` to return 0  
+D) It slows down parallel test execution  
+
+<details><summary>Answer</summary>
+
+**B** — `Math.random()` can generate duplicates, leading to random constraint violations in the database. Use deterministic UUIDs (`crypto.randomUUID()`) or test-run-specific timestamps + worker IDs.
+</details>
+
+---
+
+### Q29 [HARD] — How does Playwright's `expect.poll` help with testing polling architectures?
+
+A) It automatically mocks the API to return the expected result  
+B) It repeatedly executes the provided synchronous/asynchronous block until the expectation passes or the timeout is reached  
+C) It replaces `waitForTimeout` with a more efficient sleep  
+D) It intercepts WebSocket traffic to check for messages  
+
+<details><summary>Answer</summary>
+
+**B** — `expect.poll` executes the block, evaluates the assertion, and if it fails, waits an interval and tries again, repeating until timeout. It is essential for testing systems where data state changes over time (like external webhooks or background jobs).
+</details>
+
+---
+
+### Q30 [MEDIUM] — When doing Visual Regression Testing (`toHaveScreenshot`), what does `maxDiffPixelRatio` control?
+
+A) The maximum number of total pixels that can differ  
+B) The threshold at which color differences are ignored  
+C) The percentage of total pixels that are allowed to differ before the test fails  
+D) The resolution of the screenshot taken  
+
+<details><summary>Answer</summary>
+
+**C** — `maxDiffPixelRatio` (e.g., `0.01` for 1%) allows a certain percentage of the image's pixels to differ before throwing an error. This helps ignore small rendering differences (like anti-aliasing) across environments.
+</details>
+
+---
+
+### Q31 [HARD] — Why is it recommended to clean up database test data in the `beforeEach` block instead of `afterEach`?
+
+A) Because `afterEach` is skipped if a test fails  
+B) If a test fails and `afterEach` is skipped, the data is left behind. Doing cleanup in `beforeEach` ensures a clean state regardless of what happened in the previous run.  
+C) `beforeEach` runs faster than `afterEach`  
+D) Database connections are closed before `afterEach` runs  
+
+<details><summary>Answer</summary>
+
+**B** — The "Cleanup Before, Not After" pattern. If a test crashes, `afterEach` might not execute, leaving dirty data that ruins the next test run. Cleaning up in `beforeEach` ensures the test controls its own starting state.
+</details>
+
+---
+
+### Q32 [MEDIUM] — Which of these is a valid use case for GraphQL testing compared to REST testing?
+
+A) Asserting on the HTTP status code (since it's always 200/400)  
+B) Verifying that the endpoint returns XML  
+C) Asserting on the `errors` array in the JSON response body, even when HTTP status is 200  
+D) Testing URL path parameters (e.g., `/graphql/users/1`)  
+
+<details><summary>Answer</summary>
+
+**C** — GraphQL APIs almost always return HTTP 200, even when the query fails (e.g., permission denied, item not found). SDETs must inspect the `errors` array in the JSON body, rather than relying on HTTP 4xx/5xx status codes.
+</details>
+
+---
+
+### Q33 [HARD] — In Playwright, what is the best way to bypass a third-party CAPTCHA during automated E2E tests?
+
+A) Use an AI service to solve the CAPTCHA via CDP  
+B) Ask developers to provide a test environment bypass (e.g., a specific cookie, header, or hardcoded test user)  
+C) Run the test in headed mode and manually solve it  
+D) Slow down the typing speed to trick the CAPTCHA  
+
+<details><summary>Answer</summary>
+
+**B** — The golden rule of testing third-party security is "don't". You do not want to test Google's reCAPTCHA implementation; you want to test your app. Providing a bypass (like an `X-Bypass-Captcha` header for the test environment) is the industry standard.
+</details>
+
+---
+
+### Q34 [MEDIUM] — You want to intercept and modify the JSON response of an API call made by the frontend. How?
+
+A) `page.route('**/api/data', route => route.abort())`  
+B) `page.route('**/api/data', async route => { const resp = await route.fetch(); const json = await resp.json(); json.field = 'mocked'; await route.fulfill({ json }); })`  
+C) `page.on('response', resp => resp.json = () => ({ field: 'mocked' }))`  
+D) `request.get('**/api/data').then(res => res.json())`  
+
+<details><summary>Answer</summary>
+
+**B** — To modify a response, you must first let the request go to the server (`route.fetch()`), read the response, modify the JSON payload, and then fulfill the route with the modified JSON using `route.fulfill()`.
+</details>
+
+---
+
+### Q35 [EASY] — Which tool is integrated into Playwright to run accessibility scans?
+
+A) Lighthouse  
+B) OWASP ZAP  
+C) @axe-core/playwright  
+D) SonarQube  
+
+<details><summary>Answer</summary>
+
+**C** — `@axe-core/playwright` is the standard library used with Playwright to run accessibility checks based on WCAG standards.
+</details>
+
+---
+
+### Q36 [HARD] — You need to run a specific setup script only once for the entire test suite (e.g., creating a global database schema). Where do you place it?
+
+A) In `test.beforeAll` in every spec file  
+B) In a `scope: 'worker'` fixture  
+C) In `globalSetup` in the `playwright.config.ts`  
+D) In the `playwright.config.ts` top-level code  
+
+<details><summary>Answer</summary>
+
+**C** — `globalSetup` runs exactly once before all workers spawn. `test.beforeAll` runs once per worker per file. `scope: 'worker'` fixtures run once per worker.
+</details>
+
+---
+
+### Q37 [MEDIUM] — When testing file downloads, how do you capture the downloaded file path?
+
+A) `const download = await page.waitForEvent('download'); await page.click('button'); console.log(await download.path());`  
+B) `const [download] = await Promise.all([page.waitForEvent('download'), page.click('button')]); console.log(await download.path());`  
+C) `page.on('download', download => console.log(download.path()))`  
+D) `const file = await page.download('button');`  
+
+<details><summary>Answer</summary>
+
+**B** — You must use `Promise.all` to set up the `waitForEvent` listener BEFORE clicking the button that triggers the download, to avoid race conditions.
+</details>
+
+---
+
+### Q38 [HARD] — Why might `page.waitForLoadState('networkidle')` cause flaky tests in Modern SPAs?
+
+A) SPAs often use WebSockets, which don't count as network activity  
+B) SPAs frequently run background polling, keep-alive pings, or telemetry, meaning the network is never truly "idle" for 500ms  
+C) `networkidle` only works for static HTML pages  
+D) Playwright has a bug with `networkidle` on Chrome  
+
+<details><summary>Answer</summary>
+
+**B** — Modern apps (especially Dynamics 365, React, Angular) continuously send tracking data or poll for notifications. `networkidle` requires 500ms of zero network connections, which rarely happens, leading to timeouts.
+</details>
+
+---
+
+### Q39 [MEDIUM] — You want to test that clicking a 'Delete' button shows a browser native `window.confirm` dialog, and you want to click 'OK'. How?
+
+A) `await page.click('button'); await page.click('text=OK');`  
+B) `page.on('dialog', dialog => dialog.accept()); await page.click('button');`  
+C) `const dialog = await page.waitForSelector('dialog'); await dialog.accept();`  
+D) Native dialogs cannot be tested in Playwright  
+
+<details><summary>Answer</summary>
+
+**B** — Native browser dialogs (`alert`, `confirm`, `prompt`) do NOT appear in the DOM. You must listen for the `'dialog'` event and call `.accept()` or `.dismiss()` on the dialog object.
+</details>
+
+---
+
+### Q40 [HARD] — What is the "Page Object Model Component Pattern"?
+
+A) Inheriting a BasePage for every new page  
+B) Putting all locators in one giant JSON file  
+C) Splitting a large Page Object into smaller, reusable classes (e.g., `HeaderComponent`, `TableComponent`) that the main Page Object instantiates in its constructor  
+D) Using Web Components in your tests  
+
+<details><summary>Answer</summary>
+
+**C** — The Component POM pattern breaks down mega-pages into smaller, logical pieces. The main Page Object acts as an orchestrator, instantiating the components (e.g. `this.header = new HeaderComponent(page)`), leading to modular and maintainable code.
+</details>
+
+---
+
 **Your Score:**
-- 23–25: 🏆 Expert — Ready for senior SDET interviews
-- 18–22: ✅ Solid — Review any categories you missed
-- 14–17: 📖 Good foundation — Re-read the chapters for missed questions
-- Below 14: 🔁 Start from Chapter 1, these fundamentals need more practice
+- 35–40: 🏆 Expert — Ready for senior SDET interviews
+- 28–34: ✅ Solid — Review any categories you missed
+- 20–27: 📖 Good foundation — Re-read the chapters for missed questions
+- Below 20: 🔁 Start from Chapter 1, these fundamentals need more practice
 
 ---
 **Navigation**: [Index](../00_INDEX.md) | [→ Quiz 02: Code Challenges](./QUIZ_02_Playwright_CodeChallenge.md)

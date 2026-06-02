@@ -1,7 +1,26 @@
-﻿**Navigation**: [< Previous Chapter](05c_Graphs_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05e_Graphs_Patterns.md)
+**Navigation**: [< Previous Chapter](05c_Graphs_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05e_Graphs_Patterns.md)
 🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — shortest path and MST mental models
 
 ---
+
+```text
+ ┌─────────────────────────────────────────────────────────────────────────┐
+ │  5W1H: Advanced Graph Algorithms                                        │
+ ├─────────────────────────────────────────────────────────────────────────┤
+ │ WHAT : Sophisticated techniques beyond basic BFS/DFS (e.g., Dijkstra,   │
+ │        Bellman-Ford, Floyd-Warshall, Prim, Kruskal, Topo Sort).         │
+ │ WHY  : Basic traversals cannot efficiently solve weighted shortest      │
+ │        paths, MSTs, all-pairs distances, or complex connectivity.       │
+ │ WHEN : Dealing with weighted networks, scheduling dependencies, routing │
+ │        packets, or analyzing network vulnerabilities/flow.              │
+ │ WHERE: Embedded in network routers (OSPF/BGP), GPS navigation, build    │
+ │        systems (Make, Maven), and scheduling algorithms.                │
+ │ WHO  : Backend engineers, distributed systems designers, networking     │
+ │        engineers, and competitive programmers.                          │
+ │ HOW  : Leveraging greedy strategies (Dijkstra/Prim), DP (Bellman-Ford/  │
+ │        Floyd-Warshall), Union-Find (Kruskal), and DFS (Tarjan/Kahn).    │
+ └─────────────────────────────────────────────────────────────────────────┘
+```
 
 ## 🔗 JIT Connection — Advanced Graph Algorithms
 
@@ -437,18 +456,12 @@ private boolean dfs(int node, List<List<Integer>> adj, int[] color) {
 
 ---
 
-🔬 **Section Challenge — Pattern 4: Cycle Detection in Directed Graph (Three Colors)**
+🔬 **Section Challenge — Topological Sort & Cycle Detection**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Algorithmic Insight):** Kahn's Algorithm (BFS) and DFS both detect cycles, but how does their mechanism differ?
 <details><summary>Answer</summary>
 
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+In Kahn's Algorithm, a cycle is detected if the number of processed nodes is less than the total number of nodes (nodes in the cycle never reach an in-degree of 0). In DFS (Three Colors), a cycle is detected when a node visits a neighbor that is currently marked as `IN_PROGRESS` (a back edge).
 </details>
 
 # PART 15: Complete Graph Problems with Solutions
@@ -479,18 +492,12 @@ private Node clone(Node node, Map<Node, Node> visited) {
 }
 ```
 
-🔬 **Section Challenge — Problem 1: Clone Graph**
+🔬 **Section Challenge — Deep Copying Graphs**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Data Structures):** Why is a `HashMap` necessary when cloning a graph, whereas a simple `HashSet` might be enough for just traversing it?
 <details><summary>Answer</summary>
 
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+A `HashSet` is sufficient for traversal because we only need to know *if* we've visited a node to avoid infinite loops. When *cloning*, we must map the original node to its newly created clone. If we revisit an original node, we must link to its *already created clone* rather than creating a duplicate clone. The `HashMap` stores this `OriginalNode -> ClonedNode` mapping.
 </details>
 
 ## Problem 2: Pacific Atlantic Water Flow
@@ -586,10 +593,10 @@ public int networkDelayTime(int[][] times, int n, int k) {
 
 🔬 **Section Challenge — Problem 3: Network Delay Time (Dijkstra)**
 
-**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+**Challenge 1 (Dijkstra Internals):** Why does Dijkstra's Algorithm fail if there are negative edge weights?
 <details><summary>Answer</summary>
 
-The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+Dijkstra's relies on a greedy property: once a node is popped from the Priority Queue, its shortest path is *finalized*. It assumes all future paths will only add non-negative weights, meaning any indirect path will be strictly longer. A negative edge breaks this assumption, as taking a longer detour might actually result in a smaller total weight, requiring a node to be re-evaluated.
 </details>
 
 ## Problem 4: Cheapest Flights Within K Stops

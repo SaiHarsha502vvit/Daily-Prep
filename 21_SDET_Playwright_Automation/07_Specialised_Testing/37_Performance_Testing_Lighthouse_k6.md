@@ -1,4 +1,4 @@
-﻿# 37. Performance Testing — Core Web Vitals, Lighthouse & Response Time Assertions
+# 37. Performance Testing — Core Web Vitals, Lighthouse & Response Time Assertions
 
 **Navigation**: [â† Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
 
@@ -605,6 +605,35 @@ export const options = {
 ```
 
 ---
+
+## 5e. Flame Graph Reading for SDETs
+
+When `findSlowResources` or Lighthouse highlights a problem, the next step is often looking at a **Flame Graph** (via Playwright Traces or Chrome DevTools).
+
+**What is a Flame Graph?**
+It's a visual representation of the call stack over time.
+- **X-axis**: Time. Wide blocks mean the function took a long time to execute.
+- **Y-axis**: Call stack depth. Top blocks call bottom blocks (or vice-versa depending on the tool).
+
+**How to Read It for Performance Bugs:**
+
+1. **The "Flat Top" (Long Tasks)**: If you see a very wide block at the bottom of the stack without many children, it means a single function is blocking the main thread (synchronous JS).
+   * **Fix**: This function needs to be optimized, memoized, or pushed to a Web Worker.
+2. **The "Spiky Comb" (Excessive Renders)**: Lots of tiny, repeated vertical spikes. This usually means React/Angular is re-rendering a component hundreds of times unnecessarily.
+   * **Fix**: Check for missing `useMemo`, `useCallback`, or bad state management triggering render loops.
+3. **The "Staircase" (Waterfall Requests)**: Stacks that step down sequentially. Component A loads → fetches Data A → renders Component B → fetches Data B.
+   * **Fix**: Hoist data fetching to the route level with `Promise.all()` to fetch concurrently.
+
+**Playwright Tracing for Flame Graphs:**
+Playwright trace viewer includes a timeline and call stacks for network requests, making it easy to spot "Staircases".
+```typescript
+test.use({ trace: 'on' }); // Enable tracing
+
+test('Trace performance bottleneck', async ({ page }) => {
+  await page.goto('/dashboard');
+  // Open the trace.zip in trace.playwright.dev to view the timeline!
+});
+```
 
 ## ðŸ‹ï¸ Practice Challenges
 

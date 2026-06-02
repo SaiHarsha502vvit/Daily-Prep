@@ -646,6 +646,36 @@ _Keep state as close to where it is used as possible._
 
 ---
 
+## 🏋️ Practice Challenges
+
+**Challenge 1 (Context Performance):** A junior developer puts a complex object `{ user, theme, locale, preferences }` into a single `AppContext` provider. Why is this bad for performance, and what are two ways to fix it?
+<details><summary>Answer</summary>
+
+**Why it's bad:** Every time *any* property (like `theme`) changes, every component consuming `AppContext` will re-render, even if they only needed the `user` object. This causes massive "re-render waterfalls".
+**Fixes:** 
+1. Split the context into smaller, focused contexts (`UserContext`, `ThemeContext`).
+2. Use a state manager like Zustand or Redux that supports selector-based subscriptions (e.g., `useStore(state => state.user)`), which only re-renders the component when the selected slice of state changes.
+</details>
+
+**Challenge 2 (Redux Flow):** In Redux, why must reducers be **pure functions**? What would happen if you made an API call inside a reducer?
+<details><summary>Answer</summary>
+
+Reducers must be pure (same input = same output, no side effects, no mutation) so that state transitions are predictable, serializable, and reversible. If you put an API call in a reducer:
+1. It introduces unpredictability (network failures).
+2. It breaks time-travel debugging (you can't "rewind" a network request).
+3. Redux expects the reducer to instantly return the new state, but an API call is asynchronous.
+Side effects belong in middleware (like Redux Thunk or Saga), not the reducer.
+</details>
+
+**Challenge 3 (Server State vs Client State):** Your app fetches a list of 100 products from a database. Users can open a modal to view product details, and they can toggle a "Dark Mode" switch. Which pieces of state are "Server State" and which are "Client State"? What tools should manage them?
+<details><summary>Answer</summary>
+
+- **Server State:** The 100 products from the database. It is a remote cache of data owned by the backend. Use **React Query** (or SWR/RTK Query) to handle fetching, caching, loading states, and refetching.
+- **Client State:** The "Modal Open/Closed" boolean and the "Dark Mode" boolean. This data is ephemeral, synchronous, and owned entirely by the browser. Use **useState** for the modal (local) and **Context or Zustand** for Dark Mode (global).
+</details>
+
+---
+
 ## 🔗 Cross-References
 
 | Topic | Related Content |

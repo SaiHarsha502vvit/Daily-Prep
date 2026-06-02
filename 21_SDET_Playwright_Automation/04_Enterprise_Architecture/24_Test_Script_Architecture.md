@@ -524,7 +524,59 @@ test.describe('Create citation and verify notification @citations @smoke', () =>
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 8. The Test Lifecycle & Hooks Architecture
+
+Understanding the order in which setup, teardown, and hooks execute is critical for preventing flaky tests, data collisions, and stale state.
+
+### The Execution Order Visualised
+
+```mermaid
+sequenceDiagram
+    participant Global as globalSetup()
+    participant Worker as Worker Fixtures (Before)
+    participant Suite as beforeAll()
+    participant Test as beforeEach() / Test Fixtures (Before)
+    participant Spec as test() body
+    participant TestTeardown as afterEach() / Test Fixtures (After)
+    participant SuiteTeardown as afterAll()
+    participant WorkerTeardown as Worker Fixtures (After)
+    participant GlobalTeardown as globalTeardown()
+
+    Global->>Worker: Runs ONCE per test run
+    Worker->>Suite: Runs ONCE per worker process
+    Suite->>Test: Runs ONCE per describe block
+    Test->>Spec: Runs BEFORE EACH test
+    Spec->>TestTeardown: Executes business logic
+    TestTeardown->>Test: Runs AFTER EACH test (cleanup)
+    TestTeardown->>SuiteTeardown: (Loops for next test)
+    SuiteTeardown->>WorkerTeardown: Runs ONCE per describe block
+    WorkerTeardown->>GlobalTeardown: Runs ONCE per worker process
+    GlobalTeardown->>Global: Runs ONCE per test run
+```
+
+### Global Setup vs. Hooks vs. Fixtures
+
+Enterprise suites separate setup logic by scope to maximize speed and stability.
+
+1. **`globalSetup`**: One-time database seeding, global auth token generation, or standing up local mock servers. Runs *before Playwright spins up workers*.
+2. **`beforeAll` / `afterAll`**: Shared setup for a specific test suite. **DANGER**: Data mutations here will cause cross-test contamination if tests run in parallel or manipulate the same records.
+3. **`beforeEach` / `afterEach`**: Pre/post-test cleanup. Prefer test-scoped **Fixtures** over `beforeEach` hooks, because fixtures automatically clean up even if the test fails or times out.
+
+```typescript
+// ❌ Bad: cleanup in afterEach can fail if the test crashed mid-way
+test.afterEach(async ({ page }) => {
+  await api.deleteUser(createdUserId); // Might be undefined if test failed!
+});
+
+// ✅ Good: Test-scoped fixture handles its own lifecycle
+test('My test', async ({ customerUser }) => {
+   // customerUser is injected, used, and automatically deleted by the fixture's teardown
+});
+```
+
+---
+
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Scope Question
 

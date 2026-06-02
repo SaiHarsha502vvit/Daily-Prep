@@ -1,4 +1,4 @@
-﻿# 36. TypeScript Type System Mastery for SDETs
+# 36. TypeScript Type System Mastery for SDETs
 
 **Navigation**: [â† Chapter 35: OOP Design Patterns](./35_OOP_Design_Patterns_for_SDETs.md) | [Index](../00_INDEX.md)
 
@@ -437,7 +437,148 @@ config3.roles.includes('ADMIN');      // ✅ TypeScript knows 'ADMIN' is a valid
 
 ---
 
-## 9. Connecting to Your TypeScript Guide
+## 9. Type Inference and Control Flow Analysis
+
+**How TypeScript understands your code without annotations:**
+
+```mermaid
+flowchart TD
+    A[Assignment] -->|Infers type from value| B(Type Widening)
+    C[const x = 'Hello'] -->|Literal Type| D('Hello')
+    E[let y = 'Hello'] -->|Widened Type| F(string)
+    G[Control Flow] -->|Type Narrowing| H{if statement}
+    H -->|true| I(Narrowed Type)
+    H -->|false| J(Alternative Type)
+```
+
+**Control Flow Analysis in assertions:**
+
+```typescript
+// TypeScript tracks variables through your logic (Control Flow Analysis)
+
+let element: Locator | null = await page.locator('.btn').first();
+// Type is: Locator | null
+
+element.click(); // â Œ TypeScript error: Object is possibly 'null'
+
+if (element) {
+  // TypeScript NARROWS the type based on the truthiness check
+  element.click(); // ✅ Type is strictly: Locator
+}
+
+// Applying this to test code assertions:
+const citation = await citationsClient.getById('CIT-001');
+// citation.status could be 'PENDING' | 'PAID' | 'DISPUTED'
+
+if (citation.status === 'PAID') {
+  // Type is narrowed to the 'PAID' variant of the discriminated union
+  expect(citation.paymentDate).toBeDefined(); // ✅ Safe to access
+} else {
+  // Type is narrowed to 'PENDING' | 'DISPUTED'
+  // expect(citation.paymentDate).toBeDefined(); // â Œ Compile error
+}
+
+// expect() does NOT narrow types automatically!
+expect(citation.status).toBe('PAID');
+// citation.paymentDate // â Œ Still a compile error, expect() doesn't narrow
+// To fix this, use a type guard or an invariant assertion function.
+```
+
+---
+
+## 10. Variance in Test Automation (Covariance vs Contravariance)
+
+**The CS Concept:** Variance describes how complex types relate to each other when their underlying types have an inheritance relationship.
+- **Covariant (out):** You can use a more specific type (return types).
+- **Contravariant (in):** You must use a more generic type (function parameters).
+
+```typescript
+// Assume: Dog extends Animal
+// Covariance: A list of Dogs can be treated as a list of Animals.
+// Contravariance: A function that feeds Animals can be used where a function that feeds Dogs is expected.
+
+// In Test Automation: POM Hierarchies and Client Interfaces
+
+class BasePage {}
+class AdminPage extends BasePage { isAdmin = true; }
+
+// COVARIANCE: Return types
+interface PageFactory {
+  createPage(): BasePage;
+}
+
+class AdminPageFactory implements PageFactory {
+  // ✅ Valid: returning a MORE specific type (Covariant)
+  createPage(): AdminPage { return new AdminPage(); }
+}
+
+// CONTRAVARIANCE: Function parameters
+interface PageVisitor {
+  visit(page: AdminPage): void;
+}
+
+// ✅ Valid: accepting a LESS specific type (Contravariant)
+// If I can visit ANY BasePage, I can certainly visit an AdminPage.
+const genericVisitor: PageVisitor = {
+  visit(page: BasePage) { console.log('Visiting page'); }
+};
+
+// Function parameter strictness matters in hooks:
+type TestHook = (context: { page: Page; context: BrowserContext }) => Promise<void>;
+
+// ✅ Valid: Hook only cares about 'page', ignoring 'context' (Contravariance in action)
+const simpleHook: TestHook = async ({ page }) => {
+  await page.goto('/');
+};
+```
+
+---
+
+## 11. Utility Types Deep Dive for SDETs
+
+TypeScript provides built-in utilities that transform types. Here's how to use them in your framework:
+
+### `Partial<T>` and `Required<T>`
+```typescript
+// Partial: Makes all fields optional (good for payload overrides)
+type CitationOverrides = Partial<CreateCitationPayload>;
+
+// Required: Makes all fields mandatory (good for strict validation)
+type StrictCitation = Required<CitationApiResponse>;
+```
+
+### `Pick<T, K>` and `Omit<T, K>`
+```typescript
+// Pick: Keep only specific fields
+type CitationSummary = Pick<CitationApiResponse, 'citationId' | 'status'>;
+// Omit: Remove specific fields
+type CreatePayload = Omit<CitationApiResponse, 'citationId' | 'issuedAt'>;
+// Why? Ensures that if you add 'amount' to CitationApiResponse,
+// CreatePayload automatically requires 'amount' too. Keeps APIs in sync.
+```
+
+### `Record<K, T>`
+```typescript
+// Create a dictionary type
+type FeatureFlags = Record<'enableNewUI' | 'enableBetaApi', boolean>;
+// Enforces that exactly those two keys exist, and their values are boolean.
+```
+
+### `Extract<T, U>` and `Exclude<T, U>`
+```typescript
+type AllRoles = 'ADMIN' | 'AGENT' | 'CUSTOMER' | 'GUEST';
+
+// Exclude: Remove from a union
+type InternalRoles = Exclude<AllRoles, 'CUSTOMER' | 'GUEST'>; // 'ADMIN' | 'AGENT'
+
+// Extract: Keep only types that are assignable to U
+type StatusType = 'PENDING' | 'PAID' | 404 | 500;
+type ValidStatuses = Extract<StatusType, string>; // 'PENDING' | 'PAID'
+```
+
+---
+
+## 12. Connecting to Your TypeScript Guide
 
 The guide at [`../../17_TypeScript/04_TS_Deep_Reasoning.md`](../../../17_TypeScript/04_TS_Deep_Reasoning.md) explains the **"why"** behind TypeScript's design:
 

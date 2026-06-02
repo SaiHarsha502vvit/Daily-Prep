@@ -2,6 +2,62 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-06-01 — 02_Data_Structures: Pedagogy Refinement (Depth/Theory/5W1H)
+
+Changed:
+
+- Updated `02_Data_Structures/01a_Memory_Foundations.md` through `01g_DS_Internals.md` — Added 5W1H framing and Challenge blocks.
+- Updated `02_Data_Structures/02a_DS_Variants_Core.md` and `02b_DS_Variants_Advanced.md` — Added 5W1H framing.
+- Updated `02_Data_Structures/03_Collections_Java.md` — Added 5W1H framing.
+- Updated `02_Data_Structures/04_2D_Arrays_Matrix.md` — Added 5W1H framing.
+- Updated `02_Data_Structures/05_DS_In_Production.md` — Added 5W1H framing.
+- Updated `02_Data_Structures/00_DS_PROBLEM_BRIDGES.md` — Added 5W1H framing.
+
+Reason:
+
+- The user requested applying the pedagogical lens (5W1H and depth/theory challenges) to all modules in the `02_Data_Structures` folder.
+
+Verification:
+
+- Pending `update_context.ps1 -Mode update` and `check`.
+
+## 2026-06-01 — 15_React_Frontend: Pedagogy Refinement (Depth/Theory/5W1H)
+
+Changed:
+
+- Updated `15_React_Frontend/07_React_Testing.md` — Added 5W1H framing.
+- Updated `15_React_Frontend/08_React_Performance.md` — Added 5W1H, Practice Challenges, and Cross-References.
+- Updated `15_React_Frontend/09_React_Deep_Reasoning.md` — Added 5W1H framing.
+- Updated `15_React_Frontend/10_Custom_Hooks_Library.md` — Added 5W1H framing.
+- Updated `15_React_Frontend/11_Complex_UI_Pages_Patterns.md` — Added 5W1H and Practice Challenges.
+- Updated `15_React_Frontend/12_Hands_On_React_Projects.md` — Added 5W1H framing.
+
+Reason:
+
+- The user requested applying the pedagogical lens (5W1H and depth/theory challenges) to the remaining modules in the `15_React_Frontend` folder.
+
+Verification:
+
+- `update_context.ps1 -Mode update` completed.
+- `update_context.ps1 -Mode check` passed.
+
+## 2026-06-01 — 21_SDET_Playwright_Automation: Core Architecture Updated
+
+Changed:
+
+- Updated `21_SDET_Playwright_Automation/02_Core_Architecture/07_test_step_E2E_Architecture.md` — Added references for `test.step`, soft assertions, test timeouts, multi-page contexts, global teardown, and `test.info()`.
+- Updated `21_SDET_Playwright_Automation/02_Core_Architecture/08_Browser_Internals_for_SDETs.md` — Added references for Actionability checks, wait semantics, CDP Session API, Rendering performance, accessibility tree, and CDP Viewer.
+- Updated `21_SDET_Playwright_Automation/02_Core_Architecture/09_Parallel_Execution_Workers.md` — Added references for parallelism, sharding, test annotations, GitHub Actions, Node event loop, and merge-reports.
+
+Reason:
+
+- The user requested that verified links/references be included in all upgraded content within the `21_SDET_Playwright_Automation` module (Folder 02–08).
+
+Verification:
+
+- `update_context.ps1 -Mode update` completed.
+- `update_context.ps1 -Mode check` passed.
+
 ## 2026-05-30 — 21_SDET_Playwright_Automation: 01_Environment_Setup_and_First_Test.md created
 
 Changed:

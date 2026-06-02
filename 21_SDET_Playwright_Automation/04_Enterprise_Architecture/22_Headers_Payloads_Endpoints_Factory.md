@@ -241,9 +241,67 @@ export class HeadersIvr {
 }
 ```
 
+### Multi-Environment Header Strategy
+
+In enterprise environments, headers often differ between `local`, `staging`, and `prod`. For example, `local` might require an `X-Bypass-Rate-Limit` header, while `prod` strictly forbids it.
+
+Instead of `if (env === 'local')` statements cluttering your spec files, handle environment-specific headers inside the factory:
+
+```typescript
+// data/headers/HeadersCrm.ts
+import { currentEnv } from '../../config/environments';
+
+export class HeadersCrm {
+  static auth(accessToken: string): Record<string, string> {
+    const baseHeaders = {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json',
+      'X-Tenant-ID': process.env.TENANT_ID!,
+    };
+
+    // Environment-specific header injection
+    if (currentEnv === 'local' || currentEnv === 'dev') {
+      return {
+        ...baseHeaders,
+        'X-Bypass-Rate-Limit': 'true',  // Only allowed in lower environments
+        'X-Mock-External-Systems': 'true',
+      };
+    }
+
+    return baseHeaders;
+  }
+}
+```
+This ensures your tests seamlessly transition between environments without modifying test logic.
+
 ---
 
 ## 4. `PayloadsXxx.ts` — Deep Dive
+
+### The Payload Factory Architecture Visualised
+
+```mermaid
+classDiagram
+    class PayloadsCitation {
+        +pending(overrides) CreateCitationPayload
+        +paid(overrides) CreateCitationPayload
+        +disputed(overrides) CreateCitationPayload
+        +overdue(overrides) CreateCitationPayload
+    }
+
+    class CreateCitationPayload {
+        <<interface>>
+        +String customerId
+        +Number amount
+        +CitationStatus status
+        +CitationType citationType
+        +String issueDate
+    }
+
+    PayloadsCitation ..> CreateCitationPayload : "Returns"
+
+    note for PayloadsCitation "Static methods accept Partial<CreateCitationPayload>\nOverrides are merged with defaults"
+```
 
 ### The Override Pattern — The Key to Flexibility
 

@@ -21,6 +21,15 @@
 
 ## 1. The Architecture — 5 Layers
 
+```mermaid
+graph TD
+    A[Layer 5: Domain Clients<br>CitationsClient, PaymentsClient] -->|Throws Domain Errors| B[Layer 4: Endpoint Registry<br>Endpoints.citations.pay]
+    A --> C[Layer 3: Header Builder<br>HeadersBuilder]
+    B --> D[Layer 2: HTTP Core<br>ApiCore]
+    C --> D
+    D -->|Throws ApiHttpError| E[Layer 1: Playwright APIRequestContext<br>request.post]
+```
+
 ```
 Layer 5: Domain Clients
   CitationsClient, UsersClient, PaymentsClient, NotificationsClient
@@ -480,6 +489,18 @@ function buildUrl(base: string, params?: Record<string, unknown>): string {
 
 ### The Error Hierarchy First
 
+```mermaid
+graph TD
+    Error[Error] --> ApiError
+    
+    ApiError --> CitationNotFoundError[404: CitationNotFoundError]
+    ApiError --> CitationAlreadyPaidError[409: CitationAlreadyPaidError]
+    ApiError --> PaymentValidationError[422: PaymentValidationError]
+    ApiError --> RateLimitError[429: RateLimitError]
+    ApiError --> ServerError[500/502/503: ServerError]
+    ApiError --> SchemaValidationError[Zod Parse Failure: SchemaValidationError]
+```
+
 ```typescript
 // lib/errors/ApiErrors.ts
 
@@ -754,6 +775,32 @@ export class CitationsClient {
 ## 7. Response Schema Validation with Zod
 
 Raw API responses are `unknown` in TypeScript. Adding runtime schema validation catches API contract violations immediately.
+
+### The Typed Response Chain
+
+```mermaid
+sequenceDiagram
+    participant Test
+    participant Client as Domain Client
+    participant Zod as Zod Schema
+    participant Core as ApiCore
+    participant PW as Playwright
+    
+    Test->>Client: getById('CIT-001')
+    Client->>Core: get<unknown>('/api/...')
+    Core->>PW: fetch()
+    PW-->>Core: APIResponse (Buffer)
+    Core-->>Client: raw json (unknown)
+    Client->>Zod: parse(json)
+    
+    alt Schema Matches
+        Zod-->>Client: Validated Citation object
+        Client-->>Test: Typed Citation
+    else Schema Mismatch
+        Zod-->>Client: ZodError
+        Client-->>Test: throws SchemaValidationError
+    end
+```
 
 ```typescript
 // npm install zod

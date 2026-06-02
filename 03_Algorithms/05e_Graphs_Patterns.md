@@ -3,38 +3,36 @@
 
 ---
 
-```java
-        if (!visited[u]) {
-            List<Integer> scc = new ArrayList<>();
-            dfs2(u, radj, visited, scc);
-            sccs.add(scc);
-        }
-    }
+# 🕸️ Part 15: Graph Patterns & Specialized Algorithms
 
-    return sccs;
-}
+### 5W1H: Mastering Graph Patterns
 
-private void dfs1(int u, List<List<Integer>> adj,
-                  boolean[] visited, Deque<Integer> stack) {
-    visited[u] = true;
-    for (int v : adj.get(u)) {
-        if (!visited[v]) {
-            dfs1(v, adj, visited, stack);
-        }
-    }
-    stack.push(u);
-}
+ ┌─────────────────────────────────────────────────────────────────────────┐
+ │  5W1H: Mastering Graph Patterns                                         │
+ ├─────────────────────────────────────────────────────────────────────────┤
+ │ WHAT : Advanced graph algorithms and structural patterns including SCC, │
+ │        MST, Articulation Points, Euler Paths, and A* Pathfinding.       │
+ │ WHY  : These represent the pinnacle of graph algorithm engineering,     │
+ │        solving complex network topology problems and routing.           │
+ │ WHEN : Use SCC to group interdependent nodes. Use Articulation Points   │
+ │        to find single points of failure. Use A* for heuristic search.   │
+ │ WHERE: Applied in game AI, network routing protocols, reliability       │
+ │        analysis, and mapping software (like Google Maps).               │
+ │ WHO  : Senior engineers and candidates tackling hard graph problems.    │
+ │ HOW  : Combining DFS with low-link values (Tarjan), Union-Find with     │
+ │        greedy sorting (Kruskal), and Priority Queues with heuristics.   │
+ └─────────────────────────────────────────────────────────────────────────┘
 
-private void dfs2(int u, List<List<Integer>> radj,
-                  boolean[] visited, List<Integer> scc) {
-    visited[u] = true;
-    scc.add(u);
-    for (int v : radj.get(u)) {
-        if (!visited[v]) {
-            dfs2(v, radj, visited, scc);
-        }
-    }
-}
+## 🔬 Section Challenge — Advanced Graph Patterns
+
+**Challenge 1 (Reasoning):** What is the core difference between an Euler Path and a Hamiltonian Path, and why does one have an efficient solution while the other is NP-Complete?
+
+**Challenge 2 (Design):** Explain why Tarjan's SCC algorithm uses a stack and how it distinguishes between a cross-edge (pointing to a different SCC) and a back-edge (pointing within the current SCC).
+
+---
+
+### 5. STRONGLY CONNECTED COMPONENTS (SCC)
+
 
 // TARJAN'S ALGORITHM: O(V + E), single DFS
 public List<List<Integer>> tarjanSCC(int n, int[][] edges) {
@@ -1057,16 +1055,16 @@ Mark each ✅ as you solve it. Revisit any problem you can't solve in 30 minutes
 
 🔬 **Section Challenge — Section 6: Advanced Graph Patterns**
 
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+**Challenge 1 (Reasoning):** What is the core difference between an Euler Path and a Hamiltonian Path, and why does one have an efficient solution while the other is NP-Complete?
 <details><summary>Answer</summary>
 
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+An Euler Path visits every **edge** exactly once, whereas a Hamiltonian Path visits every **vertex** exactly once. Finding an Euler Path is solvable in $O(E)$ time (using Hierholzer's Algorithm) because it relies on local vertex degrees (an edge-centric graph property). Conversely, finding a Hamiltonian Path requires checking global visitation state and backtracking, which scales exponentially $O(n^2 2^n)$ because there is no simple local rule to guarantee global vertex coverage without exhaustive search.
 </details>
 
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+**Challenge 2 (Design):** Explain why Tarjan's SCC algorithm uses a stack and how it distinguishes between a cross-edge (pointing to a different SCC) and a back-edge (pointing within the current SCC).
 <details><summary>Answer</summary>
 
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+Tarjan's algorithm uses a stack to keep track of nodes currently being explored in the DFS tree. When an SCC is fully discovered, all its nodes are popped together. To distinguish edge types, Tarjan maintains an `onStack` boolean array. If we encounter an already visited node `v` via edge `u -> v`, we check if `v` is `onStack`. If it is, `v` is part of the current exploration path (a back-edge within the same SCC), so we update `low[u]`. If it is NOT `onStack`, `v` belongs to an already finalized SCC (a cross-edge), and we ignore it.
 </details>
 
 
@@ -1124,19 +1122,5 @@ Which graph problem type am I facing?
 
 ---
 
----
 
-🔬 **Section Challenge — HIDDEN GEMS — Non-Famous But Excellent Graph Problems**
-
-**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
-<details><summary>Answer</summary>
-
-BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
-</details>
-
-**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
-<details><summary>Answer</summary>
-
-3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
-</details>
 

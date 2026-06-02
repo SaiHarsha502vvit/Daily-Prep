@@ -28,7 +28,30 @@
 
 ---
 
-# 🔁 Part 1: What is Recursion Really?
+# 🔁 Recursion Fundamentals: The Leap of Faith
+
+### 5W1H: Mastering Recursion Fundamentals
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: The algorithmic technique where a function calls itself to solve      ║
+║        smaller, self-similar instances of the same problem.                  ║
+║                                                                              ║
+║  WHY:  Some problems (like Trees, Graphs, or Combinatorics) are inherently   ║
+║        self-referential. Iterative solutions for these require managing an   ║
+║        explicit stack, which is error-prone and harder to read.              ║
+║                                                                              ║
+║  WHO:  Developers who need to write DFS, Backtracking, or Divide & Conquer   ║
+║        algorithms, or anyone preparing for coding interviews.                ║
+║                                                                              ║
+║  WHEN: Use when a problem can be broken down into identical sub-problems,    ║
+║        and the maximum depth of recursion is bounded (to avoid stack         ║
+║        overflows).                                                           ║
+║                                                                              ║
+║  HOW:  1. Define the BASE CASE. 2. Define the PROGRESS toward the base case. ║
+║        3. Make the RECURSIVE CALL and trust it solves the sub-problem.       ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
 
 ## Complete Understanding
 

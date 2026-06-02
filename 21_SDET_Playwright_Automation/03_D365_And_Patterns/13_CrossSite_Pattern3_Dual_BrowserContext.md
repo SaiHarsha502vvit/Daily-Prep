@@ -31,6 +31,29 @@
 
 **Rule:** For two isolated sessions (e.g., admin + customer), you MUST use two different `BrowserContext` objects.
 
+### Dual Context Architecture Visualised
+
+```mermaid
+graph TD
+    B[Playwright Browser Instance] --> C1[Admin Context]
+    B --> C2[Customer Context]
+    
+    subgraph "Admin Session Isolation"
+        C1 --> S1[(Admin StorageState)]
+        S1 --> P1[Admin Page/Tab]
+        P1 --> API1[Admin API Route Interceptors]
+    end
+    
+    subgraph "Customer Session Isolation"
+        C2 --> S2[(Customer StorageState)]
+        S2 --> P2[Customer Page/Tab]
+        P2 --> API2[Customer API Route Interceptors]
+    end
+    
+    style C1 fill:#f9d0c4,stroke:#333,stroke-width:2px
+    style C2 fill:#c4e1f9,stroke:#333,stroke-width:2px
+```
+
 ---
 
 ## 2. Creating Two Contexts From the Same Browser
@@ -834,5 +857,17 @@ export default defineConfig({
 ```
 
 ---
-**Navigation**: [← Chapter 12: New Tab Shared Context](./12_CrossSite_Pattern2_NewTab_SharedContext.md) | [Index](../00_INDEX.md) | [→ Chapter 14: Token & Magic Link](./14_CrossSite_Pattern4_Token_Magic_Link.md)
 
+## 📚 References & Further Reading
+
+### Official Documentation
+- [Playwright BrowserContext API](https://playwright.dev/docs/browser-contexts) — Core documentation on context isolation
+- [Playwright `storageState`](https://playwright.dev/docs/auth) — Official guide on saving and loading authentication state
+- [Playwright Multiple Contexts](https://playwright.dev/docs/pages#multiple-contexts) — Testing with multiple accounts concurrently
+
+### Deep Dives
+- [MDN: Event Loop](https://developer.mozilla.org/en-US/docs/Web/JavaScript/EventLoop) — Why `expect.poll` is required to allow the browser to process concurrent data syncs across separate session contexts
+
+---
+
+**Navigation**: [← Chapter 12: New Tab Shared Context](./12_CrossSite_Pattern2_NewTab_SharedContext.md) | [Index](../00_INDEX.md) | [→ Chapter 14: Token & Magic Link](./14_CrossSite_Pattern4_Token_Magic_Link.md)

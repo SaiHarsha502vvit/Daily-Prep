@@ -4,6 +4,18 @@
 
 **"The developer who masters DevTools debugs in 5 minutes what others spend 2 hours on. Every tab in DevTools exists because someone needed a specific superpower. Learn them all."**
 
+## 5W1H — Why This Chapter?
+
+> WHAT: Advanced mastery of browser Developer Tools.
+>
+> WHY: Finding the bug is 90% of the work; fixing it is 10%. Console.log is a blunt instrument. DevTools provides a surgical suite for tracing logic, inspecting memory, simulating environments, and analyzing network bottlenecks.
+>
+> WHO: Any developer who touches the frontend.
+>
+> WHEN: Throughout the development lifecycle, especially when tracking down elusive rendering issues, performance drops, or memory leaks.
+>
+> HOW: By understanding and utilizing each tab (Elements, Console, Sources, Network, Performance, Memory, Application) for its specific diagnostic superpower.
+
 ---
 
 ## Table of Contents
@@ -820,6 +832,27 @@ getEventListeners($0)
   3. Uncheck "Ancestors" to see only THIS element's listeners
   4. Click "Remove" to test what happens without the handler
 ```
+
+---
+
+## 🏋️ Practice Challenges
+
+**Challenge 1 (Stale Closure Tracking):** You suspect a `setInterval` is using a stale React state because it logs the initial state `0` continuously instead of the updated `count`. How can you verify this closure in the DevTools without modifying the source code?
+<details><summary>Answer</summary>
+
+**Answer:** Use the Sources tab. Add a Logpoint (right-click the line number -> Add logpoint) inside the interval callback: `count`. Because the Logpoint runs in the same scope as the code execution, you can verify if `count` evaluates to `0` or if it's the fresh value. You can also add a Breakpoint on the interval's callback line and inspect the "Scope" panel (under "Closure") to see the exact values captured by the function.
+</details>
+
+**Challenge 2 (Memory Leak Diagnosis):** After testing your Single Page App by navigating back and forth between the Dashboard and a large Report table 10 times, the browser slows down. How do you definitively prove the Report table is leaking memory using the 3-Snapshot Technique?
+<details><summary>Answer</summary>
+
+**Answer:** 
+1. Open the Memory tab and take Snapshot 1 (baseline) on the Dashboard.
+2. Perform the action: navigate to the Report table, then back to the Dashboard. Repeat this 10 times.
+3. Click the Trash Can icon to force Garbage Collection.
+4. Take Snapshot 2.
+5. In Snapshot 2, select "Objects allocated between Snapshot 1 and 2". Search for components or data unique to the Report table (e.g., `ReportRow`). If they still exist, they are being retained (likely by an unremoved event listener or global store), confirming the leak.
+</details>
 
 ---
 

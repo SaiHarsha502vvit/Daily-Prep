@@ -815,6 +815,226 @@ export class OrdersPage {
 
 ---
 
+### Challenge 16 [HARD] — The API Mocking Trap
+
+```typescript
+test('intercept API and verify payload', async ({ page }) => {
+  let intercepted = false;
+  
+  await page.route('**/api/v1/orders', route => {
+    intercepted = true;
+    // We just want to spy on the request, so we do nothing here
+  });
+
+  await page.goto('/dashboard');
+  await page.locator('#loadOrdersBtn').click();
+
+  expect(intercepted).toBe(true);
+});
+```
+
+**What happens when this test runs? What is the correct way to "spy" on an API without breaking it?**
+
+<details><summary>Answer</summary>
+
+**What happens:** The test hangs or the application breaks! When you use `page.route`, you MUST explicitly handle the route by calling `route.continue()`, `route.fulfill()`, or `route.abort()`. If you do nothing, the request hangs forever, and the UI never loads the orders.
+
+**Fix:** If you just want to spy (observe without modifying), you MUST call `route.continue()`:
+```typescript
+await page.route('**/api/v1/orders', route => {
+  intercepted = true;
+  route.continue(); // Let the request proceed to the real server
+});
+```
+
+**Better Approach (No interception):** If you only need to spy on responses/requests, use `page.on('response')` or `page.waitForResponse()` instead of `page.route`. Route is specifically for *intercepting and modifying/blocking* traffic.
+```typescript
+const responsePromise = page.waitForResponse('**/api/v1/orders');
+await page.locator('#loadOrdersBtn').click();
+const response = await responsePromise;
+expect(response.ok()).toBeTruthy();
+```
+</details>
+
+---
+
+### Challenge 17 [MEDIUM] — Fixture Dependency Scope Mismatch
+
+```typescript
+export const test = base.extend<{ user: User }, { db: Database }>({
+  // Test-scoped database connection
+  db: async ({}, use) => {
+    const db = await connectToDatabase();
+    await use(db);
+    await db.disconnect();
+  },
+
+  // Worker-scoped user setup
+  user: [async ({ db }, use) => {
+    const user = await db.createUser({ name: 'TestUser' });
+    await use(user);
+    await db.deleteUser(user.id);
+  }, { scope: 'worker' }],
+});
+```
+
+**What is the Playwright error here? Why?**
+
+<details><summary>Answer</summary>
+
+**The Error:** Playwright will throw an error: `Error: Fixture "user" has worker scope, but depends on a test-scoped fixture "db".`
+
+**Why:** A worker-scoped fixture runs ONCE per worker, before any tests begin. A test-scoped fixture runs repeatedly, before EACH test. If a worker-scoped fixture (`user`) needs `db`, which `db` instance should it get? It can't ask for a test-scoped `db` because no test has started yet, and the test-scoped `db` is meant to be created/destroyed repeatedly.
+
+**Rule:** Worker-scoped fixtures can ONLY depend on other worker-scoped fixtures. Test-scoped fixtures can depend on BOTH test-scoped and worker-scoped fixtures.
+
+**Fix:** Change `db` to `scope: 'worker'` or change `user` to `scope: 'test'`.
+</details>
+
+---
+
+### Challenge 18 [HARD] — GraphQL Mocking by Operation Name
+
+**Requirement:** Write a `page.route` handler for `**/graphql` that fulfills the request with a mocked payload ONLY if the operation name is `GetCustomerData`. For all other GraphQL operations, let the request continue to the real server.
+
+*Hint: GraphQL requests are POSTs where the body contains a `query` or `operationName`.*
+
+<details><summary>Answer</summary>
+
+```typescript
+await page.route('**/graphql', async route => {
+  const request = route.request();
+  
+  // Only process POST requests
+  if (request.method() !== 'POST') {
+    return route.continue();
+  }
+
+  // Parse the POST data
+  const postData = request.postDataJSON();
+
+  // Check if the operation name matches
+  if (postData && (postData.operationName === 'GetCustomerData' || postData.query.includes('query GetCustomerData'))) {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        data: {
+          customer: { id: 'C-001', name: 'Mocked Customer' }
+        }
+      })
+    });
+  } else {
+    // Let all other operations hit the real backend
+    await route.continue();
+  }
+});
+```
+</details>
+
+---
+
+### Challenge 19 [MEDIUM] — The Locator "nth" Anti-Pattern
+
+```typescript
+export class CustomerGrid {
+  readonly page: Page;
+  readonly rows: Locator;
+
+  constructor(page: Page) {
+    this.page = page;
+    this.rows = page.locator('table > tbody > tr');
+  }
+
+  async clickCustomerRow(customerName: string): Promise<void> {
+    // Wait for rows to load
+    await expect(this.rows.first()).toBeVisible();
+    
+    // Find the row containing the name
+    const count = await this.rows.count();
+    for (let i = 0; i < count; i++) {
+      const text = await this.rows.nth(i).textContent();
+      if (text?.includes(customerName)) {
+        await this.rows.nth(i).click();
+        return;
+      }
+    }
+    throw new Error('Customer not found');
+  }
+}
+```
+
+**Why is this code considered an anti-pattern in Playwright? Rewrite `clickCustomerRow` in a single line.**
+
+<details><summary>Answer</summary>
+
+**Anti-Pattern:** Looping over `nth(i)` and reading `textContent()` is slow, flaky, and completely ignores Playwright's built-in locator engine. It requires multiple round-trips to the browser. If the DOM changes while the loop is running (e.g., a re-render), `nth(i)` might point to a completely different row or a detached element. 
+
+**Never use `nth()` for data-driven selection in dynamic tables.**
+
+**Rewrite:** Use `filter({ hasText: ... })` to let Playwright's engine find the correct row reliably, with built-in auto-waiting.
+
+```typescript
+async clickCustomerRow(customerName: string): Promise<void> {
+  // Finds the specific row that contains the text, and clicks it.
+  // Playwright automatically waits for the row to exist and become visible/clickable.
+  await this.rows.filter({ hasText: customerName }).click();
+}
+```
+</details>
+
+---
+
+### Challenge 20 [HARD] — Dynamic Fixture Parameters (Options Pattern)
+
+You have a `testAccount` fixture that creates a user. By default, it creates a "standard" user. Sometimes a test needs an "admin" user.
+
+**Requirement:** How do you design the fixture so that individual tests can override the `accountRole` option?
+
+*Hint: Use Playwright's `test.use({})` pattern with a custom option fixture.*
+
+<details><summary>Answer</summary>
+
+You must define a separate fixture for the *option*, provide a default value, and then consume that option inside your setup fixture.
+
+```typescript
+import { test as base } from '@playwright/test';
+
+// Define the types for both the option and the resulting fixture
+interface MyFixtures {
+  accountRole: 'standard' | 'admin'; // The option
+  testAccount: { id: string, role: string }; // The actual fixture
+}
+
+export const test = base.extend<MyFixtures>({
+  // 1. Define the option with a default value
+  accountRole: ['standard', { option: true }],
+
+  // 2. Consume the option in the setup fixture
+  testAccount: async ({ accountRole }, use) => {
+    // Create account based on the option
+    const account = await createTestUserInDB(accountRole);
+    await use(account);
+    await deleteTestUserFromDB(account.id);
+  }
+});
+
+// Usage in Test A (uses default 'standard'):
+test('regular user test', async ({ testAccount }) => {
+  expect(testAccount.role).toBe('standard');
+});
+
+// Usage in Test B (overrides the option to 'admin'):
+test.use({ accountRole: 'admin' }); // Override for this entire file (or block)
+test('admin user test', async ({ testAccount }) => {
+  expect(testAccount.role).toBe('admin');
+});
+```
+This is the enterprise way to pass dynamic arguments into fixtures without duplicating setup code.
+</details>
+
+---
+
 **Scoring:**
 - 13–15 challenges fully correct: 🏆 Expert SDET — architecture-ready
 - 10–12: ✅ Strong — review the challenges you missed

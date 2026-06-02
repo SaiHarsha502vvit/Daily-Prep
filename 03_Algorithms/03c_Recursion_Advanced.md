@@ -3,6 +3,31 @@
 
 ---
 
+# 🚀 Advanced Recursion Patterns
+
+### 5W1H: Mastering Advanced Recursion
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: Advanced recursive techniques including Include/Exclude (Backtracking), ║
+║        Permutations, and complex Divide & Conquer state management.          ║
+║                                                                              ║
+║  WHY:  Standard recursion solves tree traversals, but many real-world and    ║
+║        interview problems require generating subsets, searching grids, or    ║
+║        finding optimal paths using constraint satisfaction (backtracking).   ║
+║                                                                              ║
+║  WHO:  Engineers tackling complex algorithmic problems, dynamic programming  ║
+║        prerequisites, or constraint satisfaction domains (like AI search).   ║
+║                                                                              ║
+║  WHEN: Use when generating combinations, subsets, or permutations, or when   ║
+║        the search space is an implicit graph/tree (e.g., Sudoku, N-Queens,   ║
+║        Word Search).                                                         ║
+║                                                                              ║
+║  HOW:  By mastering state passing, Choice/Explore/Unchoose (Backtracking)    ║
+║        patterns, and systematic recursion-to-iteration conversions.          ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
 ## PART 9: Advanced Recursion Patterns
 
 ### Pattern 1: Include/Exclude Pattern

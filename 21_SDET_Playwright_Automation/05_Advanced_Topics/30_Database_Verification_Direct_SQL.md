@@ -1,4 +1,4 @@
-﻿# 30. Database Verification — Direct SQL Assertions in Tests
+# 30. Database Verification — Direct SQL Assertions in Tests
 
 **Navigation**: [â† Chapter 29: Visual Regression](./29_Visual_Regression_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 31: API Mocking with page.route()](./31_API_Mocking_page_route.md)
 
@@ -190,6 +190,27 @@ export const test = base.extend<{
 ## 4. Three-Layer Verification Pattern
 
 The most reliable test architecture: UI assertion → API assertion → DB assertion.
+
+### Verification Flow Visualised
+
+```mermaid
+sequenceDiagram
+    participant Test as Playwright Spec
+    participant UI as DOM / Locator
+    participant API as Network Intercept / Client
+    participant DB as Database (Ground Truth)
+
+    Test->>API: 1. Create Data (API Layer)
+    API-->>Test: Assert 201 Created ✅
+
+    Test->>UI: 2. Navigate & Search
+    UI-->>Test: Assert Element Visible ✅
+
+    Test->>DB: 3. Query DB Record
+    DB-->>Test: Assert Status='PENDING' ✅
+    
+    Note over Test: If API cached stale data, DB assertion catches it.
+```
 
 ```typescript
 // tests/specs/citations/create-citation-three-layer.spec.ts

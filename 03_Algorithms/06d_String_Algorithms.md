@@ -1,9 +1,22 @@
-﻿---
+---
 
 # Advanced Algorithm Patterns & Competitive Programming
 
 > **Part B of Advanced Algorithms**
-> **Navigation**: [Part A: Core Techniques](06a_Greedy_BitManip.md) | [Part B: Advanced Patterns]
+> **Navigation**: [Part A: Core Techniques](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md)
+
+---
+
+<details>
+<summary><b>🧠 5W1H: Advanced Algorithm Patterns & String Algorithms</b></summary>
+
+- **What**: Advanced patterns (Meet in the Middle, Sqrt Decomposition, Mo's, Heavy-Light Decomposition), String Algorithms (Manacher, Z-Algo, Suffix Arrays), and Competitive Programming tricks.
+- **Why**: Standard algorithms fail on time/space limits for certain complex problems (e.g. range queries on trees, large substring matching). These techniques push the boundaries of what is computable within 1-2 seconds.
+- **When**: Use when standard DP is too slow, when dealing with massive strings where $O(N^2)$ is impossible, or when answering multiple offline queries (Mo's).
+- **Where**: Competitive programming platforms (Codeforces, LeetCode Hard), and high-performance text processing systems (search engines, bioinformatics).
+- **Who**: Competitive programmers, performance engineers, and backend developers scaling systems.
+- **How**: By exploiting mathematical boundaries (Sqrt), offline sorting (Mo's), pattern preprocessing (Z-array), and bitwise tricks.
+</details>
 
 ---
 

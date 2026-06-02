@@ -1,4 +1,4 @@
-﻿# 26. Flakiness — Diagnosing, Classifying & Systematically Fixing Unstable Tests
+# 26. Flakiness — Diagnosing, Classifying & Systematically Fixing Unstable Tests
 
 **Navigation**: [â† Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
 
@@ -21,7 +21,26 @@
 
 ## 1. The Flakiness Taxonomy — 9 Types
 
-Every flaky test falls into one (or more) of these categories:
+Every flaky test falls into one (or more) of these categories.
+
+### Flakiness Taxonomy Visualised
+
+```mermaid
+mindmap
+  root((Flakiness))
+    Timing & State
+      Type 1: Race Condition
+      Type 8: Animation / Transition
+      Type 3: Order Dependency
+    Data & Environment
+      Type 2: Data Pollution
+      Type 7: Token / Session Expiry
+      Type 4: Environment / Network
+    Execution
+      Type 5: Browser / Platform
+      Type 6: Locator Ambiguity
+      Type 9: Third-Party Service
+```
 
 ```
 TYPE 1 — Timing / Race Condition
@@ -381,9 +400,28 @@ await expect.poll(
 
 ---
 
-## 3b. Root-Cause Decision Matrix
+## 3b. Root-Cause Decision Tree & Matrix
 
-Use this table when you have evidence but aren't sure which type it is:
+Use this decision tree when you have evidence but aren't sure which type it is:
+
+```mermaid
+graph TD
+    Start[Trace Analysis] --> Q1{Assertion fired BEFORE API?}
+    Q1 -->|Yes| Type1[Type 1: Timing / Race Condition]
+    Q1 -->|No| Q2{Fails only in parallel?}
+    Q2 -->|Yes| Q2a{Module state shared?}
+    Q2a -->|Yes| Type3[Type 3: Order Dependency]
+    Q2a -->|No| Type2[Type 2: Data Pollution]
+    Q2 -->|No| Q3{Fails only in CI?}
+    Q3 -->|Yes| Type4[Type 4: Environment / Network]
+    Q3 -->|No| Q4{Fails after 1 hour?}
+    Q4 -->|Yes| Type7[Type 7: Session Expiry]
+    Q4 -->|No| Q5{Wrong element clicked?}
+    Q5 -->|Yes| Type6[Type 6: Locator Ambiguity]
+    Q5 -->|No| TypeOther[Review Animation/Platform Types]
+```
+
+### Quick Reference Matrix
 
 | Evidence from Trace | Flakiness Type | First Fix to Try |
 |---|---|---|
@@ -399,7 +437,24 @@ Use this table when you have evidence but aren't sure which type it is:
 
 ---
 
-## 3c. `--repeat-each` Progressive Reproduction Strategy
+---
+
+## 3c. Retry Strategy Comparison
+
+When tests fail, CI pipelines often retry them. But not all retries are equal.
+
+| Strategy | Setup in Playwright | Best For | Risk Level |
+|---|---|---|---|
+| **No Retries** | `retries: 0` | Local dev, catching real bugs immediately. | 🟢 Low (but high frustration in CI) |
+| **Test Retries** | `retries: process.env.CI ? 2 : 0` | CI environments where network blips are common. Automatically re-runs the `test()` block. | 🟡 Medium (masks Type 1-4 flakiness) |
+| **Step Retries** | `await expect.poll(...)` | Waiting for async data without failing the whole test. | 🟢 Low (smart waiting, not blind retries) |
+| **Browser Restart** | Use `worker-scoped` fixtures to rebuild contexts on failure. | Memory leaks, corrupted browser cache state. | 🔴 High (slows down suite significantly) |
+
+**Rule of Thumb**: Do not use Test Retries (`retries: 2`) as a permanent crutch. If a test *needs* retries to pass, it belongs in quarantine until the root cause is fixed using the decision tree above.
+
+---
+
+## 3d. `--repeat-each` Progressive Reproduction Strategy
 
 Never assume a test is fixed after one pass. Use this escalating protocol:
 

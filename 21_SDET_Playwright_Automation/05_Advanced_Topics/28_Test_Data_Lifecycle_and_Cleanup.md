@@ -1,4 +1,4 @@
-﻿# 28. Test Data Lifecycle — Seeding, Isolation & Guaranteed Cleanup
+# 28. Test Data Lifecycle — Seeding, Isolation & Guaranteed Cleanup
 
 **Navigation**: [â† Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md) | [Index](../00_INDEX.md)
 
@@ -104,6 +104,39 @@ const userId = TestId.create('USR');        // 'USR-1716892345678-k7m2x'
 ---
 
 ## 3. The TestDataManager — Your Test-Scoped Registry
+
+### The TestDataManager Stack Visualised
+
+```mermaid
+sequenceDiagram
+    participant Test as Test Execution
+    participant TDM as TestDataManager Stack (LIFO)
+    participant DB as Database / API
+
+    Test->>DB: 1. Create User A
+    DB-->>Test: User A ID
+    Test->>TDM: Push [Delete User A]
+    
+    Test->>DB: 2. Create Citation (refs User A)
+    DB-->>Test: Citation ID
+    Test->>TDM: Push [Delete Citation]
+    
+    Test->>DB: 3. Create Payment (refs Citation)
+    DB-->>Test: Payment ID
+    Test->>TDM: Push [Delete Payment]
+
+    Note over Test: Test Fails or Completes
+    
+    Test->>TDM: cleanup()
+    
+    Note over TDM: Pops in Reverse Order (LIFO)
+    TDM->>DB: Delete Payment
+    TDM->>DB: Delete Citation
+    TDM->>DB: Delete User A
+```
+
+**Why LIFO? (Last-In, First-Out) / FK-Constraint Cleanup Order**
+It perfectly handles **Foreign Key (FK) constraints**. If you create a User, then a Citation for that user, the database enforces that you *cannot* delete the User while the Citation exists. By pushing cleanup tasks to a stack, popping them in reverse order guarantees that children (Citations) are deleted before their parents (Users), naturally respecting database constraints.
 
 ```typescript
 // utils/TestDataManager.ts
@@ -462,10 +495,31 @@ sweepOrphanedData().catch(console.error);
 
 ## 7. Data Isolation in Parallel Tests
 
+### Parallel Data Isolation Visualised
+
+```mermaid
+graph TD
+    subgraph Playwright Run
+        W1[Worker 1]
+        W2[Worker 2]
+    end
+    
+    subgraph Test Data
+        D1[ID: AUTO-12345]
+        D2[ID: AUTO-67890]
+    end
+    
+    W1 -->|Creates| D1
+    W2 -->|Creates| D2
+    
+    W1 -.->|Searches for AUTO-12345| D1
+    W2 -.->|Searches for AUTO-67890| D2
+```
+
 When 4 workers run simultaneously, each creating citations for `account.userId`, the results grid can show citations from all 4 workers:
 
 ```typescript
-// âŒ Problem: search returns ALL test users' citations
+// ❌ Problem: search returns ALL test users' citations
 await masterSearch.searchPanel.searchByUser(account.userId);
 const count = await masterSearch.resultsGrid.rows.count();
 expect(count).toBe(1);  // Fails: other workers created citations for the same userId

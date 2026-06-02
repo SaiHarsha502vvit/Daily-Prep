@@ -955,5 +955,20 @@ Key insight: optimizing individual action speed is almost never the bottleneck. 
 </details>
 
 ---
+
+## 📚 References & Further Reading
+
+### Official Documentation — Playwright
+- [Actionability Checks](https://playwright.dev/docs/actionability) — The exact checklist Playwright runs before every click, fill, or check (visible, stable, enabled, editable, receives events)
+- [Auto-waiting vs Explicit waiting](https://playwright.dev/docs/actionability#assertions) — How `expect(locator)` waits differ from action waits
+- [CDP Session API](https://playwright.dev/docs/api/class-cdpsession) — How to interact with the raw Chrome DevTools Protocol from within Playwright tests
+
+### Browser Internals & Rendering
+- [Google Developers: Rendering Performance](https://developers.google.com/web/fundamentals/performance/rendering) — The authoritative guide on Style, Layout, Paint, and Composite (the pixel pipeline)
+- [MDN: Accessibility Tree](https://developer.mozilla.org/en-US/docs/Glossary/Accessibility_tree) — How browsers construct the accessibility tree that `getByRole` uses
+- [Chrome DevTools Protocol Viewer](https://chromedevtools.github.io/devtools-protocol/) — The full reference for all CDP commands (Network, DOM, Page, Emulation)
+
+---
+
 **Navigation**: [← Chapter 07: E2E Architecture](./07_test_step_E2E_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 09: Parallel Execution](./09_Parallel_Execution_Workers.md)
 

@@ -1093,9 +1093,57 @@ test('Search by citation ID returns EXACTLY ONE specific result', async ({
 
 ---
 
+## War Story 15: The Clipboard Permissions Trap — Passes Locally, Fails in Headless CI
+
+### Situation
+A new "Share" feature allows users to click a "Copy Link" button, which copies a URL to the system clipboard. The test clicks the button, reads the clipboard, and asserts the URL is correct. It works 100% of the time locally on the developer's machine. In CI, it fails every time.
+
+### Symptoms
+```
+Local (headed): PASSES
+CI (headless): FAILS
+  Error: page.evaluate: DOMException: Write permission denied.
+  OR: Cannot read properties of undefined (reading 'writeText')
+```
+
+### Root Cause Diagnosis
+```typescript
+// The failing test code:
+test('Copy link to clipboard', async ({ page }) => {
+  await page.getByRole('button', { name: 'Copy Link' }).click();
+
+  // Read clipboard to verify
+  const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+  expect(clipboardText).toBe('https://crm.company.com/citations/CIT-001');
+});
+```
+
+**Root Cause**: The modern Async Clipboard API (`navigator.clipboard`) is strictly gated by browser security policies. It requires a Secure Context (HTTPS or localhost) AND explicit user permission.
+When you run locally in "headed" mode, Playwright often bypasses the prompt or the developer has previously allowed it. In "headless" mode in CI, there is no user to click "Allow," so the permission defaults to **Denied**. The API call throws `DOMException: Write permission denied`.
+
+### Fix
+```typescript
+// ✅ Fix: Explicitly grant clipboard permissions to the BrowserContext
+test('Copy link to clipboard', async ({ page, context }) => {
+  // Grant permission for this specific origin
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+
+  await page.getByRole('button', { name: 'Copy Link' }).click();
+
+  // Now the evaluate block will succeed in headless CI
+  const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+  expect(clipboardText).toBe('https://crm.company.com/citations/CIT-001');
+});
+```
+
+### Prevention Rule
+> **Rule**: Any feature that interacts with restricted browser APIs (Clipboard, Geolocation, Notifications, Camera/Microphone) MUST explicitly use `context.grantPermissions()`. Do not rely on local headed-mode implicit permissions, as they will always fail in headless CI environments.
+
+---
+
 ## The Anti-Pattern Compendium
 
-All 14 war stories, distilled into rules:
+All 15 war stories, distilled into rules:
 
 | # | Anti-Pattern | Root Cause | Prevention Rule |
 |---|---|---|---|
@@ -1113,6 +1161,7 @@ All 14 war stories, distilled into rules:
 | 12 | Retry lie | Retries hiding real race conditions | Track retry rate; retries > 5% = unfixed bug |
 | 13 | Dynamic ID trap | D365 generated IDs change on platform update | `data-id`, `data-automation-key`, or semantic locators |
 | 14 | False positive | Test passes even with wrong data returned | Count assertions + content assertions; never just visibility |
+| 15 | Clipboard permission trap | Headless CI defaults clipboard permissions to Denied | Always `context.grantPermissions(['clipboard-read', 'clipboard-write'])` |
 
 ---
 

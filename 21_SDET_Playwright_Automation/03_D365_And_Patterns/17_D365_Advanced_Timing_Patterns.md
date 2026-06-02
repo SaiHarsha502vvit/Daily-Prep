@@ -19,27 +19,34 @@
 
 ---
 
-## 1. Why D365 Timing Is Uniquely Hard
+## 1. Why D365 Timing Is Uniquely Hard (Two-Phase Render Deep Dive)
 
-Three systems fire in sequence when D365 renders a page:
+Three systems fire in sequence when D365 renders a page. Understanding this architecture is the key to mastering D365 test automation.
 
-```
-Browser receives page HTML (fast: ~100ms)
-         ↓
-React renders component shells with EMPTY state (fast: ~200ms)
-         ↓
-Components fire Dataverse/OData API calls (slow: 2–12 seconds)
-         ↓
-API responses return → React re-renders with real data (~500ms)
-         ↓
-Fluent UI animations run (CSS transitions: ~300ms)
-         ↓
-Page is actually useful to the user
+**The Two-Phase Render Architecture:**
+
+```mermaid
+sequenceDiagram
+    participant Browser
+    participant React (Shell)
+    participant Dataverse (API)
+    participant React (Data)
+
+    Note over Browser, React (Data): Phase 1: Structural Render
+    Browser->>React (Shell): Parse HTML/JS
+    React (Shell)-->>Browser: Render empty components
+    Note over Browser: ⚠️ DANGER: Elements are visible but EMPTY.<br/>Playwright sees them here!
+    
+    Note over Browser, React (Data): Phase 2: Data Hydration
+    React (Shell)->>Dataverse (API): Async OData Query
+    Dataverse (API)-->>React (Data): JSON Response (2-12s later)
+    React (Data)-->>Browser: Re-render with text/data
+    Note over Browser: ✅ SAFE: Data is now in the DOM.
 ```
 
 **Total time from navigation to "ready for testing": 3–15 seconds.**
 
-Standard Playwright locators interact with the DOM after the FIRST render — the shell with empty text. This is why `waitFor({ state: 'visible' })` passes on an empty element and your test reads empty strings.
+Standard Playwright locators interact with the DOM after the FIRST render — the shell with empty text. This is why `waitFor({ state: 'visible' })` passes on an empty element and your test reads empty strings. You must wait for Phase 2 before reading text or asserting values.
 
 ---
 
@@ -445,7 +452,79 @@ await assertCommandBarButton(page, 'Activate', 'disabled'); // on already-active
 
 ---
 
-## 12. Problem 9 — Lookup Field Interaction (Hardest D365 Control)
+## 12. The `menuitem` Trap — Flyout Menus and Dialog Close Buttons
+
+D365 relies heavily on `role="menuitem"` for command bar buttons and flyout menus. The trap occurs when clicking a button that opens a dialog or flyout, and immediately trying to click a button inside it (like a `modelCloseButton`).
+
+**What you see:** You click "Assign", the Assign dialog opens, Playwright clicks the "Close" (X) button, but the dialog *stays open* and the test times out later.
+
+**Why it happens:**
+1. You click "Assign".
+2. React mounts the Dialog component (the close button appears in DOM).
+3. Playwright instantly sees the close button and clicks it.
+4. *Then* React attaches the `onClick` event listener to the close button.
+5. Playwright's click happened 5ms too early and went into the void.
+
+**The Fix:** Use `Promise.all` with `waitForResponse`, or ensure the dialog's data is fully hydrated before clicking close.
+
+```typescript
+// ❌ WRONG: The MenuItem Trap (Clicking before event binding)
+await page.getByRole('menuitem', { name: 'Assign' }).click();
+const modelCloseButton = page.locator('button[aria-label="Close"]');
+await modelCloseButton.waitFor({ state: 'visible' }); 
+await modelCloseButton.click(); // 💥 Clicked before React attached onClick handler!
+
+// ✅ CORRECT: Verify the dialog content has hydrated before interacting with its shell
+await page.getByRole('menuitem', { name: 'Assign' }).click();
+
+const dialog = page.locator('div[role="dialog"]');
+const modelCloseButton = dialog.locator('button[aria-label="Close"]');
+
+// Wait for a known data element INSIDE the dialog to ensure Phase 2 render completed
+await expect(dialog.locator('.owner-name')).not.toHaveText('', { timeout: 10000 });
+
+// Now we know the component is fully mounted and bound
+await modelCloseButton.click();
+```
+
+---
+
+## 13. PCF Control Wait Patterns (PowerApps Component Framework)
+
+PCF controls are custom React components built by developers that sit inside standard D365 forms. They have their own independent lifecycle, separate from the main D365 form.
+
+**The Trap:** The main D365 form finishes loading (spinner disappears), but the PCF control inside an iframe or container is still booting its own React tree.
+
+```typescript
+// ❌ WRONG: Assuming PCF is ready when D365 is ready
+await expect(page.locator('.ms-Spinner')).toHaveCount(0);
+// D365 is ready, but custom PCF control is still a blank div!
+await page.locator('.custom-pcf-input').fill('123'); // Fails: element not found
+
+// ✅ CORRECT: PCF-specific wait patterns
+async function waitForPcfControl(page: Page, controlId: string) {
+  const pcfContainer = page.locator(`[data-control-name="${controlId}"]`);
+  
+  // 1. Wait for the container to exist
+  await expect(pcfContainer).toBeVisible({ timeout: 15_000 });
+  
+  // 2. PCF controls usually inject an iframe or a specific internal shell
+  // Wait for the custom class that proves the PCF React tree mounted
+  await expect(pcfContainer.locator('.pcf-initialized-marker, .custom-pcf-input'))
+    .toBeVisible({ timeout: 20_000 });
+}
+
+// Usage
+await page.goto('/entity');
+await waitForPcfControl(page, 'CustomAddressValidationControl');
+await page.locator('.custom-pcf-input').fill('123 Main St');
+```
+
+Whenever you interact with a custom PCF control, define a specific wait function that targets its internal initialized state.
+
+---
+
+## 14. Problem 9 — Lookup Field Interaction (Hardest D365 Control)
 
 The D365 Lookup field is the most complex control to automate. It fires OData searches on each keystroke and renders results in a floating panel outside the main DOM hierarchy.
 
@@ -503,7 +582,7 @@ await selectLookupValue(page, 'Owner', 'Service', 'Service Team Alpha');
 
 ---
 
-## 13. OData Request Interception — Speed Up Specific Tests
+## 15. OData Request Interception — Speed Up Specific Tests
 
 For tests that don't need real Dataverse data (e.g., UI layout tests), intercept OData calls and return mock data to avoid 8–12 second data load times:
 
@@ -747,7 +826,7 @@ Result: Group 2 tests load in <2 seconds. Group 1 tests take the full time but a
 
 ---
 
-## 14. OData Response-Time Measurement — Distinguish Load vs. Regression
+## 16. OData Response-Time Measurement — Distinguish Load vs. Regression
 
 Measure actual Dataverse response times in tests and attach them to the Playwright report. This lets you distinguish "expected 8s load" from "new 20s regression":
 
@@ -852,4 +931,17 @@ test('Citations grid loads within acceptable OData thresholds', async ({ page })
 ```
 
 ---
+
+## 📚 References & Further Reading
+
+### Official Documentation
+- [Playwright Auto-waiting](https://playwright.dev/docs/actionability) — How Playwright waits for actionability (and why it doesn't solve React two-phase renders)
+- [PowerApps Component Framework (PCF)](https://learn.microsoft.com/en-us/power-apps/developer/component-framework/overview) — Understanding the lifecycle of custom D365 controls
+- [Fluent UI React](https://developer.microsoft.com/en-us/fluentui#/) — The UI framework powering D365
+
+### Deep Dives
+- [React Component Lifecycle](https://reactjs.org/docs/react-component.html) — Why event handlers might not be bound when the DOM element first appears
+
+---
+
 **Navigation**: [← Chapter 16: StorageState Chaining](./16_CrossSite_Pattern6_StorageState_Chaining.md) | [Index](../00_INDEX.md) | [→ Chapter 18: Mega POM Architecture](../04_Enterprise_Architecture/18_Mega_POM_Architecture.md)

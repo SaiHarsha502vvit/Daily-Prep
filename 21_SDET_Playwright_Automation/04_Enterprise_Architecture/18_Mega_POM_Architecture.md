@@ -229,6 +229,45 @@ export class MasterSearchPage {
 
 When a page has 400+ locators, split by COMPONENT (functional area of the page), not by screen region:
 
+### Component POM Architecture Visualised
+
+```mermaid
+classDiagram
+    class MasterSearchPage {
+        +Page page
+        +SearchPanel searchPanel
+        +ResultsGrid resultsGrid
+        +DetailPanel detailPanel
+        +goto()
+        +waitForLoad()
+        +searchAndSelectCustomer()
+    }
+    
+    class SearchPanel {
+        +Locator tabCustomerSearch
+        +Locator input_customerFirstName
+        +searchByCustomerName()
+        +resetAllForms()
+    }
+    
+    class ResultsGrid {
+        +Locator container
+        +Locator rows
+        +getRowCount()
+        +clickRowByIndex()
+    }
+    
+    class DetailPanel {
+        +Locator panel_container
+        +waitForPanel()
+        +getCustomerId()
+    }
+    
+    MasterSearchPage *-- SearchPanel : "composes"
+    MasterSearchPage *-- ResultsGrid : "composes"
+    MasterSearchPage *-- DetailPanel : "composes"
+```
+
 ```
 pages/
 └── MasterSearchPage.ts     ← Orchestrator (~80 lines): navigation, waitForLoad, composes components
@@ -684,5 +723,111 @@ export class ResultsGrid {
 }
 ```
 </details>
+
+---
+
+## 8. The Module Registry Pattern (Enterprise Scale)
+
+When your framework grows to 50+ POMs across multiple micro-frontends, importing and instantiating them manually in every test becomes a maintenance nightmare.
+
+**The Anti-Pattern:**
+```typescript
+test('complex workflow', async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  const searchPage = new MasterSearchPage(page);
+  const detailPage = new CustomerDetailPage(page);
+  const paymentPage = new PaymentPage(page);
+  // Manual instantiation cluttering the test
+});
+```
+
+**The Module Registry Pattern:**
+Create a central registry fixture that groups POMs by business domain.
+
+```typescript
+// fixtures/app.fixture.ts
+import { test as base } from '@playwright/test';
+
+class CRMApp {
+  constructor(public readonly page: Page) {}
+  
+  // Expose POMs as getter properties
+  get login() { return new LoginPage(this.page); }
+  get masterSearch() { return new MasterSearchPage(this.page); }
+  get customerDetail() { return new CustomerDetailPage(this.page); }
+}
+
+class BillingApp {
+  constructor(public readonly page: Page) {}
+  get payment() { return new PaymentPage(this.page); }
+  get invoice() { return new InvoicePage(this.page); }
+}
+
+export const test = base.extend<{ crm: CRMApp; billing: BillingApp }>({
+  crm: async ({ page }, use) => await use(new CRMApp(page)),
+  billing: async ({ page }, use) => await use(new BillingApp(page)),
+});
+
+// Usage in tests - clean and namespaced:
+test('complex workflow', async ({ crm, billing }) => {
+  await crm.masterSearch.goto();
+  await crm.masterSearch.searchAndSelectCustomer('John', 'Smith');
+  
+  await crm.customerDetail.clickMakePayment();
+  
+  await billing.payment.payBalance(150.00);
+});
+```
+
+---
+
+## 9. Lazy-Loaded POM Strategy
+
+In the Module Registry pattern above, doing `new MasterSearchPage(page)` instantly triggers `page.locator(...)` calls for all 400 properties. If you instantiate 20 POMs at the start of a test, Playwright creates 8000 `Locator` objects in memory before the test even starts.
+
+**The Solution: Lazy Initialization (Getters)**
+
+Instead of assigning locators in the constructor, use TypeScript getters. The `Locator` object is only created the *first time* it is accessed during the test.
+
+```typescript
+// ❌ EAGER LOAD (High Memory)
+export class SearchPanel {
+  readonly button_search: Locator;
+  
+  constructor(private page: Page) {
+    // 400 locator objects created instantly upon 'new SearchPanel(page)'
+    this.button_search = page.locator('#searchBtn');
+  }
+}
+
+// ✅ LAZY LOAD (Zero Memory until used)
+export class SearchPanel {
+  constructor(private page: Page) {}
+  
+  // Locator is only created when searchPanel.button_search is accessed
+  get button_search() { return this.page.locator('#searchBtn'); }
+  get input_firstName() { return this.page.locator('#firstName'); }
+  
+  async searchByCustomerName(firstName: string) {
+    await this.input_firstName.fill(firstName); // Locator created here
+    await this.button_search.click();           // Locator created here
+  }
+}
+```
+
+This ensures that even if a fixture provides access to 50 POMs, zero memory is wasted on locators for pages the test never visits.
+
+---
+
+## 📚 References & Further Reading
+
+### Architecture Patterns
+- [Martin Fowler: PageObject](https://martinfowler.com/bliki/PageObject.html) — The original definition and intent of the pattern
+- [Playwright POM Best Practices](https://playwright.dev/docs/pom) — Official documentation
+- [Playwright Fixtures](https://playwright.dev/docs/test-fixtures) — How to inject your POM registries into tests securely
+
+---
+
+**Navigation**: [← Chapter 17: D365 Advanced Timing](../03_D365_And_Patterns/17_D365_Advanced_Timing_Patterns.md) | [Index](../00_INDEX.md) | [→ Chapter 19: Console Scripts & Security](../05_Advanced_Topics/19_Advanced_Console_Scripts_Security.md)
 
 

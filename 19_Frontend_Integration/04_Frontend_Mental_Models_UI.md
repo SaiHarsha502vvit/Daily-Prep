@@ -1,4 +1,4 @@
-﻿> **Navigation**: [< Previous](03_Build_Tools_Ecosystem.md) | [Back to Index](../00_MASTER_INDEX.md)
+> **Navigation**: [< Previous](03_Build_Tools_Ecosystem.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 > **Frontend Integration Chapter 4/4** | [← Build Tools](03_Build_Tools_Ecosystem.md) | [Index](../00_MASTER_INDEX.md) | [Next Series → Servers & Networking](../13_Developer_Essentials/17_Servers_Ports_Networking.md)
 
@@ -503,6 +503,35 @@ Q: What makes a good component API (props)?
   Avoid boolean overload: use variant="primary" not isPrimary, isSecondary.
 ```
 
+
+---
+
+## 🏋️ Practice Challenges
+
+**Challenge 1 (Component Decomposition):** A designer hands you a mockup of a Twitter-like feed. You see a list of tweets, each with a user avatar, name, text, and action buttons (reply, retweet, like). You also see a trending sidebar. Draw the component hierarchy and determine which component fetches the feed data.
+<details><summary>Answer</summary>
+
+**Hierarchy:**
+```text
+FeedPage
+├── MainColumn
+│   ├── TweetComposer
+│   └── TweetList
+│       └── TweetCard
+│           ├── Avatar
+│           ├── TweetContent
+│           └── TweetActions
+└── SidebarColumn
+    └── TrendingTopics
+```
+**Data Fetching:** The `FeedPage` (or a dedicated route-level wrapper) should fetch the feed data and the trending topics, then pass them down as props or provide them via Context/Zustand if deeply nested.
+</details>
+
+**Challenge 2 (State Ownership):** You have a multi-step checkout form. Step 1 collects shipping info. Step 2 collects payment info. Step 3 is a review screen showing everything. Where should the state for `shippingInfo` and `paymentInfo` live?
+<details><summary>Answer</summary>
+
+**Answer:** The state must live in the lowest common ancestor of Step 1, Step 2, and Step 3. This is typically the parent `CheckoutWizard` component that renders the individual steps. The state is then passed down as props to the active step, or provided via Context if prop drilling becomes an issue.
+</details>
 
 ---
 

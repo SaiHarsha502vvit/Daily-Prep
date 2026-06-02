@@ -815,5 +815,61 @@ test('Audit log entries cannot be deleted or modified', async ({ request, accoun
 ```
 
 ---
-**Navigation**: [← Chapter 14: Token & Magic Link](./14_CrossSite_Pattern4_Token_Magic_Link.md) | [Index](../00_INDEX.md) | [→ Chapter 16: StorageState Chaining](./16_CrossSite_Pattern6_StorageState_Chaining.md)
 
+## 10. Event Sourcing Assertion Strategy
+
+In an Event Sourced architecture, the state of an entity (like an Order or Citation) is derived by replaying a sequence of immutable events, rather than updating a single database row. Testing event-sourced systems requires asserting on the *entire event stream* to guarantee the sequence and payload of events are correct.
+
+```typescript
+// tests/specs/architecture/event-sourcing.spec.ts
+
+test('UI action produces the exact expected event sequence in the event store', async ({
+  page, request, account
+}) => {
+  const eventStoreClient = new EventStoreClient(request, account.accessToken);
+  
+  // 1. Perform complex UI sequence
+  await customerPortal.placeOrder(testProduct);
+  const orderId = await customerPortal.getConfirmedOrderId();
+  await customerPortal.cancelOrder(orderId);
+
+  // 2. Poll the Event Store for the complete sequence
+  let eventStream: Record<string, any>[] = [];
+  await expect.poll(
+    async () => {
+      eventStream = await eventStoreClient.getStream(`Order-${orderId}`);
+      return eventStream.length;
+    },
+    { timeout: 30_000 }
+  ).toBeGreaterThanOrEqual(3); // We expect Created, PaymentReserved, Cancelled
+
+  // 3. Assert on the exact sequence and types of events
+  expect(eventStream.map(e => e.eventType)).toEqual([
+    'OrderCreated',
+    'PaymentReserved',
+    'OrderCancelled'
+  ]);
+
+  // 4. Assert on critical payloads within the stream
+  const cancelEvent = eventStream.find(e => e.eventType === 'OrderCancelled');
+  expect(cancelEvent!.payload.reason).toBe('CUSTOMER_INITIATED');
+});
+```
+
+This strategy ensures you aren't just checking the final state ("Order is Cancelled"), but verifying the exact business rules that led to that state.
+
+---
+
+## 📚 References & Further Reading
+
+### Official Documentation
+- [Playwright `expect.poll`](https://playwright.dev/docs/test-assertions#expectpoll) — Essential for dealing with eventual consistency and message queues
+- [Playwright `page.waitForRequest`](https://playwright.dev/docs/api/class-page#page-wait-for-request) — For intercepting browser-initiated side effects
+
+### Architecture Patterns
+- [Martin Fowler: Event Sourcing](https://martinfowler.com/eaaDev/EventSourcing.html) — Understanding the architecture behind event-sourced systems
+- [Martin Fowler: Testing Asynchronous Systems](https://martinfowler.com/articles/async-testing.html) — Strategies for handling propagation delay without flaky tests
+
+---
+
+**Navigation**: [← Chapter 14: Token & Magic Link](./14_CrossSite_Pattern4_Token_Magic_Link.md) | [Index](../00_INDEX.md) | [→ Chapter 16: StorageState Chaining](./16_CrossSite_Pattern6_StorageState_Chaining.md)

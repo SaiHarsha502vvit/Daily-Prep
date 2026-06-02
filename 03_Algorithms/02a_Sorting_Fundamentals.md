@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02b_Sorting_Advanced.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](02b_Sorting_Advanced.md)
 🧠 **Mental Model**: See [Complexity Intuition](../14_Mental_Models/09_Complexity_Intuition.md) — why O(n log n) is the sorting lower bound
 
 ---
@@ -23,6 +23,29 @@
 ---
 
 # 🔄 Sorting Algorithms: Complete Visual Guide
+
+### 5W1H: Mastering Sorting Fundamentals
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: The foundational algorithms (Bubble, Selection, Insertion, Merge,     ║
+║        Quick, Heap) used to arrange data in a specific ordered sequence.     ║
+║                                                                              ║
+║  WHY:  Understanding sorting isn't about memorizing the code; it's about     ║
+║        understanding algorithm design paradigms (Divide & Conquer), time/    ║
+║        space trade-offs, stability, and hardware cache locality.             ║
+║                                                                              ║
+║  WHO:  Every software engineer, especially those preparing for interviews    ║
+║        where they must choose the correct sort or adapt sorting logic.       ║
+║                                                                              ║
+║  WHEN: Use standard sorting (`Arrays.sort()`) for O(N log N) ordering. Use   ║
+║        specific sorts when constraints demand it (e.g., Insertion Sort for   ║
+║        nearly-sorted data or small N).                                       ║
+║                                                                              ║
+║  HOW:  By comparing elements and swapping/shifting them, either iteratively  ║
+║        or via recursive partitioning and merging.                            ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
 
 ## From Bubble to Quick - With Tracing
 

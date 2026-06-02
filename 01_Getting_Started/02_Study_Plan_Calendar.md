@@ -4,6 +4,18 @@
 
 ## Your Daily Roadmap: DS + Algorithm + Combo + Pattern + 2 Questions
 
+## 5W1H — Why This Chapter?
+
+> WHAT: A structured, day-by-day 2.5-month roadmap to interview readiness.
+>
+> WHY: Unstructured practice leads to burnout and forgotten concepts. A structured syllabus ensures spaced repetition, progressive overload, and coverage of all critical patterns.
+>
+> WHO: Anyone preparing for software engineering interviews who needs a concrete schedule.
+>
+> WHEN: Before writing any code, to set expectations, block out time, and establish a daily rhythm.
+>
+> HOW: By following the daily 5-block structure (DS, Algo, Combo, Pattern, Questions) and respecting the deep dive/review days.
+
 ---
 
 **START DATE:** Thursday, February 19, 2026  

@@ -8,6 +8,28 @@
 
 # Where Every DS Lives in Modern Tech
 
+### 5W1H: Mastering Data Structures in Production
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: The application of theoretical data structures (Hash Tables, B-Trees, ║
+║        LSM-Trees, Bloom Filters) inside real-world production systems.       ║
+║                                                                              ║
+║  WHY:  Knowing Big-O is for coding interviews; knowing how to design system  ║
+║        architecture using the right storage primitives is for Staff/Principal║
+║        Engineering. It bridges the gap between code and infrastructure.      ║
+║                                                                              ║
+║  WHO:  Backend engineers, systems architects, and DevOps professionals who   ║
+║        need to optimize databases, caches, and high-throughput systems.      ║
+║                                                                              ║
+║  WHEN: During System Design interviews or when diagnosing performance        ║
+║        bottlenecks at scale (e.g., choosing Redis vs. PostgreSQL).           ║
+║                                                                              ║
+║  HOW:  By studying the memory/disk trade-offs, cache-line physics, and read/ ║
+║        write amplification characteristics of foundational data structures.  ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
 ```
 DATA STRUCTURE      │ WHERE YOU'VE ALREADY USED IT (unknowingly)
 ────────────────────┼─────────────────────────────────────────────────────

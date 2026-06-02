@@ -1,4 +1,4 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← State Management](04_State_Management.md) | [Next: Routing →](06_React_Router.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← State Management](04_State_Management.md) | [Next: Routing →](06_React_Router.md)
 
 ---
 
@@ -6,13 +6,13 @@
 
 ---
 
-## Part 1: Why TypeScript with React?
+## 5W1H — Why TypeScript with React?
 
-✅ Catch bugs at COMPILE time, not runtime
-✅ Autocompletion in IDE (know exact props, return types)
-✅ Self-documenting: types ARE documentation
-✅ Refactoring confidence: rename a prop, find all usages instantly
-✅ Industry standard for production React apps
+- **WHAT**: TypeScript is a statically typed superset of JavaScript. Using it with React means strictly defining the "shape" of your props, state, and context.
+- **WHY**: Without types, you don't know what props a component expects until you read its source code (or it crashes at runtime). TS catches bugs at compile time, enables IDE autocompletion, acts as living documentation, and gives you confidence during refactoring.
+- **WHO**: Microsoft created TypeScript. It is now the industry standard for production React apps.
+- **WHEN**: Always, for any project that will be maintained for more than a month or by more than one developer.
+- **HOW**: By using Interfaces and Type Aliases to define React constructs (`ReactNode`, `ChangeEvent`, `ComponentProps`).
 
 ---
 

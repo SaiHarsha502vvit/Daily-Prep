@@ -1,4 +1,4 @@
-﻿# 27. Advanced TypeScript Patterns for SDETs
+# 27. Advanced TypeScript Patterns for SDETs
 
 **Navigation**: [â† Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
 
@@ -535,7 +535,91 @@ type CitationBody = BodyOf<typeof citationsClient.getById>;
 
 ---
 
-## ðŸ‹ï¸ Practice Challenges
+## 10. Branded Types — Preventing ID Mix-ups
+
+### The Problem
+
+```typescript
+// All IDs are just strings.
+function getCitation(citationId: string, customerId: string) { ... }
+
+// You can accidentally swap them, and TypeScript won't complain:
+const customerId = 'CUST-123';
+const citationId = 'CIT-456';
+
+getCitation(customerId, citationId); // ❌ Logic bug, but TypeScript says ✅
+```
+
+### Branded Types Solution
+
+We can "brand" strings so TypeScript treats them as distinct, incompatible types without changing their runtime behaviour.
+
+```typescript
+// Define a utility type for branding
+type Brand<K, T> = K & { __brand: T };
+
+// Create distinct types for our IDs
+type CitationId = Brand<string, 'CitationId'>;
+type CustomerId = Brand<string, 'CustomerId'>;
+
+// Now update the function:
+function getCitation(citationId: CitationId, customerId: CustomerId) { ... }
+
+// You MUST cast when initially creating the IDs, usually at the API/Factory boundary
+const customerId = 'CUST-123' as CustomerId;
+const citationId = 'CIT-456' as CitationId;
+
+// Type safety in action:
+getCitation(citationId, customerId); // ✅ Correct
+getCitation(customerId, citationId); // ❌ TypeScript Error: Argument of type 'CustomerId' is not assignable to parameter of type 'CitationId'.
+```
+
+---
+
+## 11. Type Narrowing Deep Dive
+
+### The Problem
+
+When interacting with APIs or the DOM, you often get a broad type like `unknown` or a wide union like `Element | null`. You need to safely "narrow" it to a specific type before using it.
+
+### Solution: Type Guards & `in` Operator
+
+```typescript
+type ErrorResponse = { error: string; code: number };
+type SuccessResponse = { data: any[]; total: number };
+
+// 1. Using the 'in' operator to narrow unions
+function processResponse(response: ErrorResponse | SuccessResponse) {
+  if ('error' in response) {
+    // TypeScript now knows `response` is ErrorResponse
+    console.log(`Failed with code ${response.code}`);
+  } else {
+    // TypeScript knows `response` is SuccessResponse
+    console.log(`Got ${response.total} items`);
+  }
+}
+
+// 2. Custom Type Guards (User-Defined Type Guards)
+// Returns a boolean, but also tells TypeScript the type if true
+function isErrorResponse(res: any): res is ErrorResponse {
+  return res !== null && typeof res === 'object' && 'error' in res && 'code' in res;
+}
+
+async function testApi() {
+  const apiResult: unknown = await fetch('/api').then(r => r.json());
+
+  if (isErrorResponse(apiResult)) {
+    // apiResult is now strongly typed as ErrorResponse
+    console.log(apiResult.code); // ✅ TypeScript knows code exists
+  }
+}
+```
+
+This is heavily used when intercepting raw network payloads (`route.fulfill()`), validating `storageState` files, or parsing test configuration files where the initial type is `unknown`.
+
+---
+
+## 🏋️ Practice Challenges
 
 ### Challenge 1 [MCQ] — Generic vs `any`
 

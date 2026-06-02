@@ -3,6 +3,19 @@
 
 ---
 
+<details>
+<summary><b>🧠 5W1H: Advanced Algorithms & Low-Level Internals</b></summary>
+
+- **What**: The deep internal mechanics of algorithm execution (CPU cycles, cache, recursion stack, and amortized complexity) combined with Advanced Greedy/Matroid patterns.
+- **Why**: High-level complexity (Big-O) hides massive constant-factor performance differences. To engineer high-performance systems or solve advanced constraints, we must understand the hardware and math that underpins algorithms.
+- **When**: Use this knowledge when $O(n)$ is still too slow due to cache misses, when deep recursion risks a StackOverflow, or when choosing between greedy and DP.
+- **Where**: Embedded systems, low-latency platforms (HFT), game engines, and production algorithm engineering.
+- **Who**: Algorithm engineers, performance tuners, and senior developers.
+- **How**: By analyzing execution in CPU cycles, replacing implicit call stacks with explicit data structures, applying Amortized Math, and using Matroid theory for Greedy proofs.
+</details>
+
+---
+
 # 🎯 Advanced Algorithms: Complete University Guide
 
 ## From Divide & Conquer to NP-Complete
@@ -309,6 +322,16 @@ For ArrayList: Φ = 2(size - capacity/2)
 
 ---
 
+🔬 **Section Challenge — Amortized Analysis**
+
+**Challenge 1 (Reasoning):** If an `ArrayList` increased its capacity by adding a constant `+10` elements each time it was full instead of doubling, what would the amortized cost of an insertion be?
+<details><summary>Answer</summary>
+
+$O(n)$. For $n$ insertions, it would resize $n/10$ times. The cost of resizes would be $10 + 20 + 30 + ... + n$. This is an arithmetic series summing to $O(n^2)$. Dividing the total cost $O(n^2)$ by $n$ insertions gives an amortized cost of $O(n)$ per insertion. Doubling (geometric series) is mathematically required to achieve $O(1)$ amortized cost.
+</details>
+
+---
+
 ⚠️ **MOVED**: Unit 1 (Algorithm Analysis + Divide & Conquer + Binary Search + Master Theorem)
 has been extracted to its own dedicated file for discoverability:
 **→ [02c_Divide_And_Conquer.md](02c_Divide_And_Conquer.md)**
@@ -367,3 +390,13 @@ If your problem can be mapped to finding the maximum-weight independent set of a
 
 ### Why Greedy Fails (Not a Matroid):
 - **0/1 Knapsack:** Let capacity be 10kg. Suppose $A=\{6kg\}$ and $B=\{5kg, 5kg\}$. Both sets are valid (weight $\le 10$). Notice $|A| = 1$ and $|B| = 2$, so $|A| < |B|$. According to the Matroid Exchange Property, we should be able to take a 5kg item from $B$ and add it to $A$ to get a valid set. But $\{6kg\} \cup \{5kg\} = 11kg$, which exceeds capacity and is INVALID. The exchange property fails! Therefore, the knapsack problem does not form a matroid, and the greedy algorithm is doomed to fail, requiring Dynamic Programming instead.
+
+---
+
+🔬 **Section Challenge — The Greedy Method & Matroids**
+
+**Challenge 1 (Design):** In the Fractional Knapsack problem (where you can take fractions of items), greedy works perfectly (sort by value/weight ratio). Why does Fractional Knapsack satisfy the Matroid Exchange property when 0/1 Knapsack does not?
+<details><summary>Answer</summary>
+
+In Fractional Knapsack, the domain of items is infinitely divisible. If we have a valid set $A$ (e.g. 6kg of item X) and a larger valid set $B$ (e.g. 5kg of Y, 5kg of Z), we don't have to take a *whole* item from $B$. We can take exactly enough of an item from $B$ (e.g., 4kg) to fill $A$ up to the capacity limit. This continuous nature restores the Exchange Property (we can always exchange a fraction to grow $A$ towards $B$'s size without violating capacity). Thus, it's a matroid structure and greedy is optimal.
+</details>

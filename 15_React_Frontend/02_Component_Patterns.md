@@ -1,4 +1,4 @@
-﻿> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← Fundamentals](01_React_Fundamentals.md) | [Next: Hooks →](03_Hooks_Deep_Dive.md)
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← Fundamentals](01_React_Fundamentals.md) | [Next: Hooks →](03_Hooks_Deep_Dive.md)
 > 🧠 **Mental Model**: See [Frontend Architecture Thinking](../14_Mental_Models/17_Frontend_Architecture_Thinking.md)
 
 ---
@@ -6,6 +6,16 @@
 # 🧩 React Component Patterns & Styling
 
 > Reusable, composable, testable component architecture
+
+---
+
+## 5W1H — Why Component Patterns?
+
+- **WHAT**: Architectural patterns for structuring React components to ensure reusability, testability, and clear separation of concerns.
+- **WHY**: As React applications grow, unstructured code (where data fetching, business logic, and UI rendering are mixed) becomes impossible to maintain, test, and reuse.
+- **WHO**: Frontend engineers scaling applications beyond a few pages or building shared component libraries.
+- **WHEN**: When components exceed 150-200 lines, when you need to reuse UI with different logic, or when props drilling becomes painful.
+- **HOW**: By applying established patterns like Container/Presentational, Compound Components, Render Props (legacy/niche), and Context Providers.
 
 ---
 
@@ -366,6 +376,43 @@ function UserForm({ id }) {
   return <InputField value={text} onChange={(e) => setText(e.target.value)} />;
 }
 ```
+
+---
+
+## 🏋️ Practice Challenges
+
+**Challenge 1 (Container vs Presentational):** You have a `<ProductTable />` component that fetches products from `/api/products` and renders a table. How would you refactor this using the Container + Presentational pattern?
+<details><summary>Answer</summary>
+
+Split it into two components:
+1. `ProductTable` (Presentational): Takes `products` as a prop and renders the HTML `<table>`. It knows nothing about APIs.
+2. `ProductTableContainer` (Container): Uses `useEffect` to fetch `/api/products`, stores them in state, and renders `<ProductTable products={products} />`.
+This makes the `ProductTable` testable with mock data and reusable with different data sources.
+</details>
+
+**Challenge 2 (Compound Components):** What is the main advantage of the Compound Component pattern (like `<Tabs><Tabs.Tab>...</Tabs.Tab></Tabs>`) over passing a massive configuration object as a prop (like `<Tabs config={[{id: 't1', label: 'Tab 1'}, ...]} />`)?
+<details><summary>Answer</summary>
+
+Compound components offer **Inversion of Control** and layout flexibility. 
+With a config object, the `<Tabs>` component internally dictates exactly how and where the tabs render. If a user wants to inject an icon next to a specific tab label or change the order of the TabList vs TabPanel, they can't without changing the `<Tabs>` source code.
+With compound components, the *consumer* writes the JSX, so they control the layout, order, and styling of children, while the parent `<Tabs>` implicitly manages the shared state via Context.
+</details>
+
+**Challenge 3 (Prop Drilling vs Composition):** A `<Header>` needs the current user's avatar, but `<Header>` is deeply nested inside `<Layout>`, which is inside `<App>`. How can you use **Composition** (not Context, not Redux) to avoid passing `user` through `<Layout>`?
+<details><summary>Answer</summary>
+
+Pass the Avatar as a `children` prop (or a specific named slot prop) from the top level where the `user` is known:
+```jsx
+// In App.js
+const user = useAuth();
+return (
+  <Layout headerSlot={<Header rightElement={<Avatar user={user} />} />}>
+    <PageContent />
+  </Layout>
+);
+```
+This way, `Layout` and `Header` never need to know about the `user` object. They just render the React nodes passed to them.
+</details>
 
 ---
 

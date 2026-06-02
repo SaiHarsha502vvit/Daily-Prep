@@ -1,6 +1,6 @@
-﻿# 38. Contract Testing with Pact — Preventing API Breaking Changes
+# 38. Contract Testing with Pact — Preventing API Breaking Changes
 
-**Navigation**: [â† Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)
+**Navigation**: [← Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)
 
 **Open-Source Tools Referenced:**
 - **Pact** — https://github.com/pact-foundation/pact-js (MIT License) — the consumer-driven contract testing framework
@@ -30,6 +30,25 @@
 ---
 
 ## 1. The Problem Pact Solves — A Real Scenario
+
+**The Contract Testing Workflow:**
+```mermaid
+sequenceDiagram
+    participant Consumer
+    participant PactBroker as Pact Broker
+    participant Provider
+    
+    Note over Consumer: 1. Consumer writes test<br/>defining expected response
+    Consumer->>Consumer: Run tests against Mock Server
+    Consumer->>PactBroker: 2. Publish Contract (pact.json)
+    
+    Note over Provider: 3. Provider pulls contract<br/>during CI
+    PactBroker->>Provider: Fetch pact.json
+    Provider->>Provider: Run Verification against Real API
+    Provider->>PactBroker: 4. Publish Verification Results
+    
+    Note over Consumer,Provider: Both teams use `can-i-deploy` to check safe deployment status
+```
 
 ```
 The situation without Pact:
@@ -381,6 +400,47 @@ npx pact-broker can-i-deploy \
 
 ---
 
+## 6b. Pact Versioning Strategy
+
+A solid versioning strategy is critical for `can-i-deploy` to work. If you don't version correctly, Pact Broker doesn't know which version of the consumer is compatible with which version of the provider.
+
+**Best Practice: Use Git Commit SHAs**
+
+Do NOT use semantic versioning (like `1.0.4`) for Pact versions unless you perfectly bump versions on every single commit. Use the Git commit SHA.
+
+```bash
+# BAD versioning (hard to map back to code):
+--consumer-app-version 1.0.0
+--consumer-app-version v2-beta
+
+# GOOD versioning (absolute traceability):
+--consumer-app-version $(git rev-parse HEAD)
+```
+
+**Branch Tagging:**
+Always tag your contracts with the branch name and the environment they are deployed to.
+
+```bash
+# 1. On consumer PR build:
+--consumer-app-version 3a9f8b2 \
+--branch feature/new-search \ # marks it as a work-in-progress branch
+
+# 2. When consumer is deployed to Staging:
+npx pact-broker record-deployment \
+  --pacticipant PlaywrightTestSuite \
+  --version 3a9f8b2 \
+  --environment staging
+
+# 3. Provider checks if it can deploy to Staging:
+npx pact-broker can-i-deploy \
+  --pacticipant CitationManagementService \
+  --version 8c4f1a9 \
+  --to-environment staging
+# The broker checks: "Has provider 8c4f1a9 verified the contract from consumer 3a9f8b2?"
+```
+
+---
+
 ## 7. What Pact Does NOT Replace
 
 ```
@@ -392,13 +452,13 @@ Pact does NOT replace:
   → Security tests (auth, input validation)
 
 The test pyramid with contract testing:
-  ╔â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╗
-  ║  E2E tests (few) ║  â† Full UI+API integration
-  ╠â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╣
-  ║  Contract tests  ║  â† API shape agreement (Pact)
-  ╠â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•╣
-  ║  Unit/API tests  ║  â† Logic, edge cases
-  ╚â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  ╔══════════════════╗
+  ║  E2E tests (few) ║  ←  Full UI+API integration
+  ╠══════════════════╣
+  ║  Contract tests  ║  ←  API shape agreement (Pact)
+  ╠══════════════════╣
+  ║  Unit/API tests  ║  ←  Logic, edge cases
+  ╚══════════════════╝ 
 ```
 
 ---
@@ -522,7 +582,7 @@ await new Verifier({
     { deployedOrReleased: true }, // contracts from currently-deployed consumer versions
   ],
 
-  // â† KEY: Pending pacts won't fail provider CI
+  // ← KEY: Pending pacts won't fail provider CI
   // They're reported as warnings until the provider verifies them for the first time
   enablePending: true,
 
@@ -671,7 +731,7 @@ If the team is resistant to adopting Pact tooling on the provider side, use BDCT
 - [PactFlow — managed broker](https://pactflow.io) — free tier available
 
 ---
-**Navigation**: [â† Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)
+**Navigation**: [← Chapter 37: Performance Testing](./37_Performance_Testing_Lighthouse_k6.md) | [Index](../00_INDEX.md) | [→ Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md)
 
 ### Challenge 4 [Spot the Bug — Over-specification in Consumer Contract]
 

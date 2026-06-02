@@ -1,9 +1,22 @@
-﻿**Navigation**: [< Previous Chapter](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](06d_String_Algorithms.md) | [Back to Index](../00_MASTER_INDEX.md)
 🧠 **Mental Model**: See [Optimization Pipeline](../14_Mental_Models/14_Optimization_Pipeline.md) — systematic brute force to optimal approach
 
 ---
 
 # 🔬 PART FINAL: MODERN ALGORITHMS AND ADVANCED TOPICS
+
+<details>
+<summary><b>🧠 5W1H: Modern Algorithms & Advanced Topics</b></summary>
+
+- **What**: Theoretical foundations (P vs NP), Randomized Algorithms (Monte Carlo, Las Vegas), Advanced Strings (Aho-Corasick), Network Flows (Dinic), and Computational Geometry.
+- **Why**: Standard algorithms assume exact, deterministic answers in polynomial time. These topics address problems where polynomial time fails (NP-Hard), where randomness provides better average/practical bounds, or where continuous space (geometry) applies.
+- **When**: Used in complex routing (Network Flow), computational geometry (game engines, CAD), pattern matching (search engines), and handling intractable problems (Approximation algorithms).
+- **Where**: High-level systems design, competitive programming, and research.
+- **Who**: Algorithm engineers, researchers, and advanced software engineers.
+- **How**: By accepting approximations, using randomization for expected bounds, and applying advanced mathematical frameworks (Flow Networks, Geometry).
+</details>
+
+---
 
 ## 📚 NP — Completeness — the Complete Understanding
 

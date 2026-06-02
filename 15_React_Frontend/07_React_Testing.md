@@ -6,8 +6,17 @@
 
 ---
 
-## Testing Pyramid for React
+## 5W1H — Why React Testing?
 
+- **WHAT**: Automated verification of React components ranging from pure functions (unit), to user interactions (integration), to full browser workflows (E2E).
+- **WHY**: Uncaught UI bugs degrade user trust and cost money. Testing ensures refactoring doesn't break existing features and documents how components *should* behave.
+- **WHO**: Frontend engineers writing React code. QA engineers for E2E testing.
+- **WHEN**: Before merging code to `main`. Test pure logic and complex UI states during development; test critical paths (login, checkout) via E2E before deployment.
+- **HOW**: Using tools like Vitest/Jest (Unit), React Testing Library (Integration/Component), and Playwright/Cypress (E2E).
+
+---
+
+## Testing Pyramid for React
 /\
 /  \       E2E (Cypress/Playwright)
 / E2E\      → Test full user flows (login → checkout)

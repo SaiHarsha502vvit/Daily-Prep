@@ -5,6 +5,28 @@
 
 # 🔄 Recursion: Complete Mental Model Guide
 
+### 5W1H: Mastering Recursion Internals
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: The physical mechanics of recursion: stack frames, base cases, CPU    ║
+║        register operations, and memory layout during deep function calls.    ║
+║                                                                              ║
+║  WHY:  Writing "fib(n-1) + fib(n-2)" is easy, but understanding WHY it takes ║
+║        forever (exponential time) or throws StackOverflowError is essential  ║
+║        for system stability and optimization.                                ║
+║                                                                              ║
+║  WHO:  Engineers debugging stack overflows, optimizing recursive traversal   ║
+║        (trees/graphs), or transitioning from iterative loops to recursion.   ║
+║                                                                              ║
+║  WHEN: Study this BEFORE writing complex recursive DP or Backtracking logic. ║
+║        Knowing the memory cost helps you decide when to convert to iterative.║
+║                                                                              ║
+║  HOW:  By tracing the physical call stack, visualizing frame pointers, and   ║
+║        understanding tail-call optimization (TCO) and memoization.           ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
 ## Understanding Recursion from Brain's Perspective
 
 ---

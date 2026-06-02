@@ -874,4 +874,19 @@ Key: both accounts are worker-scoped (one login each per worker, not per test). 
 </details>
 
 ---
+
+## 📚 References & Further Reading
+
+### Official Documentation — Playwright
+- [Fixtures Guide](https://playwright.dev/docs/test-fixtures) — The official Playwright guide covering test vs worker scope, override patterns, and automatic dependency resolution
+- [Test API: `test.extend`](https://playwright.dev/docs/api/class-test#test-extend) — API reference for the fixture extension system
+- [mergeTests API](https://playwright.dev/docs/api/class-test#test-merge-tests) — How to combine multiple fixture files into a single export
+- [Global Setup and Teardown](https://playwright.dev/docs/test-global-setup-teardown) — When to use `globalSetup` instead of a worker-scoped fixture
+
+### Core Concepts
+- [Dependency Injection in JS/TS](https://blog.logrocket.com/dependency-injection-node-js/) — General concepts of DI that Playwright's fixture system implements
+- [Idempotence in Testing](https://martinfowler.com/articles/nonDeterminism.html) — Martin Fowler's discussion on non-determinism and why setup/teardown (which fixtures provide) is critical for stable tests
+
+---
+
 **Navigation**: [← Chapter 05: POM Architecture](./05_POM_Architecture_Deep_Dive.md) | [Index](../00_INDEX.md) | [→ Chapter 07: E2E Test Architecture](./07_test_step_E2E_Architecture.md)

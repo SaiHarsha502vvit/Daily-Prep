@@ -1,8 +1,19 @@
-﻿**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](07b_Advanced_DS_Patterns.md)
+**Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](07b_Advanced_DS_Patterns.md)
 
 ---
 
 # 🏗️ Advanced Data Structures: Complete Guide
+
+<details>
+<summary><b>🧠 5W1H: Advanced Data Structures</b></summary>
+
+- **What**: Sophisticated data structures like Tries, Segment Trees, Fenwick Trees (BIT), Disjoint Sets (Union-Find), Skip Lists, and Bloom Filters.
+- **Why**: Basic structures (arrays, lists, BSTs) are insufficient for specialized queries (e.g., prefix matching, range queries, probabilistic membership, fast connectivity checks).
+- **When**: Used in latency-sensitive or scale-heavy systems (e.g., databases, networking, auto-complete, caches).
+- **Where**: Embedded deeply into system architecture (Redis, LevelDB, IP Routers, Web Browsers).
+- **Who**: Systems programmers, database engineers, and competitive programmers.
+- **How**: By leveraging memory layouts, bit manipulation, amortized time bounds, and probabilistic guarantees to achieve optimal performance constraints.
+</details>
 
 ## Beyond Arrays and Trees - Structures That Power Modern Systems
 

@@ -1,5 +1,27 @@
 # 🌉 DS → Patterns → Problems Bridge Map
 
+### 5W1H: Using the Data Structure Bridge Map
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: A mapping index connecting core Data Structures to the algorithmic    ║
+║        patterns they unlock and the specific problems used to master them.   ║
+║                                                                              ║
+║  WHY:  Learning a Data Structure in isolation is useless if you don't know   ║
+║        which algorithmic patterns it naturally pairs with (e.g., Arrays      ║
+║        enable Sliding Window and Two Pointers).                              ║
+║                                                                              ║
+║  WHO:  Candidates transitioning from learning syntax and basic DSA theory to   ║
+║        actual LeetCode problem solving.                                      ║
+║                                                                              ║
+║  WHEN: Use this map IMMEDIATELY after finishing a theoretical DS module      ║
+║        (e.g., after reading `01b_Arrays.md`, come here to find the next step).║
+║                                                                              ║
+║  HOW:  By looking up the Data Structure you just learned, finding the        ║
+║        patterns it unlocks, and navigating to the practice problem sets.     ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
 > **Purpose:** When you finish a Data Structure topic, use this map to know EXACTLY where to go next.
 >
 > 📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
