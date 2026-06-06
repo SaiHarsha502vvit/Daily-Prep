@@ -8,6 +8,7 @@
 |---|------|-------------------|
 | 1 | [ERP Fundamentals](01_ERP_Fundamentals.md) | What ERP is, modules, architecture |
 | - | [DDD Tactical Patterns](01b_DDD_Tactical_Patterns.md) | Domain-Driven Design tactical patterns |
+| - | [Entity Design Based on Domain](01c_Domain_Driven_Entity_Design.md) | The 4-step framework, domain generalization, and avoiding entity breakage |
 | 2 | [ERP Advanced](02_ERP_Advanced.md) | Integration patterns, customization |
 | 3 | [ERP Finance Core](03_ERP_Finance_Core.md) | GL, AP, AR, financial close |
 | 4 | [ERP Finance Real-World](04_ERP_Finance_RealWorld.md) | Real finance scenarios and bugs |
