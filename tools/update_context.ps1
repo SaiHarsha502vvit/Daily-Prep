@@ -36,7 +36,8 @@ function Test-SkippedPath {
         $RelativePath -like "00_CONTEXT/*" -or
         $RelativePath -like ".git/*" -or
         $RelativePath -like ".venv/*" -or
-        $RelativePath -like ".vscode/*"
+        $RelativePath -like ".vscode/*" -or
+        $RelativePath -like ".claude/*"
     )
 }
 
