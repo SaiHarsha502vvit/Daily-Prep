@@ -444,3 +444,27 @@ Verification:
 
 - `wc -c _Curriculum/*.md AGENTS.md` confirms sizes under targets.
 - Content check via `grep _Curriculum/00_AGENT_START.md AGENTS.md`.
+
+## 2026-06-06 — Phase 1: 8-Semester Curriculum Shell
+
+Changed:
+
+- `_Curriculum/S01/` through `_Curriculum/S08/` — 8 semester folders.
+- 32 course folders (4 per semester) with `lectures/ labs/ assignments/ projects/ rubrics/` subdirs.
+- 5 templates in `_Curriculum/TEMPLATES/` (lecture, lab, assignment, project, rubric).
+- 40 READMEs total: 8 semester + 32 course READMEs.
+- Semester READMEs S01–S04 link to existing `00_CURRICULUM/SEMESTER_*_GUIDE.md`.
+- Course READMEs link to existing 22 content folders where applicable.
+- 12 shell courses for new CS-core subjects (Discrete Math, Linear Algebra, Probability, Computer Architecture, Theory of Computation, Numerical Methods, OS, Networks, Cryptography, IR, Compilers, Ethics) marked TBD for future phases.
+
+Reason:
+
+- Build the full curriculum architecture before filling lecture/lab content.
+- Establishes 8-semester progression: Foundations → Data & Algo → Software Eng Core → Systems → Frontend → Backend → Advanced → Capstone.
+
+Verification:
+
+- `find _Curriculum -type d | wc -l` = 217 directories.
+- `find _Curriculum -type f | wc -l` = 45 files.
+- `find _Curriculum/S01 -type d | wc -l` = 25 (semester + 4 courses × 5 subdirs + course dirs).
+- `find _Curriculum/TEMPLATES -type f | wc -l` = 5.
