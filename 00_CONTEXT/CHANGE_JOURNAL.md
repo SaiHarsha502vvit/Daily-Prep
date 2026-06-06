@@ -1,6 +1,41 @@
 # Change Journal
 
+> Older entries live in `_archive/CHANGE_JOURNAL_2024_2025.md`.
+
 Add short entries when context, structure, or domain boundaries change.
+
+## 2026-06-06 — University Curriculum Phase 2: Full 4-Semester Curriculum Built
+
+Changed:
+
+**New Curriculum Files (`00_CURRICULUM/`):**
+- `SEMESTER_2_GUIDE.md` — Full 16-week plan (OOP → Spring Boot → SQL → Distributed Systems)
+- `SEMESTER_3_GUIDE.md` — Full 16-week plan (JS/TS/React → DevOps/Docker/CI-CD → Java Concurrency)
+- `SEMESTER_4_GUIDE.md` — Full 16-week plan (Python/ML/NLP → SDET/Playwright → Enterprise Kafka → Mobile)
+
+**New Project Specs (`00_CURRICULUM/PROJECTS/`):**
+- `P02_FileSystem_Simulator.md` — Tree + DFS Java project with JUnit stubs
+- `P03_SQL_Analytics_Dashboard.md` — 7 business queries, MySQL 8.0 + Oracle 19c side-by-side
+- `P04_Library_REST_API.md` — Spring Boot + JWT + JPA full project spec
+- `P05_FoodDelivery_Domain_Model.md` — DDD 4-step framework, 5 bounded contexts, 12 entities
+- `P06_Distributed_Order_System.md` — Saga orchestration pattern with reverse compensation
+- `P07_Concurrent_Task_Queue.md` — Java priority task queue, cancellation, graceful shutdown
+- `CAP02_Microservice.md` — Invoice Management service with Outbox Pattern, DDD aggregates
+- `CAP03_FullStack.md` — React 18 + Spring Boot + Docker + GitHub Actions DevBoard
+- `CAP04_DistributedSystem.md` — Social News Feed: capacity estimation, hybrid fan-out, Redis, Kafka
+
+**New Problem Sets:**
+- `06_OOP_Design/06_PROBLEM_SETS.md` — SOLID (with LSP proof), GoF patterns, LLD Parking Lot
+- `07_Modern_Java/07_PROBLEM_SETS.md` — Java Core (autoboxing, JMM), Streams, Spring AOP proxy
+- `08_SQL/08_PROBLEM_SETS.md` — All 4 PS (Joins, Windows, CTEs, Indexes) — MySQL + Oracle dual solutions
+- `10_Enterprise_Systems/10_PROBLEM_SETS.md` — DDD Value Objects, Aggregate violations, Saga/Dual-Write
+
+Reason:
+- User requested MIT/KTH/ETH-level 4-semester curriculum with projects, problem sets, answer keys, JUnit stubs, and Erklärung failure tables. Languages: Java, Python, TypeScript, SQL (MySQL + Oracle both).
+
+Verification:
+- `update_context.ps1 -Mode update` completed: **612 active Markdown files** registered.
+- `update_context.ps1 -Mode check` passed: Context fresh.
 
 ## 2026-06-01 — 02_Data_Structures: Pedagogy Refinement (Depth/Theory/5W1H)
 
@@ -389,4 +424,23 @@ Verification:
 - Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update`.
 - Run `powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check`.
 
+## 2026-06-06 — Phase 0: Lean Agent Context System
 
+Changed:
+
+- Created `_Curriculum/` directory with lean start-sequence files:
+  - `_Curriculum/00_AGENT_START.md` — semester map, key folders, editing rules (2,769 bytes).
+  - `_Curriculum/01_FILE_MAP.md` — condensed file map of all 22 folders (5,684 bytes).
+  - `_Curriculum/02_KNOWN_ISSUES.md` — tracked issues, baselines, verification notes (1,395 bytes).
+- Updated `AGENTS.md` to redirect to `_Curriculum/00_AGENT_START.md` (reduced from 2,254 to 1,087 bytes).
+
+Reason:
+
+- Mandatory agent reading was ~165 KB (~67K tokens) per invocation before any edit.
+- New lean start sequence is ~10.7 KB total (~75–80% cheaper per agent run).
+- Unlocks cheap follow-up work for curriculum phases 1–6.
+
+Verification:
+
+- `wc -c _Curriculum/*.md AGENTS.md` confirms sizes under targets.
+- Content check via `grep _Curriculum/00_AGENT_START.md AGENTS.md`.

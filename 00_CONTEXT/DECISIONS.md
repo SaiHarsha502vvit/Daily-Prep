@@ -99,3 +99,9 @@ Examples:
 - ❌ `https://github.com/openjdk/jdk/blob/main/src/java.base/share/classes/java/util/HashMap.java#L274`
 
 Reason: HEAD links rot within weeks. Stable permalink commits preserve the exact code the guide explains, even after upstream rewrites.
+
+## D013 - Lean Agent Start Sequence
+
+Agents must start from `_Curriculum/00_AGENT_START.md` for all curriculum work. Legacy `AGENTS.md` remains available for on-demand reference but is no longer the mandatory first-read. Folder-level `CONTEXT.md` and `00_CONTEXT/` files remain valid for non-curriculum deep work.
+
+Reason: the old start sequence cost ~165 KB (~67K tokens) per invocation; the lean sequence costs ~10.7 KB (~93% reduction). This makes multi-phase curriculum work financially viable.
