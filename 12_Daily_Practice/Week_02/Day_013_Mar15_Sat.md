@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_012_Mar14_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_014_Mar16_Sun.md)
+
 # Day 013 - Saturday, March 15, 2026
 
 > **Week 02** | **Weekend** | **Theme:** Spring Boot — Beans & DI Deep Dive + SQL Practice
@@ -13,14 +15,11 @@
 
 ---
 
-
----
-
 > ## 📖 CHAPTER REFERENCES — Deep Dive Links
 >
 > Today's topics link to detailed chapter files for deeper study:
 >
-> | **Spring Boot: Bean Scopes & DI** | [Spring Boot: IoC & Beans](../../07_Modern_Java/04_Spring_Boot_Complete_Part2.md) |
+> | **Spring Boot: Bean Scopes & DI** | [Spring Boot: IoC & Beans](../../07_Modern_Java/Ch32_SB_Data_Part2.md) |
 > | **SQL: JOINs + Aggregate Drills** | [SQL: JOINs Complete](../../08_SQL/07_JOINs_Complete.md) |
 >
 > *Open the linked file for full theory, diagrams, and practice problems.*
@@ -33,35 +32,36 @@
 
 ### Topic: Beans, Scopes, and Dependency Injection
 
-> Cross-reference: [Spring Boot Part 2 — IoC & Beans](../../07_Modern_Java/04_Spring_Boot_Complete_Part2.md)
+> Cross-reference: [Spring Boot Part 2 — IoC & Beans](../../07_Modern_Java/Ch32_SB_Data_Part2.md)
 
 #### Chapter 1: Bean Scopes — WHEN Spring Creates Objects
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  BEAN SCOPES — Controls object lifecycle                            │
-│                                                                      │
-│  SINGLETON (default):                                                │
+│                                                                     │
+│  SINGLETON (default):                                               │
 │    ONE instance per application context. Shared by all.             │
-│    @Scope("singleton") or just @Service / @Component               │
-│    USE: Stateless services, repositories, controllers              │
-│                                                                      │
-│  PROTOTYPE:                                                          │
+│    @Scope("singleton") or just @Service / @Component                │
+│    USE: Stateless services, repositories, controllers               │
+│                                                                     │
+│  PROTOTYPE:                                                         │
 │    NEW instance every time it's requested.                          │
-│    @Scope("prototype")                                               │
+│    @Scope("prototype")                                              │
 │    USE: Stateful objects (shopping cart, form builder)              │
-│                                                                      │
-│  REQUEST (Web only):                                                 │
+│                                                                     │
+│  REQUEST (Web only):                                                │
 │    One per HTTP request. Destroyed after response sent.             │
-│    @Scope("request")                                                 │
+│    @Scope("request")                                                │
 │    USE: Request-specific data (user context)                        │
-│                                                                      │
-│  SESSION (Web only):                                                 │
+│                                                                     │
+│  SESSION (Web only):                                                │
 │    One per user session. Lives until session expires.               │
-│    @Scope("session")                                                 │
+│    @Scope("session")                                                │
 │    USE: User preferences, shopping cart                             │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
 
 #### Chapter 2: Dependency Injection — The 3 Ways
 
@@ -201,13 +201,14 @@ public class ProductController {
 │  SPRING DI RULES:                                                   │
 │  1. Always use constructor injection                                │
 │  2. Make fields final                                               │
-│  3. One constructor = @Autowired optional                          │
-│  4. Never use new XxxService() — let Spring manage it              │
-│  5. @Service for business logic, @Repository for data access       │
+│  3. One constructor = @Autowired optional                           │
+│  4. Never use new XxxService() — let Spring manage it               │
+│  5. @Service for business logic, @Repository for data access        │
 │  6. @Component for generic beans                                    │
-│  7. Singleton scope unless you have a reason for prototype         │
+│  7. Singleton scope unless you have a reason for prototype          │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ---
 
@@ -291,6 +292,7 @@ PATTERNS:
   • Merge logic (arrays, lists)
 ```
 
+
 ### Self-Test (try without looking at notes)
 
 ```
@@ -318,3 +320,8 @@ WEEK 2 CONFIDENCE:
 
 AREAS TO REVISIT: _______________
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_012_Mar14_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_014_Mar16_Sun.md)

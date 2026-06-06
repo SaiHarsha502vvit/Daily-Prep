@@ -1,14 +1,41 @@
-> **Navigation**: [< Previous Chapter](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05d_Graphs_Advanced.md)
+**Navigation**: [< Previous Chapter](05b_Graphs_Internals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05d_Graphs_Advanced_Algos.md)
+🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — BFS/DFS decision framework and cycle detection
 
 ---
 
-# PART 5: GRAPH FUNDAMENTALS
+## 🔗 JIT Connection — When You Need This
+
+**Arrived here from a graph or tree problem? Use this decision table:**
+
+
+| Problem Signal | Algorithm to use | Time Complexity |
+|---|---|---|
+| Shortest path, unweighted | **BFS** (level-by-level) | O(V+E) |
+| Shortest path, weighted (+ve) | **Dijkstra** (min-heap) | O((V+E) log V) |
+| Detect cycle in directed graph | **DFS** (WHITE/GRAY/BLACK) | O(V+E) |
+| Topological sort (prerequisites) | **Kahn's BFS** or DFS postorder | O(V+E) |
+| Find all islands / components | **DFS or BFS** from each unvisited | O(V+E) |
+| Minimum spanning tree | **Kruskal** (sort edges) or **Prim** | O(E log E) |
+
+
+**BFS vs DFS in one line:**
+```
+BFS = "Shortest path / minimum steps"    → Queue  → O(V+E)
+DFS = "Exists? / Cycles / Components"   → Stack/Recursion → O(V+E)
+```
+
+🔗 **Jump to practice:** [Graphs PS](../05_Problem_Solving/10_Graphs.md) | [Trees PS](../05_Problem_Solving/09_Trees.md)
+📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
+
+---
+
+# 🕸️ Part 5: Graph Fundamentals
 
 ## Complete Understanding of Graphs
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    GRAPHS - COMPLETE UNDERSTANDING                            ║
+║                    GRAPHS - COMPLETE UNDERSTANDING                           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -23,8 +50,8 @@
 │ • Multiple paths between any two nodes                                       │
 │ • Disconnected components                                                    │
 │                                                                              │
-│ HISTORY: Graph theory started with Euler's "Seven Bridges of Königsberg"    │
-│ problem in 1736 - can you cross all bridges exactly once?                   │
+│ HISTORY: Graph theory started with Euler's "Seven Bridges of Königsberg"     │
+│ problem in 1736 - can you cross all bridges exactly once?                    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -55,18 +82,18 @@
 │ WHY GRAPHS INSTEAD OF OTHER DATA STRUCTURES?                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ┌────────────────────────┬───────────────────────────────────────────────┐  │
-│ │ Structure              │ Relationship Type                             │  │
-│ ├────────────────────────┼───────────────────────────────────────────────┤  │
-│ │ Array                  │ Sequential, by position                       │  │
-│ │ Tree                   │ Hierarchical, parent-child                    │  │
-│ │ Graph                  │ ANY relationship! ⭐ Most flexible           │  │
-│ └────────────────────────┴───────────────────────────────────────────────┘  │
+│ ┌────────────────────────┬───────────────────────────────────────────────┐   │
+│ │ Structure              │ Relationship Type                             │   │
+│ ├────────────────────────┼───────────────────────────────────────────────┤   │
+│ │ Array                  │ Sequential, by position                       │   │
+│ │ Tree                   │ Hierarchical, parent-child                    │   │
+│ │ Graph                  │ ANY relationship! ⭐ Most flexible           │     │
+│ └────────────────────────┴───────────────────────────────────────────────┘   │
 │                                                                              │
-│ Trees are actually SPECIAL CASES of graphs (connected, acyclic)!            │
+│ Trees are actually SPECIAL CASES of graphs (connected, acyclic)!             │
 │                                                                              │
 │ USE GRAPH WHEN:                                                              │
-│ • Relationships aren't hierarchical (peer-to-peer, many-to-many)            │
+│ • Relationships aren't hierarchical (peer-to-peer, many-to-many)             │
 │ • Cycles are possible (road networks, social connections)                    │
 │ • Need to model complex dependencies                                         │
 │ • Multiple paths between entities exist                                      │
@@ -77,24 +104,24 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ ADJACENCY LIST:                                                              │
-│ ┌───────────────────────────────────────────────────────────────┐           │
-│ │ USE WHEN: Sparse graph (E << V²)                              │           │
-│ │ Space: O(V + E)                                               │           │
-│ │ Check edge exists: O(degree)                                  │           │
-│ │ Iterate neighbors: O(degree) ✅ FAST                          │           │
-│ │ BEST FOR: Most real-world graphs (social networks, roads)     │           │
-│ └───────────────────────────────────────────────────────────────┘           │
+│ ┌───────────────────────────────────────────────────────────────┐            │
+│ │ USE WHEN: Sparse graph (E << V²)                              │            │
+│ │ Space: O(V + E)                                               │            │
+│ │ Check edge exists: O(degree)                                  │            │
+│ │ Iterate neighbors: O(degree) ✅ FAST                          │             │
+│ │ BEST FOR: Most real-world graphs (social networks, roads)     │            │
+│ └───────────────────────────────────────────────────────────────┘            │
 │                                                                              │
 │ ADJACENCY MATRIX:                                                            │
-│ ┌───────────────────────────────────────────────────────────────┐           │
-│ │ USE WHEN: Dense graph (E ≈ V²) or need O(1) edge lookup       │           │
-│ │ Space: O(V²)                                                  │           │
-│ │ Check edge exists: O(1) ✅ FAST                               │           │
-│ │ Iterate neighbors: O(V)                                       │           │
-│ │ BEST FOR: Small dense graphs, weighted graphs, Floyd-Warshall │           │
-│ └───────────────────────────────────────────────────────────────┘           │
+│ ┌───────────────────────────────────────────────────────────────┐            │
+│ │ USE WHEN: Dense graph (E ≈ V²) or need O(1) edge lookup       │            │
+│ │ Space: O(V²)                                                  │            │
+│ │ Check edge exists: O(1) ✅ FAST                               │             │
+│ │ Iterate neighbors: O(V)                                       │            │
+│ │ BEST FOR: Small dense graphs, weighted graphs, Floyd-Warshall │            │
+│ └───────────────────────────────────────────────────────────────┘            │
 │                                                                              │
-│ RULE OF THUMB: Use adjacency LIST unless you have specific reason not to!   │
+│ RULE OF THUMB: Use adjacency LIST unless you have specific reason not to!    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -105,7 +132,7 @@
 │    Solution: boolean[] visited or Set<Integer> visited                       │
 │                                                                              │
 │ 2. DIRECTED VS UNDIRECTED CONFUSION:                                         │
-│    Undirected: Add edge both ways (A→B AND B→A)                             │
+│    Undirected: Add edge both ways (A→B AND B→A)                              │
 │    Directed: Add edge one way only                                           │
 │                                                                              │
 │ 3. 0-INDEXED VS 1-INDEXED:                                                   │
@@ -113,7 +140,7 @@
 │    Solution: Either use size N+1 or subtract 1 from all indices              │
 │                                                                              │
 │ 4. DISCONNECTED COMPONENTS:                                                  │
-│    Single DFS/BFS won't visit all nodes if graph disconnected!              │
+│    Single DFS/BFS won't visit all nodes if graph disconnected!               │
 │    Solution: Loop through all nodes, start new traversal if unvisited        │
 │                                                                              │
 │ 5. NOT HANDLING WEIGHTS:                                                     │
@@ -130,27 +157,33 @@
 │ • BFS: O(V + E) time, O(V) space (visited + queue)                           │
 │                                                                              │
 │ COMMON ALGORITHM COMPLEXITIES:                                               │
-│ ┌────────────────────────────┬──────────────────────┬────────────────────┐  │
-│ │ Algorithm                  │ Time                 │ Space              │  │
-│ ├────────────────────────────┼──────────────────────┼────────────────────┤  │
-│ │ DFS/BFS                    │ O(V + E)             │ O(V)               │  │
-│ │ Dijkstra (binary heap)     │ O((V+E) log V)       │ O(V)               │  │
-│ │ Bellman-Ford               │ O(V × E)             │ O(V)               │  │
-│ │ Floyd-Warshall             │ O(V³)                │ O(V²)              │  │
-│ │ Topological Sort           │ O(V + E)             │ O(V)               │  │
-│ │ Kruskal's MST              │ O(E log E)           │ O(V)               │  │
-│ │ Prim's MST                 │ O((V+E) log V)       │ O(V)               │  │
-│ │ Cycle Detection            │ O(V + E)             │ O(V)               │  │
-│ └────────────────────────────┴──────────────────────┴────────────────────┘  │
+│ ┌────────────────────────────┬──────────────────────┬────────────────────┐   │
+│ │ Algorithm                  │ Time                 │ Space              │   │
+│ ├────────────────────────────┼──────────────────────┼────────────────────┤   │
+│ │ DFS/BFS                    │ O(V + E)             │ O(V)               │   │
+│ │ Dijkstra (binary heap)     │ O((V+E) log V)       │ O(V)               │   │
+│ │ Bellman-Ford               │ O(V × E)             │ O(V)               │   │
+│ │ Floyd-Warshall             │ O(V³)                │ O(V²)              │   │
+│ │ Topological Sort           │ O(V + E)             │ O(V)               │   │
+│ │ Kruskal's MST              │ O(E log E)           │ O(V)               │   │
+│ │ Prim's MST                 │ O((V+E) log V)       │ O(V)               │   │
+│ │ Cycle Detection            │ O(V + E)             │ O(V)               │   │
+│ └────────────────────────────┴──────────────────────┴────────────────────┘   │
 │                                                                              │
 │ TYPICAL OUTPUTS:                                                             │
 │ • Path finding: List of nodes from source to destination                     │
 │ • Shortest path: Distance value or path + distance                           │
-│ • Cycle detection: Boolean (exists?) or List (the cycle)                    │
+│ • Cycle detection: Boolean (exists?) or List (the cycle)                     │
 │ • Topological sort: Ordered list of all vertices                             │
-│ • Connected components: Number of components or list of component nodes     │
+│ • Connected components: Number of components or list of component nodes      │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
+
+🔬 **Section Challenge — Complete Understanding of Graphs**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+
+
 
 ## Graph Representations
 
@@ -186,6 +219,18 @@ ADJACENCY MATRIX (For dense graphs):
 1 = edge exists, 0 = no edge
 ```
 
+🔬 **Section Challenge — Graph Representations**
+
+**Challenge 1 (Representation Tradeoff):** A social network has 10^9 users (vertices), each with average 200 friends (edges). **Who** chooses adjacency list vs. adjacency matrix? **When** would a matrix be appropriate? **What** is the exact memory cost of each for this graph?
+
+<details><summary>Answer</summary>
+
+**Adjacency List for this graph:** 10^9 users × 200 friends × 8 bytes (pointer) = ~1.6 TB — large but feasible with distributed storage. Each `List<Integer>` per vertex stores only EXISTING edges. **Adjacency Matrix:** 10^9 × 10^9 = 10^18 bits minimum = 125 petabytes. Completely infeasible. **When matrix is appropriate:** Dense graphs where `E ≈ V²` (almost all vertex pairs connected), or when you need O(1) edge existence checks: `matrix[u][v] == 1`. Examples: small graphs (<1000 nodes), complete graphs, routing tables in SDN. **Rule of thumb:** Sparse (E << V²) → adjacency list. Dense (E ≈ V²) or small V → adjacency matrix. **Space complexity:** List = O(V + E). Matrix = O(V²). Add/remove edge: List O(degree), Matrix O(1). Check edge existence: List O(degree), Matrix O(1).
+
+</details>
+
+
+
 ## Graph Types
 
 ```
@@ -200,13 +245,25 @@ CONNECTED: All nodes reachable from any node
 
 ---
 
-# PART 6: GRAPH TRAVERSALS
+🔬 **Section Challenge — Graph Types**
+
+**Challenge 1 (DAG Cycle Detection):** You receive a directed graph that's SUPPOSED to be a DAG (dependency graph). **Who** detects the cycle? **When** does DFS detect a cycle in a directed graph differently than in an undirected graph? **What** makes a "back edge" the definitive cycle indicator?
+
+<details><summary>Answer</summary>
+
+**Who detects:** DFS with a 3-color marking (WHITE=unvisited, GRAY=in current DFS path, BLACK=fully processed). **When DFS detects a directed cycle:** When it encounters a GRAY node (a node already in the current DFS call stack). A GRAY node means we've found a path from that node back to itself — a cycle. **Why undirected graphs differ:** In undirected graphs, `A-B` means both `A→B` and `B→A` edges exist. Seeing `B` from `A` when `B` is already visited doesn't mean a cycle — it's just the tree edge in reverse. You must track `parent` and only flag a cycle if the neighbor is visited AND is NOT the parent. **Back edge = cycle:** In DFS traversal, a "back edge" goes from a node to one of its ancestors in the DFS tree. In directed graphs: back edge = discovered gray ancestor = cycle. **Topological sort only works on DAGs** — cycle detection is the prerequisite check before topological sort.
+
+</details>
+
+
+
+# 🕸️ Part 6: Graph Traversals
 
 ## DFS vs BFS - When to Use Which
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    DFS vs BFS - COMPLETE COMPARISON                           ║
+║                    DFS vs BFS - COMPLETE COMPARISON                          ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -229,10 +286,10 @@ CONNECTED: All nodes reachable from any node
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ BFS (Breadth-First Search)                                                   │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ STRATEGY: Visit all neighbors at current level before going deeper          │
+│ STRATEGY: Visit all neighbors at current level before going deeper           │
 │                                                                              │
 │ USE BFS WHEN:                                                                │
-│ • Finding SHORTEST path in unweighted graph ⭐                              │
+│ • Finding SHORTEST path in unweighted graph ⭐                                │
 │ • Level-order traversal needed                                               │
 │ • Finding nodes at distance k                                                │
 │ • "Minimum steps/moves" problems                                             │
@@ -245,22 +302,23 @@ CONNECTED: All nodes reachable from any node
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ QUICK DECISION TABLE                                                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ ┌─────────────────────────────────────┬───────────────────────────────────┐ │
-│ │ Problem Type                        │ Use                               │ │
-│ ├─────────────────────────────────────┼───────────────────────────────────┤ │
-│ │ Shortest path (unweighted)          │ BFS                               │ │
-│ │ Shortest path (weighted)            │ Dijkstra/Bellman-Ford             │ │
-│ │ Any path exists?                    │ DFS (simpler) or BFS              │ │
-│ │ All paths                           │ DFS with backtracking             │ │
-│ │ Cycle detection                     │ DFS                               │ │
-│ │ Topological sort                    │ DFS (or Kahn's BFS)               │ │
-│ │ Connected components                │ DFS or BFS                        │ │
-│ │ Level/distance from source          │ BFS                               │ │
-│ │ Island counting                     │ DFS or BFS                        │ │
-│ │ Word ladder (transformation)        │ BFS                               │ │
-│ └─────────────────────────────────────┴───────────────────────────────────┘ │
+│ ┌─────────────────────────────────────┬───────────────────────────────────┐  │
+│ │ Problem Type                        │ Use                               │  │
+│ ├─────────────────────────────────────┼───────────────────────────────────┤  │
+│ │ Shortest path (unweighted)          │ BFS                               │  │
+│ │ Shortest path (weighted)            │ Dijkstra/Bellman-Ford             │  │
+│ │ Any path exists?                    │ DFS (simpler) or BFS              │  │
+│ │ All paths                           │ DFS with backtracking             │  │
+│ │ Cycle detection                     │ DFS                               │  │
+│ │ Topological sort                    │ DFS (or Kahn's BFS)               │  │
+│ │ Connected components                │ DFS or BFS                        │  │
+│ │ Level/distance from source          │ BFS                               │  │
+│ │ Island counting                     │ DFS or BFS                        │  │
+│ │ Word ladder (transformation)        │ BFS                               │  │
+│ └─────────────────────────────────────┴───────────────────────────────────┘  │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ## DFS (Depth-First Search)
 
@@ -282,6 +340,7 @@ USES:
 - Topological sort
 - Connected components
 ```
+
 
 ```java
 // RECURSIVE DFS
@@ -323,6 +382,27 @@ public void dfsIterative(int start, List<List<Integer>> graph) {
 // SPACE: O(V) for visited array and stack/recursion
 ```
 
+🔬 **Section Challenge — DFS (Depth-First Search)**
+
+**Challenge 1 (DFS Stack Overflow Risk):** DFS on a linked-list-shaped graph of 10^6 nodes (each node connected to next). **Who** throws `StackOverflowError`? **When** does recursive DFS fail vs. iterative DFS? **What** stack size would Java need to not overflow?
+
+<details><summary>Answer</summary>
+
+**Who throws:** The JVM's recursive DFS call. A linked-list graph causes DFS to recurse 10^6 levels deep. Each Java stack frame uses ~200-500 bytes. 10^6 × 200 bytes = 200 MB of stack. Default JVM thread stack size is 512KB-1MB → `StackOverflowError` at ~5000-8000 depth. **When recursive DFS fails:** Any graph with depth > ~8000 nodes in Java's default stack. Binary trees are typically safe (log2(10^9) = 30 levels). Graphs can have arbitrary depth. **When iterative DFS succeeds:** Always. Iterative DFS uses an explicit `Deque<Node>` on the HEAP (not call stack). Heap can hold hundreds of MB. The iterative version is equivalent to recursive DFS but uses heap memory. **Java stack size:** Pass `-Xss200m` to JVM to get 200MB stack per thread. This is memory-wasteful — better to use iterative DFS. **Rule:** For graph algorithms on arbitrary graphs in production, always use iterative BFS/DFS.
+
+</details>
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
+
 ## BFS (Breadth-First Search)
 
 ```
@@ -344,6 +424,7 @@ USES:
 - Level-order traversal
 - Finding nearest neighbor
 ```
+
 
 ```java
 public void bfs(int start, List<List<Integer>> graph) {
@@ -394,7 +475,28 @@ public int shortestPath(int start, int end, List<List<Integer>> graph) {
 
 ---
 
-# PART 7: CYCLE DETECTION
+🔬 **Section Challenge — BFS (Breadth-First Search)**
+
+**Challenge 1 (BFS Completeness Guarantee):** BFS visits nodes in level-order (all nodes at distance `d` before distance `d+1`). **Who** guarantees BFS finds the SHORTEST path in unweighted graphs? **When** does this guarantee NOT hold?
+
+<details><summary>Answer</summary>
+
+**Who guarantees it:** The FIFO queue property. When BFS dequeues node `u` (at distance `d`), it has already processed ALL nodes at distances 0 through `d-1`. Each neighbor of `u` is enqueued at distance `d+1`. This means the FIRST time BFS reaches a node is via the shortest path. **Formal proof:** By induction. At step 0: source is at distance 0. At step k: if all nodes at distance <= k are correctly labeled, neighbors of k-distance nodes are correctly labeled k+1. The first time a node is visited = shortest distance. **When this guarantee does NOT hold:** (1) **Weighted graphs:** BFS treats each edge as weight 1. A longer BFS path `A → B → C` with weights 1+1=2 beats a direct `A → C` path with weight 3. But if edges have different weights, BFS might take `A → B → C` (total cost 10) instead of `A → C` (cost 2). Use Dijkstra for weighted graphs. (2) **Negative edge weights:** Even Dijkstra fails. Use Bellman-Ford.
+
+</details>
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
+
+# 📌 Part 7: Cycle Detection
 
 ## In Undirected Graph
 
@@ -430,6 +532,18 @@ private boolean dfsHasCycle(int node, int parent,
     return false;
 }
 ```
+
+🔬 **Section Challenge — In Undirected Graph**
+
+**Challenge 1 (BFS Connected Components):** An undirected graph has 5 vertices: `{0,1,2,3,4}` with edges `{0-1, 1-2, 3-4}`. **Who** counts the connected components? **When** does BFS miss a component? **What** is the correct BFS algorithm to count ALL components?
+
+<details><summary>Answer</summary>
+
+**Who counts:** The outer loop that starts BFS from each unvisited node. With edges `{0-1, 1-2, 3-4}`: Component 1 = `{0, 1, 2}`, Component 2 = `{3, 4}`, Component 3 = `{vertex 5 if isolated}`. Answer = 2 components. **When BFS misses a component:** If you only call BFS once from node 0, BFS visits `{0, 1, 2}` but never sees `{3, 4}` because they're disconnected. **Correct algorithm:** Outer loop over ALL vertices: `for (int i = 0; i < n; i++) { if (!visited[i]) { components++; bfs(i); } }`. Each BFS call marks all vertices in ONE component as visited. The outer loop counts how many separate BFS calls were needed = number of components. **Use cases:** LC 323 (Number of Connected Components), LC 200 (Number of Islands uses DFS/BFS grid-based connected components). Union-Find is an alternative that handles dynamic edge additions.
+
+</details>
+
+
 
 ## In Directed Graph
 
@@ -470,7 +584,19 @@ private boolean dfsHasCycleDirected(int node, List<List<Integer>> graph, int[] c
 
 ---
 
-# PART 8: TOPOLOGICAL SORT
+🔬 **Section Challenge — In Directed Graph**
+
+**Challenge 1 (Topological Sort Method Comparison):** A directed dependency graph has 5 courses. **Who** detects a cycle: DFS-based topological sort or Kahn's BFS algorithm? **When** does each method have an advantage? **What** does Kahn's algorithm return when a cycle exists?
+
+<details><summary>Answer</summary>
+
+**Both detect cycles:** DFS detects via back-edge (a GRAY neighbor = cycle). Kahn's BFS detects when the final result size < total vertices (some vertices were never added because their in-degree never reached 0). **DFS-based topological sort:** Uses 3-color marking. Post-order: when a node is fully explored, push to a stack. Stack's reverse order = topological order. Detects cycles when a gray ancestor is found. **Kahn's BFS (in-degree based):** Initialize queue with all nodes of in-degree 0. Dequeue, process, reduce neighbors' in-degrees. If a neighbor hits in-degree 0, enqueue it. **Advantage of DFS:** Naturally handles post-order traversal (dependency resolution order). **Advantage of Kahn's:** Easier to understand, naturally handles level-order processing, explicitly produces the topological order (not reversed). **What Kahn's returns on cycle:** The result list will have fewer elements than total vertices. The cycle participants never reach in-degree 0 — they're never enqueued — they're missing from the result. This is the cycle detection mechanism.
+
+</details>
+
+
+
+# 🔄 Part 8: Topological Sort
 
 ```
 ORDER TASKS RESPECTING DEPENDENCIES
@@ -482,6 +608,7 @@ Course 1 → Course 2 → Course 3
 
 Valid orders: [1, 2, 4, 3] or [1, 4, 2, 3]
 ```
+
 
 ```java
 // Kahn's Algorithm (BFS approach)
@@ -528,7 +655,7 @@ public List<Integer> topologicalSort(int numCourses, int[][] prerequisites) {
 
 ---
 
-# PART 9: SHORTEST PATH ALGORITHMS
+# 📌 Part 9: Shortest Path Algorithms
 
 ## Dijkstra's Algorithm
 
@@ -592,7 +719,7 @@ public int[] dijkstra(int n, List<int[]>[] graph, int source) {
 
 ---
 
-# PART 10: PRACTICE PROBLEMS
+# 💪 Part 10: Practice Problems
 
 ## Trees
 
@@ -636,4 +763,22 @@ HARD:
 ---
 
 ---
+
+---
+
+🔬 **Section Challenge — Graphs**
+
+**Challenge 1 (Dijkstra Correctness):** Dijkstra's algorithm uses a greedy choice: always expand the unvisited node with the smallest known distance. **Who** proves this greedy choice is safe? **When** does Dijkstra give WRONG answers?
+
+<details><summary>Answer</summary>
+
+**Who proves it safe:** The "no shorter path" invariant. When Dijkstra dequeues node `u` with distance `d[u]`, ALL paths to `u` through unprocessed nodes have length >= `d[u]` (because edge weights are non-negative and unprocessed nodes have distance >= `d[u]`). So `d[u]` is already the shortest path — relaxing it further is impossible. This is the exchange argument: any other path to `u` must pass through a node with distance >= `d[u]` then add at least 0 weight. **When Dijkstra gives WRONG answers:** **Negative edge weights.** If edge `u→v` has weight -5, a path `source→u→v` might be shorter than `source→v` even after we've "finalized" `v`. Since negative weights can create shortcuts discovered after a node is dequeued, Dijkstra's invariant breaks. **Fix:** Bellman-Ford handles negative edges in O(VE). For negative cycles (where shortest path is `-∞`), Bellman-Ford detects them. Dijkstra is O((V+E)logV) with a binary heap — faster but requires non-negative weights.
+
+</details>
+> [!NOTE]
+> **Open Source Reference: Dijkstra & PriorityQueue**
+> * [cp-algorithms/dijkstra](https://cp-algorithms.com/graph/dijkstra.html) -> **Invariant:** Always expands the minimum-distance unvisited node; requires non-negative edge weights.
+> * [OpenJDK PriorityQueue](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/PriorityQueue.java) -> **Local rewrite:** Dijkstra in Java heavily relies on `PriorityQueue`. Remember that Java's `PriorityQueue.remove(Object)` is O(N), so we don't update existing nodes in the queue — we just insert the new shorter distance and ignore the old one when we pop it (lazy deletion).
+> * **Constraint warning:** If the graph has negative weights, Dijkstra's greedy invariant breaks; use Bellman-Ford instead.
+
 

@@ -1,6 +1,10 @@
+**Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)
+
 # 🎨 COMPLETE CODE TEMPLATES WITH VISUAL EXPLANATIONS
 
 ## Ready-to-use templates with step-by-step visual diagrams
+
+> Constraint first: before copying a template, confirm the input size, value signs, update behavior, and graph weights. Use [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md) when a template seems tempting but the constraints feel different.
 
 ---
 
@@ -19,49 +23,48 @@
 
 ---
 
-## 1. TWO POINTERS
+## 📌 1. Two Pointers
 
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    TWO POINTERS VISUALIZATION                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  TYPE 1: OPPOSITE ENDS (converging)                                       ║
-║  ───────────────────────────────────                                      ║
-║  Use for: Two Sum (sorted), Palindrome check, Container with water       ║
-║                                                                           ║
-║  [1, 2, 3, 4, 5, 6, 7, 8, 9]                                              ║
-║   ↑                       ↑                                               ║
-║  left                   right                                             ║
-║   └─────────→   ←─────────┘                                               ║
-║        Move towards each other                                            ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
-║                                                                           ║
-║  TYPE 2: SAME DIRECTION (fast/slow)                                       ║
-║  ───────────────────────────────────                                      ║
-║  Use for: Remove duplicates, Partition, Cycle detection                  ║
-║                                                                           ║
-║  [1, 1, 2, 2, 2, 3, 4, 4, 5]                                              ║
-║   ↑  ↑                                                                    ║
-║  slow fast                                                                ║
-║   └──→──→──→──→                                                          ║
-║        Both move same direction                                           ║
-║                                                                           ║
-║  ─────────────────────────────────────────────────────────────────────   ║
-║                                                                           ║
-║  TYPE 3: TWO ARRAYS                                                       ║
-║  ─────────────────                                                        ║
-║  Use for: Merge sorted arrays, Find intersection                         ║
-║                                                                           ║
-║  Array1: [1, 3, 5, 7]     Array2: [2, 3, 6, 8]                           ║
-║           ↑                        ↑                                      ║
-║          i                        j                                       ║
-║   Compare arr1[i] vs arr2[j], move smaller pointer                       ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  TWO POINTERS VISUALIZATION
+──────────────────────────────────────────────────
+
+TYPE 1: OPPOSITE ENDS (converging)
+───────────────────────────────────
+Use for: Two Sum (sorted), Palindrome check, Container with water
+
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+ ↑                       ↑
+left                   right
+ └─────────→   ←─────────┘
+      Move towards each other
+
+─────────────────────────────────────────────────────────────────────
+
+TYPE 2: SAME DIRECTION (fast/slow)
+───────────────────────────────────
+Use for: Remove duplicates, Partition, Cycle detection
+
+[1, 1, 2, 2, 2, 3, 4, 4, 5]
+ ↑  ↑
+slow fast
+ └──→──→──→──→
+      Both move same direction
+
+─────────────────────────────────────────────────────────────────────
+
+TYPE 3: TWO ARRAYS
+─────────────────
+Use for: Merge sorted arrays, Find intersection
+
+Array1: [1, 3, 5, 7]     Array2: [2, 3, 6, 8]
+         ↑                        ↑
+        i                        j
+ Compare arr1[i] vs arr2[j], move smaller pointer
 ```
+
 
 ### Template: Two Sum (Sorted Array)
 
@@ -158,48 +161,58 @@ public boolean isPalindrome(String s) {
 
 ---
 
-## 2. SLIDING WINDOW - FIXED
+
+
+🔬 **Section Challenge — 📌 1. Two Pointers**
+
+**Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+<details><summary>Answer</summary>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
+
+## 📌 2. Sliding Window — Fixed
 
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    FIXED SLIDING WINDOW                                   ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Problem: Find max sum of any subarray of size K=3                       ║
-║  Array: [2, 1, 5, 1, 3, 2]                                                ║
-║                                                                           ║
-║  Step 1: Build first window of size K                                    ║
-║  ┌─────────────┐                                                         ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                               ║
-║  └─────────────┘                                                         ║
-║  └─────────┘                                                             ║
-║   window sum = 8                                                          ║
-║                                                                           ║
-║  Step 2: Slide - Remove leftmost, Add rightmost                          ║
-║      ┌─────────────┐                                                     ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                               ║
-║      └─────────────┘                                                     ║
-║      └─────────┘                                                         ║
-║   -2        +1                                                           ║
-║   window sum = 8 - 2 + 1 = 7                                             ║
-║                                                                           ║
-║  Step 3: Continue sliding                                                ║
-║          ┌─────────────┐                                                 ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                               ║
-║          └─────────────┘                                                 ║
-║   window sum = 7 - 1 + 3 = 9 ⭐ MAX                                       ║
-║                                                                           ║
-║  Step 4: Continue                                                        ║
-║              ┌─────────────┐                                             ║
-║  │ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │                                               ║
-║              └─────────────┘                                             ║
-║   window sum = 9 - 5 + 2 = 6                                             ║
-║                                                                           ║
-║  Answer: Maximum sum = 9                                                  ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  FIXED SLIDING WINDOW
+──────────────────────────────────────────────────
+
+Problem: Find max sum of any subarray of size K=3
+Array: [2, 1, 5, 1, 3, 2]
+
+Step 1: Build first window of size K
+┌───────────────────────┐
+│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
+└───────────────────────┘
+└─────────┘
+ window sum = 8
+
+Step 2: Slide - Remove leftmost, Add rightmost
+    ┌─────────────┐
+│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
+    └─────────────┘
+    └─────────┘
+ -2        +1
+ window sum = 8 - 2 + 1 = 7
+
+Step 3: Continue sliding
+        ┌─────────────┐
+│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
+        └─────────────┘
+ window sum = 7 - 1 + 3 = 9 ⭐ MAX
+
+Step 4: Continue
+            ┌─────────────┐
+│ 2 │ 1 │ 5 │ 1 │ 3 │ 2 │
+            └─────────────┘
+ window sum = 9 - 5 + 2 = 6
+
+Answer: Maximum sum = 9
 ```
+
 
 ### Template: Max Sum of Size K Subarray
 
@@ -261,50 +274,66 @@ public int maxSumSubarrayV2(int[] arr, int k) {
 
 ---
 
-## 3. SLIDING WINDOW - VARIABLE
+
+
+🔬 **Section Challenge — 📌 2. Sliding Window — Fixed**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
+
+## 📌 3. Sliding Window — Variable
 
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    VARIABLE SLIDING WINDOW                                ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Problem: Find longest substring with at most K=2 distinct characters    ║
-║  String: "eceba"                                                          ║
-║                                                                           ║
-║  Step 1: Expand while valid (≤2 distinct)                                ║
-║  ┌───┐                                                                   ║
-║  │ e │ c │ e │ b │ a │  distinct: {e}=1 ≤2 ✓                             ║
-║  └───┘                                                                   ║
-║                                                                           ║
-║  Step 2: Keep expanding                                                  ║
-║  ┌───────┐                                                               ║
-║  │ e │ c │ e │ b │ a │  distinct: {e,c}=2 ≤2 ✓                           ║
-║  └───────┘                                                               ║
-║                                                                           ║
-║  Step 3: Keep expanding                                                  ║
-║  ┌───────────┐                                                           ║
-║  │ e │ c │ e │ b │ a │  distinct: {e,c}=2 ≤2 ✓  maxLen=3                 ║
-║  └───────────┘                                                           ║
-║                                                                           ║
-║  Step 4: Expand - becomes invalid                                        ║
-║  ┌───────────────┐                                                       ║
-║  │ e │ c │ e │ b │ a │  distinct: {e,c,b}=3 >2 ✗                         ║
-║  └───────────────┘                                                       ║
-║                                                                           ║
-║  Step 5: SHRINK from left until valid                                    ║
-║      ┌───────────┐                                                       ║
-║  │ e │ c │ e │ b │ a │  distinct: {c,e,b}=3 >2 ✗ (shrink more)           ║
-║      └───────────┘                                                       ║
-║                                                                           ║
-║          ┌───────┐                                                       ║
-║  │ e │ c │ e │ b │ a │  distinct: {e,b}=2 ≤2 ✓                           ║
-║          └───────┘                                                       ║
-║                                                                           ║
-║  Answer: Maximum length = 3 ("ece")                                      ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  VARIABLE SLIDING WINDOW
+──────────────────────────────────────────────────
+
+Problem: Find longest substring with at most K=2 distinct characters
+String: "eceba"
+
+Step 1: Expand while valid (≤2 distinct)
+┌───┐
+│ e │ c │ e │ b │ a │  distinct: {e}=1 ≤2 ✓
+└───┘
+
+Step 2: Keep expanding
+┌───────┐
+│ e │ c │ e │ b │ a │  distinct: {e,c}=2 ≤2 ✓
+└───────┘
+
+Step 3: Keep expanding
+┌───────────┐
+│ e │ c │ e │ b │ a │  distinct: {e,c}=2 ≤2 ✓  maxLen=3
+└───────────┘
+
+Step 4: Expand - becomes invalid
+┌───────────────┐
+│ e │ c │ e │ b │ a │  distinct: {e,c,b}=3 >2 ✗
+└───────────────┘
+
+Step 5: SHRINK from left until valid
+    ┌───────────┐
+│ e │ c │ e │ b │ a │  distinct: {c,e,b}=3 >2 ✗ (shrink more)
+    └───────────┘
+
+        ┌───────┐
+│ e │ c │ e │ b │ a │  distinct: {e,b}=2 ≤2 ✓
+        └───────┘
+
+Answer: Maximum length = 3 ("ece")
 ```
+
 
 ### Template: Longest Substring with At Most K Distinct
 
@@ -415,14 +444,31 @@ public String minWindow(String s, String t) {
 
 ---
 
-## 4. BINARY SEARCH
+
+
+🔬 **Section Challenge — 📌 3. Sliding Window — Variable**
+
+**Challenge 1 (Variable Window Shrink Condition):** Variable sliding window shrinks the window when a CONSTRAINT is violated. **Who** decides when to shrink? **When** does a `while` loop work better than an `if` for the shrink step? **What** is the minimum window substring shrink logic for LC 76?\n\n<details><summary>Answer</summary>\n\n**Who decides when to shrink:** The constraint check. For LC 76 (Minimum Window Substring): shrink when the window contains all required characters (constraint satisfied = window is valid but possibly too big). For LC 3 (Longest Substring Without Repeating): shrink when `charCount[right] > 1` (constraint violated = duplicate found). **`while` vs `if` for shrink:** Use `while` when you need to shrink UNTIL the constraint is satisfied (e.g., remove all duplicates: `while (freq[s[left]] > 1) { freq[s[left]]--; left++; }`). Use `if` when at most one element needs removal per step. In practice, `while` is safer — it handles multiple violations in one expansion step. **LC 76 Minimum Window Substring shrink logic:** (1) Expand `right`: add `s[right]` to window frequency. (2) Check if all required chars are present (use `formed == required` counter). (3) While window is valid: update `minLen`, shrink from `left` (remove `s[left]` from freq, decrement `formed` if needed, increment `left`). (4) Continue expanding. **Key insight:** Variable window achieves O(n) because each character is added to the window exactly once (right pointer advances) and removed at most once (left pointer advances). Total pointer moves = 2n.\n\n</details>
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
+
+## 🔍 4. Binary Search
 
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    BINARY SEARCH VISUALIZATION                            ║
-╠═══════════════════════════════════════════════════════════════════════════╣
+┌───────────────────────────────────────────────────────────────────────────┐
+│                    BINARY SEARCH VISUALIZATION                            │
+├───────────────────────────────────────────────────────────────────────────┤
 ║                                                                           ║
 ║  Find 7 in sorted array:                                                  ║
 ║                                                                           ║
@@ -433,27 +479,28 @@ public String minWindow(String s, String t) {
 ║  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]                                          ║
 ║   ↑           ↑              ↑                                            ║
 ║  low         mid           high                                           ║
-║  arr[4]=5 < 7 → search right half                                        ║
+║  arr[4]=5 < 7 → search right half                                         ║
 ║                                                                           ║
 ║  Step 2: low=5, high=9, mid=7                                             ║
 ║  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]                                          ║
 ║                  ↑     ↑      ↑                                           ║
 ║                 low   mid   high                                          ║
-║  arr[7]=8 > 7 → search left half                                         ║
+║  arr[7]=8 > 7 → search left half                                          ║
 ║                                                                           ║
 ║  Step 3: low=5, high=6, mid=5                                             ║
 ║  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]                                          ║
 ║                  ↑  ↑                                                     ║
 ║               low,mid high                                                ║
-║  arr[5]=6 < 7 → search right half                                        ║
+║  arr[5]=6 < 7 → search right half                                         ║
 ║                                                                           ║
 ║  Step 4: low=6, high=6, mid=6                                             ║
 ║  [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]                                          ║
 ║                     ↑                                                     ║
 ║                 low,mid,high                                              ║
-║  arr[6]=7 == 7 → FOUND! Return 6                                         ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+║  arr[6]=7 == 7 → FOUND! Return 6                                          ║
+└───────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Template: Standard Binary Search
 
@@ -543,53 +590,69 @@ public int findLastOccurrence(int[] arr, int target) {
 
 ---
 
-## 5. PREFIX SUM
+
+
+🔬 **Section Challenge — 🔍 4. Binary Search**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
+
+## 📌 5. Prefix Sum
 
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    PREFIX SUM VISUALIZATION                               ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Original Array:                                                          ║
-║  ┌───┬───┬───┬───┬───┬───┐                                               ║
-║  │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │                                               ║
-║  └───┴───┴───┴───┴───┴───┘                                               ║
-║    0   1   2   3   4   5                                                  ║
-║                                                                           ║
-║  Prefix Sum Array:                                                        ║
-║  prefix[i] = sum of arr[0] to arr[i-1]                                   ║
-║  ┌───┬───┬───┬───┬───┬────┬────┐                                         ║
-║  │ 0 │ 1 │ 3 │ 6 │ 10│ 15 │ 21 │                                         ║
-║  └───┴───┴───┴───┴───┴────┴────┘                                         ║
-║    0   1   2   3   4    5    6                                            ║
-║    ↑                                                                      ║
-║  Extra 0 at start!                                                        ║
-║                                                                           ║
-║  prefix[0] = 0                 (empty prefix)                            ║
-║  prefix[1] = 1                 (sum of arr[0])                           ║
-║  prefix[2] = 1+2 = 3           (sum of arr[0..1])                        ║
-║  prefix[3] = 1+2+3 = 6         (sum of arr[0..2])                        ║
-║  prefix[4] = 1+2+3+4 = 10      (sum of arr[0..3])                        ║
-║  prefix[5] = 1+2+3+4+5 = 15    (sum of arr[0..4])                        ║
-║  prefix[6] = 1+2+3+4+5+6 = 21  (sum of arr[0..5])                        ║
-║                                                                           ║
-║  ═══════════════════════════════════════════════════════════════════════  ║
-║                                                                           ║
-║  Range sum [i, j] = prefix[j+1] - prefix[i]                              ║
-║                                                                           ║
-║  Example: Sum of arr[2..4] = sum(3,4,5) = 12                             ║
-║           = prefix[5] - prefix[2] = 15 - 3 = 12 ✓                        ║
-║                                                                           ║
-║  ┌───┬───┬───┬───┬───┬───┐                                               ║
-║  │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │                                               ║
-║  └───┴───┴───┴───┴───┴───┘                                               ║
-║            └───────────┘                                                  ║
-║            i=2      j=4                                                   ║
-║            sum = 3+4+5 = 12                                               ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  PREFIX SUM VISUALIZATION
+──────────────────────────────────────────────────
+
+Original Array:
+┌───┬───┬───┬───┬───┬───┐
+│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │
+└───┴───┴───┴───┴───┴───┘
+  0   1   2   3   4   5
+
+Prefix Sum Array:
+prefix[i] = sum of arr[0] to arr[i-1]
+┌───┬───┬───┬───┬───┬────┬────┐
+│ 0 │ 1 │ 3 │ 6 │ 10│ 15 │ 21 │
+└───┴───┴───┴───┴───┴────┴────┘
+  0   1   2   3   4    5    6
+  ↑
+Extra 0 at start!
+
+prefix[0] = 0                 (empty prefix)
+prefix[1] = 1                 (sum of arr[0])
+prefix[2] = 1+2 = 3           (sum of arr[0..1])
+prefix[3] = 1+2+3 = 6         (sum of arr[0..2])
+prefix[4] = 1+2+3+4 = 10      (sum of arr[0..3])
+prefix[5] = 1+2+3+4+5 = 15    (sum of arr[0..4])
+prefix[6] = 1+2+3+4+5+6 = 21  (sum of arr[0..5])
+
+═══════════════════════════════════════════════════════════════════════
+
+Range sum [i, j] = prefix[j+1] - prefix[i]
+
+Example: Sum of arr[2..4] = sum(3,4,5) = 12
+         = prefix[5] - prefix[2] = 15 - 3 = 12 ✓
+
+┌───┬───┬───┬───┬───┬───┐
+│ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │
+└───┴───┴───┴───┴───┴───┘
+          └───────────┘
+          i=2      j=4
+          sum = 3+4+5 = 12
 ```
+
 
 ### Template: Build Prefix Sum
 
@@ -661,51 +724,66 @@ public int subarraySum(int[] arr, int k) {
 
 ---
 
-## 6. FREQUENCY COUNT
+
+
+🔬 **Section Challenge — 📌 5. Prefix Sum**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
+> [!NOTE]
+> **Open Source Reference: Dynamic Prefix Sums**
+> * [atcoder/ac-library/fenwicktree](https://github.com/atcoder/ac-library/blob/master/atcoder/fenwicktree.hpp) -> **Invariant:** Each node `i` stores the sum of a specific range of elements, leveraging binary representations to achieve $O(\log N)$ updates and queries.
+> * **Local rewrite:** While static arrays are $O(N)$ build and $O(1)$ query, Fenwick trees (Binary Indexed Trees) are used when the underlying array values are being updated concurrently with range queries.
+> * **Constraint warning:** Fenwick trees only work for invertible operations (like addition/subtraction, XOR) because range queries depend on `prefix(R) - prefix(L-1)`. They cannot be used for `min()` or `max()` queries.
+
+## 📌 6. Frequency Count
 
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    FREQUENCY COUNT PATTERNS                               ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  PATTERN 1: Array of 26 (lowercase letters only)                          ║
-║  ────────────────────────────────────────────────                          ║
-║  Use when: Only lowercase a-z characters                                  ║
-║                                                                           ║
-║  String: "hello"                                                          ║
-║                                                                           ║
-║  freq[ch - 'a']  ← Maps 'a'→0, 'b'→1, ..., 'z'→25                        ║
-║                                                                           ║
-║  ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐                 ║
-║  │0│0│0│0│1│0│0│1│0│0│0│2│0│0│1│0│0│0│0│0│0│0│0│0│0│0│                 ║
-║  └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘                 ║
-║   a b c d e f g h i j k l m n o p q r s t u v w x y z                    ║
-║             ↑     ↑       ↑     ↑                                         ║
-║            e:1   h:1     l:2   o:1                                        ║
-║                                                                           ║
-║  ════════════════════════════════════════════════════════════════════    ║
-║                                                                           ║
-║  PATTERN 2: HashMap (any characters, large range)                        ║
-║  ─────────────────────────────────────────────────                        ║
-║  Use when: Unicode characters, numbers, or large range                   ║
-║                                                                           ║
-║  Map<Character, Integer> freq = new HashMap<>();                         ║
-║  for (char c : str.toCharArray()) {                                      ║
-║      freq.put(c, freq.getOrDefault(c, 0) + 1);                           ║
-║  }                                                                       ║
-║                                                                           ║
-║  ┌─────────────────────────────────────────────────────────────────────┐ ║
-║  │  Key   │  Value                                                     │ ║
-║  ├────────┼────────────────────────────────────────────────────────────┤ ║
-║  │  'h'   │    1                                                       │ ║
-║  │  'e'   │    1                                                       │ ║
-║  │  'l'   │    2                                                       │ ║
-║  │  'o'   │    1                                                       │ ║
-║  └─────────────────────────────────────────────────────────────────────┘ ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  FREQUENCY COUNT PATTERNS
+──────────────────────────────────────────────────
+
+PATTERN 1: Array of 26 (lowercase letters only)
+────────────────────────────────────────────────
+Use when: Only lowercase a-z characters
+
+String: "hello"
+
+freq[ch - 'a']  ← Maps 'a'→0, 'b'→1, ..., 'z'→25
+
+┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+│0│0│0│0│1│0│0│1│0│0│0│2│0│0│1│0│0│0│0│0│0│0│0│0│0│0│
+└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
+ a b c d e f g h i j k l m n o p q r s t u v w x y z
+           ↑     ↑       ↑     ↑
+          e:1   h:1     l:2   o:1
+
+════════════════════════════════════════════════════════════════════
+
+PATTERN 2: HashMap (any characters, large range)
+─────────────────────────────────────────────────
+Use when: Unicode characters, numbers, or large range
+
+Map<Character, Integer> freq = new HashMap<>();
+for (char c : str.toCharArray()) {
+    freq.put(c, freq.getOrDefault(c, 0) + 1);
+}
+
+┌─────────────────────────────────────────────────────────────────────┐
+│  Key   │  Value                                                     │
+├────────┼────────────────────────────────────────────────────────────┤
+│  'h'   │    1                                                       │
+│  'e'   │    1                                                       │
+│  'l'   │    2                                                       │
+│  'o'   │    1                                                       │
+└─────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Template: Check Anagram
 
@@ -785,47 +863,48 @@ public int firstUniqChar(String s) {
 
 ---
 
-## 7. STACK PROBLEMS
+## 📚 7. Stack Problems
 
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    STACK PATTERNS                                         ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  PATTERN 1: Matching/Balancing                                            ║
-║  ─────────────────────────────                                            ║
-║                                                                           ║
-║  Input: "({[]})"                                                          ║
-║                                                                           ║
-║  Process '(':  Stack: [(]                                                 ║
-║  Process '{':  Stack: [(, {]                                              ║
-║  Process '[':  Stack: [(, {, []                                           ║
-║  Process ']':  Matches '[', Stack: [(, {]                                 ║
-║  Process '}':  Matches '{', Stack: [(]                                    ║
-║  Process ')':  Matches '(', Stack: []                                     ║
-║                                                                           ║
-║  Stack empty at end → BALANCED! ✓                                        ║
-║                                                                           ║
-║  ════════════════════════════════════════════════════════════════════    ║
-║                                                                           ║
-║  PATTERN 2: Monotonic Stack (Next Greater Element)                        ║
-║  ──────────────────────────────────────────────────                        ║
-║                                                                           ║
-║  Input: [2, 1, 2, 4, 3]                                                   ║
-║  Output: [4, 2, 4, -1, -1]  (next greater for each)                      ║
-║                                                                           ║
-║  Process 2: Stack: [2]                                                    ║
-║  Process 1: Stack: [2, 1]  (1 < 2, can't pop)                            ║
-║  Process 2: Pop 1 (next greater of 1 is 2), Stack: [2, 2]                ║
-║  Process 4: Pop all (4 > everyone), next greater of 2,2 is 4             ║
-║             Stack: [4]                                                    ║
-║  Process 3: Stack: [4, 3]  (3 < 4, can't pop)                            ║
-║                                                                           ║
-║  Stack maintains DECREASING order from bottom to top                     ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+┌───────────────────────────────────────────────────────────────────────────┐
+│                    STACK PATTERNS                                         │
+├───────────────────────────────────────────────────────────────────────────┤
+│                                                                           │
+│  PATTERN 1: Matching/Balancing                                            │
+│  ─────────────────────────────                                            │
+│                                                                           │
+│  Input: "({[]})"                                                          │
+│                                                                           │
+│  Process '(':  Stack: [(]                                                 │
+│  Process '{':  Stack: [(, {]                                              │
+│  Process '[':  Stack: [(, {, []                                           │
+│  Process ']':  Matches '[', Stack: [(, {]                                 │
+│  Process '}':  Matches '{', Stack: [(]                                    │
+│  Process ')':  Matches '(', Stack: []                                     │
+│                                                                           │
+│  Stack empty at end → BALANCED! ✓                                         │
+│                                                                           │
+│  ────────────────────────────────────────────────────────────────────     │
+│                                                                           │
+│  PATTERN 2: Monotonic Stack (Next Greater Element)                        │
+│  ──────────────────────────────────────────────────                       │
+│                                                                           │
+│  Input: [2, 1, 2, 4, 3]                                                   │
+│  Output: [4, 2, 4, -1, -1]  (next greater for each)                       │
+│                                                                           │
+│  Process 2: Stack: [2]                                                    │
+│  Process 1: Stack: [2, 1]  (1 < 2, can't pop)                             │
+│  Process 2: Pop 1 (next greater of 1 is 2), Stack: [2, 2]                 │
+│  Process 4: Pop all (4 > everyone), next greater of 2,2 is 4              │
+│             Stack: [4]                                                    │
+│  Process 3: Stack: [4, 3]  (3 < 4, can't pop)                             │
+│                                                                           │
+│  Stack maintains DECREASING order from bottom to top                      │
+└───────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Template: Valid Parentheses
 
@@ -886,52 +965,62 @@ public int[] nextGreaterElement(int[] arr) {
 
 ---
 
-## 8. BFS/DFS
+
+
+🔬 **Section Challenge — 📚 7. Stack Problems**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
+
+## 📌 8. Bfs/dfs
 
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    BFS vs DFS VISUALIZATION                               ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Graph:        1                                                          ║
-║               /|\                                                         ║
-║              2 3 4                                                        ║
-║             /|   |                                                        ║
-║            5 6   7                                                        ║
-║                                                                           ║
-║  BFS (Level by Level) - Use QUEUE                                        ║
-║  ────────────────────────────────                                         ║
-║  Level 0: [1]                                                             ║
-║  Level 1: [2, 3, 4]                                                       ║
-║  Level 2: [5, 6, 7]                                                       ║
-║                                                                           ║
-║  Visit order: 1 → 2 → 3 → 4 → 5 → 6 → 7                                   ║
-║  Best for: Shortest path, Level order traversal                          ║
-║                                                                           ║
-║  ════════════════════════════════════════════════════════════════════    ║
-║                                                                           ║
-║  DFS (Go Deep First) - Use STACK (or recursion)                          ║
-║  ───────────────────────────────────────────────                          ║
-║                                                                           ║
-║  Path 1: 1 → 2 → 5 (dead end, backtrack)                                 ║
-║  Path 2: 1 → 2 → 6 (dead end, backtrack)                                 ║
-║  Path 3: 1 → 3 (dead end, backtrack)                                     ║
-║  Path 4: 1 → 4 → 7 (dead end, done!)                                     ║
-║                                                                           ║
-║  Visit order: 1 → 2 → 5 → 6 → 3 → 4 → 7 (depends on order)              ║
-║  Best for: Find any path, Detect cycle, Topological sort                 ║
-║                                                                           ║
-║  ════════════════════════════════════════════════════════════════════    ║
-║                                                                           ║
-║  WHEN TO USE WHAT:                                                        ║
-║  ┌────────────────────────────────────────────────────────────────────┐  ║
-║  │ BFS: Shortest path (unweighted), Level order, Nearest neighbors   │  ║
-║  │ DFS: All paths, Cycle detection, Connected components, Backtrack  │  ║
-║  └────────────────────────────────────────────────────────────────────┘  ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  BFS vs DFS VISUALIZATION
+──────────────────────────────────────────────────
+
+Graph:        1
+             /|\
+            2 3 4
+           /|   |
+          5 6   7
+
+BFS (Level by Level) - Use QUEUE
+────────────────────────────────
+Level 0: [1]
+Level 1: [2, 3, 4]
+Level 2: [5, 6, 7]
+
+Visit order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+Best for: Shortest path, Level order traversal
+
+════════════════════════════════════════════════════════════════════
+
+DFS (Go Deep First) - Use STACK (or recursion)
+───────────────────────────────────────────────
+
+Path 1: 1 → 2 → 5 (dead end, backtrack)
+Path 2: 1 → 2 → 6 (dead end, backtrack)
+Path 3: 1 → 3 (dead end, backtrack)
+Path 4: 1 → 4 → 7 (dead end, done!)
+
+Visit order: 1 → 2 → 5 → 6 → 3 → 4 → 7 (depends on order)
+Best for: Find any path, Detect cycle, Topological sort
+
+════════════════════════════════════════════════════════════════════
+
+WHEN TO USE WHAT:
+┌────────────────────────────────────────────────────────────────────┐
+│ BFS: Shortest path (unweighted), Level order, Nearest neighbors    │
+│ DFS: All paths, Cycle detection, Connected components, Backtrack   │
+└────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Template: BFS Level Order Traversal
 
@@ -1030,43 +1119,42 @@ public void dfsIterative(int start, List<List<Integer>> adjList) {
 
 ---
 
-## 9. RECURSION & BACKTRACKING
+## 🔁 9. Recursion & Backtracking
 
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    BACKTRACKING VISUALIZATION                             ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  Problem: Generate all subsets of [1, 2, 3]                              ║
-║                                                                           ║
-║  Decision tree (include or exclude each element):                        ║
-║                                                                           ║
-║                            []                                             ║
-║                           /  \                                            ║
-║                   include 1   exclude 1                                   ║
-║                         /       \                                         ║
-║                      [1]        []                                        ║
-║                     /   \      /   \                                      ║
-║                   +2    -2   +2    -2                                    ║
-║                  /       \   /       \                                    ║
-║               [1,2]     [1] [2]      []                                   ║
-║              /    \     / \  / \    / \                                   ║
-║            +3    -3  +3 -3 +3 -3 +3 -3                                   ║
-║           /        \                                                      ║
-║      [1,2,3]    [1,2]  [1,3] [1] [2,3] [2] [3] []                        ║
-║                                                                           ║
-║  Leaf nodes = all 8 subsets!                                             ║
-║                                                                           ║
-║  BACKTRACKING PATTERN:                                                    ║
-║  ┌────────────────────────────────────────────────────────────────────┐  ║
-║  │ 1. CHOOSE: Make a choice (add element to current path)            │  ║
-║  │ 2. EXPLORE: Recurse with this choice                              │  ║
-║  │ 3. UNCHOOSE: Remove the choice (backtrack) to try other options   │  ║
-║  └────────────────────────────────────────────────────────────────────┘  ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  BACKTRACKING VISUALIZATION
+──────────────────────────────────────────────────
+
+Problem: Generate all subsets of [1, 2, 3]
+
+Decision tree (include or exclude each element):
+
+                          []
+                         /  \
+                 include 1   exclude 1
+                       /       \
+                    [1]        []
+                   /   \      /   \
+                 +2    -2   +2    -2
+                /       \   /       \
+             [1,2]     [1] [2]      []
+            /    \     / \  / \    / \
+          +3    -3  +3 -3 +3 -3 +3 -3
+         /        \
+    [1,2,3]    [1,2]  [1,3] [1] [2,3] [2] [3] []
+
+Leaf nodes = all 8 subsets!
+
+BACKTRACKING PATTERN:
+┌────────────────────────────────────────────────────────────────────┐
+│ 1. CHOOSE: Make a choice (add element to current path)             │
+│ 2. EXPLORE: Recurse with this choice                               │
+│ 3. UNCHOOSE: Remove the choice (backtrack) to try other options    │
+└────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Template: Generate All Subsets
 
@@ -1140,55 +1228,77 @@ private void backtrack(int[] nums, List<Integer> current, boolean[] used, List<L
 
 ---
 
-## 10. DYNAMIC PROGRAMMING
+
+
+🔬 **Section Challenge — 🔁 9. Recursion & Backtracking**
+
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
+
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):**
+
+```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
+
+## 💎 10. Dynamic Programming
 
 ### Visual Concept
 
 ```
-╔═══════════════════════════════════════════════════════════════════════════╗
-║                    DYNAMIC PROGRAMMING                                    ║
-╠═══════════════════════════════════════════════════════════════════════════╣
-║                                                                           ║
-║  STEP 1: Identify if DP applies                                          ║
-║  ─────────────────────────────────                                        ║
-║  ✓ Optimal substructure (optimal solution uses optimal sub-solutions)    ║
-║  ✓ Overlapping subproblems (same subproblems solved multiple times)      ║
-║                                                                           ║
-║  STEP 2: Define state                                                     ║
-║  ────────────────────────                                                 ║
-║  dp[i] = "answer for first i elements" or                                ║
-║  dp[i][j] = "answer for range [i, j]" or                                 ║
-║  dp[i][w] = "answer considering i items with capacity w"                 ║
-║                                                                           ║
-║  STEP 3: Find recurrence (transition)                                    ║
-║  ────────────────────────────────────                                     ║
-║  dp[i] = f(dp[i-1], dp[i-2], ...)  "How to build from smaller problems"  ║
-║                                                                           ║
-║  STEP 4: Identify base cases                                             ║
-║  ───────────────────────────                                              ║
-║  dp[0] = ?, dp[1] = ?  "Smallest problems with known answers"            ║
-║                                                                           ║
-║  STEP 5: Determine order of computation                                  ║
-║  ─────────────────────────────────────                                    ║
-║  Usually: smaller subproblems first (bottom-up)                          ║
-║                                                                           ║
-║  ════════════════════════════════════════════════════════════════════    ║
-║                                                                           ║
-║  Example: Climbing Stairs (n steps, can take 1 or 2 at a time)           ║
-║                                                                           ║
-║  State:    dp[i] = number of ways to reach step i                        ║
-║  Recurrence: dp[i] = dp[i-1] + dp[i-2]                                   ║
-║              (ways from step i-1 + ways from step i-2)                   ║
-║  Base:    dp[0] = 1, dp[1] = 1                                           ║
-║                                                                           ║
-║  ┌───┬───┬───┬───┬───┬───┐                                               ║
-║  │ 1 │ 1 │ 2 │ 3 │ 5 │ 8 │                                               ║
-║  └───┴───┴───┴───┴───┴───┘                                               ║
-║   0   1   2   3   4   5                                                   ║
-║                                                                           ║
-║  Answer: dp[5] = 8 ways to climb 5 stairs                                ║
-╚═══════════════════════════════════════════════════════════════════════════╝
+                  DYNAMIC PROGRAMMING
+──────────────────────────────────────────────────
+
+STEP 1: Identify if DP applies
+─────────────────────────────────
+✓ Optimal substructure (optimal solution uses optimal sub-solutions)
+✓ Overlapping subproblems (same subproblems solved multiple times)
+
+STEP 2: Define state
+────────────────────────
+dp[i] = "answer for first i elements" or
+dp[i][j] = "answer for range [i, j]" or
+dp[i][w] = "answer considering i items with capacity w"
+
+STEP 3: Find recurrence (transition)
+────────────────────────────────────
+dp[i] = f(dp[i-1], dp[i-2], ...)  "How to build from smaller problems"
+
+STEP 4: Identify base cases
+───────────────────────────
+dp[0] = ?, dp[1] = ?  "Smallest problems with known answers"
+
+STEP 5: Determine order of computation
+─────────────────────────────────────
+Usually: smaller subproblems first (bottom-up)
+
+════════════════════════════════════════════════════════════════════
+
+Example: Climbing Stairs (n steps, can take 1 or 2 at a time)
+
+State:    dp[i] = number of ways to reach step i
+Recurrence: dp[i] = dp[i-1] + dp[i-2]
+            (ways from step i-1 + ways from step i-2)
+Base:    dp[0] = 1, dp[1] = 1
+
+┌───┬───┬───┬───┬───┬───┐
+│ 1 │ 1 │ 2 │ 3 │ 5 │ 8 │
+└───┴───┴───┴───┴───┴───┘
+ 0   1   2   3   4   5
+
+Answer: dp[5] = 8 ways to climb 5 stairs
 ```
+
 
 ### Template: 1D DP (Climbing Stairs)
 
@@ -1306,6 +1416,23 @@ public int rob(int[] nums) {
 
 ---
 
+
+
+🔬 **Section Challenge — 💎 10. Dynamic Programming**
+
+**Challenge 1 (Reasoning):** How do you identify that a problem requires DP vs Greedy? What's the key test?
+<details><summary>Answer</summary>
+
+Greedy test: does the locally optimal choice always lead to the globally optimal solution? (Prove via exchange argument.) If yes → greedy. If making a local choice requires knowing future choices → DP. Example: Coin Change with standard coins [1,5,10,25] → greedy works (always pick largest). Coin Change with coins [1,3,4] and amount 6 → greedy picks 4+1+1=3 coins, optimal is 3+3=2 coins. Greedy fails → DP.
+</details>
+
+**Challenge 2 (Design):** You need to find the number of ways to climb N stairs taking 1 or 2 steps at a time. Define the DP state and recurrence.
+<details><summary>Answer</summary>
+
+State: `dp[i]` = number of ways to reach step i. Recurrence: `dp[i] = dp[i-1] + dp[i-2]` (come from step i-1 via 1 step, or from step i-2 via 2 steps). Base: `dp[0]=1` (one way: don't move), `dp[1]=1`. This is exactly Fibonacci. Space optimization: only need last 2 values → O(1) space.
+</details>
+
+
 ## 📝 MASTER CHECKLIST
 
 Before writing code for any problem:
@@ -1318,10 +1445,10 @@ Before writing code for any problem:
 
 ---
 
-# CURATED PRACTICE PROBLEMS — TEMPLATE APPLICATION DRILL
+# 💪 Curated Practice Problems — Template Application Drill
 
-> **HOW TO USE**: Each problem maps to a specific template from this guide.
-> Practice: open the template, then adapt it to solve the problem.
+**HOW TO USE**: Each problem maps to a specific template from this guide.
+Practice: open the template, then adapt it to solve the problem.
 
 ---
 
@@ -1345,3 +1472,10 @@ Before writing code for any problem:
 ---
 
 **You've got this!**
+
+
+---
+
+**Navigation**: [< Previous](01_Sliding_Window.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Visual_Diagrams.md)
+
+

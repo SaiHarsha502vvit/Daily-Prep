@@ -1,7 +1,12 @@
+﻿**Navigation**: [< Previous](12_Greedy_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](14_Union_Find_DSU_Complete.md)
+🧠 **Mental Model**: See [Array & String Thinking](../14_Mental_Models/04_Array_String_Thinking.md) — pointer patterns and string manipulation mental models
+
 # 🔤 String Algorithms Complete Guide
-> KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery
+
+KMP, Rabin-Karp, Z-Algorithm & Pattern Matching Mastery
 
 ## Table of Contents
+
 1. [Why String Algorithms?](#why-string-algorithms)
 2. [Naive Pattern Matching](#naive-matching)
 3. [KMP Algorithm](#kmp-algorithm)
@@ -23,16 +28,17 @@
 ┌─────────────────────────────────────────────────────────────────┐
 │           WHERE STRING ALGORITHMS ARE USED                      │
 ├─────────────────────────────────────────────────────────────────┤
-│  • Text Editors (Find & Replace)                               │
-│  • Search Engines (Pattern matching)                           │
-│  • DNA Sequencing (Substring search)                           │
-│  • Plagiarism Detection (Similarity)                           │
-│  • Antivirus (Signature matching)                              │
-│  • Network Intrusion Detection                                 │
-│  • Spell Checkers                                              │
-│  • Data Compression                                            │
+│  • Text Editors (Find & Replace)                                │
+│  • Search Engines (Pattern matching)                            │
+│  • DNA Sequencing (Substring search)                            │
+│  • Plagiarism Detection (Similarity)                            │
+│  • Antivirus (Signature matching)                               │
+│  • Network Intrusion Detection                                  │
+│  • Spell Checkers                                               │
+│  • Data Compression                                             │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### The Pattern Matching Problem
 
@@ -92,6 +98,7 @@ We keep rechecking characters we've already seen!
 KMP/Z-algo avoid this redundant work.
 ```
 
+
 ---
 
 ## KMP Algorithm <a name="kmp-algorithm"></a>
@@ -130,6 +137,7 @@ i=8: "ABABCABAB"→ "ABAB" matches → LPS[8] = 4
 
 LPS = [0, 0, 1, 2, 0, 1, 2, 3, 4]
 ```
+
 
 ### Complete KMP Implementation
 
@@ -225,24 +233,26 @@ Step 4: Full match found at index 5!
         A B A B D [A B A B C A B A B]
 ```
 
+
 ### Time Complexity Analysis
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │              KMP COMPLEXITY                                     │
 ├─────────────────────────────────────────────────────────────────┤
-│  LPS Construction: O(m) where m = pattern length               │
-│  Search: O(n) where n = text length                            │
-│  Total: O(n + m)                                               │
+│  LPS Construction: O(m) where m = pattern length                │
+│  Search: O(n) where n = text length                             │
+│  Total: O(n + m)                                                │
 │                                                                 │
-│  Space: O(m) for LPS array                                     │
+│  Space: O(m) for LPS array                                      │
 │                                                                 │
 │  Why O(n)?                                                      │
-│  - i never decreases (always moves forward in text)            │
-│  - j can decrease but total decreases ≤ total increases        │
-│  - Each char in text visited at most twice                     │
+│  - i never decreases (always moves forward in text)             │
+│  - j can decrease but total decreases ≤ total increases         │
+│  - Each char in text visited at most twice                      │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### KMP Applications
 
@@ -380,6 +390,7 @@ Continue...
 Final Z = [-, 1, 0, 3, 1, 0, 2, 2, 1]
 ```
 
+
 ### Z-Algorithm vs KMP
 
 ```
@@ -387,23 +398,24 @@ Final Z = [-, 1, 0, 3, 1, 0, 2, 2, 1]
 │              Z-ALGORITHM vs KMP                                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Both: O(n + m) time, O(m) space                               │
+│  Both: O(n + m) time, O(m) space                                │
 │                                                                 │
 │  Z-Algorithm:                                                   │
-│  ✓ Conceptually simpler                                        │
-│  ✓ More intuitive (direct prefix matching)                     │
-│  ✓ Useful for many string problems                             │
-│  ✗ Requires concatenation (extra space for search)             │
+│  ✓ Conceptually simpler                                         │
+│  ✓ More intuitive (direct prefix matching)                      │
+│  ✓ Useful for many string problems                              │
+│  ✗ Requires concatenation (extra space for search)              │
 │                                                                 │
 │  KMP:                                                           │
-│  ✓ True O(m) space (no concatenation)                          │
-│  ✓ Better for streaming (online algorithm)                     │
-│  ✗ LPS logic more complex                                      │
+│  ✓ True O(m) space (no concatenation)                           │
+│  ✓ Better for streaming (online algorithm)                      │
+│  ✗ LPS logic more complex                                       │
 │                                                                 │
-│  Interview tip: Know both, use whichever feels natural         │
+│  Interview tip: Know both, use whichever feels natural          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Z-Array Applications
 
@@ -533,24 +545,25 @@ Window 3: "BCD" (slide right)
 │              RABIN-KARP USE CASES                               │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  ✓ Multiple pattern search (efficient)                         │
-│    Same text, many patterns → compute text hashes once         │
+│  ✓ Multiple pattern search (efficient)                          │
+│    Same text, many patterns → compute text hashes once          │
 │                                                                 │
-│  ✓ 2D pattern matching                                         │
-│    Find matrix in larger matrix                                │
+│  ✓ 2D pattern matching                                          │
+│    Find matrix in larger matrix                                 │
 │                                                                 │
-│  ✓ Finding repeated substrings                                 │
-│    Hash all substrings of length k, find duplicates           │
+│  ✓ Finding repeated substrings                                  │
+│    Hash all substrings of length k, find duplicates             │
 │                                                                 │
-│  ✓ Plagiarism detection                                        │
-│    Hash sentences/paragraphs, compare across documents         │
+│  ✓ Plagiarism detection                                         │
+│    Hash sentences/paragraphs, compare across documents          │
 │                                                                 │
 │  Complexity:                                                    │
-│  Average: O(n + m)                                             │
-│  Worst (many collisions): O(n * m)                             │
+│  Average: O(n + m)                                              │
+│  Worst (many collisions): O(n * m)                              │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Multiple Pattern Search
 
@@ -691,6 +704,7 @@ The trick: When we know P[center] and we're at position i,
            we can use P[mirror] to initialize P[i].
 ```
 
+
 ---
 
 ## Trie Data Structure <a name="trie"></a>
@@ -722,6 +736,7 @@ Words stored: "ape", "to"
 Each node = character
 ✓ = end of word marker
 ```
+
 
 ### Trie Implementation
 
@@ -1142,6 +1157,7 @@ private String findDuplicateOfLength(String s, int len) {
 └──────────────┴────────────┴───────────┴─────────────────────────────┘
 ```
 
+
 ### When to Use What
 
 ```
@@ -1149,26 +1165,27 @@ private String findDuplicateOfLength(String s, int len) {
 │              ALGORITHM SELECTION GUIDE                          │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  "Find pattern in text"                                        │
-│    → KMP or Z-algorithm (single pattern)                       │
-│    → Rabin-Karp (multiple patterns)                            │
+│  "Find pattern in text"                                         │
+│    → KMP or Z-algorithm (single pattern)                        │
+│    → Rabin-Karp (multiple patterns)                             │
 │                                                                 │
-│  "Check if prefix exists" / "Autocomplete"                     │
+│  "Check if prefix exists" / "Autocomplete"                      │
 │    → Trie                                                       │
 │                                                                 │
-│  "Longest palindrome"                                          │
-│    → Manacher's (O(n))                                         │
-│    → DP with memo (O(n²) but simpler)                          │
+│  "Longest palindrome"                                           │
+│    → Manacher's (O(n))                                          │
+│    → DP with memo (O(n²) but simpler)                           │
 │                                                                 │
-│  "Repeated substring" / "Count substrings"                     │
-│    → Rolling hash + Binary search                              │
-│    → Suffix array                                              │
+│  "Repeated substring" / "Count substrings"                      │
+│    → Rolling hash + Binary search                               │
+│    → Suffix array                                               │
 │                                                                 │
-│  "Is X a rotation of Y?"                                       │
-│    → KMP: search Y in X+X                                      │
+│  "Is X a rotation of Y?"                                        │
+│    → KMP: search Y in X+X                                       │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Common String Tricks
 
@@ -1222,22 +1239,37 @@ private int[] buildLPS(String pattern) {
 ║            STRING ALGORITHMS - MASTER THESE                   ║
 ╠═══════════════════════════════════════════════════════════════╣
 ║                                                               ║
-║  1. KMP - Pattern matching in O(n+m)                         ║
-║     Key: LPS array, never recheck matched characters         ║
+║  1. KMP - Pattern matching in O(n+m)                          ║
+║     Key: LPS array, never recheck matched characters          ║
 ║                                                               ║
-║  2. RABIN-KARP - Rolling hash for multiple patterns          ║
-║     Key: Hash comparison, verify on match                    ║
+║  2. RABIN-KARP - Rolling hash for multiple patterns           ║
+║     Key: Hash comparison, verify on match                     ║
 ║                                                               ║
-║  3. Z-ALGORITHM - Alternative to KMP, more intuitive         ║
-║     Key: Z[i] = prefix match length at position i            ║
+║  3. Z-ALGORITHM - Alternative to KMP, more intuitive          ║
+║     Key: Z[i] = prefix match length at position i             ║
 ║                                                               ║
-║  4. TRIE - Prefix search & autocomplete                      ║
-║     Key: Tree of characters, end-of-word markers             ║
+║  4. TRIE - Prefix search & autocomplete                       ║
+║     Key: Tree of characters, end-of-word markers              ║
 ║                                                               ║
-║  Interview Tip: KMP is asked most often.                     ║
-║  Know how to build LPS and explain the skip logic.           ║
+║  Interview Tip: KMP is asked most often.                      ║
+║  Know how to build LPS and explain the skip logic.            ║
 ║                                                               ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
+
 **Pro Tip:** When explaining string algorithms in interviews, draw out the arrays (LPS, Z) step by step. Interviewers love to see you work through examples visually!
+
+---
+
+---
+
+🔬 **Section Challenge — Summary**
+
+**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+<details><summary>Answer</summary>
+
+`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+</details>
+
+

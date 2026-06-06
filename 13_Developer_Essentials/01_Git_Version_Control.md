@@ -1,6 +1,6 @@
 # 🔀 Git & Version Control — Complete Guide
 
-> **Navigation**: [Index](00_INDEX.md) | [Next: Linux CLI >](02_Linux_CLI_Shell.md)
+**Navigation**: [Index](00_INDEX.md) | [Next: Linux CLI >](02_Linux_CLI_Shell.md)
 
 ---
 
@@ -8,124 +8,132 @@
 
 ## The Problem Before Git
 
-```
-Story: It's 2004. A team of 5 developers is building software.
-       They share code via... email. Or a shared folder.
+It's 2004. A team of 5 developers is building software. They share code via email... or a shared folder.
 
-Developer A: "I'll work on login.java"
-Developer B: "Me too, I need to fix a bug there"
+*Developer A*: "I'll work on login.java"
+*Developer B*: "Me too, I need to fix a bug there"
 
-Result: Developer B copies their version over A's work.
-        3 days of A's work = GONE FOREVER.
+**Result**: Developer B copies their version over A's work. 3 days of A's work = **gone forever**.
 
-This happened EVERY DAY in the 1990s-2000s at every company.
-```
+This happened *every day* in the 1990s–2000s at every company.
 
 ### The Three Fundamental Problems
 
-```
-Problem 1: COLLABORATION
-  Multiple people editing same files → overwrites
-  
-Problem 2: HISTORY
-  "The app worked yesterday, what changed?" → nobody knows
-  
-Problem 3: EXPERIMENTATION
-  "I want to try a new approach without breaking main code" → make a copy?
-  
-Git solves ALL THREE simultaneously.
-```
+| # | Problem | Description |
+|---|---------|-------------|
+| 1 | **Collaboration** | Multiple people editing same files → overwrites |
+| 2 | **History** | "The app worked yesterday, what changed?" → nobody knows |
+| 3 | **Experimentation** | "I want to try a new approach without breaking main code" → make a copy? |
+
+✅ **Git solves all three simultaneously.**
 
 ## WHO: The Origin Story
 
-```
-2005: Linux kernel development used BitKeeper (proprietary VCS)
-      BitKeeper revoked free license
-      
-Linus Torvalds → "I'll build my own in 2 weeks"
-      
-Design goals:
-  1. FAST (handle Linux kernel: 25M+ lines)
-  2. DISTRIBUTED (no central server required)
-  3. SAFE (cryptographic integrity: SHA-1 hashes)
-  4. BRANCHING (cheap, instant branch creation)
-  
-Result: Git — named after British slang for "unpleasant person"
-        (Linus: "I name all my projects after myself")
-```
+**2005**: Linux kernel development used BitKeeper (proprietary VCS). When BitKeeper revoked its free license, Linus Torvalds said *"I'll build my own in 2 weeks."*
+
+**Design goals**:
+1. **Fast** — handle the Linux kernel (25M+ lines)
+2. **Distributed** — no central server required
+3. **Safe** — cryptographic integrity with SHA-1 hashes
+4. **Branching** — cheap, instant branch creation
+
+The name "Git" comes from British slang for "unpleasant person." Linus: *"I name all my projects after myself."*
 
 ---
+
+🔬 **Section Challenge — WHO: The Origin Story**
+
+**Challenge 1 (Reasoning):** Linus built Git to be "distributed" — no central server required. Yet every team still pushes to GitHub. What does "distributed" actually mean in practice, and what concrete advantage does it give even when you use a central hub?
+
+<details><summary>Answer</summary>
+
+"Distributed" means every developer has a **complete copy** of the repository — full history, all branches, all objects. GitHub is just a *convenient synchronization point*, not a single point of truth. Concrete advantages: you can commit, branch, merge, view history, and bisect bugs **completely offline**. When GitHub goes down, your team doesn't stop working. If GitHub deleted your repo, any developer's clone is a perfect full backup. This also enables the **fork + pull request** workflow — contributing to open source without needing write access to the original. Contrast with SVN: if the central server dies, nobody can commit anything.
+
+</details>
+
+**Challenge 2 (Reasoning):** Git uses SHA-1 hashes to identify every object. SHA-1 was broken for *cryptographic security* in 2017 (collision attacks exist). But Git's history is still trustworthy. Why? What is Git actually protecting against with SHA-1?
+
+<details><summary>Answer</summary>
+
+Git uses SHA-1 for **data integrity and deduplication**, not adversarial security. The key property: SHA-1 is content-addressed — same content always produces the same hash. Since each commit's hash includes the **parent commit's hash**, any tampering with history cascades into different hashes for all subsequent commits — immediately visible to anyone with a clone. Git protects against **accidental corruption** (disk errors, bit-flips, network corruption), not sophisticated attackers. Git is now migrating to SHA-256 (`extensions.objectFormat sha256`) for stronger collision resistance.
+
+</details>
 
 # WHAT: Core Mental Models
 
 ## Mental Model 1: Git is a SNAPSHOT Timeline
 
-```
-Most VCS: Store DIFFERENCES (deltas) between versions
-  v1 → [+5 lines] → v2 → [-2 lines, +8 lines] → v3
+**Most VCS**: Store *differences* (deltas) between versions — `v1 → [+5 lines] → v2 → [-2 lines, +8 lines] → v3`
 
-Git: Store SNAPSHOTS of entire project state
-  v1 = [complete state of every file]
-  v2 = [complete state of every file]  (unchanged files → pointer to v1's copy)
-  v3 = [complete state of every file]
+**Git**: Store **snapshots** of the entire project state. Each version is a complete picture of every file. Unchanged files just point to the previous copy.
 
-WHY snapshots? → Any version can be reconstructed instantly
-                  No need to replay 500 deltas
-```
+💡 **Why snapshots?** Any version can be reconstructed instantly — no need to replay 500 deltas.
+
+🔬 **Section Challenge — Mental Model 1: Git is a SNAPSHOT Timeline**
+
+**Challenge 1 (Reasoning):** Git stores "full snapshots" of every file at every commit. If your repo has 1,000 files and you change only 1, does Git literally store 1,000 full file copies? What happens internally to prevent storage explosion?
+
+<details><summary>Answer</summary>
+
+Git uses **content-addressed deduplication**. Internally, each file version is a **blob object** — compressed content keyed by SHA-1. If a file hasn't changed, the new commit's tree object simply **points to the same blob** as the previous commit — no new blob is written. Only the 1 changed file needs a new blob. Git also runs `git gc` (garbage collection) periodically, packing loose objects into **packfiles** using delta compression for similar blobs. Result: storage grows proportional to *unique file versions*, not files × commits. Verify with: `git cat-file -p <commit-hash>` to see the tree, then `git cat-file -p <tree-hash>` to see blob references.
+
+</details>
+
+**Challenge 2 (Comparison):** For large, frequently-changing binary files (e.g., a 200MB Photoshop `.psd`), Git's snapshot model is far worse than delta-based SVN. Why? What is the industry solution?
+
+<details><summary>Answer</summary>
+
+Each new version of a binary blob becomes a full blob object — binary files don't compress well with text delta algorithms. A 200MB `.psd` changed 50 times ≈ 10GB of blob storage, even if each edit changed only a few pixels. The solution is **Git LFS (Large File Storage)**: LFS replaces the binary in the repo with a small text pointer, storing the actual binary in a separate LFS server. The Git repo stays fast and small. Enable with `git lfs track "*.psd"` — this adds the pattern to `.gitattributes`, and `git push` sends LFS objects separately. GitHub, GitLab, and Bitbucket all support LFS natively.
+
+</details>
 
 ## Mental Model 2: Three Areas
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    YOUR COMPUTER                         │
-│                                                          │
-│   ┌──────────────┐  git add  ┌──────────────┐          │
-│   │  WORKING     │ ───────── │   STAGING     │          │
-│   │  DIRECTORY   │           │   AREA        │          │
-│   │              │  ◄─────── │   (Index)     │          │
-│   │  (your files │  git      │              │          │
-│   │   as you     │  restore) │  (files ready │          │
-│   │   edit them) │           │   to commit)  │          │
-│   └──────────────┘           └───────┬──────┘          │
-│                                       │ git commit      │
-│                                       ▼                 │
-│                              ┌──────────────┐          │
-│                              │  LOCAL REPO   │          │
-│                              │  (.git folder)│          │
-│                              │              │          │
-│                              │  (permanent   │          │
-│                              │   history)    │          │
-│                              └───────┬──────┘          │
-│                                       │ git push        │
-└───────────────────────────────────────┼─────────────────┘
-                                        ▼
-                               ┌──────────────┐
-                               │  REMOTE REPO  │
-                               │  (GitHub)     │
-                               └──────────────┘
+```mermaid
+flowchart TD
+    subgraph local["🖥️ YOUR COMPUTER"]
+        WD["📁 WORKING DIRECTORY<br>your files as you edit them"]
+        SA["📋 STAGING AREA<br>files ready to commit"]
+        LR["🗄️ LOCAL REPO<br>permanent history in .git"]
+        WD -->|"git add"| SA
+        SA -.->|"git restore"| WD
+        SA -->|"git commit"| LR
+    end
+    LR -->|"git push"| RR["☁️ REMOTE REPO<br>GitHub"]
+    RR -.->|"git pull"| LR
 ```
 
 ## Mental Model 3: Commits are a Linked List
 
-```
-Each commit contains:
-  1. Snapshot of all files
-  2. Author + timestamp
-  3. Message (description)
-  4. Pointer to PARENT commit(s)
+Each commit contains: **(1)** snapshot of all files, **(2)** author + timestamp, **(3)** message, **(4)** pointer to parent commit(s).
 
-commit_3 ──→ commit_2 ──→ commit_1 ──→ (initial)
-   │              │              │
-   hash:abc123   hash:def456   hash:789abc
-   msg:"Add      msg:"Fix      msg:"Initial
-   login"        typo"          commit"
-   
-Hash = SHA-1 of (content + parent hash + metadata)
-       If ANY byte changes → completely different hash
-       → Tamper-proof history
+```mermaid
+flowchart RL
+    C3["commit_3<br>abc123 · Add login"] --> C2["commit_2<br>def456 · Fix typo"]
+    C2 --> C1["commit_1<br>789abc · Initial commit"]
 ```
+
+💡 **Hash** = SHA-1 of content + parent hash + metadata. If ANY byte changes → completely different hash → tamper-proof history.
 
 ---
+
+🔬 **Section Challenge — Mental Model 3: Commits are a Linked List**
+
+**Challenge 1 (Trace):** You run `git show abc123`. What exact data is Git returning? List every field stored in a commit object, and explain what the `tree` field points to.
+
+<details><summary>Answer</summary>
+
+A **commit object** contains: (1) **tree** — SHA-1 of the root tree object (a directory snapshot mapping filenames to blob and sub-tree hashes); (2) **parent** — SHA-1 of the previous commit (zero for initial commit, two SHA-1s for a merge commit); (3) **author** — name, email, timestamp of who wrote the code; (4) **committer** — name, email, timestamp of who applied it (differs from author after cherry-pick or rebase); (5) **message** — the commit message. Git follows the tree pointer to reconstruct the full file snapshot. Inspect raw: `git cat-file -p abc123`.
+
+</details>
+
+**Challenge 2 (Debug):** A teammate ran `git rebase main` on their feature branch and force-pushed it. You run `git pull` on that branch and Git says "your branch and the remote have diverged, 5 and 3 different commits each." Why does rebase cause this, and what is the correct recovery command?
+
+<details><summary>Answer</summary>
+
+`git rebase` **rewrites commit objects** — it creates entirely new commits (E', F', G') with new SHA-1 hashes because the parent pointer changed to point to the new main tip. Your local branch still has original E, F, G. After force-push, remote has E', F', G'. Git sees two histories that diverged from a common ancestor — hence "diverged." **Correct recovery**: `git fetch origin` then `git reset --hard origin/feature`. This moves your local pointer to match the remote's rewritten history. **Never `git pull` here** — it creates a merge commit mixing old and rewritten commits, permanently polluting history.
+
+</details>
 
 # HOW: Essential Commands (Progressive)
 
@@ -215,24 +223,26 @@ Examples:
 
 ### WHY Branches Exist
 
-```
-Scenario: Your app is live. Users depend on it.
-          You need to add a NEW FEATURE that takes 2 weeks.
+**Scenario**: Your app is live, users depend on it. You need to add a **new feature** that takes 2 weeks.
 
-Without branches:
-  - You edit the main code
-  - For 2 weeks, the code is HALF-FINISHED
-  - If a CRITICAL BUG appears → you can't deploy a fix
-  
-With branches:
-  main ─────────────────────────► (always deployable)
-         \                    /
-          \  feature/login   /
-           ──────────────────    (your experimental work, isolated)
-           
-  Bug fix? → Branch from main → fix → merge → deploy
-  Feature ready? → Merge feature into main
+**Without branches**: You edit the main code. For 2 weeks it's HALF-FINISHED. If a CRITICAL BUG appears → you can't deploy a fix.
+
+**With branches**:
+
+```mermaid
+gitGraph
+    commit id: "v1.0 stable"
+    commit id: "v1.1 stable"
+    branch feature/login
+    commit id: "login WIP"
+    commit id: "login done"
+    checkout main
+    commit id: "hotfix"
+    merge feature/login id: "merge"
 ```
+
+**Bug fix?** Branch from main → fix → merge → deploy.
+**Feature ready?** Merge feature into main.
 
 ### Branch Commands
 
@@ -260,41 +270,52 @@ git merge main                  # Get latest main changes into feature
 
 ### Git Flow vs GitHub Flow
 
+**Git Flow** *(Complex, Enterprise)*:
+
+```mermaid
+gitGraph
+    commit id: "init"
+    branch develop
+    commit id: "dev-1"
+    branch feature/X
+    commit id: "feat-1"
+    commit id: "feat-2"
+    checkout develop
+    merge feature/X id: "merge-feat"
+    branch release/1.0
+    commit id: "release-prep"
+    checkout main
+    merge release/1.0 id: "v1.0" tag: "v1.0"
+    branch hotfix
+    commit id: "critical-fix"
+    checkout main
+    merge hotfix id: "hotfix" tag: "v1.0.1"
 ```
-=== GIT FLOW (Complex, Enterprise) ===
 
-main ─────────────────────────────────── (production)
-  │
-develop ──────────────────────────────── (integration)
-  │         \            /
-  │     feature/X ──────            (feature work)
-  │
-release/1.0 ─────────────────── (release prep)
-  │
-hotfix/critical ──────────────── (emergency fix)
+**GitHub Flow** *(Simple, Modern)*:
 
-=== GITHUB FLOW (Simple, Modern) ===
-
-main ──────────────────── (always deployable)
-  \        /
-   feature ──── (short-lived, merged via PR)
-
-Recommendation for YOU:
-  - Learning/personal: GitHub Flow
-  - Enterprise/team: Git Flow (Netcracker, Infosys, etc.)
+```mermaid
+gitGraph
+    commit id: "v1"
+    commit id: "v2"
+    branch feature
+    commit id: "work"
+    commit id: "done"
+    checkout main
+    merge feature id: "PR-merge"
+    commit id: "v3"
 ```
+
+**Recommendation**: Learning/personal → **GitHub Flow**. Enterprise/team → **Git Flow**.
 
 ## Level 3: Merge Conflicts (The Hard Part)
 
 ### WHY Conflicts Happen
 
-```
-You:    Edit line 10 of app.java → "Hello World"  
-Friend: Edit line 10 of app.java → "Hello Universe"
+**You**: Edit line 10 of `app.java` → `"Hello World"`
+**Friend**: Edit line 10 of `app.java` → `"Hello Universe"`
 
-Git: "Two different changes to the SAME line. I can't decide.
-      Human, you must choose."
-```
+**Git**: *"Two different changes to the SAME line. I can't decide. Human, you must choose."*
 
 ### HOW to Resolve
 
@@ -307,7 +328,7 @@ git status   # Shows conflicted files in red
 System.out.println("Hello World");    ← YOUR change
 =======
 System.out.println("Hello Universe"); ← THEIR change
->>>>>>> feature/greeting
+>>>>>> feature/greeting
 
 # YOU decide — edit the file to keep what's correct:
 System.out.println("Hello Universe");
@@ -319,12 +340,10 @@ git commit               # Complete the merge
 
 ### Conflict Prevention Strategy
 
-```
-1. PULL FREQUENTLY — git pull every morning
-2. SMALL COMMITS — commit every 30 minutes of work
-3. COMMUNICATE — "I'm working on X file today"
-4. SHORT BRANCHES — merge within 1-3 days, not weeks
-```
+1. **Pull frequently** — `git pull` every morning
+2. **Small commits** — commit every 30 minutes of work
+3. **Communicate** — "I'm working on X file today"
+4. **Short branches** — merge within 1–3 days, not weeks
 
 ## Level 4: Advanced Git (Month 3+)
 
@@ -391,10 +410,10 @@ git bisect reset
 
 ### Reset vs Revert
 
-```
-git reset:  REWRITE history (dangerous on shared branches)
-git revert: CREATE NEW commit that undoes a previous one (safe)
+`git reset`: **Rewrite** history (⚠️ dangerous on shared branches)
+`git revert`: **Create new** commit that undoes a previous one (safe)
 
+```bash
 # Undo last commit but keep changes staged
 git reset --soft HEAD~1
 
@@ -477,43 +496,178 @@ node_modules/
 
 # WHEN: Decision Guide
 
+| Question | Answer |
+|----------|--------|
+| When to commit? | Every logical unit of work (30–60 min intervals) |
+| When to branch? | Every new feature, bug fix, or experiment |
+| When to merge vs rebase? | `merge` for shared branches, `rebase` for personal cleanup |
+| When to force push? | **Only** on your personal branch after rebase. **Never** on main/develop |
+| When to use stash? | Switching tasks mid-work (not for long-term storage) |
+
+---
+
+# 🔩 HOW (Internals): Git Object Model
+
+> 📖 *Source: Pro Git, Chapter 10 — Git Internals. Understanding this makes `git reset`, `rebase`, and `reflog` trivially intuitive rather than magical.*
+
+## The `.git/` Directory
+
+`git init` creates exactly one directory: `.git/`. Everything Git knows lives here.
+
 ```
-Q: When to commit?
-A: Every logical unit of work (30-60 min intervals)
-
-Q: When to branch?
-A: Every new feature, bug fix, or experiment
-
-Q: When to merge vs rebase?
-A: merge for shared branches, rebase for personal cleanup
-
-Q: When to force push?
-A: ONLY on your personal branch AFTER rebase
-   NEVER on main/develop
-
-Q: When to use stash?
-A: Switching tasks mid-work (not for long-term storage)
+.git/
+├── HEAD              ← "You are here" — ref to current branch or raw commit hash
+├── index             ← The staging area (binary file, not human-readable)
+├── config            ← Repo-local config (remote URLs, user overrides)
+├── refs/
+│   ├── heads/        ← One 41-byte file per LOCAL branch
+│   ├── remotes/      ← One 41-byte file per REMOTE tracking branch
+│   └── tags/         ← One 41-byte file per tag
+└── objects/          ← Every blob, tree, and commit ever created
+    ├── ab/
+    │   └── cdef1234... ← Object: first 2 chars = folder, rest = filename
+    └── pack/         ← Packfiles (delta-compressed, created by git gc)
 ```
+
+## The 3 Types of Git Objects
+
+Git is a **content-addressable filesystem** — every object is stored by SHA-1 of its content.
+
+```
+BLOB — A file's content (filename NOT stored inside the blob itself)
+┌──────────────────────────────────────────────────────────────┐
+│  Content: "public class Main { ... }"                        │
+│  Hash:    sha1("blob <size>\0<content>")                     │
+│  Stored:  .git/objects/ab/cdef1234...  (zlib-compressed)     │
+│                                                              │
+│  Key insight: Two files with identical content = ONE blob.   │
+│  Renaming a file creates NO new blob — just a new tree.      │
+└──────────────────────────────────────────────────────────────┘
+
+TREE — A directory snapshot (maps names → blobs or sub-trees)
+┌──────────────────────────────────────────────────────────────┐
+│  100644 blob a1b2c3...  README.md                            │
+│  100644 blob d4e5f6...  pom.xml                              │
+│  040000 tree 789abc...  src/          ← sub-directory        │
+│                                                              │
+│  TREE stores: filename + permissions + pointer to blob/tree  │
+│  BLOB stores: file contents. Clean separation of concerns.   │
+└──────────────────────────────────────────────────────────────┘
+
+COMMIT — A snapshot + metadata + parent link
+┌──────────────────────────────────────────────────────────────┐
+│  tree     f1a2b3...      ← root tree of this snapshot        │
+│  parent   d4e5f6...      ← previous commit's hash            │
+│  author   Harsha <h@x.com> 1714000000 +0530                  │
+│  committer Harsha <h@x.com> 1714000000 +0530                 │
+│  message  "feat: add payment gateway"                        │
+│                                                              │
+│  Merge commits have TWO parent pointers.                     │
+│  Initial commit has ZERO parent pointers.                    │
+└──────────────────────────────────────────────────────────────┘
+```
+
+## How `git add` + `git commit` Work at Object Level
+
+```
+STEP 1: git add src/Main.java
+  → Compress Main.java content with zlib
+  → Compute SHA-1 of "blob <size>\0<content>"
+  → Write blob to .git/objects/ab/cdef1234...
+  → Update .git/index (staging area) to record:
+      "100644 abcdef1234... src/Main.java"
+
+STEP 2: git commit -m "fix: NPE in payment"
+  → Build TREE objects for each directory
+  → Build COMMIT object:
+        tree    = root tree hash
+        parent  = current HEAD commit hash
+        author  = git config values
+        message = "fix: NPE in payment"
+  → Compute SHA-1 of commit object = new commit hash
+  → Write commit to .git/objects/xx/yyyy...
+  → Update .git/refs/heads/main ← new commit hash
+  → .git/HEAD still points to refs/heads/main (unchanged)
+```
+
+## What `HEAD` Actually Is
+
+```bash
+# HEAD is the file .git/HEAD
+
+# On a branch — contains a reference:
+cat .git/HEAD
+→ ref: refs/heads/main
+
+# In "detached HEAD" state (e.g., after git checkout abc123):
+cat .git/HEAD
+→ abc1234567890abcdef...   ← raw commit hash
+
+# refs/heads/main is also just a file:
+cat .git/refs/heads/main
+→ def4567890abcdef...      ← the commit hash main points to
+```
+
+## The Reflog — Git's Safety Net
+
+```bash
+# git reflog records EVERY movement of HEAD, kept for 90 days
+git reflog
+
+# Output:
+abc1234 HEAD@{0}: commit: fix: NPE in payment
+def5678 HEAD@{1}: rebase: finish — return to refs/heads/main
+789abc  HEAD@{2}: commit: feat: add payment gateway
+bcd123  HEAD@{3}: checkout: moving from feature to main
+
+# RECOVERY: You did git reset --hard and "lost" a commit.
+# 1. Find the lost hash in reflog
+git reflog
+
+# 2. Restore it to a new branch
+git checkout -b recovery/lost-work abc1234
+```
+
+> 🔥 **3+ YOE Insight — Why reflog saves careers**: `git reset --hard HEAD~1` feels permanent but isn't. Git's garbage collector only deletes objects **unreachable from any ref AND older than 90 days** (configurable via `gc.reflogExpire`). Until then, `git reflog` exposes every commit hash Git has ever held — even from deleted branches. **Rule**: if you made a commit, it's recoverable within 90 days.
+
+🔬 **Section Challenge — Git Object Model**
+
+**Challenge 1 (Trace):** You rename a file `Main.java` → `App.java` with no content changes, then commit. How many new objects does Git create? What type are they?\
+
+<details><summary>Answer</summary>
+
+Git creates **zero new blobs** and **two new tree objects** (one for the root directory, one for `src/` if the file is in a subdirectory). The blob for the file content is identical — same content, same SHA-1, same existing blob. Only the tree objects change because they map filenames to blob hashes, and the filename changed. This is why `git mv` is efficient: renaming large files is instant regardless of file size, and Git's `git log --follow` can trace history across renames by detecting blob identity.
+
+</details>
+
+**Challenge 2 (Internals):** A colleague says "Git uses a lot of storage because it stores full file copies in every commit." Correct this misconception precisely, citing the internal mechanism.
+
+<details><summary>Answer</summary>
+
+Git stores **blob objects keyed by content hash** — identical content across commits shares the same blob. When only 1 file changes in a 10,000-file repo, only 1 new blob is created; the new commit's tree objects point to the same blobs as the previous commit for all 9,999 unchanged files. Additionally, `git gc` runs **packfile compression** — it groups similar blobs and applies delta encoding between them. A 1GB repo of text code typically has a `.git` folder of ~50–100MB because of deduplication + delta compression. The misconception conflates "snapshot model" with "no deduplication," which are independent concerns.
+
+</details>
 
 ---
 
 # 🧭 Git Command Cheat Sheet
 
-```
-SETUP:     init | clone | config
-DAILY:     status | add | commit | push | pull
-BRANCH:    branch | checkout | switch | merge
-INSPECT:   log | diff | show | blame
-UNDO:      reset | revert | restore | stash
-ADVANCED:  rebase | cherry-pick | bisect | reflog
-REMOTE:    remote | fetch | push | pull
-```
+| Category | Commands |
+|----------|----------|
+| **Setup** | `init`, `clone`, `config` |
+| **Daily** | `status`, `add`, `commit`, `push`, `pull` |
+| **Branch** | `branch`, `checkout`, `switch`, `merge` |
+| **Inspect** | `log`, `diff`, `show`, `blame` |
+| **Undo** | `reset`, `revert`, `restore`, `stash` |
+| **Advanced** | `rebase`, `cherry-pick`, `bisect`, `reflog` |
+| **Remote** | `remote`, `fetch`, `push`, `pull` |
 
 ---
 
 # 🏋️ Practice Exercises
 
 ## Exercise 1: Basic Workflow
+
 ```
 1. Create a new repo
 2. Add 3 files, commit each separately
@@ -522,6 +676,7 @@ REMOTE:    remote | fetch | push | pull
 ```
 
 ## Exercise 2: Branching
+
 ```
 1. Create feature/login branch
 2. Make 3 commits on it
@@ -530,7 +685,26 @@ REMOTE:    remote | fetch | push | pull
 5. Delete the branch
 ```
 
+🔬 **Section Challenge — Exercise 2: Branching**
+
+**Challenge 1 (Trace):** When you run `git branch feature/login`, what does Git physically do? There is no file copying. Explain the exact mechanism using Git's internal object model.
+
+<details><summary>Answer</summary>
+
+`git branch feature/login` creates **one file**: `.git/refs/heads/feature/login` containing the 40-character SHA-1 hash of the current HEAD commit. That's it — no code is copied, no snapshot is duplicated. A branch in Git is literally a 41-byte text file (40 hex chars + newline) pointing to a commit. When you `git checkout feature/login`, Git updates `.git/HEAD` to `ref: refs/heads/feature/login`, then updates your working directory to match that commit's snapshot. This is why branch creation in Git is instantaneous regardless of repo size — compared to SVN where branching copies the entire directory tree.
+
+</details>
+
+**Challenge 2 (Debug):** You're on `main`. You run `git merge feature/login` and Git says "Already up to date." You *know* the feature branch has 3 new commits. What went wrong, and how do you diagnose it?
+
+<details><summary>Answer</summary>
+
+"Already up to date" means every commit in `feature/login` is already **reachable from `main`'s history** — the feature is already contained in main. Common causes: (1) You merged in the wrong direction — you're on `feature/login` and accidentally merged `main` into it earlier, or (2) You're on the wrong branch entirely. Diagnose with `git log main..feature/login` — if it shows no output, main already contains all of feature/login's commits. `git log --graph --oneline --all` gives the full visual topology to see where commits actually sit.
+
+</details>
+
 ## Exercise 3: Conflict Resolution
+
 ```
 1. Create two branches from main
 2. Edit the SAME line in both
@@ -539,6 +713,7 @@ REMOTE:    remote | fetch | push | pull
 ```
 
 ## Exercise 4: Rebase
+
 ```
 1. Create a branch with 3 commits
 2. Make 2 commits on main
@@ -548,4 +723,7 @@ REMOTE:    remote | fetch | push | pull
 
 ---
 
-> **Next Chapter**: [Linux CLI & Shell →](02_Linux_CLI_Shell.md)
+**Next Chapter**: [Linux CLI & Shell →](02_Linux_CLI_Shell.md)
+
+---
+

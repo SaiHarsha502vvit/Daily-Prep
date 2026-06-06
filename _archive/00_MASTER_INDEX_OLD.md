@@ -12,8 +12,8 @@
 | 📅 Daily Timetable (Feb 19 - May 5) | [01_Getting_Started/02_Study_Plan_Calendar.md](01_Getting_Started/02_Study_Plan_Calendar.md) |
 | 📅 Old Plan (Feb 10 reference) | [01_Getting_Started/03_Feb10_Study_Plan.md](01_Getting_Started/03_Feb10_Study_Plan.md) |
 | 🔥 Ultimate DSA Reference | [09_Career_Reference/02_Ultimate_DSA_Guide.md](09_Career_Reference/02_Ultimate_DSA_Guide.md) |
-| 📝 Practice Problems (210+) | [05_Problem_Solving/01_Practice_Problems.md](05_Problem_Solving/01_Practice_Problems.md) |
-| ⚡ Quick Reference Sheet | [09_Career_Reference/03_Quick_Reference.md](09_Career_Reference/03_Quick_Reference.md) |
+| 📝 Practice Problems (210+) | [05_Problem_Solving/01_Intro_Checklist.md](05_Problem_Solving/01_Intro_Checklist.md) |
+| ⚡ Quick Reference Sheet | [09_Career_Reference/11_Quick_Reference.md](09_Career_Reference/11_Quick_Reference.md) |
 
 ---
 
@@ -62,10 +62,10 @@ Daily-Prep/
 │   └── 07_Two_Pointers_Complete.md    → Same/opposite direction pointers
 │
 ├── 📁 05_Problem_Solving/             ← PRACTICE
-│   ├── 01_Practice_Problems.md        → 210+ problems with solutions
-│   ├── 02_Edge_Cases.md               → Edge case handling
-│   ├── 03_Common_Mistakes.md          → Mistakes to avoid
-│   └── 04_Problem_Origins.md          → Real-world problem origins
+│   ├── 01_Intro_Checklist.md        → 210+ problems with solutions
+│   ├── 23_Edge_Cases.md               → Edge case handling
+│   ├── 24_Common_Mistakes.md          → Mistakes to avoid
+│   └── 25_Problem_Origins.md          → Real-world problem origins
 │
 ├── 📁 06_OOP_Design/                  ← DESIGN
 │   ├── 01_OOPS_Principles.md          → OOP concepts (SOLID)
@@ -74,43 +74,43 @@ Daily-Prep/
 │   └── 04_User_System_Flows.md        → User flows & sequences
 │
 ├── 📁 07_Modern_Java/                 ← JAVA + SPRING BOOT (28 files)
-│   ├── 00_SPRING_BOOT_ROADMAP.md      → Spring Boot learning path
-│   ├── 01_Functional_Programming.md   → Streams, Lambdas, Optionals
+│   ├── Ch24_Spring_Boot_Roadmap.md      → Spring Boot learning path
+│   ├── Ch06_Functional_Programming.md   → Streams, Lambdas, Optionals
 │   ├── 02_Algorithm_Engineering.md    → Algorithm optimization
 │   ├── 02_Spring_Boot_Part0_Hidden_Foundations.md → Pre-Spring concepts
-│   ├── 03_Spring_Boot_Complete_Part1.md → Core Spring Boot
-│   ├── 04_Spring_Boot_Complete_Part2.md → Data & Persistence
-│   ├── 05_Spring_Boot_Complete_Part3.md → Web & REST APIs
-│   ├── 06_Spring_Boot_Complete_Part4.md → Security & Auth
-│   ├── 07_Spring_Boot_Part5_Lombok_DTOs.md → Lombok, DTOs, Validation
-│   ├── 08_Spring_Boot_Part6_Service_Repository.md → Service layer patterns
-│   ├── 09_Spring_Boot_Part7_Controllers_REST.md → REST controllers
-│   ├── 10_Spring_Boot_Part8_JPA_Deep_Dive.md → JPA & Hibernate
-│   ├── 11_Spring_Boot_Part9_Architecture_Quality.md → Clean Architecture
-│   ├── 12_Spring_Boot_Part10_HTTP_Deep_Dive.md → HTTP internals
-│   ├── 13_Spring_Boot_Part11_Auth_Security.md → JWT, OAuth2
-│   ├── 14_Spring_Boot_Part12_DSA_Applications.md → DSA in backend
-│   ├── 15_Spring_Boot_Part13_Industry_Projects.md → Real-world projects
+│   ├── Ch31_SB_Core_Part1.md → Core Spring Boot
+│   ├── Ch32_SB_Data_Part2.md → Data & Persistence
+│   ├── Ch33_SB_Web_Part3.md → Web & REST APIs
+│   ├── Ch34_SB_Security_Part4.md → Security & Auth
+│   ├── Ch35_SB_Lombok_DTOs.md → Lombok, DTOs, Validation
+│   ├── Ch36_SB_Service_Repository.md → Service layer patterns
+│   ├── Ch37_SB_Controllers_REST.md → REST controllers
+│   ├── Ch40_SB_JPA_Deep_Dive.md → JPA & Hibernate
+│   ├── Ch41_SB_Architecture_Quality.md → Clean Architecture
+│   ├── Ch42_SB_HTTP_Deep_Dive.md → HTTP internals
+│   ├── Ch43_SB_Auth_Security.md → JWT, OAuth2
+│   ├── Ch50_SB_DSA_Applications.md → DSA in backend
+│   ├── Ch51_SB_Industry_Projects.md → Real-world projects
 │   ├── 16_Spring_Boot_Part14_Essential_Missing_Topics.md → Advanced topics
 │   ├── 17_Spring_Boot_Part15_WebFlux_Reactive.md → WebFlux & Reactive
 │   ├── 18_Spring_Boot_Part16_SOLID_Principles.md → SOLID in Spring
 │   ├── 19_Spring_Boot_Part17_Database_Security.md → DB Security
-│   ├── 20_Spring_Boot_Part18_Distributed_Tracing.md → Observability & Tracing
+│   ├── Ch53_SB_Distributed_Tracing.md → Observability & Tracing
 │   ├── 21_Spring_Boot_Part19_Testing_Complete.md → Testing strategies
 │   ├── 22_Spring_Boot_Part20_Microservices_Patterns.md → Microservices
 │   ├── 23_Spring_Boot_Part21_Cloud_Deployment.md → Cloud & Deployment
-│   └── 24_Spring_Boot_Part22_Annotations_Complete_Reference.md → All annotations│   ├── 25_Spring_Boot_Part23_Missing_Essential_Topics.md → WebSocket, GraphQL, gRPC, Batch, i18n, Multi-tenancy, GraalVM, Rate Limiting
-│   └── 26_Spring_Boot_Curriculum_50Day.md → 🆕 50-Day Spring Boot Study Plan│
-├── 📁 08_SQL_Database/                ← SQL
+│   └── 24_Spring_Boot_Part22_Annotations_Complete_Reference.md → All annotations│   ├── Ch52_SB_WebSocket_GraphQL_gRPC.md → WebSocket, GraphQL, gRPC, Batch, i18n, Multi-tenancy, GraalVM, Rate Limiting
+│   └── Ch25_Spring_Boot_50Day_Plan.md → 🆕 50-Day Spring Boot Study Plan│
+├── 📁 08_SQL/                ← SQL
 │   └── 01_SQL_Complete_Guide.md       → Complete SQL (6000+ lines)
 │
 ├── 📁 09_Career_Reference/            ← CAREER & REFERENCE
 │   ├── 01_Career_Guide.md             → Career development
 │   ├── 02_Ultimate_DSA_Guide.md       → Master reference
-│   ├── 03_Quick_Reference.md          → Quick revision sheet
-│   ├── 04_Brain_Psychology.md         → Learning psychology
-│   ├── 05_Daily_Habits_Tracking.md    → Habit tracking
-│   └── 06_Resources_Links.md          → External resources
+│   ├── 11_Quick_Reference.md          → Quick revision sheet
+│   ├── 12_Brain_Psychology.md         → Learning psychology
+│   ├── 13_Daily_Habits_Tracking.md    → Habit tracking
+│   └── 14_Resources_Links.md          → External resources
 │
 ├── 📁 10_Enterprise_Systems/          ← ENTERPRISE & REAL-WORLD
 │   ├── 01_ERP_Complete_Guide.md       → Oracle ERP, Finance, HR, SCM
@@ -168,10 +168,10 @@ Daily-Prep/
 - [Two Pointers](04_Patterns_Templates/07_Two_Pointers_Complete.md)
 
 ### Practice & Problem Solving
-- [210+ Practice Problems](05_Problem_Solving/01_Practice_Problems.md)
-- [Edge Cases](05_Problem_Solving/02_Edge_Cases.md)
-- [Common Mistakes](05_Problem_Solving/03_Common_Mistakes.md)
-- [Problem Origins](05_Problem_Solving/04_Problem_Origins.md)
+- [210+ Practice Problems](05_Problem_Solving/01_Intro_Checklist.md)
+- [Edge Cases](05_Problem_Solving/23_Edge_Cases.md)
+- [Common Mistakes](05_Problem_Solving/24_Common_Mistakes.md)
+- [Problem Origins](05_Problem_Solving/25_Problem_Origins.md)
 
 ### OOP & Design
 - [OOP Principles (SOLID)](06_OOP_Design/01_OOPS_Principles.md)
@@ -180,23 +180,23 @@ Daily-Prep/
 - [User/System Flows](06_OOP_Design/04_User_System_Flows.md)
 
 ### Modern Java & Spring Boot
-- [Spring Boot Roadmap](07_Modern_Java/00_SPRING_BOOT_ROADMAP.md)
-- [Functional Programming](07_Modern_Java/01_Functional_Programming.md)
+- [Spring Boot Roadmap](07_Modern_Java/Ch24_Spring_Boot_Roadmap.md)
+- [Functional Programming](07_Modern_Java/Ch06_Functional_Programming.md)
 - [Algorithm Engineering](07_Modern_Java/02_Algorithm_Engineering.md)
 - Spring Boot Parts 0-14: [Part 0](07_Modern_Java/02_Spring_Boot_Part0_Hidden_Foundations.md) → [Part 14](07_Modern_Java/16_Spring_Boot_Part14_Essential_Missing_Topics.md)
 - [WebFlux & Reactive](07_Modern_Java/17_Spring_Boot_Part15_WebFlux_Reactive.md)
 - [SOLID in Spring](07_Modern_Java/18_Spring_Boot_Part16_SOLID_Principles.md)
 - [Database Security](07_Modern_Java/19_Spring_Boot_Part17_Database_Security.md)
-- [Distributed Tracing](07_Modern_Java/20_Spring_Boot_Part18_Distributed_Tracing.md)
+- [Distributed Tracing](07_Modern_Java/Ch53_SB_Distributed_Tracing.md)
 - [Testing Complete](07_Modern_Java/21_Spring_Boot_Part19_Testing_Complete.md)
 - [Microservices Patterns](07_Modern_Java/22_Spring_Boot_Part20_Microservices_Patterns.md)
 - [Cloud Deployment](07_Modern_Java/23_Spring_Boot_Part21_Cloud_Deployment.md)
 - [Annotations Reference](07_Modern_Java/24_Spring_Boot_Part22_Annotations_Complete_Reference.md)
-- [**Missing Essentials: WebSocket, GraphQL, gRPC, Batch, i18n, GraalVM, Modulith**](07_Modern_Java/25_Spring_Boot_Part23_Missing_Essential_Topics.md)
-- [**📅 50-Day Spring Boot Curriculum**](07_Modern_Java/26_Spring_Boot_Curriculum_50Day.md)
+- [**Missing Essentials: WebSocket, GraphQL, gRPC, Batch, i18n, GraalVM, Modulith**](07_Modern_Java/Ch52_SB_WebSocket_GraphQL_gRPC.md)
+- [**📅 50-Day Spring Boot Curriculum**](07_Modern_Java/Ch25_Spring_Boot_50Day_Plan.md)
 
 ### SQL & Database
-- [Complete SQL Guide (6000+ lines)](08_SQL_Database/01_SQL_Complete_Guide.md)
+- [Complete SQL Guide (6000+ lines)](08_SQL/01_SQL_Complete_Guide.md)
 - [SQL Foundations (WHY-HOW)](11_SQL_Complete/01_SQL_Foundations_WHY_HOW.md)
 - [SQL Data Analysis (JOINs, CTEs)](11_SQL_Complete/02_SQL_Data_Analysis.md)
 - [SQL Practice Projects](11_SQL_Complete/04_SQL_Practice_Projects.md)
@@ -204,10 +204,10 @@ Daily-Prep/
 ### Career & Reference
 - [Career Guide](09_Career_Reference/01_Career_Guide.md)
 - [Ultimate DSA Reference](09_Career_Reference/02_Ultimate_DSA_Guide.md)
-- [Quick Reference Sheet](09_Career_Reference/03_Quick_Reference.md)
-- [Brain & Learning Psychology](09_Career_Reference/04_Brain_Psychology.md)
-- [Daily Habits](09_Career_Reference/05_Daily_Habits_Tracking.md)
-- [Resources & Links](09_Career_Reference/06_Resources_Links.md)
+- [Quick Reference Sheet](09_Career_Reference/11_Quick_Reference.md)
+- [Brain & Learning Psychology](09_Career_Reference/12_Brain_Psychology.md)
+- [Daily Habits](09_Career_Reference/13_Daily_Habits_Tracking.md)
+- [Resources & Links](09_Career_Reference/14_Resources_Links.md)
 
 ### Enterprise & Real-World
 - [ERP Complete Guide](10_Enterprise_Systems/01_ERP_Complete_Guide.md)

@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_013_Mar15_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
+
 # Day 014 - Sunday, March 16, 2026
 
 > **Week 02** | **Review Day** | **Theme:** Full Review + Speed Drills + Weak Spot Focus
@@ -13,9 +15,6 @@
 - [ ] Teach-back: Explain 3 concepts aloud (20 min)
 - [ ] Plan: Review next week's topics (10 min)
 - [ ] Bonus: Extra challenge problems (optional, 60 min)
-
----
-
 
 ---
 
@@ -130,7 +129,7 @@ Explain these concepts aloud (or write) as if teaching a junior:
 
 ---
 
-## WEEK 3 PREVIEW
+## 📌 Week 3 Preview
 
 ```
 WHAT'S COMING:
@@ -142,6 +141,7 @@ WHAT'S COMING:
   Difficulty ramp: MEDIUM → MEDIUM-HARD
   You'll build on everything from Week 1-2!
 ```
+
 
 ---
 
@@ -204,3 +204,8 @@ Spring Boot DI            [ ]      [ ]          [ ]
 SCORE: ___ / 42 (14 topics × 3 levels)
 TARGET: 28+ (at least "can code it" for everything)
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_013_Mar15_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)

@@ -1,10 +1,68 @@
-> **Navigation**: [< Previous Chapter](05c_Graphs_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05e_Graphs_Patterns.md)
+**Navigation**: [< Previous Chapter](05c_Graphs_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](05e_Graphs_Patterns.md)
+🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — shortest path and MST mental models
 
 ---
 
-> **Navigation**: [< Previous Chapter](05c_Graphs_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+```text
+ ┌─────────────────────────────────────────────────────────────────────────┐
+ │  5W1H: Advanced Graph Algorithms                                        │
+ ├─────────────────────────────────────────────────────────────────────────┤
+ │ WHAT : Sophisticated techniques beyond basic BFS/DFS (e.g., Dijkstra,   │
+ │        Bellman-Ford, Floyd-Warshall, Prim, Kruskal, Topo Sort).         │
+ │ WHY  : Basic traversals cannot efficiently solve weighted shortest      │
+ │        paths, MSTs, all-pairs distances, or complex connectivity.       │
+ │ WHEN : Dealing with weighted networks, scheduling dependencies, routing │
+ │        packets, or analyzing network vulnerabilities/flow.              │
+ │ WHERE: Embedded in network routers (OSPF/BGP), GPS navigation, build    │
+ │        systems (Make, Maven), and scheduling algorithms.                │
+ │ WHO  : Backend engineers, distributed systems designers, networking     │
+ │        engineers, and competitive programmers.                          │
+ │ HOW  : Leveraging greedy strategies (Dijkstra/Prim), DP (Bellman-Ford/  │
+ │        Floyd-Warshall), Union-Find (Kruskal), and DFS (Tarjan/Kahn).    │
+ └─────────────────────────────────────────────────────────────────────────┘
+```
+
+## 🔗 JIT Connection — Advanced Graph Algorithms
+
+**Arrived here from a problem that needs more than basic BFS/DFS?**
+
+| When you need this algorithm | Problem Type | Key Signal |
+|---|---|---|
+| **Bellman-Ford** | Shortest path with negative edges | "negative weights", "detect negative cycle" |
+| **Floyd-Warshall** | All-pairs shortest path | "distances between ALL pairs", small graph (n≤500) |
+| **Prim's MST** | Minimum spanning tree, dense graph | "connect all nodes minimum cost" |
+| **Kruskal's MST** | Minimum spanning tree, sparse graph | sort edges + Union-Find |
+| **Articulation Point/Bridge** | Network vulnerability | "critical connection", "remove vertex" |
+| **Multi-Source BFS** | Distance from multiple sources | "distance to nearest 0-cell", "01 matrix" |
+| **Bidirectional BFS** | Word Ladder, fastest transformation | "minimum steps between two states" |
+
+**Choose the right algorithm:**
+```
+Negative weights?        → Bellman-Ford  O(VE)
+All-pairs shortest?      → Floyd-Warshall O(V³)
+MST (dense graph)?       → Prim  O((V+E) log V) with heap
+MST (sparse graph)?      → Kruskal  O(E log E)
+Multiple start points?   → Multi-Source BFS
+```
+
+🔗 **Practice problems:** [Graphs PS](../05_Problem_Solving/10_Graphs.md)
+📋 **All Patterns Hub:** [00_PATTERN_MASTER_GUIDE.md](../04_Patterns_Templates/00_PATTERN_MASTER_GUIDE.md)
 
 ---
+
+🔬 **Section Challenge — 🔗 JIT Connection — Advanced Graph Algorithms**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
 
 # PART 12: Advanced Graph Algorithms
 
@@ -398,7 +456,13 @@ private boolean dfs(int node, List<List<Integer>> adj, int[] color) {
 
 ---
 
----
+🔬 **Section Challenge — Topological Sort & Cycle Detection**
+
+**Challenge 1 (Algorithmic Insight):** Kahn's Algorithm (BFS) and DFS both detect cycles, but how does their mechanism differ?
+<details><summary>Answer</summary>
+
+In Kahn's Algorithm, a cycle is detected if the number of processed nodes is less than the total number of nodes (nodes in the cycle never reach an in-degree of 0). In DFS (Three Colors), a cycle is detected when a node visits a neighbor that is currently marked as `IN_PROGRESS` (a back edge).
+</details>
 
 # PART 15: Complete Graph Problems with Solutions
 
@@ -427,6 +491,14 @@ private Node clone(Node node, Map<Node, Node> visited) {
     return copy;
 }
 ```
+
+🔬 **Section Challenge — Deep Copying Graphs**
+
+**Challenge 1 (Data Structures):** Why is a `HashMap` necessary when cloning a graph, whereas a simple `HashSet` might be enough for just traversing it?
+<details><summary>Answer</summary>
+
+A `HashSet` is sufficient for traversal because we only need to know *if* we've visited a node to avoid infinite loops. When *cloning*, we must map the original node to its newly created clone. If we revisit an original node, we must link to its *already created clone* rather than creating a duplicate clone. The `HashMap` stores this `OriginalNode -> ClonedNode` mapping.
+</details>
 
 ## Problem 2: Pacific Atlantic Water Flow
 
@@ -519,6 +591,14 @@ public int networkDelayTime(int[][] times, int n, int k) {
 }
 ```
 
+🔬 **Section Challenge — Problem 3: Network Delay Time (Dijkstra)**
+
+**Challenge 1 (Dijkstra Internals):** Why does Dijkstra's Algorithm fail if there are negative edge weights?
+<details><summary>Answer</summary>
+
+Dijkstra's relies on a greedy property: once a node is popped from the Priority Queue, its shortest path is *finalized*. It assumes all future paths will only add non-negative weights, meaning any indirect path will be strictly longer. A negative edge breaks this assumption, as taking a longer detour might actually result in a smaller total weight, requiring a node to be re-evaluated.
+</details>
+
 ## Problem 4: Cheapest Flights Within K Stops
 
 ```java
@@ -547,35 +627,34 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 
 ---
 
----
-
 # 🔬 PART FINAL: ADVANCED TREE & GRAPH ALGORITHMS - DEEP DIVE
 
-## ADVANCED TREE ALGORITHMS
+## 🌳 Advanced Tree Algorithms
 
-### 1. LOWEST COMMON ANCESTOR (LCA) - MULTIPLE APPROACHES
+### 📌 1. Lowest Common Ancestor (lca) — Multiple Approaches
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    LCA ALGORITHMS - COMPLETE COMPARISON                          │
+│                    LCA ALGORITHMS - COMPLETE COMPARISON                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Problem: Find the lowest common ancestor of two nodes p and q in a tree        │
-│                                                                                  │
-│  Tree:         3                                                                 │
-│              /   \                                                               │
-│             5     1                                                              │
-│            / \   / \                                                             │
-│           6   2 0   8                                                            │
-│              / \                                                                 │
-│             7   4                                                                │
-│                                                                                  │
-│  LCA(5, 1) = 3                                                                   │
-│  LCA(5, 4) = 5                                                                   │
-│  LCA(6, 4) = 5                                                                   │
-│                                                                                  │
+│                                                                                 │
+│  Tree:         3                                                                │
+│              /   \                                                              │
+│             5     1                                                             │
+│            / \   / \                                                            │
+│           6   2 0   8                                                           │
+│              / \                                                                │
+│             7   4                                                               │
+│                                                                                 │
+│  LCA(5, 1) = 3                                                                  │
+│  LCA(5, 4) = 5                                                                  │
+│  LCA(6, 4) = 5                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ```java
 // APPROACH 1: RECURSIVE (O(n) time, O(h) space)
@@ -730,7 +809,7 @@ class LCABinaryLifting {
 }
 ```
 
-### 2. TREE DIAMETER AND CENTER
+### 🌳 2. Tree Diameter and Center
 
 ```java
 /*
@@ -853,7 +932,7 @@ public List<Integer> findCenter(int n, int[][] edges) {
 }
 ```
 
-### 3. TREE DP - COMPREHENSIVE PATTERNS
+### 🌳 3. Tree DP — Comprehensive Patterns
 
 ```java
 /*
@@ -961,9 +1040,9 @@ private void dfs2(int u, int parent, List<List<Integer>> adj,
 }
 ```
 
-## ADVANCED GRAPH ALGORITHMS
+## 🕸️ Advanced Graph Algorithms
 
-### 4. TOPOLOGICAL SORT - ALL APPROACHES
+### 🔄 4. Topological Sort — All Approaches
 
 ```java
 /*
@@ -1057,50 +1136,322 @@ private boolean dfs(int u, List<List<Integer>> adj,
 }
 ```
 
-### 5. STRONGLY CONNECTED COMPONENTS (SCC)
+### 🧩 5. Strongly Connected Components (scc)
+
+```
+SCC: Maximal set of vertices where EVERY vertex is
+reachable from EVERY other vertex in the set
+
+   ┌──→ 1 ──→ 2 ──┐        SCCs: {0}, {1, 2, 3, 4}
+   │    ↑    ↓    │
+   0    │    3    │        WHY IT MATTERS:
+        │    ↓    │        - 2-SAT satisfiability
+        └─── 4 ←──┘        - Dead code elimination
+                            - Social network clusters
+                            - Condensing digraph to DAG
+TIME: O(V + E)   SPACE: O(V)
+```
+
+
+#### Kosaraju's Algorithm (Two-Pass DFS)
+
+```
+IDEA: If we reverse ALL edges, the SCCs remain the same.
+1. DFS on original graph → record finish order
+2. DFS on REVERSED graph in reverse finish order → each DFS tree = one SCC
+```
+
 
 ```java
-/*
- * SCC: Maximal set of vertices where every vertex is reachable from every other
- *
- *     ┌──→ 1 ──→ 2 ──┐
- *     │    ↑    ↓    │
- *     0    │    3    │
- *          │    ↓    │
- *          └─── 4 ←──┘
- *
- * SCCs: {0}, {1, 2, 3, 4}
- */
+public class KosarajuSCC {
+    public List<List<Integer>> findSCCs(int n, int[][] edges) {
+        List<List<Integer>> adj = new ArrayList<>(), radj = new ArrayList<>();
+        for (int i = 0; i < n; i++) { adj.add(new ArrayList<>()); radj.add(new ArrayList<>()); }
+        for (int[] e : edges) { adj.get(e[0]).add(e[1]); radj.get(e[1]).add(e[0]); }
 
-// KOSARAJU'S ALGORITHM: O(V + E)
-public List<List<Integer>> findSCCs(int n, int[][] edges) {
-    // Build adjacency list and reverse graph
-    List<List<Integer>> adj = new ArrayList<>();
-    List<List<Integer>> radj = new ArrayList<>();  // Reversed
+        // Pass 1: DFS on original → collect finish order
+        boolean[] visited = new boolean[n];
+        Deque<Integer> order = new ArrayDeque<>();
+        for (int i = 0; i < n; i++)
+            if (!visited[i]) dfs1(i, adj, visited, order);
 
-    for (int i = 0; i < n; i++) {
-        adj.add(new ArrayList<>());
-        radj.add(new ArrayList<>());
+        // Pass 2: DFS on reversed in reverse finish order
+        visited = new boolean[n];
+        List<List<Integer>> sccs = new ArrayList<>();
+        while (!order.isEmpty()) {
+            int u = order.pop();
+            if (!visited[u]) {
+                List<Integer> scc = new ArrayList<>();
+                dfs2(u, radj, visited, scc);
+                sccs.add(scc);
+            }
+        }
+        return sccs;
     }
 
-    for (int[] edge : edges) {
-        adj.get(edge[0]).add(edge[1]);
-        radj.get(edge[1]).add(edge[0]);  // Reversed
+    private void dfs1(int u, List<List<Integer>> adj, boolean[] vis, Deque<Integer> order) {
+        vis[u] = true;
+        for (int v : adj.get(u)) if (!vis[v]) dfs1(v, adj, vis, order);
+        order.push(u);
     }
 
-    // Step 1: DFS on original graph, collect finish order
-    boolean[] visited = new boolean[n];
-    Deque<Integer> finishOrder = new ArrayDeque<>();
+    private void dfs2(int u, List<List<Integer>> radj, boolean[] vis, List<Integer> scc) {
+        vis[u] = true;
+        scc.add(u);
+        for (int v : radj.get(u)) if (!vis[v]) dfs2(v, radj, vis, scc);
+    }
+}
+```
 
-    for (int i = 0; i < n; i++) {
-        if (!visited[i]) {
-            dfs1(i, adj, visited, finishOrder);
+#### Tarjan's Algorithm (Single-Pass DFS with Low-Link)
+
+```
+IDEA: Use discovery time + low-link value. A node is SCC root
+when its low-link equals its own id. Pop stack to get the SCC.
+```
+
+```java
+public class TarjanSCC {
+    private int id = 0, sccCount = 0;
+    private int[] ids, low;
+    private boolean[] onStack;
+    private Deque<Integer> stack = new ArrayDeque<>();
+    private List<List<Integer>> sccs = new ArrayList<>();
+
+    public List<List<Integer>> findSCCs(int n, List<List<Integer>> adj) {
+        ids = new int[n]; low = new int[n]; onStack = new boolean[n];
+        Arrays.fill(ids, -1);
+        for (int i = 0; i < n; i++)
+            if (ids[i] == -1) dfs(i, adj);
+        return sccs;
+    }
+
+    private void dfs(int at, List<List<Integer>> adj) {
+        ids[at] = low[at] = id++;
+        stack.push(at);
+        onStack[at] = true;
+
+        for (int to : adj.get(at)) {
+            if (ids[to] == -1) {
+                dfs(to, adj);
+                low[at] = Math.min(low[at], low[to]);
+            } else if (onStack[to]) {
+                low[at] = Math.min(low[at], ids[to]);
+            }
+        }
+
+        if (ids[at] == low[at]) {  // Root of SCC
+            List<Integer> scc = new ArrayList<>();
+            while (true) {
+                int node = stack.pop();
+                onStack[node] = false;
+                scc.add(node);
+                if (node == at) break;
+            }
+            sccs.add(scc);
+            sccCount++;
         }
     }
+}
+```
 
-    // Step 2: DFS on reversed graph in reverse finish order
-    visited = new boolean[n];
-    List<List<Integer>> sccs = new ArrayList<>();
+#### Kosaraju vs Tarjan — When to Use Which
 
-    while (!finishOrder.isEmpty()) {
-        int u = finishOrder.pop();
+```
+╔══════════════╦══════════════════════════════╦═══════════════════════════════╗
+║              ║ Kosaraju                     ║ Tarjan                        ║
+╠══════════════╬══════════════════════════════╬═══════════════════════════════╣
+║ Passes       ║ 2 DFS passes                ║ 1 DFS pass                     ║
+║ Extra memory ║ Reversed graph O(V+E)        ║ Stack + low-link arrays O(V)  ║
+║ Simpler code ║ ✓ (two simple DFS)          ║ ✗ (low-link logic tricky)      ║
+║ Better for   ║ Dense graphs, simple impl    ║ Online/streaming, less memory ║
+║ 2-SAT        ║ Commonly used                ║ Also works                    ║
+╚══════════════╩══════════════════════════════╩═══════════════════════════════╝
+```
+
+
+#### 2-SAT via SCC
+
+```
+CONCEPT: Determine if boolean formula (x₁ OR x₂) AND (¬x₃ OR x₄) ...
+is satisfiable when each clause has exactly 2 literals.
+
+KEY INSIGHT:
+  (a OR b) ≡ (¬a → b) AND (¬b → a)
+
+Build implication graph → Find SCCs
+If xᵢ and ¬xᵢ are in SAME SCC → UNSATISFIABLE
+Otherwise: xᵢ = true if SCC(xᵢ) has higher topological order than SCC(¬xᵢ)
+```
+
+
+### 🔍 6. A* Search Algorithm
+
+```
+╔════════════════════════════════════════════════════════════════╗
+║  A*: Best-first search with heuristic guidance                 ║
+║                                                                ║
+║  f(n) = g(n) + h(n)                                            ║
+║         ↑         ↑                                            ║
+║    actual cost   heuristic (estimated cost to goal)            ║
+║    from start                                                  ║
+║                                                                ║
+║  GUARANTEE: If h(n) is admissible (never overestimates)        ║
+║             AND consistent (h(a) ≤ cost(a,b) + h(b))           ║
+║             → A* finds the OPTIMAL path                        ║
+║                                                                ║
+║  TIME: O(E) in best case, O(b^d) worst case                    ║
+║  SPACE: O(V)                                                   ║
+║                                                                ║
+║  USE CASES:                                                    ║
+║  - Grid shortest path (game AI, robotics)                      ║
+║  - Navigation / GPS routing                                    ║
+║  - Sliding puzzle (15-puzzle)                                  ║
+╚════════════════════════════════════════════════════════════════╝
+```
+
+
+#### A* vs Dijkstra — The Key Difference
+
+```
+Dijkstra explores in ALL directions (expanding circle):
+
+     . . . . .
+     . . * . .    * = start, G = goal
+     . . . . .    Dijkstra checks ALL dots
+     . . . G .
+
+A* uses heuristic to focus toward goal (expanding cone):
+
+     . . . . .
+     . . * → .    A* focuses toward G
+     . . . ↘ .    Fewer nodes explored!
+     . . . G .
+
+Same result, fewer expansions → FASTER in practice
+```
+
+
+```java
+public class AStar {
+    // Grid-based A* (most common interview variant)
+    static int[][] dirs = {{0,1},{0,-1},{1,0},{-1,0}};
+
+    public int shortestPath(int[][] grid, int[] start, int[] goal) {
+        int m = grid.length, n = grid[0].length;
+        int[][] gScore = new int[m][n];
+        for (int[] row : gScore) Arrays.fill(row, Integer.MAX_VALUE);
+        gScore[start[0]][start[1]] = 0;
+
+        // PQ ordered by f(n) = g(n) + h(n)
+        PriorityQueue<int[]> pq = new PriorityQueue<>(
+            (a, b) -> (gScore[a[0]][a[1]] + heuristic(a, goal))
+                     - (gScore[b[0]][b[1]] + heuristic(b, goal))
+        );
+        pq.offer(start);
+
+        while (!pq.isEmpty()) {
+            int[] cur = pq.poll();
+            int r = cur[0], c = cur[1];
+
+            if (r == goal[0] && c == goal[1]) return gScore[r][c];
+
+            for (int[] d : dirs) {
+                int nr = r + d[0], nc = c + d[1];
+                if (nr < 0 || nr >= m || nc < 0 || nc >= n) continue;
+                if (grid[nr][nc] == 1) continue;  // Wall
+
+                int newG = gScore[r][c] + 1;  // Edge weight = 1 for grid
+                if (newG < gScore[nr][nc]) {
+                    gScore[nr][nc] = newG;
+                    pq.offer(new int[]{nr, nc});
+                }
+            }
+        }
+        return -1;  // No path
+    }
+
+    // Manhattan distance heuristic (admissible for 4-directional grid)
+    private int heuristic(int[] a, int[] b) {
+        return Math.abs(a[0] - b[0]) + Math.abs(a[1] - b[1]);
+    }
+}
+```
+
+#### Common Heuristics
+
+```
+╔════════════════════╦══════════════════════════════════════════╗
+║ Heuristic          ║ When to Use                              ║
+╠════════════════════╬══════════════════════════════════════════╣
+║ Manhattan distance ║ 4-directional grid (up/down/left/right)  ║
+║ |x₁-x₂| + |y₁-y₂|║                                            ║
+╠════════════════════╬══════════════════════════════════════════╣
+║ Euclidean distance ║ 8-directional or free movement           ║
+║ √((x₁-x₂)²+(y₁-y₂)²)                                          ║
+╠════════════════════╬══════════════════════════════════════════╣
+║ Chebyshev distance ║ 8-directional grid (king moves)          ║
+║ max(|x₁-x₂|,|y₁-y₂|)                                          ║
+╠════════════════════╬══════════════════════════════════════════╣
+║ h(n) = 0          ║ Degenerates to Dijkstra (always safe)     ║
+╚════════════════════╩══════════════════════════════════════════╝
+```
+
+
+### Curated Practice — Advanced Graph Algorithms
+
+```
+╔════╦══════════════════════════════════════════════════════════════╦═══════════════════════════════════════════════╗
+║  # ║ Problem                                                     ║ Diff.                                          ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  1 ║ Critical Connections (LC 1192)                               ║ Hard                                          ║
+║    ║ https://leetcode.com/problems/critical-connections-in-a-network/ ║                                           ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  2 ║ Shortest Path in Binary Matrix (LC 1091)                    ║ Medium                                         ║
+║    ║ https://leetcode.com/problems/shortest-path-in-binary-matrix/ ║                                              ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  3 ║ Network Delay Time (LC 743)                                 ║ Medium                                         ║
+║    ║ https://leetcode.com/problems/network-delay-time/            ║                                               ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  4 ║ Cheapest Flights Within K Stops (LC 787)                    ║ Medium                                         ║
+║    ║ https://leetcode.com/problems/cheapest-flights-within-k-stops/ ║                                             ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  5 ║ Course Schedule II (LC 210) — Topo Sort                     ║ Medium                                         ║
+║    ║ https://leetcode.com/problems/course-schedule-ii/            ║                                               ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  6 ║ Path with Maximum Probability (LC 1514) — Max Dijkstra      ║ Medium                                         ║
+║    ║ https://leetcode.com/problems/path-with-maximum-probability/ ║                                               ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  7 ║ Minimum Cost to Make at Least One Valid Path (LC 1368)      ║ Hard                                           ║
+║    ║ https://leetcode.com/problems/minimum-cost-to-make-at-least-one-valid-path-in-a-grid/ ║                      ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  8 ║ Redundant Connection II (LC 685) — Directed graph cycle     ║ Hard                                           ║
+║    ║ https://leetcode.com/problems/redundant-connection-ii/       ║                                               ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║  9 ║ Swim in Rising Water (LC 778) — Binary Search + BFS/UF     ║ Hard                                            ║
+║    ║ https://leetcode.com/problems/swim-in-rising-water/          ║                                               ║
+╠════╬══════════════════════════════════════════════════════════════╬═══════════════════════════════════════════════╣
+║ 10 ║ Find the City (LC 1334) — Floyd-Warshall                   ║ Medium                                          ║
+║    ║ https://leetcode.com/problems/find-the-city-with-the-smallest-number-of-neighbors-at-a-threshold-distance/ ║ ║
+╚════╩══════════════════════════════════════════════════════════════╩═══════════════════════════════════════════════╝
+```
+
+
+---
+
+---
+
+🔬 **Section Challenge — 🕸️ Advanced Graph Algorithms**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+

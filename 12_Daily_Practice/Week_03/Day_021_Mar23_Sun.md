@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_020_Mar22_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
+
 # Day 021 — Sunday, March 23, 2026
 
 > **Week 03** | **Review Day** | **Theme:** Full Review + Speed Drills + Weak Spot Focus
@@ -13,9 +15,6 @@
 - [ ] Teach-back exercise (20 min)
 - [ ] Week 4 preview (10 min)
 - [ ] Bonus challenges (optional, 60 min)
-
----
-
 
 ---
 
@@ -120,7 +119,7 @@ Explain as if teaching a junior:
 
 ---
 
-## WEEK 4 PREVIEW
+## 📌 Week 4 Preview
 
 ```
 WHAT'S COMING:
@@ -132,6 +131,7 @@ WHAT'S COMING:
   Difficulty ramp: MEDIUM-HARD
   Building on trees (→ tries) and BFS (→ Dijkstra)!
 ```
+
 
 ---
 
@@ -222,3 +222,9 @@ PROBLEMS SOLVED:
 
 NEXT MILESTONE: 50 problems by end of Week 4!
 ```
+
+
+
+---
+
+> **Navigation**: [< Previous](Day_020_Mar22_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)

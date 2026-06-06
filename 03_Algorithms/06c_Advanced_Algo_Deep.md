@@ -2,10 +2,20 @@
 
 ---
 
-✗ Coin change with unusual denominations
-✗ 0/1 Knapsack (need DP)
-✗ Problems requiring backtracking
-```
+<details>
+<summary><b>🧠 5W1H: Advanced Algorithms (DP, Backtracking, Branch & Bound, NP-Complete)</b></summary>
+
+- **What**: Core patterns of Dynamic Programming, Backtracking, Branch & Bound, and theoretical limits via NP-Completeness.
+- **Why**: Real-world routing/scheduling problems are often intractable (NP-Hard). You must recognize when exact $O(N)$ is impossible so you can switch to DP, Branch & Bound, or approximations.
+- **When**: Use DP for overlapping subproblems. Use Backtracking for small constraints to enumerate state spaces. Use Branch & Bound when pruning makes NP-hard feasible for small inputs.
+- **Where**: Pathfinding, logistics (TSP), constraint solvers, and algorithmic interviews.
+- **Who**: Operations researchers, backend engineers, and algorithm designers.
+- **How**: By defining states and transitions (DP), maintaining a state stack (Backtracking), deriving tight lower bounds (B&B), and reducing from known problems (SAT) to prove hardness.
+</details>
+
+---
+
+# 🎯 Advanced Algorithms Deep Dive: Implementations
 
 ### Fractional Knapsack Problem
 
@@ -512,6 +522,16 @@ public int editDistance(String s1, String s2) {
 
 ---
 
+🔬 **Section Challenge — Dynamic Programming**
+
+**Challenge 1 (State Reduction):** For Edit Distance, we allocate an $O(M \times N)$ array. How can this be optimized to $O(\min(M, N))$ space, and what is the trade-off if we need to reconstruct the actual sequence of operations (not just the minimum count)?
+<details><summary>Answer</summary>
+
+Because `dp[i][j]` only depends on `dp[i-1][j]`, `dp[i][j-1]`, and `dp[i-1][j-1]`, we only need the *current row* and *previous row* at any given time, reducing space to $O(\min(M, N))$. However, the trade-off is we lose the historical paths. If we need to reconstruct the actual edits (the alignment), we *must* keep the full $O(M \times N)$ table (or use Hirschberg's algorithm, which achieves $O(M \times N)$ time and $O(M)$ space for both score and alignment via Divide & Conquer).
+</details>
+
+---
+
 # UNIT 4: BACKTRACKING
 
 ## The General Method
@@ -781,6 +801,16 @@ private boolean isSafe(int[][] graph, int[] path, int pos, int v) {
 
 // TIME: O(N!) worst case
 ```
+
+---
+
+🔬 **Section Challenge — Backtracking**
+
+**Challenge 1 (Symmetry Pruning):** In the N-Queens problem, finding all solutions for $N=8$ takes 92 iterations. However, we can cut the search space nearly in half. How?
+<details><summary>Answer</summary>
+
+Symmetry. A chessboard is symmetric horizontally, vertically, and diagonally. Instead of searching all columns for the first row (`row = 0`), we only need to place the first queen in the first half of the columns ($0$ to $N/2 - 1$). Any valid board found can be mirrored horizontally to produce another valid board. For odd $N$, the middle column requires a full search but cannot be mirrored. This dramatically cuts the branches of the state space tree at the very top.
+</details>
 
 ---
 
@@ -1111,7 +1141,18 @@ SAT → 3-SAT → CLIQUE → VERTEX COVER → HAMILTONIAN → TSP
 
 ---
 
+🔬 **Section Challenge — NP-Completeness**
+
+**Challenge 1 (Reduction Logic):** If someone discovers an $O(N^3)$ algorithm for 3-SAT, why does this automatically mean TSP (Optimization) is solvable in polynomial time?
+<details><summary>Answer</summary>
+
+Because 3-SAT is NP-Complete, and TSP (Decision version) is in NP. By Cook's Theorem and Karp's reductions, any instance of TSP can be mathematically translated (reduced) into an instance of 3-SAT in polynomial time. If 3-SAT is solvable in $O(N^3)$, we can just translate TSP to 3-SAT, solve it, and translate the answer back, all in polynomial time. Therefore $P = NP$, and every problem in NP is solvable in polynomial time.
+</details>
 
 ---
 
-> **Next**: [Part B: Advanced Patterns & Competitive Programming](06b_Advanced_Algorithms_Patterns.md)
+> **Next**: [Part B: Advanced Patterns & Competitive Programming](06e_Algorithm_Patterns.md)
+
+---
+
+> **Navigation**: [< Previous](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06d_String_Algorithms.md)

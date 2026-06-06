@@ -1,0 +1,272 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [← Testing](07_React_Testing.md)
+
+---
+
+# ⚡ React Performance & Enterprise Patterns
+
+---
+
+## 5W1H — Why React Performance Optimization?
+
+- **WHAT**: The process of minimizing rendering bottlenecks, network delays, and bundle sizes in React applications.
+- **WHY**: Slow applications cause high bounce rates and poor user experience. Over-rendering drains battery life and makes UIs feel unresponsive.
+- **WHO**: Senior frontend engineers scaling applications with large DOM trees or complex interactive data structures.
+- **WHEN**: *After* measuring a real performance problem. Premature optimization (like wrapping every function in `useCallback`) often makes code worse and slower due to memoization overhead.
+- **HOW**: By memoizing expensive operations (`React.memo`, `useMemo`), splitting bundles (`React.lazy`), virtualizing large lists, and strictly managing state locations to avoid prop-drilling renders.
+
+---
+
+## Part 1: Performance — Avoid Unnecessary Re-renders
+
+
+> WHEN DOES A COMPONENT RE-RENDER?
+>
+> 1. Its state changes (useState setter called)
+> 2. Its parent re-renders (props may have changed)
+> 3. Context value it consumes changes
+>
+> REACT RE-RENDER ≠ DOM UPDATE
+> Re-render: React calls your component function → creates virtual DOM
+> DOM update: React diffs old vs new virtual DOM → updates only changed nodes
+>
+> Most re-renders are fine! Only optimize when you MEASURE a problem.
+
+
+### Key Optimization Techniques
+
+```jsx
+// 1. React.memo — Skip re-render if props haven't changed
+const ExpensiveList = React.memo(function ExpensiveList({ items }) {
+  return <ul>{items.map(i => <li key={i.id}>{i.name}</li>)}</ul>;
+});
+// Only re-renders if items reference changes (shallow comparison)
+
+// 2. useMemo — Memoize expensive calculations
+const sortedData = useMemo(() => {
+  return [...data].sort((a, b) => a.score - b.score); // expensive sort
+}, [data]);
+
+// 3. useCallback — Stable function references for memoized children
+const handleDelete = useCallback((id: string) => {
+  setItems(prev => prev.filter(i => i.id !== id));
+}, []); // stable reference
+
+// 4. Lazy loading — Code split by route
+const Dashboard = lazy(() => import('./pages/Dashboard'));
+
+function App() {
+  return (
+    <Suspense fallback={<Spinner />}>
+      <Routes>
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </Suspense>
+  );
+}
+
+// 5. Virtualization — Render only visible items in long lists
+import { useVirtualizer } from '@tanstack/react-virtual';
+
+function VirtualList({ items }) {
+  const parentRef = useRef(null);
+  const virtualizer = useVirtualizer({
+    count: items.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 50, // estimated row height
+  });
+  
+  return (
+    <div ref={parentRef} style={{ height: '400px', overflow: 'auto' }}>
+      <div style={{ height: virtualizer.getTotalSize() }}>
+        {virtualizer.getVirtualItems().map(virtualRow => (
+          <div key={virtualRow.key} style={{
+            position: 'absolute', top: virtualRow.start, height: virtualRow.size,
+          }}>
+            {items[virtualRow.index].name}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+// 10,000 items? Only ~20 DOM nodes rendered at a time!
+```
+
+---
+
+## Part 2: Enterprise Project Structure
+
+```
+src/
+├── api/                   # API client & domain-specific APIs
+│   ├── client.ts          # Base HTTP client (fetch wrapper)
+│   ├── users.ts           # User-related API calls
+│   └── orders.ts
+├── components/            # Shared/reusable UI components
+│   ├── ui/                # Primitives: Button, Modal, Input
+│   ├── forms/             # Form components with validation
+│   └── layout/            # Header, Sidebar, Footer
+├── features/              # Feature-based modules (vertical slices)
+│   ├── auth/
+│   │   ├── components/    # LoginForm, RegisterForm
+│   │   ├── hooks/         # useAuth, useLogin
+│   │   ├── store/         # Auth slice/store
+│   │   └── types.ts
+│   ├── products/
+│   │   ├── components/    # ProductList, ProductCard
+│   │   ├── hooks/         # useProducts, useProductSearch
+│   │   └── types.ts
+│   └── cart/
+├── hooks/                 # Shared custom hooks
+│   ├── useDebounce.ts
+│   ├── useLocalStorage.ts
+│   └── useMediaQuery.ts
+├── lib/                   # Third-party setup (axios, dayjs)
+├── pages/                 # Route-level page components
+├── store/                 # Global state (Redux store config)
+├── types/                 # Shared TypeScript types
+├── utils/                 # Pure utility functions
+└── App.tsx
+```
+
+
+---
+
+## Part 3: Key Enterprise Patterns
+
+```tsx
+// ── FEATURE FLAG SYSTEM ──
+const FeatureFlagContext = createContext<Record<string, boolean>>({});
+
+function useFeatureFlag(flag: string): boolean {
+  const flags = useContext(FeatureFlagContext);
+  return flags[flag] ?? false;
+}
+
+function NewCheckout() {
+  const isNewCheckoutEnabled = useFeatureFlag('new-checkout');
+  return isNewCheckoutEnabled ? <NewCheckoutFlow /> : <LegacyCheckout />;
+}
+
+// ── ROLE-BASED ACCESS CONTROL ──
+function usePermission(permission: string): boolean {
+  const { user } = useAuth();
+  return user?.permissions?.includes(permission) ?? false;
+}
+
+function AdminPanel() {
+  const canManageUsers = usePermission('users:manage');
+  if (!canManageUsers) return <AccessDenied />;
+  return <UserManagement />;
+}
+
+// ── OPTIMISTIC UPDATES (React Query) ──
+const mutation = useMutation({
+  mutationFn: updateTodo,
+  onMutate: async (newTodo) => {
+    await queryClient.cancelQueries({ queryKey: ['todos'] });
+    const previous = queryClient.getQueryData(['todos']);
+    queryClient.setQueryData(['todos'], (old) =>
+      old.map(t => t.id === newTodo.id ? { ...t, ...newTodo } : t)
+    );
+    return { previous };  // save for rollback
+  },
+  onError: (err, newTodo, context) => {
+    queryClient.setQueryData(['todos'], context.previous); // rollback
+  },
+  onSettled: () => {
+    queryClient.invalidateQueries({ queryKey: ['todos'] }); // refetch truth
+  },
+});
+```
+
+---
+
+
+
+## Part 4: Environment & Deployment
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│  ENVIRONMENT VARIABLES (Vite):                                                   │
+│  .env                → VITE_API_URL=http://localhost:8080                        │
+│  .env.production     → VITE_API_URL=https://api.myapp.com                        │
+│  Access: import.meta.env.VITE_API_URL                                            │
+│  RULE: Only VITE_ prefixed vars are exposed to client!                           │
+│                                                                                  │
+│  BUILD & DEPLOY PIPELINE:                                                        │
+│  npm run build → dist/ folder (static HTML/CSS/JS)                               │
+│  Deploy dist/ to: Vercel, Netlify, S3+CloudFront, Nginx                          │
+│                                                                                  │
+│  ESSENTIAL TOOLING:                                                              │
+│  Build: Vite (fast HMR, optimized builds)                                        │
+│  Lint: ESLint + Prettier (consistent code)                                       │
+│  Type check: tsc --noEmit (CI check)                                             │
+│  Test: Vitest (unit/integration) + Playwright (E2E)                              │
+│  CI: GitHub Actions → lint + type-check + test + build + deploy                  │
+└──────────────────────────────────────────────────────────────────────────────────┘
+```
+
+
+---
+
+## React Interview Must-Knows
+
+```
+Q: "What is the virtual DOM?"
+A: In-memory representation of the real DOM. When state changes, React creates
+   a new virtual DOM tree, diffs it against the old one, and applies only
+   the minimal set of real DOM changes. This is called reconciliation.
+
+Q: "Why do we need keys in lists?"
+A: Keys help React identify which items changed/added/removed during reconciliation.
+   Without stable keys, React re-renders the entire list.
+
+Q: "useState vs useRef?"
+A: useState: triggers re-render when value changes. Use for UI state.
+   useRef: persists value across renders without triggering re-render.
+   Use for DOM refs, timers, previous values.
+
+Q: "When would you use useReducer over useState?"
+A: When state logic is complex (multiple sub-values, next state depends on
+   previous), when state transitions need to be testable separately, or
+   when passing dispatch down avoids prop drilling callbacks.
+
+Q: "How do you handle stale closures in useEffect?"
+A: Use functional updates (setCount(c => c + 1)), include deps in
+   dependency array, use refs for values you don't want to trigger re-runs.
+```
+
+---
+
+## 🏋️ Practice Challenges
+
+**Challenge 1 (Performance Diagnostics):** A user complains that typing into a Search `<input>` is extremely laggy. The `<input>` is located at the top of a `<ProductDashboard>` component that also renders 5,000 `<ProductCard>` components. Explain exactly why the lag occurs and two ways to fix it.
+<details><summary>Answer</summary>
+
+**Why it occurs:** Every keystroke updates a `searchQuery` state variable in `<ProductDashboard>`. This triggers a re-render of the entire dashboard, which forces React to recursively re-render all 5,000 `<ProductCard>` components synchronously, blocking the main thread and freezing the input.
+**Fixes:** 
+1. **Debounce the input / Local State:** Move the `<input>` into a separate `<SearchBox>` component that manages its own keystroke state, and only passes the final query up to the dashboard after a debounce.
+2. **React.memo:** Wrap `ProductCard` in `React.memo` so they skip rendering if their props haven't changed.
+3. **useTransition:** Wrap the dashboard filtering logic in `startTransition` so React knows the input update is urgent, but the list rendering is low priority.
+</details>
+
+**Challenge 2 (Memoization Traps):** You wrap a heavy child component in `React.memo()`. You pass it `items={list}` and `onSelect={() => setSelection()}`. The child still re-renders every time the parent renders. Why?
+<details><summary>Answer</summary>
+
+The inline arrow function `() => setSelection()` creates a **new function reference** in memory every single time the parent renders. `React.memo` does a shallow comparison (`oldProps === newProps`). Since `newFunction !== oldFunction`, `React.memo` thinks the props changed and forces a re-render.
+**Fix:** Wrap the callback in `useCallback` to preserve its memory reference across renders.
+</details>
+
+---
+
+## 🔗 Cross-References
+
+| Topic | Related Content |
+|---|---|
+| **Hooks** | [Hooks Deep Dive](03_Hooks_Deep_Dive.md) — useMemo, useCallback |
+| **State Management** | [State Management](04_State_Management.md) — avoiding render waterfalls |
+| **Component Patterns** | [Component Patterns](02_Component_Patterns.md) |
+| **React Router** | [React Router](06_React_Router.md) — lazy loading |
+| **Web Performance** | [System Design](../20_Interview_Mastery/06_System_Design_Blueprint.md) — General frontend performance |
+

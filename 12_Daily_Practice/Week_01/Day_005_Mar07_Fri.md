@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_004_Mar06_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_006_Mar08_Sat.md)
+
 # Day 005 - Friday, March 7, 2026
 
 > **Week 01** | **Difficulty:** EASY-MEDIUM | **Theme:** 2D Arrays + Merge Sort + SQL SELECT
@@ -42,6 +44,7 @@ KEY DIMENSIONS:
   cols = matrix[0].length
 ```
 
+
 #### HOW: Traversal patterns
 
 ```java
@@ -80,6 +83,7 @@ Matrix:    1  2  3  4       Spiral output: 1→2→3→4→8→12→11→10
 
 Direction: RIGHT → DOWN → LEFT → UP → repeat (shrinking boundaries)
 ```
+
 
 ```java
 public List<Integer> spiralOrder(int[][] matrix) {
@@ -145,6 +149,7 @@ MERGE phase (combine sorted halves):
  [3, 27, 38, 43] + [9, 10, 82] → [3, 9, 10, 27, 38, 43, 82]
 ```
 
+
 #### Code
 
 ```java
@@ -193,6 +198,7 @@ Level 2:  [n/4][n/4][n/4][n/4]            → n work
    ...    log₂(n) levels total             → n × log₂(n) total
 ```
 
+
 ---
 
 ## BLOCK 3: COMBO (20 min)
@@ -209,6 +215,7 @@ target = 3 → true
 target = 13 → false
 ```
 
+
 **KEY INSIGHT:** Treat the 2D matrix as a 1D sorted array.
 
 ```
@@ -221,6 +228,7 @@ Convert 1D index to 2D:
   
 Example: index 5 in 4-column matrix → row=5/4=1, col=5%4=1 → matrix[1][1]=11
 ```
+
 
 <details>
 <summary>Solution</summary>
@@ -415,7 +423,7 @@ ORDER BY inventory_value DESC;
 ```
 </details>
 
-> **Read more:** [08_SQL/05_SELECT_Filtering.md](../../08_SQL/05_SELECT_Filtering.md)
+> **Read more:** [08_SQL/05_Queries_SELECT_WHERE.md](../../08_SQL/05_Queries_SELECT_WHERE.md)
 
 ---
 
@@ -444,6 +452,7 @@ Step 2 — Reverse each row:
    [8,5,2],
    [9,6,3]]  ← Done!
 ```
+
 
 <details>
 <summary>Solution</summary>
@@ -498,6 +507,7 @@ Let's verify: row 0 min=1 → col 0 max=3 → not 1. row 0 min=1→ fail.
               row 1: min=3 at col=0. Col 0 max=3. 3==3 → YES! Saddle=3.
 ```
 
+
 <details>
 <summary>Solution</summary>
 
@@ -551,3 +561,8 @@ public int findSaddlePoint(int[][] matrix) {
 > **Mentor Note:** You now know 4 sorting algorithms (Selection, Insertion, 
 > Bubble, Merge). Next week adds Quick Sort and Counting Sort. At that point 
 > you'll have a complete sorting toolkit for any interview.
+
+
+---
+
+> **Navigation**: [< Previous](Day_004_Mar06_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_006_Mar08_Sat.md)

@@ -1,10 +1,98 @@
+﻿**Navigation**: [< Previous](03_Visual_Diagrams.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_LeetCode_RealWorld_Map.md)
+
+---
+
+## 🗺️ MASTER PATTERN GUIDE — How to Identify Any Pattern From a Problem
+
+**Read this FIRST. Use this every time you see a new problem.**
+The fastest skill you can build is: see a problem → immediately know which pattern to use.
+
+> Constraint override: keywords suggest patterns, but constraints confirm them. If values may be negative, updates exist, graph weights differ, or `N` is huge, switch using [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+> Rewrite method: when you only have brute force, use [Brute Force to Optimal](../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md) to identify which DS/Algo replaces the slow loop.
+
+### 🔑 Step 1: Read the Problem. Look for These Keywords
+
+| If you see... | First think... | Then verify with... |
+|---|---|---|
+| `subarray`, `contiguous`, `consecutive` | Sliding Window or Prefix Sum | Is it max/min sum? → Kadane's. Count? → Prefix+HashMap |
+| `substring` of size constraints | Sliding Window | Fixed size? Fixed window. Variable? Variable window |
+| `subsequence`, `not necessarily contiguous` | Recursion / DP | LIS? Binary Search. LCS? 2D DP |
+| `pairs`, `two numbers sum to target` | Two Pointers (sorted) or HashMap | Sorted input? Two Pointers. Unsorted? HashMap |
+| `triplets / k-sum` | Sort + Two Pointers | Fix one, two-pointer the rest |
+| `sorted` + `find` / `search` | Binary Search | On data? Classic BS. On answer? BS on answer space |
+| `rotated sorted array` | Modified Binary Search | One half always sorted |
+| `frequency`, `count occurrences` | HashMap | Char? `int[26]`. General? `HashMap` |
+| `group by`, `anagrams`, `bucket` | HashMap groups | Key = sorted string or signature |
+| `k-th largest / smallest` | Heap | Min-Heap of size k O(n log k) |
+| `top K` elements | Heap + Freq | Freq map → Heap |
+| `matching brackets / nesting` | Stack | LIFO maps nesting perfectly |
+| `next greater / smaller element` | Monotonic Stack | Decreasing for NGE, increasing for NSE |
+| `level by level`, `BFS` | Queue | Level-order traversal |
+| `all possible`, `generate all`, `enumerate` | Recursion / Backtracking | Include/Exclude paradigm |
+| `minimum cost / maximum profit` globally | Greedy or DP | Greedy if local optimal = global. DP if overlapping subproblems |
+| `connected components`, `path`, `graph` | BFS/DFS | BFS = shortest path unweighted. DFS = explore all |
+| `cycle detection` | Fast/Slow Pointers (LL) or DFS (graph) | LL? Floyd's. Graph? DFS color |
+| `intervals`, `overlapping ranges` | Sort by start + merge | Sort → scan linearly |
+| `prefix` / `range sum query` | Prefix Sum | Build O(n), query O(1) |
+
+### 🔑 Step 2: Check the Input Type
+
+```
+Input is ARRAY?
+  ├── Sorted? → Binary Search / Two Pointers
+  ├── Unsorted, find pairs? → HashMap O(n) or Sort+TwoPtr O(n log n)
+  ├── Window problem? → Sliding Window
+  └── Max/min subarray? → Kadane's
+
+Input is STRING?
+  ├── Substring constraints? → Sliding Window
+  ├── Frequency? → int[26] or HashMap
+  ├── Prefix/suffix? → String DP
+  └── Pattern matching? → KMP / Rolling Hash
+
+Input is TREE?
+  ├── Path problems? → DFS
+  ├── Level problems? → BFS
+  └── BST + ordered? → Inorder traversal
+
+Input is GRAPH?
+  ├── Shortest path (unweighted)? → BFS
+  ├── All paths / connected? → DFS
+  ├── Shortest path (weighted)? → Dijkstra's (Heap)
+  └── No cycles guaranteed? → Topological Sort
+
+Input is LINKED LIST?
+  ├── Cycle? → Fast/Slow Pointers
+  ├── Nth from end? → Gap of N (Fast/Slow)
+  ├── Middle? → Fast/Slow
+  └── Reverse? → 3-pointer iterative
+```
+
+### 🔑 Step 3: Check the Constraints
+
+```
+n ≤ 20        → O(2ⁿ) or O(n!) OK → Backtracking / Brute Force
+n ≤ 100       → O(n³) OK           → 3 nested loops
+n ≤ 1,000     → O(n²) OK           → 2 nested loops / DP
+n ≤ 100,000   → O(n log n) needed  → Sort / Binary Search / Heap
+n ≤ 1,000,000 → O(n) needed        → HashMap / Sliding Window / Kadane's
+n ≤ 10^9      → O(log n) or O(1)   → Math / Binary Search
+```
+
+---
+
+
+
 # 🔥 Advanced DSA Patterns & Templates
 
 ## Beyond the Basics - Level Up Your Problem Solving
 
 ---
 
-# PATTERN 1: PREFIX SUM
+
+
+
+# 🎨 Pattern 1: Prefix Sum
 
 ## Concept
 
@@ -45,7 +133,7 @@ int rangeSum = prefix[right + 1] - prefix[left];
 
 ---
 
-# PATTERN 2: KADANE'S ALGORITHM
+# 🎨 Pattern 2: Kadane's Algorithm
 
 ## Concept
 
@@ -81,6 +169,7 @@ Step-by-step:
 
 Maximum Subarray Sum = 6 (subarray [4, -1, 2, 1])
 ```
+
 
 ## Template
 
@@ -124,7 +213,7 @@ public int[] maxSubArrayWithIndices(int[] arr) {
 
 ---
 
-# PATTERN 3: MONOTONIC STACK
+# 📚 Pattern 3: Monotonic Stack
 
 ## Concept
 
@@ -185,7 +274,10 @@ public int largestRectangleArea(int[] heights) {
 
 ---
 
-# PATTERN 4: UNION-FIND (DISJOINT SET)
+
+
+
+# 🎨 Pattern 4: Union — Find (disjoint Set)
 
 ## Concept
 
@@ -237,6 +329,7 @@ With Path Compression on find(3):
 
 Now find(3) = 0 directly!
 ```
+
 
 ## Template
 
@@ -301,7 +394,7 @@ class UnionFind {
 
 ---
 
-# PATTERN 5: TRIE (PREFIX TREE)
+# 🌳 Pattern 5: Trie (prefix Tree)
 
 ## Concept
 
@@ -385,7 +478,7 @@ class Trie {
 
 ---
 
-# PATTERN 6: TOPOLOGICAL SORT
+# 🔄 Pattern 6: Topological Sort
 
 ## Concept
 
@@ -395,6 +488,7 @@ such that for every edge u→v, u comes before v
 
 Use Case: Task scheduling, course prerequisites, build systems
 ```
+
 
 ## Visual
 
@@ -411,6 +505,7 @@ Valid Topological Orders:
 
 Not valid: 3, 2, ... (2 must come before 3)
 ```
+
 
 ## Template: Kahn's Algorithm (BFS)
 
@@ -507,7 +602,7 @@ private boolean dfs(int node, List<List<Integer>> adj,
 
 ---
 
-# PATTERN 7: BINARY SEARCH VARIANTS
+# 🔍 Pattern 7: Binary Search Variants
 
 ## Variant 1: Find First True (Lower Bound)
 
@@ -534,6 +629,9 @@ public int lowerBound(int[] arr, int target) {
 }
 ```
 
+
+
+
 ## Variant 2: Find Last True (Upper Bound)
 
 ```
@@ -558,6 +656,9 @@ public int lastLessOrEqual(int[] arr, int target) {
     return arr[left] <= target ? left : -1;
 }
 ```
+
+
+
 
 ## Variant 3: Search in Rotated Array
 
@@ -597,6 +698,9 @@ public int searchRotated(int[] arr, int target) {
 }
 ```
 
+
+
+
 ## Variant 4: Binary Search on Answer
 
 ```
@@ -635,7 +739,24 @@ private boolean canShip(int[] weights, int days, int capacity) {
 
 ---
 
-# PATTERN 8: INTERVAL PROBLEMS
+
+
+🔬 **Section Challenge — Variant 4: Binary Search on Answer**
+
+**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+<details><summary>Answer</summary>
+
+lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+</details>
+
+**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+<details><summary>Answer</summary>
+
+Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+</details>
+
+
+# 🧩 Pattern 8: Interval Problems
 
 ## Common Operations
 
@@ -656,6 +777,9 @@ Merge Logic:
 - If current.start <= prev.end: Overlap! Merge them
 - Else: No overlap, add to result
 ```
+
+
+
 
 ## Template: Merge Intervals
 
@@ -684,6 +808,9 @@ public int[][] merge(int[][] intervals) {
     return result.toArray(new int[result.size()][]);
 }
 ```
+
+
+
 
 ## Template: Meeting Rooms II (Min Rooms Needed)
 
@@ -721,7 +848,10 @@ public int minMeetingRooms(int[][] intervals) {
 
 ---
 
-# PATTERN 9: GRAPH ALGORITHMS
+
+
+
+# 🕸️ Pattern 9: Graph Algorithms
 
 ## Dijkstra's Algorithm (Shortest Path with Weights)
 
@@ -787,7 +917,7 @@ public int[][] floydWarshall(int[][] graph) {
 
 ---
 
-# PATTERN 10: BIT MANIPULATION
+# ⚡ Pattern 10: Bit Manipulation
 
 ## Common Operations
 
@@ -860,7 +990,10 @@ public List<List<Integer>> subsets(int[] nums) {
 
 ---
 
-# QUICK COMPLEXITY REFERENCE
+
+
+
+# 📖 Quick Complexity Reference
 
 | Pattern          | Time                    | Space        |
 | ---------------- | ----------------------- | ------------ |
@@ -881,21 +1014,21 @@ public List<List<Integer>> subsets(int[] nums) {
 
 ```
 ┌────────────────────────────────────────────────────────────┐
-│                    DECISION TREE                            │
+│                    DECISION TREE                           │
 ├────────────────────────────────────────────────────────────┤
-│                                                             │
+│                                                            │
 │  Is array SORTED?                                          │
 │  ├── YES → Binary Search / Two Pointers                    │
 │  └── NO → Continue...                                      │
-│                                                             │
+│                                                            │
 │  Need CONTIGUOUS subarray?                                 │
 │  ├── YES → Sliding Window / Prefix Sum                     │
 │  └── NO → Continue...                                      │
-│                                                             │
+│                                                            │
 │  Need to find PAIRS/COMPLEMENTS?                           │
 │  ├── YES → HashMap / Two Pointers (if sorted)              │
 │  └── NO → Continue...                                      │
-│                                                             │
+│                                                            │
 │  Is it a GRAPH problem?                                    │
 │  ├── YES:                                                  │
 │  │   ├── Shortest path → BFS (unweighted) / Dijkstra       │
@@ -903,24 +1036,25 @@ public List<List<Integer>> subsets(int[] nums) {
 │  │   ├── Cycle detection → DFS                             │
 │  │   └── Dependency order → Topological Sort               │
 │  └── NO → Continue...                                      │
-│                                                             │
+│                                                            │
 │  Need ALL possibilities?                                   │
 │  ├── YES → Backtracking                                    │
 │  └── NO → Continue...                                      │
-│                                                             │
+│                                                            │
 │  Ask for OPTIMAL (min/max/count)?                          │
 │  ├── YES → Dynamic Programming                             │
 │  └── NO → Try brute force first, then optimize             │
-│                                                             │
+│                                                            │
 └────────────────────────────────────────────────────────────┘
 ```
 
+
 ---
 
-# CURATED PRACTICE PROBLEMS — PATTERN RECOGNITION DRILL
+# 💪 Curated Practice Problems — Pattern Recognition Drill
 
-> **HOW TO USE**: For each problem below, FIRST identify the pattern BEFORE coding.
-> Write down: "This is a [pattern] problem because [reason]."
+**HOW TO USE**: For each problem below, FIRST identify the pattern BEFORE coding.
+Write down: "This is a [pattern] problem because [reason]."
 
 ---
 
@@ -944,3 +1078,5 @@ public List<List<Integer>> subsets(int[] nums) {
 ---
 
 **Master these patterns, and you'll solve 90% of interview problems!**
+
+

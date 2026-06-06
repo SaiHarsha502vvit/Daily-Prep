@@ -1,8 +1,35 @@
-> **Navigation**: [< Previous Chapter](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+**Navigation**: [< Previous Chapter](02a_Sorting_Fundamentals.md) | [Back to Index](../00_MASTER_INDEX.md)
+🧠 **Mental Model**: See [Complexity Intuition](../14_Mental_Models/09_Complexity_Intuition.md) — heap sort, counting sort, and non-comparison bounds
 
 ---
 
-# PART 7: HEAP SORT
+# 📦 Advanced Sorting: Non-Comparison & Hybrid Algorithms
+
+### 5W1H: Mastering Advanced Sorting
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: Advanced sorting algorithms that either break the O(N log N) bound    ║
+║        using non-comparison techniques (Counting, Radix, Bucket) or combine  ║
+║        algorithms to exploit real-world data patterns (TimSort, Introsort).  ║
+║                                                                              ║
+║  WHY:  Real-world systems don't just sort random arrays. They sort bounded   ║
+║        integers, partially sorted logs, or enormous datasets where a generic ║
+║        QuickSort would be inefficient or unstable.                           ║
+║                                                                              ║
+║  WHO:  Engineers optimizing latency-critical pipelines, database indexes, or ║
+║        solving hard algorithmic challenges like "Sort colors in O(N)".       ║
+║                                                                              ║
+║  WHEN: Use when data has specific constraints (e.g., ages 0-120 → Counting   ║
+║        Sort), or when the language runtime needs a stable, adaptive sort     ║
+║        for object references (Java's TimSort).                               ║
+║                                                                              ║
+║  HOW:  By distributing elements into buckets/frequencies, sorting digits     ║
+║        iteratively, or detecting existing "runs" to minimize comparisons.    ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+## Part 7: Heap Sort
 
 ## The Idea
 
@@ -47,6 +74,7 @@ STEP 2: Extract max and heapify
 
         Done!            [1, 3, 4, 5, 10] ✓
 ```
+
 
 ## Code
 
@@ -102,7 +130,7 @@ private void heapify(int[] arr, int n, int i) {
 
 ---
 
-# PART 8: COMPARISON TABLE
+# ⚖️ Part 8: Comparison Table
 
 ```
 ┌─────────────┬──────────┬───────────┬───────────┬────────┬─────────┐
@@ -119,7 +147,7 @@ private void heapify(int[] arr, int n, int i) {
 
 ---
 
-# PART 9: WHEN TO USE WHICH
+# 📌 Part 9: When to Use Which
 
 ```
 USE INSERTION SORT WHEN:
@@ -151,7 +179,7 @@ USE BUILT-IN SORT:
 
 ---
 
-# PART 10: PRACTICE PROBLEMS
+# 💪 Part 10: Practice Problems
 
 ```
 EASY:
@@ -609,6 +637,17 @@ Arrays.sort(nums, (a, b) -> (b + "" + a).compareTo(a + "" + b));
 Arrays.sort(arr, fromIndex, toIndex);
 ```
 
+🔬 **Section Challenge — Custom Comparators in Java**
+
+**Challenge 1 (Bug Hunt):** You sort intervals with `(a, b) -> a[0] - b[0]`, and coordinates may be close to `Integer.MIN_VALUE` or `Integer.MAX_VALUE`. What can break, and what comparator should you use?
+<details><summary>Trace, Reasoning & Debug</summary>
+
+Subtraction can overflow, so a smaller value may look larger and the comparator can violate ordering rules. Broken comparators create wrong sorted order and can even trigger `Comparison method violates its general contract`.
+
+Use `Integer.compare(a[0], b[0])` for the primary key and add tie-breakers explicitly: `Comparator.<int[]>comparingInt(x -> x[0]).thenComparingInt(x -> x[1])`. The mental rule: comparator code must express ordering, not arithmetic shortcuts.
+</details>
+
+
 ## Sorting Linked Lists
 
 ```java
@@ -653,6 +692,17 @@ private ListNode merge(ListNode l1, ListNode l2) {
 }
 ```
 
+🔬 **Section Challenge — Sorting Linked Lists**
+
+**Challenge 1 (Constraint Reasoning):** Why is merge sort usually the natural choice for sorting a linked list, while array-style QuickSort is awkward?
+<details><summary>Trace, Reasoning & Debug</summary>
+
+Linked lists have no random access, so partitioning around a pivot and jumping by index is painful. Merge sort fits the structure: split with slow/fast pointers, recursively sort halves, then merge by rewiring `next` pointers.
+
+The constraint lens is: no indexing means prefer pointer-friendly algorithms. Merge sort gives `O(N log N)` time, stable ordering, and can be implemented with low extra memory because merging lists does not require copying into an array.
+</details>
+
+
 ## External Sorting (Large Files)
 
 ```
@@ -696,6 +746,17 @@ public void kWayMerge(List<Scanner> sortedFiles, PrintWriter output) {
 ```
 
 ---
+
+🔬 **Section Challenge — External Sorting (Large Files)**
+
+**Challenge 1 (Constraint Reasoning):** You must sort a `200GB` log file on a machine with `2GB` free RAM. Why does normal in-memory sorting fail, and what is the external sorting plan?
+<details><summary>Trace, Reasoning & Debug</summary>
+
+The input is larger than memory, so loading everything into an array will page heavily or crash. The correct category is external memory sorting, not "find a faster comparator."
+
+Split the file into RAM-sized chunks, sort each chunk in memory, write sorted runs to disk, then k-way merge the runs with a min-heap over the current head of each run. Tune chunk size, merge fan-in, buffer size, and temp file cleanup around memory and file descriptor limits.
+</details>
+
 
 # PART 15: Sorting-Based Interview Problems
 
@@ -824,439 +885,499 @@ _Understanding sorting algorithms teaches you how to think about efficiency!_ �
 
 # 🔬 PART FINAL: ADVANCED SORTING DEEP DIVE
 
-## RADIX SORT - NON-COMPARISON BASED SORTING
+## 🔄 Radix Sort — Non — Comparison Based Sorting
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    RADIX SORT - BEATING O(n log n)                               │
+│                    RADIX SORT - BEATING O(n log n)                              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  CLAIM: No comparison-based sort can be faster than O(n log n)                  │
-│  REALITY: Radix sort achieves O(nk) where k = number of digits!                │
-│                                                                                  │
+│  REALITY: Radix sort achieves O(nk) where k = number of digits!                 │
+│                                                                                 │
 │  For 32-bit integers with decimal digits:                                       │
-│  • k = 10 (maximum 10 digits in 32-bit integer)                                │
-│  • O(n × 10) = O(n) linear time!                                               │
-│                                                                                  │
-│                                                                                  │
+│  • k = 10 (maximum 10 digits in 32-bit integer)                                 │
+│  • O(n × 10) = O(n) linear time!                                                │
+│                                                                                 │
+│                                                                                 │
 │  ALGORITHM (LSD - Least Significant Digit first):                               │
 │  ────────────────────────────────────────────────                               │
 │  Sort by each digit, starting from rightmost                                    │
 │  Use stable counting sort for each digit position                               │
-│                                                                                  │
-│  Example: Sort [170, 45, 75, 90, 802, 24, 2, 66]                               │
-│                                                                                  │
-│  PASS 1 (ones digit):                                                            │
-│  Bucket 0: [170, 90]                                                             │
-│  Bucket 2: [802, 2]                                                              │
-│  Bucket 4: [24]                                                                  │
-│  Bucket 5: [45, 75]                                                              │
-│  Bucket 6: [66]                                                                  │
+│                                                                                 │
+│  Example: Sort [170, 45, 75, 90, 802, 24, 2, 66]                                │
+│                                                                                 │
+│  PASS 1 (ones digit):                                                           │
+│  Bucket 0: [170, 90]                                                            │
+│  Bucket 2: [802, 2]                                                             │
+│  Bucket 4: [24]                                                                 │
+│  Bucket 5: [45, 75]                                                             │
+│  Bucket 6: [66]                                                                 │
 │  After: [170, 90, 802, 2, 24, 45, 75, 66]                                       │
-│                                                                                  │
-│  PASS 2 (tens digit):                                                            │
+│                                                                                 │
+│  PASS 2 (tens digit):                                                           │
 │  Bucket 0: [802, 2]    (02, 02)                                                 │
-│  Bucket 2: [24]        (24)                                                      │
-│  Bucket 4: [45]        (45)                                                      │
-│  Bucket 6: [66]        (66)                                                      │
+│  Bucket 2: [24]        (24)                                                     │
+│  Bucket 4: [45]        (45)                                                     │
+│  Bucket 6: [66]        (66)                                                     │
 │  Bucket 7: [170, 75]   (70, 75)                                                 │
-│  Bucket 9: [90]        (90)                                                      │
+│  Bucket 9: [90]        (90)                                                     │
 │  After: [802, 2, 24, 45, 66, 170, 75, 90]                                       │
-│                                                                                  │
-│  PASS 3 (hundreds digit):                                                        │
+│                                                                                 │
+│  PASS 3 (hundreds digit):                                                       │
 │  Bucket 0: [2, 24, 45, 66, 75, 90]                                              │
-│  Bucket 1: [170]                                                                 │
-│  Bucket 8: [802]                                                                 │
-│  After: [2, 24, 45, 66, 75, 90, 170, 802] ✓ SORTED!                            │
-│                                                                                  │
-│                                                                                  │
-│  JAVA IMPLEMENTATION:                                                            │
+│  Bucket 1: [170]                                                                │
+│  Bucket 8: [802]                                                                │
+│  After: [2, 24, 45, 66, 75, 90, 170, 802] ✓ SORTED!                             │
+│                                                                                 │
+│                                                                                 │
+│  JAVA IMPLEMENTATION:                                                           │
 │  ────────────────────                                                           │
-│  public void radixSort(int[] arr) {                                              │
-│      int max = getMax(arr);                                                      │
-│                                                                                  │
+│  public void radixSort(int[] arr) {                                             │
+│      int max = getMax(arr);                                                     │
+│                                                                                 │
 │      // Do counting sort for every digit                                        │
 │      for (int exp = 1; max / exp > 0; exp *= 10) {                              │
-│          countingSortByDigit(arr, exp);                                          │
-│      }                                                                           │
-│  }                                                                               │
-│                                                                                  │
+│          countingSortByDigit(arr, exp);                                         │
+│      }                                                                          │
+│  }                                                                              │
+│                                                                                 │
 │  private void countingSortByDigit(int[] arr, int exp) {                         │
-│      int n = arr.length;                                                         │
-│      int[] output = new int[n];                                                  │
+│      int n = arr.length;                                                        │
+│      int[] output = new int[n];                                                 │
 │      int[] count = new int[10];  // Digits 0-9                                  │
-│                                                                                  │
-│      // Count occurrences of each digit                                          │
+│                                                                                 │
+│      // Count occurrences of each digit                                         │
 │      for (int i = 0; i < n; i++)                                                │
 │          count[(arr[i] / exp) % 10]++;                                          │
-│                                                                                  │
-│      // Convert counts to positions                                              │
+│                                                                                 │
+│      // Convert counts to positions                                             │
 │      for (int i = 1; i < 10; i++)                                               │
 │          count[i] += count[i - 1];                                              │
-│                                                                                  │
+│                                                                                 │
 │      // Build output array (reverse for stability)                              │
 │      for (int i = n - 1; i >= 0; i--) {                                         │
 │          int digit = (arr[i] / exp) % 10;                                       │
 │          output[count[digit] - 1] = arr[i];                                     │
-│          count[digit]--;                                                         │
-│      }                                                                           │
-│                                                                                  │
-│      // Copy back                                                                │
+│          count[digit]--;                                                        │
+│      }                                                                          │
+│                                                                                 │
+│      // Copy back                                                               │
 │      System.arraycopy(output, 0, arr, 0, n);                                    │
-│  }                                                                               │
-│                                                                                  │
-│                                                                                  │
+│  }                                                                              │
+│                                                                                 │
+│                                                                                 │
 │  WHEN TO USE RADIX SORT:                                                        │
 │  ──────────────────────                                                         │
-│  ✅ Integers with limited range                                                 │
-│  ✅ Strings of fixed length                                                     │
-│  ✅ When n is very large and k is small                                        │
-│  ❌ Floating point numbers (tricky representation)                             │
-│  ❌ When range is huge (k becomes large)                                       │
-│                                                                                  │
+│  ✅ Integers with limited range                                                  │
+│  ✅ Strings of fixed length                                                      │
+│  ✅ When n is very large and k is small                                          │
+│  ❌ Floating point numbers (tricky representation)                               │
+│  ❌ When range is huge (k becomes large)                                         │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## TIMSORT - THE REAL-WORLD CHAMPION
+🔬 **Section Challenge — 🔄 Radix Sort — Non — Comparison Based Sorting**
+
+**Challenge 1 (Constraint Reasoning):** `N = 1e6` non-negative integers are all below `1e9`. When can radix sort beat comparison sorting, and what hidden constraints must you check first?
+<details><summary>Trace, Reasoning & Debug</summary>
+
+Comparison sorting has a lower bound of `O(N log N)`, but radix sort can run in `O(d * (N + base))`, where `d` is the number of digits/passes. It can win when keys are fixed-width integers and the digit count is small.
+
+Check whether values are negative, whether stability is required, how much extra memory counting buckets need, and whether the constant factors beat Java's highly optimized built-in sorts for the actual input size.
+</details>
+
+
+## 🔄 Timsort — the Real — World Champion
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    TIMSORT - USED BY JAVA, PYTHON, ANDROID                       │
+│                    TIMSORT - USED BY JAVA, PYTHON, ANDROID                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Created by Tim Peters for Python in 2002                                       │
 │  Now used in: Java (Arrays.sort for objects), Python, Android                   │
-│                                                                                  │
+│                                                                                 │
 │  KEY INSIGHT: Real-world data is often partially sorted!                        │
-│                                                                                  │
-│  Examples of "natural runs":                                                     │
+│                                                                                 │
+│  Examples of "natural runs":                                                    │
 │  • Log files (sorted by timestamp, new entries appended)                        │
 │  • Database results (often sorted by ID)                                        │
 │  • User actions (recent activity lists)                                         │
-│                                                                                  │
-│                                                                                  │
-│  ALGORITHM OVERVIEW:                                                             │
+│                                                                                 │
+│                                                                                 │
+│  ALGORITHM OVERVIEW:                                                            │
 │  ───────────────────                                                            │
 │  1. FIND RUNS: Identify naturally sorted sequences                              │
-│     [3, 5, 7, 2, 1, 4, 6, 8] has runs: [3,5,7], [1,2], [4,6,8]                 │
-│                                                                                  │
-│  2. EXTEND SMALL RUNS: If run < minrun (usually 32-64), extend with            │
+│     [3, 5, 7, 2, 1, 4, 6, 8] has runs: [3,5,7], [1,2], [4,6,8]                  │
+│                                                                                 │
+│  2. EXTEND SMALL RUNS: If run < minrun (usually 32-64), extend with             │
 │     Insertion Sort (fast for small arrays)                                      │
-│                                                                                  │
-│  3. MERGE RUNS: Use galloping merge for runs of different sizes                │
+│                                                                                 │
+│  3. MERGE RUNS: Use galloping merge for runs of different sizes                 │
 │     Smart stack-based merging strategy                                          │
-│                                                                                  │
-│                                                                                  │
-│  GALLOPING MODE:                                                                 │
+│                                                                                 │
+│                                                                                 │
+│  GALLOPING MODE:                                                                │
 │  ───────────────                                                                │
-│  When merging [1,2,3,100,101,102] with [50,51,52,200,201,202]                  │
-│                                                                                  │
-│  Standard merge: Compare one by one                                              │
+│  When merging [1,2,3,100,101,102] with [50,51,52,200,201,202]                   │
+│                                                                                 │
+│  Standard merge: Compare one by one                                             │
 │  Galloping: If 7 consecutive elements come from same array,                     │
 │             switch to exponential search to find merge point                    │
-│                                                                                  │
+│                                                                                 │
 │  This handles "one array is much smaller" case efficiently                      │
-│                                                                                  │
-│                                                                                  │
-│  PERFORMANCE:                                                                    │
+│                                                                                 │
+│                                                                                 │
+│  PERFORMANCE:                                                                   │
 │  ────────────                                                                   │
-│  • Already sorted: O(n) - just identifies one big run                          │
-│  • Reverse sorted: O(n) - reverses the run, still O(n)                         │
-│  • Random: O(n log n) - falls back to merge sort behavior                      │
-│  • Mostly sorted: O(n) to O(n log n) - exploits existing order                │
-│                                                                                  │
-│                                                                                  │
+│  • Already sorted: O(n) - just identifies one big run                           │
+│  • Reverse sorted: O(n) - reverses the run, still O(n)                          │
+│  • Random: O(n log n) - falls back to merge sort behavior                       │
+│  • Mostly sorted: O(n) to O(n log n) - exploits existing order                  │
+│                                                                                 │
+│                                                                                 │
 │  WHY JAVA USES TIMSORT FOR OBJECTS:                                             │
 │  ───────────────────────────────────                                            │
 │  1. STABILITY: Equal objects keep their relative order                          │
-│     Essential for multi-key sorting (sort by name, then by age)                │
-│                                                                                  │
-│  2. REAL-WORLD PERFORMANCE: Most data has some order                           │
-│     TimSort exploits this, often faster than pure QuickSort                    │
-│                                                                                  │
-│  3. COMPARISON COST: Object.compareTo() is expensive                           │
+│     Essential for multi-key sorting (sort by name, then by age)                 │
+│                                                                                 │
+│  2. REAL-WORLD PERFORMANCE: Most data has some order                            │
+│     TimSort exploits this, often faster than pure QuickSort                     │
+│                                                                                 │
+│  3. COMPARISON COST: Object.compareTo() is expensive                            │
 │     TimSort minimizes comparisons                                               │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## EXTERNAL SORTING - WHEN DATA DOESN'T FIT IN MEMORY
+
+## 🧠 External Sorting — When Data Doesn't Fit in Memory
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    EXTERNAL MERGE SORT - SORTING 1TB OF DATA                     │
+│                    EXTERNAL MERGE SORT - SORTING 1TB OF DATA                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  PROBLEM: Need to sort 1 TB of data, but only have 8 GB RAM                     │
-│                                                                                  │
+│                                                                                 │
 │  SOLUTION: External Merge Sort                                                  │
-│                                                                                  │
-│  PHASE 1: CREATE SORTED RUNS                                                     │
+│                                                                                 │
+│  PHASE 1: CREATE SORTED RUNS                                                    │
 │  ────────────────────────────                                                   │
-│  1. Read 8 GB chunk from disk                                                    │
+│  1. Read 8 GB chunk from disk                                                   │
 │  2. Sort in memory (QuickSort)                                                  │
-│  3. Write sorted chunk to temp file                                              │
-│  4. Repeat until all data processed                                              │
-│                                                                                  │
+│  3. Write sorted chunk to temp file                                             │
+│  4. Repeat until all data processed                                             │
+│                                                                                 │
 │  Result: 128 sorted files of 8 GB each                                          │
-│                                                                                  │
-│                                                                                  │
-│  PHASE 2: K-WAY MERGE                                                            │
+│                                                                                 │
+│                                                                                 │
+│  PHASE 2: K-WAY MERGE                                                           │
 │  ────────────────────                                                           │
 │  Can't merge all 128 files at once (need buffer for each)                       │
-│                                                                                  │
+│                                                                                 │
 │  With 8 GB RAM and 64 MB buffers:                                               │
 │  • Can merge ~120 files at once                                                 │
 │  • But 128 > 120, so need multiple passes                                       │
-│                                                                                  │
-│  MERGE STRATEGY:                                                                 │
-│  ┌───────────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                           │ │
-│  │  Pass 1: Merge files 1-120 → temp1                                       │ │
-│  │          Merge files 121-128 → temp2                                     │ │
-│  │                                                                           │ │
-│  │  Pass 2: Merge temp1 + temp2 → final output                              │ │
-│  │                                                                           │ │
-│  └───────────────────────────────────────────────────────────────────────────┘ │
-│                                                                                  │
-│  K-WAY MERGE WITH MIN-HEAP:                                                      │
+│                                                                                 │
+│  MERGE STRATEGY:                                                                │
+│  ┌───────────────────────────────────────────────────────────────────────────┐  │
+│  │                                                                           │  │
+│  │  Pass 1: Merge files 1-120 → temp1                                       │   │
+│  │          Merge files 121-128 → temp2                                     │   │
+│  │                                                                           │  │
+│  │  Pass 2: Merge temp1 + temp2 → final output                              │   │
+│  │                                                                           │  │
+│  └───────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                 │
+│  K-WAY MERGE WITH MIN-HEAP:                                                     │
 │  ──────────────────────────                                                     │
 │  1. Put first element from each file in min-heap                                │
-│  2. Extract min, write to output                                                 │
+│  2. Extract min, write to output                                                │
 │  3. Read next element from same file, add to heap                               │
 │  4. Repeat until all files exhausted                                            │
-│                                                                                  │
-│  Time per element: O(log k) where k = number of files                          │
+│                                                                                 │
+│  Time per element: O(log k) where k = number of files                           │
 │  Total: O(n log k)                                                              │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│                                                                                 │
 │  REAL-WORLD EXAMPLE: GOOGLE MAPREDUCE SORTING                                   │
 │  ─────────────────────────────────────────────                                  │
-│  • 2008 record: Sorted 1 PB (1000 TB) in 6 hours                               │
+│  • 2008 record: Sorted 1 PB (1000 TB) in 6 hours                                │
 │  • Used 4000 machines                                                           │
 │  • Each machine sorted ~250 GB locally                                          │
 │  • Then merged across network                                                   │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## PARALLEL SORTING - USING MULTIPLE CPU CORES
+
+🔬 **Section Challenge — 🧠 External Sorting — When Data Doesn't Fit in Memory**
+
+**Challenge 1 (Systems Reasoning):** During k-way merge, you create 50,000 sorted temp files and the program fails before sorting finishes. What constraint did you ignore?
+<details><summary>Trace, Reasoning & Debug</summary>
+
+External sorting is limited by RAM, disk bandwidth, and OS file descriptors. A k-way merge that opens every run at once can exceed the file descriptor limit even if the algorithm is correct on paper.
+
+Fix it with multi-pass merging: merge a safe fan-in like 128 or 512 runs at a time, write larger intermediate runs, and repeat. Keep buffered readers small but effective, close files promptly, and delete temp files after each pass.
+</details>
+
+
+## 🔄 Parallel Sorting — Using Multiple CPU Cores
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    PARALLEL SORTING - MULTI-CORE PERFORMANCE                     │
+│                    PARALLEL SORTING - MULTI-CORE PERFORMANCE                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  JAVA 8+: Arrays.parallelSort()                                                 │
 │  ────────────────────────────                                                   │
 │  Uses Fork/Join framework to parallelize merge sort                             │
-│                                                                                  │
+│                                                                                 │
 │  int[] arr = new int[10_000_000];                                               │
-│  // Fill with random numbers                                                     │
+│  // Fill with random numbers                                                    │
 │  Arrays.parallelSort(arr);  // Uses all CPU cores!                              │
-│                                                                                  │
-│                                                                                  │
-│  HOW IT WORKS:                                                                   │
+│                                                                                 │
+│                                                                                 │
+│  HOW IT WORKS:                                                                  │
 │  ────────────                                                                   │
 │  1. Split array into chunks (one per core)                                      │
 │  2. Sort each chunk in parallel (using QuickSort)                               │
 │  3. Merge sorted chunks (can also be parallelized)                              │
-│                                                                                  │
-│  ┌───────────────────────────────────────────────────────────────────────────┐ │
-│  │                                                                           │ │
-│  │  Original Array: [##############################]                         │ │
-│  │                                                                           │ │
-│  │  Split:    [########] [########] [########] [########]                   │ │
-│  │             Core 1     Core 2     Core 3     Core 4                      │ │
-│  │                ↓          ↓          ↓          ↓                        │ │
-│  │  Sort:     [sorted]   [sorted]   [sorted]   [sorted]                    │ │
-│  │                ↘          ↙          ↘          ↙                        │ │
-│  │  Merge L1:      [merged]              [merged]                           │ │
-│  │                     ↘                    ↙                                │ │
-│  │  Merge L2:              [FINAL SORTED]                                   │ │
-│  │                                                                           │ │
-│  └───────────────────────────────────────────────────────────────────────────┘ │
-│                                                                                  │
-│                                                                                  │
-│  SPEEDUP:                                                                        │
+│                                                                                 │
+│  ┌───────────────────────────────────────────────────────────────────────────┐  │
+│  │                                                                           │  │
+│  │  Original Array: [##############################]                         │  │
+│  │                                                                           │  │
+│  │  Split:    [########] [########] [########] [########]                   │   │
+│  │             Core 1     Core 2     Core 3     Core 4                      │   │
+│  │                ↓          ↓          ↓          ↓                        │   │
+│  │  Sort:     [sorted]   [sorted]   [sorted]   [sorted]                    │    │
+│  │                ↘          ↙          ↘          ↙                        │   │
+│  │  Merge L1:      [merged]              [merged]                           │   │
+│  │                     ↘                    ↙                                │  │
+│  │  Merge L2:              [FINAL SORTED]                                   │   │
+│  │                                                                           │  │
+│  └───────────────────────────────────────────────────────────────────────────┘  │
+│                                                                                 │
+│                                                                                 │
+│  SPEEDUP:                                                                       │
 │  ────────                                                                       │
-│  • 4 cores: ~3.5x faster (not 4x due to merge overhead)                        │
+│  • 4 cores: ~3.5x faster (not 4x due to merge overhead)                         │
 │  • 8 cores: ~6x faster                                                          │
-│  • 16 cores: ~10x faster (diminishing returns)                                 │
-│                                                                                  │
-│  THRESHOLD: parallelSort only kicks in for arrays > 8192 elements              │
+│  • 16 cores: ~10x faster (diminishing returns)                                  │
+│                                                                                 │
+│  THRESHOLD: parallelSort only kicks in for arrays > 8192 elements               │
 │  Below that, sequential sort is faster (no parallel overhead)                   │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│                                                                                 │
 │  BENCHMARK (10 million integers, 8-core CPU):                                   │
-│  ┌───────────────────┬───────────────┬──────────────────────────────────────┐ │
-│  │ Method            │ Time          │ Speedup                              │ │
-│  ├───────────────────┼───────────────┼──────────────────────────────────────┤ │
-│  │ Arrays.sort()     │ 950 ms        │ 1x (baseline)                        │ │
-│  │ parallelSort()    │ 180 ms        │ 5.3x                                 │ │
-│  │ Custom parallel   │ 160 ms        │ 5.9x (optimized)                     │ │
-│  └───────────────────┴───────────────┴──────────────────────────────────────┘ │
-│                                                                                  │
+│  ┌───────────────────┬───────────────┬──────────────────────────────────────┐   │
+│  │ Method            │ Time          │ Speedup                              │   │
+│  ├───────────────────┼───────────────┼──────────────────────────────────────┤   │
+│  │ Arrays.sort()     │ 950 ms        │ 1x (baseline)                        │   │
+│  │ parallelSort()    │ 180 ms        │ 5.3x                                 │   │
+│  │ Custom parallel   │ 160 ms        │ 5.9x (optimized)                     │   │
+│  └───────────────────┴───────────────┴──────────────────────────────────────┘   │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## SORTING STABILITY - DEEP EXPLANATION
+
+🔬 **Section Challenge — 🔄 Parallel Sorting — Using Multiple CPU Cores**
+
+**Challenge 1 (Performance Reasoning):** Should you always replace `Arrays.sort()` with `Arrays.parallelSort()` for large inputs?
+<details><summary>Trace, Reasoning & Debug</summary>
+
+No. Parallel sorting adds split/merge overhead, uses the common ForkJoinPool, and can become memory-bandwidth bound. It may help on very large primitive arrays with available CPU cores, but it can hurt small arrays or busy servers.
+
+The selection rule is benchmark under production-like load. Use parallel sort when input size is large enough, the machine has idle cores, comparator cost is not the bottleneck, and sharing the common pool will not starve other work.
+</details>
+
+
+## 🔄 Sorting Stability — Deep Explanation
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                    STABILITY - WHY IT MATTERS IN REAL APPLICATIONS              │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  DEFINITION: Stable sort preserves relative order of equal elements             │
-│                                                                                  │
-│  EXAMPLE:                                                                        │
-│  Input:  [(Alice, 25), (Bob, 30), (Charlie, 25)]                               │
-│  Sort by age:                                                                    │
-│                                                                                  │
-│  STABLE:   [(Alice, 25), (Charlie, 25), (Bob, 30)]                             │
+│                                                                                 │
+│  EXAMPLE:                                                                       │
+│  Input:  [(Alice, 25), (Bob, 30), (Charlie, 25)]                                │
+│  Sort by age:                                                                   │
+│                                                                                 │
+│  STABLE:   [(Alice, 25), (Charlie, 25), (Bob, 30)]                              │
 │            Alice still before Charlie (original order preserved)                │
-│                                                                                  │
-│  UNSTABLE: [(Charlie, 25), (Alice, 25), (Bob, 30)]                             │
+│                                                                                 │
+│  UNSTABLE: [(Charlie, 25), (Alice, 25), (Bob, 30)]                              │
 │            Order of Alice and Charlie might change                              │
-│                                                                                  │
-│                                                                                  │
-│  WHY STABILITY MATTERS:                                                          │
+│                                                                                 │
+│                                                                                 │
+│  WHY STABILITY MATTERS:                                                         │
 │  ──────────────────────                                                         │
-│                                                                                  │
+│                                                                                 │
 │  SCENARIO: E-commerce product listing                                           │
 │  1. First sort by rating (highest first)                                        │
 │  2. Then sort by price (lowest first)                                           │
-│                                                                                  │
-│  WITH STABLE SORT:                                                               │
+│                                                                                 │
+│  WITH STABLE SORT:                                                              │
 │  After step 1: Products ordered by rating                                       │
-│  After step 2: Products ordered by price, but WITHIN same price,               │
+│  After step 2: Products ordered by price, but WITHIN same price,                │
 │                higher-rated products come first!                                │
-│                                                                                  │
-│  This is called "multi-key sorting" or "sort then sort again"                  │
-│                                                                                  │
-│                                                                                  │
-│  STABLE ALGORITHMS:                                                              │
+│                                                                                 │
+│  This is called "multi-key sorting" or "sort then sort again"                   │
+│                                                                                 │
+│                                                                                 │
+│  STABLE ALGORITHMS:                                                             │
 │  ─────────────────                                                              │
 │  • Insertion Sort (elements only move past smaller elements)                    │
-│  • Merge Sort (equal elements taken from left half first)                      │
-│  • Counting Sort (preserves input order in each bucket)                        │
-│  • Radix Sort (uses stable counting sort per digit)                            │
+│  • Merge Sort (equal elements taken from left half first)                       │
+│  • Counting Sort (preserves input order in each bucket)                         │
+│  • Radix Sort (uses stable counting sort per digit)                             │
 │  • TimSort (designed to be stable)                                              │
-│                                                                                  │
-│                                                                                  │
-│  UNSTABLE ALGORITHMS:                                                            │
+│                                                                                 │
+│                                                                                 │
+│  UNSTABLE ALGORITHMS:                                                           │
 │  ───────────────────                                                            │
 │  • QuickSort (swap can exchange equal elements)                                 │
 │  • HeapSort (heap structure doesn't preserve order)                             │
 │  • Selection Sort (swap can disturb equal elements)                             │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│                                                                                 │
 │  MAKING UNSTABLE SORTS STABLE:                                                  │
 │  ─────────────────────────────                                                  │
 │  Add index as secondary key:                                                    │
-│                                                                                  │
+│                                                                                 │
 │  Original: [3a, 1, 3b, 2]                                                       │
-│  With index: [(3,0), (1,1), (3,2), (2,3)]                                      │
-│                                                                                  │
-│  Sort by: first element, then by index if equal                                │
-│  Result: [(1,1), (2,3), (3,0), (3,2)]                                          │
-│  Final: [1, 2, 3a, 3b] - STABLE!                                               │
-│                                                                                  │
+│  With index: [(3,0), (1,1), (3,2), (2,3)]                                       │
+│                                                                                 │
+│  Sort by: first element, then by index if equal                                 │
+│  Result: [(1,1), (2,3), (3,0), (3,2)]                                           │
+│  Final: [1, 2, 3a, 3b] - STABLE!                                                │
+│                                                                                 │
 │  Cost: O(n) extra space for indices                                             │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## SORTING IN COMPETITIVE PROGRAMMING
+
+🔬 **Section Challenge — 🔄 Sorting Stability — Deep Explanation**
+
+**Challenge 1 (Trace Reasoning):** You sort employees by `name`, then sort again by `department`. When does this produce employees grouped by department while still alphabetized inside each department?
+<details><summary>Trace, Reasoning & Debug</summary>
+
+This works only if the second sort is stable. A stable sort preserves the relative order of equal keys, so employees with the same department keep the name order established by the first sort.
+
+If the second sort is unstable, equal-department rows may be rearranged. The safer Java approach is either use a stable object sort or express the full ordering in one comparator: `comparing(Employee::department).thenComparing(Employee::name)`.
+</details>
+
+
+## 🔄 Sorting in Competitive Programming
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    COMPETITIVE PROGRAMMING SORTING TRICKS                        │
+│                    COMPETITIVE PROGRAMMING SORTING TRICKS                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  TRICK 1: COORDINATE COMPRESSION                                                 │
+│                                                                                 │
+│  TRICK 1: COORDINATE COMPRESSION                                                │
 │  ────────────────────────────────                                               │
-│  Problem: Values are huge (up to 10^9) but only n values (n ≤ 10^5)            │
+│  Problem: Values are huge (up to 10^9) but only n values (n ≤ 10^5)             │
 │  Solution: Map values to 0 to n-1                                               │
-│                                                                                  │
+│                                                                                 │
 │  int[] arr = {1000000000, 1, 50000};                                            │
 │  // Create sorted copy with indices                                             │
 │  int[][] sorted = new int[n][2];                                                │
 │  for (int i = 0; i < n; i++)                                                    │
 │      sorted[i] = new int[]{arr[i], i};                                          │
-│  Arrays.sort(sorted, (a, b) -> a[0] - b[0]);                                   │
-│                                                                                  │
-│  // Assign compressed values                                                     │
-│  int[] compressed = new int[n];                                                  │
+│  Arrays.sort(sorted, (a, b) -> a[0] - b[0]);                                    │
+│                                                                                 │
+│  // Assign compressed values                                                    │
+│  int[] compressed = new int[n];                                                 │
 │  for (int i = 0; i < n; i++)                                                    │
-│      compressed[sorted[i][1]] = i;                                               │
-│  // Result: [2, 0, 1] (maps to 0-based ranks)                                  │
-│                                                                                  │
-│                                                                                  │
+│      compressed[sorted[i][1]] = i;                                              │
+│  // Result: [2, 0, 1] (maps to 0-based ranks)                                   │
+│                                                                                 │
+│                                                                                 │
 │  TRICK 2: CUSTOM COMPARATOR FOR COMPLEX SORTING                                 │
 │  ──────────────────────────────────────────────                                 │
-│  // Sort intervals by end point, then by start point                           │
+│  // Sort intervals by end point, then by start point                            │
 │  Arrays.sort(intervals, (a, b) -> {                                             │
-│      if (a[1] != b[1]) return a[1] - b[1];  // By end                          │
+│      if (a[1] != b[1]) return a[1] - b[1];  // By end                           │
 │      return a[0] - b[0];                     // Then by start                   │
-│  });                                                                             │
-│                                                                                  │
-│  // Sort strings by length, then lexicographically                             │
+│  });                                                                            │
+│                                                                                 │
+│  // Sort strings by length, then lexicographically                              │
 │  Arrays.sort(strings, (a, b) -> {                                               │
-│      if (a.length() != b.length())                                               │
+│      if (a.length() != b.length())                                              │
 │          return a.length() - b.length();                                        │
-│      return a.compareTo(b);                                                      │
-│  });                                                                             │
-│                                                                                  │
-│                                                                                  │
+│      return a.compareTo(b);                                                     │
+│  });                                                                            │
+│                                                                                 │
+│                                                                                 │
 │  TRICK 3: PARTIAL SORTING WITH QUICKSELECT                                      │
 │  ──────────────────────────────────────────                                     │
 │  Problem: Find kth smallest element (don't need full sort)                      │
 │  Solution: QuickSelect - O(n) average                                           │
-│                                                                                  │
+│                                                                                 │
 │  // Java's partial sort workaround                                              │
-│  PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a,b) -> b - a);         │
+│  PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a,b) -> b - a);          │
 │  for (int num : arr) {                                                          │
-│      maxHeap.offer(num);                                                         │
-│      if (maxHeap.size() > k)                                                     │
-│          maxHeap.poll();                                                         │
-│  }                                                                               │
-│  // maxHeap.peek() is kth smallest - O(n log k)                                │
-│                                                                                  │
-│                                                                                  │
+│      maxHeap.offer(num);                                                        │
+│      if (maxHeap.size() > k)                                                    │
+│          maxHeap.poll();                                                        │
+│  }                                                                              │
+│  // maxHeap.peek() is kth smallest - O(n log k)                                 │
+│                                                                                 │
+│                                                                                 │
 │  TRICK 4: SORTING + TWO POINTERS                                                │
 │  ────────────────────────────────                                               │
 │  Many problems become easier after sorting:                                     │
-│  • Two Sum variants                                                              │
+│  • Two Sum variants                                                             │
 │  • Container With Most Water                                                    │
 │  • 3Sum, 4Sum                                                                   │
-│  • Merge intervals                                                               │
-│                                                                                  │
-│  Pattern:                                                                        │
-│  1. Sort the input                                                               │
+│  • Merge intervals                                                              │
+│                                                                                 │
+│  Pattern:                                                                       │
+│  1. Sort the input                                                              │
 │  2. Use two pointers from both ends                                             │
 │  3. Move pointers based on comparison                                           │
-│                                                                                  │
+│                                                                                 │
 │  // Example: Find pair with sum closest to target                               │
-│  Arrays.sort(arr);                                                               │
+│  Arrays.sort(arr);                                                              │
 │  int left = 0, right = arr.length - 1;                                          │
 │  int closestSum = Integer.MAX_VALUE;                                            │
-│  while (left < right) {                                                          │
+│  while (left < right) {                                                         │
 │      int sum = arr[left] + arr[right];                                          │
-│      if (Math.abs(sum - target) < Math.abs(closestSum - target))               │
-│          closestSum = sum;                                                       │
-│      if (sum < target) left++;                                                   │
-│      else right--;                                                               │
-│  }                                                                               │
-│                                                                                  │
+│      if (Math.abs(sum - target) < Math.abs(closestSum - target))                │
+│          closestSum = sum;                                                      │
+│      if (sum < target) left++;                                                  │
+│      else right--;                                                              │
+│  }                                                                              │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ---
 
 _Master sorting and you master a huge portion of algorithm problems!_
 
 ---
+
+🔬 **Section Challenge — 🔄 Sorting in Competitive Programming**
+
+**Challenge 1 (Constraint Pattern):** Values are up to `1e9`, `N <= 2e5`, and queries ask for ranks/counts of values less than `x`. Why is a raw frequency array impossible, and what sorting-based rewrite works?
+<details><summary>Trace, Reasoning & Debug</summary>
+
+A raw array indexed by value would need size `1e9`, which is too large. But only `N` distinct input values can appear, so the real coordinate space is small after compression.
+
+Sort the unique values, map each value to its compressed rank, and answer counts/ranks with binary search or a Fenwick tree if updates are involved. The mental move is: huge value range plus limited item count means coordinate compression.
+</details>
+
 
 ## PRACTICE PROBLEMS — Sorting & Searching
 

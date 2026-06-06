@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_027_Mar29_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)
+
 # DAY 028 — Sunday, March 30, 2026
 ## WEEK 04 REVIEW — Trie + Graphs + SQL Performance + Spring JPA
 
@@ -13,9 +15,6 @@
 | 0:45–1:30 | 45 min | RE-ATTEMPT ZONE: Unsolved problems |
 | 1:30–2:15 | 45 min | TEACH-BACK: Explain to imaginary student |
 | 2:15–3:00 | 45 min | CUMULATIVE REVIEW: Weeks 1–4 |
-
----
-
 
 ---
 
@@ -196,4 +195,7 @@ Sat: Spring Boot Security (Authentication, JWT)
 Sun: Week Review
 ```
 
+
 ---
+
+> **Navigation**: [< Previous](Day_027_Mar29_Sat.md) | [Back to Index](../../00_MASTER_INDEX.md)

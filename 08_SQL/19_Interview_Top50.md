@@ -1,4 +1,4 @@
-> **SQL Chapter 19/20** | [← Previous](18_Projects_Mini.md) | [Index](../00_MASTER_INDEX.md) | [Next →](20_CheatSheet_QuickRef.md)
+> **SQL Chapter 19/20** | [← Previous](18a_SQL_Projects_Beginner.md) | [Index](../00_MASTER_INDEX.md) | [Next →](20_CheatSheet_QuickRef.md)
 
 ---
 
@@ -122,3 +122,4 @@ SELECT user_id, COUNT(*) AS consecutive_days FROM numbered GROUP BY user_id, grp
 
 ---
 
+> **Navigation**: [< Previous](18b_SQL_Projects_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](20_CheatSheet_QuickRef.md)

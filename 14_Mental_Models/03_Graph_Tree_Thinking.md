@@ -1,6 +1,8 @@
+**Navigation**: [< Previous](02_DP_State_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](04_Array_String_Thinking.md)
+
 # 🗺️ Graph & Tree Problem Thinking — Mental Model
 
-> **The key insight**: Most graph/tree problems are just asking "how do I explore this structure?" The answer is almost always BFS, DFS, or Union-Find. The skill is knowing WHICH one and WHY.
+**The key insight**: Most graph/tree problems are just asking "how do I explore this structure?" The answer is almost always BFS, DFS, or Union-Find. The skill is knowing WHICH one and WHY.
 
 ---
 
@@ -21,7 +23,20 @@ Problem says:                          → Model as:
 "Maze from start to end"             → Grid graph (BFS = shortest)
 ```
 
+
 ---
+
+
+
+🔬 **Section Challenge — Part 1: "Is This a Graph Problem?" — Recognition**
+
+**Challenge 1 (Reasoning):** You are building a system to resolve package dependencies for a package manager (like `npm install`). You need to install packages in an order such that no package is installed before its dependencies. What kind of graph is this, and what is the specific algorithm to solve it?
+
+<details><summary>Answer</summary>
+
+This is a **Directed Acyclic Graph (DAG)**. It must be directed because "A depends on B" is a one-way relationship. It must be acyclic because if A depends on B, and B depends on A, the system is deadlocked (circular dependency). The specific algorithm to resolve this is **Topological Sorting** (usually implemented via Kahn's Algorithm using indegrees, or DFS with a post-order stack).
+
+</details>
 
 ## Part 2: BFS vs DFS — The Decision Framework
 
@@ -37,6 +52,7 @@ Mental model: BFS = "Ripple in a pond"
 Drop a stone → it expands in CIRCLES → nearest first
 ```
 
+
 ### When to use DFS (Stack/Recursion):
 ```
 ✅ Path finding — "does any path exist?"
@@ -49,6 +65,7 @@ Drop a stone → it expands in CIRCLES → nearest first
 Mental model: DFS = "Exploring a maze"
 Go as DEEP as possible → hit dead end → BACKTRACK → try next path
 ```
+
 
 ### When to use Dijkstra (Priority Queue):
 ```
@@ -69,6 +86,7 @@ Always expand the CHEAPEST unexplored node
 Mental model: Union-Find = "Clubs merging"
 Each person belongs to a club → when two people connect, their clubs merge
 ```
+
 
 ### Decision Tree
 ```
@@ -94,6 +112,7 @@ Graph problem?
     ├── Level-order? → BFS
     └── LCA? → DFS with parent tracking
 ```
+
 
 ---
 
@@ -136,6 +155,7 @@ Category 4: "FIND something in the tree"
 → Example: LCA = if both sides return non-null, current is LCA
 ```
 
+
 ### BST-Specific Thinking
 ```
 BST = sorted structure → INORDER traversal gives sorted array
@@ -147,7 +167,11 @@ BST = sorted structure → INORDER traversal gives sorted array
 "Delete?" → Three cases: leaf, one child, two children (find successor)
 ```
 
+
 ---
+
+
+
 
 ## Part 4: Grid/Matrix as Graph — Mental Model
 
@@ -188,7 +212,20 @@ boolean[][] visited;  // When you can't mutate the grid
 "Rotting oranges?" → Multi-source BFS with time tracking
 ```
 
+
 ---
+
+
+
+🔬 **Section Challenge — Part 4: Grid/Matrix as Graph — Mental Model**
+
+**Challenge 1 (Trace):** In the "Rotting Oranges" problem, a grid has fresh oranges (1), rotten oranges (2), and empty cells (0). Every minute, any fresh orange adjacent (4-directionally) to a rotten orange becomes rotten. You decide to use DFS starting from the first rotten orange you find. Why will DFS fail to give the minimum minutes required, and what is the correct approach?
+
+<details><summary>Answer</summary>
+
+DFS goes as deep as possible along one path. It might trace a winding path of 10 fresh oranges and mark them as rotting in 10 minutes. However, a different rotten orange might have been right next to the 10th orange and could have rotted it in 1 minute. DFS loses the "time" (level) synchrony. The correct approach is **Multi-Source BFS**. You find ALL initially rotten oranges, put them all in a Queue at time T=0, and then process them level-by-level (minute-by-minute). BFS guarantees the shortest path (minimum time) in unweighted graphs.
+
+</details>
 
 ## Part 5: Common Graph Patterns & When They Appear
 
@@ -210,6 +247,7 @@ If conflict found → not bipartite
 Mental model: "Color neighbors with opposite color. Contradiction = not bipartite."
 ```
 
+
 ### Tarjan's / Bridges — "What if this edge is removed?"
 ```
 When: "Critical connections", "bridges", "articulation points"
@@ -219,7 +257,20 @@ If low[child] > disc[parent] → bridge edge
 Mental model: "Can child reach higher than parent without this edge?"
 ```
 
+
 ---
+
+
+
+🔬 **Section Challenge — Part 5: Common Graph Patterns & When They Appear**
+
+**Challenge 1 (Design):** You are given a social network of users and a list of `dislikes(A, B)`. You want to divide the users into exactly two groups such that nobody in the same group dislikes each other. Which graph algorithm determines if this is possible?
+
+<details><summary>Answer</summary>
+
+This is exactly the **Bipartite Graph (2-Coloring)** problem. The graph's nodes are the users, and the edges are the dislikes. You want to color the graph using exactly 2 colors (the two groups) such that no two adjacent nodes (people who dislike each other) share the same color. You solve this with BFS or DFS: start coloring a node Red, all its neighbors Blue, all their neighbors Red. If you ever find a neighbor that has already been colored the *same* color as the current node, the graph is not bipartite, and the division is impossible.
+
+</details>
 
 ## Part 6: Graph/Tree Debugging Checklist
 
@@ -235,12 +286,32 @@ Mental model: "Can child reach higher than parent without this edge?"
 □ Weighted graph: Am I using PQ correctly? (skip outdated entries in Dijkstra)
 ```
 
+
 ---
 
 📖 **Related Files:**
-- [03_Algorithms/05b_Graphs_Core.md](../03_Algorithms/05b_Graphs_Core.md) — Graph algorithms
+- [03_Algorithms/05c_Graphs_Fundamentals.md](../03_Algorithms/05c_Graphs_Fundamentals.md) — Graph algorithms
 - [04_Patterns_Templates/13_Tree_Plus_DFS_BFS.md](../04_Patterns_Templates/13_Tree_Plus_DFS_BFS.md) — Tree+DFS/BFS problems
 - [04_Patterns_Templates/14_Graph_Plus_Traversal.md](../04_Patterns_Templates/14_Graph_Plus_Traversal.md) — Graph+Traversal problems
 
 ---
 [← 02 DP State](02_DP_State_Thinking.md) | [04 Array & String →](04_Array_String_Thinking.md)
+
+
+---
+
+
+---
+
+
+
+🔬 **Section Challenge — Part 6: Graph/Tree Debugging Checklist**
+
+**Challenge 1 (Debug):** A junior developer writes a BFS to find the shortest path in a maze. Their code gets a `Memory Limit Exceeded` or `OutOfMemoryError`. Their visited logic is: `if (!visited[neighbor]) { queue.add(neighbor); }` and they mark `visited[curr] = true` *after* popping `curr` from the queue. Why did memory explode?
+
+<details><summary>Answer</summary>
+
+They marked nodes as visited when DEQUEUING instead of ENQUEUING. Because of this, if a node is reachable via multiple paths of the same length, it gets added to the queue multiple times before it is finally popped and marked visited. In a dense graph or empty grid, this causes the queue size to explode exponentially as the same nodes are duplicated hundreds of times in the queue. **Fix**: ALWAYS mark a node as visited the exact moment you *enqueue* it.
+
+</details>
+

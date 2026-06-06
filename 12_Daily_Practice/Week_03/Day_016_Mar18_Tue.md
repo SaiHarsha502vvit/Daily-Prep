@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_015_Mar17_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_017_Mar19_Wed.md)
+
 # Day 016 — Tuesday, March 18, 2026
 
 > **Week 03** | **Day 2** | **Theme:** Binary Search Tree (BST) + BFS (Level-Order) + SQL Window Functions Intro
@@ -7,15 +9,12 @@
 
 ## Completion Checklist
 
-- [ ] DS Deep Dive: BST — properties, insert, search, delete (30 min)
-- [ ] ALGO Deep Dive: BFS / Level-Order Traversal (30 min)
+- [x] DS Deep Dive: BST — properties, insert, search, delete (30 min)
+- [x] ALGO Deep Dive: BFS / Level-Order Traversal (30 min)
 - [ ] SQL Lesson: Window Functions — ROW_NUMBER, RANK, DENSE_RANK (40 min)
 - [ ] Problem 1: LC 700 — Search in a BST (15 min)
 - [ ] Problem 2: LC 102 — Binary Tree Level Order Traversal (25 min)
 - [ ] Real-World Connection (10 min)
-
----
-
 
 ---
 
@@ -56,6 +55,7 @@ BST INVARIANT: For every node N:
   Inorder traversal → 1, 3, 4, 6, 7, 8, 10, 13, 14
   ALWAYS SORTED! That's the magic.
 ```
+
 
 ### HOW — Operations
 
@@ -126,6 +126,7 @@ Step 2: Copy 4's value to 3's position
 Step 3: Delete 4 from right subtree (it's a leaf, easy)
 ```
 
+
 ---
 
 ## 2. ALGO DEEP DIVE: BFS / Level-Order Traversal (30 min)
@@ -154,6 +155,7 @@ Queue trace:
 
 Output: [[3], [9, 20], [15, 7]]
 ```
+
 
 ### Implementation — Level-by-Level BFS
 
@@ -195,7 +197,7 @@ CRITICAL PATTERN:
 │              │     DFS        │     BFS        │
 ├──────────────┼────────────────┼────────────────┤
 │ Data Struct  │ Stack/Recursion│ Queue          │
-│ Memory       │ O(h) height   │ O(w) width     │
+│ Memory       │ O(h) height   │ O(w) width      │
 │ Deep tree    │ Uses less mem  │ Uses more mem  │
 │ Wide tree    │ Uses more mem  │ Uses less mem  │
 │ Shortest path│ Not guaranteed │ YES (unweight) │
@@ -203,6 +205,7 @@ CRITICAL PATTERN:
 │              │ backtracking   │ shortest path  │
 └──────────────┴────────────────┴────────────────┘
 ```
+
 
 ---
 
@@ -226,6 +229,7 @@ GROUP BY collapses rows:         Window functions KEEP rows:
                                  └─────┴────────┴──────┴──────┘
                                   (kept all rows + added rank!)
 ```
+
 
 ### Syntax
 
@@ -261,6 +265,7 @@ DIFFERENCE:
   80k    │     3      │  2   │    2
   70k    │     4      │  4   │    3    ← RANK skips 3, DENSE doesn't
 ```
+
 
 ### Practice Exercises
 
@@ -349,6 +354,7 @@ Level 2: queue=[15,7]  → process 15, 7
 Output: [[3], [9,20], [15,7]]
 ```
 
+
 ### Solution
 
 ```java
@@ -380,7 +386,7 @@ class Solution {
 
 ---
 
-## 6. REAL-WORLD CONNECTION
+## 📌 6. Real — World Connection
 
 ```
 BST POWERS:
@@ -394,3 +400,4 @@ BFS POWERS:
   GPS navigation shortest path = BFS/Dijkstra
   Network broadcast = BFS from source
 ```
+

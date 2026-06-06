@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](05_Universal_Problem_Framework.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_SQL_Mental_Pipeline.md)
+
 # ✅ Implementation Checklist — Things to Remember While Writing Code
 
 > **The key insight**: Most bugs aren't from wrong algorithms — they're from careless implementation mistakes. This checklist prevents the 20 most common errors that cost you time in interviews and contests.
@@ -16,6 +18,7 @@
   □ All same values
   □ Very large input (will my approach TLE?)
 ```
+
 
 ---
 
@@ -237,6 +240,7 @@ After writing code, verify:
   → Should I convert to iterative?
 ```
 
+
 ---
 
 ## Part 5: Quick Pre-Submission Checklist
@@ -254,12 +258,18 @@ After writing code, verify:
 □ Binary search: used left + (right - left) / 2
 ```
 
+
 ---
 
 📖 **Related Files:**
 - [05_Universal_Problem_Framework.md](05_Universal_Problem_Framework.md) — 6-step approach
 - [08_Debugging_DryRun.md](08_Debugging_DryRun.md) — Finding bugs systematically
-- [05_Problem_Solving/03_Common_Mistakes.md](../05_Problem_Solving/03_Common_Mistakes.md) — Extended mistake catalog
+- [05_Problem_Solving/24_Common_Mistakes.md](../05_Problem_Solving/24_Common_Mistakes.md) — Extended mistake catalog
 
 ---
 [← 05 Universal Framework](05_Universal_Problem_Framework.md) | [07 SQL Mental Pipeline →](07_SQL_Mental_Pipeline.md)
+
+
+---
+
+> **Navigation**: [< Previous](05_Universal_Problem_Framework.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07_SQL_Mental_Pipeline.md)

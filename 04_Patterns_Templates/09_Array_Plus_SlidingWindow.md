@@ -1,6 +1,43 @@
+**Navigation**: [< Previous](08_Array_Plus_TwoPointers.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_HashMap_Plus_Counting.md)
+
 # Array + Sliding Window — Combined Pattern Guide
 
-> **WHY this combination?** When you need to find optimal **contiguous subarrays** or **substrings**, the sliding window maintains a running computation as it moves across the array. Reduces O(n²) brute force → O(n).
+### 🧠 Deep Intuition — Why Sliding Window Is O(n)
+**WHY this combination?** When you need to find optimal **contiguous subarrays** or **substrings**, the sliding window maintains a running computation as it moves across the array. Reduces O(n²) brute force → O(n).
+
+
+### ⚠️ Constraint Lens
+
+| Given Constraints | Do This |
+|-------------------|---------|
+| fixed size `k` | fixed window |
+| all values positive + threshold condition | variable sliding window |
+| negatives allowed + exact sum `K` | prefix sum + hashmap |
+| negatives allowed + shortest sum at least `K` | prefix sum + monotonic deque |
+| exact `K` distinct | compute `atMost(K) - atMost(K-1)` |
+| values are binary (`0/1`) | window often works by counting zeros/ones |
+
+Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
+
+### 🧠 Deep Intuition — Why Sliding Window Is O(n)
+
+The brute force for "best contiguous subarray" problems checks all O(n²) subarrays (each starting point × each ending point) and evaluates each one. Sliding window reduces this to O(n) by making a crucial observation: **you don't need to recompute the entire subarray when you shift by one position.**
+
+#### The Amortized Analysis — Why It's Truly O(n)
+
+Despite the nested `while (shrink)` loop inside the `for` loop, sliding window is NOT O(n²). Here's the rigorous argument:
+
+- The `right` pointer advances from 0 to n-1: exactly **n increments**
+- The `left` pointer also advances from 0 to at most n-1: at most **n increments total** (across all iterations of the outer loop, not per iteration)
+- Therefore, the total work is O(n + n) = **O(n)**
+
+Think of it this way: each element enters the window exactly once (when `right` reaches it) and leaves the window at most once (when `left` passes it). Total operations = 2n.
+
+#### Why Sliding Window FAILS With Negative Numbers
+
+Sliding window for sum problems relies on a **monotonicity assumption**: expanding the window (moving `right`) always increases the sum, and shrinking (moving `left`) always decreases it. With negative numbers, adding an element might *decrease* the sum, which breaks the invariant that "if the current window exceeds the target, we should shrink."
+
+For problems with negative numbers, use **Prefix Sum + HashMap** instead: compute `prefix[i] = sum(arr[0..i])`, then `subarray_sum(i,j) = prefix[j] - prefix[i-1]`. Store prefix sums in a HashMap to find target differences in O(1).
 
 ---
 
@@ -20,13 +57,29 @@ THEN → Sliding Window on Array
 ```
 Fixed Window (size k):          Variable Window:
 ┌─────┐                        ┌──────────────┐
-│ k=3 │→ slide                 │   expand →    │
+│ k=3 │→ slide                 │   expand →   │
 └─────┘                        └──────────────┘
                                 ← shrink │
 Use when: size is given         Use when: find optimal size
 ```
 
 ---
+
+
+
+🔬 **Section Challenge — 🧠 WHEN TO RECOGNIZE THIS PATTERN**
+
+**Challenge 1 (Reasoning):** A problem says "maximum sum of subarray with sum ≤ K, where array contains negative numbers." Why does sliding window fail here, and what's the correct approach?
+<details><summary>Answer</summary>
+
+Sliding window requires **monotonicity**: expanding the window must increase (or maintain) the sum, shrinking must decrease it. With negatives, expanding by adding a negative element *decreases* the sum — breaking the invariant. The window shrink logic becomes incorrect: if `sum > K`, shrinking from left might not help if there are negatives in the middle. **Correct approach**: Prefix Sum + HashMap. Compute cumulative sums, then for each `prefix[r]`, find the largest `prefix[l]` such that `prefix[r] - prefix[l] ≤ K`. Sort prefix sums or use a TreeMap for O(N log N).
+</details>
+
+**Challenge 2 (Reasoning):** "Sliding window is O(N) because left and right each move at most N times." Prove this rigorously — the inner `while` loop looks like it could make it O(N²).
+<details><summary>Answer</summary>
+
+**Amortized argument**: Count total pointer movements. `right` starts at 0 and moves right N times total (one per outer loop iteration). `left` starts at 0 and can only move right (never left). Since `left ≤ right ≤ N-1` always, `left` moves at most N times *total* across ALL iterations of the inner while loop — not N times per outer iteration. Total operations = right moves + left moves = N + N = 2N = O(N). The inner while loop's iterations are "paid for" by previous outer loop iterations that advanced `right`.
+</details>
 
 ## 📐 CORE TEMPLATES
 
@@ -120,19 +173,17 @@ Answer: 3
 
 ---
 
-## 🔥 KEY TRICKS
 
-| Trick | When | Example |
-|-------|------|---------|
-| HashMap in window | Track frequencies | Longest substring without repeating |
-| Deque for min/max | Sliding window max/min | Sliding Window Maximum |
-| Prefix sum alternative | When window has negatives | Subarray Sum Equals K (use HashMap) |
-| Fixed → Variable | When "at most k" | Most k distinct = atMost(k) - atMost(k-1) |
-| Count subarrays | Ending at right | Count += (right - left + 1) at each step |
 
----
+🔬 **Section Challenge — 🔬 VISUAL: Variable Window**
 
-## � FULL WALKTHROUGH: Longest Substring Without Repeating Characters
+**Challenge (Design):** Count the number of subarrays with sum exactly K (array has negatives). Why can't you use sliding window? Write the correct approach.
+<details><summary>Answer</summary>
+
+Negatives break monotonicity. Correct approach: **Prefix Sum + HashMap**. `count += prefixMap.getOrDefault(prefix - k, 0)` as you build the running prefix sum. The map stores `{prefixSum → count of times seen}`. When `prefix[r] - prefix[l] == k`, we found a valid subarray `(l, r]`. Time: O(N), Space: O(N). This is LC 560 — the classic harder version after sliding window.
+</details>
+
+## 🔬 FULL WALKTHROUGH: Longest Substring Without Repeating Characters
 
 ```
 Problem: Find length of longest substring without repeating chars.
@@ -200,19 +251,20 @@ WHY fixed window? Size is given (k=3), so just slide it.
 ┌───────────────────────────────┬──────────────────────────────────────┐
 │ Edge Case                     │ Handling                             │
 ├───────────────────────────────┼──────────────────────────────────────┤
-│ Empty string / array          │ Return 0 immediately                │
-│ k > array length              │ Invalid — return -1 or throw       │
-│ All same characters "aaaa"    │ Longest unique substring = 1       │
-│ All unique "abcdef"           │ Entire string is the answer        │
-│ Negative numbers in subarray  │ DON'T use sliding window for sum! │
-│                               │ Use Prefix Sum + HashMap instead   │
-│ Single element                │ Window of size 1 = that element    │
+│ Empty string / array          │ Return 0 immediately                 │
+│ k > array length              │ Invalid — return -1 or throw         │
+│ All same characters "aaaa"    │ Longest unique substring = 1         │
+│ All unique "abcdef"           │ Entire string is the answer          │
+│ Negative numbers in subarray  │ DON'T use sliding window for sum!    │
+│                               │ Use Prefix Sum + HashMap instead     │
+│ Single element                │ Window of size 1 = that element      │
 └───────────────────────────────┴──────────────────────────────────────┘
 ```
 
 ---
 
 ## 📋 PRACTICE PROBLEMS — From Your Excel Sheet
+
 | # | Problem | Companies | Key Insight |
 |---|---------|-----------|-------------|
 | 1 | [Best Time to Buy and Sell Stock](https://leetcode.com/problems/best-time-to-buy-and-sell-stock/) | Amazon | Track min price, expand window |
@@ -255,9 +307,30 @@ WHY fixed window? Size is given (k=3), so just slide it.
 
 ---
 
-📖 **Related Chapters:**
-- [04_Patterns_Templates/01_Sliding_Window.md](01_Sliding_Window.md) — Sliding Window deep dive
-- [05_Problem_Solving/05_Problems_Sliding_Window.md](../05_Problem_Solving/05_Problems_Sliding_Window.md) — More window problems
+## 🎯 INTERVIEW ARTICULATION — How to Explain Sliding Window
+
+**When the interviewer gives you a Sliding Window problem, say this:**
+
+"The brute force checks all O(n²) subarrays. Sliding window reduces to O(n) because instead of recomputing from scratch, we add the new right element and remove the old left element — maintaining a running result. Each element enters the window once and leaves once, so total operations are 2n = O(n). This is amortized O(1) per element."
+
+**Key mathematical justification:**
+- "The inner while-loop looks O(n²), but each element is pushed at most once and popped at most once across ALL iterations. Total work = 2n."
+- "This only works when expanding the window monotonically changes the constraint (e.g., sum increases). With negative numbers, this invariant breaks — use prefix sums + HashMap instead."
+
+**Common mistakes to proactively mention:**
+- ❌ "Don't use sliding window for sum problems with negative numbers — the monotonicity assumption breaks."
+- ❌ "Fixed window vs variable window: if the problem gives you K, it's fixed. If it says 'longest' or 'shortest,' it's variable."
+- ❌ "Update your answer AFTER shrinking, not before — otherwise you report an invalid window state."
+
+**Real-world applications:**
+- Network throughput monitoring (requests per rolling time window)
+- Rate limiting (max N requests per T seconds — sliding window counter)
+- Stream processing (rolling averages in real-time analytics, e.g., stock price moving average)
+- Log analysis (error rate in the last 5 minutes)
 
 ---
-[← 08 Array+TwoPointers](08_Array_Plus_TwoPointers.md) | [10 HashMap+Counting →](10_HashMap_Plus_Counting.md)
+
+📖 **Related Chapters:**
+- [04_Patterns_Templates/01_Sliding_Window.md](01_Sliding_Window.md) — Sliding Window deep dive
+- [05_Problem_Solving/05_Sliding_Window.md](../05_Problem_Solving/05_Sliding_Window.md) — More window problems
+

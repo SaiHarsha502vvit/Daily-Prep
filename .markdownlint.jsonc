@@ -1,0 +1,38 @@
+{
+  // Keep markdownlint useful for this study-notes repo.
+  // These files intentionally include long ASCII diagrams, HTML <details>,
+  // and compact teaching layouts that strict defaults flag as noise.
+  "default": true,
+
+  // Diagram-heavy notes intentionally exceed 80 chars.
+  "MD013": false,
+
+  // Files begin with navigation callouts before the first H1.
+  "MD041": false,
+
+  // Reused subsection titles like "The Idea" and "Code" are intentional.
+  "MD024": {
+    "siblings_only": true
+  },
+
+  // Expand/collapse answers use <details>/<summary>.
+  "MD033": false,
+
+  // Unlabeled fenced blocks are used for ASCII diagrams and visual traces.
+  "MD040": false,
+
+  // Visual teaching blocks use flexible table pipe spacing.
+  "MD060": false,
+
+  // Compact study-note sections intentionally mix lists/fences tightly.
+  "MD031": false,
+  "MD032": false,
+
+  // Visual flow blocks often use intentional numbering/marker styles.
+  "MD029": false,
+  "MD030": false,
+  "MD004": false,
+
+  // Emphasis lines are used as intentional mini-headings in some sections.
+  "MD036": false
+}

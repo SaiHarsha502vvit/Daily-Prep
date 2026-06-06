@@ -572,7 +572,7 @@ Day 82-83: Weak Area Focus
  - Do 5 problems per weak area
 
 Day 84: Final Review
- 📘 09_Career_Reference/03_Quick_Reference.md
+ 📘 09_Career_Reference/11_Quick_Reference.md
  - Review all key formulas
  - Review common patterns
 ```

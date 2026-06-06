@@ -1,3 +1,5 @@
+﻿> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_002_Mar04_Tue.md)
+
 # Day 001 - Monday, March 3, 2026
 
 > **Week 01** | **Difficulty:** EASY | **Theme:** Arrays Fundamentals + SQL Start
@@ -63,6 +65,7 @@ Delete at index i   O(n)      Must shift elements left
 ─────────────────────────────────────────────────────
 ```
 
+
 #### WHEN to use Arrays vs alternatives?
 
 ```
@@ -78,6 +81,7 @@ DON'T USE ARRAY WHEN:
   - Need sorted dynamic data → TreeSet/BST
   - Size changes dramatically → ArrayList (dynamic array)
 ```
+
 
 #### Code: Implement these by hand
 
@@ -121,7 +125,7 @@ public class ArrayBasics {
 }
 ```
 
-> **Read more:** [02_Data_Structures/01_DataStructures_Complete.md](../../02_Data_Structures/01_DataStructures_Complete.md)
+> **Read more:** [02_Data_Structures/01a_Memory_Foundations.md](../../02_Data_Structures/01a_Memory_Foundations.md)
 
 ---
 
@@ -226,7 +230,8 @@ Bubble Sort      O(n)     O(n^2)    O(n^2)   O(1)   Yes       Yes
 "Stable"   = equal elements keep their relative order
 ```
 
-> **Read more:** [03_Algorithms/02_Sorting_Algorithms.md](../../03_Algorithms/02_Sorting_Algorithms.md)
+
+> **Read more:** [03_Algorithms/02a_Sorting_Fundamentals.md](../../03_Algorithms/02a_Sorting_Fundamentals.md)
 
 ---
 
@@ -397,6 +402,7 @@ There are 4 types of SQL commands:
   TCL (Txn)     : COMMIT, ROLLBACK, SAVEPOINT → Transaction safety
 ```
 
+
 #### HOW — Your First Queries
 
 ```sql
@@ -522,6 +528,7 @@ Example 2: nums = [0, 1]    → Output: 2
 Example 3: nums = [9,6,4,2,3,5,7,0,1] → Output: 8
 ```
 
+
 **Think before coding:** What approaches exist?
 1. Sort + check gaps → O(n log n)
 2. HashSet + check all numbers → O(n) time, O(n) space
@@ -580,6 +587,7 @@ Example 2: [1, 1, 2]             → Output: 2
 Example 3: [7]                    → Output: 7
 ```
 
+
 **The XOR pattern (memorize this — it appears in 10+ problems):**
 ```
 PROPERTY: a ^ a = 0     (any number XOR itself = 0)
@@ -591,6 +599,7 @@ So: 2 ^ 3 ^ 5 ^ 4 ^ 5 ^ 3 ^ 4
   = 2 ^ 0 ^ 0 ^ 0
   = 2  ← The single element!
 ```
+
 
 <details>
 <summary>Solution</summary>
@@ -630,3 +639,8 @@ public int singleNumber(int[] nums) {
 > **Mentor Note:** Don't rush. If you didn't finish everything today, that's okay. 
 > The most important thing is understanding WHY, not just typing code.
 > If you understood the XOR pattern deeply, you've already won today.
+
+
+---
+
+> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_002_Mar04_Tue.md)

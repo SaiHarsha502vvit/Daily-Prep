@@ -1,4 +1,4 @@
-> **SQL Chapter 09/20** | [← Previous](08_Subqueries_CTEs.md) | [Index](../00_MASTER_INDEX.md) | [Next →](10_Normalization.md)
+**SQL Chapter 09/20** | [← Previous](08_Subqueries_CTEs.md) | [Index](../00_MASTER_INDEX.md) | [Next →](10_Normalization.md)
 
 ---
 
@@ -8,45 +8,46 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WINDOW FUNCTIONS - OVERVIEW                                   │
+│                    WINDOW FUNCTIONS - OVERVIEW                                  │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Window functions perform calculations across a SET of rows related to the      │
 │  current row, WITHOUT collapsing the result into a single row (unlike GROUP BY).│
-│                                                                                  │
+│                                                                                 │
 │  Syntax:                                                                        │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  function_name() OVER (                                                    ││
-│  │      [PARTITION BY column1, column2]  ← Groups for calculation             ││
-│  │      [ORDER BY column3]               ← Order within group                 ││
-│  │      [ROWS/RANGE frame_clause]        ← Which rows to consider             ││
-│  │  )                                                                         ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  function_name() OVER (                                                    │ │
+│  │      [PARTITION BY column1, column2]  ← Groups for calculation             │ │
+│  │      [ORDER BY column3]               ← Order within group                 │ │
+│  │      [ROWS/RANGE frame_clause]        ← Which rows to consider             │ │
+│  │  )                                                                         │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  WINDOW FUNCTION CATEGORIES:                                                    │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  1. RANKING Functions                                                      ││
-│  │     • ROW_NUMBER() - Unique sequential number                              ││
-│  │     • RANK()       - Rank with gaps                                        ││
-│  │     • DENSE_RANK() - Rank without gaps                                     ││
-│  │     • NTILE(n)     - Divide into n groups                                  ││
-│  │                                                                            ││
-│  │  2. VALUE Functions                                                        ││
-│  │     • LAG()         - Previous row value                                   ││
-│  │     • LEAD()        - Next row value                                       ││
-│  │     • FIRST_VALUE() - First value in window                                ││
-│  │     • LAST_VALUE()  - Last value in window                                 ││
-│  │     • NTH_VALUE()   - Nth value in window                                  ││
-│  │                                                                            ││
-│  │  3. AGGREGATE Functions (as window)                                        ││
-│  │     • SUM() OVER()                                                         ││
-│  │     • AVG() OVER()                                                         ││
-│  │     • COUNT() OVER()                                                       ││
-│  │     • MIN() OVER(), MAX() OVER()                                           ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  1. RANKING Functions                                                      │ │
+│  │     • ROW_NUMBER() - Unique sequential number                              │ │
+│  │     • RANK()       - Rank with gaps                                        │ │
+│  │     • DENSE_RANK() - Rank without gaps                                     │ │
+│  │     • NTILE(n)     - Divide into n groups                                  │ │
+│  │                                                                            │ │
+│  │  2. VALUE Functions                                                        │ │
+│  │     • LAG()         - Previous row value                                   │ │
+│  │     • LEAD()        - Next row value                                       │ │
+│  │     • FIRST_VALUE() - First value in window                                │ │
+│  │     • LAST_VALUE()  - Last value in window                                 │ │
+│  │     • NTH_VALUE()   - Nth value in window                                  │ │
+│  │                                                                            │ │
+│  │  3. AGGREGATE Functions (as window)                                        │ │
+│  │     • SUM() OVER()                                                         │ │
+│  │     • AVG() OVER()                                                         │ │
+│  │     • COUNT() OVER()                                                       │ │
+│  │     • MIN() OVER(), MAX() OVER()                                           │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Ranking Functions
 
@@ -345,6 +346,29 @@ WINDOW w AS (PARTITION BY dept_id ORDER BY salary DESC);
 
 ---
 
+
+
+🔬 **Section Challenge — Chapter 9: Window Functions**
+
+**Challenge 1 (Reasoning):** Why can't you use a window function in a WHERE clause? How do you filter on window function results?
+<details><summary>Answer</summary>
+
+Window functions run in a logical step AFTER WHERE filtering. The WHERE clause operates on base rows; window functions are computed on the result set. Solution: wrap in a subquery/CTE. `WITH ranked AS (SELECT *, ROW_NUMBER() OVER(...) rn FROM t) SELECT * FROM ranked WHERE rn = 1`. This is 'standard' pattern for top-N-per-group.
+</details>
+
+> [!NOTE]
+> **Open Source Reference: Window Aggregation Engine**
+> * [postgres/nodeWindowAgg.c](https://github.com/postgres/postgres/blob/master/src/backend/executor/nodeWindowAgg.c) -> **Invariant:** The executor groups tuples into partitions, caching them in a `tuplestore`. It evaluates window functions over the defined frame boundaries without reducing the input row count.
+> * **Local rewrite:** While `GROUP BY` routes tuples to an aggregator that emits a single result row per group (destroying base row visibility), the `WindowAgg` node buffers the partition, evaluates the aggregate or ranking function, and emits the result appended to *every* original row.
+> * **Constraint warning:** Because it requires sorting and buffering (often spilling to disk if `work_mem` is exceeded), window functions are expensive on large partitions. Always define the narrowest `PARTITION BY` possible and filter with `WHERE` *before* the window function runs.
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
+
 ## 📝 PRACTICE EXERCISES - PART 2
 
 ```sql
@@ -523,64 +547,59 @@ _"Part 2 Complete! You now understand Aggregates, GROUP BY, JOINs, Subqueries, C
 
 ---
 
-
-
----
-
 # ═══════════════════════════════════════════════════════════════════
 # MERGED FROM: 02_SQL_Data_Analysis.md (WHY-HOW Framework Edition)
 # ═══════════════════════════════════════════════════════════════════
 
 # 📊 SQL FOR DATA ANALYSIS - Complete Guide
 
-> **From Analyst Queries to Data Engineering Patterns**
-> _"Turn raw data into business insights with SQL mastery"_
+**From Analyst Queries to Data Engineering Patterns**
+_"Turn raw data into business insights with SQL mastery"_
 
 ---
 
 # 🎯 DATA ANALYST SQL JOURNEY
 
 ```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║                    DATA ANALYST SQL SKILLSET                                     ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                   ║
-║  Level 1: BASIC QUERIES (Week 1-2)                                               ║
-║  ├── SELECT, WHERE, ORDER BY, LIMIT                                              ║
-║  ├── Comparison & Logical Operators                                              ║
-║  └── Basic filtering and sorting                                                 ║
-║                                                                                   ║
-║  Level 2: AGGREGATIONS (Week 3-4)                                                ║
-║  ├── GROUP BY, HAVING                                                            ║
-║  ├── COUNT, SUM, AVG, MIN, MAX                                                   ║
-║  └── Aggregate with conditions                                                   ║
-║                                                                                   ║
-║  Level 3: JOINS (Week 5-6)                                                       ║
-║  ├── INNER, LEFT, RIGHT, FULL JOIN                                               ║
-║  ├── Self Joins, Cross Joins                                                     ║
-║  └── Multiple table combinations                                                 ║
-║                                                                                   ║
-║  Level 4: SUBQUERIES & CTEs (Week 7-8)                                           ║
-║  ├── Scalar subqueries                                                           ║
-║  ├── Correlated subqueries                                                       ║
-║  └── Common Table Expressions                                                    ║
-║                                                                                   ║
-║  Level 5: WINDOW FUNCTIONS (Week 9-10)                                           ║
-║  ├── ROW_NUMBER, RANK, DENSE_RANK                                                ║
-║  ├── LAG, LEAD, FIRST_VALUE                                                      ║
-║  └── Running totals, Moving averages                                             ║
-║                                                                                   ║
-║  Level 6: ADVANCED ANALYTICS (Week 11-12)                                        ║
-║  ├── PIVOT/UNPIVOT                                                               ║
-║  ├── Cohort analysis                                                             ║
-║  └── Funnel analysis                                                             ║
-║                                                                                   ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
+                  DATA ANALYST SQL SKILLSET
+──────────────────────────────────────────────────
+
+Level 1: BASIC QUERIES (Week 1-2)
+├── SELECT, WHERE, ORDER BY, LIMIT
+├── Comparison & Logical Operators
+└── Basic filtering and sorting
+
+Level 2: AGGREGATIONS (Week 3-4)
+├── GROUP BY, HAVING
+├── COUNT, SUM, AVG, MIN, MAX
+└── Aggregate with conditions
+
+Level 3: JOINS (Week 5-6)
+├── INNER, LEFT, RIGHT, FULL JOIN
+├── Self Joins, Cross Joins
+└── Multiple table combinations
+
+Level 4: SUBQUERIES & CTEs (Week 7-8)
+├── Scalar subqueries
+├── Correlated subqueries
+└── Common Table Expressions
+
+Level 5: WINDOW FUNCTIONS (Week 9-10)
+├── ROW_NUMBER, RANK, DENSE_RANK
+├── LAG, LEAD, FIRST_VALUE
+└── Running totals, Moving averages
+
+Level 6: ADVANCED ANALYTICS (Week 11-12)
+├── PIVOT/UNPIVOT
+├── Cohort analysis
+└── Funnel analysis
+
 ```
+
 
 ---
 
-# PART 1: JOINS - THE FOUNDATION OF DATA ANALYSIS
+# 🔗 Part 1: Joins — the Foundation of Data Analysis
 
 ---
 
@@ -590,161 +609,162 @@ _"Part 2 Complete! You now understand Aggregates, GROUP BY, JOINs, Subqueries, C
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY DATA IS SPLIT INTO MULTIPLE TABLES                        │
+│                    WHY DATA IS SPLIT INTO MULTIPLE TABLES                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  THE PROBLEM: Storing Everything in One Table                                   │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  orders_denormalized:                                                      ││
-│  │  ┌───────────────────────────────────────────────────────────────────┐    ││
-│  │  │ order_id │ customer_name │ customer_email │ product_name │ price │    ││
-│  │  ├──────────┼───────────────┼────────────────┼──────────────┼───────┤    ││
-│  │  │ 1        │ John Doe      │ john@email.com │ iPhone 15    │ 999   │    ││
-│  │  │ 2        │ John Doe      │ john@email.com │ AirPods      │ 199   │    ││
-│  │  │ 3        │ John Doe      │ john@email.com │ MacBook Pro  │ 2499  │    ││
-│  │  │ 4        │ Jane Smith    │ jane@email.com │ iPhone 15    │ 999   │    ││
-│  │  └───────────────────────────────────────────────────────────────────┘    ││
-│  │                                                                            ││
-│  │  PROBLEMS:                                                                 ││
-│  │  1. REDUNDANCY: "John Doe" and "john@email.com" stored 3 times            ││
-│  │  2. UPDATE ANOMALY: John changes email → must update ALL rows             ││
-│  │  3. STORAGE WASTE: Customer info repeated with every order                ││
-│  │  4. INCONSISTENCY: What if one row has typo "john@emal.com"?              ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  orders_denormalized:                                                      │ │
+│  │  ┌───────────────────────────────────────────────────────────────────┐    │  │
+│  │  │ order_id │ customer_name │ customer_email │ product_name │ price │    │   │
+│  │  ├──────────┼───────────────┼────────────────┼──────────────┼───────┤    │   │
+│  │  │ 1        │ John Doe      │ john@email.com │ iPhone 15    │ 999   │    │   │
+│  │  │ 2        │ John Doe      │ john@email.com │ AirPods      │ 199   │    │   │
+│  │  │ 3        │ John Doe      │ john@email.com │ MacBook Pro  │ 2499  │    │   │
+│  │  │ 4        │ Jane Smith    │ jane@email.com │ iPhone 15    │ 999   │    │   │
+│  │  └───────────────────────────────────────────────────────────────────┘    │  │
+│  │                                                                            │ │
+│  │  PROBLEMS:                                                                 │ │
+│  │  1. REDUNDANCY: "John Doe" and "john@email.com" stored 3 times            │  │
+│  │  2. UPDATE ANOMALY: John changes email → must update ALL rows             │  │
+│  │  3. STORAGE WASTE: Customer info repeated with every order                │  │
+│  │  4. INCONSISTENCY: What if one row has typo "john@emal.com"?              │  │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  THE SOLUTION: Normalized Tables with JOINs                                     │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  customers:                    orders:                                     ││
-│  │  ┌─────────────────────────┐   ┌──────────────────────────────┐           ││
-│  │  │ id │ name      │ email │   │ id │ customer_id │ product_id │           ││
-│  │  ├────┼───────────┼───────┤   ├────┼─────────────┼────────────┤           ││
-│  │  │ 1  │ John Doe  │ john@ │   │ 1  │ 1           │ 101        │           ││
-│  │  │ 2  │ Jane Smith│ jane@ │   │ 2  │ 1           │ 102        │           ││
-│  │  └─────────────────────────┘   │ 3  │ 1           │ 103        │           ││
-│  │                                │ 4  │ 2           │ 101        │           ││
-│  │                                └──────────────────────────────┘           ││
-│  │                                                                            ││
-│  │  BENEFITS:                                                                 ││
-│  │  ✓ No redundancy - customer info stored ONCE                              ││
-│  │  ✓ Update in one place - changes propagate automatically                  ││
-│  │  ✓ Less storage - only IDs repeated, not full data                        ││
-│  │  ✓ Data integrity - single source of truth                                ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  customers:                    orders:                                     │ │
+│  │  ┌─────────────────────────┐   ┌──────────────────────────────┐           │  │
+│  │  │ id │ name      │ email │   │ id │ customer_id │ product_id │           │  │
+│  │  ├────┼───────────┼───────┤   ├────┼─────────────┼────────────┤           │  │
+│  │  │ 1  │ John Doe  │ john@ │   │ 1  │ 1           │ 101        │           │  │
+│  │  │ 2  │ Jane Smith│ jane@ │   │ 2  │ 1           │ 102        │           │  │
+│  │  └─────────────────────────┘   │ 3  │ 1           │ 103        │           │ │
+│  │                                │ 4  │ 2           │ 101        │           │ │
+│  │                                └──────────────────────────────┘           │  │
+│  │                                                                            │ │
+│  │  BENEFITS:                                                                 │ │
+│  │  ✓ No redundancy - customer info stored ONCE                              │  │
+│  │  ✓ Update in one place - changes propagate automatically                  │  │
+│  │  ✓ Less storage - only IDs repeated, not full data                        │  │
+│  │  ✓ Data integrity - single source of truth                                │  │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  BUT: To get complete information, we need JOIN!                                │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Visual: All JOIN Types
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    JOIN TYPES - VISUAL GUIDE                                     │
+│                    JOIN TYPES - VISUAL GUIDE                                    │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  Sample Data:                                                                   │
-│                                                                                  │
+│                                                                                 │
 │  customers:                          orders:                                    │
-│  ┌────┬───────────┐                  ┌────┬─────────────┬───────┐              │
-│  │ id │ name      │                  │ id │ customer_id │ total │              │
-│  ├────┼───────────┤                  ├────┼─────────────┼───────┤              │
-│  │ 1  │ Alice     │                  │ 1  │ 1           │ 100   │              │
-│  │ 2  │ Bob       │                  │ 2  │ 1           │ 200   │              │
-│  │ 3  │ Charlie   │ ← No orders      │ 3  │ 2           │ 150   │              │
-│  └────┴───────────┘                  │ 4  │ 4           │ 300   │ ← No customer│
-│                                      └────┴─────────────┴───────┘              │
-│                                                                                  │
-│  ════════════════════════════════════════════════════════════════════════════  │
-│                                                                                  │
+│  ┌────┬───────────┐                  ┌────┬─────────────┬───────┐               │
+│  │ id │ name      │                  │ id │ customer_id │ total │               │
+│  ├────┼───────────┤                  ├────┼─────────────┼───────┤               │
+│  │ 1  │ Alice     │                  │ 1  │ 1           │ 100   │               │
+│  │ 2  │ Bob       │                  │ 2  │ 1           │ 200   │               │
+│  │ 3  │ Charlie   │ ← No orders      │ 3  │ 2           │ 150   │               │
+│  └────┴───────────┘                  │ 4  │ 4           │ 300   │ ← No customer │
+│                                      └────┴─────────────┴───────┘               │
+│                                                                                 │
+│  ════════════════════════════════════════════════════════════════════════════   │
+│                                                                                 │
 │  1. INNER JOIN - Only matching rows                                             │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │   SELECT * FROM customers c INNER JOIN orders o ON c.id = o.customer_id │   │
-│  │                                                                         │   │
-│  │   Result:                                                               │   │
-│  │   ┌────┬───────┬──────────┬─────────────┬───────┐                       │   │
-│  │   │ id │ name  │ order_id │ customer_id │ total │                       │   │
-│  │   ├────┼───────┼──────────┼─────────────┼───────┤                       │   │
-│  │   │ 1  │ Alice │ 1        │ 1           │ 100   │                       │   │
-│  │   │ 1  │ Alice │ 2        │ 1           │ 200   │                       │   │
-│  │   │ 2  │ Bob   │ 3        │ 2           │ 150   │                       │   │
-│  │   └────┴───────┴──────────┴─────────────┴───────┘                       │   │
-│  │                                                                         │   │
-│  │   Note: Charlie excluded (no orders), Order 4 excluded (no customer)    │   │
-│  │                                                                         │   │
-│  │   Visual:  ┌─────┐ ┌─────┐                                              │   │
-│  │            │ A   │█│ B   │   Only intersection                          │   │
-│  │            └─────┘ └─────┘                                              │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                  │
-│  ════════════════════════════════════════════════════════════════════════════  │
-│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │   SELECT * FROM customers c INNER JOIN orders o ON c.id = o.customer_id │    │
+│  │                                                                         │    │
+│  │   Result:                                                               │    │
+│  │   ┌────┬───────┬──────────┬─────────────┬───────┐                       │    │
+│  │   │ id │ name  │ order_id │ customer_id │ total │                       │    │
+│  │   ├────┼───────┼──────────┼─────────────┼───────┤                       │    │
+│  │   │ 1  │ Alice │ 1        │ 1           │ 100   │                       │    │
+│  │   │ 1  │ Alice │ 2        │ 1           │ 200   │                       │    │
+│  │   │ 2  │ Bob   │ 3        │ 2           │ 150   │                       │    │
+│  │   └────┴───────┴──────────┴─────────────┴───────┘                       │    │
+│  │                                                                         │    │
+│  │   Note: Charlie excluded (no orders), Order 4 excluded (no customer)    │    │
+│  │                                                                         │    │
+│  │   Visual:  ┌─────┐ ┌─────┐                                              │    │
+│  │            │ A   │█│ B   │   Only intersection                          │    │
+│  │            └─────┘ └─────┘                                              │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│  ════════════════════════════════════════════════════════════════════════════   │
+│                                                                                 │
 │  2. LEFT JOIN - All from left + matching from right                             │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │   SELECT * FROM customers c LEFT JOIN orders o ON c.id = o.customer_id  │   │
-│  │                                                                         │   │
-│  │   Result:                                                               │   │
-│  │   ┌────┬─────────┬──────────┬─────────────┬───────┐                     │   │
-│  │   │ id │ name    │ order_id │ customer_id │ total │                     │   │
-│  │   ├────┼─────────┼──────────┼─────────────┼───────┤                     │   │
-│  │   │ 1  │ Alice   │ 1        │ 1           │ 100   │                     │   │
-│  │   │ 1  │ Alice   │ 2        │ 1           │ 200   │                     │   │
-│  │   │ 2  │ Bob     │ 3        │ 2           │ 150   │                     │   │
-│  │   │ 3  │ Charlie │ NULL     │ NULL        │ NULL  │  ← Included!       │   │
-│  │   └────┴─────────┴──────────┴─────────────┴───────┘                     │   │
-│  │                                                                         │   │
-│  │   Visual:  ┌─────┐ ┌─────┐                                              │   │
-│  │            │█████│█│     │   All of A + intersection                    │   │
-│  │            └─────┘ └─────┘                                              │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                  │
-│  ════════════════════════════════════════════════════════════════════════════  │
-│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │   SELECT * FROM customers c LEFT JOIN orders o ON c.id = o.customer_id  │    │
+│  │                                                                         │    │
+│  │   Result:                                                               │    │
+│  │   ┌────┬─────────┬──────────┬─────────────┬───────┐                     │    │
+│  │   │ id │ name    │ order_id │ customer_id │ total │                     │    │
+│  │   ├────┼─────────┼──────────┼─────────────┼───────┤                     │    │
+│  │   │ 1  │ Alice   │ 1        │ 1           │ 100   │                     │    │
+│  │   │ 1  │ Alice   │ 2        │ 1           │ 200   │                     │    │
+│  │   │ 2  │ Bob     │ 3        │ 2           │ 150   │                     │    │
+│  │   │ 3  │ Charlie │ NULL     │ NULL        │ NULL  │  ← Included!       │     │
+│  │   └────┴─────────┴──────────┴─────────────┴───────┘                     │    │
+│  │                                                                         │    │
+│  │   Visual:  ┌─────┐ ┌─────┐                                              │    │
+│  │            │█████│█│     │   All of A + intersection                    │    │
+│  │            └─────┘ └─────┘                                              │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│  ════════════════════════════════════════════════════════════════════════════   │
+│                                                                                 │
 │  3. RIGHT JOIN - All from right + matching from left                            │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │   SELECT * FROM customers c RIGHT JOIN orders o ON c.id = o.customer_id │   │
-│  │                                                                         │   │
-│  │   Result:                                                               │   │
-│  │   ┌──────┬───────┬──────────┬─────────────┬───────┐                     │   │
-│  │   │ id   │ name  │ order_id │ customer_id │ total │                     │   │
-│  │   ├──────┼───────┼──────────┼─────────────┼───────┤                     │   │
-│  │   │ 1    │ Alice │ 1        │ 1           │ 100   │                     │   │
-│  │   │ 1    │ Alice │ 2        │ 1           │ 200   │                     │   │
-│  │   │ 2    │ Bob   │ 3        │ 2           │ 150   │                     │   │
-│  │   │ NULL │ NULL  │ 4        │ 4           │ 300   │  ← Orphan order    │   │
-│  │   └──────┴───────┴──────────┴─────────────┴───────┘                     │   │
-│  │                                                                         │   │
-│  │   Visual:  ┌─────┐ ┌─────┐                                              │   │
-│  │            │     │█│█████│   Intersection + all of B                    │   │
-│  │            └─────┘ └─────┘                                              │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                  │
-│  ════════════════════════════════════════════════════════════════════════════  │
-│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │   SELECT * FROM customers c RIGHT JOIN orders o ON c.id = o.customer_id │    │
+│  │                                                                         │    │
+│  │   Result:                                                               │    │
+│  │   ┌──────┬───────┬──────────┬─────────────┬───────┐                     │    │
+│  │   │ id   │ name  │ order_id │ customer_id │ total │                     │    │
+│  │   ├──────┼───────┼──────────┼─────────────┼───────┤                     │    │
+│  │   │ 1    │ Alice │ 1        │ 1           │ 100   │                     │    │
+│  │   │ 1    │ Alice │ 2        │ 1           │ 200   │                     │    │
+│  │   │ 2    │ Bob   │ 3        │ 2           │ 150   │                     │    │
+│  │   │ NULL │ NULL  │ 4        │ 4           │ 300   │  ← Orphan order    │     │
+│  │   └──────┴───────┴──────────┴─────────────┴───────┘                     │    │
+│  │                                                                         │    │
+│  │   Visual:  ┌─────┐ ┌─────┐                                              │    │
+│  │            │     │█│█████│   Intersection + all of B                    │    │
+│  │            └─────┘ └─────┘                                              │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
+│  ════════════════════════════════════════════════════════════════════════════   │
+│                                                                                 │
 │  4. FULL OUTER JOIN - All from both tables                                      │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │   SELECT * FROM customers c FULL JOIN orders o ON c.id = o.customer_id  │   │
-│  │                                                                         │   │
-│  │   Result:                                                               │   │
-│  │   ┌──────┬─────────┬──────────┬─────────────┬───────┐                   │   │
-│  │   │ id   │ name    │ order_id │ customer_id │ total │                   │   │
-│  │   ├──────┼─────────┼──────────┼─────────────┼───────┤                   │   │
-│  │   │ 1    │ Alice   │ 1        │ 1           │ 100   │                   │   │
-│  │   │ 1    │ Alice   │ 2        │ 1           │ 200   │                   │   │
-│  │   │ 2    │ Bob     │ 3        │ 2           │ 150   │                   │   │
-│  │   │ 3    │ Charlie │ NULL     │ NULL        │ NULL  │ ← No orders      │   │
-│  │   │ NULL │ NULL    │ 4        │ 4           │ 300   │ ← No customer    │   │
-│  │   └──────┴─────────┴──────────┴─────────────┴───────┘                   │   │
-│  │                                                                         │   │
-│  │   Visual:  ┌─────┐ ┌─────┐                                              │   │
-│  │            │█████│█│█████│   Everything from both                       │   │
-│  │            └─────┘ └─────┘                                              │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-│                                                                                  │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │   SELECT * FROM customers c FULL JOIN orders o ON c.id = o.customer_id  │    │
+│  │                                                                         │    │
+│  │   Result:                                                               │    │
+│  │   ┌──────┬─────────┬──────────┬─────────────┬───────┐                   │    │
+│  │   │ id   │ name    │ order_id │ customer_id │ total │                   │    │
+│  │   ├──────┼─────────┼──────────┼─────────────┼───────┤                   │    │
+│  │   │ 1    │ Alice   │ 1        │ 1           │ 100   │                   │    │
+│  │   │ 1    │ Alice   │ 2        │ 1           │ 200   │                   │    │
+│  │   │ 2    │ Bob     │ 3        │ 2           │ 150   │                   │    │
+│  │   │ 3    │ Charlie │ NULL     │ NULL        │ NULL  │ ← No orders      │     │
+│  │   │ NULL │ NULL    │ 4        │ 4           │ 300   │ ← No customer    │     │
+│  │   └──────┴─────────┴──────────┴─────────────┴───────┘                   │    │
+│  │                                                                         │    │
+│  │   Visual:  ┌─────┐ ┌─────┐                                              │    │
+│  │            │█████│█│█████│   Everything from both                       │    │
+│  │            └─────┘ └─────┘                                              │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -772,7 +792,7 @@ products (product_id, name, category, price, cost)
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Pattern 1: Customer with their orders
-SELECT 
+SELECT
     c.name AS customer_name,
     c.email,
     o.order_id,
@@ -784,7 +804,7 @@ ORDER BY c.name, o.order_date;
 
 -- Pattern 2: Find customers WITHOUT orders (LEFT JOIN + NULL check)
 -- WHY: Identify inactive customers for marketing campaigns
-SELECT 
+SELECT
     c.customer_id,
     c.name,
     c.email,
@@ -794,7 +814,7 @@ LEFT JOIN orders o ON c.customer_id = o.customer_id
 WHERE o.order_id IS NULL;  -- No matching order
 
 -- Pattern 3: Order details with product information
-SELECT 
+SELECT
     o.order_id,
     o.order_date,
     p.name AS product_name,
@@ -825,7 +845,7 @@ employees:
 */
 
 -- Get employee with manager name
-SELECT 
+SELECT
     e.name AS employee,
     m.name AS manager
 FROM employees e
@@ -840,7 +860,7 @@ LEFT JOIN employees m ON e.manager_id = m.emp_id;
 -- | VP Sales | CEO     |
 
 -- Find employees who manage others
-SELECT DISTINCT 
+SELECT DISTINCT
     m.emp_id,
     m.name AS manager_name,
     COUNT(e.emp_id) AS direct_reports
@@ -853,7 +873,7 @@ GROUP BY m.emp_id, m.name;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Complete sales analysis: Customer → Order → Items → Products
-SELECT 
+SELECT
     c.name AS customer,
     c.city,
     DATE_FORMAT(o.order_date, '%Y-%m') AS order_month,
@@ -868,7 +888,7 @@ INNER JOIN order_items oi ON o.order_id = oi.order_id
 INNER JOIN products p ON oi.product_id = p.product_id
 WHERE o.status = 'completed'
   AND o.order_date >= '2024-01-01'
-GROUP BY c.customer_id, c.name, c.city, 
+GROUP BY c.customer_id, c.name, c.city,
          DATE_FORMAT(o.order_date, '%Y-%m'), p.category
 ORDER BY revenue DESC;
 
@@ -888,7 +908,7 @@ WHERE o.order_date BETWEEN '2024-01-01' AND '2024-01-31';
 SELECT c.customer_id, c.name
 FROM customers c
 WHERE EXISTS (
-    SELECT 1 FROM orders o 
+    SELECT 1 FROM orders o
     WHERE o.customer_id = c.customer_id
       AND o.order_date BETWEEN '2024-01-01' AND '2024-01-31'
 );
@@ -909,7 +929,28 @@ WHERE c.customer_id IN (
 
 ---
 
-# PART 2: AGGREGATE FUNCTIONS & GROUP BY
+
+
+🔬 **Section Challenge — Chapter 1: Understanding JOINs**
+
+**Challenge 1 (Bug Hunt — Who/When/What):** `SELECT * FROM orders o LEFT JOIN customers c ON o.customer_id = c.id WHERE c.country = 'US'`. **Who** gets excluded? **When** does a LEFT JOIN silently become an INNER JOIN? **What** is the fix?
+
+<details><summary>Answer</summary>
+
+**Who gets excluded?** Orders with no matching customer — the very rows LEFT JOIN is supposed to keep. The `WHERE c.country = 'US'` filter on the right-side table eliminates NULL rows (because `NULL = 'US'` is NULL, not TRUE). **When does it happen?** Any time you put a filter condition on the RIGHT table's column in the WHERE clause of a LEFT JOIN. **What is the fix?** Move the condition into the ON clause: `LEFT JOIN customers c ON o.customer_id = c.id AND c.country = 'US'`. This keeps orders with no customer (c.country = NULL for them) AND only matches US customers for those with a customer. **Rule:** Filter on LEFT table in WHERE. Filter on RIGHT table in ON.
+
+</details>
+
+**Challenge 2 (Design — Who/When/What):** `customers LEFT JOIN orders` vs `orders LEFT JOIN customers` — **who** is preserved in each? **When** would you choose each? **What** if you need both sides?
+
+<details><summary>Answer</summary>
+
+**`customers LEFT JOIN orders`:** ALL customers preserved, even those with no orders. Orders without a customer are excluded. Use when: "show me all customers, even inactive ones." **`orders LEFT JOIN customers`:** ALL orders preserved, even orphan orders with no customer. Customers with no orders are excluded. Use when: "show me all orders, flag which ones have a missing customer." **Need both sides?** `FULL OUTER JOIN` (PostgreSQL, SQL Server). In MySQL: `LEFT JOIN UNION RIGHT JOIN`. Or use a proper data integrity constraint (FK) to prevent orphan orders in the first place.
+
+</details>
+
+
+# 📌 Part 2: Aggregate Functions & Group By
 
 ---
 
@@ -919,39 +960,40 @@ WHERE c.customer_id IN (
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY AGGREGATIONS MATTER                                       │
+│                    WHY AGGREGATIONS MATTER                                      │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  RAW DATA (1 million rows):                                                     │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │ order_id │ customer_id │ product_id │ quantity │ price │ order_date        ││
-│  │ 1        │ 1001        │ 501        │ 2        │ 29.99 │ 2024-01-15        ││
-│  │ 2        │ 1002        │ 502        │ 1        │ 49.99 │ 2024-01-15        ││
-│  │ 3        │ 1001        │ 503        │ 3        │ 19.99 │ 2024-01-16        ││
-│  │ ... 999,997 more rows ...                                                  ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │ order_id │ customer_id │ product_id │ quantity │ price │ order_date        │ │
+│  │ 1        │ 1001        │ 501        │ 2        │ 29.99 │ 2024-01-15        │ │
+│  │ 2        │ 1002        │ 502        │ 1        │ 49.99 │ 2024-01-15        │ │
+│  │ 3        │ 1001        │ 503        │ 3        │ 19.99 │ 2024-01-16        │ │
+│  │ ... 999,997 more rows ...                                                  │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  CEO asks: "How is the business doing?"                                         │
 │  You can't show 1 million rows!                                                 │
-│                                                                                  │
+│                                                                                 │
 │  AGGREGATED INSIGHT:                                                            │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  📊 EXECUTIVE DASHBOARD - January 2024                                     ││
-│  │                                                                            ││
-│  │  Total Revenue:     $2,345,678                                             ││
-│  │  Total Orders:      45,231                                                 ││
-│  │  Avg Order Value:   $51.87                                                 ││
-│  │  Top Category:      Electronics (35% of revenue)                           ││
-│  │  Top City:          Mumbai (12% of orders)                                 ││
-│  │  Growth vs Dec:     +15%                                                   ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  📊 EXECUTIVE DASHBOARD - January 2024                                     │  │
+│  │                                                                            │ │
+│  │  Total Revenue:     $2,345,678                                             │ │
+│  │  Total Orders:      45,231                                                 │ │
+│  │  Avg Order Value:   $51.87                                                 │ │
+│  │  Top Category:      Electronics (35% of revenue)                           │ │
+│  │  Top City:          Mumbai (12% of orders)                                 │ │
+│  │  Growth vs Dec:     +15%                                                   │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  This is the power of AGGREGATION!                                              │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### 🟢 HOW: Complete Aggregation Guide
 
@@ -965,7 +1007,7 @@ WHERE c.customer_id IN (
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- COUNT: Number of rows/values
-SELECT 
+SELECT
     COUNT(*) AS total_rows,           -- All rows (including NULL)
     COUNT(customer_id) AS non_null,   -- Non-NULL values only
     COUNT(DISTINCT customer_id) AS unique_customers  -- Unique values
@@ -978,7 +1020,7 @@ SELECT SUM(total) AS total_revenue FROM orders WHERE status = 'completed';
 SELECT AVG(total) AS avg_order_value FROM orders;
 
 -- MIN/MAX: Smallest/Largest value
-SELECT 
+SELECT
     MIN(order_date) AS first_order,
     MAX(order_date) AS last_order,
     MIN(total) AS smallest_order,
@@ -990,7 +1032,7 @@ FROM orders;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Sales by category
-SELECT 
+SELECT
     p.category,
     COUNT(*) AS num_orders,
     SUM(oi.quantity) AS units_sold,
@@ -1002,7 +1044,7 @@ GROUP BY p.category
 ORDER BY revenue DESC;
 
 -- Sales by month
-SELECT 
+SELECT
     DATE_FORMAT(order_date, '%Y-%m') AS month,
     COUNT(*) AS orders,
     SUM(total) AS revenue,
@@ -1012,7 +1054,7 @@ GROUP BY DATE_FORMAT(order_date, '%Y-%m')
 ORDER BY month;
 
 -- Multiple GROUP BY columns
-SELECT 
+SELECT
     c.city,
     p.category,
     COUNT(*) AS orders,
@@ -1033,7 +1075,7 @@ ORDER BY c.city, revenue DESC;
 -- HAVING: Filters GROUPS after aggregation
 
 -- Find high-value customers (spent > ₹10,000)
-SELECT 
+SELECT
     c.customer_id,
     c.name,
     COUNT(*) AS order_count,
@@ -1046,7 +1088,7 @@ HAVING SUM(o.total) > 10000         -- HAVING: filter groups after
 ORDER BY total_spent DESC;
 
 -- Find products with low sales (need restock review)
-SELECT 
+SELECT
     p.product_id,
     p.name,
     COUNT(oi.item_id) AS times_ordered,
@@ -1062,14 +1104,14 @@ ORDER BY units_sold;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Single query for multiple metrics
-SELECT 
+SELECT
     DATE_FORMAT(order_date, '%Y-%m') AS month,
     COUNT(*) AS total_orders,
     SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed,
     SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled,
     SUM(CASE WHEN status = 'refunded' THEN 1 ELSE 0 END) AS refunded,
     ROUND(
-        100.0 * SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) / COUNT(*), 
+        100.0 * SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) / COUNT(*),
         2
     ) AS completion_rate
 FROM orders
@@ -1077,7 +1119,7 @@ GROUP BY DATE_FORMAT(order_date, '%Y-%m')
 ORDER BY month;
 
 -- Revenue breakdown by category
-SELECT 
+SELECT
     DATE_FORMAT(o.order_date, '%Y-%m') AS month,
     SUM(CASE WHEN p.category = 'Electronics' THEN oi.quantity * oi.price ELSE 0 END) AS electronics_rev,
     SUM(CASE WHEN p.category = 'Clothing' THEN oi.quantity * oi.price ELSE 0 END) AS clothing_rev,
@@ -1095,7 +1137,7 @@ ORDER BY month;
 
 -- MySQL: GROUP_CONCAT
 -- List all products in each order
-SELECT 
+SELECT
     o.order_id,
     o.order_date,
     GROUP_CONCAT(p.name ORDER BY p.name SEPARATOR ', ') AS products
@@ -1105,7 +1147,7 @@ JOIN products p ON oi.product_id = p.product_id
 GROUP BY o.order_id, o.order_date;
 
 -- PostgreSQL: STRING_AGG
-SELECT 
+SELECT
     o.order_id,
     o.order_date,
     STRING_AGG(p.name, ', ' ORDER BY p.name) AS products
@@ -1117,7 +1159,10 @@ GROUP BY o.order_id, o.order_date;
 
 ---
 
-# PART 3: WINDOW FUNCTIONS - ADVANCED ANALYTICS
+
+
+
+# 🚀 Part 3: Window Functions — Advanced Analytics
 
 ---
 
@@ -1127,62 +1172,63 @@ GROUP BY o.order_id, o.order_date;
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY WINDOW FUNCTIONS EXIST                                    │
+│                    WHY WINDOW FUNCTIONS EXIST                                   │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  THE LIMITATION OF GROUP BY:                                                    │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  Original Data:                  After GROUP BY:                           ││
-│  │  ┌─────────────────────┐         ┌────────────────┐                        ││
-│  │  │ emp │ dept │ salary│         │ dept │ avg_sal │                        ││
-│  │  ├─────┼──────┼───────┤         ├──────┼─────────┤                        ││
-│  │  │ A   │ IT   │ 60000 │ ──────→ │ IT   │ 65000   │                        ││
-│  │  │ B   │ IT   │ 70000 │         │ HR   │ 50000   │                        ││
-│  │  │ C   │ HR   │ 50000 │         └────────────────┘                        ││
-│  │  └─────────────────────┘                                                   ││
-│  │                                                                            ││
-│  │  PROBLEM: We lost individual employee details!                             ││
-│  │  - Can't compare each employee to department average                       ││
-│  │  - Can't see employee name alongside department total                      ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  Original Data:                  After GROUP BY:                           │ │
+│  │  ┌─────────────────────┐         ┌────────────────┐                        │ │
+│  │  │ emp │ dept │ salary│         │ dept │ avg_sal │                        │  │
+│  │  ├─────┼──────┼───────┤         ├──────┼─────────┤                        │  │
+│  │  │ A   │ IT   │ 60000 │ ──────→ │ IT   │ 65000   │                        │  │
+│  │  │ B   │ IT   │ 70000 │         │ HR   │ 50000   │                        │  │
+│  │  │ C   │ HR   │ 50000 │         └────────────────┘                        │  │
+│  │  └─────────────────────┘                                                   │ │
+│  │                                                                            │ │
+│  │  PROBLEM: We lost individual employee details!                             │ │
+│  │  - Can't compare each employee to department average                       │ │
+│  │  - Can't see employee name alongside department total                      │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  WINDOW FUNCTIONS SOLUTION:                                                     │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  SELECT emp, dept, salary,                                                 ││
-│  │         AVG(salary) OVER (PARTITION BY dept) AS dept_avg                  ││
-│  │  FROM employees;                                                           ││
-│  │                                                                            ││
-│  │  Result: Keep ALL rows + add aggregate                                     ││
-│  │  ┌─────────────────────────────────────┐                                  ││
-│  │  │ emp │ dept │ salary │ dept_avg      │                                  ││
-│  │  ├─────┼──────┼────────┼───────────────┤                                  ││
-│  │  │ A   │ IT   │ 60000  │ 65000         │  ← Each row has its own salary   ││
-│  │  │ B   │ IT   │ 70000  │ 65000         │    PLUS the department average   ││
-│  │  │ C   │ HR   │ 50000  │ 50000         │                                  ││
-│  │  └─────────────────────────────────────┘                                  ││
-│  │                                                                            ││
-│  │  NOW YOU CAN:                                                              ││
-│  │  - Compare each employee to their department average                       ││
-│  │  - Rank employees within departments                                       ││
-│  │  - Calculate running totals                                                ││
-│  │  - Find previous/next values                                               ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│  🔴 REAL USE CASE: Netflix's Content Analytics                                  │
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  SELECT emp, dept, salary,                                                 │ │
+│  │         AVG(salary) OVER (PARTITION BY dept) AS dept_avg                  │  │
+│  │  FROM employees;                                                           │ │
+│  │                                                                            │ │
+│  │  Result: Keep ALL rows + add aggregate                                     │ │
+│  │  ┌─────────────────────────────────────┐                                  │  │
+│  │  │ emp │ dept │ salary │ dept_avg      │                                  │  │
+│  │  ├─────┼──────┼────────┼───────────────┤                                  │  │
+│  │  │ A   │ IT   │ 60000  │ 65000         │  ← Each row has its own salary   │  │
+│  │  │ B   │ IT   │ 70000  │ 65000         │    PLUS the department average   │  │
+│  │  │ C   │ HR   │ 50000  │ 50000         │                                  │  │
+│  │  └─────────────────────────────────────┘                                  │  │
+│  │                                                                            │ │
+│  │  NOW YOU CAN:                                                              │ │
+│  │  - Compare each employee to their department average                       │ │
+│  │  - Rank employees within departments                                       │ │
+│  │  - Calculate running totals                                                │ │
+│  │  - Find previous/next values                                               │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│  🔴 REAL USE CASE: Netflix's Content Analytics                                   │
+│                                                                                 │
 │  - Rank shows by viewership within each genre                                   │
 │  - Calculate running total of watch hours                                       │
 │  - Find viewership change from previous week                                    │
-│  - Identify top 10% performing content per region                              │
-│                                                                                  │
+│  - Identify top 10% performing content per region                               │
+│                                                                                 │
 │  All require WINDOW FUNCTIONS!                                                  │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### 🟢 HOW: Window Functions Complete Guide
 
@@ -1207,7 +1253,7 @@ function_name() OVER (
 -- RANK: Same rank for ties, gaps after
 -- DENSE_RANK: Same rank for ties, no gaps
 
-SELECT 
+SELECT
     name,
     department,
     salary,
@@ -1226,7 +1272,7 @@ FROM employees;
 */
 
 -- Rank within each department (PARTITION BY)
-SELECT 
+SELECT
     name,
     department,
     salary,
@@ -1234,7 +1280,7 @@ SELECT
 FROM employees;
 
 -- NTILE: Divide into N equal groups (quartiles, deciles)
-SELECT 
+SELECT
     customer_id,
     total_spent,
     NTILE(4) OVER (ORDER BY total_spent) AS spending_quartile
@@ -1246,14 +1292,14 @@ FROM customer_lifetime_value;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Month-over-month comparison
-SELECT 
+SELECT
     month,
     revenue,
     LAG(revenue) OVER (ORDER BY month) AS prev_month_revenue,
     revenue - LAG(revenue) OVER (ORDER BY month) AS revenue_change,
     ROUND(
-        100.0 * (revenue - LAG(revenue) OVER (ORDER BY month)) / 
-        LAG(revenue) OVER (ORDER BY month), 
+        100.0 * (revenue - LAG(revenue) OVER (ORDER BY month)) /
+        LAG(revenue) OVER (ORDER BY month),
         2
     ) AS pct_change
 FROM monthly_revenue;
@@ -1267,13 +1313,13 @@ FROM monthly_revenue;
 */
 
 -- LEAD: Look ahead
-SELECT 
+SELECT
     employee_id,
     name,
     hire_date,
     LEAD(hire_date) OVER (ORDER BY hire_date) AS next_hire_date,
     DATEDIFF(
-        LEAD(hire_date) OVER (ORDER BY hire_date), 
+        LEAD(hire_date) OVER (ORDER BY hire_date),
         hire_date
     ) AS days_until_next_hire
 FROM employees;
@@ -1283,14 +1329,14 @@ FROM employees;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Running total (cumulative sum)
-SELECT 
+SELECT
     order_date,
     total,
     SUM(total) OVER (ORDER BY order_date) AS running_total
 FROM orders;
 
 -- Running total RESET each month (PARTITION BY)
-SELECT 
+SELECT
     order_date,
     total,
     SUM(total) OVER (
@@ -1300,7 +1346,7 @@ SELECT
 FROM orders;
 
 -- 7-day moving average
-SELECT 
+SELECT
     order_date,
     daily_revenue,
     AVG(daily_revenue) OVER (
@@ -1310,7 +1356,7 @@ SELECT
 FROM daily_sales;
 
 -- 3-day moving average (centered)
-SELECT 
+SELECT
     order_date,
     daily_revenue,
     AVG(daily_revenue) OVER (
@@ -1324,12 +1370,12 @@ FROM daily_sales;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Find first order date for each customer
-SELECT 
+SELECT
     customer_id,
     order_id,
     order_date,
     FIRST_VALUE(order_date) OVER (
-        PARTITION BY customer_id 
+        PARTITION BY customer_id
         ORDER BY order_date
     ) AS first_order_date,
     DATEDIFF(order_date, FIRST_VALUE(order_date) OVER (
@@ -1338,7 +1384,7 @@ SELECT
 FROM orders;
 
 -- Compare each sale to the day's first and highest sale
-SELECT 
+SELECT
     sale_time,
     amount,
     FIRST_VALUE(amount) OVER (ORDER BY sale_time) AS first_sale,
@@ -1351,7 +1397,7 @@ FROM sales;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Find percentile of each customer's spending
-SELECT 
+SELECT
     customer_id,
     total_spent,
     ROUND(PERCENT_RANK() OVER (ORDER BY total_spent) * 100, 2) AS percentile,
@@ -1370,7 +1416,7 @@ FROM customer_lifetime_value;
 
 -- Identify top 10% customers
 WITH ranked_customers AS (
-    SELECT 
+    SELECT
         customer_id,
         total_spent,
         PERCENT_RANK() OVER (ORDER BY total_spent) AS percentile
@@ -1391,67 +1437,68 @@ SELECT * FROM ranked_customers WHERE percentile >= 0.90;
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY CTEs EXIST                                                │
+│                    WHY CTEs EXIST                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  THE PROBLEM: Nested Subqueries are Hard to Read                                │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  -- Find customers whose orders are above average order value              ││
-│  │  -- Then show their spending rank                                          ││
-│  │                                                                            ││
-│  │  SELECT customer_id, name, total_spent, rank_num FROM (                   ││
-│  │      SELECT c.customer_id, c.name, total_spent,                           ││
-│  │             RANK() OVER (ORDER BY total_spent DESC) as rank_num           ││
-│  │      FROM customers c                                                      ││
-│  │      JOIN (                                                                ││
-│  │          SELECT customer_id, SUM(total) as total_spent                    ││
-│  │          FROM orders                                                       ││
-│  │          WHERE total > (                                                   ││
-│  │              SELECT AVG(total) FROM orders                                 ││
-│  │          )                                                                 ││
-│  │          GROUP BY customer_id                                              ││
-│  │      ) o ON c.customer_id = o.customer_id                                  ││
-│  │  ) ranked WHERE rank_num <= 10;                                            ││
-│  │                                                                            ││
-│  │  PROBLEMS:                                                                 ││
-│  │  - Hard to understand flow                                                 ││
-│  │  - Difficult to debug                                                      ││
-│  │  - Can't reuse subquery results                                            ││
-│  │  - Reading order: inside-out                                               ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  -- Find customers whose orders are above average order value              │ │
+│  │  -- Then show their spending rank                                          │ │
+│  │                                                                            │ │
+│  │  SELECT customer_id, name, total_spent, rank_num FROM (                   │  │
+│  │      SELECT c.customer_id, c.name, total_spent,                           │  │
+│  │             RANK() OVER (ORDER BY total_spent DESC) as rank_num           │  │
+│  │      FROM customers c                                                      │ │
+│  │      JOIN (                                                                │ │
+│  │          SELECT customer_id, SUM(total) as total_spent                    │  │
+│  │          FROM orders                                                       │ │
+│  │          WHERE total > (                                                   │ │
+│  │              SELECT AVG(total) FROM orders                                 │ │
+│  │          )                                                                 │ │
+│  │          GROUP BY customer_id                                              │ │
+│  │      ) o ON c.customer_id = o.customer_id                                  │ │
+│  │  ) ranked WHERE rank_num <= 10;                                            │ │
+│  │                                                                            │ │
+│  │  PROBLEMS:                                                                 │ │
+│  │  - Hard to understand flow                                                 │ │
+│  │  - Difficult to debug                                                      │ │
+│  │  - Can't reuse subquery results                                            │ │
+│  │  - Reading order: inside-out                                               │ │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  THE SOLUTION: CTEs Make it Readable                                            │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │                                                                            ││
-│  │  WITH avg_order AS (                                                       ││
-│  │      SELECT AVG(total) as avg_total FROM orders                           ││
-│  │  ),                                                                        ││
-│  │  high_value_orders AS (                                                    ││
-│  │      SELECT customer_id, SUM(total) as total_spent                        ││
-│  │      FROM orders                                                           ││
-│  │      WHERE total > (SELECT avg_total FROM avg_order)                      ││
-│  │      GROUP BY customer_id                                                  ││
-│  │  ),                                                                        ││
-│  │  ranked_customers AS (                                                     ││
-│  │      SELECT c.customer_id, c.name, h.total_spent,                         ││
-│  │             RANK() OVER (ORDER BY total_spent DESC) as rank_num           ││
-│  │      FROM customers c                                                      ││
-│  │      JOIN high_value_orders h ON c.customer_id = h.customer_id            ││
-│  │  )                                                                        ││
-│  │  SELECT * FROM ranked_customers WHERE rank_num <= 10;                     ││
-│  │                                                                            ││
-│  │  BENEFITS:                                                                 ││
-│  │  ✓ Top-to-bottom reading flow                                             ││
-│  │  ✓ Each step has meaningful name                                          ││
-│  │  ✓ Easy to debug each CTE separately                                      ││
-│  │  ✓ Reuse CTEs multiple times                                              ││
-│  │                                                                            ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │                                                                            │ │
+│  │  WITH avg_order AS (                                                       │ │
+│  │      SELECT AVG(total) as avg_total FROM orders                           │  │
+│  │  ),                                                                        │ │
+│  │  high_value_orders AS (                                                    │ │
+│  │      SELECT customer_id, SUM(total) as total_spent                        │  │
+│  │      FROM orders                                                           │ │
+│  │      WHERE total > (SELECT avg_total FROM avg_order)                      │  │
+│  │      GROUP BY customer_id                                                  │ │
+│  │  ),                                                                        │ │
+│  │  ranked_customers AS (                                                     │ │
+│  │      SELECT c.customer_id, c.name, h.total_spent,                         │  │
+│  │             RANK() OVER (ORDER BY total_spent DESC) as rank_num           │  │
+│  │      FROM customers c                                                      │ │
+│  │      JOIN high_value_orders h ON c.customer_id = h.customer_id            │  │
+│  │  )                                                                        │  │
+│  │  SELECT * FROM ranked_customers WHERE rank_num <= 10;                     │  │
+│  │                                                                            │ │
+│  │  BENEFITS:                                                                 │ │
+│  │  ✓ Top-to-bottom reading flow                                             │  │
+│  │  ✓ Each step has meaningful name                                          │  │
+│  │  ✓ Easy to debug each CTE separately                                      │  │
+│  │  ✓ Reuse CTEs multiple times                                              │  │
+│  │                                                                            │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### 🟢 HOW: CTE Patterns
 
@@ -1465,14 +1512,14 @@ SELECT * FROM ranked_customers WHERE percentile >= 0.90;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 WITH monthly_revenue AS (
-    SELECT 
+    SELECT
         DATE_FORMAT(order_date, '%Y-%m') AS month,
         SUM(total) AS revenue
     FROM orders
     WHERE status = 'completed'
     GROUP BY DATE_FORMAT(order_date, '%Y-%m')
 )
-SELECT 
+SELECT
     month,
     revenue,
     LAG(revenue) OVER (ORDER BY month) AS prev_month,
@@ -1488,7 +1535,7 @@ ORDER BY month;
 
 WITH customer_orders AS (
     -- Step 1: Get order summary per customer
-    SELECT 
+    SELECT
         customer_id,
         COUNT(*) AS order_count,
         SUM(total) AS total_spent,
@@ -1499,7 +1546,7 @@ WITH customer_orders AS (
 ),
 rfm_scores AS (
     -- Step 2: Calculate RFM scores (1-5 scale)
-    SELECT 
+    SELECT
         customer_id,
         order_count,
         total_spent,
@@ -1511,7 +1558,7 @@ rfm_scores AS (
 ),
 customer_segments AS (
     -- Step 3: Create segments based on RFM
-    SELECT 
+    SELECT
         customer_id,
         order_count,
         total_spent,
@@ -1530,7 +1577,7 @@ customer_segments AS (
     FROM rfm_scores
 )
 -- Step 4: Final output with customer names
-SELECT 
+SELECT
     c.customer_id,
     c.name,
     c.email,
@@ -1553,7 +1600,7 @@ ORDER BY cs.total_score DESC;
 -- Example: Employee hierarchy
 WITH RECURSIVE org_hierarchy AS (
     -- Base case: Start from CEO (no manager)
-    SELECT 
+    SELECT
         emp_id,
         name,
         manager_id,
@@ -1561,11 +1608,11 @@ WITH RECURSIVE org_hierarchy AS (
         name AS path
     FROM employees
     WHERE manager_id IS NULL
-    
+
     UNION ALL
-    
+
     -- Recursive case: Find employees who report to current level
-    SELECT 
+    SELECT
         e.emp_id,
         e.name,
         e.manager_id,
@@ -1611,7 +1658,7 @@ USE TEMP TABLE WHEN:
 
 ---
 
-# PART 5: REAL-WORLD ANALYTICS QUERIES
+# 📌 Part 5: Real — World Analytics Queries
 
 ---
 
@@ -1629,18 +1676,18 @@ USE TEMP TABLE WHEN:
 -- Track how users who signed up in each month behave over time
 WITH user_cohort AS (
     -- Assign each user to their signup cohort
-    SELECT 
+    SELECT
         customer_id,
         DATE_FORMAT(signup_date, '%Y-%m') AS cohort_month
     FROM customers
 ),
 user_activity AS (
     -- Get each user's activity by month
-    SELECT 
+    SELECT
         c.customer_id,
         uc.cohort_month,
         DATE_FORMAT(o.order_date, '%Y-%m') AS activity_month,
-        TIMESTAMPDIFF(MONTH, 
+        TIMESTAMPDIFF(MONTH,
             STR_TO_DATE(CONCAT(uc.cohort_month, '-01'), '%Y-%m-%d'),
             STR_TO_DATE(CONCAT(DATE_FORMAT(o.order_date, '%Y-%m'), '-01'), '%Y-%m-%d')
         ) AS months_since_signup
@@ -1648,7 +1695,7 @@ user_activity AS (
     JOIN user_cohort uc ON c.customer_id = uc.customer_id
     LEFT JOIN orders o ON c.customer_id = o.customer_id
 )
-SELECT 
+SELECT
     cohort_month,
     months_since_signup,
     COUNT(DISTINCT customer_id) AS active_users
@@ -1663,7 +1710,7 @@ ORDER BY cohort_month, months_since_signup;
 
 -- E-commerce funnel: Visit → Add to Cart → Checkout → Purchase
 WITH funnel AS (
-    SELECT 
+    SELECT
         DATE(event_time) AS event_date,
         COUNT(DISTINCT CASE WHEN event_type = 'page_view' THEN session_id END) AS visitors,
         COUNT(DISTINCT CASE WHEN event_type = 'add_to_cart' THEN session_id END) AS add_to_cart,
@@ -1673,7 +1720,7 @@ WITH funnel AS (
     WHERE event_time >= '2024-01-01'
     GROUP BY DATE(event_time)
 )
-SELECT 
+SELECT
     event_date,
     visitors,
     add_to_cart,
@@ -1691,7 +1738,7 @@ ORDER BY event_date;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 WITH monthly_metrics AS (
-    SELECT 
+    SELECT
         DATE_FORMAT(order_date, '%Y-%m') AS month,
         YEAR(order_date) AS year,
         MONTH(order_date) AS month_num,
@@ -1702,17 +1749,17 @@ WITH monthly_metrics AS (
     WHERE order_date >= DATE_SUB(CURDATE(), INTERVAL 2 YEAR)
     GROUP BY DATE_FORMAT(order_date, '%Y-%m'), YEAR(order_date), MONTH(order_date)
 )
-SELECT 
+SELECT
     curr.month AS current_month,
     curr.revenue AS current_revenue,
     prev.revenue AS prev_year_revenue,
     ROUND(
-        100.0 * (curr.revenue - prev.revenue) / prev.revenue, 
+        100.0 * (curr.revenue - prev.revenue) / prev.revenue,
         2
     ) AS yoy_growth_pct
 FROM monthly_metrics curr
-LEFT JOIN monthly_metrics prev 
-    ON curr.month_num = prev.month_num 
+LEFT JOIN monthly_metrics prev
+    ON curr.month_num = prev.month_num
     AND curr.year = prev.year + 1
 WHERE curr.year = YEAR(CURDATE())
 ORDER BY curr.month;
@@ -1723,13 +1770,13 @@ ORDER BY curr.month;
 
 -- Top 3 products by revenue in each category
 WITH product_revenue AS (
-    SELECT 
+    SELECT
         p.category,
         p.product_id,
         p.name,
         SUM(oi.quantity * oi.price) AS revenue,
         RANK() OVER (
-            PARTITION BY p.category 
+            PARTITION BY p.category
             ORDER BY SUM(oi.quantity * oi.price) DESC
         ) AS revenue_rank
     FROM products p
@@ -1754,7 +1801,7 @@ WITH RECURSIVE date_range AS (
     FROM date_range
     WHERE date < DATE('2024-12-31')
 )
-SELECT 
+SELECT
     dr.date,
     'NO ORDERS' AS status
 FROM date_range dr
@@ -1768,7 +1815,7 @@ WHERE o.order_id IS NULL
 
 -- Group user events into sessions (30-min inactivity = new session)
 WITH events_with_prev AS (
-    SELECT 
+    SELECT
         user_id,
         event_time,
         event_type,
@@ -1776,9 +1823,9 @@ WITH events_with_prev AS (
     FROM events
 ),
 events_with_session_flag AS (
-    SELECT 
+    SELECT
         *,
-        CASE 
+        CASE
             WHEN prev_event_time IS NULL THEN 1
             WHEN TIMESTAMPDIFF(MINUTE, prev_event_time, event_time) > 30 THEN 1
             ELSE 0
@@ -1786,15 +1833,15 @@ events_with_session_flag AS (
     FROM events_with_prev
 ),
 events_with_session AS (
-    SELECT 
+    SELECT
         *,
         SUM(new_session_flag) OVER (
-            PARTITION BY user_id 
+            PARTITION BY user_id
             ORDER BY event_time
         ) AS session_id
     FROM events_with_session_flag
 )
-SELECT 
+SELECT
     user_id,
     session_id,
     MIN(event_time) AS session_start,
@@ -1809,7 +1856,7 @@ GROUP BY user_id, session_id;
 -- ═══════════════════════════════════════════════════════════════════════════════
 
 -- Find P50, P75, P90, P95 order values
-SELECT 
+SELECT
     COUNT(*) AS total_orders,
     MIN(total) AS min_order,
     MAX(total) AS max_order,
@@ -1836,67 +1883,73 @@ FROM orders;
 
 ---
 
-# QUICK REFERENCE CARD
+# 📖 Quick Reference Card
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║                    SQL FOR DATA ANALYSIS - CHEAT SHEET                           ║
 ╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                   ║
+║                                                                                  ║
 ║  JOIN TYPES:                                                                     ║
 ║    INNER JOIN - Only matching rows                                               ║
 ║    LEFT JOIN  - All left + matching right (NULL if no match)                     ║
 ║    RIGHT JOIN - All right + matching left                                        ║
 ║    FULL JOIN  - Everything from both                                             ║
 ║    SELF JOIN  - Table joined to itself (hierarchies)                             ║
-║                                                                                   ║
+║                                                                                  ║
 ║  AGGREGATE FUNCTIONS:                                                            ║
 ║    COUNT(*), COUNT(col), COUNT(DISTINCT col)                                     ║
 ║    SUM(col), AVG(col), MIN(col), MAX(col)                                        ║
 ║    GROUP_CONCAT(col) / STRING_AGG(col, ',')                                      ║
-║                                                                                   ║
+║                                                                                  ║
 ║  WINDOW FUNCTIONS SYNTAX:                                                        ║
 ║    function() OVER (PARTITION BY col ORDER BY col)                               ║
-║                                                                                   ║
+║                                                                                  ║
 ║  RANKING:                                                                        ║
 ║    ROW_NUMBER() - Unique numbers 1,2,3,4,5                                       ║
 ║    RANK()       - Ties get same, gaps after: 1,2,2,4,5                           ║
 ║    DENSE_RANK() - Ties get same, no gaps: 1,2,2,3,4                              ║
 ║    NTILE(n)     - Divide into n equal groups                                     ║
-║                                                                                   ║
+║                                                                                  ║
 ║  VALUE FUNCTIONS:                                                                ║
 ║    LAG(col, n)    - Previous row value                                           ║
 ║    LEAD(col, n)   - Next row value                                               ║
 ║    FIRST_VALUE()  - First value in partition                                     ║
 ║    LAST_VALUE()   - Last value in partition                                      ║
-║                                                                                   ║
+║                                                                                  ║
 ║  RUNNING/MOVING:                                                                 ║
 ║    SUM() OVER (ORDER BY date)                      - Running total               ║
 ║    SUM() OVER (ORDER BY date ROWS 6 PRECEDING)    - 7-day rolling sum            ║
 ║    AVG() OVER (ORDER BY date ROWS 6 PRECEDING)    - 7-day moving average         ║
-║                                                                                   ║
+║                                                                                  ║
 ║  CTE SYNTAX:                                                                     ║
 ║    WITH cte_name AS (SELECT ...) SELECT ... FROM cte_name                        ║
 ║    Multiple: WITH a AS (...), b AS (...) SELECT ...                              ║
 ║    Recursive: WITH RECURSIVE cte AS (base UNION ALL recursive)                   ║
-║                                                                                   ║
+║                                                                                  ║
 ║  COMMON PATTERNS:                                                                ║
 ║    -- Find rows with no match                                                    ║
 ║    LEFT JOIN ... WHERE right.id IS NULL                                          ║
-║                                                                                   ║
+║                                                                                  ║
 ║    -- Top N per group                                                            ║
 ║    RANK() OVER (PARTITION BY group ORDER BY value DESC)                          ║
 ║    WHERE rank <= N                                                               ║
-║                                                                                   ║
+║                                                                                  ║
 ║    -- Month-over-month change                                                    ║
 ║    value - LAG(value) OVER (ORDER BY month)                                      ║
-║                                                                                   ║
+║                                                                                  ║
 ║    -- Percentile                                                                 ║
 ║    PERCENT_RANK() OVER (ORDER BY value)                                          ║
-║                                                                                   ║
+║                                                                                  ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
 ```
+
 
 ---
 
 **NEXT: 03_SQL_RealWorld_Incidents.md - Production SQL Stories and Lessons**
+
+
+---
+
+> **Navigation**: [< Previous](08_Subqueries_CTEs.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Normalization.md)

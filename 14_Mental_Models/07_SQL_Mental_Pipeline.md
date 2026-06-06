@@ -1,6 +1,8 @@
+**Navigation**: [< Previous](06_Implementation_Checklist.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08_Debugging_DryRun.md)
+
 # 🗃️ SQL Mental Pipeline — Think in Sets, Build Queries Step-by-Step
 
-> **The key insight**: SQL doesn't work like Java. In Java, you think in LOOPS (process one row at a time). In SQL, you think in SETS (operate on entire tables at once). This shift is the #1 barrier for programmers learning SQL.
+**The key insight**: SQL doesn't work like Java. In Java, you think in LOOPS (process one row at a time). In SQL, you think in SETS (operate on entire tables at once). This shift is the #1 barrier for programmers learning SQL.
 
 ---
 
@@ -21,6 +23,7 @@ You're describing WHAT you want, not HOW to get it.
 SQL is declarative — you describe the result, the engine figures out the steps.
 ```
 
+
 ### Mental Model: Think of Tables as Spreadsheets
 ```
 employees table = a spreadsheet
@@ -30,6 +33,9 @@ Your query = a formula that produces a NEW spreadsheet from existing ones
 ```
 
 ---
+
+
+
 
 ## Part 2: The SQL Execution Order — MEMORIZE THIS
 
@@ -45,6 +51,7 @@ HAVING    ─── 4th ───→  6. DISTINCT       (remove duplicates)
 ORDER BY  ─── 6th ───→  7. ORDER BY       (sort)
 LIMIT     ─── 7th ───→  8. LIMIT/OFFSET   (paginate)
 ```
+
 
 ### Why Execution Order Matters
 ```sql
@@ -116,6 +123,9 @@ ORDER BY employee_count DESC;
 
 ---
 
+
+
+
 ## Part 4: JOIN Mental Models
 
 ### The Venn Diagram Approach
@@ -135,6 +145,7 @@ FULL OUTER JOIN: All A + All B (nulls where no match)
 CROSS JOIN:      A × B         (every combo — rarely wanted)
 ```
 
+
 ### When to Use Each JOIN
 ```
 "Get employees WITH their department name"    → INNER JOIN (skip employees with no dept)
@@ -143,6 +154,7 @@ CROSS JOIN:      A × B         (every combo — rarely wanted)
 "Find all possible team pairings"             → CROSS JOIN (or self-join)
 "Find matching records in both tables"        → INNER JOIN
 ```
+
 
 ### The Self-Join Pattern
 ```sql
@@ -159,6 +171,19 @@ WHERE e.salary > m.salary;
 ```
 
 ---
+
+
+
+🔬 **Section Challenge — Part 4: JOIN Mental Models**
+
+**Challenge 1 (Mental Model — Who/When/What):** Draw the mental pipeline for: `SELECT c.name, COUNT(o.id) FROM customers c LEFT JOIN orders o ON c.id = o.customer_id WHERE c.country = 'IN' GROUP BY c.id HAVING COUNT(o.id) = 0`. **Who** gets counted as 0? **When** does the LEFT JOIN matter here? **What** would INNER JOIN return instead?
+
+<details><summary>Answer</summary>
+
+**Mental pipeline:** (1) FROM+JOIN: all `customers` rows from India (after WHERE pushdown) LEFT JOINed with `orders` — customers with no orders get `o.id = NULL`. (2) WHERE `c.country = 'IN'` — filters customers table (the LEFT side) — safe, doesn't remove NULL rows. (3) GROUP BY: each customer becomes one group. (4) HAVING `COUNT(o.id) = 0` — `COUNT(o.id)` counts non-NULL values, so customers with no orders get `COUNT(o.id) = 0`. **Who gets counted as 0?** Indian customers with zero orders — the NULL rows from the LEFT JOIN. **When does LEFT JOIN matter?** EXACTLY here — it's what keeps customers with no orders in the result set. **What would INNER JOIN return?** Empty set — INNER JOIN excludes customers with no orders, so HAVING COUNT(o.id)=0 would never be true. This query pattern (LEFT JOIN + HAVING COUNT = 0) is the canonical "find entities with no related records" template.
+
+</details>
+
 
 ## Part 5: Subquery vs JOIN — Decision Framework
 
@@ -178,6 +203,7 @@ WHERE e.salary > m.salary;
    WHERE salary = (SELECT MAX(salary) FROM employees WHERE dept_id = e.dept_id);
 ```
 
+
 ### When to Use JOIN Instead
 ```
 1. When you need columns from BOTH tables → JOIN
@@ -188,7 +214,29 @@ Rule of thumb: If you need columns from multiple tables in SELECT → use JOIN
                If you need a value for filtering (WHERE/HAVING) → subquery is fine
 ```
 
+
 ---
+
+
+
+🔬 **Section Challenge — Part 5: Subquery vs JOIN — Decision Framework**
+
+**Challenge 1 (Reasoning):** You need to "find employees whose salary is greater than the average salary." Why must you use a subquery for this, rather than a JOIN?
+
+<details><summary>Answer</summary>
+
+Because "average salary" is an aggregate value computed over the entire `employees` table, while the filtering condition (`>`) must be applied to individual rows. A JOIN requires matching keys between rows, but here we are comparing row-level data against a global aggregate. You cannot compute `AVG(salary)` and select individual rows in the same level without a window function. Therefore, the subquery `(SELECT AVG(salary) FROM employees)` is necessary to compute the scalar aggregate first.
+
+</details>
+
+**Challenge 2 (Performance):** Correlated subqueries are often described as having `O(N^2)` performance characteristics. Why? How can a JOIN fix this?
+
+<details><summary>Answer</summary>
+
+A correlated subquery references columns from the outer query (e.g., `WHERE salary = (SELECT MAX(salary) FROM employees WHERE dept_id = outer.dept_id)`). This forces the database engine to execute the inner query *once for every single row* returned by the outer query. If the outer table has N rows, the inner table is scanned N times, leading to `O(N^2)` performance. A JOIN fixes this by computing the aggregate for all departments *once* (e.g., `JOIN (SELECT dept_id, MAX(salary) AS max_sal FROM employees GROUP BY dept_id)`), returning a temporary table that is then hash-joined to the outer query in `O(N)` time.
+
+</details>
+
 
 ## Part 6: GROUP BY + Aggregation — Mental Model
 
@@ -215,6 +263,7 @@ Now you can only SELECT:
 ❌ Individual row values (name)   → ERROR! Which name from the pile?
 ```
 
+
 ### Common Aggregations
 ```sql
 COUNT(*)         — Number of rows (including NULLs)
@@ -240,6 +289,7 @@ GROUP BY dept
 HAVING AVG(salary) > 60000  -- Filter GROUPS (after grouping)
 ```
 
+
 ---
 
 ## Part 7: Window Functions — "Aggregation Without Losing Rows"
@@ -256,6 +306,7 @@ Window functions compute aggregates BUT keep every row!
 | Dave  | IT   | 80000  | 77500    | 1         |
 | Bob   | IT   | 75000  | 77500    | 2         |
 ```
+
 
 ### Window Function Template
 ```sql
@@ -287,6 +338,19 @@ WHERE rn <= 3;  -- Top 3 earners per department
 
 ---
 
+
+
+🔬 **Section Challenge — Part 7: Window Functions — "Aggregation Without Losing Rows"**
+
+
+
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
+
+
 ## Part 8: SQL Problem Classification
 
 ```
@@ -303,6 +367,7 @@ See these keywords in the problem? → Use this approach:
 "Pivot/Unpivot data"                 → CASE WHEN + GROUP BY (or PIVOT keyword)
 "Hierarchical data (manager chain)"  → Self-join or recursive CTE
 ```
+
 
 ---
 
@@ -321,12 +386,15 @@ See these keywords in the problem? → Use this approach:
 □ Subquery returns multiple rows but used with = instead of IN?
 ```
 
+
 ---
 
 📖 **Related Files:**
 - [08_SQL/01_Foundations_Database_Basics.md](../08_SQL/01_Foundations_Database_Basics.md) — SQL foundations
-- [11_SQL_Complete/](../11_SQL_Complete/) — Full SQL topic files
+- [08_SQL/](../08_SQL/) — Full SQL topic files
 - [05_Universal_Problem_Framework.md](05_Universal_Problem_Framework.md) — General problem-solving
 
 ---
 [← 06 Implementation Checklist](06_Implementation_Checklist.md) | [08 Debugging & Dry Run →](08_Debugging_DryRun.md)
+
+

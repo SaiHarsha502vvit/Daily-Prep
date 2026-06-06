@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_003_Mar05_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_005_Mar07_Fri.md)
+
 # Day 004 - Thursday, March 6, 2026
 
 > **Week 01** | **Difficulty:** EASY-MEDIUM | **Theme:** Subarrays + Kadane's + SQL DML
@@ -76,6 +78,7 @@ BRUTE FORCE: Try all subarrays, compute sum
 OPTIMAL: Kadane's Algorithm → O(n)  (next block!)
 ```
 
+
 ---
 
 ## BLOCK 2: ALGORITHM (30 min)
@@ -101,6 +104,7 @@ KEY IDEA: At each position, decide:
   If currentMax + arr[i] >= arr[i]
     → Extending is beneficial (or at least not harmful)
 ```
+
 
 #### Step-by-step trace
 
@@ -272,6 +276,7 @@ DDL (yesterday) → changes schema (tables, columns)
 DML (today)     → changes data within tables
 ```
 
+
 #### UPDATE — the command you must FEAR and RESPECT
 
 ```sql
@@ -372,7 +377,7 @@ WHERE product_id IN (SELECT product_id FROM orders);
 ```
 </details>
 
-> **Read more:** [08_SQL/04_DML_InsertUpdateDelete.md](../../08_SQL/04_DML_InsertUpdateDelete.md)
+> **Read more:** [08_SQL/04_DML_Manipulating_Data.md](../../08_SQL/04_DML_Manipulating_Data.md)
 
 ---
 
@@ -463,3 +468,8 @@ public int equilibriumIndex(int[] arr) {
 > **Mentor Note:** Kadane's Algorithm is a MUST-KNOW. If you could only memorize 
 > one algorithm from this week, make it this one. It appears directly or as a 
 > sub-problem in dozens of medium/hard problems.
+
+
+---
+
+> **Navigation**: [< Previous](Day_003_Mar05_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_005_Mar07_Fri.md)

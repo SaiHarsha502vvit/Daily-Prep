@@ -1,11 +1,22 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](06e_Algorithm_Patterns.md)
-
 ---
 
 # Advanced Algorithm Patterns & Competitive Programming
 
 > **Part B of Advanced Algorithms**
-> **Navigation**: [Part A: Core Techniques](06_Advanced_Algorithms.md) | [Part B: Advanced Patterns]
+> **Navigation**: [Part A: Core Techniques](06a_Greedy_BitManip.md) | [Back to Index](../00_MASTER_INDEX.md)
+
+---
+
+<details>
+<summary><b>🧠 5W1H: Advanced Algorithm Patterns & String Algorithms</b></summary>
+
+- **What**: Advanced patterns (Meet in the Middle, Sqrt Decomposition, Mo's, Heavy-Light Decomposition), String Algorithms (Manacher, Z-Algo, Suffix Arrays), and Competitive Programming tricks.
+- **Why**: Standard algorithms fail on time/space limits for certain complex problems (e.g. range queries on trees, large substring matching). These techniques push the boundaries of what is computable within 1-2 seconds.
+- **When**: Use when standard DP is too slow, when dealing with massive strings where $O(N^2)$ is impossible, or when answering multiple offline queries (Mo's).
+- **Where**: Competitive programming platforms (Codeforces, LeetCode Hard), and high-performance text processing systems (search engines, bioinformatics).
+- **Who**: Competitive programmers, performance engineers, and backend developers scaling systems.
+- **How**: By exploiting mathematical boundaries (Sqrt), offline sorting (Mo's), pattern preprocessing (Z-array), and bitwise tricks.
+</details>
 
 ---
 
@@ -586,251 +597,19 @@ public class SuffixArray {
 
 ---
 
-## PART 14: Graph Algorithm Masterclass
-
-### Tarjan's Algorithm (Strongly Connected Components)
-
-```
-CONCEPT:
-Find all SCCs in directed graph using single DFS.
-Uses discovery time and low-link values.
-
-TIME: O(V + E)
-SPACE: O(V)
-
-USE CASES:
-- 2-SAT problem
-- Dead code elimination in compilers
-- Social network analysis
-```
-
-```java
-public class TarjanSCC {
-    private List<List<Integer>> adj;
-    private int[] ids, low;
-    private boolean[] onStack;
-    private Deque<Integer> stack;
-    private int id, sccCount;
-    private List<List<Integer>> sccs;
-
-    public List<List<Integer>> findSCCs(int n, List<List<Integer>> graph) {
-        adj = graph;
-        ids = new int[n];
-        low = new int[n];
-        onStack = new boolean[n];
-        stack = new ArrayDeque<>();
-        sccs = new ArrayList<>();
-        Arrays.fill(ids, -1);
-
-        for (int i = 0; i < n; i++) {
-            if (ids[i] == -1) {
-                dfs(i);
-            }
-        }
-
-        return sccs;
-    }
-
-    private void dfs(int at) {
-        ids[at] = low[at] = id++;
-        stack.push(at);
-        onStack[at] = true;
-
-        for (int to : adj.get(at)) {
-            if (ids[to] == -1) {
-                dfs(to);
-                low[at] = Math.min(low[at], low[to]);
-            } else if (onStack[to]) {
-                low[at] = Math.min(low[at], ids[to]);
-            }
-        }
-
-        // If this is root of SCC
-        if (ids[at] == low[at]) {
-            List<Integer> scc = new ArrayList<>();
-            while (true) {
-                int node = stack.pop();
-                onStack[node] = false;
-                scc.add(node);
-                if (node == at) break;
-            }
-            sccs.add(scc);
-            sccCount++;
-        }
-    }
-}
-```
-
-### Kosaraju's Algorithm (Alternative SCC Algorithm)
-
-```java
-public class KosarajuSCC {
-    public List<List<Integer>> findSCCs(int n, List<List<Integer>> graph) {
-        // Step 1: Fill stack with finish order
-        boolean[] visited = new boolean[n];
-        Deque<Integer> stack = new ArrayDeque<>();
-
-        for (int i = 0; i < n; i++) {
-            if (!visited[i]) {
-                fillOrder(i, graph, visited, stack);
-            }
-        }
-
-        // Step 2: Create transpose graph
-        List<List<Integer>> transpose = new ArrayList<>();
-        for (int i = 0; i < n; i++) transpose.add(new ArrayList<>());
-        for (int u = 0; u < n; u++) {
-            for (int v : graph.get(u)) {
-                transpose.get(v).add(u);
-            }
-        }
-
-        // Step 3: Process vertices in stack order
-        Arrays.fill(visited, false);
-        List<List<Integer>> sccs = new ArrayList<>();
-
-        while (!stack.isEmpty()) {
-            int v = stack.pop();
-            if (!visited[v]) {
-                List<Integer> scc = new ArrayList<>();
-                dfs(v, transpose, visited, scc);
-                sccs.add(scc);
-            }
-        }
-
-        return sccs;
-    }
-
-    private void fillOrder(int v, List<List<Integer>> graph,
-                           boolean[] visited, Deque<Integer> stack) {
-        visited[v] = true;
-        for (int u : graph.get(v)) {
-            if (!visited[u]) {
-                fillOrder(u, graph, visited, stack);
-            }
-        }
-        stack.push(v);
-    }
-
-    private void dfs(int v, List<List<Integer>> graph,
-                     boolean[] visited, List<Integer> scc) {
-        visited[v] = true;
-        scc.add(v);
-        for (int u : graph.get(v)) {
-            if (!visited[u]) {
-                dfs(u, graph, visited, scc);
-            }
-        }
-    }
-}
-```
-
-### 2-SAT Problem
-
-```
-CONCEPT:
-Determine if boolean formula in CNF with 2 literals per clause is satisfiable.
-
-KEY INSIGHT:
-x OR y equivalent to (¬x → y) AND (¬y → x)
-Build implication graph, find SCCs.
-If x and ¬x in same SCC → unsatisfiable.
-```
-
-```java
-public class TwoSAT {
-    private int n;  // Number of variables
-    private List<List<Integer>> adj, radj;
-
-    public TwoSAT(int n) {
-        this.n = n;
-        adj = new ArrayList<>();
-        radj = new ArrayList<>();
-        for (int i = 0; i < 2 * n; i++) {
-            adj.add(new ArrayList<>());
-            radj.add(new ArrayList<>());
-        }
-    }
-
-    // Add clause: (a OR b)
-    // a, b are literals: positive for x_i, negative for NOT x_i
-    public void addClause(int a, int b) {
-        // (a OR b) equivalent to (NOT a → b) AND (NOT b → a)
-        int notA = negate(a);
-        int notB = negate(b);
-
-        adj.get(notA).add(b);
-        adj.get(notB).add(a);
-        radj.get(b).add(notA);
-        radj.get(a).add(notB);
-    }
-
-    private int negate(int x) {
-        if (x >= 0) return x + n;  // x becomes NOT x
-        return -x - 1;              // NOT x becomes x
-    }
-
-    private int toIndex(int x) {
-        return x >= 0 ? x : n - x - 1;
-    }
-
-    public boolean[] solve() {
-        // Use Kosaraju to find SCCs
-        int[] sccId = new int[2 * n];
-        Arrays.fill(sccId, -1);
-        Deque<Integer> order = new ArrayDeque<>();
-        boolean[] visited = new boolean[2 * n];
-
-        // First DFS
-        for (int i = 0; i < 2 * n; i++) {
-            if (!visited[i]) {
-                dfs1(i, visited, order);
-            }
-        }
-
-        // Second DFS on reverse graph
-        int sccCount = 0;
-        while (!order.isEmpty()) {
-            int v = order.pop();
-            if (sccId[v] == -1) {
-                dfs2(v, sccCount++, sccId);
-            }
-        }
-
-        // Check satisfiability and extract solution
-        boolean[] result = new boolean[n];
-        for (int i = 0; i < n; i++) {
-            if (sccId[i] == sccId[i + n]) {
-                return null;  // Unsatisfiable
-            }
-            result[i] = sccId[i] > sccId[i + n];
-        }
-
-        return result;
-    }
-
-    private void dfs1(int v, boolean[] visited, Deque<Integer> order) {
-        visited[v] = true;
-        for (int u : adj.get(v)) {
-            if (!visited[u]) {
-                dfs1(u, visited, order);
-            }
-        }
-        order.push(v);
-    }
-
-    private void dfs2(int v, int scc, int[] sccId) {
-        sccId[v] = scc;
-        for (int u : radj.get(v)) {
-            if (sccId[u] == -1) {
-                dfs2(u, scc, sccId);
-            }
-        }
-    }
-}
-```
+> **Note:** Graph algorithms (Tarjan's SCC, Kosaraju's, 2-SAT, A*, Bridges)
+> have been moved to their proper home:
+> [05d_Graphs_Advanced_Algos.md](05d_Graphs_Advanced_Algos.md)
 
 ---
+
+> 🔬 **Section Challenge — PART 13: String Algorithms Deep Dive**
+
+**Challenge 1 (Reasoning):** In Manacher's algorithm, when `i < R`, we set `P[i] = Math.min(R - i, P[mirror])`. Why do we take the *minimum* of these two values instead of just `P[mirror]`?
+<details><summary>Answer</summary>
+
+The mirror palindrome `P[mirror]` might extend *beyond* the left boundary of the current known palindrome centered at `C`. If `mirror - P[mirror] < L` (where L = 2*C - R), the mirror's palindrome reaches past what our current center `C` can guarantee. Beyond the boundary `R`, we have no information — the characters are unverified. So `R - i` caps how much we can "trust" from the mirror. After this initialization, we still try to expand outward, character by character. This is why Manacher's is O(N): the cap ensures each character is compared at most once across all expansions.
+</details>
 
 ## PART 15: Competitive Programming Tricks
 
@@ -1045,6 +824,14 @@ public class BitTricks {
 
 ---
 
+> 🔬 **Section Challenge — PART 15: Competitive Programming Tricks**
+
+**Challenge 1 (Reasoning):** `modInverse(a, mod)` uses `power(a, mod - 2, mod)` (Fermat's little theorem). This only works when `mod` is prime. What happens if you call `modInverse(6, 12)` and why? What's the alternative for non-prime moduli?
+<details><summary>Answer</summary>
+
+Fermat's little theorem states `a^(p-1) ≡ 1 (mod p)` only when p is prime and `gcd(a, p) = 1`. For `modInverse(6, 12)`: `gcd(6, 12) = 6 ≠ 1`, so 6 has **no** multiplicative inverse mod 12. The function silently returns a wrong value. For non-prime moduli, use the **Extended Euclidean Algorithm**: compute `gcd(a, mod)` and if it equals 1, extract the inverse from the Bézout coefficients. If `gcd(a, mod) ≠ 1`, no inverse exists. In competitive programming, the modulus is almost always `10^9 + 7` (prime), so Fermat's is standard — but knowing *why* it fails for composites separates understanding from memorization.
+</details>
+
 ## PART 16: Algorithm Complexity Analysis Deep Dive
 
 ### Master Theorem Reference
@@ -1080,6 +867,7 @@ EXAMPLES:
 │ T(n) = 2T(n-1) + 1                │ O(2^n)          │
 └───────────────────────────────────┴─────────────────┘
 ```
+
 
 ### Amortized Analysis
 
@@ -1160,28 +948,28 @@ SLIDING WINDOW:
 └─────────────────────────────────────────┴───────────────┘
 
 DYNAMIC PROGRAMMING:
-┌─────────────────────────────────────────┬───────────────┐
-│ Climbing Stairs                         │ 70            │
-│ House Robber I, II, III                 │ 198, 213, 337 │
-│ Coin Change I, II                       │ 322, 518      │
-│ Longest Increasing Subsequence          │ 300           │
-│ Longest Common Subsequence              │ 1143          │
-│ Edit Distance                           │ 72            │
-│ 0/1 Knapsack (Practice)                 │ -             │
-│ Partition Equal Subset Sum              │ 416           │
-│ Target Sum                              │ 494           │
-│ Palindromic Substrings                  │ 647           │
-│ Longest Palindromic Subsequence         │ 516           │
-│ Word Break I, II                        │ 139, 140      │
-│ Decode Ways                             │ 91            │
-│ Unique Paths I, II                      │ 62, 63        │
-│ Min Path Sum                            │ 64            │
-│ Maximal Square                          │ 221           │
+┌─────────────────────────────────────────┬────────────────┐
+│ Climbing Stairs                         │ 70             │
+│ House Robber I, II, III                 │ 198, 213, 337  │
+│ Coin Change I, II                       │ 322, 518       │
+│ Longest Increasing Subsequence          │ 300            │
+│ Longest Common Subsequence              │ 1143           │
+│ Edit Distance                           │ 72             │
+│ 0/1 Knapsack (Practice)                 │ -              │
+│ Partition Equal Subset Sum              │ 416            │
+│ Target Sum                              │ 494            │
+│ Palindromic Substrings                  │ 647            │
+│ Longest Palindromic Subsequence         │ 516            │
+│ Word Break I, II                        │ 139, 140       │
+│ Decode Ways                             │ 91             │
+│ Unique Paths I, II                      │ 62, 63         │
+│ Min Path Sum                            │ 64             │
+│ Maximal Square                          │ 221            │
 │ Best Time Buy Sell Stock I-IV           │ 121,122,123,188│
-│ Interleaving String                     │ 97            │
-│ Burst Balloons                          │ 312           │
-│ Matrix Chain Multiplication             │ -             │
-└─────────────────────────────────────────┴───────────────┘
+│ Interleaving String                     │ 97             │
+│ Burst Balloons                          │ 312            │
+│ Matrix Chain Multiplication             │ -              │
+└─────────────────────────────────────────┴────────────────┘
 
 GRAPH ALGORITHMS:
 ┌─────────────────────────────────────────┬───────────────┐
@@ -1415,3 +1203,12 @@ public class FenwickTree {
 
 ---
 
+---
+
+> 🔬 **Section Challenge — PART 18: Essential Templates for Competitive Programming**
+
+**Challenge 1 (Reasoning):** The `FastIO` template uses `BufferedReader + StringTokenizer` instead of `Scanner`. In a problem reading 10^6 integers, `Scanner` TLEs but `BufferedReader` doesn't. Where exactly does `Scanner` waste time?
+<details><summary>Answer</summary>
+
+`Scanner.nextInt()` internally: (1) compiles a regex pattern for integer matching, (2) reads character-by-character through its internal buffer (1024 bytes default), (3) applies locale-aware parsing, (4) does regex matching on the token. `BufferedReader.readLine()` reads in 8192-byte chunks (8× larger buffer), `StringTokenizer` splits by whitespace with zero regex, and `Integer.parseInt()` is a tight loop of digit multiplication. For 10^6 integers, Scanner does ~10^6 regex compilations + tiny buffer I/O calls. BufferedReader does ~500 read syscalls + zero regex. The difference is ~10×. **Key insight**: Scanner is *convenience*, not *performance*. In contests, always use the BufferedReader template.
+</details>

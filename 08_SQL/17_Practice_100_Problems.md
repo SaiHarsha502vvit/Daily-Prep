@@ -1,4 +1,4 @@
-> **SQL Chapter 17/20** | [← Previous](16_RealWorld_CaseStudies.md) | [Index](../00_MASTER_INDEX.md) | [Next →](18_Projects_Mini.md)
+> **SQL Chapter 17/20** | [← Previous](16_RealWorld_CaseStudies.md) | [Index](../00_MASTER_INDEX.md) | [Next →](18a_SQL_Projects_Beginner.md)
 
 ---
 
@@ -409,3 +409,4 @@ GROUP BY p.product_id ORDER BY score DESC LIMIT 10;
 
 ---
 
+> **Navigation**: [< Previous](16_RealWorld_CaseStudies.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](18a_SQL_Projects_Beginner.md)

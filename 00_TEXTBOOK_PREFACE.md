@@ -1,11 +1,13 @@
+﻿> **Navigation**: [< Previous](00_MASTER_INDEX.md) | [Back to Index](00_MASTER_INDEX.md)
+
 # THE COMPLETE SOFTWARE ENGINEER — Preface & Reading Guide
 
-> *A self-contained textbook covering Data Structures, Algorithms, SQL, Spring Boot, System Design, and Career Development.*
+> *A self-contained textbook covering Data Structures, Algorithms, SQL, Spring Boot, JavaScript, React, TypeScript, CSS, System Design, and Career Development.*
 > 
 > **For:** Self-taught engineers building from fundamentals to production-ready skills.
 > **Style:** MIT/KTH academic — WHY before WHAT, theory before code, diagrams before proofs.
-> **Estimated Total Study Time:** ~300 hours across 11 weeks.
-> **Files:** 192 markdown chapters across 12 folders.
+> **Estimated Total Study Time:** ~400 hours across 14 weeks.
+> **Files:** 280+ markdown chapters across 19 folders.
 
 ---
 
@@ -59,6 +61,7 @@ This repository is organized as a **progressive textbook** — each folder is a 
   └─────────────────────────────────────────────────────────┘
 ```
 
+
 ### Phase 2: Core Patterns (Weeks 4-6)
 
 ```
@@ -90,11 +93,12 @@ This repository is organized as a **progressive textbook** — each folder is a 
                              │
   ┌──────────────────────────▼──────────────────────────────┐
   │ PART 8: Spring Boot I — Core (weekends)                 │
-  │ [07_Modern_Java/02c_SB_HiddenFoundations_Part1.md]     │
-  │ Through: [07_Spring_Boot_Part5_Lombok_DTOs.md]          │
+  │ [07_Modern_Java/Ch26_Pre_Spring_Part1.md]     │
+  │ Through: [Ch35_SB_Lombok_DTOs.md]          │
   │ IoC, DI, Beans, REST basics, DTO pattern.               │
   └─────────────────────────────────────────────────────────┘
 ```
+
 
 ### Phase 3: Advanced (Weeks 7-10)
 
@@ -125,11 +129,12 @@ This repository is organized as a **progressive textbook** — each folder is a 
                              │
   ┌──────────────────────────▼──────────────────────────────┐
   │ PART 12: Spring Boot II — Production (weekends)         │
-  │ [10_Spring_Boot_Part8_JPA_Deep_Dive.md]                │
-  │ Through: [22a_SB_Microservices_Core.md]                │
+  │ [Ch40_SB_JPA_Deep_Dive.md]                │
+  │ Through: [Ch61_SB_Microservices_Core.md]                │
   │ JPA, Security, Auth, Testing, Microservices.            │
   └─────────────────────────────────────────────────────────┘
 ```
+
 
 ### Phase 4: Integration (Week 11)
 
@@ -144,8 +149,8 @@ This repository is organized as a **progressive textbook** — each folder is a 
                              │
   ┌──────────────────────────▼──────────────────────────────┐
   │ PART 14: Enterprise & Real-World                        │
-  │ [10_Enterprise_Systems/01a_ERP_Fundamentals.md]        │
-  │ Through: [06_RealWorld_Incidents_DSA.md]                │
+  │ [10_Enterprise_Systems/01_ERP_Fundamentals.md]        │
+  │ Through: [08_RealWorld_Incidents_DSA.md]                │
   │ How DSA appears in production systems.                  │
   └──────────────────────────┬──────────────────────────────┘
                              │
@@ -161,12 +166,83 @@ This repository is organized as a **progressive textbook** — each folder is a 
   ┌──────────────────────────▼──────────────────────────────┐
   │ PART 16: Career & Interview Prep                        │
   │ [09_Career_Reference/01_Career_TechnoFunctional.md]    │
-  │ [09_Career_Reference/02a_DSA_Guide_Foundations.md]     │
-  │ [09_Career_Reference/02b_Ultimate_DSA_Advanced.md]     │
-  │ [09_Career_Reference/02c_Ultimate_DSA_JVM.md]          │
+  │ [09_Career_Reference/07_DSA_Guide_Foundations.md]     │
+  │ [09_Career_Reference/09_Ultimate_DSA_Advanced.md]     │
+  │ [09_Career_Reference/10_Ultimate_DSA_JVM.md]          │
   │ The comprehensive reference — DSA + JVM + career.       │
   └─────────────────────────────────────────────────────────┘
 ```
+
+
+### Phase 5: Frontend & Deep Reasoning (Weeks 12-14)
+
+```
+  ┌─────────────────────────────────────────────────────────┐
+  │ PART 17: JavaScript & TypeScript                        │
+  │ [16_JavaScript/01_JS_Foundations.md]                    │
+  │ Through: [07_JS_Error_Handling_Debugging.md]            │
+  │ [17_TypeScript/01_TS_Foundations.md]                    │
+  │ Through: [03_TS_Patterns_BestPractices.md]             │
+  │ V8 internals, closures, async/await, type system.       │
+  └──────────────────────────┬──────────────────────────────┘
+                             │
+  ┌──────────────────────────▼──────────────────────────────┐
+  │ PART 18: React & CSS                                    │
+  │ [15_React_Frontend/01_React_Fundamentals.md]           │
+  │ Through: [08_React_Performance.md]                     │
+  │ [18_CSS_Complete/01_CSS_Foundations.md]                 │
+  │ Through: [04_CSS_Modern_Architecture.md]               │
+  │ Components, hooks, state management, layout, animation. │
+  └──────────────────────────┬──────────────────────────────┘
+                             │
+  ┌──────────────────────────▼──────────────────────────────┐
+  │ PART 19: Frontend Integration                           │
+  │ [19_Frontend_Integration/01_React_JS_CSS_Combined.md]  │
+  │ Through: [04_Frontend_Mental_Models_UI.md]             │
+  │ Full-stack UI building, debugging, build tools.         │
+  └──────────────────────────┬──────────────────────────────┘
+                             │
+  ┌──────────────────────────▼──────────────────────────────┐
+  │ PART 20: Deep Reasoning — Senior Engineer Thinking      │
+  │ THE MOST IMPORTANT FILES FOR INTERVIEW CONFIDENCE       │
+  │                                                         │
+  │ These files cover the "freeze moments" — when you know  │
+  │ the surface answer but freeze on the follow-up.         │
+  │                                                         │
+  │ [16_JavaScript/08_JS_Deep_Reasoning.md]                │
+  │ [15_React_Frontend/09_React_Deep_Reasoning.md]         │
+  │ [17_TypeScript/04_TS_Deep_Reasoning.md]                │
+  │ [18_CSS_Complete/05_CSS_Deep_Reasoning.md]             │
+  │ [07_Modern_Java/Ch22_Java_Deep_Reasoning.md]             │
+  │ [07_Modern_Java/Ch58_SB_Deep_Reasoning.md]      │
+  │ [03_Algorithms/16_DSA_Deep_Reasoning.md]               │
+  │ [08_SQL/23_SQL_Deep_Reasoning.md]             │
+  │                                                         │
+  │ Each file: Surface → Deep reasoning with analogy →      │
+  │ Code proof → Follow-up traps → Quick-fire table         │
+  │                                                         │
+  │ 🆕 Phase 23 — Deep Mastery (5 new files):               │
+  │ [07_Modern_Java/Ch23_Streams_Deep_Reasoning.md]           │
+  │ [07_Modern_Java/Ch19_JVM_Object_Model.md]       │
+  │ [07_Modern_Java/Ch17_Concurrency_Synchronizers.md]   │
+  │ [08_SQL/24_SQL_Data_Analyst_RealWorld.md]       │
+  │ [03_Algorithms/17_DSA_Java_Implementation_Mastery.md]    │
+  │                                                         │
+  │ Streams internals & lazy evaluation, JVM object headers  │
+  │ & mark word, Semaphore/CountDownLatch/CyclicBarrier,     │
+  │ SQL analyst patterns (cohort/funnel/retention/A-B test), │
+  │ Java-specific DSA implementation strategies.             │
+  └──────────────────────────┬──────────────────────────────┘
+                             │
+  ┌──────────────────────────▼──────────────────────────────┐
+  │ PART 21: Concurrency & Async Models                     │
+  │ [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md]
+  │ Coroutines vs Continuations, Virtual Threads, Event     │
+  │ Loop, Go goroutines, async/await across 5 languages.    │
+  │ Process vs Thread vs Coroutine — the complete picture.  │
+  └─────────────────────────────────────────────────────────┘
+```
+
 
 ---
 
@@ -198,7 +274,18 @@ SQL Track (parallel):
 
 Spring Boot Track (parallel, weekends):
   Java Basics → IoC/DI → REST → JPA → Security → Testing → Microservices
+
+Frontend Track (parallel):
+  JS Foundations → Closures/Async → DOM → TypeScript → React → CSS → Integration
+
+Deep Reasoning Track (READ AFTER each domain):
+  Each domain has a "Deep Reasoning" file — read AFTER the main chapters.
+  These cover the freeze moments that separate juniors from seniors.
+
+Concurrency Track:
+  Java Threads → Virtual Threads → Coroutines → Event Loop → Goroutines
 ```
+
 
 ---
 
@@ -222,6 +309,7 @@ Spring Boot Track (parallel, weekends):
            └──────────────────────┴─────────────────────────┘
                     "Each week builds on the last"
 ```
+
 
 ---
 
@@ -251,29 +339,59 @@ Spring Boot Track (parallel, weekends):
 | Learn an algorithm | [03_Algorithms/](03_Algorithms/) |
 | Find a coding pattern | [04_Patterns_Templates/](04_Patterns_Templates/) |
 | Solve practice problems | [05_Problem_Solving/](05_Problem_Solving/) |
-| Study Spring Boot | [07_Modern_Java/00_SPRING_BOOT_ROADMAP.md](07_Modern_Java/00_SPRING_BOOT_ROADMAP.md) |
+| Study Spring Boot | [07_Modern_Java/Ch24_Spring_Boot_Roadmap.md](07_Modern_Java/Ch24_Spring_Boot_Roadmap.md) |
 | Learn SQL from scratch | [08_SQL/01_Foundations_Database_Basics.md](08_SQL/01_Foundations_Database_Basics.md) |
 | Learn Git/Docker/CI-CD | [13_Developer_Essentials/00_INDEX.md](13_Developer_Essentials/00_INDEX.md) |
-| Quick reference before interview | [09_Career_Reference/03_Quick_Reference.md](09_Career_Reference/03_Quick_Reference.md) |
-| Understand JVM internals | [09_Career_Reference/02c_Ultimate_DSA_JVM.md](09_Career_Reference/02c_Ultimate_DSA_JVM.md) |
+| Quick reference before interview | [09_Career_Reference/11_Quick_Reference.md](09_Career_Reference/11_Quick_Reference.md) |
+| Understand JVM internals | [09_Career_Reference/10_Ultimate_DSA_JVM.md](09_Career_Reference/10_Ultimate_DSA_JVM.md) |
 | See how DSA is used in production | [10_Enterprise_Systems/](10_Enterprise_Systems/) |
+| Learn JavaScript from scratch | [16_JavaScript/01_JS_Foundations.md](16_JavaScript/01_JS_Foundations.md) |
+| Learn React | [15_React_Frontend/01_React_Fundamentals.md](15_React_Frontend/01_React_Fundamentals.md) |
+| Learn TypeScript | [17_TypeScript/01_TS_Foundations.md](17_TypeScript/01_TS_Foundations.md) |
+| Learn CSS properly | [18_CSS_Complete/01_CSS_Foundations.md](18_CSS_Complete/01_CSS_Foundations.md) |
+| **Stop freezing in JS interviews** | [16_JavaScript/08_JS_Deep_Reasoning.md](16_JavaScript/08_JS_Deep_Reasoning.md) |
+| **Stop freezing in React interviews** | [15_React_Frontend/09_React_Deep_Reasoning.md](15_React_Frontend/09_React_Deep_Reasoning.md) |
+| **Stop freezing in Java interviews** | [07_Modern_Java/Ch22_Java_Deep_Reasoning.md](07_Modern_Java/Ch22_Java_Deep_Reasoning.md) |
+| **Stop freezing in Spring Boot interviews** | [07_Modern_Java/Ch58_SB_Deep_Reasoning.md](07_Modern_Java/Ch58_SB_Deep_Reasoning.md) |
+| **Stop freezing in DSA interviews** | [03_Algorithms/16_DSA_Deep_Reasoning.md](03_Algorithms/16_DSA_Deep_Reasoning.md) |
+| **Master Java DSA implementation** | [03_Algorithms/17_DSA_Java_Implementation_Mastery.md](03_Algorithms/17_DSA_Java_Implementation_Mastery.md) |
+| **Stop freezing in SQL interviews** | [08_SQL/23_SQL_Deep_Reasoning.md](08_SQL/23_SQL_Deep_Reasoning.md) |
+| **Become intermediate Data Analyst** | [08_SQL/24_SQL_Data_Analyst_RealWorld.md](08_SQL/24_SQL_Data_Analyst_RealWorld.md) |
+| **Master Streams internals** | [07_Modern_Java/Ch23_Streams_Deep_Reasoning.md](07_Modern_Java/Ch23_Streams_Deep_Reasoning.md) |
+| **JVM object headers & lock escalation** | [07_Modern_Java/Ch19_JVM_Object_Model.md](07_Modern_Java/Ch19_JVM_Object_Model.md) |
+| **Semaphore, CountDownLatch, Phaser** | [07_Modern_Java/Ch17_Concurrency_Synchronizers.md](07_Modern_Java/Ch17_Concurrency_Synchronizers.md) |
+| **Understand Coroutines & Concurrency** | [13_Developer_Essentials/19_Concurrency_Models_Coroutines.md](13_Developer_Essentials/19_Concurrency_Models_Coroutines.md) |
 
 ---
 
 ## Statistics
 
-- **Total Files:** 192 across 12 folders
+- **Total Files:** 280+ across 19 folders
 - **Data Structure Chapters:** 11 (Memory → Arrays → LinkedList → Stack/Queue → Hash → Trees → Internals → Variants)
-- **Algorithm Chapters:** 26 (Sorting → Recursion → DP → Trees → Graphs → Advanced → Specialized)
-- **Problem Chapters:** 14 topic-based collections + 3 methodology guides
-- **SQL Chapters:** 21 (beginner → expert)
-- **Spring Boot Parts:** 36 (foundations → microservices → cloud)
-- **Developer Essentials:** 10 MIT/KTH-style guides (Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, System Design, Tools)
+- **Algorithm Chapters:** 28 (Sorting → Recursion → DP → Trees → Graphs → Advanced → Specialized → Deep Reasoning → Java DSA Mastery)
+- **Problem Chapters:** 23 topic-based collections + methodology guides
+- **SQL Chapters:** 21 + 5 advanced (Database Internals, NoSQL, Interview, Deep Reasoning, Data Analyst)
+- **Spring Boot Parts:** 36 (foundations → microservices → cloud) + Deep Reasoning
+- **Java Chapters:** 47 (Functional, Algo Eng, Concurrency, Modern Java 9-21, Kafka, Deep Reasoning, Streams Mastery, JVM Object Model, Synchronizers)
+- **Developer Essentials:** 20 guides (Git, Linux, Docker, CI/CD, Clean Code, Testing, REST, Security, Cloud, Terraform, Agile, Servers, Concurrency Models)
+- **Mental Models:** 18 HOW-TO-THINK guides
+- **React Frontend:** 9 chapters (Fundamentals → Performance → Deep Reasoning)
+- **JavaScript:** 8 chapters (Foundations → Debugging → Deep Reasoning)
+- **TypeScript:** 4 chapters (Foundations → Patterns → Deep Reasoning)
+- **CSS:** 5 chapters (Foundations → Architecture → Deep Reasoning)
+- **Frontend Integration:** 4 chapters (Combined, Debugging, Build Tools, Mental Models)
+- **Deep Reasoning Files:** 13 across all domains (senior-engineer-level interview prep)
+- **Concurrency & Coroutines:** 1 comprehensive guide + 1 synchronizers deep dive (Coroutines, Continuations, Virtual Threads, Semaphore, CountDownLatch, CyclicBarrier, Phaser)
 - **Daily Practice Days:** 28 (4 weeks, each with cross-reference links)
-- **Estimated Problems Covered:** 600+ across all files
+- **Estimated Problems Covered:** 800+ across all files
 
 ---
 
 > *"The purpose of computing is insight, not numbers."* — Richard Hamming
 > 
 > *"First, solve the problem. Then, write the code."* — John Johnson
+
+
+---
+
+> **Navigation**: [< Previous](00_MASTER_INDEX.md) | [Back to Index](00_MASTER_INDEX.md)

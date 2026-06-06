@@ -1,3 +1,5 @@
+﻿> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_009_Mar11_Tue.md)
+
 # Day 008 - Monday, March 10, 2026
 
 > **Week 02** | **Difficulty:** EASY-MEDIUM | **Theme:** LinkedList + Merge Sort Mastery + SQL WHERE
@@ -14,9 +16,6 @@
 - [ ] SQL: WHERE, AND, OR, BETWEEN, IN (40 min)
 - [ ] Q1: Coding problem 1 (20 min)
 - [ ] Q2: Coding problem 2 (20 min)
-
----
-
 
 ---
 
@@ -71,6 +70,7 @@ KEY DIFFERENCE FROM ARRAY:
   List:   10→20→30      ← scattered memory, sequential access O(n)
 ```
 
+
 #### HOW does it work internally?
 
 ```
@@ -84,6 +84,7 @@ Insert at position k    O(k)      Traverse to k, then O(1) link
 Delete at head          O(1)      Just move head forward
 Delete by value         O(n)      Must find it first
 ```
+
 
 #### IMPLEMENT: Build a LinkedList from scratch
 
@@ -185,20 +186,21 @@ public class SinglyLinkedList {
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  WHY MERGE SORT MATTERS:                                            │
-│                                                                      │
+│                                                                     │
 │  • GUARANTEED O(n log n) — no worst case degradation                │
 │  • STABLE sort (equal elements stay in original order)              │
 │  • Foundation of external sorting (sorting data too big for RAM)    │
-│  • Tim Sort (Java's Arrays.sort for objects) is based on it        │
-│  • Teaches the Divide & Conquer paradigm perfectly                 │
-│                                                                      │
-│  vs Quick Sort:                                                      │
-│  • Quick Sort: avg O(n log n), worst O(n²), in-place              │
-│  • Merge Sort: always O(n log n), uses O(n) extra space            │
-│  • Java uses Merge Sort for objects (stability needed)             │
-│  • Java uses Quick Sort for primitives (speed, no stability need)  │
+│  • Tim Sort (Java's Arrays.sort for objects) is based on it         │
+│  • Teaches the Divide & Conquer paradigm perfectly                  │
+│                                                                     │
+│  vs Quick Sort:                                                     │
+│  • Quick Sort: avg O(n log n), worst O(n²), in-place                │
+│  • Merge Sort: always O(n log n), uses O(n) extra space             │
+│  • Java uses Merge Sort for objects (stability needed)              │
+│  • Java uses Quick Sort for primitives (speed, no stability need)   │
 └─────────────────────────────────────────────────────────────────────┘
 ```
+
 
 #### HOW it works — Visual
 
@@ -228,6 +230,7 @@ MERGE STEP DETAIL (merging [27,38] and [3,43]):
   Compare 38 vs 43 → take 38  → result: [3, 27, 38]
   Right remaining   → take 43 → result: [3, 27, 38, 43] ✓
 ```
+
 
 #### IMPLEMENT: Merge Sort
 
@@ -309,6 +312,7 @@ VISUAL:
   Remaining: l2's 4            → result: 1→1→2→3→4→4 ✓
 ```
 
+
 ```java
 public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
     ListNode dummy = new ListNode(-1);  // Sentinel node
@@ -355,6 +359,7 @@ Order(3,"Case") → Order(5,"Cable") → Order(7,"Charger")
 Notice: Order(3,"Mouse") comes before Order(3,"Case") — STABILITY matters!
 If sort is unstable, Warehouse A's order might get pushed behind B's.
 ```
+
 
 **Think about:** Why does Java use Merge Sort (TimSort) for object sorting?
 Answer: Because stability preserves the relative order of equal elements — critical in business applications.
@@ -459,6 +464,7 @@ Step 4: prev=4→3→2→1, curr=5       (4 now points to 3)
 Step 5: prev=5→4→3→2→1, curr=null  (5 now points to 4) DONE!
 ```
 
+
 ```java
 // ITERATIVE: O(n) time, O(1) space
 public ListNode reverseList(ListNode head) {
@@ -494,6 +500,7 @@ Step 1: slow=2, fast=3
 Step 2: slow=3, fast=5  → fast.next=null → STOP → slow=3 ✓
 ```
 
+
 ```java
 public ListNode middleNode(ListNode head) {
     ListNode slow = head, fast = head;
@@ -525,3 +532,8 @@ CONFIDENCE LEVEL: (circle one)
 
 TOMORROW'S PREVIEW: Doubly LinkedList + Quick Sort + SQL ORDER BY/LIMIT
 ```
+
+
+---
+
+> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_009_Mar11_Tue.md)

@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_001_Mar03_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_003_Mar05_Wed.md)
+
 # Day 002 - Tuesday, March 4, 2026
 
 > **Week 01** | **Difficulty:** EASY | **Theme:** Array Operations + Insertion Sort + SQL Data Types
@@ -43,6 +45,7 @@ RIGHT ROTATE by 2:
     Step 2: Reverse first k elements:   [4, 5, 3, 2, 1]
     Step 3: Reverse remaining elements: [4, 5, 1, 2, 3]
 ```
+
 
 **2. Prefix Sum**
 ```
@@ -149,6 +152,7 @@ WHY THIS MATTERS:
   - Real example: Excel multi-column sort depends on stability
 ```
 
+
 #### Insertion Sort — trace through carefully
 
 ```
@@ -189,6 +193,7 @@ SURPRISE: Insertion Sort is OPTIMAL for:
   4. Stable sorting needed with O(1) space
 ```
 
+
 ---
 
 ## BLOCK 3: COMBO (20 min)
@@ -212,6 +217,7 @@ KEY INSIGHT: Merge from the END to avoid overwriting!
   j exhausted, remaining [1,2] already in place
   Result: [1, 2, 2, 3, 5, 6] ✓
 ```
+
 
 <details>
 <summary>Solution</summary>
@@ -301,6 +307,7 @@ CHOOSING THE RIGHT TYPE:
   Storing birthday?    → DATE — no time component needed
   Storing true/false?  → BOOLEAN — stored as TINYINT(1)
 ```
+
 
 #### Practice: CREATE with constraints
 
@@ -477,3 +484,8 @@ public int maxSumSubarray(int[] arr, int k) {
 > **Mentor Note:** The reverse trick for array rotation is one of those "aha!" 
 > moments. If you understood it, try to explain it to someone (or write it in 
 > your own words). Teaching solidifies understanding.
+
+
+---
+
+> **Navigation**: [< Previous](Day_001_Mar03_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_003_Mar05_Wed.md)

@@ -4,7 +4,71 @@
 
 ## Chapter 5: Basic Queries (SELECT, WHERE, ORDER BY)
 
+### 🧠 How SQL Queries Work — Thinking in Sets
+
+The most important mindset shift when learning SQL: **SQL is a declarative language**. You describe **what data you want**, not **how to get it**. When you write `SELECT name FROM employees WHERE salary > 50000`, you're saying *"give me names of employees earning more than 50k"* — the database decides *how* to find them (which index to use, which algorithm, etc.).
+
+#### The Logical Execution Order — Why It Matters
+
+SQL doesn't execute in the order you write it. You write `SELECT ... FROM ... WHERE ... ORDER BY`, but the database processes it as:
+
+```
+1. FROM        → identify which table(s)
+2. WHERE       → filter individual rows
+3. GROUP BY    → create groups (if aggregating)
+4. HAVING      → filter groups
+5. SELECT      → choose/compute columns
+6. DISTINCT    → remove duplicates
+7. ORDER BY    → sort results
+8. LIMIT       → restrict output
+```
+
+This explains several common SQL puzzles:
+- **Why can't I use a column alias in WHERE?** Because WHERE executes *before* SELECT, so the alias doesn't exist yet.
+- **Why CAN I use an alias in ORDER BY?** Because ORDER BY executes *after* SELECT.
+- **Why is HAVING separate from WHERE?** Because WHERE filters rows *before* grouping, while HAVING filters *after* grouping.
+
+#### The NULL Trap — A Critical Concept
+
+`NULL` in SQL means **unknown/missing**, not zero, not empty string, not false. It follows **three-valued logic** (TRUE, FALSE, NULL):
+- `NULL = NULL` → NULL (not TRUE! Two unknowns aren't necessarily equal)
+- `NULL > 5` → NULL (you can't compare unknown to anything)
+- `NOT NULL` → NULL (the opposite of unknown is still unknown)
+
+This is why you must use `IS NULL` instead of `= NULL`. It's the #1 source of SQL bugs for beginners.
+
+---
+
 ### SELECT Fundamentals
+
+#### 📝 Formal Syntax — The Complete SELECT Statement
+
+```
+SELECT [DISTINCT] <column1> [AS <alias>], <column2>, <expression>, ...
+FROM <table_name> [AS <alias>]
+[WHERE <condition>]                              -- Filter individual rows
+[GROUP BY <column1>, <column2>, ...]             -- Group rows
+[HAVING <aggregate_condition>]                   -- Filter groups
+[ORDER BY <column1> [ASC|DESC], <column2> [ASC|DESC], ...]
+[LIMIT <count> [OFFSET <skip>]];                 -- Restrict output
+```
+
+#### 📝 Formal Syntax — WHERE Conditions
+
+```
+WHERE <column> = <value>                         -- Equality
+WHERE <column> != <value>  |  <column> <> <value>  -- Not equal
+WHERE <column> > | >= | < | <= <value>           -- Comparison
+WHERE <column> BETWEEN <low> AND <high>          -- Range (inclusive)
+WHERE <column> IN (<value1>, <value2>, ...)      -- Set membership
+WHERE <column> LIKE '<pattern>'                  -- Pattern matching (% = any chars, _ = one char)
+WHERE <column> IS NULL  |  IS NOT NULL           -- NULL checks (never use = NULL!)
+WHERE <condition1> AND <condition2>              -- Both must be true
+WHERE <condition1> OR <condition2>               -- Either must be true
+WHERE NOT <condition>                            -- Negation
+```
+
+---
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -392,3 +456,4 @@ _"Part 1 Complete! You now understand Database basics, Data Types, DDL, DML, and
 
 ---
 
+> **Navigation**: [< Previous](04_DML_Manipulating_Data.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Aggregations_GroupBy.md)

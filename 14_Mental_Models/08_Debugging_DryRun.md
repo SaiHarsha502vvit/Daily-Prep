@@ -1,6 +1,8 @@
+**Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
+
 # 🔬 Debugging & Dry Run — How to Find Bugs Systematically
 
-> **The key insight**: Debugging is NOT random. It's a systematic process: reproduce → isolate → identify → fix → verify. The best debuggers aren't smarter — they have a PROCESS.
+**The key insight**: Debugging is NOT random. It's a systematic process: reproduce → isolate → identify → fix → verify. The best debuggers aren't smarter — they have a PROCESS.
 
 ---
 
@@ -41,6 +43,7 @@ Iteration | left | right | mid | arr[mid] | Action
   3       |  5   |   5   |  5  |   23     | 23 == 23 → return 5 ✅
 ```
 
+
 ### Dry Run for Recursion — Use Call Stack Notation
 ```
 fibonacci(4)
@@ -57,6 +60,7 @@ fibonacci(4)
     return 1 + 0 = 1
 return 2 + 1 = 3 ✅
 ```
+
 
 ---
 
@@ -75,6 +79,7 @@ Example: "My sorting fails for [3, 1, 2, 1]"
 The smaller the failing input, the easier to trace.
 ```
 
+
 ### Step 2: ISOLATE Where the Bug Is
 ```
 Strategy A: "Halfway check"
@@ -92,6 +97,7 @@ Strategy C: "Simplest failing case"
   → Reduce input until bug disappears
   → The last input that bugs = exact trigger
 ```
+
 
 ### Step 3: IDENTIFY the Root Cause
 ```
@@ -116,6 +122,7 @@ Rules for fixing:
 □ Understand WHY the fix works (not just that it works)
 ```
 
+
 ### Step 5: VERIFY the Fix
 ```
 □ Original failing input now passes
@@ -124,7 +131,11 @@ Rules for fixing:
 □ No new bugs introduced
 ```
 
+
 ---
+
+
+
 
 ## Part 3: Common Bug Patterns & How to Spot Them
 
@@ -163,6 +174,7 @@ Fix: Use long for large sums/products
      Check if n * n > Integer.MAX_VALUE
 ```
 
+
 ### Pattern 4: "Works sometimes, fails randomly"
 ```
 Typical causes:
@@ -190,6 +202,8 @@ Fix: Verify loop variable changes each iteration
 ```
 
 ---
+
+
 
 ## Part 4: Strategic Print Debugging
 
@@ -242,6 +256,9 @@ System.out.println(map);
 
 ---
 
+
+
+
 ## Part 5: Debugging DP Problems
 
 ### Common DP Bugs
@@ -262,6 +279,7 @@ Bug 4: Wrong answer extraction
 → Check what dp[i] REPRESENTS
 ```
 
+
 ### DP Table Visualization
 ```
 Problem: Climbing Stairs (ways to reach step n, can take 1 or 2 steps)
@@ -276,6 +294,9 @@ dp:   [1] [1] [2] [3] [5] [8]
 ```
 
 ---
+
+
+
 
 ## Part 6: Debugging Graph/Tree Problems
 
@@ -296,6 +317,7 @@ Bug 4: Directed vs undirected confusion
 → Undirected: add edge BOTH ways (a→b AND b→a)
 → Directed: add edge ONE way only
 ```
+
 
 ### Tree Debugging: Print Traversals
 ```java
@@ -325,6 +347,26 @@ void levelOrder(TreeNode root) {
 
 ---
 
+
+
+🔬 **Section Challenge — Part 6: Debugging Graph/Tree Problems**
+
+**Challenge 1 (Trace):** You are implementing BFS to find the shortest path in an unweighted grid. Your queue logic pushes a node, pops it, checks its neighbors, and pushes the valid neighbors. You mark a node as `visited = true` the moment you *pop* it from the queue. Why will this cause `Time Limit Exceeded` (TLE) on large grids?
+
+<details><summary>Answer</summary>
+
+Because you are marking nodes as visited too late! If a node is added to the queue but not yet popped, it is not marked as visited. As a result, other neighboring nodes currently being processed might see it as "unvisited" and push *duplicate* copies of the same node onto the queue. This causes the queue size to explode exponentially, leading to TLE. **Fix:** Always mark nodes as visited the exact moment you *push* them into the queue.
+
+</details>
+
+**Challenge 2 (Debug):** You are dry-running a recursive DFS for a Binary Search Tree (BST). Your output array is `[10, 5, 2, 7, 15]`. Since this is a BST, you expected the output to be sorted (`[2, 5, 7, 10, 15]`). What specific debugging mistake does this output reveal about your traversal order?
+
+<details><summary>Answer</summary>
+
+The output `[10, 5, 2, 7, 15]` corresponds to a **Pre-order traversal** (Root → Left → Right), not an In-order traversal. To get a sorted array from a BST, you must use **In-order traversal** (Left → Root → Right). The debugging output immediately isolates the root cause: you placed the `list.add(node.val)` or `print` statement *before* the recursive call to `node.left`, instead of *between* the calls to `node.left` and `node.right`.
+
+</details>
+
 ## Part 7: Debugging Checklist (Quick Reference)
 
 ```
@@ -340,12 +382,20 @@ When your code fails:
 □ Remove debug prints before submitting
 ```
 
+
 ---
 
 📖 **Related Files:**
 - [06_Implementation_Checklist.md](06_Implementation_Checklist.md) — Avoid bugs in the first place
-- [05_Problem_Solving/02_Edge_Cases.md](../05_Problem_Solving/02_Edge_Cases.md) — Edge case catalog
-- [05_Problem_Solving/03_Common_Mistakes.md](../05_Problem_Solving/03_Common_Mistakes.md) — Common mistakes
+- [05_Problem_Solving/23_Edge_Cases.md](../05_Problem_Solving/23_Edge_Cases.md) — Edge case catalog
+- [05_Problem_Solving/24_Common_Mistakes.md](../05_Problem_Solving/24_Common_Mistakes.md) — Common mistakes
 
 ---
 [← 07 SQL Mental Pipeline](07_SQL_Mental_Pipeline.md) | [09 Complexity Intuition →](09_Complexity_Intuition.md)
+
+
+---
+
+**Navigation**: [< Previous](07_SQL_Mental_Pipeline.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Complexity_Intuition.md)
+
+

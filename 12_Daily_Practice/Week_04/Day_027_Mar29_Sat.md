@@ -1,4 +1,7 @@
+﻿> **Navigation**: [< Previous](Day_026_Mar28_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_028_Mar30_Sun.md)
+
 # DAY 027 — Saturday, March 29, 2026
+
 ## Spring Boot: JPA & Hibernate Deep Dive + SQL Practice
 
 > **Theme**: Weekend = Spring Boot (ORM, Entity mapping, Repository pattern) + SQL drills
@@ -15,20 +18,16 @@
 
 ---
 
-
----
-
 > ## 📖 CHAPTER REFERENCES — Deep Dive Links
 >
 > Today's topics link to detailed chapter files for deeper study:
 >
-> | **Spring Boot: JPA & Hibernate Deep Dive** | [Spring Boot: JPA Deep Dive](../../07_Modern_Java/10_Spring_Boot_Part8_JPA_Deep_Dive.md) |
+> | **Spring Boot: JPA & Hibernate Deep Dive** | [Spring Boot: JPA Deep Dive](../../07_Modern_Java/Ch40_SB_JPA_Deep_Dive.md) |
 > | **SQL: Mixed Drill (Indexes + Transactions)** | [SQL: Indexes & Performance](../../08_SQL/11_Indexes_Performance.md) |
 >
 > *Open the linked file for full theory, diagrams, and practice problems.*
 
 ---
-
 
 ## 🌱 SPRING BOOT BLOCK: JPA & Hibernate
 
@@ -48,6 +47,7 @@ WITH JPA:
   Employee e = employeeRepository.findById(id).orElseThrow();
   // That's it. JPA maps table → object automatically.
 ```
+
 
 ### WHAT: Key Concepts
 
@@ -170,6 +170,7 @@ FIX 2: JPQL JOIN FETCH
 List<Department> findAllWithEmployees();  // 1 query
 ```
 
+
 ### application.properties
 
 ```properties
@@ -237,21 +238,18 @@ EXPLAIN SELECT * FROM products WHERE category = 'Electronics' AND price > 100;
 
 ## 📊 WEEK 04 GRAPH ALGORITHM SUMMARY
 
-```
-┌──────────────────┬──────────────────┬───────────────────────┐
-│ Algorithm        │ Time             │ Use Case              │
-├──────────────────┼──────────────────┼───────────────────────┤
-│ BFS              │ O(V + E)         │ Shortest unweighted   │
-│ DFS              │ O(V + E)         │ Connectivity, cycles  │
-│ Dijkstra         │ O((V+E) log V)   │ Shortest weighted+    │
-│ Bellman-Ford     │ O(V * E)         │ Negative weights      │
-│ Kahn's Topo Sort │ O(V + E)         │ Dependency ordering   │
-│ Kruskal's MST    │ O(E log E)       │ Min cost connect all  │
-│ Union-Find       │ O(α(N)) per op   │ Dynamic connectivity  │
-│ 2-Color BFS      │ O(V + E)         │ Bipartite check       │
-│ A*               │ O(E log V) best  │ Targeted shortest     │
-└──────────────────┴──────────────────┴───────────────────────┘
-```
+| Algorithm | Time | Use Case |
+|---|---|---|
+| BFS | O(V + E) | Shortest unweighted |
+| DFS | O(V + E) | Connectivity, cycles |
+| Dijkstra | O((V+E) log V) | Shortest weighted+ |
+| Bellman-Ford | O(V * E) | Negative weights |
+| Kahn's Topo Sort | O(V + E) | Dependency ordering |
+| Kruskal's MST | O(E log E) | Min cost connect all |
+| Union-Find | O(α(N)) per op | Dynamic connectivity |
+| 2-Color BFS | O(V + E) | Bipartite check |
+| A* | O(E log V) best | Targeted shortest |
+
 
 ---
 
@@ -265,3 +263,5 @@ EXPLAIN SELECT * FROM products WHERE category = 'Electronics' AND price > 100;
 - [ ] Can recite all graph algorithms and when to use each
 
 ---
+
+> **Navigation**: [< Previous](Day_026_Mar28_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_028_Mar30_Sun.md)

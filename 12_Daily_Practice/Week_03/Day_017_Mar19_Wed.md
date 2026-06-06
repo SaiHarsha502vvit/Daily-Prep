@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_016_Mar18_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_018_Mar20_Thu.md)
+
 # Day 017 — Wednesday, March 19, 2026
 
 > **Week 03** | **Day 3** | **Theme:** Heap / Priority Queue + Heap Sort + SQL Window Functions (SUM, AVG, LAG, LEAD)
@@ -13,9 +15,6 @@
 - [ ] Problem 1: LC 215 — Kth Largest Element in an Array (25 min)
 - [ ] Problem 2: LC 347 — Top K Frequent Elements (25 min)
 - [ ] Real-World Connection (10 min)
-
----
-
 
 ---
 
@@ -149,6 +148,7 @@ Step 2: Sift up — 2 < 3? Yes, swap
 Step 3: Sift up — 2 < 1? No, stop. Done!
 ```
 
+
 ### Java PriorityQueue Usage
 
 ```java
@@ -200,6 +200,7 @@ EXTRACT PHASE:
   
   Result: [1, 3, 4, 5, 10] ← SORTED!
 ```
+
 
 ```java
 void heapSort(int[] arr) {
@@ -279,6 +280,7 @@ order_date | amount | prev | change | next
                        ↑ LAG              ↑ LEAD
 ```
 
+
 ### Moving Average
 
 ```sql
@@ -341,6 +343,7 @@ Process:  3 → heap=[3]        (size < k, just add)
 
 Answer: peek() = 5  ← 2nd largest!
 ```
+
 
 ### Solution
 
@@ -407,6 +410,7 @@ Step 2: Min-heap by frequency, size ≤ k
 Step 3: Extract from heap → [1, 2]
 ```
 
+
 ### Solution
 
 ```java
@@ -434,7 +438,7 @@ class Solution {
 
 ---
 
-## 6. REAL-WORLD CONNECTION
+## 📌 6. Real — World Connection
 
 ```
 HEAP IN THE REAL WORLD:
@@ -444,3 +448,9 @@ HEAP IN THE REAL WORLD:
   4. Merge K Sorted Lists: Min-heap of K heads → always extract smallest
   5. Event Queue: Process earliest event first (min-heap by timestamp)
 ```
+
+
+
+---
+
+> **Navigation**: [< Previous](Day_016_Mar18_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_018_Mar20_Thu.md)

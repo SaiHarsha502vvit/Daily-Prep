@@ -1,6 +1,10 @@
+**Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)
+
 # 🧭 Universal Problem-Solving Framework — 6-Step Method for ANY Problem
 
-> **The key insight**: Every problem — DSA, SQL, system design — follows the same thinking process. Master this 6-step framework and you'll never freeze in front of a problem again.
+**The key insight**: Every problem — DSA, SQL, system design — follows the same thinking process. Master this 6-step framework and you'll never freeze in front of a problem again.
+
+> Companion playbook: [Brute Force to Optimal](22_Brute_Force_To_Optimal_Playbook.md) shows how to start with loops, identify the bottleneck, and replace it with the right data structure or algorithm.
 
 ---
 
@@ -8,14 +12,15 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────┐
-│  1. READ    → Understand what's asked (not what you assume) │
-│  2. CLASSIFY → What type of problem is this?                │
-│  3. PLAN    → Choose strategy, design approach              │
-│  4. CODE    → Translate plan to code                        │
-│  5. TEST    → Verify with examples and edge cases           │
-│  6. OPTIMIZE → Can we do better?                            │
+│  1. READ    → Understand what's asked (not what you assume)  │
+│  2. CLASSIFY → What type of problem is this?                 │
+│  3. PLAN    → Choose strategy, design approach               │
+│  4. CODE    → Translate plan to code                         │
+│  5. TEST    → Verify with examples and edge cases            │
+│  6. OPTIMIZE → Can we do better?                             │
 └──────────────────────────────────────────────────────────────┘
 ```
+
 
 ---
 
@@ -42,6 +47,22 @@ n ≤ 1,000,000 → O(n) — Linear scan, HashMap, Two pointers
 n ≤ 10⁸       → O(n) — Must be single pass
 n > 10⁸       → O(log n) or O(1) — Math, Binary search on answer
 ```
+
+### Constraint-to-Pattern Overrides
+
+After choosing the rough complexity, check the value rules:
+
+| If Constraints Say | Avoid | Prefer |
+|--------------------|-------|--------|
+| negative numbers in subarray sum | naive sliding window | prefix sum + hashmap/tree/deque |
+| online updates after range queries | static prefix/sparse table | Fenwick / segment tree |
+| weighted graph edges | plain BFS | Dijkstra / 0-1 BFS / Bellman-Ford |
+| negative graph edges | Dijkstra | Bellman-Ford / potentials |
+| original indices required | sorting blindly | hashmap/index-preserving structure |
+| recursion depth can hit `1e5+` in Java | recursive DFS | iterative stack/BFS |
+
+Full map: [Constraint-Based Pattern Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md).
+
 
 ---
 
@@ -83,7 +104,28 @@ STRING MANIPULATION?
 └── Subsequence comparison? → DP (LCS, Edit Distance)
 ```
 
+
 ---
+
+
+
+🔬 **Section Challenge — Step 2: CLASSIFY — What Type of Problem Is This?**
+
+**Challenge 1 (Reasoning):** A problem asks you to find the "minimum number of jumps to reach the end of an array." What are the two most likely algorithmic classifications for this problem, and what specific constraint would force you to pick one over the other?
+
+<details><summary>Answer</summary>
+
+The two most likely classifications are **Dynamic Programming** (optimization problem with overlapping subproblems) and **Greedy** (if a local optimum leads to the global optimum). If the constraint is `N = 100,000`, O(N^2) DP will fail with `Time Limit Exceeded`, forcing you to find the O(N) Greedy solution. If `N = 1,000`, the O(N^2) DP approach is perfectly acceptable.
+
+</details>
+
+**Challenge 2 (Design):** You are given a list of a million words and must frequently query whether a specific prefix exists in the list. What classification is this, and what is the optimal data structure?
+
+<details><summary>Answer</summary>
+
+This is a **Data Retrieval (Query/Lookup)** classification, specifically involving String Prefix Matching. The optimal data structure is a **Trie (Prefix Tree)**. While a HashMap provides O(1) exact-word lookups, it cannot easily answer "does any word *start with* this prefix" without iterating over all keys. A Trie answers prefix queries in O(K) time, where K is the length of the prefix.
+
+</details>
 
 ## Step 3: PLAN — Design Your Approach
 
@@ -103,6 +145,7 @@ Write this down (mentally or on paper):
 If your plan doesn't work on examples → GO BACK to Step 2 and reclassify
 ```
 
+
 ### The "Brute Force First" Principle
 ```
 ALWAYS think of brute force first:
@@ -118,7 +161,10 @@ Example: Two Sum
 - Optimize: HashMap makes search O(1) → Total O(n)
 ```
 
+
 ---
+
+
 
 ## Step 4: CODE — Translation Rules
 
@@ -148,6 +194,7 @@ public ReturnType solve(InputType input) {
 ❌ Variables named i,j,k,x,y → Use descriptive names: left, right, count
 ```
 
+
 ---
 
 ## Step 5: TEST — Verify Correctness
@@ -174,6 +221,7 @@ Step | Variable States                | Action
 ✅ Matches expected output [0, 1]
 ```
 
+
 ---
 
 ## Step 6: OPTIMIZE — Can We Do Better?
@@ -196,6 +244,7 @@ Strategy 3: PRECOMPUTE
 - Build adjacency list once for multiple graph queries
 ```
 
+
 ### The "Can We Do Better?" Checklist
 ```
 □ Am I doing any repeated computation? → Cache it (DP, memoization)
@@ -205,6 +254,7 @@ Strategy 3: PRECOMPUTE
 □ Am I visiting nodes multiple times? → Track visited
 □ Am I sorting when I don't need full sort? → Partial sort (QuickSelect for k-th)
 ```
+
 
 ---
 
@@ -219,6 +269,10 @@ Step 5: TEST → Run against example data mentally
 Step 6: OPTIMIZE → Indexes? Avoid subqueries? Use CTEs?
 ```
 
+
+
+
+
 ## Applying This to System Design
 
 ```
@@ -230,6 +284,7 @@ Step 5: TEST → Walk through user scenarios
 Step 6: OPTIMIZE → Scaling bottlenecks, caching, CDN, sharding
 ```
 
+
 ---
 
 📖 **Related Files:**
@@ -239,3 +294,10 @@ Step 6: OPTIMIZE → Scaling bottlenecks, caching, CDN, sharding
 
 ---
 [← 04 Array & String](04_Array_String_Thinking.md) | [06 Implementation Checklist →](06_Implementation_Checklist.md)
+
+
+---
+
+**Navigation**: [< Previous](04_Array_String_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](06_Implementation_Checklist.md)
+
+

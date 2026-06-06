@@ -4,7 +4,97 @@
 
 ## Chapter 4: DML - Manipulating Data
 
+### 🧠 What Is DML — Working With Data Inside Tables
+
+DML (Data Manipulation Language) is the subset of SQL that **reads, creates, modifies, and removes data** within existing tables. While DDL (previous chapter) defines the *structure* of your database, DML operates on the *contents*. This is the SQL you'll write most often in practice.
+
+DML maps directly to the **CRUD** operations that every application needs:
+
+| CRUD Operation | SQL Statement | What It Does |
+|----------------|---------------|--------------|
+| **C**reate | `INSERT` | Adds new rows to a table |
+| **R**ead | `SELECT` | Retrieves data (covered in Chapter 5) |
+| **U**pdate | `UPDATE` | Modifies existing rows |
+| **D**elete | `DELETE` | Removes rows from a table |
+
+#### The Cardinal Rule of DML: WHERE Clauses Save Careers
+
+The single most important thing to understand about `UPDATE` and `DELETE`: **without a `WHERE` clause, they affect EVERY row in the table.** This is not a bug — it's by design. SQL is a set-based language; it operates on *sets of rows*, and without a filter, the set is "all rows."
+
+Every database professional has a horror story about this. Someone runs `DELETE FROM users` intending to delete one user but forgetting the `WHERE` clause. Every user is gone. This is why production databases should:
+1. Always preview with `SELECT` first (using the same `WHERE` clause)
+2. Wrap modifications in `START TRANSACTION` ... `ROLLBACK/COMMIT`
+3. Use database permissions to restrict who can run DML
+
+#### Understanding UPSERT — INSERT + UPDATE Combined
+
+A very common real-world need: "Insert this record if it doesn't exist; update it if it does." For example, when syncing product data from a supplier's feed. You receive 10,000 products — some are new (need INSERT), some already exist and have updated prices (need UPDATE).
+
+Without UPSERT, you'd need to: SELECT to check if it exists → if yes, UPDATE → if no, INSERT. That's 3 queries per record, and it has race conditions in concurrent environments (two threads both see "doesn't exist" and both try to INSERT, one fails).
+
+UPSERT (`ON DUPLICATE KEY UPDATE` in MySQL, `ON CONFLICT ... DO UPDATE` in PostgreSQL) solves this atomically in a single statement.
+
+#### Soft Delete vs Hard Delete — A Design Decision
+
+When you `DELETE FROM users WHERE user_id = 5`, the row is **physically removed** from disk. It's gone forever (unless you have backups). This is called a **hard delete**.
+
+In many production systems, you never actually delete data. Instead, you **soft delete**: set a flag like `is_active = FALSE` or `deleted_at = NOW()`. The row stays in the database but is excluded from queries by adding `WHERE is_active = TRUE` to all your SELECTs. Why?
+
+- **Audit trail** — Regulators (banking, healthcare) require you to keep records for years
+- **Recovery** — Users accidentally delete things; soft delete lets you "undelete"
+- **Referential integrity** — Other tables may reference this row. Hard delete either fails (due to foreign keys) or cascades dangerously
+
+> 💡 **Trade-off:** Soft delete means your tables grow forever and queries must always filter by the active flag. Hard delete keeps tables lean but loses data permanently.
+
+---
+
 ### INSERT Operations
+
+#### 📝 Formal Syntax — INSERT
+
+```
+INSERT INTO <table_name> [(<column1>, <column2>, ...)]
+VALUES (<value1>, <value2>, ...),
+       (<value1>, <value2>, ...);              -- Multiple rows
+
+INSERT INTO <table_name> [(<column1>, <column2>, ...)]
+SELECT <columns> FROM <other_table>
+[WHERE <condition>];                            -- Insert from query
+```
+
+#### 📝 Formal Syntax — UPDATE
+
+```
+UPDATE <table_name>
+SET <column1> = <value1>,
+    <column2> = <value2>, ...
+[WHERE <condition>];                            -- ⚠️ Without WHERE, ALL rows are updated!
+```
+
+#### 📝 Formal Syntax — DELETE
+
+```
+DELETE FROM <table_name>
+[WHERE <condition>];                            -- ⚠️ Without WHERE, ALL rows are deleted!
+```
+
+#### 📝 Formal Syntax — UPSERT
+
+```
+-- MySQL:
+INSERT INTO <table_name> (<columns>)
+VALUES (<values>)
+ON DUPLICATE KEY UPDATE
+    <column1> = VALUES(<column1>), ...;
+
+-- PostgreSQL:
+INSERT INTO <table_name> (<columns>)
+VALUES (<values>)
+ON CONFLICT (<conflict_column>)
+DO UPDATE SET <column1> = EXCLUDED.<column1>, ...;
+```
+
+---
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -231,4 +321,17 @@ WHERE emp_id = 5;
 ```
 
 ---
+
+> **Navigation**: [< Previous](03_DDL_Creating_Structure.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Queries_SELECT_WHERE.md)
+
+
+
+
+> 🔬 **Section Challenge — Chapter 4: DML - Manipulating Data**
+
+**Challenge 1 (Reasoning):** `DELETE FROM logs` and `TRUNCATE TABLE logs` both remove all rows. But `DELETE` on a 10M-row table takes 45 minutes while `TRUNCATE` takes 1 second. Why is the time difference so extreme? Can you ROLLBACK a TRUNCATE?
+<details><summary>Answer</summary>
+
+`DELETE` is a **row-by-row DML operation**: for each of the 10M rows, the engine (1) acquires a row-level lock, (2) writes the old row data to the **undo log** (for potential ROLLBACK), (3) writes the deletion to the **redo log** (for crash recovery), (4) fires any `ON DELETE` triggers, (5) updates all indexes that reference the row. 10M × 5 operations = extremely slow. `TRUNCATE` is a **DDL operation** — it doesn't delete rows individually. Instead, it **deallocates the data pages** (drops and recreates the table's data storage). It's like deleting a file vs. erasing every byte in the file. Key differences: (1) `TRUNCATE` resets `AUTO_INCREMENT` to 1; `DELETE` does not. (2) `TRUNCATE` does NOT fire `ON DELETE` triggers. (3) In MySQL, `TRUNCATE` is **not transactional** — you CANNOT ROLLBACK it. In PostgreSQL, `TRUNCATE` IS transactional (you can ROLLBACK). (4) `TRUNCATE` requires `DROP` privilege; `DELETE` requires `DELETE` privilege. **Production rule:** Use `DELETE` with `WHERE` for selective removal. Use `TRUNCATE` only for completely clearing staging/temp tables where you need speed and don't need rollback.
+</details>
 

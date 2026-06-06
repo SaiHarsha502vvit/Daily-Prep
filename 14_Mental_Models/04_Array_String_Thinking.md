@@ -1,6 +1,27 @@
+**Navigation**: [< Previous](03_Graph_Tree_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](05_Universal_Problem_Framework.md)
+
 # 🔍 Array & String Problem Thinking — Mental Model
 
-> **The key insight**: Arrays and strings have a SMALL set of core techniques. The skill is recognizing WHICH technique applies based on problem constraints. This decision tree will guide you.
+**The key insight**: Arrays and strings have a SMALL set of core techniques. The skill is recognizing WHICH technique applies based on problem constraints. This decision tree will guide you.
+
+---
+
+## Part 0: Constraint Overrides Before the Decision Tree
+
+The same keyword can point to different patterns depending on constraints.
+
+| If You See | Check This | Choose |
+|------------|------------|--------|
+| `subarray sum` | all values positive? | sliding window may work |
+| `subarray sum` | negatives allowed? | prefix sum + hashmap/tree/deque |
+| `pair sum` | sorted? | two pointers |
+| `pair sum` | unsorted and indices needed? | hashmap complement |
+| `range sum query` | no updates? | prefix sum |
+| `range query` | updates exist? | Fenwick / segment tree |
+| `substring` | contiguous char condition? | sliding window |
+| `subsequence` | can skip characters? | DP / greedy / binary search |
+
+Full map: [Constraint-Based Pattern Selection](../04_Patterns_Templates/25_Constraint_Based_Pattern_Selection.md).
 
 ---
 
@@ -44,6 +65,7 @@ Q6: Limitation says O(n) and array has range [0, n-1]?
 └── NO → Brute force, then optimize
 ```
 
+
 ---
 
 ## Part 2: Two Pointers — When and How
@@ -71,6 +93,7 @@ Result: [1, 2, 3, 4, 5, 6]
 When: Merge two sorted arrays/lists, intersection of sorted arrays
 ```
 
+
 ### Template: Two Sum on Sorted Array
 ```java
 int left = 0, right = arr.length - 1;
@@ -83,6 +106,18 @@ while (left < right) {
 ```
 
 ---
+
+
+
+🔬 **Section Challenge — Part 2: Two Pointers — When and How**
+
+**Challenge 1 (Reasoning):** In the classic "Two Sum II" (array is sorted), you start pointers at `left = 0` and `right = n - 1`. If `sum > target`, you do `right--`. A junior engineer asks, "How do we know we didn't just skip the correct answer by moving `right`? What if `arr[left+1] + arr[right]` was the target?" Provide the mathematical proof.
+
+<details><summary>Answer</summary>
+
+Because the array is sorted, `arr[left+1] >= arr[left]`. If `arr[left] + arr[right] > target`, then `arr[left+1] + arr[right]` must be EVEN GREATER than the target! The current `right` element is simply too large to pair with *any* element equal to or larger than `arr[left]`. Therefore, the current `right` element cannot be part of any valid pair with elements to the right of `left`. We can safely discard it by doing `right--` without missing the answer. This is the core "search space reduction" proof for two pointers.
+
+</details>
 
 ## Part 3: Sliding Window — When and How
 
@@ -103,6 +138,7 @@ VARIABLE Window (find smallest/largest valid window):
 When: "Smallest subarray with sum ≥ target", "Longest substring without repeating"
 Template: Expand right always, shrink left while condition met
 ```
+
 
 ### Variable Window Template
 ```java
@@ -134,6 +170,23 @@ Works for: Subarrays with Exactly K Distinct Integers (LC 992)
 
 ---
 
+
+
+🔬 **Section Challenge — Part 3: Sliding Window — When and How**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
+
 ## Part 4: Prefix Sum — When and How
 
 ### Mental Model: Running Total
@@ -146,6 +199,7 @@ Sum of subarray [i..j] = prefix[j+1] - prefix[i]
 Sum of [1..3] = prefix[4] - prefix[1] = 9 - 3 = 6  ✓ (1+4+1=6)
 ```
 
+
 ### Prefix Sum + HashMap Pattern
 ```
 Problem: "How many subarrays have sum equal to k?"
@@ -155,6 +209,7 @@ Key insight: If prefix[j] - prefix[i] = k, then subarray [i+1..j] sums to k
 → For each j, count how many previous prefix sums equal (prefix[j] - k)
 → Use HashMap to store frequency of prefix sums seen so far!
 ```
+
 
 ```java
 int count = 0, sum = 0;
@@ -171,6 +226,18 @@ return count;
 
 ---
 
+
+
+🔬 **Section Challenge — Part 4: Prefix Sum — When and How**
+
+**Challenge 1 (Debug):** You are solving "Subarray Sum Equals K" using a HashMap. Your code loops through the array, updates the running `sum`, and checks `if (map.containsKey(sum - k)) count += map.get(sum - k);`. You test it with `arr = [3, 4, 7]`, `k = 7`. It returns `0` instead of `2` (the subarrays `[3, 4]` and `[7]`). What initialization step did you forget?
+
+<details><summary>Answer</summary>
+
+You forgot the sentinel value: `map.put(0, 1)`. When the loop reaches the `7` at index 2, the running `sum` is `14`. It checks for `14 - 7 = 7`. The prefix sum `7` exists in the map (from index 1, where `3+4=7`). So it correctly counts the `[7]` subarray. BUT, when the loop is at index 1 (`4`), the running sum is `7`. It checks for `7 - 7 = 0`. Since `0` is not in the map, it fails to count the valid subarray `[3, 4]`. The prefix `0` represents the "empty prefix" before the array starts, which is mathematically necessary to count subarrays that start at index 0.
+
+</details>
+
 ## Part 5: String-Specific Patterns
 
 ### String Comparison Table
@@ -186,6 +253,7 @@ Problem Type:                         → Technique:
 "String to integer / parse"           → Manual parsing with edge cases
 "Reverse words in string"             → Split → reverse array → join (or two passes)
 ```
+
 
 ### Character Frequency Trick (int[26])
 ```java
@@ -213,6 +281,9 @@ String result = sb.toString();
 
 ---
 
+
+
+
 ## Part 6: In-Place Array Techniques
 
 ### Index-as-Hash (O(1) space tricks)
@@ -231,6 +302,7 @@ for (int num : nums) {
 }
 ```
 
+
 ### Partition / Dutch National Flag
 ```
 When: Separate elements into groups (0s, 1s, 2s)
@@ -243,7 +315,11 @@ Three pointers: low, mid, high
 - If arr[mid] == 2: swap with high, move high left (don't move mid!)
 ```
 
+
 ---
+
+
+
 
 ## Part 7: Array & String Debugging Checklist
 
@@ -260,6 +336,7 @@ Three pointers: low, mid, high
 □ Character encoding: 'a' to 'z' = 26 letters, '0' to '9' = 10 digits
 ```
 
+
 ---
 
 📖 **Related Files:**
@@ -269,3 +346,5 @@ Three pointers: low, mid, high
 
 ---
 [← 03 Graph & Tree](03_Graph_Tree_Thinking.md) | [05 Universal Framework →](05_Universal_Problem_Framework.md)
+
+

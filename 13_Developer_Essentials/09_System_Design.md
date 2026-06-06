@@ -1,6 +1,6 @@
 # 🏗️ System Design — Complete Guide
 
-> **Navigation**: [< Security](08_Security_Fundamentals.md) | [Index](00_INDEX.md) | [Next: Dev Tools >](10_Dev_Tools_Productivity.md)
+**Navigation**: [< Security](08_Security_Fundamentals.md) | [Index](00_INDEX.md) | [Next: Dev Tools >](10_Dev_Tools_Productivity.md)
 
 ---
 
@@ -30,6 +30,24 @@ System design isn't just for interviews — it's your daily reality.
 
 ---
 
+🔬 **Section Challenge — From Single Server to Global Scale**
+
+**Challenge 1 (Reasoning):** A startup with 50 users runs fine on a single server. At 10,000 users, the API slows down. At 100,000, it crashes. Why doesn't vertical scaling (buying a bigger server) solve this indefinitely?
+
+<details><summary>Answer</summary>
+
+Vertical scaling (adding more CPU/RAM to one machine) hits two hard walls: (1) **Hardware ceiling** — the largest AWS EC2 instance (`u-24tb1.metal`) has 448 vCPUs and 24TB RAM. Beyond that, no bigger machine exists. (2) **Availability cliff** — a single server is a single point of failure. Upgrading it requires downtime. Horizontal scaling (multiple servers behind a load balancer) adds capacity incrementally with no ceiling and allows zero-downtime deploys (rolling updates). The real lesson: vertical scaling buys time; horizontal scaling is the only path to genuine scale. At 10,000 users, the issue is often a slow DB query (N+1 or missing index) — fix that before buying a bigger server.
+
+</details>
+
+**Challenge 2 (Design):** You're designing for 1M requests/day. Estimate the QPS, then name the FIRST infrastructure component you add beyond a single server.
+
+<details><summary>Answer</summary>
+
+1M req/day ÷ 86,400 seconds/day ≈ **12 QPS average**. With a 10:1 peak-to-average ratio, design for ~120 QPS peak. A single well-tuned Spring Boot server handles 1,000-10,000 QPS, so hardware isn't the bottleneck yet. The FIRST thing to add: **database read replica + caching**. 80-90% of web requests are reads. Adding a Redis cache in front of the DB reduces DB load by 10-100x before you need any horizontal web server scaling. Next: a **CDN** for static assets. These two changes get you to 10M+ req/day without adding app servers.
+
+</details>
+
 # WHAT: Core Building Blocks
 
 ## 1. Load Balancer
@@ -53,6 +71,14 @@ Algorithms:
 
 Tools: NGINX, HAProxy, AWS ALB, Kubernetes Ingress
 ```
+
+🔬 **Section Challenge — 1. Load Balancer**
+
+**Challenge 1 (Reasoning):** Round-robin load balancing sends requests to servers 1,2,3,1,2,3. Why does this fail for stateful sessions?
+<details><summary>Answer</summary>
+
+Session data (shopping cart, auth state) is stored on ONE server. Round-robin sends the NEXT request to a different server which has NO session data → user is logged out, cart is empty. Solutions: (1) Sticky sessions (session affinity) — LB routes user to the same server based on cookie. Single point of failure risk. (2) Externalize session to Redis — all servers share one session store. (3) Stateless auth (JWT) — no server-side session needed. Modern preference: stateless design + JWT.
+</details>
 
 ## 2. Caching
 
@@ -103,6 +129,14 @@ public class ProductService {
 }
 ```
 
+🔬 **Section Challenge — 2. Caching**
+
+**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+<details><summary>Answer</summary>
+
+Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+</details>
+
 ## 3. Database Scaling
 
 ```
@@ -126,6 +160,24 @@ SQL vs NoSQL Decision:
   SQL  (PostgreSQL, MySQL)  → Structured data, ACID, joins needed
   NoSQL (MongoDB, DynamoDB) → Flexible schema, high throughput, horizontal scale
 ```
+
+🔬 **Section Challenge — 3. Database Scaling**
+
+**Challenge 1 (Reasoning):** A PostgreSQL database has 500 million rows. A simple `SELECT * FROM users WHERE last_login > '2023-01-01'` takes 14 seconds. The CTO suggests sharding the database across 4 servers to speed it up. Why is this the wrong first step, and what is the correct one?
+
+<details><summary>Answer</summary>
+
+Sharding is the most complex, highest-overhead database scaling strategy; it breaks JOINs and requires application-level routing logic. It should be the absolute last resort. The correct first step is **Vertical Scaling (Adding an Index)**. A sequential scan on 500M rows takes seconds; an index on `last_login` uses a B-Tree to find the records in O(log N) time, reducing the query to milliseconds. If indexing doesn't work, upgrade the server RAM (vertical scaling). If read volume is too high, use a Read Replica. Only consider sharding when you exceed the storage capacity of the largest possible single machine or hit write-throughput limits that hardware cannot solve.
+
+</details>
+
+**Challenge 2 (Design):** A social media app uses MongoDB (NoSQL) for user profiles and posts. They want to add a billing system that deducts credits when a user buys a premium sticker. A developer suggests storing the `credit_balance` in MongoDB. What is the fundamental risk here?
+
+<details><summary>Answer</summary>
+
+MongoDB historically (and in its default high-throughput configurations) prioritizes AP (Availability/Partition Tolerance) and flexible schemas over strict ACID guarantees (though modern MongoDB supports multi-document transactions). The risk is **Consistency**. Financial transactions (deducting credits) require strict ACID properties to prevent race conditions (e.g., double-spending). For the billing system, you should use a **Relational SQL Database** (PostgreSQL) designed for strict CP consistency and transactional integrity, even if the rest of the app uses NoSQL. This is called **Polyglot Persistence**.
+
+</details>
 
 ## 4. Message Queues
 
@@ -176,6 +228,24 @@ Tools: Cloudflare, AWS CloudFront, Akamai
 
 ---
 
+🔬 **Section Challenge — 5. CDN (Content Delivery Network)**
+
+**Challenge 1 (Reasoning):** You deploy a new JS bundle to your server. CDN edge servers globally are still serving the old cached version. Walk through the two standard strategies to force cache invalidation.
+
+<details><summary>Answer</summary>
+
+1. **URL fingerprinting (best practice)**: include the file hash in the filename — `main.a3f7bc9.js` instead of `main.js`. When the file changes, the hash changes, the URL changes, CDN caches the new URL with a fresh TTL. Old cached URL expires naturally. This is what Webpack/Vite do automatically with `[contenthash]`. Zero TTL configuration needed. 2. **Cache purge API**: Cloudflare, CloudFront provide an API to invalidate specific files: `aws cloudfront create-invalidation --paths '/main.js'`. Takes 30-60 seconds to propagate globally. Use for emergency hotfixes when you can't change the URL. Avoid purging `/*` (all files) — it defeats the performance purpose of CDN and counts against your monthly purge limit (CloudFront = 1,000 free paths/month).
+
+</details>
+
+**Challenge 2 (Design):** Which of these should NOT be cached on a CDN: (a) product images, (b) `GET /api/users/me`, (c) React app bundle, (d) company logo? Explain each.
+
+<details><summary>Answer</summary>
+
+**(b) `GET /api/users/me` should NOT be cached on CDN.** (a) Product images ✅ — static, change rarely, perfect for CDN with long TTL + fingerprinted URL. (b) `/api/users/me` ❌ — user-specific private data. If CDN caches it, User B gets User A's data (catastrophic data leak). Even with `Cache-Control: private`, CDN misconfigurations cause leaks. Never cache authenticated API responses on shared CDN. (c) React bundle ✅ — fingerprinted filename, long TTL, identical for all users. (d) Company logo ✅ — static asset, rarely changes, huge benefit from edge caching. Rule: CDN caches public, user-agnostic content only.
+
+</details>
+
 # HOW: Design Patterns
 
 ## Microservices vs Monolith
@@ -206,6 +276,14 @@ MICROSERVICES:
 
 RULE: Start with monolith, extract microservices WHEN NEEDED
 ```
+
+🔬 **Section Challenge — Microservices vs Monolith**
+
+**Challenge 1 (Reasoning):** Service A calls Service B which calls Service C. C is slow. How does this cause a cascade failure?
+<details><summary>Answer</summary>
+
+Without circuit breakers: A has a thread pool for B calls. B is slow (waiting for C) → B responses are slow → A's thread pool fills with waiting threads → A's thread pool exhausted → A becomes slow for ALL callers, not just B-related ones. Cascade: C slow → B slow → A slow → entire system degraded. Fix: Resilience4j circuit breaker — after N failures, 'open' the circuit → fail fast with fallback response instead of waiting. Timeouts + bulkhead patterns to isolate failure.
+</details>
 
 ## CAP Theorem
 
@@ -245,6 +323,24 @@ So you choose: CP or AP.
 ```
 
 ---
+
+🔬 **Section Challenge — Rate Limiting Algorithms**
+
+**Challenge 1 (Trace):** Token bucket starts full at 10 tokens. Refill rate: 2 tokens/second. A client sends 10 requests in 1 second, then 3 more in the next second. Trace the token count and which requests are rejected.
+
+<details><summary>Answer</summary>
+
+T=0s: bucket = 10 tokens. Requests 1-10 consume all 10 tokens → all allowed. Bucket = 0. T=1s: 2 tokens refilled → bucket = 2. Requests 11-13 arrive: req 11 takes 1 token (bucket=1), req 12 takes 1 token (bucket=0), req 13 **rejected** (0 tokens). **Request 13 is rate-limited.** This is the token bucket's key property: it allows bursts up to bucket capacity, then throttles to the refill rate. A fixed-window limiter would allow ALL 3 requests at T=1s (new window resets the counter). Token bucket is more fair because sustained throughput is capped regardless of window boundaries.
+
+</details>
+
+**Challenge 2 (Design):** You implement rate limiting per-user with Redis. User makes 1000 req/s from 50 IPs (distributed botnet). Why does per-IP rate limiting fail here, and what is the correct key strategy?
+
+<details><summary>Answer</summary>
+
+Per-IP rate limiting fails because each of the 50 IPs sends only 20 req/s — well under a per-IP limit of, say, 100/s. The coordinated attack bypasses the limit. Correct strategy: **multi-level keys**. (1) **Per-user-ID key**: `ratelimit:user:42` — counts all requests from authenticated user 42 regardless of IP. A single user can't exceed 100 req/s even from 1000 IPs. (2) **Per-API-key key**: for unauthenticated endpoints. (3) **Per-IP key**: as a secondary layer to catch single-IP spammers. In Redis, use `INCR` + `EXPIRE` or sorted sets for sliding window. Layer all three: if any exceeds threshold, return 429. This is exactly how Stripe implements rate limiting.
+
+</details>
 
 # WHERE: System Design Template
 
@@ -315,6 +411,7 @@ Monitor       → Prometheus + Grafana + ELK Stack
 # 🏋️ Practice
 
 ## Exercise 1: URL Shortener
+
 ```
 Design a URL shortener (like bit.ly):
   - POST /shorten → returns short URL
@@ -329,6 +426,7 @@ Think about:
 ```
 
 ## Exercise 2: Chat Application
+
 ```
 Design a real-time chat system:
   - One-to-one messages
@@ -345,4 +443,4 @@ Think about:
 
 ---
 
-> **Next Chapter**: [Dev Tools & Productivity →](10_Dev_Tools_Productivity.md)
+**Next Chapter**: [Dev Tools & Productivity →](10_Dev_Tools_Productivity.md)

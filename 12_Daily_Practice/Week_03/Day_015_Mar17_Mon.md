@@ -1,3 +1,5 @@
+﻿> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_016_Mar18_Tue.md)
+
 # Day 015 — Monday, March 17, 2026
 
 > **Week 03** | **Day 1** | **Theme:** Binary Tree Fundamentals + DFS Intro + SQL UNION & CASE
@@ -14,9 +16,6 @@
 - [ ] Problem 2: LC 94 — Binary Tree Inorder Traversal (20 min)
 - [ ] Real-World Connection (10 min)
 - [ ] Self-Assessment (5 min)
-
----
-
 
 ---
 
@@ -39,7 +38,7 @@
 ### WHY?
 Every hierarchical structure in computing is a tree: file systems, DOM, organization charts, JSON, XML, database indexes (B-Trees). Trees are the bridge between linear structures (arrays, lists) and complex networks (graphs). If you only learn one non-linear data structure deeply, it should be the binary tree.
 
-### WHAT?
+### 📌 What?
 A **binary tree** is a tree where each node has at most **two children** (left, right).
 
 ```
@@ -60,6 +59,7 @@ A **binary tree** is a tree where each node has at most **two children** (left, 
     Size   = Total nodes = 6
 ```
 
+
 ### Tree Properties
 
 ```
@@ -72,6 +72,7 @@ Complete tree   All levels full except last (filled left→right)
 Perfect tree    All internal nodes have 2 children, all leaves same level
 Balanced tree   |height(left) - height(right)| ≤ 1 for every node
 ```
+
 
 ### HOW — Implementation
 
@@ -156,6 +157,7 @@ POSTORDER (Left → Right → Root):  4, 5, 2, 3, 1
   Use: Delete tree, evaluate expressions, calc directory sizes
 ```
 
+
 ### Memory Model — Call Stack Visualization
 
 ```
@@ -179,6 +181,7 @@ After returning from 4:
 │ preorder(1)  │  ← waiting for left subtree
 └──────────────┘
 ```
+
 
 ### HOW — Recursive (clean) vs Iterative (interview-ready)
 
@@ -278,6 +281,7 @@ employees:        contractors:      UNION result:
                                   └───────┘
 ```
 
+
 ### CASE WHEN — SQL's if/else
 
 ```sql
@@ -301,6 +305,7 @@ HOW CASE WORKS:
 
   Like a switch statement — exits after first match!
 ```
+
 
 ### Combining CASE with Aggregates
 
@@ -380,6 +385,7 @@ Step-by-step (iterative):
 Output: [1, 2, 3]
 ```
 
+
 ### Solution
 
 ```java
@@ -455,6 +461,7 @@ Call inorder(1):
 Output: [1, 3, 2]
 ```
 
+
 ### Solution — Iterative (Interview Gold)
 
 ```java
@@ -490,7 +497,7 @@ PATTERN TO MEMORIZE:
 
 ---
 
-## 6. REAL-WORLD CONNECTION
+## 📌 6. Real — World Connection
 
 ```
 WHERE YOU'LL SEE TREES:
@@ -520,6 +527,7 @@ WHERE YOU'LL SEE TREES:
    = (2 * 5) + 3 = 13  (postorder evaluation)
 ```
 
+
 ---
 
 ## Self-Assessment
@@ -536,3 +544,8 @@ WHERE YOU'LL SEE TREES:
 | CASE with aggregates (pivot) | ___ |
 
 **Target:** All 4+ before Week 3 ends.
+
+
+---
+
+> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_016_Mar18_Tue.md)

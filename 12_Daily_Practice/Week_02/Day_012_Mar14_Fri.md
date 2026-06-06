@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_011_Mar13_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_013_Mar15_Sat.md)
+
 # Day 012 - Friday, March 14, 2026
 
 > **Week 02** | **Difficulty:** MEDIUM | **Theme:** HashSet + Two Pointers + SQL Subqueries
@@ -14,9 +16,6 @@
 - [ ] SQL: Subqueries + EXISTS (40 min)
 - [ ] Q1: Coding problem 1 (20 min)
 - [ ] Q2: Coding problem 2 (20 min)
-
----
-
 
 ---
 
@@ -54,7 +53,7 @@ USE CASES:
   • Word dictionaries (is this word valid?)
 ```
 
-#### WHAT
+#### 📌 What
 
 ```
 HashSet is just HashMap<K, PRESENT> internally (value is a dummy constant).
@@ -66,6 +65,7 @@ remove(x)       O(1)      set.remove("apple")
 contains(x)     O(1)      set.contains("apple")
 size()          O(1)      set.size()
 ```
+
 
 ```java
 // Common patterns
@@ -112,25 +112,26 @@ TWO VARIANTS:
    Used for: remove duplicates, linked list cycle, partition
 
 ┌──────────────────────────────────────────────────────────┐
-│  OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array)    │
+│  OPPOSITE DIRECTION EXAMPLE: Two Sum II (sorted array)   │
 │  [2, 7, 11, 15]  target = 9                              │
-│   L→                ←R                                    │
-│   2 + 15 = 17 > 9  → move R left                        │
-│   2 + 11 = 13 > 9  → move R left                        │
-│   2 + 7  = 9  == 9  → FOUND! ✓                          │
+│   L→                ←R                                   │
+│   2 + 15 = 17 > 9  → move R left                         │
+│   2 + 11 = 13 > 9  → move R left                         │
+│   2 + 7  = 9  == 9  → FOUND! ✓                           │
 └──────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────┐
-│  SAME DIRECTION EXAMPLE: Remove Duplicates (sorted)       │
+│  SAME DIRECTION EXAMPLE: Remove Duplicates (sorted)      │
 │  [1, 1, 2, 2, 3]                                         │
-│   s  f                                                    │
-│   slow tracks "unique so far" position                    │
-│   fast scans ahead for next unique                        │
-│   Result: [1, 2, 3, _, _]  return slow+1 = 3            │
+│   s  f                                                   │
+│   slow tracks "unique so far" position                   │
+│   fast scans ahead for next unique                       │
+│   Result: [1, 2, 3, _, _]  return slow+1 = 3             │
 └──────────────────────────────────────────────────────────┘
 ```
 
-#### TEMPLATES
+
+#### 📐 Templates
 
 ```java
 // TEMPLATE 1: Opposite direction (sorted array)
@@ -226,6 +227,7 @@ WHY HashMap + HashSet?
   O(1) per transaction → can handle millions in real-time
   LinkedHashMap can auto-evict old entries (removeEldestEntry)
 ```
+
 
 ---
 
@@ -359,3 +361,8 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW (SAT): Spring Boot Day #2 — Dependency Injection Deep + SQL Practice
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_011_Mar13_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_013_Mar15_Sat.md)

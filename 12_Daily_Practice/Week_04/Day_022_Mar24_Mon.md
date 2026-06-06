@@ -1,3 +1,5 @@
+﻿> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_023_Mar25_Tue.md)
+
 # DAY 022 — Monday, March 24, 2026
 ## WEEK 04: Trie + Graph BFS/DFS + SQL Indexes
 
@@ -15,9 +17,6 @@
 | 1:20–1:40 | 20 min | REAL-WORLD: Autocomplete = Trie |
 | 1:40–2:20 | 40 min | SQL: Indexes — Why Queries Are Slow |
 | 2:20–3:00 | 40 min | PROBLEMS: Q1 + Q2 |
-
----
-
 
 ---
 
@@ -48,6 +47,7 @@ Trie approach:   Walk 3 nodes a→p→p → O(L) then collect children
 Trie = Tree where each edge is a CHARACTER
        Path from root = PREFIX
 ```
+
 
 ### WHAT: Trie Structure
 
@@ -219,6 +219,7 @@ Finding 'Smith': root → R (go right) → S is in R-U → leaf → found!
 Only 3 levels checked instead of 1M rows
 ```
 
+
 ### HOW: Create and Use Indexes
 
 ```sql
@@ -303,3 +304,5 @@ Output: 3
 - [ ] Can explain: "Why does an index make queries faster?"
 
 ---
+
+> **Navigation**: [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_023_Mar25_Tue.md)

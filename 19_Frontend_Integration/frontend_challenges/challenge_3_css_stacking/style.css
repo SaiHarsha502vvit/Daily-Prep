@@ -1,0 +1,242 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   CHALLENGE 3: CSS — The Stacking Context Trap
+   ═══════════════════════════════════════════════════════════════════════
+  
+   ┌──────────────────────────────────────────────────────────────────┐
+   │ WHY THIS CHALLENGE EXISTS                                        │
+   │                                                                  │
+   │ Every frontend developer at some point adds z-index: 99999 to    │
+   │ a modal and it STILL appears behind the header. They google it,  │
+   │ find "stacking context" and ignore it. Then it bites them again. │
+   │                                                                  │
+   │ If you understand stacking contexts, you understand how the      │
+   │ browser's compositor ACTUALLY decides what paints on top of what.│
+   │ This is hardware-level GPU compositing, not just CSS numbers.    │
+   └──────────────────────────────────────────────────────────────────┘
+  
+   ─── THE HIDDEN KNOWLEDGE ────────────────────────────────────────────
+  
+   1. WHAT A STACKING CONTEXT REALLY IS:
+  
+      The browser's rendering pipeline has a step called "compositing."
+      It creates LAYERS — actual GPU texture surfaces — for painting.
+      A stacking context is the CSS abstraction that controls which
+      elements get their own compositing layer and in what order.
+  
+      ┌──────────────────────────────────────────────────────────────┐
+      │  THE RENDERING PIPELINE                                      │
+      │                                                              │
+      │  HTML + CSS                                                  │
+      │    → DOM Tree + CSSOM Tree                                   │
+      │      → Render Tree (only visible elements)                   │
+      │        → Layout (box positions, sizes)                       │
+      │          → Paint (draw pixels for each layer)                │
+      │            → Composite (stack layers by z-order on GPU)      │
+      │                                                              │
+      │  Stacking contexts control the COMPOSITE step.               │
+      │  Each context = a group of layers that are ordered together. │
+      │  Children can only be reordered WITHIN their parent context. │
+      └──────────────────────────────────────────────────────────────┘
+  
+   2. ALL THE THINGS THAT CREATE A STACKING CONTEXT:
+  
+      Most developers only know about z-index. But these ALL create one:
+      - position: relative/absolute/fixed/sticky WITH a z-index != auto
+      - opacity < 1 (even 0.99!)
+      - transform (even transform: translateZ(0))
+      - filter (even filter: blur(0))
+      - will-change: transform (or any paint property)
+      - contain: paint or contain: layout
+      - isolation: isolate (DESIGNED specifically to force a new context)
+      - mix-blend-mode (anything other than "normal")
+  
+      This is why adding a CSS animation to a parent can suddenly
+      break z-index ordering of its children — the animation triggers
+      transform, which creates a new stacking context!
+  
+   3. THE z-index = auto vs z-index = 0 DIFFERENCE:
+  
+      z-index: auto → does NOT create a stacking context
+      z-index: 0    → DOES create a stacking context (even though 0 = nothing)
+  
+      This is the single most misunderstood line of CSS.
+      auto means "participate in PARENT's stacking context."
+      0 means "create my OWN stacking context with order 0."
+  
+   4. HOW THIS CONNECTS TO REACT COMPONENT ARCHITECTURE:
+  
+      In a real React app, you have:
+        <App>
+          <Header />          ← position: sticky + z-index: 10
+          <MainContent>       ← position: relative + z-index: 1 (THE TRAP)
+            <Dashboard />
+            <Modal />         ← z-index: 9999 — STILL BEHIND HEADER
+          </MainContent>
+        </App>
+  
+      The solution in production codebases: use React Portals.
+      ReactDOM.createPortal(modalJSX, document.body) renders the modal
+      OUTSIDE of MainContent's DOM tree entirely, escaping the
+      stacking context trap at the HTML level.
+  
+      But you should STILL understand the CSS fix, because:
+      - Not everything is React
+      - Portals have their own edge cases (event bubbling still follows React tree)
+      - Some third-party libraries force their own stacking contexts
+  
+   ─── DATA FLOW CONNECTION ─────────────────────────────────────────
+  
+   Modals are the #1 UI component that deals with data flow:
+  
+   ┌──────────────────────────────────────────────────────────────────┐
+   │  MODAL DATA FLOW IN A REAL APP                                   │
+   │                                                                  │
+   │  1. User clicks "Edit Profile" → opens modal                    │
+   │  2. Modal receives current data via props or context:            │
+   │       <Modal user={currentUser} />                               │
+   │  3. Modal has its own LOCAL state for the form inputs:           │
+   │       const [formData, setFormData] = useState(user)             │
+   │  4. User edits fields → formData updates (local state only)     │
+   │  5. User clicks "Save":                                         │
+   │       a. Serialize: JSON.stringify(formData)                     │
+   │       b. Send: fetch('/api/users', { method: 'PUT', body: ... })│
+   │       c. Backend: JSON → DTO → Entity → SQL UPDATE → Response   │
+   │       d. Response → update parent state → close modal           │
+   │  6. If modal is behind header, user can't click "Save"          │
+   │     → DATA NEVER REACHES THE BACKEND                            │
+   │                                                                  │
+   │  A CSS stacking bug = a data flow BLOCK.                        │
+   │  It's not "just CSS" — it's a broken user interaction pipeline. │
+   └──────────────────────────────────────────────────────────────────┘
+  
+   ═══════════════════════════════════════════════════════════════════════
+  
+   THE BUG:
+     .content has `position: relative` + `z-index: 1`.
+     This creates a stacking context with value 1.
+     The .modal-wrapper is INSIDE .content, so it's trapped at level 1.
+     The .header has z-index: 10, which is higher than 1.
+     Therefore: header (10) > content (1) > modal (stuck at 1).
+  
+     No matter how high you set the modal's z-index, it will
+     NEVER escape .content's stacking context of 1.
+  
+   YOUR MISSION:
+     Fix the CSS so the modal appears on top of the sticky header.
+  
+   CONSTRAINTS:
+     ❌ You CANNOT change the z-index of .modal (must stay at 5)
+     ❌ You CANNOT change the z-index of .header (must stay at 10)
+     ❌ You CANNOT move the modal out of .content in the HTML
+     ✅ You CAN modify .content's CSS properties
+     ✅ You CAN modify .modal-wrapper's CSS properties
+  
+   HINTS:
+     - What CSS property on .content is creating the stacking context?
+     - Can you remove it without breaking the layout?
+     - Or: position:fixed creates a stacking context at the ROOT level.
+       Can you use this to break free?
+  
+   ═══════════════════════════════════════════════════════════════════════ */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  height: 300vh; /* Makes the page very tall for scrolling */
+  background: #f0f0f0;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  background: #1a1a2e;
+  color: white;
+  padding: 1rem 2rem;
+  z-index: 10; /* ❌ DO NOT CHANGE THIS */
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+.content {
+  position: relative;
+  padding: 2rem;
+  z-index: 1; /* ⚠️ THIS IS THE TRAP! This creates a stacking context. */
+  
+  /* ─── YOUR FIX GOES HERE ─────────────────────────────────────────
+     
+     Option A: Change z-index to `auto`.
+       auto does NOT create a stacking context.
+       The children can now participate in the root stacking context.
+       Test: does the layout break? (Probably not — z-index: 1 on
+       .content was likely unnecessary in the first place.)
+     
+     Option B: Remove `position: relative` entirely.
+       Without position, z-index has NO EFFECT (z-index only works
+       on positioned elements). No position + no z-index = no context.
+       But: any absolutely positioned children of .content will now
+       be positioned relative to the next positioned ancestor.
+     
+     Option C: Remove the z-index line entirely.
+       position: relative WITHOUT z-index does NOT create a context.
+       You keep the positioning for child elements, but break free
+       of the stacking trap.
+     
+     Try each option and observe the difference in DevTools.
+     
+     ─────────────────────────────────────────────────────────────── */
+}
+
+.modal-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  /* ─── OR YOUR FIX GOES HERE ──────────────────────────────────────
+     
+     If .content's stacking context is removed (Option A/B/C above),
+     then this modal-wrapper with position:fixed participates in the
+     ROOT stacking context. Even without an explicit z-index, it
+     paints after .header in DOM order, so it appears on top.
+     
+     If you CAN'T remove .content's stacking context (maybe other
+     elements depend on it), you have a second strategy:
+     
+     Give .modal-wrapper its own z-index: 11 (higher than header's 10).
+     position: fixed + z-index creates a stacking context at the
+     ROOT level, REGARDLESS of what its parent's context is.
+     
+     Wait — but I said children can't escape their parent's context.
+     That's true for position: relative/absolute. But position: fixed
+     elements are positioned relative to the VIEWPORT, not their parent.
+     The spec says fixed elements form their stacking context at root
+     level... UNLESS their parent has a transform, filter, or perspective
+     (which creates a new "containing block" — another CSS trap!).
+     
+     ─────────────────────────────────────────────────────────────── */
+}
+
+.modal {
+  background: white;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  max-width: 500px;
+  text-align: center;
+  z-index: 5; /* ❌ DO NOT CHANGE THIS */
+}
+
+.modal h2 {
+  margin-bottom: 1rem;
+  color: #c0392b;
+}
+
+.modal p {
+  margin: 0.5rem 0;
+  color: #333;
+  line-height: 1.6;
+}

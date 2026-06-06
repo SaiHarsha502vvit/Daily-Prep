@@ -40,10 +40,10 @@
 ║   ├─────────────────────────────────────────────────────────────────────────────┤║
 ║   │  🧪 PROBLEM SOLVING                                                         │║
 ║   │  ─────────────────────                                                      │║
-║   │  05_Problem_Solving/01_Practice_Problems.md → 210+ problems (MAIN!)         │║
-║   │  05_Problem_Solving/02_Edge_Cases.md → Edge case handling                   │║
-║   │  05_Problem_Solving/03_Common_Mistakes.md → Mistakes to avoid               │║
-║   │  05_Problem_Solving/04_Problem_Origins.md → Real-world origins              │║
+║   │  05_Problem_Solving/01_Intro_Checklist.md → 210+ problems (MAIN!)         │║
+║   │  05_Problem_Solving/23_Edge_Cases.md → Edge case handling                   │║
+║   │  05_Problem_Solving/24_Common_Mistakes.md → Mistakes to avoid               │║
+║   │  05_Problem_Solving/25_Problem_Origins.md → Real-world origins              │║
 ║   ├─────────────────────────────────────────────────────────────────────────────┤║
 ║   │  🏗️ OOP & DESIGN                                                            │║
 ║   │  ───────────────────                                                        │║
@@ -54,21 +54,21 @@
 ║   ├─────────────────────────────────────────────────────────────────────────────┤║
 ║   │  ☕ MODERN JAVA                                                             │║
 ║   │  ─────────────────                                                          │║
-║   │  07_Modern_Java/01_Functional_Programming.md → Streams, Lambdas             │║
+║   │  07_Modern_Java/Ch06_Functional_Programming.md → Streams, Lambdas             │║
 ║   │  07_Modern_Java/02_Algorithm_Engineering.md → Optimization                  │║
 ║   ├─────────────────────────────────────────────────────────────────────────────┤║
 ║   │  🗄️ SQL & DATABASE                                                          │║
 ║   │  ──────────────────                                                         │║
-║   │  08_SQL_Database/01_SQL_Complete_Guide.md → Complete SQL (6000+ lines)      │║
+║   │  08_SQL/01_SQL_Complete_Guide.md → Complete SQL (6000+ lines)      │║
 ║   ├─────────────────────────────────────────────────────────────────────────────┤║
 ║   │  💼 CAREER & REFERENCE                                                      │║
 ║   │  ──────────────────────                                                     │║
 ║   │  09_Career_Reference/01_Career_Guide.md → Career development                │║
 ║   │  09_Career_Reference/02_Ultimate_DSA_Guide.md → MASTER REFERENCE            │║
-║   │  09_Career_Reference/03_Quick_Reference.md → Quick revision                 │║
-║   │  09_Career_Reference/04_Brain_Psychology.md → Learning psychology           │║
-║   │  09_Career_Reference/05_Daily_Habits_Tracking.md → Habit tracking           │║
-║   │  09_Career_Reference/06_Resources_Links.md → External resources             │║
+║   │  09_Career_Reference/11_Quick_Reference.md → Quick revision                 │║
+║   │  09_Career_Reference/12_Brain_Psychology.md → Learning psychology           │║
+║   │  09_Career_Reference/13_Daily_Habits_Tracking.md → Habit tracking           │║
+║   │  09_Career_Reference/14_Resources_Links.md → External resources             │║
 ║   └─────────────────────────────────────────────────────────────────────────────┘║
 ║                                                                                   ║
 ║   📁 Other: JavaSolutions/, practice/, _archive/ (old files)                     ║
@@ -80,7 +80,7 @@
 
 ### **🚨 #1: Practice Problems (210+ Problems)**
 
-**File:** [05_Problem_Solving/01_Practice_Problems.md](../05_Problem_Solving/01_Practice_Problems.md)
+**File:** [05_Problem_Solving/01_Intro_Checklist.md](../05_Problem_Solving/01_Intro_Checklist.md)
 
 **This is your main practice resource with:**
 
@@ -172,7 +172,7 @@
 
 1. Follow [02_Study_Plan_Calendar.md](02_Study_Plan_Calendar.md) week by week
 2. Start with Data Structures, move to Algorithms
-3. Practice problems from [05_Problem_Solving/01_Practice_Problems.md](../05_Problem_Solving/01_Practice_Problems.md)
+3. Practice problems from [05_Problem_Solving/01_Intro_Checklist.md](../05_Problem_Solving/01_Intro_Checklist.md)
 4. End with SQL mastery
 
 ### If You Have 4 Weeks:
@@ -198,7 +198,7 @@
 
 ### If You Have 1 Day:
 
-1. Read [09_Career_Reference/03_Quick_Reference.md](../09_Career_Reference/03_Quick_Reference.md)
+1. Read [09_Career_Reference/11_Quick_Reference.md](../09_Career_Reference/11_Quick_Reference.md)
 2. Focus on array/string problems only
 3. Practice input validation
 4. Review common mistakes
@@ -214,7 +214,7 @@
 ║                                                                           ║
 ║   Boundary conditions ──► 04_Patterns_Templates/01_Sliding_Window.md     ║
 ║                                                                           ║
-║   Input validation ─────► 09_Career_Reference/03_Quick_Reference.md      ║
+║   Input validation ─────► 09_Career_Reference/11_Quick_Reference.md      ║
 ║                                                                           ║
 ║   Pattern recognition ──► 04_Patterns_Templates/04_Pattern_Recognition.md║
 ║                                                                           ║
@@ -222,11 +222,11 @@
 ║                                                                           ║
 ║   Syntax errors ────────► 04_Patterns_Templates/02_Code_Templates.md     ║
 ║                                                                           ║
-║   Need practice ────────► 05_Problem_Solving/01_Practice_Problems.md     ║
+║   Need practice ────────► 05_Problem_Solving/01_Intro_Checklist.md     ║
 ║                                                                           ║
-║   Edge cases ───────────► 05_Problem_Solving/02_Edge_Cases.md            ║
+║   Edge cases ───────────► 05_Problem_Solving/23_Edge_Cases.md            ║
 ║                                                                           ║
-║   Common mistakes ──────► 05_Problem_Solving/03_Common_Mistakes.md       ║
+║   Common mistakes ──────► 05_Problem_Solving/24_Common_Mistakes.md       ║
 ║                                                                           ║
 ╚═══════════════════════════════════════════════════════════════════════════╝
 ```
@@ -239,7 +239,7 @@
 
 1. Read [04_Patterns_Templates/01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md) — count-based approach
 2. Study "Boundary Traps" in [04_Patterns_Templates/02_Code_Templates.md](../04_Patterns_Templates/02_Code_Templates.md)
-3. Practice sliding window problems from [05_Problem_Solving/01_Practice_Problems.md](../05_Problem_Solving/01_Practice_Problems.md)
+3. Practice sliding window problems from [05_Problem_Solving/01_Intro_Checklist.md](../05_Problem_Solving/01_Intro_Checklist.md)
 
 **Time Required:** 3-4 hours
 
@@ -251,8 +251,8 @@
 
 **Solution Path:**
 
-1. Memorize validation template from [09_Career_Reference/03_Quick_Reference.md](../09_Career_Reference/03_Quick_Reference.md)
-2. Review [05_Problem_Solving/02_Edge_Cases.md](../05_Problem_Solving/02_Edge_Cases.md)
+1. Memorize validation template from [09_Career_Reference/11_Quick_Reference.md](../09_Career_Reference/11_Quick_Reference.md)
+2. Review [05_Problem_Solving/23_Edge_Cases.md](../05_Problem_Solving/23_Edge_Cases.md)
 3. Practice with validation on every problem
 
 **Time Required:** 1-2 hours
@@ -267,7 +267,7 @@
 
 1. Study [04_Patterns_Templates/04_Pattern_Recognition.md](../04_Patterns_Templates/04_Pattern_Recognition.md)
 2. Read [04_Patterns_Templates/05_LeetCode_RealWorld_Map.md](../04_Patterns_Templates/05_LeetCode_RealWorld_Map.md)
-3. Practice categorized problems from [05_Problem_Solving/01_Practice_Problems.md](../05_Problem_Solving/01_Practice_Problems.md)
+3. Practice categorized problems from [05_Problem_Solving/01_Intro_Checklist.md](../05_Problem_Solving/01_Intro_Checklist.md)
 
 **Time Required:** 4-5 hours
 
@@ -279,7 +279,7 @@
 ╔══════════════════════════════════════════════════════════════════════════════╗
 ║       SCIENTIFICALLY-PROVEN TECHNIQUES FOR EFFECTIVE LEARNING                 ║
 ║                                                                               ║
-║  Detailed guide: 09_Career_Reference/04_Brain_Psychology.md                  ║
+║  Detailed guide: 09_Career_Reference/12_Brain_Psychology.md                  ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -342,7 +342,7 @@
 | `05_Problem_Solving/`    | Practice (210+ problems) | Daily practice           |
 | `06_OOP_Design/`         | Design & architecture    | Week 6-8                 |
 | `07_Modern_Java/`        | Advanced Java            | Week 7-8                 |
-| `08_SQL_Database/`       | SQL mastery              | Week 9-12                |
+| `08_SQL/`       | SQL mastery              | Week 9-12                |
 | `09_Career_Reference/`   | Quick refs & career      | Always                   |
 
 ---
@@ -359,11 +359,11 @@
 ║  • Understand concepts, take notes                                       ║
 ║                                                                          ║
 ║  AFTERNOON (2-3 hours):                                                  ║
-║  • Solve 3-5 problems from 05_Problem_Solving/01_Practice_Problems.md    ║
+║  • Solve 3-5 problems from 05_Problem_Solving/01_Intro_Checklist.md    ║
 ║  • Use templates from 04_Patterns_Templates/ as reference                ║
 ║                                                                          ║
 ║  EVENING (1 hour):                                                       ║
-║  • Review edge cases (05_Problem_Solving/02_Edge_Cases.md)               ║
+║  • Review edge cases (05_Problem_Solving/23_Edge_Cases.md)               ║
 ║  • Quick revision of day's learning                                      ║
 ║                                                                          ║
 ║  BEFORE SLEEP (15 min):                                                  ║
@@ -380,7 +380,7 @@
 ### Recommended First Steps:
 
 1. **Read** [02_Study_Plan_Calendar.md](02_Study_Plan_Calendar.md) for the full roadmap
-2. **Bookmark** [05_Problem_Solving/01_Practice_Problems.md](../05_Problem_Solving/01_Practice_Problems.md) for daily practice
+2. **Bookmark** [05_Problem_Solving/01_Intro_Checklist.md](../05_Problem_Solving/01_Intro_Checklist.md) for daily practice
 3. **Reference** [09_Career_Reference/02_Ultimate_DSA_Guide.md](../09_Career_Reference/02_Ultimate_DSA_Guide.md) when stuck
 4. **Start coding** with [JavaSolutions/](../JavaSolutions/) examples
 

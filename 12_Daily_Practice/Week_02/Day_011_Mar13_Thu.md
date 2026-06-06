@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_010_Mar12_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_012_Mar14_Fri.md)
+
 # Day 011 - Thursday, March 13, 2026
 
 > **Week 02** | **Difficulty:** MEDIUM | **Theme:** Queue & Deque + HashMap + SQL JOINs Part 1
@@ -14,9 +16,6 @@
 - [ ] SQL: INNER JOIN & LEFT JOIN (40 min)
 - [ ] Q1: Coding problem 1 (20 min)
 - [ ] Q2: Coding problem 2 (20 min)
-
----
-
 
 ---
 
@@ -70,6 +69,7 @@ Java:
   Queue methods:  offer(x), poll(), peek()
   Deque methods:  offerFirst(x), offerLast(x), pollFirst(), pollLast()
 ```
+
 
 #### IMPLEMENT: Circular Queue (Array-based)
 
@@ -127,36 +127,38 @@ HashMap converts ANY key into an array index using a hash function.
 RESULT: O(1) average for get/put/contains
 ```
 
+
 #### HOW: Internal Mechanism
 
 ```
 ┌────────────────────────────────────────────────────────────────┐
 │  HashMap INTERNALS (Java 8+)                                   │
-│                                                                 │
-│  1. Key → hashCode() → index = hash % capacity                │
-│                                                                 │
+│                                                                │
+│  1. Key → hashCode() → index = hash % capacity                 │
+│                                                                │
 │  2. Array of buckets:                                          │
 │     [0] → null                                                 │
-│     [1] → ("apple",5) → ("kiwi",3) → null    ← COLLISION!   │
-│     [2] → ("banana",7) → null                                 │
+│     [1] → ("apple",5) → ("kiwi",3) → null    ← COLLISION!      │
+│     [2] → ("banana",7) → null                                  │
 │     [3] → null                                                 │
 │     ...                                                        │
-│                                                                 │
-│  3. COLLISION HANDLING:                                         │
-│     ≤ 8 entries in bucket → Linked List (O(n) worst case)     │
-│     > 8 entries in bucket → Red-Black Tree (O(log n))         │
+│                                                                │
+│  3. COLLISION HANDLING:                                        │
+│     ≤ 8 entries in bucket → Linked List (O(n) worst case)      │
+│     > 8 entries in bucket → Red-Black Tree (O(log n))          │
 │     This is why Java 8 HashMap is better than Java 7!          │
-│                                                                 │
+│                                                                │
 │  4. LOAD FACTOR = 0.75                                         │
-│     When 75% full → resize to 2x capacity → rehash all keys   │
+│     When 75% full → resize to 2x capacity → rehash all keys    │
 │     Rehashing is O(n) but amortized over many operations       │
-│                                                                 │
-│  COMPLEXITY:                                                    │
+│                                                                │
+│  COMPLEXITY:                                                   │
 │    Average: O(1) for get/put/remove                            │
 │    Worst:   O(log n) per bucket (tree) or O(n) (pathological)  │
 │    Space:   O(n)                                               │
 └────────────────────────────────────────────────────────────────┘
 ```
+
 
 #### Common HashMap Patterns
 
@@ -200,6 +202,7 @@ Input:  "loveleetcode" → Output: 2 (first unique = 'v')
 APPROACH: HashMap for frequency + scan for first with count==1
 ```
 
+
 ```java
 public int firstUniqChar(String s) {
     Map<Character, Integer> freq = new HashMap<>();
@@ -240,6 +243,7 @@ WHY Queue? Oldest timestamps naturally at front → easy to clean up.
 WHY HashMap? O(1) lookup of each user's queue.
 ```
 
+
 ---
 
 ## BLOCK 5: SQL (40 min)
@@ -263,6 +267,7 @@ departments: dept_id | dept_name
 
 To see "Alice works in Engineering" → you need a JOIN.
 ```
+
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════
@@ -370,6 +375,7 @@ pop() → returns 1
   outStack: [3, 2]
 ```
 
+
 ```java
 class MyQueue {
     Deque<Integer> inStack = new ArrayDeque<>();
@@ -413,3 +419,8 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW'S PREVIEW: HashSet + Two Pointers technique + SQL Subqueries
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_010_Mar12_Wed.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_012_Mar14_Fri.md)

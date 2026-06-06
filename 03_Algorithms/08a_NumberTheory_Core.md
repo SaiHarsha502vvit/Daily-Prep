@@ -1,4 +1,4 @@
-> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](08b_NumberTheory_Advanced.md)
+﻿> **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next Chapter >](08b_NumberTheory_Advanced.md)
 
 ---
 
@@ -8,26 +8,24 @@
 
 ---
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║  WHY THIS FILE EXISTS                                                            ║
-║                                                                                   ║
-║  GCD, LCM, Primes, Modular Arithmetic → appear in:                              ║
-║  • 40% of coding interviews (number theory questions)                            ║
-║  • Encryption systems (RSA uses GCD, primes, modular exponentiation)             ║
-║  • Database sharding (hash % shard_count needs coprime understanding)            ║
-║  • Load balancing algorithms                                                     ║
-║  • Game development (timing, frequencies)                                        ║
-║  • Pattern programs → builds loop thinking essential for ALL DSA                 ║
-║                                                                                   ║
-║  START DATE: February 10, 2026                                                   ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+> WHY THIS FILE EXISTS
+>
+> GCD, LCM, Primes, Modular Arithmetic → appear in:
+> - 40% of coding interviews (number theory questions)
+> - Encryption systems (RSA uses GCD, primes, modular exponentiation)
+> - Database sharding (hash % shard_count needs coprime understanding)
+> - Load balancing algorithms
+> - Game development (timing, frequencies)
+> - Pattern programs → builds loop thinking essential for ALL DSA
+>
+> START DATE: February 10, 2026
 
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 1: GCD (Greatest Common Divisor) - COMPLETE
+
 # ═══════════════════════════════════════════════════════════
 
 ## 🎯 WHY GCD Matters
@@ -48,6 +46,7 @@ Database has 120 shards, you want to reorganize into fewer groups
 Each group must have equal number of shards
 Maximum groups possible? GCD helps!
 ```
+
 
 ---
 
@@ -212,6 +211,20 @@ public static int binaryGCD(int a, int b) {
 ```
 
 ---
+
+🔬 **Section Challenge — Algorithm 4: Binary GCD (Stein's Algorithm)**
+
+**Challenge 1 (Bit-Level Reasoning):** Binary GCD replaces division/modulo with shifts and subtraction. Why can this be faster, and what edge cases must your implementation handle?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** If both numbers are even, `gcd(a, b) = 2 * gcd(a/2, b/2)`. If one number is even, remove its factor of two. If both are odd, subtract the smaller from the larger and continue.
+
+**Reasoning:** Shifts and subtraction are cheaper than repeated modulo on some systems, especially for large integer arithmetic. The algorithm preserves common factors while reducing the numbers toward equality.
+
+**Debug/Fix:** Normalize negatives if allowed, handle `gcd(0, b) = |b|`, handle `gcd(0, 0)` according to the problem statement, and track the common power of two so it can be restored at the end.
+
+</details>
 
 ## LCM (Least Common Multiple)
 
@@ -434,7 +447,9 @@ public static int countCoprimePairs(int[] arr) {
 ---
 
 # ═══════════════════════════════════════════════════════════
-# PART 2: PRIME NUMBERS - COMPLETE
+
+# 📚 Part 2: Prime Numbers — Complete
+
 # ═══════════════════════════════════════════════════════════
 
 ## Why Primes Matter
@@ -665,8 +680,24 @@ public static List<Integer> getAllDivisors(int n) {
 
 ---
 
+🔬 **Section Challenge — Problem P4: Count Divisors Using Prime Factorization**
+
+**Challenge 1 (Formula Reasoning):** Why does `n = p1^a * p2^b * p3^c` have `(a + 1)(b + 1)(c + 1)` divisors, and how do constraints decide the factorization method?
+
+<details><summary>Trace, Reasoning & Debug</summary>
+
+**Trace:** Every divisor chooses an exponent for each prime: `p1` can be used `0..a` times, `p2` can be used `0..b` times, and so on. The choices are independent, so multiply the counts.
+
+**Reasoning:** The formula is combinatorics over prime exponents. The algorithmic question is how fast you can get those exponents: trial division for small `sqrt(n)`, SPF sieve for many queries with bounded `n`, or stronger primality/factorization tools for huge numbers.
+
+**Debug/Fix:** Divide `n` completely by each found prime, count exponents, and if the remaining `n > 1`, it contributes exponent `1`. For many queries, precompute smallest prime factor once.
+
+</details>
+
 # ═══════════════════════════════════════════════════════════
-# PART 3: MODULAR ARITHMETIC
+
+# 📌 Part 3: Modular Arithmetic
+
 # ═══════════════════════════════════════════════════════════
 
 ```
@@ -678,6 +709,7 @@ WHY MODULAR ARITHMETIC?
 4. Circular data structures (circular queue: index % capacity)
 5. Clock arithmetic (14:00 → 2:00 PM = 14 % 12)
 ```
+
 
 ```java
 /**
@@ -766,24 +798,27 @@ public class ModularArithmetic {
 ---
 
 # ═══════════════════════════════════════════════════════════
+
 # PART 4: PATTERN PROGRAMS ⭐ (Loop Mastery)
+
 # ═══════════════════════════════════════════════════════════
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║  WHY PATTERN PROGRAMS?                                                        ║
-║                                                                                ║
-║  "Pattern programs are NOT just for beginners" - Every Senior Dev              ║
-║                                                                                ║
-║  They teach:                                                                   ║
-║  1. Nested loop thinking → Essential for 2D arrays, matrices                   ║
-║  2. Index relationships → The KEY to solving any grid problem                  ║
-║  3. Space management → Teaches precision with boundaries                       ║
-║  4. How to convert visual output to code logic                                 ║
-║                                                                                ║
-║  REAL USE: Table formatting, report generation, ASCII art for CLIs             ║
+║  WHY PATTERN PROGRAMS?                                                       ║
+║                                                                              ║
+║  "Pattern programs are NOT just for beginners" - Every Senior Dev            ║
+║                                                                              ║
+║  They teach:                                                                 ║
+║  1. Nested loop thinking → Essential for 2D arrays, matrices                 ║
+║  2. Index relationships → The KEY to solving any grid problem                ║
+║  3. Space management → Teaches precision with boundaries                     ║
+║  4. How to convert visual output to code logic                               ║
+║                                                                              ║
+║  REAL USE: Table formatting, report generation, ASCII art for CLIs           ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```
+
 
 ### Pattern 1: Right Triangle
 
@@ -1177,3 +1212,7 @@ public static String zigzagConvert(String s, int numRows) {
 ---
 
 # ═══════════════════════════════════════════════════════════
+
+---
+
+> **Navigation**: [< Previous](07b_Advanced_DS_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08b_NumberTheory_Advanced.md)

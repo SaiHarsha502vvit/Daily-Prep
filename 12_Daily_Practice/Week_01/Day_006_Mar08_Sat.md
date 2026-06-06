@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_005_Mar07_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_007_Mar09_Sun.md)
+
 # Day 006 - Saturday, March 8, 2026
 
 > **Week 01** | **WEEKEND** | **Theme:** Spring Boot Foundations + SQL Practice + Review
@@ -35,6 +37,7 @@ AFTER Spring Boot:
   4. Run it
   → "Hello World" in 5 MINUTES
 ```
+
 
 #### WHO uses Spring Boot?
 
@@ -79,6 +82,7 @@ WHY layers?
   - Maintainability (change database without touching controller)
 ```
 
+
 ### Part 2: Core Concepts (30 min)
 
 #### IoC (Inversion of Control) and DI (Dependency Injection)
@@ -111,6 +115,7 @@ IoC CONTAINER:
     MENU (annotations) = @Component, @Service, @Repository
     ORDER (injection) = @Autowired, constructor injection
 ```
+
 
 #### Annotations you must know
 
@@ -180,6 +185,7 @@ STEP 2: Project structure generated:
         static/                     ← Frontend files
         templates/                  ← HTML templates
 ```
+
 
 #### Complete Hello World API
 
@@ -279,6 +285,7 @@ GET http://localhost:8080/api/products
 GET http://localhost:8080/api/products/1
   → Returns: {"id": 1, "name": "Laptop", "price": 999.99}
 ```
+
 
 ---
 
@@ -436,3 +443,8 @@ Sunday:    Review + weak spot practice
 > **Mentor Note:** Rate yourself honestly. If any topic is below 3, spend 
 > tomorrow's review time re-reading that section and solving the problem AGAIN 
 > without looking at the solution. Struggle leads to learning.
+
+
+---
+
+> **Navigation**: [< Previous](Day_005_Mar07_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_007_Mar09_Sun.md)

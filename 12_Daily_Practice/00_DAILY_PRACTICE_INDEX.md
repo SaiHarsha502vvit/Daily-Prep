@@ -1,3 +1,5 @@
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)
+
 # Daily Practice System - Master Index
 
 > **Start Date:** March 3, 2026 | **Style:** MIT/KTH Academic
@@ -76,6 +78,8 @@ Week 11:   HARD       (Integration, system thinking)
 
 ## Week Folders
 
+- [15-Day Pattern Sprint Index](15_DAY_PATTERN_SPRINT_INDEX.md) - Focused arrays-to-DP sprint with 4 problems/day and full Java solutions
+
 - [Week 01](Week_01/) - Mar 3-9: Arrays + Sorting + SQL Foundations
 - [Week 02](Week_02/) - Mar 10-16: LinkedList, Stack, Queue, HashMap, HashSet + MergeSort, QuickSort, Binary Search, Two Pointers + SQL WHERE→Subqueries + Spring Boot DI
 - [Week 03](Week_03/) - Mar 17-23: Binary Tree, BST, Heap + DFS, BFS, Backtracking, Sliding Window + SQL Window Functions, CTEs + Spring REST + Error Handling
@@ -89,12 +93,17 @@ Each daily file links to these study materials:
 
 | Topic Area | Files to Read |
 |-----------|---------------|
-| Arrays | [02_Data_Structures/01_DataStructures_Complete.md](../02_Data_Structures/01_DataStructures_Complete.md) |
-| Sorting | [03_Algorithms/02_Sorting_Algorithms.md](../03_Algorithms/02_Sorting_Algorithms.md) |
+| Arrays | [02_Data_Structures/01a_Memory_Foundations.md](../02_Data_Structures/01a_Memory_Foundations.md) |
+| Sorting | [03_Algorithms/02a_Sorting_Fundamentals.md](../03_Algorithms/02a_Sorting_Fundamentals.md) |
 | Two Pointers | [04_Patterns_Templates/07_Two_Pointers_Complete.md](../04_Patterns_Templates/07_Two_Pointers_Complete.md) |
 | Sliding Window | [04_Patterns_Templates/01_Sliding_Window.md](../04_Patterns_Templates/01_Sliding_Window.md) |
 | SQL Foundations | [08_SQL/01_Foundations_Database_Basics.md](../08_SQL/01_Foundations_Database_Basics.md) |
-| Problems: Arrays | [05_Problem_Solving/04_Problems_Arrays.md](../05_Problem_Solving/04_Problems_Arrays.md) |
-| Problems: Sliding Window | [05_Problem_Solving/05_Problems_Sliding_Window.md](../05_Problem_Solving/05_Problems_Sliding_Window.md) |
-| Problems: Two Pointers | [05_Problem_Solving/06_Problems_Two_Pointers.md](../05_Problem_Solving/06_Problems_Two_Pointers.md) |
-| Spring Boot | [07_Modern_Java/00_SPRING_BOOT_ROADMAP.md](../07_Modern_Java/00_SPRING_BOOT_ROADMAP.md) |
+| Problems: Arrays | [05_Problem_Solving/04_Arrays.md](../05_Problem_Solving/04_Arrays.md) |
+| Problems: Sliding Window | [05_Problem_Solving/05_Sliding_Window.md](../05_Problem_Solving/05_Sliding_Window.md) |
+| Problems: Two Pointers | [05_Problem_Solving/06_Two_Pointers.md](../05_Problem_Solving/06_Two_Pointers.md) |
+| Spring Boot | [07_Modern_Java/Ch24_Spring_Boot_Roadmap.md](../07_Modern_Java/Ch24_Spring_Boot_Roadmap.md) |
+
+
+---
+
+> **Navigation**: [Back to Index](../00_MASTER_INDEX.md)

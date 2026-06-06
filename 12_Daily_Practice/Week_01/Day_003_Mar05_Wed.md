@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_002_Mar04_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_004_Mar06_Thu.md)
+
 # Day 003 - Wednesday, March 5, 2026
 
 > **Week 01** | **Difficulty:** EASY | **Theme:** Strings + Bubble Sort + SQL DDL
@@ -49,6 +51,7 @@ String Pool (special memory area):
   
   RULE: ALWAYS use .equals() for String comparison, NEVER ==
 ```
+
 
 #### HOW: Essential String operations
 
@@ -153,6 +156,7 @@ Pass 4:
   (1,2) → ok:   [1, 2, 3, 5, 8]  ← DONE
 ```
 
+
 #### Optimized Bubble Sort (early termination)
 
 ```java
@@ -204,6 +208,7 @@ Two strings are anagrams if they contain the same characters in different order.
 "hello" and "world"   → false
 "anagram" and "nagaram" → true
 ```
+
 
 **Three approaches:**
 1. Sort both, compare → O(n log n)
@@ -399,7 +404,7 @@ DROP TABLE products;
 ```
 </details>
 
-> **Read more:** [08_SQL/03_DDL_CreateAlterDrop.md](../../08_SQL/03_DDL_CreateAlterDrop.md)
+> **Read more:** [08_SQL/03_DDL_Creating_Structure.md](../../08_SQL/03_DDL_Creating_Structure.md)
 
 ---
 
@@ -506,3 +511,8 @@ public int firstUniqChar(String s) {
 > **Mentor Note:** The frequency array pattern (int[26] for lowercase) is one of 
 > the most reusable tricks in string problems. Master it — it appears in 15+ 
 > LeetCode problems.
+
+
+---
+
+> **Navigation**: [< Previous](Day_002_Mar04_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_004_Mar06_Thu.md)

@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_019_Mar21_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_021_Mar23_Sun.md)
+
 # Day 020 — Saturday, March 22, 2026
 
 > **Week 03** | **Day 6 (Weekend)** | **Theme:** Spring Boot REST Controllers + Error Handling + SQL Practice
@@ -14,14 +16,11 @@
 
 ---
 
-
----
-
 > ## 📖 CHAPTER REFERENCES — Deep Dive Links
 >
 > Today's topics link to detailed chapter files for deeper study:
 >
-> | **Spring Boot: REST Controllers + Validation** | [Spring Boot: Controllers & REST](../../07_Modern_Java/09_Spring_Boot_Part7_Controllers_REST.md) |
+> | **Spring Boot: REST Controllers + Validation** | [Spring Boot: Controllers & REST](../../07_Modern_Java/Ch37_SB_Controllers_REST.md) |
 > | **SQL: Mixed Drills** | [SQL: JOINs Complete](../../08_SQL/07_JOINs_Complete.md) |
 >
 > *Open the linked file for full theory, diagrams, and practice problems.*
@@ -54,6 +53,7 @@ CLIENT (Browser/Mobile/Postman)
 │  PostgreSQL / MySQL                   │
 └───────────────────────────────────────┘
 ```
+
 
 ### Complete CRUD REST Controller
 
@@ -134,6 +134,7 @@ public class ProductController {
 │ DELETE  │ Delete     │ /products/1  │ 204 No Content   │
 └─────────┴────────────┴──────────────┴──────────────────┘
 ```
+
 
 ### DTO Pattern (Don't Expose Entities!)
 
@@ -430,6 +431,7 @@ Spring Boot:
   @Valid + @RestControllerAdvice = clean error handling
 ```
 
+
 ---
 
 ## Self-Assessment: Week 3 Scorecard
@@ -453,3 +455,8 @@ Error Handling            [ ]      [ ]          [ ]
 SCORE: ___ / 39 (13 × 3)
 TARGET: 26+ before moving to Week 4
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_019_Mar21_Fri.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_021_Mar23_Sun.md)

@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_025_Mar27_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_027_Mar29_Sat.md)
+
 # DAY 026 — Friday, March 28, 2026
 ## Bellman-Ford + Bipartite Check + SQL Normalization
 
@@ -15,9 +17,6 @@
 | 1:20–1:40 | 20 min | REAL-WORLD: Currency arbitrage = Bellman-Ford |
 | 1:40–2:20 | 40 min | SQL: Database Normalization (1NF → 3NF) |
 | 2:20–3:00 | 40 min | PROBLEMS: Q1 + Q2 |
-
----
-
 
 ---
 
@@ -95,9 +94,10 @@ int[] bellmanFord(int n, int[][] edges, int source) {
 │ Negative cycles   │ Can't detect     │ CAN detect         │
 │ Space             │ O(V)             │ O(V)               │
 │ Use when          │ Non-neg weights  │ Neg weights or K   │
-│                   │                  │ stops constraint    │
+│                   │                  │ stops constraint   │
 └───────────────────┴──────────────────┴────────────────────┘
 ```
+
 
 ---
 
@@ -118,6 +118,7 @@ Bipartite = can split nodes into 2 sets such that
         | /   |          Edge 1-2: Blue-Red ✓
         2     3          Edge 0-2: Red-Red ✗ → NOT BIPARTITE
 ```
+
 
 ### BFS 2-Coloring
 
@@ -173,6 +174,7 @@ Problems:
 • Skills in one column → can't easily query "who knows Java?" 
 ```
 
+
 ### The Normal Forms
 
 ```
@@ -191,6 +193,7 @@ Problems:
   ✓ No transitive dependencies (non-key → non-key)
   → DeptPhone depends on Dept, not on emp_id → move to departments table
 ```
+
 
 ### Normalized Design
 
@@ -237,6 +240,7 @@ Input: n=4, flights=[[0,1,100],[1,2,100],[2,0,100],[1,3,600],[2,3,200]],
 Output: 700 (0→1→3)
 ```
 
+
 **Pattern**: Bellman-Ford with K+1 iterations (or BFS with level = stops).
 
 ### Q2: Is Graph Bipartite? (LC 785) — Medium
@@ -263,3 +267,5 @@ Output: false (odd cycle exists)
 - [ ] Solved LC 785 (Is Graph Bipartite)
 
 ---
+
+> **Navigation**: [< Previous](Day_025_Mar27_Thu.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_027_Mar29_Sat.md)

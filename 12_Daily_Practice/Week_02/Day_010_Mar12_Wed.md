@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_009_Mar11_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_011_Mar13_Thu.md)
+
 # Day 010 - Wednesday, March 12, 2026
 
 > **Week 02** | **Difficulty:** MEDIUM | **Theme:** Stack + Binary Search + SQL Aggregates
@@ -14,9 +16,6 @@
 - [ ] SQL: COUNT, SUM, AVG, MIN, MAX, GROUP BY (40 min)
 - [ ] Q1: Coding problem 1 (20 min)
 - [ ] Q2: Coding problem 2 (20 min)
-
----
-
 
 ---
 
@@ -54,6 +53,7 @@ MEMORY INSIGHT: The program call stack IS a stack.
   foo() returns → stack: [main]
 ```
 
+
 #### WHAT: Operations
 
 ```
@@ -84,6 +84,7 @@ push(40):    pop():       peek():
 │  10 │
 └─────┘
 ```
+
 
 #### IMPLEMENT: Stack using Array
 
@@ -151,6 +152,7 @@ HOW IT WORKS:
   3 steps instead of 6 (linear would need to check indices 0-5)
 ```
 
+
 #### IMPLEMENT: Two Templates
 
 ```java
@@ -211,6 +213,7 @@ ALGORITHM:
   At end: stack must be empty
 ```
 
+
 ```java
 public boolean isValid(String s) {
     Deque<Character> stack = new ArrayDeque<>();
@@ -254,6 +257,7 @@ SCENARIO: Text editor undo/redo — two stacks!
   You went back in time, then did something NEW → old future is invalid.
   (Same as git: checkout old commit + make new commit = old branch abandoned)
 ```
+
 
 ---
 
@@ -331,6 +335,7 @@ Input:  [1, 3, 5, 6], target = 2  → Output: 1 (would insert at index 1)
 This is exactly the LOWER BOUND template from today!
 ```
 
+
 ```java
 public int searchInsert(int[] nums, int target) {
     int left = 0, right = nums.length;
@@ -356,6 +361,7 @@ push(7):  main: [5,3,7]   min: [5,3,3]    ← min still 3
 pop():    main: [5,3]     min: [5,3]
 getMin(): return min.peek() = 3 ✓
 ```
+
 
 ```java
 class MinStack {
@@ -396,3 +402,8 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW'S PREVIEW: Queue/Deque + HashMap intro + SQL JOINs Part 1
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_009_Mar11_Tue.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_011_Mar13_Thu.md)

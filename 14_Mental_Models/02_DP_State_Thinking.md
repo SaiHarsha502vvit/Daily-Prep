@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](01_Recursion_Tree_Thinking.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](03_Graph_Tree_Thinking.md)
+
 # 🎯 DP: State & Transition Thinking — Mental Model
 
 > **The #1 mistake in DP**: jumping straight to the recurrence relation. This guide teaches you to think about DP as **defining states**, then **defining transitions between them** — like designing a spreadsheet before filling it.
@@ -28,6 +30,7 @@ Your job:
     C   [ 0  1  2  2 ]    dp[3][2] = match! → dp[2][1] + 1
     E   [ 0  1  2  3 ]    ← answer: dp[4][3] = 3
 ```
+
 
 ---
 
@@ -62,6 +65,7 @@ For each choice, the state changes:
 - Don't match → dp[i][j] depends on dp[i-1][j] or dp[i][j-1]
 ```
 
+
 ### Step 3: Identify Base Cases (WHERE does the spreadsheet start?)
 ```
 Ask: "What states can I answer WITHOUT any computation?"
@@ -82,6 +86,7 @@ Common orders:
 - Grid: top-left to bottom-right
 - Tree: post-order (children before parent)
 ```
+
 
 ### Step 5: Extract the Answer (WHERE is the final answer?)
 ```
@@ -122,7 +127,10 @@ What are you optimizing?
     └── Multiple states per position (Buy/Sell Stock with cooldown)
 ```
 
+
 ---
+
+
 
 ## Part 4: State Identification — Hard Examples
 
@@ -143,6 +151,7 @@ Transition:
 dp[e][f] = 1 + min over x of max(dp[e-1][x-1], dp[e][f-x])
 ```
 
+
 ### Example 2: Buy/Sell Stock with Cooldown
 ```
 "What do I need to know at day i?"
@@ -160,6 +169,7 @@ notHold[i] = max(notHold[i-1], cool[i-1])              // stay or finish cooldow
 cool[i]    = hold[i-1] + price[i]                       // sell today
 ```
 
+
 ### Example 3: Knapsack — Adding a Dimension
 ```
 "I have items and a weight capacity."
@@ -175,6 +185,7 @@ If items unlimited (Unbounded):
   ↑ no need for item dimension, just process in right order
 ```
 
+
 ---
 
 ## Part 5: Common DP Transition Patterns
@@ -185,6 +196,7 @@ dp[i] = max(dp[i-1], dp[i-2] + value[i])
          ↑ skip i    ↑ take i (can't take i-1)
 Examples: House Robber, Sticker Collection
 ```
+
 
 ### Pattern 2: Best from All Previous (O(n²))
 ```
@@ -217,6 +229,8 @@ Examples: TSP, Assignment Problem
 
 ---
 
+
+
 ## Part 6: Space Optimization Mental Model
 
 ### When Can You Optimize?
@@ -233,6 +247,7 @@ Direction matters:
    Unbounded Knapsack: process LEFT TO RIGHT (allow reuse)
 ```
 
+
 ### Visual: Rolling Array
 ```
 Full table:          Optimized:
@@ -241,6 +256,7 @@ dp[1]: [...]    →    curr: [...]   (swap after each row)
 dp[2]: [...]
 dp[3]: [...]
 ```
+
 
 ---
 
@@ -256,6 +272,7 @@ dp[3]: [...]
 □ Edge cases: empty input? single element? all same values?
 ```
 
+
 ---
 
 📖 **Related Files:**
@@ -264,3 +281,5 @@ dp[3]: [...]
 
 ---
 [← 01 Recursion](01_Recursion_Tree_Thinking.md) | [03 Graph & Tree Thinking →](03_Graph_Tree_Thinking.md)
+
+

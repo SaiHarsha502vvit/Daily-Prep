@@ -1,6 +1,6 @@
 # 🔐 Security Fundamentals — Complete Guide
 
-> **Navigation**: [< API Design](07_API_Design_REST.md) | [Index](00_INDEX.md) | [Next: System Design >](09_System_Design.md)
+**Navigation**: [< API Design](07_API_Design_REST.md) | [Index](00_INDEX.md) | [Next: System Design >](09_System_Design.md)
 
 ---
 
@@ -222,6 +222,24 @@ public class CorsConfig implements WebMvcConfigurer {
 
 ---
 
+🔬 **Section Challenge — Level 6 — CORS (Cross-Origin Resource Sharing)**
+
+**Challenge 1 (Reasoning):** A developer sets `.allowedOrigins("*")` in production to stop a CORS error. What specific attack does this enable, and why does `allowCredentials(true)` make it catastrophically worse?
+
+<details><summary>Answer</summary>
+
+`allowedOrigins("*")` means **any origin** can make cross-origin requests to your API. This enables **Cross-Site Request Forgery (CSRF)**: a malicious site at `evil.com` can embed `fetch('https://yourapi.com/api/admin/deleteAll', {method:'DELETE'})` and the browser will send it. Normally, the browser's same-origin policy blocks this. CORS with `*` removes that block. Adding `allowCredentials(true)` is **invalid with `*`** (the spec forbids it — Spring will throw an error), but conceptually the combination would mean: cookies and session tokens are included in the cross-origin request, turning a read-only leak into a full session-authenticated attack. Fix: always explicitly list allowed origins: `.allowedOrigins("https://yourapp.com")`.
+
+</details>
+
+**Challenge 2 (Trace):** A browser sends a `GET /api/public` request from `react-app.com` to `api.backend.com`. When does the browser send a pre-flight `OPTIONS` request first, and when does it skip it?
+
+<details><summary>Answer</summary>
+
+The browser sends a **pre-flight OPTIONS request** when the actual request is "non-simple": (1) method is `PUT`, `DELETE`, or `PATCH` (not GET/POST/HEAD); (2) has custom headers like `Authorization`, `Content-Type: application/json`; (3) `Content-Type` is not `application/x-www-form-urlencoded`, `multipart/form-data`, or `text/plain`. For a `GET /api/public` with no custom headers, the browser skips the pre-flight and sends the request directly — checking the `Access-Control-Allow-Origin` response header to decide if the JS code can read the response. The pre-flight is a performance cost: 2 HTTP round-trips instead of 1. Use `maxAge(3600)` to let browsers cache the pre-flight result for 1 hour.
+
+</details>
+
 # WHERE: Security Checklist for Every Project
 
 ```
@@ -272,6 +290,7 @@ Dependencies     → Dependabot + regular updates
 # 🏋️ Practice
 
 ## Exercise 1: Find the Vulnerabilities
+
 ```java
 // How many security issues can you spot?
 @PostMapping("/login")
@@ -287,7 +306,18 @@ public String login(@RequestParam String user, @RequestParam String pass) {
 //   (3) password in error message, (4) no rate limiting, (5) GET-style params
 ```
 
+🔬 **Section Challenge — Exercise 1: Find the Vulnerabilities**
+
+**Challenge (Audit):** The code above has at least 5 security vulnerabilities. List them all with the exact fix for each. Don’t look at the comment — cover it and try first.
+
+<details><summary>Answer</summary>
+
+1. **SQL Injection** (line 2-3): String concatenation allows `user = "' OR 1=1 --"` which bypasses authentication entirely. Fix: `PreparedStatement` with `?` parameters. 2. **Plaintext password comparison** (line 4-5): Password is compared as-is from the database, meaning passwords are stored in plaintext. Fix: BCrypt — store `passwordEncoder.encode(pass)` and verify with `passwordEncoder.matches(rawPass, storedHash)`. 3. **Credential leak in error message** (line 7): `"Invalid: " + user + "/" + pass` exposes the attempted password in the HTTP response, logs, and browser history. Fix: return only `"Invalid credentials"`. 4. **No rate limiting**: An attacker can make unlimited login attempts. Fix: implement a counter with Redis/Bucket4j — block after 5 failures per IP per minute. 5. **`@RequestParam` for credentials**: Query params (`?user=x&pass=y`) appear in server logs, browser history, and Referer headers. Fix: use `@RequestBody LoginRequest` with a POST body so credentials travel in the encrypted TLS payload only.
+
+</details>
+
 ## Exercise 2: Secure a Spring Boot App
+
 ```
 Build a Spring Boot REST API with:
   - BCrypt password hashing
@@ -300,4 +330,26 @@ Build a Spring Boot REST API with:
 
 ---
 
-> **Next Chapter**: [System Design →](09_System_Design.md)
+**Next Chapter**: [System Design →](09_System_Design.md)
+
+---
+
+**Navigation**: [< Previous](07_API_Design_REST.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_System_Design.md)
+
+🔬 **Section Challenge — Exercise 2: Secure a Spring Boot App**
+
+**Challenge 1 (Design):** You’ve built a Spring Boot REST API with BCrypt + JWT. A security reviewer says your JWTs are a liability because they can’t be revoked before expiry. What is the standard pattern to solve this without abandoning JWTs?
+
+<details><summary>Answer</summary>
+
+Use a **refresh token + short-lived access token** pattern. Access JWTs expire in 15 minutes — short enough that a stolen token has limited blast radius. Store a long-lived refresh token (UUID, 7 days) in an **HttpOnly, Secure cookie** (not accessible to JS, preventing XSS theft). When the access JWT expires, the client posts to `/auth/refresh` with the cookie — server validates the refresh token against a database record, issues a new access JWT, and optionally rotates the refresh token. To "revoke" access: delete the refresh token DB record. The user’s next request after the 15-min window fails. This gives you ~15 minutes of revocation lag — acceptable for most systems. For zero-lag revocation: maintain a Redis blocklist of revoked JWT JTI (JWT ID) values checked on every request.
+
+</details>
+
+**Challenge 2 (Senior):** Your Spring Boot app has `@PreAuthorize("hasRole('ADMIN')")` on all admin endpoints. A penetration tester reports a **Broken Access Control** finding even though roles are enforced. How is this possible?
+
+<details><summary>Answer</summary>
+
+Broken Access Control is #1 on OWASP Top 10 and often bypasses role checks via **object-level authorization failures**. Example: `GET /api/orders/{id}` checks that the caller is authenticated, but doesn’t verify that order `{id}` belongs to the caller. User A (role USER) calls `GET /api/orders/9999` — order 9999 belongs to User B, but the endpoint returns it anyway. Fix: always add **ownership checks**: `if (!order.getOwnerId().equals(currentUser.getId())) throw new ForbiddenException()`. `@PreAuthorize` only checks role; you must write the data-level check yourself. This is called **IDOR (Insecure Direct Object Reference)**.
+
+</details>

@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_008_Mar10_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_010_Mar12_Wed.md)
+
 # Day 009 - Tuesday, March 11, 2026
 
 > **Week 02** | **Difficulty:** EASY-MEDIUM | **Theme:** Doubly LinkedList + Quick Sort + SQL ORDER BY
@@ -14,9 +16,6 @@
 - [ ] SQL: ORDER BY, LIMIT, OFFSET, aliases (40 min)
 - [ ] Q1: Coding problem 1 (20 min)
 - [ ] Q2: Coding problem 2 (20 min)
-
----
-
 
 ---
 
@@ -64,7 +63,8 @@ TRADE-OFF:
     prev data next       prev data next       prev data next
 ```
 
-#### IMPLEMENT
+
+#### 🔧 Implement
 
 ```java
 public class DoublyLinkedList {
@@ -128,21 +128,22 @@ public class DoublyLinkedList {
 #### WHY Quick Sort?
 
 ```
-┌────────────────────────────────────────────────────────────────┐
-│  COMPARISON OF SORTING ALGORITHMS (what you know so far):      │
+┌─────────────────────────────────────────────────────────────────┐
+│  COMPARISON OF SORTING ALGORITHMS (what you know so far):       │
 │                                                                 │
 │  Algorithm       │ Best    │ Average  │ Worst   │ Space │ Stable│
 │  ─────────────────────────────────────────────────────────────  │
-│  Selection Sort  │ O(n²)   │ O(n²)    │ O(n²)   │ O(1) │  No  │
-│  Insertion Sort  │ O(n)    │ O(n²)    │ O(n²)   │ O(1) │  Yes │
-│  Bubble Sort     │ O(n)    │ O(n²)    │ O(n²)   │ O(1) │  Yes │
-│  Merge Sort      │ O(nlogn)│ O(nlogn) │ O(nlogn)│ O(n) │  Yes │
-│  Quick Sort      │ O(nlogn)│ O(nlogn) │ O(n²)   │ O(logn)│ No │
+│  Selection Sort  │ O(n²)   │ O(n²)    │ O(n²)   │ O(1) │  No    │
+│  Insertion Sort  │ O(n)    │ O(n²)    │ O(n²)   │ O(1) │  Yes   │
+│  Bubble Sort     │ O(n)    │ O(n²)    │ O(n²)   │ O(1) │  Yes   │
+│  Merge Sort      │ O(nlogn)│ O(nlogn) │ O(nlogn)│ O(n) │  Yes   │
+│  Quick Sort      │ O(nlogn)│ O(nlogn) │ O(n²)   │ O(logn)│ No   │
 │                                                                 │
-│  Quick Sort wins: in-place (O(log n) stack) + cache-friendly   │
-│  Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort          │
-└────────────────────────────────────────────────────────────────┘
+│  Quick Sort wins: in-place (O(log n) stack) + cache-friendly    │
+│  Java's Arrays.sort(int[]) uses Dual-Pivot Quick Sort           │
+└─────────────────────────────────────────────────────────────────┘
 ```
+
 
 #### HOW: Partition then Recurse
 
@@ -159,6 +160,7 @@ IDEA: Pick a "pivot". Put smaller elements LEFT, larger RIGHT. Repeat.
     
     Now recursively sort [1, 2, 1] and [6, 8, 10]
 ```
+
 
 #### IMPLEMENT: Lomuto Partition Scheme
 
@@ -265,6 +267,7 @@ WHY DOUBLY LINKED LIST?
 This is LeetCode 146 (Medium) — implement it as a bonus challenge!
 ```
 
+
 ---
 
 ## BLOCK 5: SQL (40 min)
@@ -349,6 +352,7 @@ WHY does it work?
   Eventually fast "laps" slow → they meet inside the cycle.
 ```
 
+
 ```java
 public boolean hasCycle(ListNode head) {
     ListNode slow = head, fast = head;
@@ -386,6 +390,7 @@ TRICK: Two-pointer with gap of n
     slow.next = slow.next.next → removes node 4 ✓
 ```
 
+
 ```java
 public ListNode removeNthFromEnd(ListNode head, int n) {
     ListNode dummy = new ListNode(0);
@@ -421,3 +426,8 @@ CONFIDENCE LEVEL: 😟 | 😐 | 😊 | 🔥
 
 TOMORROW'S PREVIEW: Stack + Binary Search + SQL Aggregate Functions
 ```
+
+
+---
+
+> **Navigation**: [< Previous](Day_008_Mar10_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_010_Mar12_Wed.md)

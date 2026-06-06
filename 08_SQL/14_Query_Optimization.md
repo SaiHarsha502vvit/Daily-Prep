@@ -1,4 +1,4 @@
-> **SQL Chapter 14/20** | [← Previous](13_Transactions_ACID.md) | [Index](../00_MASTER_INDEX.md) | [Next →](15_Analytics_Warehousing_ETL.md)
+﻿> **SQL Chapter 14/20** | [← Previous](13_Transactions_ACID.md) | [Index](../00_MASTER_INDEX.md) | [Next →](15_Analytics_Warehousing_ETL.md)
 
 ---
 
@@ -8,58 +8,59 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    QUERY OPTIMIZATION CHECKLIST                                  │
+│                    QUERY OPTIMIZATION CHECKLIST                                 │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. SELECT ONLY WHAT YOU NEED                                                   │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  BAD:  SELECT * FROM large_table WHERE id = 1;                             ││
-│  │  GOOD: SELECT id, name, email FROM large_table WHERE id = 1;               ││
-│  │                                                                            ││
-│  │  Why: Less data transfer, possible covering index usage                    ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  BAD:  SELECT * FROM large_table WHERE id = 1;                             │ │
+│  │  GOOD: SELECT id, name, email FROM large_table WHERE id = 1;               │ │
+│  │                                                                            │ │
+│  │  Why: Less data transfer, possible covering index usage                    │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  2. USE PROPER INDEXES                                                          │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  • Index columns in WHERE, JOIN, ORDER BY                                  ││
-│  │  • Composite indexes for multi-column filters                              ││
-│  │  • Covering indexes to avoid table lookups                                 ││
-│  │  • But don't over-index (hurts writes)                                     ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  • Index columns in WHERE, JOIN, ORDER BY                                  │ │
+│  │  • Composite indexes for multi-column filters                              │ │
+│  │  • Covering indexes to avoid table lookups                                 │ │
+│  │  • But don't over-index (hurts writes)                                     │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  3. AVOID FUNCTIONS ON INDEXED COLUMNS                                          │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  BAD:  WHERE YEAR(created_at) = 2024                                       ││
-│  │  GOOD: WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'      ││
-│  │                                                                            ││
-│  │  BAD:  WHERE LOWER(email) = 'test@example.com'                             ││
-│  │  GOOD: Create functional index or store lowercase version                  ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  BAD:  WHERE YEAR(created_at) = 2024                                       │ │
+│  │  GOOD: WHERE created_at >= '2024-01-01' AND created_at < '2025-01-01'      │ │
+│  │                                                                            │ │
+│  │  BAD:  WHERE LOWER(email) = 'test@example.com'                             │ │
+│  │  GOOD: Create functional index or store lowercase version                  │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  4. USE JOINS INSTEAD OF SUBQUERIES (when possible)                             │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  BAD:  WHERE id IN (SELECT id FROM other_table WHERE ...)                  ││
-│  │  GOOD: JOIN other_table ON ... WHERE ...                                   ││
-│  │                                                                            ││
-│  │  (Modern optimizers often rewrite, but explicit JOINs are clearer)         ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  BAD:  WHERE id IN (SELECT id FROM other_table WHERE ...)                  │ │
+│  │  GOOD: JOIN other_table ON ... WHERE ...                                   │ │
+│  │                                                                            │ │
+│  │  (Modern optimizers often rewrite, but explicit JOINs are clearer)         │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  5. LIMIT EARLY                                                                 │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  • Use LIMIT to reduce result set                                          ││
-│  │  • Filter in subqueries before joins                                       ││
-│  │  • Use EXISTS instead of COUNT(*) for existence checks                     ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  • Use LIMIT to reduce result set                                          │ │
+│  │  • Filter in subqueries before joins                                       │ │
+│  │  • Use EXISTS instead of COUNT(*) for existence checks                     │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  6. BATCH OPERATIONS                                                            │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  • INSERT multiple rows in single statement                                ││
-│  │  • DELETE/UPDATE in batches with LIMIT                                     ││
-│  │  • Use transactions for related operations                                 ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  • INSERT multiple rows in single statement                                │ │
+│  │  • DELETE/UPDATE in batches with LIMIT                                     │ │
+│  │  • Use transactions for related operations                                 │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -179,10 +180,10 @@ WHERE e.salary > 80000;
 EXPLAIN Output Interpretation:
 
 ┌─────────────────────────────────────────────────────────────────────────────┐
-│ id │ select_type │ table │ type   │ key          │ rows │ Extra           │
-├────┼─────────────┼───────┼────────┼──────────────┼──────┼─────────────────┤
-│ 1  │ SIMPLE      │ e     │ range  │ idx_salary   │ 50   │ Using where     │
-│ 1  │ SIMPLE      │ d     │ eq_ref │ PRIMARY      │ 1    │ NULL            │
+│ id │ select_type │ table │ type   │ key          │ rows │ Extra             │
+├────┼─────────────┼───────┼────────┼──────────────┼──────┼───────────────────┤
+│ 1  │ SIMPLE      │ e     │ range  │ idx_salary   │ 50   │ Using where       │
+│ 1  │ SIMPLE      │ d     │ eq_ref │ PRIMARY      │ 1    │ NULL              │
 └─────────────────────────────────────────────────────────────────────────────┘
 
 Reading this:
@@ -208,5 +209,59 @@ EXPLAIN (ANALYZE, BUFFERS, FORMAT TEXT)
 SELECT * FROM employees WHERE dept_id = 1;
 ```
 
----
+### The Cost-Based Optimizer (CBO) Math
 
+```text
+The PostgreSQL optimizer doesn't guess; it calculates the exact mathematical COST of different execution paths based on disk I/O physics.
+
+DEFAULT COST CONSTANTS:
+- seq_page_cost = 1.0    (Cost of sequential disk read)
+- random_page_cost = 4.0 (Cost of random disk read/seek)
+- cpu_tuple_cost = 0.01  (Cost to process one row)
+
+SCENARIO: Table with 100,000 rows (1,000 pages, 100 rows per page).
+Query: SELECT * FROM users WHERE status = 'active'; (Returns 20,000 rows)
+
+PLAN A: Sequential Scan
+Cost = (1,000 pages × 1.0) + (100,000 rows × 0.01)
+     = 1,000 + 1,000
+     = Total Cost: 2,000
+
+PLAN B: Index Scan (Random I/O)
+Cost = (20,000 random reads × 4.0) + (20,000 rows × 0.01)
+     = 80,000 + 200
+     = Total Cost: 80,200
+
+DECISION: 2,000 < 80,200. The optimizer will IGNORE the index and do a Seq Scan, because reading the entire table sequentially is 40x cheaper than seeking the disk head 20,000 times!
+```
+
+### Index Scan vs. Bitmap Heap Scan Physics
+
+```mermaid
+flowchart TD
+    %% Disk Head Thrashing vs Bitmap Sorting
+    subgraph INDEX_SCAN ["Index Scan (Low Cardinality = Thrashing)"]
+        I1["Read Index: Row 1"] -->|Seek Disk| D1["Read Heap: Page 50"]
+        I2["Read Index: Row 2"] -->|Seek Disk| D2["Read Heap: Page 2"]
+        I3["Read Index: Row 3"] -->|Seek Disk| D3["Read Heap: Page 90"]
+        D1 -.->|Physical Arm Movement| D2
+        D2 -.->|Physical Arm Movement| D3
+    end
+
+    subgraph BITMAP_SCAN ["Bitmap Heap Scan (High Cardinality)"]
+        B1["1. Read All Matching Index Pointers"]
+        B2["2. Sort Pointers in Memory (Bitmap)"]
+        B3["3. Read Heap Pages Sequentially"]
+        
+        B1 --> B2
+        B2 --> B3
+        
+        B3 -->|Sequential I/O| H1["Page 2"]
+        H1 -->|Sequential I/O| H2["Page 50"]
+        H2 -->|Sequential I/O| H3["Page 90"]
+    end
+    
+```
+
+**Why Bitmap Heap Scans Exist:**
+If the optimizer realizes an Index Scan will jump around the disk too much (thrashing the physical arm or saturating random I/O IOPS on an SSD), it switches to a **Bitmap Heap Scan**. It reads the index first, builds a memory bitmap of all the heap pages it needs, **sorts them by physical disk location**, and then visits each page exactly once in a smooth, sequential sweep.

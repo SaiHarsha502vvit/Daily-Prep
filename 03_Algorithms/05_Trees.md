@@ -1,29 +1,49 @@
 # TREES - Complete Guide
+
+### 5W1H: Mastering Trees
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║  WHAT: Tree data structures, their memory representations (heap layouts),    ║
+║        traversals (DFS, BFS), and common algorithmic patterns.               ║
+║                                                                              ║
+║  WHY:  Trees naturally model hierarchical data (DOM, file systems, orgs).    ║
+║        Understanding cache misses in pointer-based trees vs arrays, and the  ║
+║        call stack in recursion is vital for production-level optimization.   ║
+║                                                                              ║
+║  WHO:  Software engineers designing scalable hierarchical models or aiming   ║
+║        to master complex recursive traversal problems in interviews.         ║
+║                                                                              ║
+║  WHEN: Use trees when relationships are parent-child, not flat. Use specific ║
+║        traversals: Postorder for deletion/bottom-up, Inorder for BST sorted  ║
+║        access, Preorder for copying.                                         ║
+║                                                                              ║
+║  HOW:  By mastering recursion stacks, iterative stack conversions, and       ║
+║        recognizing when to pass data down (parameters) vs up (returns).      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
 ## From Binary Trees to Advanced Tree Algorithms
 
-> **Split from Trees_Graphs.md for better navigation**
-> See also: [Graphs](05b_Graphs.md) | [Index](../00_MASTER_INDEX.md)
+🧠 **Mental Model**: See [Graph & Tree Thinking](../14_Mental_Models/03_Graph_Tree_Thinking.md) — tree traversal patterns and parent-child reasoning
+**Split from Trees_Graphs.md for better navigation**
+See also: [Graphs](05b_Graphs_Internals.md) | [Index](../00_MASTER_INDEX.md)
 
 ---
 
 # 🔬 PART 0: DEEP INTERNALS - HOW TREES & GRAPHS WORK AT CPU/MEMORY LEVEL
 
-```
-╔══════════════════════════════════════════════════════════════════════════════════╗
-║       TREES & GRAPHS AT THE HARDWARE LEVEL - WHAT REALLY HAPPENS                 ║
-╠══════════════════════════════════════════════════════════════════════════════════╣
-║                                                                                  ║
-║  Understanding the PHYSICAL reality of trees and graphs:                         ║
-║  • How nodes are stored in memory                                                ║
-║  • What happens during tree traversal at CPU level                               ║
-║  • Recursion stack deep dive                                                     ║
-║  • Why tree operations are often cache-unfriendly                                ║
-║  • Graph representation memory comparison                                        ║
-║                                                                                  ║
-╚══════════════════════════════════════════════════════════════════════════════════╝
-```
+TREES & GRAPHS AT THE HARDWARE LEVEL - WHAT REALLY HAPPENS
 
-## TREE NODE MEMORY LAYOUT
+Understanding the PHYSICAL reality of trees and graphs:
+- How nodes are stored in memory
+- What happens during tree traversal at CPU level
+- Recursion stack deep dive
+- Why tree operations are often cache-unfriendly
+- Graph representation memory comparison
+
+
+## 🧠 Tree Node Memory Layout
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -60,9 +80,9 @@
 │       /    \                 ┌──────────────────────────┐                       │
 │     [5]    [15]              │ TreeNode                 │                       │
 │    /  \    /  \              │ val: 10                  │                       │
-│  [3]  [7][12] [20]           │ left: 0x00110000 ─┐     │                        │
-│                              │ right: 0x00220000 │     │                        │
-│                              └──────────────────│─┼────┘                        │
+│  [3]  [7][12] [20]           │ left: 0x00110000 ─┐      │                       │
+│                              │ right: 0x00220000 │      │                       │
+│                              └──────────────────│─┼────-┘                       │
 │                                                 │ │                             │
 │                              ┌──────────────────┘ │                             │
 │                              ▼                    ▼                             │
@@ -83,7 +103,8 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## RECURSION STACK - WHAT ACTUALLY HAPPENS
+
+## 📚 Recursion Stack — What Actually Happens
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -132,22 +153,22 @@
 │  ├────────────────────────┤                                                     │
 │  │ Frame: inorder(10)     │                                                     │
 │  └────────────────────────┘                                                     │
-│                                                                                  │
+│                                                                                 │
 │  Call 4: inorder(3).left → inorder(null) → returns immediately                  │
 │                                                                                 │
 │  Call 5: Print "3"                                                              │
-│                                                                                  │
+│                                                                                 │
 │  Call 6: inorder(3).right → inorder(null) → returns immediately                 │
-│                                                                                  │
+│                                                                                 │
 │  Frame for inorder(3) POPS, return to inorder(5)                                │
 │  ┌────────────────────────┐                                                     │
-│  │ Frame: inorder(5)      │ ← Stack Pointer (resumed)                          │
+│  │ Frame: inorder(5)      │ ← Stack Pointer (resumed)                           │
 │  ├────────────────────────┤                                                     │
 │  │ Frame: inorder(10)     │                                                     │
 │  └────────────────────────┘                                                     │
-│                                                                                  │
-│  Call 7: Print "5"                                                               │
-│                                                                                  │
+│                                                                                 │
+│  Call 7: Print "5"                                                              │
+│                                                                                 │
 │  Call 8: inorder(5).right → inorder(7)                                          │
 │  ┌────────────────────────┐                                                     │
 │  │ Frame: inorder(7)      │ ← Stack Pointer                                     │
@@ -156,170 +177,204 @@
 │  ├────────────────────────┤                                                     │
 │  │ Frame: inorder(10)     │                                                     │
 │  └────────────────────────┘                                                     │
-│                                                                                  │
+│                                                                                 │
 │  ... continues until all nodes visited                                          │
-│                                                                                  │
-│  Final output: 3, 5, 7, 10, 15  (INORDER = SORTED for BST!)                    │
-│                                                                                  │
-│                                                                                  │
-│  STACK FRAME SIZE:                                                               │
+│                                                                                 │
+│  Final output: 3, 5, 7, 10, 15  (INORDER = SORTED for BST!)                     │
+│                                                                                 │
+│                                                                                 │
+│  STACK FRAME SIZE:                                                              │
 │  ─────────────────                                                              │
-│  Each frame contains:                                                            │
+│  Each frame contains:                                                           │
 │  • Return address:     8 bytes                                                  │
 │  • root parameter:     8 bytes (reference)                                      │
 │  • Saved registers:    ~32 bytes (varies by JVM)                                │
 │  ───────────────────────────────                                                │
 │  Total per frame:      ~48 bytes                                                │
-│                                                                                  │
+│                                                                                 │
 │  For tree of height h: Stack size = h × 48 bytes                                │
 │  Balanced tree (n nodes): h ≈ log₂(n)                                           │
-│  1 million nodes: h ≈ 20 → 20 × 48 = 960 bytes (safe!)                         │
-│                                                                                  │
+│  1 million nodes: h ≈ 20 → 20 × 48 = 960 bytes (safe!)                          │
+│                                                                                 │
 │  Skewed tree (n nodes): h = n                                                   │
-│  1 million nodes: h = 1,000,000 → 48 MB stack!                                 │
+│  1 million nodes: h = 1,000,000 → 48 MB stack!                                  │
 │  DEFAULT STACK SIZE: ~1MB → STACK OVERFLOW!                                     │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## ITERATIVE TRAVERSAL - EXPLICIT STACK
+🔬 **Section Challenge — 📚 Recursion Stack — What Actually Happens**
+
+**Challenge 1 (Reasoning):** Every recursive algorithm can be converted to iterative. What data structure replaces the call stack?
+<details><summary>Answer</summary>
+
+An explicit `Stack<State>` where State holds what the stack frame would hold (current node, remaining work, partial results). DFS → explicit stack. Factorial → accumulator variable (tail recursion → loop). Tree traversal → stack with nodes + 'visited' flag. When to use recursion vs iteration: recursion = cleaner code when tree/graph depth is bounded. Iteration = necessary when depth is unbounded (stack overflow risk) or when performance is critical.
+</details>
+
+**Challenge 2 (Bug Hunt):**
+
+```java
+void fib(int n) { return n<=1 ? n : fib(n-1) + fib(n-2); }
+fib(50) // takes forever
+```
+Why and what are the 3 fixes?
+<details><summary>Answer</summary>
+
+Exponential time O(2^N) — `fib(n-1)` and `fib(n-2)` each recursively recompute the same subproblems billions of times. Fix 1: Memoization — `Map<Integer,Long> memo`, return early if computed. O(N) time, O(N) space. Fix 2: Bottom-up DP — array `dp[i] = dp[i-1] + dp[i-2]`. O(N) time, O(N) space. Fix 3: O(1) space — just track last two values with two variables. O(N) time, O(1) space.
+</details>
+
+
+## 📚 Iterative Traversal — Explicit Stack
+
+
+
+🔬 **Section Challenge — 📚 Iterative Traversal — Explicit Stack**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
+
+## Iterative Vs Recursive - Memory Comparison
+
+
+**Recursive Inorder**:
+void inorder(TreeNode root) {
+if (root == null) return;
+inorder(root.left);
+visit(root);
+inorder(root.right);
+}
+Uses CALL STACK: ~48 bytes per frame (includes return address, saved regs)
+
+**Iterative Inorder**:
+void inorderIterative(TreeNode root) {
+Stack<TreeNode> stack = new Stack<>();
+TreeNode curr = root;
+while (curr != null || !stack.isEmpty()) {
+while (curr != null) {
+stack.push(curr);
+curr = curr.left;
+}
+curr = stack.pop();
+visit(curr);
+curr = curr.right;
+}
+}
+Uses HEAP STACK: ~8 bytes per node reference
+MEMORY COMPARISON (tree height h = 20):
+| Method | Memory Used | Notes |
+|---|---|---|
+| Recursive | 20 × 48 = 960 B | Uses call stack (limited) |
+| Iterative | 20 × 8 = 160 B | Uses heap (flexible) |
+For SKEWED tree (h = 100,000):
+- Recursive: 100,000 × 48 = 4.8 MB → STACK OVERFLOW on 1MB stack
+- Iterative: 100,000 × 8 = 800 KB → Works fine on heap
+
+**Recommendation**: Use iterative for production code with unknown tree shapes
+
+## 🌳 Cache Behavior in Tree Traversal
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    ITERATIVE VS RECURSIVE - MEMORY COMPARISON                    │
+│                    WHY TREE TRAVERSAL IS CACHE-UNFRIENDLY                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  RECURSIVE INORDER:                                                              │
-│  void inorder(TreeNode root) {                                                  │
-│      if (root == null) return;                                                  │
-│      inorder(root.left);                                                        │
-│      visit(root);                                                               │
-│      inorder(root.right);                                                       │
-│  }                                                                               │
-│                                                                                  │
-│  Uses CALL STACK: ~48 bytes per frame (includes return address, saved regs)    │
-│                                                                                  │
-│                                                                                  │
-│  ITERATIVE INORDER:                                                              │
-│  void inorderIterative(TreeNode root) {                                         │
-│      Stack<TreeNode> stack = new Stack<>();                                     │
-│      TreeNode curr = root;                                                       │
-│                                                                                  │
-│      while (curr != null || !stack.isEmpty()) {                                 │
-│          while (curr != null) {                                                  │
-│              stack.push(curr);                                                  │
-│              curr = curr.left;                                                  │
-│          }                                                                       │
-│          curr = stack.pop();                                                    │
-│          visit(curr);                                                           │
-│          curr = curr.right;                                                     │
-│      }                                                                           │
-│  }                                                                               │
-│                                                                                  │
-│  Uses HEAP STACK: ~8 bytes per node reference                                   │
-│                                                                                  │
-│                                                                                  │
-│  MEMORY COMPARISON (tree height h = 20):                                        │
-│  ┌────────────────────┬───────────────────┬─────────────────────────────────┐  │
-│  │ Method             │ Memory Used       │ Notes                           │  │
-│  ├────────────────────┼───────────────────┼─────────────────────────────────┤  │
-│  │ Recursive          │ 20 × 48 = 960 B   │ Uses call stack (limited!)     │  │
-│  │ Iterative          │ 20 × 8 = 160 B    │ Uses heap (flexible)           │  │
-│  └────────────────────┴───────────────────┴─────────────────────────────────┘  │
-│                                                                                  │
-│  For SKEWED tree (h = 100,000):                                                 │
-│  • Recursive: 100,000 × 48 = 4.8 MB → STACK OVERFLOW on 1MB stack             │
-│  • Iterative: 100,000 × 8 = 800 KB → Works fine on heap                       │
-│                                                                                  │
-│  RECOMMENDATION: Use iterative for production code with unknown tree shapes    │
-│                                                                                  │
-└─────────────────────────────────────────────────────────────────────────────────┘
-```
-
-## CACHE BEHAVIOR IN TREE TRAVERSAL
-
-```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    WHY TREE TRAVERSAL IS CACHE-UNFRIENDLY                        │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
-│  MEMORY LAYOUT COMPARISON:                                                       │
-│                                                                                  │
-│  ARRAY (cache-friendly):                                                         │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │ Address │ 0x1000 │ 0x1004 │ 0x1008 │ 0x100C │ 0x1010 │ 0x1014 │ 0x1018 ││
-│  │ Index   │  [0]   │  [1]   │  [2]   │  [3]   │  [4]   │  [5]   │  [6]   ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│  Access arr[0] → CPU loads cache line: [0] to [15] (64 bytes)                  │
-│  Access arr[1] → Already in cache! CACHE HIT!                                  │
-│  Access arr[2] → Already in cache! CACHE HIT!                                  │
-│                                                                                  │
-│                                                                                  │
-│  TREE (cache-unfriendly):                                                        │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │ HEAP LAYOUT:                                                               ││
-│  │                                                                            ││
-│  │ 0x1000: [Node A] ───left───►  0x5000: [Node B]                            ││
-│  │                 ───right──►  0x8000: [Node C]                            ││
-│  │                                      ↓                                     ││
-│  │                              0x3000: [Node D]                              ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
-│  Access Node A → CPU loads cache line around 0x1000                            │
-│  Access Node B → 0x5000 NOT in cache → CACHE MISS! Load new line              │
-│  Access Node D → 0x3000 NOT in cache → CACHE MISS! Load new line              │
-│                                                                                  │
-│                                                                                  │
-│  CACHE MISS PENALTY:                                                             │
+│                                                                                 │
+│  MEMORY LAYOUT COMPARISON:                                                      │
+│                                                                                 │
+│  ARRAY (cache-friendly):                                                        │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │ Address │ 0x1000 │ 0x1004 │ 0x1008 │ 0x100C │ 0x1010 │ 0x1014 │ 0x1018 │     │
+│  │ Index   │  [0]   │  [1]   │  [2]   │  [3]   │  [4]   │  [5]   │  [6]   │     │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│  Access arr[0] → CPU loads cache line: [0] to [15] (64 bytes)                   │
+│  Access arr[1] → Already in cache! CACHE HIT!                                   │
+│  Access arr[2] → Already in cache! CACHE HIT!                                   │
+│                                                                                 │
+│                                                                                 │
+│  TREE (cache-unfriendly):                                                       │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │ HEAP LAYOUT:                                                               │ │
+│  │                                                                            │ │
+│  │ 0x1000: [Node A] ───left───►  0x5000: [Node B]                            │  │
+│  │                 ───right──►  0x8000: [Node C]                            │   │
+│  │                                      ↓                                     │ │
+│  │                              0x3000: [Node D]                              │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
+│  Access Node A → CPU loads cache line around 0x1000                             │
+│  Access Node B → 0x5000 NOT in cache → CACHE MISS! Load new line                │
+│  Access Node D → 0x3000 NOT in cache → CACHE MISS! Load new line                │
+│                                                                                 │
+│                                                                                 │
+│  CACHE MISS PENALTY:                                                            │
 │  ───────────────────                                                            │
 │  • L1 cache hit:   ~4 cycles                                                    │
 │  • L2 cache hit:   ~12 cycles                                                   │
 │  • L3 cache hit:   ~40 cycles                                                   │
 │  • RAM (miss):     ~200 cycles                                                  │
-│                                                                                  │
-│  Tree traversal: ~200 cycles PER NODE (mostly cache misses)                    │
-│  Array iteration: ~4 cycles PER ELEMENT (mostly cache hits)                    │
-│                                                                                  │
-│  THIS IS WHY ARRAY-BASED HEAP IS FASTER THAN POINTER-BASED TREE!              │
-│                                                                                  │
-│                                                                                  │
+│                                                                                 │
+│  Tree traversal: ~200 cycles PER NODE (mostly cache misses)                     │
+│  Array iteration: ~4 cycles PER ELEMENT (mostly cache hits)                     │
+│                                                                                 │
+│  THIS IS WHY ARRAY-BASED HEAP IS FASTER THAN POINTER-BASED TREE!                │
+│                                                                                 │
+│                                                                                 │
 │  OPTIMIZATION: Van Emde Boas Layout                                             │
 │  ────────────────────────────────────                                           │
 │  Store tree nodes in memory in a cache-friendly order:                          │
 │  • Keep subtrees together in contiguous memory                                  │
-│  • Used in high-performance databases (B+ trees)                               │
+│  • Used in high-performance databases (B+ trees)                                │
 │  • Trade-off: Complex implementation, harder to update                          │
-│                                                                                  │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-## GRAPH REPRESENTATION - MEMORY DEEP DIVE
+
+## 🧠 Graph Representation — Memory Deep Dive
 
 ---
 
-# PART 1: BINARY TREE FUNDAMENTALS
+🔬 **Section Challenge — 🧠 Graph Representation — Memory Deep Dive**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
+
+# 🌳 Part 1: Binary Tree Fundamentals
 
 ## Complete Understanding
 
 ```
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║                    TREES - COMPLETE UNDERSTANDING                             ║
+║                    TREES - COMPLETE UNDERSTANDING                            ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHAT IS A TREE DATA STRUCTURE?                                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ A tree is a hierarchical data structure consisting of NODES connected by    │
+│ A tree is a hierarchical data structure consisting of NODES connected by     │
 │ EDGES, with these properties:                                                │
 │ • ONE root node (top)                                                        │
 │ • Each node has ZERO or more children                                        │
 │ • Each non-root node has EXACTLY one parent                                  │
-│ • NO CYCLES (can't reach a node from itself by following edges)             │
+│ • NO CYCLES (can't reach a node from itself by following edges)              │
 │                                                                              │
-│ FORMAL: A connected acyclic graph with n nodes and n-1 edges                │
+│ FORMAL: A connected acyclic graph with n nodes and n-1 edges                 │
 │                                                                              │
-│ HISTORY: Trees were formalized by Arthur Cayley in 1857 for chemical        │
-│ structures. Used in CS since early programming (file systems, parsing).     │
+│ HISTORY: Trees were formalized by Arthur Cayley in 1857 for chemical         │
+│ structures. Used in CS since early programming (file systems, parsing).      │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -328,16 +383,16 @@
 │ CORE PROBLEM: Representing HIERARCHICAL relationships efficiently            │
 │                                                                              │
 │ REAL-WORLD EXAMPLES:                                                         │
-│ • File System: Folders contain files and subfolders (parent-child)          │
-│ • Organization: CEO → Managers → Employees (reporting structure)            │
-│ • DOM/HTML: <html> → <body> → <div> → <p> (nesting)                        │
+│ • File System: Folders contain files and subfolders (parent-child)           │
+│ • Organization: CEO → Managers → Employees (reporting structure)             │
+│ • DOM/HTML: <html> → <body> → <div> → <p> (nesting)                          │
 │ • Family Tree: Ancestors and descendants                                     │
 │ • Decision Making: Yes/No questions leading to conclusions                   │
 │ • Syntax Parsing: Expression trees (how compilers work)                      │
 │                                                                              │
 │ WHY NOT USE ARRAY OR LIST?                                                   │
-│ • Arrays: Good for linear data, but hierarchies need O(n) to find parent   │
-│ • Trees: Natural for hierarchies, O(log n) operations for balanced trees   │
+│ • Arrays: Good for linear data, but hierarchies need O(n) to find parent     │
+│ • Trees: Natural for hierarchies, O(log n) operations for balanced trees     │
 │                                                                              │
 │ WHY NOT USE GRAPH?                                                           │
 │ • Graphs allow cycles, multiple paths - more complex                         │
@@ -360,20 +415,20 @@
 │    Tree problems have elegant recursive solutions                            │
 │                                                                              │
 │ COMPARISON:                                                                  │
-│ ┌───────────────┬─────────────┬─────────────┬─────────────┬─────────────┐   │
-│ │ Operation     │ Array       │ LinkedList  │ BST (avg)   │ BST (worst) │   │
-│ ├───────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   │
-│ │ Search        │ O(n)        │ O(n)        │ O(log n)    │ O(n)        │   │
-│ │ Insert        │ O(n)        │ O(1)        │ O(log n)    │ O(n)        │   │
-│ │ Delete        │ O(n)        │ O(1)        │ O(log n)    │ O(n)        │   │
-│ │ Min/Max       │ O(n)        │ O(n)        │ O(log n)    │ O(n)        │   │
-│ └───────────────┴─────────────┴─────────────┴─────────────┴─────────────┘   │
+│ ┌───────────────┬─────────────┬─────────────┬─────────────┬─────────────┐    │
+│ │ Operation     │ Array       │ LinkedList  │ BST (avg)   │ BST (worst) │    │
+│ ├───────────────┼─────────────┼─────────────┼─────────────┼─────────────┤    │
+│ │ Search        │ O(n)        │ O(n)        │ O(log n)    │ O(n)        │    │
+│ │ Insert        │ O(n)        │ O(1)        │ O(log n)    │ O(n)        │    │
+│ │ Delete        │ O(n)        │ O(1)        │ O(log n)    │ O(n)        │    │
+│ │ Min/Max       │ O(n)        │ O(n)        │ O(log n)    │ O(n)        │    │
+│ └───────────────┴─────────────┴─────────────┴─────────────┴─────────────┘    │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ WHEN TO USE TREES?                                                           │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│ ✅ USE TREES WHEN:                                                          │
+│ ✅ USE TREES WHEN:                                                            │
 │    • Data has natural hierarchy (files, org charts)                          │
 │    • Need efficient search, insert, delete (use BST)                         │
 │    • Need sorted iteration (BST inorder)                                     │
@@ -381,35 +436,35 @@
 │    • Need range queries (Segment Trees)                                      │
 │    • Prefix-based search (Tries)                                             │
 │                                                                              │
-│ ❌ DON'T USE TREES WHEN:                                                    │
+│ ❌ DON'T USE TREES WHEN:                                                      │
 │    • Data is flat/linear (use array)                                         │
-│    • Relationships aren't hierarchical (use graph)                          │
-│    • Simple key-value lookup (use HashMap - O(1))                           │
-│    • Data changes rarely but searched often (use sorted array + binary)     │
+│    • Relationships aren't hierarchical (use graph)                           │
+│    • Simple key-value lookup (use HashMap - O(1))                            │
+│    • Data changes rarely but searched often (use sorted array + binary)      │
 │                                                                              │
 │ TREE TYPE SELECTION:                                                         │
-│ ┌────────────────────────────┬───────────────────────────────────────────┐  │
-│ │ Problem Type               │ Best Tree Type                            │  │
-│ ├────────────────────────────┼───────────────────────────────────────────┤  │
-│ │ Maintain sorted data       │ BST, AVL, Red-Black                       │  │
-│ │ Find min/max repeatedly    │ Heap                                      │  │
-│ │ Range sum/min/max queries  │ Segment Tree                              │  │
-│ │ Prefix search (strings)    │ Trie                                      │  │
-│ │ Hierarchical data          │ N-ary Tree                                │  │
-│ │ Parse expressions          │ Expression Tree                           │  │
-│ └────────────────────────────┴───────────────────────────────────────────┘  │
+│ ┌────────────────────────────┬───────────────────────────────────────────┐   │
+│ │ Problem Type               │ Best Tree Type                            │   │
+│ ├────────────────────────────┼───────────────────────────────────────────┤   │
+│ │ Maintain sorted data       │ BST, AVL, Red-Black                       │   │
+│ │ Find min/max repeatedly    │ Heap                                      │   │
+│ │ Range sum/min/max queries  │ Segment Tree                              │   │
+│ │ Prefix search (strings)    │ Trie                                      │   │
+│ │ Hierarchical data          │ N-ary Tree                                │   │
+│ │ Parse expressions          │ Expression Tree                           │   │
+│ └────────────────────────────┴───────────────────────────────────────────┘   │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ DIFFICULTIES & COMMON PITFALLS                                               │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │ 1. NULL POINTER EXCEPTIONS:                                                  │
-│    ALWAYS check if node is null before accessing .left or .right            │
-│    Solution: Start every recursive function with: if (root == null) return  │
+│    ALWAYS check if node is null before accessing .left or .right             │
+│    Solution: Start every recursive function with: if (root == null) return   │
 │                                                                              │
 │ 2. UNBALANCED TREES:                                                         │
-│    Inserting sorted data into BST → becomes a linked list → O(n)            │
-│    Solution: Use self-balancing trees (AVL, Red-Black)                      │
+│    Inserting sorted data into BST → becomes a linked list → O(n)             │
+│    Solution: Use self-balancing trees (AVL, Red-Black)                       │
 │                                                                              │
 │ 3. CONFUSING TRAVERSAL TYPES:                                                │
 │    Which traversal to use for which problem?                                 │
@@ -433,14 +488,14 @@
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ TRAVERSAL OUTPUTS:                                                           │
-│ • Preorder:  [root, left subtree, right subtree]  - useful for copying tree │
-│ • Inorder:   [left subtree, root, right subtree]  - gives SORTED for BST    │
-│ • Postorder: [left subtree, right subtree, root]  - useful for deleting     │
-│ • Level:     [[level 0], [level 1], ...]          - useful for BFS problems │
+│ • Preorder:  [root, left subtree, right subtree]  - useful for copying tree  │
+│ • Inorder:   [left subtree, root, right subtree]  - gives SORTED for BST     │
+│ • Postorder: [left subtree, right subtree, root]  - useful for deleting      │
+│ • Level:     [[level 0], [level 1], ...]          - useful for BFS problems  │
 │                                                                              │
 │ TIME COMPLEXITY:                                                             │
 │ • All traversals: O(n) - must visit every node                               │
-│ • BST search/insert/delete: O(h) where h = height                           │
+│ • BST search/insert/delete: O(h) where h = height                            │
 │   - Balanced: h = log(n) → O(log n)                                          │
 │   - Unbalanced: h = n → O(n)                                                 │
 │                                                                              │
@@ -451,9 +506,9 @@
 │ • Storing tree: O(n) for n nodes                                             │
 │                                                                              │
 │ IMPORTANT FORMULAS:                                                          │
-│ • Complete binary tree with n nodes: height = ⌊log₂(n)⌋                     │
-│ • Full binary tree height h: max nodes = 2^(h+1) - 1                        │
-│ • Binary tree height h: min nodes = h+1, max nodes = 2^(h+1) - 1            │
+│ • Complete binary tree with n nodes: height = ⌊log₂(n)⌋                      │
+│ • Full binary tree height h: max nodes = 2^(h+1) - 1                         │
+│ • Binary tree height h: min nodes = h+1, max nodes = 2^(h+1) - 1             │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -476,6 +531,7 @@ TERMINOLOGY:
 • Depth: Distance from root (depth of 4 is 2)
 • Subtree: Any node and its descendants
 ```
+
 
 ## Tree Node Structure
 
@@ -500,7 +556,7 @@ root.left.right = new TreeNode(5);
 
 ---
 
-# PART 2: TREE TRAVERSALS
+# 🌳 Part 2: Tree Traversals
 
 ## The Three DFS Traversals
 
@@ -531,50 +587,50 @@ POSTORDER: 4 → 5 → 2 → 3 → 1  (Children first, then root)
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ PREORDER (Root → Left → Right):                                              │
-│ ┌────────────────────────────────────────────────────────────────┐          │
-│ │ USE FOR: Copying/cloning a tree                                │          │
-│ │          Serializing tree to file/string                       │          │
+│ ┌────────────────────────────────────────────────────────────────┐           │
+│ │ USE FOR: Copying/cloning a tree                                │           │
+│ │          Serializing tree to file/string                       │           │
 │ │          Creating prefix expressions                            │          │
 │ │          Getting directory structure (ls -R)                    │          │
-│ │                                                                  │          │
-│ │ WHY: You need to create parent BEFORE children                 │          │
-│ │      (Can't have children without parent first!)               │          │
-│ └────────────────────────────────────────────────────────────────┘          │
+│ │                                                                  │         │
+│ │ WHY: You need to create parent BEFORE children                 │           │
+│ │      (Can't have children without parent first!)               │           │
+│ └────────────────────────────────────────────────────────────────┘           │
 │                                                                              │
 │ INORDER (Left → Root → Right):                                               │
-│ ┌────────────────────────────────────────────────────────────────┐          │
-│ │ USE FOR: Getting sorted elements from BST                      │          │
-│ │          Validating if tree is BST                             │          │
-│ │          Finding kth smallest/largest element                  │          │
+│ ┌────────────────────────────────────────────────────────────────┐           │
+│ │ USE FOR: Getting sorted elements from BST                      │           │
+│ │          Validating if tree is BST                             │           │
+│ │          Finding kth smallest/largest element                  │           │
 │ │          Creating infix expressions                             │          │
-│ │                                                                  │          │
-│ │ WHY: For BST, left < root < right, so this gives sorted order  │          │
-│ │      It's the "natural" reading order (left to right)          │          │
-│ └────────────────────────────────────────────────────────────────┘          │
+│ │                                                                  │         │
+│ │ WHY: For BST, left < root < right, so this gives sorted order  │           │
+│ │      It's the "natural" reading order (left to right)          │           │
+│ └────────────────────────────────────────────────────────────────┘           │
 │                                                                              │
 │ POSTORDER (Left → Right → Root):                                             │
-│ ┌────────────────────────────────────────────────────────────────┐          │
-│ │ USE FOR: Deleting a tree (must delete children before parent)  │          │
-│ │          Calculating folder sizes (need children sizes first)  │          │
+│ ┌────────────────────────────────────────────────────────────────┐           │
+│ │ USE FOR: Deleting a tree (must delete children before parent)  │           │
+│ │          Calculating folder sizes (need children sizes first)  │           │
 │ │          Evaluating expression trees                            │          │
 │ │          Finding height of tree                                 │          │
 │ │          Garbage collection algorithms                          │          │
-│ │                                                                  │          │
-│ │ WHY: You need children's result before you can compute parent's│          │
-│ │      (Can't calculate total until you have subtotals!)         │          │
-│ └────────────────────────────────────────────────────────────────┘          │
+│ │                                                                  │         │
+│ │ WHY: You need children's result before you can compute parent's│           │
+│ │      (Can't calculate total until you have subtotals!)         │           │
+│ └────────────────────────────────────────────────────────────────┘           │
 │                                                                              │
 │ LEVEL ORDER (BFS):                                                           │
-│ ┌────────────────────────────────────────────────────────────────┐          │
-│ │ USE FOR: Finding shortest path in unweighted tree              │          │
-│ │          Printing tree level by level                          │          │
+│ ┌────────────────────────────────────────────────────────────────┐           │
+│ │ USE FOR: Finding shortest path in unweighted tree              │           │
+│ │          Printing tree level by level                          │           │
 │ │          Finding nodes at specific depth                        │          │
 │ │          Connecting nodes at same level                         │          │
 │ │          Zigzag traversal                                       │          │
-│ │                                                                  │          │
-│ │ WHY: Processes nodes by distance from root - perfect for       │          │
+│ │                                                                  │         │
+│ │ WHY: Processes nodes by distance from root - perfect for       │           │
 │ │      "nearest" or "level" based questions                       │          │
-│ └────────────────────────────────────────────────────────────────┘          │
+│ └────────────────────────────────────────────────────────────────┘           │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 QUICK DECISION TABLE:
@@ -686,7 +742,7 @@ public List<List<Integer>> levelOrder(TreeNode root) {
 
 ---
 
-# PART 3: COMMON TREE PROBLEMS
+# 🌳 Part 3: Common Tree Problems
 
 ## Maximum Depth
 
@@ -769,7 +825,7 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 ---
 
-# PART 4: BINARY SEARCH TREE (BST)
+# 🌳 Part 4: Binary Search Tree (bst)
 
 ## BST Property
 
@@ -836,8 +892,6 @@ private boolean validate(TreeNode node, long min, long max) {
            validate(node.right, node.val, max);
 }
 ```
-
----
 
 ---
 
@@ -1053,8 +1107,6 @@ public class EulerTour {
 
 ---
 
----
-
 # PART 14: Complete Tree Problems with Solutions
 
 ## Problem 1: Serialize and Deserialize Binary Tree
@@ -1214,9 +1266,7 @@ public void flatten(TreeNode root) {
 
 ---
 
----
-
-# PART 10: CODERBYTE & INTERVIEW TREE CHALLENGES
+# 🌳 Part 10: Coderbyte & Interview Tree Challenges
 
 ## Challenge 1: Binary Tree LCA from Array Representation
 
@@ -1571,30 +1621,31 @@ public class TreeSerializer {
 ## Tree Challenge Patterns Summary
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    TREE PROBLEM RECOGNITION GUIDE                               │
-├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                 │
-│  "Find common ancestor..."             → LCA algorithm                          │
+┌──────────────────────────────────────────────────────────────────────────────────┐
+│                    TREE PROBLEM RECOGNITION GUIDE                                │
+├──────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                  │
+│  "Find common ancestor..."             → LCA algorithm                           │
 │  "Tree given as array [1,2,3,#,4]..."  → Parent at (i-1)/2, children at 2i+1,2i+2│
-│  "Distance between nodes..."           → LCA + distance from LCA to each node   │
-│  "Path between nodes..."               → Find LCA, then paths from LCA          │
-│  "Serialize tree..."                   → Preorder with null markers             │
-│  "Validate BST..."                     → Inorder should be sorted               │
-│                                                                                 │
-│  TREE ARRAY INDEX FORMULAS (0-indexed):                                         │
-│  • Parent of i:       (i - 1) / 2                                               │
-│  • Left child of i:   2 * i + 1                                                 │
-│  • Right child of i:  2 * i + 2                                                 │
-│                                                                                 │
-│  LCA APPROACHES:                                                                │
-│  • Recursive: O(n) time, O(h) space                                             │
-│  • Parent map: O(n) time, O(n) space                                            │
-│  • BST optimized: O(h) time, O(1) space                                         │
-│  • Binary lifting: O(n log n) preprocess, O(log n) query                        │
-│                                                                                 │
-└─────────────────────────────────────────────────────────────────────────────────┘
+│  "Distance between nodes..."           → LCA + distance from LCA to each node    │
+│  "Path between nodes..."               → Find LCA, then paths from LCA           │
+│  "Serialize tree..."                   → Preorder with null markers              │
+│  "Validate BST..."                     → Inorder should be sorted                │
+│                                                                                  │
+│  TREE ARRAY INDEX FORMULAS (0-indexed):                                          │
+│  • Parent of i:       (i - 1) / 2                                                │
+│  • Left child of i:   2 * i + 1                                                  │
+│  • Right child of i:  2 * i + 2                                                  │
+│                                                                                  │
+│  LCA APPROACHES:                                                                 │
+│  • Recursive: O(n) time, O(h) space                                              │
+│  • Parent map: O(n) time, O(n) space                                             │
+│  • BST optimized: O(h) time, O(1) space                                          │
+│  • Binary lifting: O(n log n) preprocess, O(log n) query                         │
+│                                                                                  │
+└──────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ---
 
@@ -1659,3 +1710,4 @@ _Trees and graphs are everywhere - master them and unlock many problems!_
 | Sum of Distances in Tree | LC 834 | Re-rooting technique (Hard, teaches re-root) |
 | Check Completeness of Binary Tree | LC 958 | BFS — null before value = incomplete |
 | Count Complete Tree Nodes | LC 222 | O(log²n) using height comparison |
+

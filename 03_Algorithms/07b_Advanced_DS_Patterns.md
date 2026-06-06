@@ -1,4 +1,4 @@
-> **Navigation**: [< Previous Chapter](07a_Advanced_DS_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
+﻿**Navigation**: [< Previous Chapter](07a_Advanced_DS_Core.md) | [Back to Index](../00_MASTER_INDEX.md)
 
 ---
 
@@ -90,7 +90,177 @@ class FenwickTree {
 
 ---
 
-# PART 5: DISJOINT SET (UNION-FIND)
+# PART 4b: SEGMENT TREE — Complete Implementation
+
+```
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                      SEGMENT TREE — THEORY & CODE                            ║
+╠══════════════════════════════════════════════════════════════════════════════╣
+║  A Segment Tree allows:                                                      ║
+║  • Range Query (sum/min/max/gcd) in O(log n)                                 ║
+║  • Point Update in O(log n)                                                  ║
+║  • Range Update with Lazy Propagation in O(log n)                            ║
+║  • Uses O(4n) space (built as complete binary tree in array)                 ║
+║                                                                              ║
+║  WHEN TO USE vs BIT/FENWICK:                                                 ║
+║  • BIT: Only prefix-sum/point-update. Simpler, less memory.                  ║
+║  • Segment Tree: Range update, range min/max, lazy propagation.              ║
+║    More powerful but ~2× more code.                                          ║
+║                                                                              ║
+║  VISUAL:                                                                     ║
+║  Array: [1, 3, 5, 7, 9, 11]                                                  ║
+║                                                                              ║
+║                    [0,5]=36                                                  ║
+║                  /          \                                                ║
+║            [0,2]=9         [3,5]=27                                          ║
+║            /    \          /     \                                           ║
+║        [0,1]=4  [2]=5  [3,4]=16  [5]=11                                      ║
+║        /    \          /    \                                                ║
+║     [0]=1  [1]=3   [3]=7  [4]=9                                              ║
+║                                                                              ║
+║  Each node stores aggregate (sum/min/max) of its range.                      ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+```
+
+
+## Segment Tree Implementation (Range Sum + Point Update)
+
+```java
+class SegmentTree {
+    int[] tree;
+    int n;
+    
+    public SegmentTree(int[] arr) {
+        n = arr.length;
+        tree = new int[4 * n];  // 4× for safe sizing
+        build(arr, 0, 0, n - 1);
+    }
+    
+    // BUILD: O(n)
+    private void build(int[] arr, int node, int start, int end) {
+        if (start == end) {
+            tree[node] = arr[start];  // Leaf
+        } else {
+            int mid = (start + end) / 2;
+            build(arr, 2 * node + 1, start, mid);       // Left child
+            build(arr, 2 * node + 2, mid + 1, end);     // Right child
+            tree[node] = tree[2 * node + 1] + tree[2 * node + 2];  // Merge
+        }
+    }
+    
+    // POINT UPDATE: O(log n)
+    public void update(int idx, int val) {
+        update(0, 0, n - 1, idx, val);
+    }
+    
+    private void update(int node, int start, int end, int idx, int val) {
+        if (start == end) {
+            tree[node] = val;
+        } else {
+            int mid = (start + end) / 2;
+            if (idx <= mid) update(2 * node + 1, start, mid, idx, val);
+            else update(2 * node + 2, mid + 1, end, idx, val);
+            tree[node] = tree[2 * node + 1] + tree[2 * node + 2];
+        }
+    }
+    
+    // RANGE QUERY: O(log n)
+    public int query(int L, int R) {
+        return query(0, 0, n - 1, L, R);
+    }
+    
+    private int query(int node, int start, int end, int L, int R) {
+        if (R < start || end < L) return 0;            // No overlap
+        if (L <= start && end <= R) return tree[node];  // Total overlap
+        int mid = (start + end) / 2;                    // Partial overlap
+        return query(2 * node + 1, start, mid, L, R)
+             + query(2 * node + 2, mid + 1, end, L, R);
+    }
+}
+```
+
+## Segment Tree with Lazy Propagation (Range Update)
+
+```java
+class LazySegTree {
+    int[] tree, lazy;
+    int n;
+    
+    public LazySegTree(int[] arr) {
+        n = arr.length;
+        tree = new int[4 * n];
+        lazy = new int[4 * n];
+        build(arr, 0, 0, n - 1);
+    }
+    
+    private void build(int[] arr, int node, int start, int end) {
+        if (start == end) { tree[node] = arr[start]; return; }
+        int mid = (start + end) / 2;
+        build(arr, 2*node+1, start, mid);
+        build(arr, 2*node+2, mid+1, end);
+        tree[node] = tree[2*node+1] + tree[2*node+2];
+    }
+    
+    private void pushDown(int node, int start, int end) {
+        if (lazy[node] != 0) {
+            int mid = (start + end) / 2;
+            tree[2*node+1] += lazy[node] * (mid - start + 1);
+            tree[2*node+2] += lazy[node] * (end - mid);
+            lazy[2*node+1] += lazy[node];
+            lazy[2*node+2] += lazy[node];
+            lazy[node] = 0;
+        }
+    }
+    
+    // RANGE UPDATE: add val to all elements in [L,R]
+    public void rangeUpdate(int L, int R, int val) {
+        rangeUpdate(0, 0, n-1, L, R, val);
+    }
+    
+    private void rangeUpdate(int node, int start, int end, int L, int R, int val) {
+        if (R < start || end < L) return;
+        if (L <= start && end <= R) {
+            tree[node] += val * (end - start + 1);
+            lazy[node] += val;
+            return;
+        }
+        pushDown(node, start, end);
+        int mid = (start + end) / 2;
+        rangeUpdate(2*node+1, start, mid, L, R, val);
+        rangeUpdate(2*node+2, mid+1, end, L, R, val);
+        tree[node] = tree[2*node+1] + tree[2*node+2];
+    }
+    
+    public int query(int L, int R) { return query(0, 0, n-1, L, R); }
+    
+    private int query(int node, int start, int end, int L, int R) {
+        if (R < start || end < L) return 0;
+        if (L <= start && end <= R) return tree[node];
+        pushDown(node, start, end);
+        int mid = (start + end) / 2;
+        return query(2*node+1, start, mid, L, R) + query(2*node+2, mid+1, end, L, R);
+    }
+}
+```
+
+## Curated Segment Tree / BIT Problems
+
+| # | Problem | LC# | Pattern | Difficulty |
+|---|---------|-----|---------|-----------|
+| 1 | [Range Sum Query - Mutable](https://leetcode.com/problems/range-sum-query-mutable/) | 307 | BIT or Segment Tree | Medium |
+| 2 | [Count of Smaller Numbers After Self](https://leetcode.com/problems/count-of-smaller-numbers-after-self/) | 315 | BIT + coordinate compress | Hard |
+| 3 | [My Calendar I](https://leetcode.com/problems/my-calendar-i/) | 729 | Segment Tree / TreeMap | Medium |
+| 4 | [My Calendar II](https://leetcode.com/problems/my-calendar-ii/) | 731 | Segment Tree with lazy | Medium |
+| 5 | [My Calendar III](https://leetcode.com/problems/my-calendar-iii/) | 732 | Segment Tree with lazy | Hard |
+| 6 | [Count of Range Sum](https://leetcode.com/problems/count-of-range-sum/) | 327 | BIT / Merge Sort | Hard |
+| 7 | [Reverse Pairs](https://leetcode.com/problems/reverse-pairs/) | 493 | BIT / Merge Sort | Hard |
+| 8 | [Rectangle Area II](https://leetcode.com/problems/rectangle-area-ii/) | 850 | Segment Tree + sweep | Hard |
+| 9 | [Falling Squares](https://leetcode.com/problems/falling-squares/) | 699 | Segment Tree (range max) | Hard |
+| 10 | [Range Sum Query 2D - Mutable](https://leetcode.com/problems/range-sum-query-2d-mutable/) | 308 | 2D BIT | Hard |
+
+---
+
+# 🔗 Part 5: Disjoint Set (union — Find)
 
 ## Concept
 
@@ -230,7 +400,7 @@ public int kruskalMST(int n, int[][] edges) {
 
 ---
 
-# PART 6: SKIP LIST
+# 📌 Part 6: Skip List
 
 ## Concept
 
@@ -252,6 +422,7 @@ Search for 6:
 
 Path: 1→9 (overshoot) ↓ 1→4→7 (overshoot) ↓ 4→6 ✓
 ```
+
 
 ## Implementation
 
@@ -363,7 +534,7 @@ class SkipList {
 
 ---
 
-# PART 7: BLOOM FILTER
+# 📌 Part 7: Bloom Filter
 
 ## Concept
 
@@ -456,7 +627,7 @@ class BloomFilter {
 
 ---
 
-# PART 8: LRU CACHE
+# 💾 Part 8: LRU Cache
 
 ## Concept
 
@@ -481,6 +652,7 @@ Structure: HashMap + Doubly Linked List
 Access B → Move B to front:
 HEAD ←→ B ←→ A ←→ C ←→ TAIL
 ```
+
 
 ## Implementation
 
@@ -571,7 +743,7 @@ class LRUCache {
 
 ---
 
-# PART 9: B-TREE AND B+ TREE
+# 🌳 Part 9: B — Tree and B+ Tree
 
 ## Concept
 
@@ -609,9 +781,10 @@ WHY B+ TREE for DATABASES?
 3. More keys per node → shallower tree → fewer disk reads
 ```
 
+
 ---
 
-# PART 10: COMPARISON TABLE
+# ⚖️ Part 10: Comparison Table
 
 ```
 ┌───────────────────┬─────────────┬─────────────┬─────────────────────┐
@@ -633,13 +806,14 @@ k = number of hash functions for Bloom Filter
 α = inverse Ackermann function (practically constant)
 ```
 
+
 ---
 
 _These data structures are the building blocks of modern systems!_ 🏗️
 
 ---
 
-# PART 11: MORE ADVANCED DATA STRUCTURES
+# 🚀 Part 11: More Advanced Data Structures
 
 ## Sparse Table (Range Minimum Query)
 
@@ -654,14 +828,15 @@ Array: [3, 1, 4, 1, 5, 9, 2, 6]
 Sparse Table (for MIN):
 ┌───────────────────────────────────────────────────────────────┐
 │ k=0 (2^0=1): [3, 1, 4, 1, 5, 9, 2, 6]  (each element itself)  │
-│ k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -]  (min of 2)            │
-│ k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -]  (min of 4)            │
-│ k=3 (2^3=8): [1, -, -, -, -, -, -, -]  (min of 8)            │
+│ k=1 (2^1=2): [1, 1, 1, 1, 5, 2, 2, -]  (min of 2)             │
+│ k=2 (2^2=4): [1, 1, 1, 1, 2, 2, -, -]  (min of 4)             │
+│ k=3 (2^3=8): [1, -, -, -, -, -, -, -]  (min of 8)             │
 └───────────────────────────────────────────────────────────────┘
 
 Query(2, 6): min(sparse[2][2], sparse[3][2]) = min(1, 2) = 1
              Using k=2 (length 4), overlapping ranges [2-5] and [3-6]
 ```
+
 
 ```java
 class SparseTable {
@@ -731,16 +906,17 @@ VISUAL EXAMPLE - Next Greater Element:
 Array: [4, 5, 2, 10, 8]
 
 Step by step (decreasing stack, process right to left):
-┌──────────────────────────────────────────────────────────────┐
-│ i=4: arr[4]=8   Stack=[]      → NGE=-1   Stack=[8]          │
-│ i=3: arr[3]=10  Stack=[8]     → 10>8, pop → NGE=-1  Stack=[10]│
-│ i=2: arr[2]=2   Stack=[10]    → 2<10 → NGE=10  Stack=[10,2] │
+┌────────────────────────────────────────────────────────────────┐
+│ i=4: arr[4]=8   Stack=[]      → NGE=-1   Stack=[8]             │
+│ i=3: arr[3]=10  Stack=[8]     → 10>8, pop → NGE=-1  Stack=[10] │
+│ i=2: arr[2]=2   Stack=[10]    → 2<10 → NGE=10  Stack=[10,2]    │
 │ i=1: arr[1]=5   Stack=[10,2]  → 5>2, pop → NGE=10  Stack=[10,5]│
-│ i=0: arr[0]=4   Stack=[10,5]  → 4<5 → NGE=5   Stack=[10,5,4]│
-└──────────────────────────────────────────────────────────────┘
+│ i=0: arr[0]=4   Stack=[10,5]  → 4<5 → NGE=5   Stack=[10,5,4]   │
+└────────────────────────────────────────────────────────────────┘
 
 Result: [5, 10, 10, -1, -1]
 ```
+
 
 ```java
 // Next Greater Element
@@ -803,6 +979,15 @@ public int largestRectangleArea(int[] heights) {
 
 ---
 
+🔬 **Section Challenge — Monotonic Stack**
+
+**Challenge 1 (Reasoning):** Monotonic DECREASING stack — when you push a new element, which existing elements are popped and what information do those pops tell you?
+<details><summary>Answer</summary>
+
+In a decreasing stack (top is smallest), pushing element `x`: all elements smaller than `x` are popped. For each popped element `y`: `x` is the NEXT GREATER ELEMENT of `y`. This is the key insight: the pop event = answer event. Application: Daily Temperatures (next warmer day), Largest Rectangle in Histogram (right boundary), Next Greater Element. Each element is pushed and popped exactly once → O(N) total.
+</details>
+
+
 ## Monotonic Deque (Sliding Window Maximum)
 
 ```
@@ -814,16 +999,17 @@ PROBLEM: Find maximum in each sliding window of size k
 Array: [1, 3, -1, -3, 5, 3, 6, 7], k=3
 
 ┌─────────────────────────────────────────────────────────────────┐
-│ Window [1,3,-1]     Deque: [3,-1]     Max: 3                   │
-│ Window [3,-1,-3]    Deque: [3,-1,-3]  Max: 3                   │
-│ Window [-1,-3,5]    Deque: [5]        Max: 5                   │
-│ Window [-3,5,3]     Deque: [5,3]      Max: 5                   │
-│ Window [5,3,6]      Deque: [6]        Max: 6                   │
-│ Window [3,6,7]      Deque: [7]        Max: 7                   │
+│ Window [1,3,-1]     Deque: [3,-1]     Max: 3                    │
+│ Window [3,-1,-3]    Deque: [3,-1,-3]  Max: 3                    │
+│ Window [-1,-3,5]    Deque: [5]        Max: 5                    │
+│ Window [-3,5,3]     Deque: [5,3]      Max: 5                    │
+│ Window [5,3,6]      Deque: [6]        Max: 6                    │
+│ Window [3,6,7]      Deque: [7]        Max: 7                    │
 └─────────────────────────────────────────────────────────────────┘
 
 Result: [3, 3, 5, 5, 6, 7]
 ```
+
 
 ```java
 public int[] maxSlidingWindow(int[] nums, int k) {
@@ -857,6 +1043,21 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 
 ---
 
+🔬 **Section Challenge — Monotonic Deque (Sliding Window Maximum)**
+
+**Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+<details><summary>Answer</summary>
+
+Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+</details>
+
+**Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+<details><summary>Answer</summary>
+
+Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+</details>
+
+
 ## Circular Buffer (Ring Buffer)
 
 ```
@@ -865,28 +1066,29 @@ RING BUFFER: Fixed-size buffer that wraps around
 
 STRUCTURE:
 ┌─────────────────────────────────────────────────────────┐
-│         ┌───┬───┬───┬───┬───┬───┬───┬───┐             │
-│         │ A │ B │ C │ D │ E │   │   │   │             │
-│         └───┴───┴───┴───┴───┴───┴───┴───┘             │
-│           ↑                   ↑                        │
-│         HEAD                TAIL                       │
-│         (read)              (write)                    │
-│                                                        │
-│  After adding F, G, H, I:                             │
-│         ┌───┬───┬───┬───┬───┬───┬───┬───┐             │
-│         │ A │ B │ C │ D │ E │ F │ G │ H │             │
-│         └───┴───┴───┴───┴───┴───┴───┴───┘             │
-│           ↑                               ↑            │
-│         HEAD                            TAIL           │
-│                                                        │
-│  After adding I (wraps around):                       │
-│         ┌───┬───┬───┬───┬───┬───┬───┬───┐             │
-│         │ I │ B │ C │ D │ E │ F │ G │ H │             │
-│         └───┴───┴───┴───┴───┴───┴───┴───┘             │
-│             ↑ ↑                                        │
-│          TAIL HEAD                                     │
+│         ┌───┬───┬───┬───┬───┬───┬───┬───┐               │
+│         │ A │ B │ C │ D │ E │   │   │   │               │
+│         └───┴───┴───┴───┴───┴───┴───┴───┘               │
+│           ↑                   ↑                         │
+│         HEAD                TAIL                        │
+│         (read)              (write)                     │
+│                                                         │
+│  After adding F, G, H, I:                               │
+│         ┌───┬───┬───┬───┬───┬───┬───┬───┐               │
+│         │ A │ B │ C │ D │ E │ F │ G │ H │               │
+│         └───┴───┴───┴───┴───┴───┴───┴───┘               │
+│           ↑                               ↑             │
+│         HEAD                            TAIL            │
+│                                                         │
+│  After adding I (wraps around):                         │
+│         ┌───┬───┬───┬───┬───┬───┬───┬───┐               │
+│         │ I │ B │ C │ D │ E │ F │ G │ H │               │
+│         └───┴───┴───┴───┴───┴───┴───┴───┘               │
+│             ↑ ↑                                         │
+│          TAIL HEAD                                      │
 └─────────────────────────────────────────────────────────┘
 ```
+
 
 ```java
 class CircularBuffer<T> {
@@ -976,30 +1178,31 @@ QUADTREE: Tree where each node has exactly 4 children
 STRUCTURE:
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│    ┌─────────────┬─────────────┐                               │
-│    │             │             │                               │
-│    │     NW      │     NE      │                               │
-│    │             │             │                               │
-│    ├─────────────┼─────────────┤                               │
-│    │             │             │                               │
-│    │     SW      │     SE      │                               │
-│    │             │             │                               │
-│    └─────────────┴─────────────┘                               │
+│    ┌─────────────┬─────────────┐                                │
+│    │             │             │                                │
+│    │     NW      │     NE      │                                │
+│    │             │             │                                │
+│    ├─────────────┼─────────────┤                                │
+│    │             │             │                                │
+│    │     SW      │     SE      │                                │
+│    │             │             │                                │
+│    └─────────────┴─────────────┘                                │
 │                                                                 │
 │  Each quadrant can be subdivided further if needed              │
 │                                                                 │
-│  Example: Storing points (3,7), (5,2), (8,8), (1,4)            │
+│  Example: Storing points (3,7), (5,2), (8,8), (1,4)             │
 │                                                                 │
-│    10┌─────────────┬─────────────┐                             │
-│      │    (3,7)    │    (8,8)    │                             │
-│    5 │    (1,4)    │             │                             │
-│      ├─────────────┼─────────────┤                             │
-│      │             │    (5,2)    │                             │
-│    0 │             │             │                             │
-│      └─────────────┴─────────────┘                             │
-│      0      5      10                                          │
+│    10┌─────────────┬─────────────┐                              │
+│      │    (3,7)    │    (8,8)    │                              │
+│    5 │    (1,4)    │             │                              │
+│      ├─────────────┼─────────────┤                              │
+│      │             │    (5,2)    │                              │
+│    0 │             │             │                              │
+│      └─────────────┴─────────────┘                              │
+│      0      5      10                                           │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ```java
 class QuadTree {
@@ -1101,23 +1304,24 @@ Used in: Blockchain, Git, Databases (PostgreSQL), P2P networks
 STRUCTURE:
 ┌─────────────────────────────────────────────────────────────────┐
 │                                                                 │
-│                    [Root Hash: abcd1234]                       │
+│                    [Root Hash: abcd1234]                        │
 │                           /        \                            │
-│              [Hash: ab12]           [Hash: cd34]               │
+│              [Hash: ab12]           [Hash: cd34]                │
 │               /       \              /        \                 │
-│         [H: a1]    [H: b2]     [H: c3]     [H: d4]             │
+│         [H: a1]    [H: b2]     [H: c3]     [H: d4]              │
 │            |          |           |           |                 │
 │         Block A   Block B     Block C     Block D               │
 │                                                                 │
 │  VERIFICATION:                                                  │
-│  To verify Block C is unchanged:                               │
-│  1. Hash Block C → should match [H: c3]                        │
-│  2. Combine with [H: d4] → should match [Hash: cd34]           │
-│  3. Combine with [Hash: ab12] → should match Root              │
+│  To verify Block C is unchanged:                                │
+│  1. Hash Block C → should match [H: c3]                         │
+│  2. Combine with [H: d4] → should match [Hash: cd34]            │
+│  3. Combine with [Hash: ab12] → should match Root               │
 │                                                                 │
-│  Only need O(log n) hashes to verify any block!                │
+│  Only need O(log n) hashes to verify any block!                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ```java
 import java.security.MessageDigest;
@@ -1209,7 +1413,7 @@ class MerkleTree {
 
 ---
 
-# PART 12: LEETCODE PROBLEMS BY DATA STRUCTURE
+# 🧩 Part 12: Leetcode Problems By Data Structure
 
 ## Practice Problems Mapped to DS
 
@@ -1256,38 +1460,39 @@ HEAP/PRIORITY QUEUE:
 └── LC 767: Reorganize String                     ⭐ Medium
 ```
 
+
 ---
 
-# PART 13: COMPLEXITY CHEAT SHEET (EXTENDED)
+# 📋 Part 13: Complexity Cheat Sheet (extended)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
 │                    COMPLETE COMPLEXITY REFERENCE                            │
 ├─────────────────────────────────────────────────────────────────────────────┤
-│ DATA STRUCTURE      │ ACCESS │ SEARCH │ INSERT │ DELETE │ SPACE            │
-├─────────────────────┼────────┼────────┼────────┼────────┼──────────────────┤
-│ Array               │ O(1)   │ O(n)   │ O(n)   │ O(n)   │ O(n)             │
-│ Dynamic Array       │ O(1)   │ O(n)   │ O(1)*  │ O(n)   │ O(n)             │
-│ Singly Linked List  │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)             │
-│ Doubly Linked List  │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)             │
-│ Stack               │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)             │
-│ Queue               │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)             │
-│ Hash Table          │ N/A    │ O(1)*  │ O(1)*  │ O(1)*  │ O(n)             │
-│ BST (balanced)      │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)             │
-│ BST (worst)         │ O(n)   │ O(n)   │ O(n)   │ O(n)   │ O(n)             │
-│ AVL Tree            │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)             │
-│ Red-Black Tree      │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)             │
-│ B-Tree              │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)             │
-│ Heap                │ O(1)†  │ O(n)   │ O(logn)│ O(logn)│ O(n)             │
-│ Trie                │ O(m)   │ O(m)   │ O(m)   │ O(m)   │ O(ALPHABET*m*n)  │
-│ Segment Tree        │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(4n)            │
-│ Fenwick Tree        │ N/A    │ O(logn)│ O(logn)│ N/A    │ O(n)             │
-│ Sparse Table        │ O(1)   │ O(1)   │ N/A    │ N/A    │ O(n log n)       │
-│ Disjoint Set        │ N/A    │ O(α)   │ O(α)   │ N/A    │ O(n)             │
-│ Skip List           │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n log n)*      │
-│ Bloom Filter        │ N/A    │ O(k)   │ O(k)   │ N/A    │ O(m) bits        │
-│ QuadTree            │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)             │
-└─────────────────────┴────────┴────────┴────────┴────────┴──────────────────┘
+│ DATA STRUCTURE      │ ACCESS │ SEARCH │ INSERT │ DELETE │ SPACE             │
+├─────────────────────┼────────┼────────┼────────┼────────┼───────────────────┤
+│ Array               │ O(1)   │ O(n)   │ O(n)   │ O(n)   │ O(n)              │
+│ Dynamic Array       │ O(1)   │ O(n)   │ O(1)*  │ O(n)   │ O(n)              │
+│ Singly Linked List  │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
+│ Doubly Linked List  │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
+│ Stack               │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
+│ Queue               │ O(n)   │ O(n)   │ O(1)   │ O(1)   │ O(n)              │
+│ Hash Table          │ N/A    │ O(1)*  │ O(1)*  │ O(1)*  │ O(n)              │
+│ BST (balanced)      │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
+│ BST (worst)         │ O(n)   │ O(n)   │ O(n)   │ O(n)   │ O(n)              │
+│ AVL Tree            │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
+│ Red-Black Tree      │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
+│ B-Tree              │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
+│ Heap                │ O(1)†  │ O(n)   │ O(logn)│ O(logn)│ O(n)              │
+│ Trie                │ O(m)   │ O(m)   │ O(m)   │ O(m)   │ O(ALPHABET*m*n)   │
+│ Segment Tree        │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(4n)             │
+│ Fenwick Tree        │ N/A    │ O(logn)│ O(logn)│ N/A    │ O(n)              │
+│ Sparse Table        │ O(1)   │ O(1)   │ N/A    │ N/A    │ O(n log n)        │
+│ Disjoint Set        │ N/A    │ O(α)   │ O(α)   │ N/A    │ O(n)              │
+│ Skip List           │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n log n)*       │
+│ Bloom Filter        │ N/A    │ O(k)   │ O(k)   │ N/A    │ O(m) bits         │
+│ QuadTree            │ O(logn)│ O(logn)│ O(logn)│ O(logn)│ O(n)              │
+└─────────────────────┴────────┴────────┴────────┴────────┴───────────────────┘
 
 * = amortized or average case
 † = O(1) for peek/min, O(log n) for extract
@@ -1296,9 +1501,10 @@ m = string/key length
 k = number of hash functions
 ```
 
+
 ---
 
-# PART 14: WHEN TO USE WHAT (DECISION FLOWCHART)
+# 📌 Part 14: When to Use What (decision Flowchart)
 
 ```
 START: What problem are you solving?
@@ -1339,6 +1545,8 @@ START: What problem are you solving?
     └── Efficient proof of data? → MERKLE TREE
 ```
 
+
 ---
 
 _Master these structures, and you can build anything!_ 🚀
+

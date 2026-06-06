@@ -1,60 +1,155 @@
-> **SQL Chapter 08/20** | [← Previous](07_JOINs_Complete.md) | [Index](../00_MASTER_INDEX.md) | [Next →](09_Window_Functions.md)
+﻿> **SQL Chapter 08/20** | [← Previous](07_JOINs_Complete.md) | [Index](../00_MASTER_INDEX.md) | [Next →](09_Window_Functions.md)
 
 ---
 
 ## Chapter 8: Subqueries & CTEs
 
-### Subquery Types
+### 🧠 Understanding Subqueries — Queries Within Queries
+
+A subquery is a `SELECT` statement nested inside another SQL statement. It lets you use the **result of one query as input to another**. This is powerful because many real-world questions are two-step: first, find something (like the average salary), then use that result to filter or compare.
+
+#### Subquery vs JOIN — Which to Use?
+
+Both can often solve the same problem, but they differ in important ways:
+
+| Aspect | Subquery | JOIN |
+|--------|----------|------|
+| **Readability** | Better when asking "exists/doesn't exist" questions | Better when combining columns from multiple tables |
+| **Performance** | Correlated subqueries run *once per row* of the outer query — can be very slow on large tables | JOINs are typically optimized better by the query planner |
+| **Use when** | Checking existence, comparing to aggregates, filtering by derived values | Retrieving columns from related tables |
+
+> 💡 **Rule of Thumb:** If you need columns from both tables in your output, use a JOIN. If you only need data from one table but need to check a condition against another, a subquery or EXISTS is often cleaner.
+
+#### Correlated vs Non-Correlated — The Performance Trap
+
+- **Non-correlated subquery:** Runs once, independently of the outer query. Like a constant. `WHERE salary > (SELECT AVG(salary) FROM employees)` — the average is computed once and reused for every row. This is fast.
+
+- **Correlated subquery:** References the outer query, so it runs **once for every row** in the outer query. `WHERE salary > (SELECT AVG(salary) FROM employees e2 WHERE e2.dept_id = e.dept_id)` — the average is recomputed for each employee's department. For 10,000 employees, this runs 10,000 subqueries. This can be rewritten as a JOIN for much better performance.
+
+### Why CTEs Exist — Readable, Modular SQL
+
+CTEs (Common Table Expressions, the `WITH` clause) let you break complex queries into **named, sequential steps**. Without CTEs, complex queries become deeply nested subqueries that are nearly impossible to read or debug. CTEs make SQL readable like a story: "First, calculate X. Then, using X, calculate Y. Finally, show Y."
+
+CTEs are also the **only way to write recursive queries** in SQL — traversing hierarchies (org charts, category trees, file systems) requires the query to reference its own previous results, which only `WITH RECURSIVE` supports.
+
+#### 📝 Formal Syntax — Subqueries
+
+```
+-- Scalar subquery (returns single value, used in WHERE):
+SELECT <columns>
+FROM <table>
+WHERE <column> <operator> (SELECT <single_column> FROM <table> [WHERE ...]);
+
+-- Column subquery (returns a list, used with IN):
+SELECT <columns>
+FROM <table>
+WHERE <column> IN (SELECT <single_column> FROM <table> [WHERE ...]);
+
+-- Table subquery (returns a result set, used as derived table in FROM):
+SELECT <columns>
+FROM (SELECT <columns> FROM <table> [WHERE ...]) AS <alias>;
+
+-- EXISTS subquery (returns TRUE/FALSE based on whether rows exist):
+SELECT <columns>
+FROM <table_A> AS a
+WHERE [NOT] EXISTS (SELECT 1 FROM <table_B> WHERE <table_B>.<col> = a.<col>);
+
+-- Correlated subquery (references outer query — runs once per row):
+SELECT <columns>
+FROM <table> AS outer_alias
+WHERE <column> <operator> (
+    SELECT <aggregate>(<column>) FROM <table> WHERE <column> = outer_alias.<column>
+);
+```
+
+#### 📝 Formal Syntax — CTE (Common Table Expression)
+
+```
+WITH <cte_name> AS (
+    SELECT <columns>
+    FROM <table>
+    [WHERE <condition>]
+)
+SELECT <columns>
+FROM <cte_name>
+[JOIN <other_table> ON ...];
+
+-- Multiple CTEs (chained):
+WITH
+    <cte_1> AS (SELECT ...),
+    <cte_2> AS (SELECT ... FROM <cte_1> ...)
+SELECT ... FROM <cte_2>;
+```
+
+#### 📝 Formal Syntax — Recursive CTE
+
+```
+WITH RECURSIVE <cte_name> AS (
+    -- Base case (anchor member):
+    SELECT <columns> FROM <table> WHERE <start_condition>
+
+    UNION ALL
+
+    -- Recursive case (references itself):
+    SELECT <columns>
+    FROM <table>
+    JOIN <cte_name> ON <table>.<parent_col> = <cte_name>.<child_col>
+)
+SELECT * FROM <cte_name>;
+```
+
+---
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                    SUBQUERY TYPES                                                │
+│                    SUBQUERY TYPES                                               │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                  │
+│                                                                                 │
 │  1. SCALAR SUBQUERY - Returns single value                                      │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT * FROM employees                                                   ││
-│  │  WHERE salary > (SELECT AVG(salary) FROM employees);                       ││
-│  │               └──────────────────────────────────────┘                     ││
-│  │                    Returns: 85000 (single value)                           ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT * FROM employees                                                   │ │
+│  │  WHERE salary > (SELECT AVG(salary) FROM employees);                       │ │
+│  │               └──────────────────────────────────────┘                     │ │
+│  │                    Returns: 85000 (single value)                           │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  2. ROW SUBQUERY - Returns single row                                           │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT * FROM employees                                                   ││
-│  │  WHERE (dept_id, job_title) = (SELECT dept_id, job_title                  ││
-│  │                                 FROM employees WHERE emp_id = 1);          ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT * FROM employees                                                   │ │
+│  │  WHERE (dept_id, job_title) = (SELECT dept_id, job_title                  │  │
+│  │                                 FROM employees WHERE emp_id = 1);          │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  3. COLUMN SUBQUERY - Returns single column (multiple rows)                     │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT * FROM employees                                                   ││
-│  │  WHERE dept_id IN (SELECT dept_id FROM departments                        ││
-│  │                    WHERE location = 'New York');                           ││
-│  │                └─────────────────────────────────────────┘                 ││
-│  │                     Returns: (1, 2, 5) - list of values                    ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT * FROM employees                                                   │ │
+│  │  WHERE dept_id IN (SELECT dept_id FROM departments                        │  │
+│  │                    WHERE location = 'New York');                           │ │
+│  │                └─────────────────────────────────────────┘                 │ │
+│  │                     Returns: (1, 2, 5) - list of values                    │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  4. TABLE SUBQUERY - Returns multiple rows and columns                          │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT d.dept_name, sub.avg_salary                                        ││
-│  │  FROM departments d                                                        ││
-│  │  JOIN (SELECT dept_id, AVG(salary) as avg_salary                          ││
-│  │        FROM employees GROUP BY dept_id) sub                                ││
-│  │  ON d.dept_id = sub.dept_id;                                               ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT d.dept_name, sub.avg_salary                                        │ │
+│  │  FROM departments d                                                        │ │
+│  │  JOIN (SELECT dept_id, AVG(salary) as avg_salary                          │  │
+│  │        FROM employees GROUP BY dept_id) sub                                │ │
+│  │  ON d.dept_id = sub.dept_id;                                               │ │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 │  5. CORRELATED SUBQUERY - References outer query                                │
-│  ┌────────────────────────────────────────────────────────────────────────────┐│
-│  │  SELECT * FROM employees e                                                 ││
-│  │  WHERE salary > (SELECT AVG(salary) FROM employees                        ││
-│  │                  WHERE dept_id = e.dept_id);   ←─ References e             ││
-│  │                                                                            ││
-│  │  Executes subquery ONCE PER ROW in outer query (can be slow!)             ││
-│  └────────────────────────────────────────────────────────────────────────────┘│
-│                                                                                  │
+│  ┌────────────────────────────────────────────────────────────────────────────┐ │
+│  │  SELECT * FROM employees e                                                 │ │
+│  │  WHERE salary > (SELECT AVG(salary) FROM employees                        │  │
+│  │                  WHERE dept_id = e.dept_id);   ←─ References e             │ │
+│  │                                                                            │ │
+│  │  Executes subquery ONCE PER ROW in outer query (can be slow!)             │  │
+│  └────────────────────────────────────────────────────────────────────────────┘ │
+│                                                                                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
+
 
 ```sql
 -- ═══════════════════════════════════════════════════════════════════════════════
@@ -331,3 +426,4 @@ SELECT * FROM category_tree ORDER BY full_path;
 
 ---
 
+> **Navigation**: [< Previous](07_JOINs_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Window_Functions.md)

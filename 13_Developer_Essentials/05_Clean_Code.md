@@ -1,6 +1,6 @@
 # ✨ Clean Code Principles — Complete Guide
 
-> **Navigation**: [< CI/CD](04_CICD_Pipelines.md) | [Index](00_INDEX.md) | [Next: Testing >](06_Testing_Fundamentals.md)
+**Navigation**: [< CI/CD](04_CICD_Pipelines.md) | [Index](00_INDEX.md) | [Next: Testing >](06_Testing_Fundamentals.md)
 
 ---
 
@@ -99,6 +99,24 @@ void calculateTotal() {}        // verb
 boolean isActive() {}           // boolean = is/has/can
 ```
 
+🔬 **Section Challenge — 1. Naming (The #1 Most Important Skill)**
+
+**Challenge 1 (Reasoning):** A teammate submits a PR with `boolean flag`, `List<int[]> data`, and `void process()`. Walk through exactly WHY each name fails the intention-revealing test and provide improved versions.
+
+<details><summary>Answer</summary>
+
+`boolean flag` — the word "flag" has no meaning on its own. A boolean describes a binary state; the name must tell you WHICH state. Improved: `isEmailVerified`, `hasActiveSubscription`. `List<int[]> data` — "data" is the most information-free word in English. Everything is data. The name reveals neither the element type nor the purpose. Improved: `flaggedCells`, `activeUserIds`. `void process()` — process WHAT? Every method processes something. The verb reveals zero intent. Improved: `processPaymentRefund()`, `archiveExpiredOrders()`. Rule of thumb: if you can replace a name with "thing" and it still makes sense, the name is wrong.
+
+</details>
+
+**Challenge 2 (Bug Hunt):** You review a PR and see `if (status == 4)`. The author says "everyone knows 4 means ACTIVE." Name two concrete production risks this creates.
+
+<details><summary>Answer</summary>
+
+1. **Silent breakage on refactor**: A new developer changes the status enum ordering to alphabetical — ACTIVE moves from index 4 to index 0. The check `status == 4` now silently evaluates all ACTIVE users as inactive, causing a production outage with no compile-time warning. 2. **Search blindness**: When a bug report says "ACTIVE users are getting locked out," you `grep` the codebase for `ACTIVE` — finding nothing. The magic number `4` is invisible to intent-based search. With `static final int ACTIVE_STATUS = 4; if (status == ACTIVE_STATUS)`, both risks disappear: refactoring requires updating one constant, and `grep ACTIVE_STATUS` finds every usage.
+
+</details>
+
 ## 2. Functions / Methods
 
 ### Small & Focused
@@ -162,6 +180,14 @@ record UserRegistrationRequest(
     Address address, int age, String role
 ) {}
 ```
+
+🔬 **Section Challenge — 2. Functions / Methods**
+>
+**Challenge 2 (Design):** `ROW_NUMBER()` vs `RANK()` vs `DENSE_RANK()` — show with an example where they produce different results.
+<details><summary>Answer</summary>
+
+Scores: [100, 90, 90, 80]. ROW_NUMBER: 1,2,3,4 (always unique, arbitrary for ties). RANK: 1,2,2,4 (gives same rank to ties, SKIPS the next rank). DENSE_RANK: 1,2,2,3 (same rank to ties, NO skipping). Use: ROW_NUMBER for pagination (must be unique). RANK when you want 'no 3rd place if two tied for 2nd'. DENSE_RANK when you want consecutive ranks despite ties.
+</details>
 
 ## 3. Comments
 
@@ -257,6 +283,20 @@ class OrderService {
 }
 ```
 
+🔬 **Section Challenge — 4. SOLID Principles**
+
+**Challenge 1 (Reasoning):** Open/Closed Principle says 'closed for modification'. Does this mean code can NEVER be changed?
+<details><summary>Answer</summary>
+
+No — it means don't modify existing, tested behavior to add new features. Add new classes/methods instead. In practice: use interfaces + plugins. Adding a new payment type = new class implementing `PaymentStrategy`. Not modifying `PaymentProcessor`. The existing processor is 'closed' (don't touch tested code). The system is 'open' (easily extend by adding new implementations).
+</details>
+
+**Challenge 2 (Design):** A class has 5 public methods but clients only use 1-2. Which SOLID principle is violated and what's the fix?
+<details><summary>Answer</summary>
+
+Interface Segregation Principle (ISP): clients shouldn't depend on methods they don't use. Fix: split the class into smaller, focused interfaces. `Printable`, `Scannable`, `FaxMachine` instead of one `AllInOnePrinter`. Each client implements/uses only the interface it needs.
+</details>
+
 ## 5. Code Smells (Warning Signs)
 
 ```
@@ -300,7 +340,25 @@ public void processPayment(Payment payment) {
 }
 ```
 
-## 6. DRY, KISS, YAGNI
+🔬 **Section Challenge — 5. Code Smells (Warning Signs)**
+
+**Challenge 1 (Trace):** A 200-line `processOrder` method handles validation, tax calculation, discount logic, payment charging, and email sending. Name the smell, the SOLID principle violated, and the exact refactoring pattern.
+
+<details><summary>Answer</summary>
+
+Smell: **Long Method** (and **God Class** if this is the only method in the class). SOLID violation: **Single Responsibility Principle** — the class has 5 reasons to change (tax rules change, discount rules change, payment provider changes, email template changes, validation rules change). Refactoring: **Extract Method** — split into `validateOrder()`, `calculateTax()`, `applyDiscount()`, `chargePayment()`, `sendConfirmation()`. Each extracted method becomes a candidate for its own class (`TaxCalculator`, `PaymentProcessor`, `OrderNotificationService`). The orchestrating method shrinks to 5 readable lines.
+
+</details>
+
+**Challenge 2 (Design):** `if (type.equals("standard"))... if (type.equals("express"))... if (type.equals("overnight"))...` appears in 3 different classes. Which code smell does this represent, which OCP violation does it create, and what is the single fix?
+
+<details><summary>Answer</summary>
+
+Smell: **Switch on Type** (aka Primitive Obsession + Duplicated Conditional Logic). OCP violation: every time you add a new shipping type, you must open and modify 3 existing classes. Fix: **Replace Conditional with Polymorphism**. Create a `ShippingStrategy` interface with a `calculate(double weight)` method, then create `StandardShipping`, `ExpressShipping`, `OvernightShipping` implementations. Store the strategy on the `Order` object. All 3 classes now call `order.getShippingStrategy().calculate(weight)` — adding a new type = adding a new class, touching zero existing code.
+
+</details>
+
+## 📌 6. Dry, Kiss, Yagni
 
 ```
 DRY — Don't Repeat Yourself
@@ -392,6 +450,7 @@ Before submitting code, check:
 # 🏋️ Practice
 
 ## Exercise 1: Refactor This
+
 ```
 Take any old code you've written.
 Apply naming rules + extract methods.
@@ -399,6 +458,7 @@ Compare before vs after readability.
 ```
 
 ## Exercise 2: Code Review Practice
+
 ```
 Read open-source PRs on GitHub.
 Identify code smells.
@@ -407,4 +467,7 @@ Suggest improvements in comments.
 
 ---
 
-> **Next Chapter**: [Testing Fundamentals →](06_Testing_Fundamentals.md)
+**Next Chapter**: [Testing Fundamentals →](06_Testing_Fundamentals.md)
+
+---
+

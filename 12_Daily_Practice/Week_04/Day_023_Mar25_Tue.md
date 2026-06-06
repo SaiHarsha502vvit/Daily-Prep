@@ -1,3 +1,5 @@
+﻿> **Navigation**: [< Previous](Day_022_Mar24_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_024_Mar26_Wed.md)
+
 # DAY 023 — Tuesday, March 25, 2026
 ## Graph DFS + Trie Applications + SQL EXPLAIN & Query Optimization
 
@@ -15,9 +17,6 @@
 | 1:20–1:40 | 20 min | REAL-WORLD: Spell checker = Trie + Edit Distance |
 | 1:40–2:20 | 40 min | SQL: EXPLAIN Plans + Query Optimization |
 | 2:20–3:00 | 40 min | PROBLEMS: Q1 + Q2 |
-
----
-
 
 ---
 
@@ -219,6 +218,7 @@ search(".ad") → true
 search("b..") → true
 ```
 
+
 ### Q2: Number of Provinces (LC 547) — Medium
 
 ```
@@ -244,3 +244,5 @@ Output: 2 (cities 0,1 = one province; city 2 = another)
 - [ ] Solved LC 547 (Number of Provinces)
 
 ---
+
+> **Navigation**: [< Previous](Day_022_Mar24_Mon.md) | [Back to Index](../../00_MASTER_INDEX.md) | [Next >](Day_024_Mar26_Wed.md)

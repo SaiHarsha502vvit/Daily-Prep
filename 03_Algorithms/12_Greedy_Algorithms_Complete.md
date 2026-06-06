@@ -1,7 +1,11 @@
+**Navigation**: [< Previous](11_Backtracking_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](13_String_Algorithms_Complete.md)
+
 # 🎯 Greedy Algorithms Complete Guide
-> Make the Locally Optimal Choice at Each Step
+
+Make the Locally Optimal Choice at Each Step
 
 ## Table of Contents
+
 0. [PART 0: Complete Understanding](#part-0)
 1. [What is Greedy?](#what-is-greedy)
 2. [When Does Greedy Work?](#when-greedy-works)
@@ -19,329 +23,347 @@
 
 ## PART 0: COMPLETE UNDERSTANDING — The WHY Before the WHAT <a name="part-0"></a>
 
-```
-╔══════════════════════════════════════════════════════════════════════════════╗
-║           GREEDY ALGORITHMS — COMPLETE UNDERSTANDING & GROWTH MINDSET        ║
-╚══════════════════════════════════════════════════════════════════════════════╝
+## What Problem Does Greedy Solve
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHAT PROBLEM DOES GREEDY SOLVE?                                              │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ CORE PROBLEM: Optimization — find the BEST answer among many possibilities. │
-│                                                                              │
-│ Three approaches to optimization:                                            │
-│                                                                              │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │ APPROACH       │ HOW IT WORKS          │ TIME        │ GUARANTEED?     │ │
-│ │────────────────┼───────────────────────┼─────────────┼─────────────────│ │
-│ │ Backtracking   │ Try ALL combinations  │ O(2ⁿ)      │ Yes (brute)    │ │
-│ │ Dynamic Prog   │ Build optimal from    │ O(n²) or   │ Yes (always)   │ │
-│ │                │ subproblem answers     │ O(n×W)     │                 │ │
-│ │ GREEDY         │ Always pick local     │ O(n log n) │ ONLY SOMETIMES │ │
-│ │                │ best, never look back │ or O(n)    │                 │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
-│                                                                              │
-│ THE CATCH: Greedy doesn't ALWAYS work. It only works when making the        │
-│ "selfish" best choice at each step happens to lead to the overall best.     │
-│                                                                              │
-│ ANALOGY — The ATM Machine:                                                   │
-│   Making change for $0.63 with coins [25¢, 10¢, 5¢, 1¢]:                  │
-│     Greedy: Take biggest coin possible: 25+25+10+1+1+1 = 6 coins ✅        │
-│     This is OPTIMAL for US coins!                                           │
-│                                                                              │
-│   BUT with coins [1¢, 3¢, 4¢], make change for 6¢:                         │
-│     Greedy: 4+1+1 = 3 coins ❌                                             │
-│     Optimal: 3+3 = 2 coins ✅                                              │
-│   Greedy FAILS for some coin systems → need DP for general coins.           │
-│                                                                              │
-│ ┌─────────────────────────────────────────────────────────────────────────┐ │
-│ │  WHEN IT WORKS                   │ WHEN IT FAILS                       │ │
-│ │──────────────────────────────────┼─────────────────────────────────────│ │
-│ │ Fractional Knapsack ✅           │ 0/1 Knapsack ❌                    │ │
-│ │ Activity Selection ✅            │ Weighted Job Scheduling ❌          │ │
-│ │ Huffman Coding ✅                │ General Coin Change ❌             │ │
-│ │ Kruskal's/Prim's MST ✅         │ Longest Path in Graph ❌           │ │
-│ │ Dijkstra (non-negative) ✅       │ Dijkstra (negative weights) ❌     │ │
-│ │ Interval Scheduling ✅           │ Interval Scheduling + Weights ❌   │ │
-│ └─────────────────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────────────┘
+**Core Problem**: Optimization — find the BEST answer among many possibilities.
+Three approaches to optimization:
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ REAL-WORLD ORIGIN STORY                                                      │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 1952 — DAVID HUFFMAN'S HOMEWORK ASSIGNMENT:                                 │
-│   MIT professor Robert Fano gave a term paper assignment: find the most     │
-│   efficient binary code for a set of symbols. Fano himself had worked on    │
-│   this (Shannon-Fano coding) but couldn't prove optimality. Student David   │
-│   Huffman, about to give up, realized: "What if I build the tree BOTTOM-UP, │
-│   always merging the TWO LEAST-FREQUENT symbols first?"                     │
-│                                                                              │
-│   This GREEDY insight gave us HUFFMAN CODING:                               │
-│   → Foundation of ZIP, GZIP, JPEG, MP3, MP4, DEFLATE                       │
-│   → Still used today in every compressed file you download                  │
-│   → A homework assignment that changed computing forever                    │
-│                                                                              │
-│ 1956 — JOSEPH KRUSKAL AT BELL LABS:                                         │
-│   "How to wire telephone offices with minimum cable?"                       │
-│   Kruskal: "Sort all possible cables by cost. Pick cheapest that doesn't   │
-│   create a loop." → Kruskal's MST algorithm.                               │
-│   Still used: Internet backbone routing, power grid design, circuit boards. │
-│                                                                              │
-│ 1959 — EDSGER DIJKSTRA IN 20 MINUTES:                                      │
-│   Dijkstra invented his shortest path algorithm in 20 minutes while         │
-│   drinking coffee at a café in Amsterdam. "Always expand the nearest        │
-│   unvisited node." This greedy choice is guaranteed optimal for             │
-│   non-negative weights. → GPS, Google Maps, network routing worldwide.     │
-│                                                                              │
-│ TAKEAWAY: The greatest greedy algorithms weren't discovered by              │
-│ trying all approaches — they came from INSIGHT about the problem structure. │
-└──────────────────────────────────────────────────────────────────────────────┘
+| Approach | How it works | Time | Guaranteed? |
+|---|---|---|---|
+| Backtracking | Try all combinations | O(2^n) | Yes (brute force) |
+| Dynamic Programming | Build optimal from subproblem answers | O(n^2) or O(n×W) | Yes (always) |
+| Greedy | Always pick local best, never look back | O(n log n) or O(n) | Only sometimes |
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE TWO REQUIRED PROPERTIES                                                  │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ For greedy to work, BOTH must hold:                                          │
-│                                                                              │
-│ PROPERTY 1: GREEDY CHOICE PROPERTY                                           │
-│ "A globally optimal solution CAN be built from locally optimal choices."    │
-│                                                                              │
-│   THINK OF IT AS: "Being selfish at each step is fine."                     │
-│   At each step, we make the choice that looks BEST RIGHT NOW,              │
-│   and we NEVER go back to reconsider.                                       │
-│                                                                              │
-│ PROPERTY 2: OPTIMAL SUBSTRUCTURE                                             │
-│ "After making the greedy choice, we're left with a SMALLER version          │
-│  of the SAME kind of problem."                                              │
-│                                                                              │
-│   THINK OF IT AS: "After choosing, the remaining problem has the same       │
-│   shape — it's just smaller."                                               │
-│                                                                              │
-│ VISUAL — Activity Selection:                                                 │
-│   Activities: A=[1,4], B=[3,5], C=[0,6], D=[5,7], E=[3,9], F=[5,9]       │
-│   G=[6,10], H=[8,11], I=[8,12], J=[2,14], K=[12,16]                       │
-│                                                                              │
-│   Timeline:                                                                  │
-│   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16                        │
-│   │──C──────────│                                                            │
-│      │──A────│                                                               │
-│         │──J─────────────────────────│                                       │
-│            │──B───│                                                           │
-│            │──E──────────│                                                    │
-│               │──D──│                                                         │
-│               │──F────────│                                                   │
-│                  │──G────────│                                                │
-│                        │──H─────│                                             │
-│                        │──I────────│                                          │
-│                                    │──K────│                                  │
-│                                                                              │
-│   GREEDY: Sort by end time → pick A(ends 4), D(ends 7), H(ends 11),       │
-│   K(ends 16). Result: 4 activities. This IS optimal!                         │
-│                                                                              │
-│   WHY? After picking A, we only need to solve the SAME problem             │
-│   for activities starting after time 4 → smaller subproblem.               │
-└──────────────────────────────────────────────────────────────────────────────┘
+**The Catch**: Greedy doesn't ALWAYS work. It only works when making the
+"selfish" best choice at each step happens to lead to the overall best.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ HOW TO PROVE GREEDY WORKS: THREE METHODS                                     │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ METHOD 1: EXCHANGE ARGUMENT (most common in interviews)                      │
-│                                                                              │
-│   Steps:                                                                    │
-│   1. Assume there's an optimal solution OPT that doesn't use greedy choice  │
-│   2. SWAP one element from OPT with the greedy choice                       │
-│   3. Show the result is AT LEAST AS GOOD as OPT                            │
-│   4. Conclude: greedy choice can always be in an optimal solution           │
-│                                                                              │
-│   FULL PROOF — Activity Selection Exchange Argument:                         │
-│                                                                              │
-│   Greedy picks activity 'g' with EARLIEST finish time.                      │
-│   Suppose OPT starts with activity 'o' instead (ends later than g).        │
-│                                                                              │
-│   ──────g────│                                                              │
-│   ──────────o────────│                                                      │
-│                      │───rest of OPT───                                     │
-│                                                                              │
-│   SWAP 'o' with 'g' in OPT:                                                │
-│   ──────g────│                                                              │
-│              │───rest of OPT──── (still compatible! g ends EARLIER)         │
-│                                                                              │
-│   Result: Same number of activities, no conflicts.                          │
-│   → OPT with 'g' is at least as good as OPT with 'o'. ∎                   │
-│                                                                              │
-│ METHOD 2: GREEDY STAYS AHEAD                                                │
-│                                                                              │
-│   Show: After each step k, greedy's partial solution ≥ any alternative's.  │
-│   "Greedy is always at least as far ahead as any other strategy."           │
-│                                                                              │
-│   Example: Greedy coin change for US coins.                                 │
-│   After choosing each coin, the remaining amount is always smaller          │
-│   than any other strategy's remaining amount.                               │
-│                                                                              │
-│ METHOD 3: STRUCTURAL / MATROID THEORY                                        │
-│                                                                              │
-│   If the problem has MATROID structure (independence system where            │
-│   "subsets of valid sets are valid"), greedy is GUARANTEED optimal.          │
-│   Examples: MST (graphic matroid), scheduling on uniform machines.          │
-│                                                                              │
-│   For interviews: Pattern recognition. "This looks like Activity            │
-│   Selection / Huffman / Interval Partitioning → greedy works."             │
-└──────────────────────────────────────────────────────────────────────────────┘
+💡 **ANALOGY — The ATM Machine:**
+Making change for $0.63 with coins [25¢, 10¢, 5¢, 1¢]:
+Greedy: Take biggest coin possible: 25+25+10+1+1+1 = 6 coins ✅
+This is OPTIMAL for US coins!
+BUT with coins [1¢, 3¢, 4¢], make change for 6¢:
+Greedy: 4+1+1 = 3 coins ❌
+Optimal: 3+3 = 2 coins ✅
+Greedy FAILS for some coin systems → need DP for general coins.
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ "GREEDY FAILS" — FULL WORKED EXAMPLE                                         │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ 0/1 KNAPSACK: capacity=50, items: {val:60,wt:10}, {val:100,wt:20},        │
-│                                    {val:120,wt:30}                           │
-│                                                                              │
-│ Greedy strategy 1 — Sort by value/weight ratio:                             │
-│   Item 1: 60/10 = 6.0   Item 2: 100/20 = 5.0   Item 3: 120/30 = 4.0      │
-│   Pick Item 1 (wt 10, val 60), then Item 2 (wt 20, val 100).              │
-│   Remaining capacity: 50-10-20 = 20. Item 3 needs 30 → can't fit.         │
-│   Greedy answer: 60 + 100 = 160                                            │
-│                                                                              │
-│ Greedy strategy 2 — Sort by value:                                          │
-│   Pick Item 3 (val 120, wt 30), then Item 2 (val 100, wt 20).             │
-│   Remaining: 50-30-20 = 0. Greedy answer: 120 + 100 = 220                 │
-│                                                                              │
-│ Greedy strategy 3 — Sort by weight (lightest first):                        │
-│   Pick Item 1 (wt 10), Item 2 (wt 20), then Item 3 needs 30 > 20 left.   │
-│   Greedy answer: 60 + 100 = 160                                            │
-│                                                                              │
-│ DP solution: Try all subsets →                                              │
-│   {Item 2, Item 3} = 100+120 = 220, weight 50 ✅ OPTIMAL                   │
-│                                                                              │
-│ Notice: Greedy strategy 2 happens to get 220 here, but change items to     │
-│   {val:60,wt:10}, {val:100,wt:20}, {val:120,wt:30}, capacity=35           │
-│   Greedy (by value): Item 3(30)+can't fit Item 2(20)→only 120              │
-│   DP optimal: Item 1(10)+Item 2(20) = 160, weight 30 ✅                    │
-│                                                                              │
-│ LESSON: No single greedy strategy works for 0/1 Knapsack.                   │
-│ The problem lacks greedy choice property → must use DP.                     │
-│                                                                              │
-│ BUT: FRACTIONAL Knapsack (can take partial items) → Greedy WORKS!           │
-│   Sort by value/weight ratio. Take as much of best ratio as possible.       │
-│   Why? You can always "pour in" more of the best-ratio item.               │
-└──────────────────────────────────────────────────────────────────────────────┘
+| Greedy Works | Greedy Fails (Need DP) |
+|---|---|
+| Fractional Knapsack | 0/1 Knapsack |
+| Activity Selection | Weighted Job Scheduling |
+| Huffman Coding | General Coin Change |
+| Kruskal's/Prim's MST | Longest Path in Graph |
+| Dijkstra (non-negative) | Dijkstra (negative weights) |
+| Interval Scheduling | Interval Scheduling + Weights |
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ WHEN TO USE GREEDY vs DP vs BACKTRACKING                                     │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ ┌──────────────────────┬──────────────┬──────────────┬───────────────┐      │
-│ │ Signal               │ Greedy       │ DP           │ Backtracking  │      │
-│ ├──────────────────────┼──────────────┼──────────────┼───────────────┤      │
-│ │ "Minimum/maximum"    │ Maybe        │ Likely       │ Unlikely      │      │
-│ │ "Count ways"         │ Rarely       │ Almost always│ Sometimes     │      │
-│ │ "List all solutions" │ Never        │ Never        │ Always        │      │
-│ │ n ≤ 10⁶             │ ✅ Must use  │ Maybe O(n)   │ Way too slow  │      │
-│ │ n ≤ 10⁴             │ ✅           │ ✅           │ Too slow      │      │
-│ │ n ≤ 20              │ ✅           │ ✅           │ ✅            │      │
-│ │ Can sort input?      │ Almost always│ Sometimes    │ Sometimes     │      │
-│ │ Greedy choice prop?  │ REQUIRED     │ Not needed   │ N/A           │      │
-│ │ Overlapping subprob? │ No           │ Yes (KEY!)   │ No            │      │
-│ │ Decision at each step│ ONE best     │ Try all      │ Try all+prune │      │
-│ └──────────────────────┴──────────────┴──────────────┴───────────────┘      │
-│                                                                              │
-│ DECISION TREE (use in interviews):                                           │
-│                                                                              │
-│   Can you sort + pick locally best?                                          │
-│     YES → Can you prove exchange argument?                                  │
-│              YES → GREEDY ✅                                                │
-│              NO  → Think harder or fall back to DP                          │
-│     NO  → Does problem have overlapping subproblems?                        │
-│              YES → DP                                                       │
-│              NO  → Backtracking / DFS                                       │
-│                                                                              │
-│  💡 Interview tip: "I believe greedy works here because of the exchange     │
-│  argument: [explain swap]. If I'm wrong, I'd fall back to DP."             │
-└──────────────────────────────────────────────────────────────────────────────┘
+### Where It's Used in Real World
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ THE 10 GREEDY PATTERN FAMILIES                                               │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ Most interview greedy problems fall into one of these families:              │
-│                                                                              │
-│ 1. INTERVAL SCHEDULING — Sort by end time, pick non-overlapping             │
-│    Problems: Activity Selection, Non-overlapping Intervals, Meeting Rooms   │
-│    Signal: "intervals", "schedule", "overlap", "meetings"                   │
-│                                                                              │
-│ 2. INTERVAL PARTITIONING — Sort by start time, use min-heap for rooms       │
-│    Problems: Meeting Rooms II, Minimum Platforms                            │
-│    Signal: "minimum rooms/platforms", "parallel tasks"                       │
-│                                                                              │
-│ 3. FRACTIONAL SELECTION — Sort by ratio, take best ratio first              │
-│    Problems: Fractional Knapsack, Task Scheduler with cooldown             │
-│    Signal: "maximize value per unit", "fractional"                          │
-│                                                                              │
-│ 4. HUFFMAN / MERGE — Always merge the two smallest                          │
-│    Problems: Huffman Coding, Minimum Cost to Connect Sticks                 │
-│    Signal: "merge costs", "encoding", "combine"                             │
-│                                                                              │
-│ 5. SINGLE-PASS GREEDY — Scan once, maintain running state                   │
-│    Problems: Best Time to Buy/Sell Stock, Gas Station, Jump Game            │
-│    Signal: "array traversal", "track running min/max/sum"                   │
-│                                                                              │
-│ 6. TWO-POINTER GREEDY — Greedy from both ends                               │
-│    Problems: Container With Most Water, Trapping Rain Water                 │
-│    Signal: "two sides", "shrink from both ends"                             │
-│                                                                              │
-│ 7. SORTING + ASSIGNMENT — Sort, then assign greedily                         │
-│    Problems: Assign Cookies, Boats to Save People                           │
-│    Signal: "assign resources to demands", "pair up"                         │
-│                                                                              │
-│ 8. DIGIT/CHARACTER GREEDY — Build result character by character             │
-│    Problems: Remove K Digits, Largest Number, Reorganize String             │
-│    Signal: "form number/string", "remove digits", "rearrange"              │
-│                                                                              │
-│ 9. GRAPH GREEDY — MST, shortest paths                                        │
-│    Problems: Kruskal's, Prim's, Dijkstra                                   │
-│    Signal: "minimum spanning", "shortest path", "network"                   │
-│                                                                              │
-│ 10. EXCHANGE-BASED — Prove by showing any swap makes it worse               │
-│     Problems: Task Scheduler, Queue Reconstruction by Height                │
-│     Signal: Complex problems where you must PROVE greedy works              │
-└──────────────────────────────────────────────────────────────────────────────┘
+* **Data Compression**: File archiving tools (ZIP, GZIP, JPEG, MP3) use Huffman Coding to build prefix-free variable-length codes based on symbol frequency.
+* **Networking**: Routing protocols (OSPF uses Dijkstra's) and building network topologies (spanning trees to prevent bridging loops using Kruskal's/Prim's).
+* **Operating Systems**: CPU scheduling algorithms (like Shortest Job First) and memory allocation strategies (First Fit, Best Fit).
+* **Financial Systems**: ATMs making exact change using the minimum number of bills (works for standard coin/bill denominations).
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ BENCHMARK: WHY GREEDY IS FAST                                                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ Activity Selection — n activities:                                           │
-│                                                                              │
-│ ┌───────────┬───────────────┬──────────────┬─────────────────────────┐      │
-│ │ n         │ Greedy O(nlogn)│ DP O(n²)    │ Backtracking O(2ⁿ)    │      │
-│ ├───────────┼───────────────┼──────────────┼─────────────────────────┤      │
-│ │ 100       │ 0.001 ms      │ 0.01 ms     │ 10²⁴ years (IMPOSSIBLE)│      │
-│ │ 1,000     │ 0.01 ms       │ 1 ms        │ ∞                       │      │
-│ │ 10,000    │ 0.14 ms       │ 100 ms      │ ∞                       │      │
-│ │ 100,000   │ 1.7 ms        │ 10 sec      │ ∞                       │      │
-│ │ 1,000,000 │ 20 ms         │ 17 min      │ ∞                       │      │
-│ │ 10,000,000│ 0.23 sec      │ ~28 hours   │ ∞                       │      │
-│ └───────────┴───────────────┴──────────────┴─────────────────────────┘      │
-│                                                                              │
-│ CPU INSIGHT: Greedy is often cache-friendly!                                 │
-│ • Greedy: Sort array once → sequential scan → CPU cache loves this         │
-│ • DP: Random table access → cache misses → slower than theory predicts     │
-│ • After sorting, greedy scans left-to-right → prefetcher predicts next     │
-│                                                                              │
-│ MEMORY:                                                                      │
-│ • Greedy: Usually O(1) or O(n) extra space                                 │
-│ • DP: Often O(n²) or O(n×W) table → can blow memory for large inputs      │
-└──────────────────────────────────────────────────────────────────────────────┘
+🔬 **Section Challenge — What Problem Does Greedy Solve**
 
-┌──────────────────────────────────────────────────────────────────────────────┐
-│ GREEDY TEMPLATE CODE — THE SKELETON                                          │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│ Almost every greedy solution follows this pattern:                           │
-└──────────────────────────────────────────────────────────────────────────────┘
-```
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
+
+## Real-World Origin Story
+
+1952 — DAVID HUFFMAN'S HOMEWORK ASSIGNMENT:
+MIT professor Robert Fano gave a term paper assignment: find the most
+efficient binary code for a set of symbols. Fano himself had worked on
+this (Shannon-Fano coding) but couldn't prove optimality. Student David
+Huffman, about to give up, realized: "What if I build the tree BOTTOM-UP,
+always merging the TWO LEAST-FREQUENT symbols first?"
+This GREEDY insight gave us HUFFMAN CODING:
+→ Foundation of ZIP, GZIP, JPEG, MP3, MP4, DEFLATE
+→ Still used today in every compressed file you download
+→ A homework assignment that changed computing forever
+1956 — JOSEPH KRUSKAL AT BELL LABS:
+"How to wire telephone offices with minimum cable?"
+Kruskal: "Sort all possible cables by cost. Pick cheapest that doesn't
+create a loop." → Kruskal's MST algorithm.
+Still used: Internet backbone routing, power grid design, circuit boards.
+1959 — EDSGER DIJKSTRA IN 20 MINUTES:
+Dijkstra invented his shortest path algorithm in 20 minutes while
+drinking coffee at a café in Amsterdam. "Always expand the nearest
+unvisited node." This greedy choice is guaranteed optimal for
+non-negative weights. → GPS, Google Maps, network routing worldwide.
+
+**Takeaway**: The greatest greedy algorithms weren't discovered by
+trying all approaches — they came from INSIGHT about the problem structure.
+
+## The Two Required Properties
+
+For greedy to work, BOTH must hold:
+PROPERTY 1: GREEDY CHOICE PROPERTY
+"A globally optimal solution CAN be built from locally optimal choices."
+
+**Think Of It As**: "Being selfish at each step is fine."
+At each step, we make the choice that looks BEST RIGHT NOW,
+and we NEVER go back to reconsider.
+PROPERTY 2: OPTIMAL SUBSTRUCTURE
+"After making the greedy choice, we're left with a SMALLER version
+of the SAME kind of problem."
+
+**Think Of It As**: "After choosing, the remaining problem has the same
+shape — it's just smaller."
+VISUAL — Activity Selection:
+Activities: A=[1,4], B=[3,5], C=[0,6], D=[5,7], E=[3,9], F=[5,9]
+G=[6,10], H=[8,11], I=[8,12], J=[2,14], K=[12,16]
+Timeline:
+0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16
+C
+A
+J
+B
+E
+D
+F
+G
+H
+I
+K
+
+**Greedy**: Sort by end time → pick A(ends 4), D(ends 7), H(ends 11),
+K(ends 16). Result: 4 activities. This IS optimal!
+WHY? After picking A, we only need to solve the SAME problem
+for activities starting after time 4 → smaller subproblem.
+
+🔬 **Section Challenge — The Two Required Properties**
+
+**Challenge 1 (Property Verification):** Greedy requires TWO properties: Greedy Choice Property and Optimal Substructure. **Which** property does `0/1 Knapsack` have and which does it LACK? **Why** does adding the word "Fractional" to the problem restore Greedy correctness?
+
+<details><summary>Answer</summary>
+
+**0/1 Knapsack HAS Optimal Substructure:** The optimal solution for capacity W using items 1..n contains the optimal solution for the sub-problem of capacity W-w[n] using items 1..n-1 (if item n is included). Subproblems nest properly. **0/1 Knapsack LACKS Greedy Choice Property:** Taking the locally best item (highest value/weight ratio) does NOT guarantee the globally best total. Proof by counterexample: items {wt:10,val:60}, {wt:20,val:100}, {wt:30,val:120}, cap=50. Greedy by ratio picks item1(ratio=6) + item2(ratio=5) = 160. But optimal is item2+item3 = 220. **Why "Fractional" restores Greedy:** In Fractional Knapsack, you can take a partial item. After taking the best-ratio item fully, taking a fraction of the next-best is ALWAYS optimal — you can't do better than filling remaining space with the highest ratio. The greedy choice is safe because fractions eliminate the interaction between discrete yes/no decisions. This restores the Greedy Choice Property.
+
+</details>
+
+The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+</details>
+
+
+## How To Prove Greedy Works: Three Methods
+
+METHOD 1: EXCHANGE ARGUMENT (most common in interviews)
+Steps:
+1. Assume there's an optimal solution OPT that doesn't use greedy choice
+2. SWAP one element from OPT with the greedy choice
+3. Show the result is AT LEAST AS GOOD as OPT
+4. Conclude: greedy choice can always be in an optimal solution
+FULL PROOF — Activity Selection Exchange Argument:
+Greedy picks activity 'g' with EARLIEST finish time.
+Suppose OPT starts with activity 'o' instead (ends later than g).
+g
+o
+rest of OPT
+SWAP 'o' with 'g' in OPT:
+g
+rest of OPT──── (still compatible! g ends EARLIER)
+Result: Same number of activities, no conflicts.
+→ OPT with 'g' is at least as good as OPT with 'o'. ∎
+METHOD 2: GREEDY STAYS AHEAD
+Show: After each step k, greedy's partial solution ≥ any alternative's.
+"Greedy is always at least as far ahead as any other strategy."
+Example: Greedy coin change for US coins.
+After choosing each coin, the remaining amount is always smaller
+than any other strategy's remaining amount.
+METHOD 3: STRUCTURAL / MATROID THEORY
+If the problem has MATROID structure (independence system where
+"subsets of valid sets are valid"), greedy is GUARANTEED optimal.
+Examples: MST (graphic matroid), scheduling on uniform machines.
+For interviews: Pattern recognition. "This looks like Activity
+Selection / Huffman / Interval Partitioning → greedy works."
+
+🔬 **Section Challenge — How To Prove Greedy Works: Three Methods**
+
+**Challenge 1 (Exchange Argument Apply):** Apply the Exchange Argument to prove: "Always picking the CHEAPEST unconnected edge that doesn't create a cycle (Kruskal's MST) is globally optimal." **Who** is swapped, **when** does the swap preserve correctness, and **what** does the argument conclude?
+
+<details><summary>Answer</summary>
+
+**Who is swapped:** Suppose optimal MST solution OPT includes edge E_opt instead of the greedy's edge E_greedy (cheapest crossing edge). E_greedy has lower cost than E_opt (by definition — greedy picks minimum). **When swap preserves correctness:** Removing E_opt from OPT creates two components. Adding E_greedy reconnects them (since E_greedy also crosses the cut). The resulting tree has the same number of edges, is still spanning, still acyclic (no cycle introduced if greedy's choice was valid), and has LOWER total weight (E_greedy ≤ E_opt by greedy choice). **What argument concludes:** The resulting tree T' is at least as good as OPT. Repeating this argument for every edge difference — OPT can be transformed into Greedy's solution without increasing cost. Therefore Greedy is optimal. **Key insight:** The exchange argument works here because the matroid structure of spanning trees guarantees that swapping one edge for a cheaper crossing edge can always be done safely without breaking the spanning property.
+
+</details>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
+
+## "Greedy Fails" — Full Worked Example
+
+0/1 KNAPSACK: capacity=50, items: {val:60,wt:10}, {val:100,wt:20},
+{val:120,wt:30}
+Greedy strategy 1 — Sort by value/weight ratio:
+Item 1: 60/10 = 6.0   Item 2: 100/20 = 5.0   Item 3: 120/30 = 4.0
+Pick Item 1 (wt 10, val 60), then Item 2 (wt 20, val 100).
+Remaining capacity: 50-10-20 = 20. Item 3 needs 30 → can't fit.
+Greedy answer: 60 + 100 = 160
+Greedy strategy 2 — Sort by value:
+Pick Item 3 (val 120, wt 30), then Item 2 (val 100, wt 20).
+Remaining: 50-30-20 = 0. Greedy answer: 120 + 100 = 220
+Greedy strategy 3 — Sort by weight (lightest first):
+Pick Item 1 (wt 10), Item 2 (wt 20), then Item 3 needs 30 > 20 left.
+Greedy answer: 60 + 100 = 160
+DP solution: Try all subsets →
+{Item 2, Item 3} = 100+120 = 220, weight 50 ✅ OPTIMAL
+Notice: Greedy strategy 2 happens to get 220 here, but change items to
+{val:60,wt:10}, {val:100,wt:20}, {val:120,wt:30}, capacity=35
+Greedy (by value): Item 3(30)+can't fit Item 2(20)→only 120
+DP optimal: Item 1(10)+Item 2(20) = 160, weight 30 ✅
+
+**Lesson**: No single greedy strategy works for 0/1 Knapsack.
+The problem lacks greedy choice property → must use DP.
+
+**But**: FRACTIONAL Knapsack (can take partial items) → Greedy WORKS!
+Sort by value/weight ratio. Take as much of best ratio as possible.
+Why? You can always "pour in" more of the best-ratio item.
+
+🔬 **Section Challenge — "Greedy Fails" — Full Worked Example**
+
+**Challenge 1 (Counterexample Design):** The section shows Greedy fails for 0/1 Knapsack. Design a 3-coin counterexample that proves Greedy (by largest denomination first) fails for arbitrary coin denominations. **What** coins, **what** target, and **what** is Greedy's answer vs. optimal?
+
+<details><summary>Answer</summary>
+
+**Coins:** [4, 3, 1]. **Target:** 6 cents. **Greedy (largest first):** Takes 4 (remaining 2), then takes 1 (remaining 1), then takes 1 (remaining 0). Answer: 4+1+1 = 3 coins. **Optimal:** 3+3 = 2 coins. **Why Greedy fails:** Taking 4 "blocks" the ability to use two 3s. The greedy choice is locally optimal (4 is the biggest coin ≤ 6) but globally suboptimal. **Why this proves DP is needed:** For arbitrary denominations, there's no local property that guarantees the greedy choice is globally best. The 0/1 selection interacts across choices. **Standard US coins [25,10,5,1] are special:** They form a canonical coin system where greedily taking the largest is always optimal — proven by structural properties of the denominations, NOT by greedy's general validity.
+
+</details>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
+
+## When To Use Greedy Vs Dp Vs Backtracking
+
+| Signal | Greedy | DP | Backtracking |
+|---|---|---|---|
+| "Minimum/maximum" | Maybe | Likely | Unlikely |
+| "Count ways" | Rarely | Almost always | Sometimes |
+| "List all solutions" | Never | Never | Always |
+| n ≤ 10^6 | Must use | Maybe O(n) | Way too slow |
+| n ≤ 10^4 | Good fit | Good fit | Usually too slow |
+| n ≤ 20 | Good fit | Good fit | Good fit |
+| Can sort input? | Almost always | Sometimes | Sometimes |
+| Greedy choice property? | Required | Not needed | N/A |
+| Overlapping subproblems? | No | Yes (key) | No |
+| Decision at each step | One best | Try all | Try all + prune |
+
+DECISION TREE (use in interviews):
+Can you sort + pick locally best?
+YES → Can you prove exchange argument?
+YES → GREEDY ✅
+NO  → Think harder or fall back to DP
+NO  → Does problem have overlapping subproblems?
+YES → DP
+NO  → Backtracking / DFS
+💡 Interview tip: "I believe greedy works here because of the exchange
+argument: [explain swap]. If I'm wrong, I'd fall back to DP."
+
+🔬 **Section Challenge — When To Use Greedy Vs Dp Vs Backtracking**
+
+**Challenge 1 (Decision Routing):** Route these 3 problems to the correct algorithm and justify: (A) Given n activities with start/end times, find MAXIMUM non-overlapping activities. (B) Given n activities with PROFITS and deadlines, find selection that MAXIMIZES profit. (C) Given a map of cities, find the route that visits ALL cities exactly once with minimum cost.
+
+<details><summary>Answer</summary>
+
+**(A) Max non-overlapping activities → GREEDY.** Sort by end time, pick greedily. The exchange argument proves optimality. O(N log N). **(B) Weighted job scheduling (maximize profit) → DP.** Why NOT greedy: Adding weights breaks the greedy choice property. A high-profit short job may conflict with several medium-profit jobs whose TOTAL exceeds it. Must evaluate all subsets. DP with binary search: O(N log N). **(C) Minimum cost to visit all cities (TSP) → Backtracking / Branch-and-Bound.** TSP is NP-hard. Greedy (nearest neighbor) gives a 2-approximation but NOT optimal. DP (Held-Karp) gives exact O(N² × 2^N) — feasible up to ~20 cities. Backtracking with pruning for exact solutions on larger inputs. **Decision signal:** "Maximum non-overlapping" without weights = Greedy. "Maximum with profits/weights" = DP. "Visit all" / "enumerate all" = Backtracking.
+
+</details>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
+
+## The 10 Greedy Pattern Families
+
+Most interview greedy problems fall into one of these families:
+1. INTERVAL SCHEDULING — Sort by end time, pick non-overlapping
+Problems: Activity Selection, Non-overlapping Intervals, Meeting Rooms
+Signal: "intervals", "schedule", "overlap", "meetings"
+2. INTERVAL PARTITIONING — Sort by start time, use min-heap for rooms
+Problems: Meeting Rooms II, Minimum Platforms
+Signal: "minimum rooms/platforms", "parallel tasks"
+3. FRACTIONAL SELECTION — Sort by ratio, take best ratio first
+Problems: Fractional Knapsack, Task Scheduler with cooldown
+Signal: "maximize value per unit", "fractional"
+4. HUFFMAN / MERGE — Always merge the two smallest
+Problems: Huffman Coding, Minimum Cost to Connect Sticks
+Signal: "merge costs", "encoding", "combine"
+5. SINGLE-PASS GREEDY — Scan once, maintain running state
+Problems: Best Time to Buy/Sell Stock, Gas Station, Jump Game
+Signal: "array traversal", "track running min/max/sum"
+6. TWO-POINTER GREEDY — Greedy from both ends
+Problems: Container With Most Water, Trapping Rain Water
+Signal: "two sides", "shrink from both ends"
+7. SORTING + ASSIGNMENT — Sort, then assign greedily
+Problems: Assign Cookies, Boats to Save People
+Signal: "assign resources to demands", "pair up"
+8. DIGIT/CHARACTER GREEDY — Build result character by character
+Problems: Remove K Digits, Largest Number, Reorganize String
+Signal: "form number/string", "remove digits", "rearrange"
+9. GRAPH GREEDY — MST, shortest paths
+Problems: Kruskal's, Prim's, Dijkstra
+Signal: "minimum spanning", "shortest path", "network"
+10. EXCHANGE-BASED — Prove by showing any swap makes it worse
+Problems: Task Scheduler, Queue Reconstruction by Height
+Signal: Complex problems where you must PROVE greedy works
+
+🔬 **Section Challenge — The 10 Greedy Pattern Families**
+
+**Challenge 1 (Pattern Identification):** Given these 3 problems, identify the Greedy pattern family and the key sorting criterion: (A) Given balloons with start/end positions, find minimum arrows to burst all balloons. (B) Given n tasks each taking 1 unit with deadlines and profits, maximize total profit. (C) Given an array of non-negative integers, jump to reach the end in minimum jumps.
+
+<details><summary>Answer</summary>
+
+**(A) Minimum Arrows (LC 452) → Pattern 1: Interval Scheduling.** Sort by END position. Each arrow at the earliest end point of an unresolved cluster bursts all overlapping balloons. Greedy choice: place arrow at earliest end of current balloon, eliminating all balloons it intersects. **(B) Job Scheduling with Deadlines → Pattern 3: Fractional Selection / Sorting + Assignment.** Sort jobs by PROFIT descending. Greedily schedule each job in the latest available slot before its deadline (using a boolean slot array). **Sorting criterion:** profit descending + latest-slot greedy assignment. **(C) Jump Game II (LC 45) → Pattern 5: Single-Pass Greedy.** Maintain `currentEnd` (furthest reach from current step) and `farthest` (max reach seen). When you reach `currentEnd`, increment jump count and update `currentEnd = farthest`. **Sorting criterion:** none — single left-to-right scan. Signal: "minimum jumps" without weights and with array traversal = single-pass greedy.
+
+</details>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
+
+## Benchmark: Why Greedy Is Fast
+
+Activity Selection — n activities:
+
+| n | Greedy O(n log n) | DP O(n^2) | Backtracking O(2^n) |
+|---|---|---|---|
+| 100 | 0.001 ms | 0.01 ms | 10^24 years (impossible) |
+| 1,000 | 0.01 ms | 1 ms | Not practical |
+| 10,000 | 0.14 ms | 100 ms | Not practical |
+| 100,000 | 1.7 ms | 10 sec | Not practical |
+| 1,000,000 | 20 ms | 17 min | Not practical |
+| 10,000,000 | 0.23 sec | ~28 hours | Not practical |
+
+**Cpu Insight**: Greedy is often cache-friendly!
+* Greedy: Sort array once → sequential scan → CPU cache loves this
+* DP: Random table access → cache misses → slower than theory predicts
+* After sorting, greedy scans left-to-right → prefetcher predicts next
+
+**Memory**:
+* Greedy: Usually O(1) or O(n) extra space
+* DP: Often O(n²) or O(n×W) table → can blow memory for large inputs
+
+🔬 **Section Challenge — Benchmark: Why Greedy Is Fast**
+
+**Challenge 1 (Cache Performance):** The benchmark shows Greedy at O(N log N) beats DP at O(N²) in practice even MORE than theory predicts. **Who** gives Greedy the extra speed advantage? **When** does DP's random table access hurt? **What** is the cache line size relevant here?
+
+<details><summary>Answer</summary>
+
+**Who gives extra speed:** The CPU's L1/L2 cache and hardware prefetcher. After sorting, Greedy scans the array LEFT-TO-RIGHT sequentially. The prefetcher detects this stride-1 access pattern and pre-loads future cache lines before they're needed. Memory access is effectively free because data is already in L1 cache when needed. **When DP hurts:** DP fills a 2D table `dp[i][j]` where computing each cell often requires values from `dp[i-1][j]` (above) and `dp[i][j-w]` (far left). For large W, `dp[i][j-w]` is many cache lines away — each access is an L2/L3 cache miss (~10-50ns each). For N=10,000, W=10,000 that's 10^8 potential cache misses. **Cache line size:** 64 bytes. An `int[]` array packs 16 ints per cache line. Greedy's sequential scan uses 100% of each cache line loaded. DP's sparse access pattern may use 1-2 ints per cache line loaded (1/16 efficiency). **Conclusion:** Greedy beats DP 2-10x MORE than big-O predicts because of cache utilization. This is why algorithm complexity alone doesn't predict real-world performance.
+
+</details>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
+
+## Greedy Template Code — The Skeleton
+
+Almost every greedy solution follows this pattern:
 
 ```java
 // UNIVERSAL GREEDY TEMPLATE
@@ -373,130 +395,144 @@ public int greedySolve(int[][] items) {
 │ HISTORICAL EVOLUTION                                                         │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 1952: David Huffman invents Huffman Coding (MIT homework paper)             │
-│       → Foundation of ALL modern compression (ZIP, JPEG, MP3, H.264)       │
+│ 1952: David Huffman invents Huffman Coding (MIT homework paper)              │
+│       → Foundation of ALL modern compression (ZIP, JPEG, MP3, H.264)         │
 │                                                                              │
-│ 1956: Joseph Kruskal publishes MST algorithm at Bell Labs                   │
+│ 1956: Joseph Kruskal publishes MST algorithm at Bell Labs                    │
 │       → Still used for network design and circuit board routing              │
 │                                                                              │
-│ 1957: Robert Prim publishes alternative MST algorithm                       │
-│       → Better for dense graphs; used in power grid design                  │
+│ 1957: Robert Prim publishes alternative MST algorithm                        │
+│       → Better for dense graphs; used in power grid design                   │
 │                                                                              │
-│ 1959: Edsger Dijkstra invents shortest path in a café                       │
-│       → GPS navigation, Google Maps, network routing                        │
+│ 1959: Edsger Dijkstra invents shortest path in a café                        │
+│       → GPS navigation, Google Maps, network routing                         │
 │                                                                              │
-│ 1960s: Matroid theory (Rado, Edmonds) formalizes WHEN greedy is optimal     │
-│       → Theoretical foundation proving greedy correctness                   │
+│ 1960s: Matroid theory (Rado, Edmonds) formalizes WHEN greedy is optimal      │
+│       → Theoretical foundation proving greedy correctness                    │
 │                                                                              │
-│ 1971: Cook proves NP-completeness; greedy becomes important as              │
-│       fast APPROXIMATION for NP-hard problems                               │
+│ 1971: Cook proves NP-completeness; greedy becomes important as               │
+│       fast APPROXIMATION for NP-hard problems                                │
 │                                                                              │
-│ 2000s: Greedy approximation algorithms dominate industry:                   │
-│       → Set Cover: Greedy gives ln(n)-approximation                        │
-│       → Vertex Cover: 2-approximation in O(V+E)                            │
-│       → Google's ad auction (Generalized Second Price) = greedy allocation  │
+│ 2000s: Greedy approximation algorithms dominate industry:                    │
+│       → Set Cover: Greedy gives ln(n)-approximation                          │
+│       → Vertex Cover: 2-approximation in O(V+E)                              │
+│       → Google's ad auction (Generalized Second Price) = greedy allocation   │
 │                                                                              │
-│ TODAY: Every time your phone finds the fastest route, every time you        │
-│        download a compressed file, greedy algorithms are at work.           │
+│ TODAY: Every time your phone finds the fastest route, every time you         │
+│        download a compressed file, greedy algorithms are at work.            │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⚠️  COMMON MISTAKES & HOW TO AVOID THEM                                     │
+│ ⚠️  COMMON MISTAKES & HOW TO AVOID THEM                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
 │ MISTAKE 1: Assuming greedy works without proof                               │
-│   WRONG: "Sort by value and pick the best — that's clearly optimal"        │
-│   RIGHT: "I'll use exchange argument: if I swap my choice with any          │
-│          other, the solution doesn't improve."                              │
-│   Fix: ALWAYS verify with a counterexample attempt first.                   │
+│   WRONG: "Sort by value and pick the best — that's clearly optimal"          │
+│   RIGHT: "I'll use exchange argument: if I swap my choice with any           │
+│          other, the solution doesn't improve."                               │
+│   Fix: ALWAYS verify with a counterexample attempt first.                    │
 │                                                                              │
 │ MISTAKE 2: Wrong sorting criterion                                           │
-│   Activity Selection: Sort by END time, NOT start time.                     │
-│   Fractional Knapsack: Sort by VALUE/WEIGHT ratio, NOT value alone.        │
-│   Remove K Digits: Compare with PREVIOUS digit, not next.                   │
-│   Fix: Try 2-3 criteria on a small example before coding.                   │
+│   Activity Selection: Sort by END time, NOT start time.                      │
+│   Fractional Knapsack: Sort by VALUE/WEIGHT ratio, NOT value alone.          │
+│   Remove K Digits: Compare with PREVIOUS digit, not next.                    │
+│   Fix: Try 2-3 criteria on a small example before coding.                    │
 │                                                                              │
 │ MISTAKE 3: Not handling ties                                                 │
-│   What if two activities end at the same time?                              │
-│   What if two items have the same ratio?                                    │
-│   Fix: Define tiebreaker (e.g., shorter duration, smaller index).           │
+│   What if two activities end at the same time?                               │
+│   What if two items have the same ratio?                                     │
+│   Fix: Define tiebreaker (e.g., shorter duration, smaller index).            │
 │                                                                              │
 │ MISTAKE 4: Forgetting edge cases                                             │
-│   • Empty input → return 0                                                 │
-│   • Single element → return that element                                   │
-│   • All elements identical → any order works                               │
-│   • Negative numbers → does your sort still work?                          │
-│   Fix: Test with n=0, n=1, all-same, negatives.                            │
+│   • Empty input → return 0                                                   │
+│   • Single element → return that element                                     │
+│   • All elements identical → any order works                                 │
+│   • Negative numbers → does your sort still work?                            │
+│   Fix: Test with n=0, n=1, all-same, negatives.                              │
 │                                                                              │
 │ MISTAKE 5: Greedy on DIRECTED graphs                                         │
-│   Greedy MST (Kruskal/Prim) only works for UNDIRECTED graphs.              │
-│   Minimum spanning arborescence needs Edmonds' algorithm (not greedy).      │
-│   Fix: Check if graph is directed before applying greedy.                   │
+│   Greedy MST (Kruskal/Prim) only works for UNDIRECTED graphs.                │
+│   Minimum spanning arborescence needs Edmonds' algorithm (not greedy).       │
+│   Fix: Check if graph is directed before applying greedy.                    │
 │                                                                              │
 │ MISTAKE 6: Confusing "greedy" with "brute force with early stopping"         │
-│   Greedy: ONE choice per step, NEVER reconsider.                            │
-│   Backtracking with pruning: STILL tries multiple choices.                  │
-│   Fix: If your code has recursion with multiple branches, it's NOT greedy.  │
+│   Greedy: ONE choice per step, NEVER reconsider.                             │
+│   Backtracking with pruning: STILL tries multiple choices.                   │
+│   Fix: If your code has recursion with multiple branches, it's NOT greedy.   │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
 │ DIFFICULTIES IN LEARNING GREEDY                                              │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ 1. "HOW DO I KNOW IF GREEDY WORKS?"                                         │
-│    This is THE hardest part. Unlike DP where you always know it works,      │
-│    greedy requires PROOF. Strategy:                                         │
-│    a) Try a greedy approach on a small example                              │
-│    b) Try to find a COUNTEREXAMPLE where it fails                          │
-│    c) If you can't break it, try the exchange argument                      │
-│    d) If exchange works → greedy; if not → DP                              │
+│ 1. "HOW DO I KNOW IF GREEDY WORKS?"                                          │
+│    This is THE hardest part. Unlike DP where you always know it works,       │
+│    greedy requires PROOF. Strategy:                                          │
+│    a) Try a greedy approach on a small example                               │
+│    b) Try to find a COUNTEREXAMPLE where it fails                            │
+│    c) If you can't break it, try the exchange argument                       │
+│    d) If exchange works → greedy; if not → DP                                │
 │                                                                              │
-│ 2. "I CAN'T FIGURE OUT WHAT TO SORT BY"                                     │
-│    Each problem has a KEY attribute. Try all natural orderings:             │
-│    • By start time  • By end time  • By duration  • By weight              │
-│    • By value  • By ratio (value/weight)  • By frequency                   │
-│    Run each on a small example. The correct one usually clicks.             │
+│ 2. "I CAN'T FIGURE OUT WHAT TO SORT BY"                                      │
+│    Each problem has a KEY attribute. Try all natural orderings:              │
+│    • By start time  • By end time  • By duration  • By weight                │
+│    • By value  • By ratio (value/weight)  • By frequency                     │
+│    Run each on a small example. The correct one usually clicks.              │
 │                                                                              │
 │ 3. "GREEDY SOLUTIONS LOOK TOO SIMPLE"                                        │
-│    Yes! That's the point. The HARD part is proving it works.               │
-│    The CODE for greedy is usually 10-15 lines.                              │
-│    The PROOF is the real challenge.                                         │
+│    Yes! That's the point. The HARD part is proving it works.                 │
+│    The CODE for greedy is usually 10-15 lines.                               │
+│    The PROOF is the real challenge.                                          │
 │                                                                              │
 │ 4. "I KEEP FALLING FOR GREEDY TRAPS"                                         │
-│    Common trap: "Maximize sum by always picking largest" fails for          │
-│    problems with constraints (capacity, cooldown, dependencies).            │
-│    Fix: If there are CONSTRAINTS that interact → probably DP, not greedy.  │
+│    Common trap: "Maximize sum by always picking largest" fails for           │
+│    problems with constraints (capacity, cooldown, dependencies).             │
+│    Fix: If there are CONSTRAINTS that interact → probably DP, not greedy.    │
 │                                                                              │
 │ 5. "INTERVAL PROBLEMS ALL LOOK THE SAME"                                     │
 │    They're NOT! Three different patterns:                                    │
-│    • Max activities (sort by END) • Min rooms (sort by START, use heap)     │
-│    • Min removals (sort by END, count overlaps)                            │
+│    • Max activities (sort by END) • Min rooms (sort by START, use heap)      │
+│    • Min removals (sort by END, count overlaps)                              │
 └──────────────────────────────────────────────────────────────────────────────┘
 
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│ ⭐ EXPECTED OUTPUTS OF MASTERING GREEDY ⭐                                    │
+│ ⭐ EXPECTED OUTPUTS OF MASTERING GREEDY ⭐                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │                                                                              │
-│ ✅ INSTANT RECOGNITION: See "intervals + maximize" → Activity Selection     │
-│ ✅ PROOF ABILITY: Can explain exchange argument for any greedy problem       │
-│ ✅ COUNTEREXAMPLE SKILL: Can quickly disprove wrong greedy strategies       │
-│ ✅ PATTERN MATCHING: Know all 10 greedy families by signal words            │
-│ ✅ GREEDY VS DP: Can explain exactly WHY a problem needs DP, not greedy    │
-│ ✅ IMPLEMENTATION: Code any greedy solution in <5 minutes                   │
-│ ✅ OPTIMIZATION: Know when greedy gives EXACT answer vs approximation       │
+│ ✅ INSTANT RECOGNITION: See "intervals + maximize" → Activity Selection       │
+│ ✅ PROOF ABILITY: Can explain exchange argument for any greedy problem        │
+│ ✅ COUNTEREXAMPLE SKILL: Can quickly disprove wrong greedy strategies         │
+│ ✅ PATTERN MATCHING: Know all 10 greedy families by signal words              │
+│ ✅ GREEDY VS DP: Can explain exactly WHY a problem needs DP, not greedy       │
+│ ✅ IMPLEMENTATION: Code any greedy solution in <5 minutes                     │
+│ ✅ OPTIMIZATION: Know when greedy gives EXACT answer vs approximation         │
 │                                                                              │
 │ THE TRANSFORMATION:                                                          │
-│ FROM: "Let me try all possibilities and see"                                │
-│   TO: "I can sort by X, and the exchange argument shows: if I swap the     │
-│        greedy choice with any other, the solution doesn't improve."         │
+│ FROM: "Let me try all possibilities and see"                                 │
+│   TO: "I can sort by X, and the exchange argument shows: if I swap the       │
+│        greedy choice with any other, the solution doesn't improve."          │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
 
 📖 **Related mental models:**
-- [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — Classification decision tree
-- [14_Mental_Models/03_Optimization_Thinking.md](../14_Mental_Models/03_Optimization_Thinking.md) — Greedy vs DP decision framework
+* [14_Mental_Models/05_Universal_Problem_Framework.md](../14_Mental_Models/05_Universal_Problem_Framework.md) — Classification decision tree
+* [14_Mental_Models/14_Optimization_Pipeline.md](../14_Mental_Models/14_Optimization_Pipeline.md) — Greedy vs DP decision framework
 
 ---
+
+🔬 **Section Challenge — Greedy Template Code — The Skeleton**
+
+**Challenge 1 (Template Customization):** The template sorts by `a[1] - b[1]` (end time). **What** change makes it solve "Minimum Number of Intervals to Remove to Make the Rest Non-overlapping" (LC 435)? **Who** is the answer variable tracking? **When** do you skip vs. count an interval?
+
+<details><summary>Answer</summary>
+
+**What changes:** The template stays nearly identical — sort by `a[1] - b[1]` (end time, ascending). Instead of counting non-overlapping intervals, count OVERLAPPING ones removed. **Who the answer variable tracks:** Instead of `count` (non-overlapping picked), you track `removals` (intervals that overlap the last kept interval). **When to skip vs. count:** If `item[0] >= lastEnd` — non-overlapping — KEEP it (update `lastEnd`). If `item[0] < lastEnd` — overlaps — REMOVE it: `removals++` (don't update `lastEnd`). **Full solution:** `removals=0, lastEnd=INT_MIN. For each interval sorted by end: if (start >= lastEnd) lastEnd = end; else removals++;` Return `removals`. **Connection:** LC 435 (minimum removals) = N - LC 252 (maximum non-overlapping). The SAME greedy template solves both by changing what you count. This is the power of recognizing the Interval Scheduling pattern family.
+
+</details>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## What is Greedy? <a name="what-is-greedy"></a>
 
@@ -507,16 +543,17 @@ public int greedySolve(int[][] items) {
 │                      GREEDY PHILOSOPHY                          │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│    "At each step, make the choice that looks best RIGHT NOW"   │
+│    "At each step, make the choice that looks best RIGHT NOW"    │
 │                                                                 │
-│    LOCAL OPTIMUM → Hopefully → GLOBAL OPTIMUM                  │
+│    LOCAL OPTIMUM → Hopefully → GLOBAL OPTIMUM                   │
 │                                                                 │
 │    Key properties:                                              │
-│    1. Greedy Choice Property: Local choice leads to global     │
-│    2. Optimal Substructure: Optimal contains optimal sub       │
+│    1. Greedy Choice Property: Local choice leads to global      │
+│    2. Optimal Substructure: Optimal contains optimal sub        │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Visual Example: Coin Change (When Greedy Works)
 
@@ -537,6 +574,7 @@ Result: 25 + 25 + 10 + 1 + 1 + 1 = 6 coins ✓
 This works because US coins have special property!
 ```
 
+
 ### When Greedy FAILS
 
 ```
@@ -552,6 +590,20 @@ For arbitrary coins, use DP instead.
 
 ---
 
+🔬 **Section Challenge — What is Greedy? <a name="what-is-greedy"></a>**
+
+**Challenge 1 (US Coins Special Property):** The section shows Greedy works for US coins [25,10,5,1] but fails for [4,3,1]. **What** mathematical property makes [25,10,5,1] a "canonical coin system" where Greedy is always optimal? **Who** proved this property formalized in academic literature?
+
+<details><summary>Answer</summary>
+
+**Mathematical property:** A coin system is canonical if for every amount n, the greedy algorithm using the coins produces the minimum number of coins. Formally, a coin system C is canonical if for every denomination c_i in C, the greedy solution for `c_i - 1` (one less than a denomination) uses fewer coins than any non-greedy alternative. **Why [25,10,5,1] satisfies this:** At each "boundary" amount (24¢, 9¢, 4¢), the greedy solution is optimal. This can be verified by checking every amount up to the largest denomination. **Why [4,3,1] fails:** At amount 6, greedy picks 4+1+1=3 coins. But 3+3=2 coins. The 3¢ coin violates the canonical property at the 4-1=3¢ boundary: greedy gives 3 coins (3+...hmm wait) — actually the issue is at 6: greedy picks 4 when 3+3 is better. **Who proved it:** Pearson (2005) and Chang & Gill (2006) proved exact conditions for canonical coin systems. The problem of determining if a given coin system is canonical is solvable in O(n×m) where n=largest denomination and m=number of coin types.
+
+</details>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
+
 ## When Does Greedy Work? <a name="when-greedy-works"></a>
 
 ### The Two Requirements
@@ -563,15 +615,16 @@ For arbitrary coins, use DP instead.
 │                                                                 │
 │  1. GREEDY CHOICE PROPERTY                                      │
 │     → The locally optimal choice is part of globally optimal    │
-│     → "Taking the best now won't hurt us later"                │
+│     → "Taking the best now won't hurt us later"                 │
 │                                                                 │
 │  2. OPTIMAL SUBSTRUCTURE                                        │
-│     → After making greedy choice, remaining is smaller         │
+│     → After making greedy choice, remaining is smaller          │
 │       version of same problem                                   │
-│     → "Problem breaks into similar subproblems"                │
+│     → "Problem breaks into similar subproblems"                 │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### How to Recognize Greedy Problems
 
@@ -581,22 +634,23 @@ For arbitrary coins, use DP instead.
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  Keywords in Problem:                                           │
-│  ✓ "Minimum/Maximum number of..."                              │
-│  ✓ "Largest/Smallest..."                                       │
-│  ✓ "Optimal arrangement/schedule"                              │
-│  ✓ "Non-overlapping intervals"                                 │
-│  ✓ "Select items with constraint"                              │
+│  ✓ "Minimum/Maximum number of..."                               │
+│  ✓ "Largest/Smallest..."                                        │
+│  ✓ "Optimal arrangement/schedule"                               │
+│  ✓ "Non-overlapping intervals"                                  │
+│  ✓ "Select items with constraint"                               │
 │                                                                 │
 │  Problem Patterns:                                              │
-│  ✓ Activity/Job scheduling                                     │
-│  ✓ Interval selection/merging                                  │
-│  ✓ Huffman coding                                              │
-│  ✓ Minimum spanning tree (Kruskal's, Prim's)                   │
-│  ✓ Shortest path (Dijkstra's)                                  │
-│  ✓ Fractional knapsack                                         │
+│  ✓ Activity/Job scheduling                                      │
+│  ✓ Interval selection/merging                                   │
+│  ✓ Huffman coding                                               │
+│  ✓ Minimum spanning tree (Kruskal's, Prim's)                    │
+│  ✓ Shortest path (Dijkstra's)                                   │
+│  ✓ Fractional knapsack                                          │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Proof Technique: Exchange Argument
 
@@ -611,6 +665,20 @@ To prove greedy works:
 ```
 
 ---
+
+🔬 **Section Challenge — When Does Greedy Work? <a name="when-greedy-works"></a>**
+
+**Challenge 1 (Recognition Test):** You encounter problem: "Given a list of tasks with deadlines, find the MAXIMUM number of tasks you can complete if each task takes 1 unit." **What** is the greedy criterion? **How** do you prove it with the exchange argument in 2 sentences?
+
+<details><summary>Answer</summary>
+
+**Greedy criterion:** Sort tasks by DEADLINE ascending. Process in order; if a task can fit in the schedule (there's a free time slot at or before its deadline), schedule it. **Exchange argument (2 sentences):** Suppose an optimal solution skips a task T_early (earlier deadline) in favor of T_late (later deadline) scheduled in the same time slot. Swapping T_late for T_early in that slot is safe because T_early's deadline is earlier — if T_late fits before its deadline, T_early also fits (T_early.deadline ≤ T_late.deadline), so the swap can only help or be neutral, never hurt. **Key insight:** The greedy choice (always take earliest-deadline task that fits) is an instance of the activity selection exchange argument — earlier deadlines leave more room for future tasks.
+
+</details>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## Classic Greedy Patterns <a name="classic-patterns"></a>
 
@@ -650,6 +718,7 @@ Different interval problems need different sorting:
 └───────────────────────────────────┴──────────────────────────────┘
 ```
 
+
 ### Pattern 3: Two-Pointer Greedy
 
 ```java
@@ -675,6 +744,20 @@ public int matchPairs(int[] costs, int[] values) {
 ```
 
 ---
+
+🔬 **Section Challenge — Classic Greedy Patterns <a name="classic-patterns"></a>**
+
+**Challenge 1 (Pattern 2 Deep Dive):** The table shows "Merge overlapping intervals" sorts by START time. **Who** decides whether to merge or skip? **What** invariant is maintained after each merge? **When** does `Math.max(lastEnd, current.end)` matter vs. just `current.end`?
+
+<details><summary>Answer</summary>
+
+**Who decides merge:** You compare `current.start` with `lastEnd` (the end of the last merged interval). If `current.start <= lastEnd` — OVERLAP — merge by extending. If `current.start > lastEnd` — GAP — push current interval as a new separate interval. **Invariant maintained:** After each step, the result list contains the minimum set of non-overlapping merged intervals for all intervals processed so far. **When `Math.max(lastEnd, current.end)` matters:** When one interval is FULLY CONTAINED inside another. Example: intervals [1,10] and [3,5] (sorted by start). Processing [3,5]: `3 <= 10` (overlap), so merge. But the merged end = `Math.max(10, 5) = 10` (NOT 5). If you just used `current.end = 5`, you'd shrink the interval incorrectly. `Math.max` ensures the merged interval is the UNION, not the intersection. **Classic bug:** Using `lastEnd = current.end` without `Math.max` — produces wrong results when a smaller interval is nested inside a larger one.
+
+</details>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
 
 ## Scheduling Problems <a name="scheduling"></a>
 
@@ -728,6 +811,7 @@ E [8,9]  ✓  (starts after D ends)
 
 Result: 3 activities (A, D, E)
 ```
+
 
 ### Job Scheduling to Maximize Profit
 
@@ -1140,6 +1224,15 @@ public int candy(int[] ratings) {
 
 ---
 
+🔬 **Section Challenge — Array Greedy Problems <a name="array-greedy"></a>**
+
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
+
 ## String Greedy Problems <a name="string-greedy"></a>
 
 ### Remove K Digits (LeetCode 402)
@@ -1300,6 +1393,15 @@ A B _ A B _ A B
 
 ---
 
+🔬 **Section Challenge — String Greedy Problems <a name="string-greedy"></a>**
+
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
+
 ## Graph Greedy Algorithms <a name="graph-greedy"></a>
 
 ### Kruskal's MST (Minimum Spanning Tree)
@@ -1431,6 +1533,21 @@ public int[] dijkstra(int n, int[][] edges, int src) {
 ```
 
 ---
+
+🔬 **Section Challenge — Graph Greedy Algorithms <a name="graph-greedy"></a>**
+
+**Challenge 1 (Reasoning):** BFS finds shortest path in unweighted graphs but not in weighted graphs. Why exactly?
+<details><summary>Answer</summary>
+
+BFS explores by 'hop count' (number of edges). Each level = one more edge away from source. All edges are treated as weight=1. In a weighted graph, the 'shortest by hop count' path may not be 'shortest by weight sum'. Example: A→B (weight 1, 1 hop) vs A→C→B (weight 0.1+0.1=0.2, 2 hops). BFS finds A→B (1 hop), Dijkstra finds A→C→B (lower total weight). BFS is optimal ONLY when all edges have equal weight.
+</details>
+
+**Challenge 2 (Design):** Detect if a directed graph has a cycle. Write the algorithm and explain why we need 3 states (not 2).
+<details><summary>Answer</summary>
+
+3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
+</details>
+
 
 ## Interview Problems <a name="interview-problems"></a>
 
@@ -1564,19 +1681,20 @@ public boolean lemonadeChange(int[] bills) {
 │  Makes ONE choice at each     │  Considers ALL choices at each  │
 │  step, never reconsiders      │  step, picks best via recursion │
 │                               │                                 │
-│  O(n) or O(n log n) usually   │  O(n²) or O(n³) typically      │
+│  O(n) or O(n log n) usually   │  O(n²) or O(n³) typically       │
 │                               │                                 │
 │  Doesn't always work          │  Always gives optimal (if       │
 │                               │  correct recurrence)            │
 │                               │                                 │
 │  Examples:                    │  Examples:                      │
-│  - Activity Selection         │  - 0/1 Knapsack                │
+│  - Activity Selection         │  - 0/1 Knapsack                 │
 │  - Huffman Coding             │  - Longest Common Subsequence   │
-│  - Dijkstra's Algorithm       │  - Edit Distance               │
+│  - Dijkstra's Algorithm       │  - Edit Distance                │
 │  - Fractional Knapsack        │  - Matrix Chain Multiplication  │
 │                               │                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Same Problem, Different Approaches
 
@@ -1613,9 +1731,19 @@ public int dpCoinChange(int[] coins, int amount) {
 
 ---
 
+🔬 **Section Challenge — Greedy vs DP <a name="greedy-vs-dp"></a>**
+
+**Challenge 1 (Reasoning):** Interval scheduling: select maximum number of non-overlapping intervals. Why does sorting by END time work, not by START time or duration?
+<details><summary>Answer</summary>
+
+Sorting by end time: greedily picking the interval that ends earliest leaves maximum time for future intervals. Formal proof (exchange argument): suppose optimal solution picks interval A instead of interval B (B ends earlier). We can swap A for B without losing any other interval (B ends ≤ A ends, so anything compatible with A is also compatible with B). Sorting by start time fails: a very long interval starting early would block many shorter intervals. Sorting by duration fails: a short interval might overlap two others.
+</details>
+
+
 ## Practice Problems <a name="practice-problems"></a>
 
 ### Easy 🟢
+
 | Problem | Type | Key Insight |
 |---------|------|-------------|
 | Assign Cookies | Matching | Sort both, greedy match |
@@ -1625,6 +1753,7 @@ public int dpCoinChange(int[] coins, int amount) {
 | Maximum Units on Truck | Sorting | Sort by units/box |
 
 ### Medium 🟡
+
 | Problem | Type | Key Insight |
 |---------|------|-------------|
 | Jump Game I/II | Array | Track farthest |
@@ -1638,6 +1767,7 @@ public int dpCoinChange(int[] coins, int amount) {
 | Container With Most Water | Two pointer | Move shorter |
 
 ### Hard 🔴
+
 | Problem | Type | Key Insight |
 |---------|------|-------------|
 | Candy | Two pass | L→R then R→L |
@@ -1658,30 +1788,31 @@ public int dpCoinChange(int[] coins, int amount) {
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  1. SORT BY END TIME                                            │
-│     → Max non-overlapping intervals                            │
+│     → Max non-overlapping intervals                             │
 │     → Activity selection                                        │
 │                                                                 │
 │  2. SORT BY START TIME                                          │
 │     → Merge intervals                                           │
-│     → Cover range with min intervals                           │
+│     → Cover range with min intervals                            │
 │                                                                 │
-│  3. SORT BY RATIO (value/weight)                               │
-│     → Fractional knapsack                                      │
+│  3. SORT BY RATIO (value/weight)                                │
+│     → Fractional knapsack                                       │
 │                                                                 │
-│  4. SORT BY ONE, SECONDARY BY ANOTHER                          │
-│     → Job scheduling (profit desc, deadline)                   │
-│     → Queue reconstruction (height desc, k asc)                │
+│  4. SORT BY ONE, SECONDARY BY ANOTHER                           │
+│     → Job scheduling (profit desc, deadline)                    │
+│     → Queue reconstruction (height desc, k asc)                 │
 │                                                                 │
-│  5. TWO POINTERS (heaviest + lightest)                         │
-│     → Boat problem                                             │
-│     → Two sum variants                                         │
+│  5. TWO POINTERS (heaviest + lightest)                          │
+│     → Boat problem                                              │
+│     → Two sum variants                                          │
 │                                                                 │
-│  6. TRACK FARTHEST/EARLIEST ENDING                             │
-│     → Jump game                                                │
-│     → Interval covering                                        │
+│  6. TRACK FARTHEST/EARLIEST ENDING                              │
+│     → Jump game                                                 │
+│     → Interval covering                                         │
 │                                                                 │
 └─────────────────────────────────────────────────────────────────┘
 ```
+
 
 ### Common Mistakes to Avoid
 
@@ -1702,6 +1833,7 @@ public int dpCoinChange(int[] coins, int amount) {
    → Always update end/farthest after making choice
 ```
 
+
 ---
 
 **Master These 3 Greedy Patterns:**
@@ -1710,12 +1842,14 @@ public int dpCoinChange(int[] coins, int amount) {
 ╔═══════════════════════════════════════════════════════════════╗
 ║     GREEDY ESSENTIALS                                         ║
 ╠═══════════════════════════════════════════════════════════════╣
-║  1. INTERVAL SELECTION: Sort by end time, pick earliest      ║
+║  1. INTERVAL SELECTION: Sort by end time, pick earliest       ║
 ║                                                               ║
-║  2. INTERVAL MERGING: Sort by start time, extend end         ║
+║  2. INTERVAL MERGING: Sort by start time, extend end          ║
 ║                                                               ║
-║  3. TWO POINTER: Sort both, match greedily                   ║
+║  3. TWO POINTER: Sort both, match greedily                    ║
 ╚═══════════════════════════════════════════════════════════════╝
 ```
 
+
 **Pro Tip:** If greedy doesn't work for a problem, try DP. If you can prove the greedy choice property (exchange argument), greedy is usually faster!
+
