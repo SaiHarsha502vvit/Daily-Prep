@@ -58,5 +58,12 @@ export default defineConfig({
       },
       grep: /@cross-browser/,
     },
+    {
+      name: 'file-io',
+      testDir: './tests/file-io',
+      use: {
+        ...devices['Desktop Chrome'],
+      },
+    },
   ],
 });

@@ -1,0 +1,96 @@
+---
+# ============================================================
+# Playwright Enterprise Framework — Docker Compose
+# ============================================================
+# Services:
+#   playwright  — the test runner (built from ./Dockerfile)
+#   app         — placeholder for the application under test
+#                 (replace with your real app service or remove if
+#                  tests target a remote environment)
+#
+# Usage:
+#   Build:          docker compose build
+#   Run all tests:  docker compose run --rm playwright
+#   Single project: docker compose run --rm playwright npx playwright test --project=api
+#   Shard 1 of 3:   docker compose run --rm -e SHARD=1/3 playwright
+#   View report:    docker compose run --rm playwright npx playwright show-report
+#   Tear down:      docker compose down --volumes
+# ============================================================
+
+version: "3.9"
+
+services:
+  # ── Application under test (example stub) ─────────────────
+  # Replace with your real app image.  Remove if tests target a remote URL.
+  app:
+    image: node:20-alpine
+    working_dir: /app
+    # A minimal HTTP server — swap for your real app command.
+    command: sh -c "npx --yes serve -s . -l 3000"
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000"]
+      interval: 5s
+      retries: 6
+      start_period: 10s
+
+  # ── Playwright test runner ─────────────────────────────────
+  playwright:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: playwright-framework:latest
+
+    # Shared memory: Chromium and Firefox need > 64 MB /dev/shm.
+    # 2 GB is safe for 4 parallel workers.
+    shm_size: "2gb"
+
+    # Wait for the app to be ready before running tests.
+    # Remove 'depends_on' if tests target a remote URL (CI pipeline).
+    depends_on:
+      app:
+        condition: service_healthy
+
+    environment:
+      # CI mode: forbidOnly, 4 workers, 2 retries (playwright.config.ts)
+      CI: "true"
+
+      # Application URLs — read by framework/config/env.loader.ts
+      ORANGEHRM_BASE_URL: ${ORANGEHRM_BASE_URL:-https://opensource-demo.orangehrmlive.com}
+      API_BASE_URL: ${API_BASE_URL:-https://reqres.in}
+
+      # Auth credentials — inject from your CI secrets manager.
+      # NEVER hardcode credentials here; use environment variable substitution.
+      ORANGEHRM_USERNAME: ${ORANGEHRM_USERNAME:-}
+      ORANGEHRM_PASSWORD: ${ORANGEHRM_PASSWORD:-}
+
+      # Optional OAuth settings (Ch 57 — auth.oauth.fixture.ts)
+      OAUTH_TOKEN_URL: ${OAUTH_TOKEN_URL:-}
+      OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID:-}
+      OAUTH_CLIENT_SECRET: ${OAUTH_CLIENT_SECRET:-}
+
+      # Sharding: set SHARD=N/TOTAL to run a fraction of tests.
+      # Example: SHARD=2/3 runs the second third of the test suite.
+      # The entrypoint script (see below) passes this to --shard.
+      SHARD: ${SHARD:-}
+
+    volumes:
+      # Mount test artifacts OUT of the container so CI can collect them.
+      - ./playwright-report:/app/playwright-report
+      - ./test-results:/app/test-results
+
+    # Override default CMD with shard support.
+    # If SHARD is set, append --shard to the playwright command.
+    entrypoint: >
+      sh -c '
+        ARGS="$${PLAYWRIGHT_EXTRA_ARGS:-}"
+        if [ -n "$${SHARD}" ]; then
+          ARGS="$$ARGS --shard=$$SHARD"
+        fi
+        exec npx playwright test $$ARGS
+      '
+
+networks:
+  default:
+    name: playwright-net

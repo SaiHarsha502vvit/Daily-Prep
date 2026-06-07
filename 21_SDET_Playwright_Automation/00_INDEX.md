@@ -84,17 +84,24 @@
 | 54 | [Synthetic Monitoring](./05_Advanced_Topics/54_Synthetic_Monitoring.md) | 45 min | **Checkly, cron-based Playwright monitors, alerting, SLA reporting** | Ch25, Ch48 |
 | &nbsp; | **——— DEBUGGING SURFACES ——— Inspector, Trace Viewer, UI Mode** | | | |
 | 55 | [Inspector, Trace Viewer & UI Mode — Walk-Through](./02_Core_Architecture/55_Inspector_TraceViewer_UIMode_Walkthrough.md) | 30 min | **Step-through live, time-travel past runs, UI Mode watch loop — hands-on only** | Ch26 |
+| &nbsp; | **——— CONFIG, AUTH, FILE I/O, DOCKER, TOOL COMPARISON ——— Reader-requested fills** | | | |
+| 56 | [Playwright Config Deep-Dive](./02_Core_Architecture/56_Playwright_Config_Deep_Dive.md) | 75 min | **Every config field: projects, use-merging, reporters, timeouts, retries, trace, devices, globalSetup vs dependencies** | Ch09, Ch26, Ch55 |
+| 57 | [Login Taxonomy — OAuth2 / OIDC / SAML / MFA / mTLS](./05_Advanced_Topics/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) | 90 min | **5 production auth flows beyond storageState — OAuth2+PKCE, OIDC, SAML, TOTP, client certs; worker-scoped token caches** | Ch06, Ch16 |
+| 58 | [File Uploads & Downloads](./05_Advanced_Topics/58_File_Uploads_Downloads.md) | 60 min | **setInputFiles single/multi/buffer, drag-drop, download event race, CSV/XLSX/PDF assertion helpers** | Ch04, Ch07 |
+| 59 | [Docker for Playwright](./05_Advanced_Topics/59_Docker_For_Playwright.md) | 60 min | **mcr.microsoft.com/playwright base image, multi-stage builds, sharding via docker-compose, /dev/shm gotcha, CI integration** | Ch09, Ch25, Ch48 |
+| 60 | [Tool Comparison — Cypress / Selenium / WebdriverIO](./06_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md) | 60 min | **Honest trade-offs, architecture, locator model, cross-domain, parallel, API testing, when to pick what — interview prep** | Ch32, `23_Mobile_Dev_And_Testing/01` |
 
 **Bolded chapters** = Advanced content built on your real codebase.
 **Ch33–36** = Read alongside the corresponding guide folder (DSA, OOP, TypeScript) for maximum cross-pollination.
 **Ch37–41** = Industry-standard open-source tools (Lighthouse, k6, Pact, axe-core, OWASP ZAP, GraphQL).
 **Ch42–44** = Real-world depth: the async waiting patterns, actual war stories, and the API library architecture that separates SDETs from senior SDEs.
 **Ch45** = AI & MCP: the frontier of agentic test automation and what AI can (and cannot) replace.
-**Ch46–51** = Enterprise tooling: BDD, observability, test selection, feature flags, email testing, secrets management.
+**Ch46–51** = Enterprise tooling: BDD, Allure/ReportPortal, sharding, feature flags, email testing, secrets management.
 **Ch52–54** = Depth testing: component isolation, mutation score, synthetic monitoring — the upper tier of SDET competency.
 **Ch55** = Debugging surfaces: Inspector, Trace Viewer, UI Mode — hands-on only, no shortcuts.
+**Ch56–60** = Reader-requested fills: config deep-dive, auth taxonomy beyond storageState, file I/O, Docker, and an honest tool comparison for interview prep.
 
-> **Total estimated study time: ~130–155 hours** (55 chapters x 60–90 min + quizzes)
+> **Total estimated study time: ~160–185 hours** (60 chapters x 60–90 min + quizzes)
 
 ---
 
@@ -145,14 +152,23 @@ Quiz 01 → after Chapters 01–16
 Quiz 02 → after Chapters 01–18
 Quiz 02 Solutions → after attempting Quiz 02 (self-check)
 
-Ch45 (AI/MCP)         → after Ch05+Ch06+Ch21 (needs POM, fixtures, project structure)
-Ch46 (Config Semantics) → read alongside Ch09 (workers belong to Ch09; config belongs here)
-Ch47 (Uploads/Downloads) → after Ch07 (E2E steps)
-Ch48 (Trace Artifacts) → after Ch26 (flakiness)
-Ch49 (Component Testing) → after Ch05+Ch06+Ch39
-Ch50 (SPA Tabs/No IDs) → after Ch05+Ch08+Ch10
-Ch51 (Login Taxonomy) → after Ch06+Ch16+Ch28
-Ch52 (UI Flow Fixtures) → after Ch06+Ch07+Ch50
+Ch45 (AI/MCP)              → after Ch05+Ch06+Ch21 (needs POM, fixtures, project structure)
+Ch46 (BDD with Cucumber)   → after Ch06+Ch07 (steps wrap fixtures + POMs)
+Ch47 (Allure/ReportPortal) → after Ch25 (CI/CD pipelines feed the reporter)
+Ch48 (Sharding/Selection)  → after Ch09+Ch25 (parallel model + CI matrices)
+Ch49 (Feature Flag Testing)→ after Ch06+Ch28 (flag-injection fixtures + data lifecycle)
+Ch50 (Email Service)       → after Ch06+Ch14 (token/magic-link pattern)
+Ch51 (Secrets Mgmt)        → after Ch25+Ch40 (CI secrets + security testing)
+Ch52 (Playwright CT)       → after Ch05+Ch06+Ch39 (POMs, fixtures, a11y baselines)
+Ch53 (Mutation Testing)    → after Ch27 (advanced TS for mutator config)
+Ch54 (Synthetic Monitoring)→ after Ch25+Ch48 (CI + scheduled runs)
+Ch55 (Debugging surfaces)  → after Ch26 (use trace viewer to diagnose flakiness)
+
+Ch56 (Config Deep-Dive)    → read alongside Ch09 (workers + config together)
+Ch57 (Login Taxonomy)      → after Ch06+Ch16+Ch28 (fixtures + storageState + data lifecycle)
+Ch58 (Uploads/Downloads)   → after Ch07 (E2E steps)
+Ch59 (Docker)              → after Ch25+Ch48 (CI + sharding)
+Ch60 (Tool Comparison)     → after Ch32 (interview prep)
 ```
 
 ---
@@ -284,3 +300,21 @@ try {
 - **React/SPA**: [`15_React_Frontend/`](../15_React_Frontend/00_INDEX.md) — React rendering lifecycle
 - **SQL/DB**: [`08_SQL/`](../08_SQL/00_INDEX.md) — JOIN, CTE, transactions for DB testing
 - **DevOps/CI**: [`22_DevOps/19_CICD_Pipelines.md`](../22_DevOps/19_CICD_Pipelines.md) — Running Playwright in GitHub Actions
+
+---
+
+## Roadmap — Not Yet Covered (Deliberately Deferred)
+
+These are real gaps. They have NOT been written yet — by design, not by oversight. Each is large enough to deserve its own session and is captured here so readers know what's deliberate vs. what's missing.
+
+| Topic | Why deferred | When to revisit |
+|---|---|---|
+| **OpenTelemetry / APM integration** (Datadog, New Relic, Jaeger) | Each vendor needs its own walk-through; the patterns differ enough that one chapter would be misleading | When the team picks a primary APM |
+| **Chaos engineering** (network partitions, API degradation, browser crash simulation) | Toolchain (Gremlin, Toxiproxy, Chaos Mesh) is still in flux for browser testing | Once a stable Playwright-friendly chaos tool emerges |
+| **Cloud device farms** (BrowserStack, Sauce Labs, AWS Device Farm) | Vendor-specific config; quickly stale | On demand — when CI capacity becomes a bottleneck |
+| **Property-based testing** (`fast-check` + Playwright) | Niche pattern, hard to motivate for UI tests | Add as a `08_Practice_And_Quizzes/` extension challenge |
+| **Mobile / Appium hands-on** | Cross-module concern; lives in `23_Mobile_Dev_And_Testing/` | Expand that module instead |
+| **Screen-reader automation** (NVDA / JAWS) | Beyond axe-core; requires OS-level tooling | Pair with Ch39 a11y when the team has a screen-reader user-research need |
+| **Test impact analysis** (changed-files → affected-tests) | Real win for monorepos, but requires bespoke dependency-graph tooling | Once the suite exceeds ~500 tests |
+
+If you need any of these urgently, open an issue or ping the maintainer — the absence is intentional but not permanent.

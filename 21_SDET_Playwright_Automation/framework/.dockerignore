@@ -1,0 +1,28 @@
+# Node modules — reinstalled inside the container via npm ci
+node_modules/
+
+# Test artifacts — don't bake reports into the image
+playwright-report/
+test-results/
+
+# Auth state files — never commit or ship credentials
+auth-states/
+*.storageState.json
+
+# Local env overrides — secrets live in CI environment variables
+.env
+.env.local
+.env.*.local
+
+# Lock files produced by proper-lockfile (test account pool)
+*.lock
+
+# OS and editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
