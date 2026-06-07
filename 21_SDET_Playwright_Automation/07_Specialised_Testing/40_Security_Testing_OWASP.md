@@ -1,6 +1,6 @@
 # 40. Security Test Automation — OWASP Top 10, ZAP & Auth Testing
 
-**Navigation**: [â† Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
+**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
 
 **Open-Source Tools Referenced:**
 - **OWASP ZAP** — https://github.com/zaproxy/zaproxy (Apache 2.0) — the world's most widely used web security scanner
@@ -647,7 +647,7 @@ test('IDOR: customer cannot read another customer citation via sequential ID', a
 - [securityheaders.com](https://securityheaders.com/) — Free security header scanner
 
 ---
-**Navigation**: [â† Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
+**Navigation**: [← Chapter 39: Accessibility Testing](./39_Accessibility_Testing_axe_core.md) | [Index](../00_INDEX.md) | [→ Chapter 41: GraphQL & WebSocket Testing](./41_GraphQL_WebSocket_Testing.md)
 
 ### Challenge 2 [Write It Yourself — XSS Payload Injection]
 

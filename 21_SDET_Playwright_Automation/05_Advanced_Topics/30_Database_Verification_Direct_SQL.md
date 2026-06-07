@@ -1,6 +1,6 @@
 # 30. Database Verification — Direct SQL Assertions in Tests
 
-**Navigation**: [â† Chapter 29: Visual Regression](./29_Visual_Regression_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 31: API Mocking with page.route()](./31_API_Mocking_page_route.md)
+**Navigation**: [← Chapter 29: Visual Regression](./29_Visual_Regression_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 31: API Mocking with page.route()](./31_API_Mocking_page_route.md)
 
 **Cross-links:**
 - [`07_test_step_E2E_Architecture.md`](../02_Core_Architecture/07_test_step_E2E_Architecture.md) — Three-layer verification pattern
@@ -37,7 +37,7 @@ With DB verification:
   2. API assertion passes ✅
   3. DB query: SELECT status FROM citations WHERE citation_id = 'CIT-001'
   4. DB returns: 'OVERDUE'
-  5. DB assertion FAILS âŒ → test correctly catches the discrepancy
+  5. DB assertion FAILS ❌ → test correctly catches the discrepancy
 ```
 
 ---
@@ -547,7 +547,7 @@ export const test = base.extend<{}, { dbClient: DbClient }>({
 DB assertions are internal automation code, but still write them safely:
 
 ```typescript
-// âŒ NEVER: string concatenation (SQL injection risk, even in test code)
+// ❌ NEVER: string concatenation (SQL injection risk, even in test code)
 const citationId = testData.citationId;  // could be "'; DROP TABLE citations; --"
 const rows = await client.query(
   `SELECT * FROM citations WHERE citation_id = '${citationId}'`  // DANGEROUS

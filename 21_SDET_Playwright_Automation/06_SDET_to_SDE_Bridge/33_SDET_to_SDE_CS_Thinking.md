@@ -1,6 +1,6 @@
 # 33. SDET → SDE Thinking — CS Fundamentals That Make You a Better Test Engineer
 
-**Navigation**: [â† Chapter 32: Interview Prep](./32_SDET_Interview_Prep.md) | [Index](../00_INDEX.md) | [→ Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md)
+**Navigation**: [← Chapter 32: Interview Prep](./32_SDET_Interview_Prep.md) | [Index](../00_INDEX.md) | [→ Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md)
 
 **Cross-references (read these alongside this chapter):**
 - [`../../14_Mental_Models/05_Universal_Problem_Framework.md`](../../../14_Mental_Models/05_Universal_Problem_Framework.md) — Problem decomposition that applies to test design
@@ -60,7 +60,7 @@ The CS skills are identical.
 // If you use an array → O(n) search per test: slow + fragile.
 // If you use a Map → O(1) lookup per test.
 
-// âŒ Array — O(n) lookup
+// ❌ Array — O(n) lookup
 const createdCitations: CitationApiResponse[] = [];
 const myCitation = createdCitations.find(c => c.citationId === 'CIT-001');
 // .find() scans the whole array — O(n)
@@ -145,7 +145,7 @@ const notifications = await notificationsClient.getByUser(account.userId);
 // notifications is in FIFO order (oldest first)
 const createIndex = notifications.findIndex(n => n.type === 'CITATION_CREATED');
 const payIndex = notifications.findIndex(n => n.type === 'PAYMENT_RECEIVED');
-expect(createIndex).toBeLessThan(payIndex);  // â† queue ordering assertion
+expect(createIndex).toBeLessThan(payIndex);  // ← queue ordering assertion
 ```
 
 ---
@@ -248,7 +248,7 @@ Topological sort of the dependency graph gives you the correct creation order.
 // Bad:
 const test = base.extend({
   fixtureA: async ({ fixtureB }, use) => { ... },  // A needs B
-  fixtureB: async ({ fixtureA }, use) => { ... },  // B needs A  â† cycle!
+  fixtureB: async ({ fixtureA }, use) => { ... },  // B needs A  ← cycle!
 });
 // Playwright error: "circular fixture dependency"
 
@@ -390,7 +390,7 @@ async function pollUntil<T>(
 
   // RECURSIVE CASE: wait and try again
   await sleep(1000);
-  return pollUntil(fn, expected, timeoutMs, startTime);  // â† recursive call
+  return pollUntil(fn, expected, timeoutMs, startTime);  // ← recursive call
 }
 
 // Playwright's expect.poll() does this with exponential backoff intervals:

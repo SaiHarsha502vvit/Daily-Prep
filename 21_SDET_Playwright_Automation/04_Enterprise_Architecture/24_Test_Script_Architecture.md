@@ -1,6 +1,6 @@
 # 24. Test Script Architecture — POMs Before Steps, Data Never Exposed
 
-**Navigation**: [â† Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
 - [`07_test_step_E2E_Architecture.md`](../02_Core_Architecture/07_test_step_E2E_Architecture.md) — The Data Accumulator pattern
@@ -61,7 +61,7 @@ test('example', async ({ page }) => {
 
   // If you declare inside step 1:
   await test.step('Step 1: Navigate', async () => {
-    const masterPage = new MasterSearchPage(page); // â† inside step 1's closure
+    const masterPage = new MasterSearchPage(page); // ← inside step 1's closure
     await masterPage.goto();
   });
 
@@ -148,7 +148,7 @@ test('create citation and verify', async ({ page, citationsClient, account }) =>
     const citation = await citationsClient.create(
       PayloadsCitation.pending({ customerId: account.userId })
     );
-    data.citationId = citation.citationId;  // â† step 1 fills it in
+    data.citationId = citation.citationId;  // ← step 1 fills it in
   });
 
   await test.step('Find citation in UI', async () => {
@@ -162,7 +162,7 @@ test('create citation and verify', async ({ page, citationsClient, account }) =>
 **Why not use `let` variables instead of an object?**
 
 ```typescript
-// âŒ let variables — TypeScript "possibly unassigned" problem
+// ❌ let variables — TypeScript "possibly unassigned" problem
 let citationId: string;
 
 await test.step('Create', async () => {
@@ -339,7 +339,7 @@ test.describe('Citation Dispute Flow @citations @regression', () => {
 ### The Rule
 
 ```typescript
-// âŒ NEVER in a spec file:
+// ❌ NEVER in a spec file:
 const adminEmail = 'admin@company.com';    // hardcoded credential
 const adminPassword = 'Admin@123!';        // hardcoded credential
 const apiKey = 'sk-live-abc123xyz789';     // hardcoded secret
@@ -386,7 +386,7 @@ async ({ account }) => {
 Step names are what appear in the Playwright HTML report. They should be:
 
 ```typescript
-// âŒ Vague steps — useless in failure reports
+// ❌ Vague steps — useless in failure reports
 await test.step('step 1', async () => { ... });
 await test.step('do thing', async () => { ... });
 await test.step('check', async () => { ... });
@@ -466,7 +466,7 @@ test.describe('Create citation and verify notification @citations @smoke', () =>
     'Agent creates PARKING citation → customer receives email notification within 30s',
     async ({ page, account, citationsClient, notificationsClient }) => {
     //        ↑ page   ↑ auth    ↑ HTTP client   ↑ notifications client
-    //        Playwright built-in  â†── your custom fixtures ──────────────────────►
+    //        Playwright built-in  ←── your custom fixtures ──────────────────────►
 
     // ── POMs: ALL declared here, BEFORE any step ──────────────────────────
     const masterSearch = new MasterSearchPage(page);
@@ -588,7 +588,7 @@ test('example', async ({ page }) => {
   });
 
   await test.step('Step 2', async () => {
-    await form.fillCitationId('CIT-001');  // â† what happens?
+    await form.fillCitationId('CIT-001');  // ← what happens?
   });
 });
 ```
@@ -620,7 +620,7 @@ test('lookup customer', async ({ page, account }) => {
     await masterSearch.searchPanel.searchByEmail(account.email);
     await masterSearch.resultsGrid.waitForResults();
     data.customerId = await masterSearch.resultsGrid.getFirstRowId();
-    // â† No assertion that data.customerId is not null
+    // ← No assertion that data.customerId is not null
   });
 
   await test.step('Open customer record', async () => {
@@ -732,7 +732,7 @@ test.describe('New supervisor onboarding @users @smoke', () => {
 | Assertions inside steps, not after them | Step-level failure isolation: you know WHICH step failed |
 
 ---
-**Navigation**: [â† Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 23: APIUtils — Your HTTP Library](./23_APIUtils_HTTP_Library.md) | [Index](../00_INDEX.md)
 
 ---
 

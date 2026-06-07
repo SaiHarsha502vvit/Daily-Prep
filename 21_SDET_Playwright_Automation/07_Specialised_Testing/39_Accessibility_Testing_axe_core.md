@@ -1,6 +1,6 @@
 # 39. Accessibility Testing — axe-core, WCAG 2.1, and Automated A11y
 
-**Navigation**: [â† Chapter 38: Contract Testing](./38_Contract_Testing_Pact.md) | [Index](../00_INDEX.md) | [→ Chapter 40: Security Test Automation](./40_Security_Testing_OWASP.md)
+**Navigation**: [← Chapter 38: Contract Testing](./38_Contract_Testing_Pact.md) | [Index](../00_INDEX.md) | [→ Chapter 40: Security Test Automation](./40_Security_Testing_OWASP.md)
 
 **Open-Source Tools Referenced:**
 - **axe-core** — https://github.com/dequelabs/axe-core (MPL 2.0) — the world's leading accessibility testing engine, by Deque Systems

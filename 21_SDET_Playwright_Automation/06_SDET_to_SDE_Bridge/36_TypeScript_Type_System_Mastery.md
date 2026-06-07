@@ -1,6 +1,6 @@
 # 36. TypeScript Type System Mastery for SDETs
 
-**Navigation**: [â† Chapter 35: OOP Design Patterns](./35_OOP_Design_Patterns_for_SDETs.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 35: OOP Design Patterns](./35_OOP_Design_Patterns_for_SDETs.md) | [Index](../00_INDEX.md)
 
 **Cross-references (read these alongside):**
 - [`../../17_TypeScript/02_TS_Advanced_Types.md`](../../../17_TypeScript/02_TS_Advanced_Types.md) — Full coverage of conditional types, mapped types, infer — the same features used in your test framework
@@ -99,7 +99,7 @@ type CitationApiResponse =
 function processPayment(citation: CitationApiResponse) {
   if (citation.status === 'PAID') {
     citation.paymentDate;      // ✅ TypeScript knows this exists (we're in the 'PAID' variant)
-    citation.disputeReason;    // âŒ TypeScript error: doesn't exist on 'PAID' variant
+    citation.disputeReason;    // ❌ TypeScript error: doesn't exist on 'PAID' variant
   }
 }
 ```
@@ -133,7 +133,7 @@ async function typedGet<T extends ApiResponseType>(url: string): Promise<T> {
   return fetch(url).then(r => r.json());
 }
 // typedGet<CitationApiResponse>(url)  ✅
-// typedGet<string>(url)               âŒ TypeScript error: string is not in ApiResponseType
+// typedGet<string>(url)               ❌ TypeScript error: string is not in ApiResponseType
 ```
 
 **Constraint patterns in test fixtures:**
@@ -196,12 +196,12 @@ type CitationResponse<Includes extends IncludeOptions[] = []> =
 // Usage:
 // Without includes: just CitationBase
 const basic = await client.getById<[]>('CIT-001');
-basic.notifications;  // âŒ TypeScript error: not in the type
+basic.notifications;  // ❌ TypeScript error: not in the type
 
 // With notifications include:
 const withNotifs = await client.getById<['notifications']>('CIT-001');
 withNotifs.notifications;  // ✅ TypeScript knows this exists
-withNotifs.auditLog;       // âŒ TypeScript error: not requested
+withNotifs.auditLog;       // ❌ TypeScript error: not requested
 ```
 
 **Simpler version for everyday use — the `format` pattern from Ch27:**
@@ -267,7 +267,7 @@ type ImmutableFixture<T> = {
 };
 // This recursively makes every field readonly — deep immutability.
 // If a test accidentally tries to mutate a fixture:
-// fixture.amount = 999;  â† TypeScript error: cannot assign to read-only property
+// fixture.amount = 999;  ← TypeScript error: cannot assign to read-only property
 ```
 
 ---
@@ -313,7 +313,7 @@ From [`../../17_TypeScript/02_TS_Advanced_Types.md`](../../../17_TypeScript/02_T
 // Basic template literal type:
 type Greeting = `Hello, ${string}!`;
 const g1: Greeting = 'Hello, World!';    // ✅
-const g2: Greeting = 'Hi, World!';       // âŒ doesn't start with 'Hello, '
+const g2: Greeting = 'Hi, World!';       // ❌ doesn't start with 'Hello, '
 
 // Applied to API endpoint typing:
 type ApiVersion = 'v1' | 'v2' | 'v3';
@@ -327,8 +327,8 @@ function buildPath(version: ApiVersion, resource: ResourceName, id?: string): Ap
 }
 
 buildPath('v2', 'citations', 'CIT-001');  // ✅ '/api/v2/citations/CIT-001'
-buildPath('v4', 'citations');             // âŒ TypeScript error: 'v4' is not in ApiVersion
-buildPath('v2', 'citaions');              // âŒ TypeScript error: 'citaions' is not in ResourceName
+buildPath('v4', 'citations');             // ❌ TypeScript error: 'v4' is not in ApiVersion
+buildPath('v2', 'citaions');              // ❌ TypeScript error: 'citaions' is not in ResourceName
 // Typos in endpoint paths become COMPILE ERRORS, not 404s at runtime.
 ```
 
@@ -609,7 +609,7 @@ citation.citaton_id;  // typo — TypeScript says nothing. Runtime: undefined.
 // MEDIUM (Level 2): basic interface
 interface Citation { citationId: string; status: string; amount: number; }
 const citation: Citation = await callApi('/api/v2/citations/CIT-001');
-citation.citaton_id;  // âŒ TypeScript error — misspelled field caught at compile time ✅
+citation.citaton_id;  // ❌ TypeScript error — misspelled field caught at compile time ✅
 
 // STRONG (Level 3): discriminated union + generic + conditional return
 type GetResult<F extends 'body' | 'raw', T> = F extends 'raw' ? ApiResponse<T> : T;
@@ -666,8 +666,8 @@ const cursored: PaginationConfig = { mode: 'cursor', cursor: 'abc', limit: 20 };
 const none: PaginationConfig = {};                                               // ✅
 
 // These are compile errors:
-const invalid1: PaginationConfig = { mode: 'page', cursor: 'abc' };  // âŒ cursor not in page variant
-const invalid2: PaginationConfig = { mode: 'cursor', page: 1 };      // âŒ page not in cursor variant
+const invalid1: PaginationConfig = { mode: 'page', cursor: 'abc' };  // ❌ cursor not in page variant
+const invalid2: PaginationConfig = { mode: 'cursor', page: 1 };      // ❌ page not in cursor variant
 ```
 </details>
 

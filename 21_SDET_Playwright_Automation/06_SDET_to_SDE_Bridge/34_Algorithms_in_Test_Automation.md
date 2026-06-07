@@ -1,6 +1,6 @@
 ﻿# 34. Algorithms in Test Automation — Search, Sort, and Pattern Recognition
 
-**Navigation**: [â† Chapter 33: SDET→SDE CS Thinking](./33_SDET_to_SDE_CS_Thinking.md) | [Index](../00_INDEX.md) | [→ Chapter 35: OOP Design Patterns Deep-Dive for SDETs](./35_OOP_Design_Patterns_for_SDETs.md)
+**Navigation**: [← Chapter 33: SDET→SDE CS Thinking](./33_SDET_to_SDE_CS_Thinking.md) | [Index](../00_INDEX.md) | [→ Chapter 35: OOP Design Patterns Deep-Dive for SDETs](./35_OOP_Design_Patterns_for_SDETs.md)
 
 **Cross-references (read these alongside this chapter):**
 - [`../../03_Algorithms/01_Algorithm_Thinking.md`](../../../03_Algorithms/01_Algorithm_Thinking.md) — The algorithm thinking framework that applies to test design

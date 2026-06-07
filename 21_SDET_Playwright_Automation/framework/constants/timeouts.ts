@@ -1,0 +1,16 @@
+export enum Timeouts {
+  ONE_SECOND = 1_000,
+  FIVE_SECONDS = 5_000,
+  TEN_SECONDS = 10_000,
+  FIFTEEN_SECONDS = 15_000,
+  THIRTY_SECONDS = 30_000,
+  SIXTY_SECONDS = 60_000,
+  TWO_MINUTES = 120_000,
+  FIVE_MINUTES = 300_000,
+}
+
+export enum PollIntervals {
+  FAST = 250,
+  MEDIUM = 1_000,
+  SLOW = 5_000,
+}

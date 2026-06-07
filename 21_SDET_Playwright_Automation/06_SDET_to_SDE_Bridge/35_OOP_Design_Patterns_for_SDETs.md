@@ -1,6 +1,6 @@
 # 35. OOP Design Patterns Deep-Dive for SDETs
 
-**Navigation**: [â† Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md) | [Index](../00_INDEX.md) | [→ Chapter 36: TypeScript Type System Mastery](./36_TypeScript_Type_System_Mastery.md)
+**Navigation**: [← Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md) | [Index](../00_INDEX.md) | [→ Chapter 36: TypeScript Type System Mastery](./36_TypeScript_Type_System_Mastery.md)
 
 **Cross-references (read these alongside):**
 - [`../../06_OOP_Design/01_OOPS_Principles.md`](../../../06_OOP_Design/01_OOPS_Principles.md) — SOLID, encapsulation, polymorphism — all in your POM
@@ -53,10 +53,10 @@ VIOLATION in test code:
     async getFirstResult() { ... }
 
     // API calls
-    async createCitationViaAPI(payload) { ... }  // â† WRONG: this belongs in a client class
+    async createCitationViaAPI(payload) { ... }  // ← WRONG: this belongs in a client class
 
     // Assertions
-    expect(await this.getStatus()).toBe('PENDING');  // â† WRONG: assertions in POM
+    expect(await this.getStatus()).toBe('PENDING');  // ← WRONG: assertions in POM
   }
 
 WHY IT'S WRONG:
@@ -572,11 +572,11 @@ private async processResponse<T>(response, method, url, options): Promise<ApiRes
   const contentType = response.headers()['content-type'] ?? '';
   let body: T;
   if (contentType.includes('application/json')) {
-    body = await response.json() as T;           // â† JSON subcase
+    body = await response.json() as T;           // ← JSON subcase
   } else if (status === 204) {
-    body = undefined as T;                        // â† No Content subcase
+    body = undefined as T;                        // ← No Content subcase
   } else {
-    body = await response.text() as T;            // â† Plain text subcase
+    body = await response.text() as T;            // ← Plain text subcase
   }
 
   // Step 4: Return (fixed)
@@ -762,7 +762,7 @@ export const test = base.extend<{ consoleErrorGuard: void }>({
     const jsErrors: string[] = [];
     page.on('pageerror', (err) => jsErrors.push(err.message));
 
-    await use();  // â† test runs here (the "variable" step — different per test)
+    await use();  // ← test runs here (the "variable" step — different per test)
 
     // Template step: assert no JS errors (fixed — same for ALL tests)
     if (jsErrors.length > 0) {
@@ -771,7 +771,7 @@ export const test = base.extend<{ consoleErrorGuard: void }>({
         jsErrors.map((e, i) => `  ${i + 1}. ${e}`).join('\n')
       );
     }
-  }, { auto: true }],  // â† auto: true means this fixture runs for EVERY test automatically
+  }, { auto: true }],  // ← auto: true means this fixture runs for EVERY test automatically
   // No test needs to declare it. It's always active.
 });
 ```
