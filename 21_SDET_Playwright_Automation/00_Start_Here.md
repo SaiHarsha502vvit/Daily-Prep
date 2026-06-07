@@ -161,13 +161,16 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 | 43 | [43_Real_World_SDET_War_Stories.md](./05_Advanced_Topics/43_Real_World_SDET_War_Stories.md) | 14 real problems: ghost click, stale session, silent 200, parallel collision, frame trap |
 | 44 | [44_Enterprise_API_Client_Library.md](./05_Advanced_Topics/44_Enterprise_API_Client_Library.md) | 5-layer architecture, typed domain clients, Zod validation, retry middleware, error hierarchy |
 | 45 | [45_AI_Agents_MCP_And_Playwright.md](./05_Advanced_Topics/45_AI_Agents_MCP_And_Playwright.md) | MCP protocol, Playwright MCP server, AI scaffolding, Copilot integration |
-| 46 | [46_Playwright_Config_Deep_Dive.md](./05_Advanced_Topics/46_Playwright_Config_Deep_Dive.md) | Config merge algebra, projects DAG, reporter selection, anti-pattern taxonomy |
-| 47 | [47_File_Uploads_Downloads_Media.md](./05_Advanced_Topics/47_File_Uploads_Downloads_Media.md) | setInputFiles, download event, blob/CSV assertions, drag-and-drop, clipboard |
-| 48 | [48_Trace_Viewer_Video_Mastery.md](./05_Advanced_Topics/48_Trace_Viewer_Video_Mastery.md) | Trace file format, programmatic parsing, retention economics, video vs trace decision theory |
-| 49 | [49_Component_Testing_Playwright_CT.md](./05_Advanced_Topics/49_Component_Testing_Playwright_CT.md) | mount(), React/Vue/Svelte isolation, CT vs E2E boundary, CI integration |
-| 50 | [50_Real_World_SPA_Tabs_Menuitems_No_IDs.md](./05_Advanced_Topics/50_Real_World_SPA_Tabs_Menuitems_No_IDs.md) | Non-D365 SPA POMs, tab/menuitem role-based selectors, console reconnaissance, component POMs |
-| 51 | [51_Login_Fixture_Architecture.md](./05_Advanced_Topics/51_Login_Fixture_Architecture.md) | 5-level auth taxonomy, worker-scoped fixtures, API-first login, performance analysis |
-| 52 | [52_UI_Flow_Fixtures.md](./05_Advanced_Topics/52_UI_Flow_Fixtures.md) | Journey helpers, flow fixtures with data accumulator, multi-step wizard fixtures, anti-patterns |
+| 46 | [46_BDD_With_Cucumber.md](./05_Advanced_Topics/46_BDD_With_Cucumber.md) | BDD with Cucumber-js, Gherkin scenarios, step definitions, Playwright hooks |
+| 47 | [47_Allure_ReportPortal.md](./05_Advanced_Topics/47_Allure_ReportPortal.md) | Allure 2 annotations, custom steps, screenshots, ReportPortal CI integration |
+| 48 | [48_Sharding_And_Test_Selection.md](./05_Advanced_Topics/48_Sharding_And_Test_Selection.md) | --shard N/M, shard-aware CI matrix, test tagging, selective re-run strategy |
+| 49 | [49_Feature_Flag_Testing.md](./05_Advanced_Topics/49_Feature_Flag_Testing.md) | LaunchDarkly, env-based overrides, fixture-driven flag injection, matrix coverage |
+| 50 | [50_Email_Service_Testing.md](./05_Advanced_Topics/50_Email_Service_Testing.md) | Mailosaur, MailHog, inbox polling fixture, OTP flows, attachment assertions |
+| 51 | [51_Secrets_Management_For_SDETs.md](./07_Specialised_Testing/51_Secrets_Management_For_SDETs.md) | gitleaks, Doppler, HashiCorp Vault, GitHub Actions secrets, .env discipline |
+| 52 | [52_Component_Testing_With_Playwright_CT.md](./05_Advanced_Topics/52_Component_Testing_With_Playwright_CT.md) | @playwright/experimental-ct-react, mount(), props/events, CT vs E2E trade-offs |
+| 53 | [53_Mutation_Testing_With_Stryker.md](./07_Specialised_Testing/53_Mutation_Testing_With_Stryker.md) | Stryker mutator, mutation score, surviving mutants, assertion quality |
+| 54 | [54_Synthetic_Monitoring.md](./05_Advanced_Topics/54_Synthetic_Monitoring.md) | Checkly, cron-based Playwright monitors, alerting, SLA reporting |
+| 55 | [55_Inspector_TraceViewer_UIMode_Walkthrough.md](./02_Core_Architecture/55_Inspector_TraceViewer_UIMode_Walkthrough.md) | Inspector step-through, Trace Viewer time-travel, UI Mode watch loop |
 
 ---
 
