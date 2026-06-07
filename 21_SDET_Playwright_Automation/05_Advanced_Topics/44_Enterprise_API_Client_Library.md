@@ -1,6 +1,6 @@
 # 44. Building an Enterprise API Client Library from Scratch
 
-**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](../45_Complete_Playwright_API_Reference.md)
+**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](./45_AI_Agents_MCP_And_Playwright.md)
 
 **Cross-links:**
 - [`23_APIUtils_HTTP_Library.md`](../04_Enterprise_Architecture/23_APIUtils_HTTP_Library.md) — The foundational APIUtils pattern this chapter builds on
@@ -1276,7 +1276,7 @@ The 20/80 rule: 20% of fields carry 80% of the validation value. Start with IDs,
 
 ---
 
-**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](../45_Complete_Playwright_API_Reference.md)
+**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](./45_AI_Agents_MCP_And_Playwright.md)
 
 ## 🏋️ Practice Challenges
 
@@ -1462,4 +1462,4 @@ const user = await client.get('/api/users/1', UserSchema);
 </details>
 
 ---
-**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](../45_Complete_Playwright_API_Reference.md)
+**Navigation**: [← Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md) | [Index](../00_INDEX.md) | [→ Chapter 45: Complete Playwright API Reference](./45_AI_Agents_MCP_And_Playwright.md)

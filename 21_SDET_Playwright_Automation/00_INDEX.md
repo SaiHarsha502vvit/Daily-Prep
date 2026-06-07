@@ -70,13 +70,31 @@
 | 42 | [Polling & Async Data Patterns](./05_Advanced_Topics/42_Polling_Async_Data_Patterns.md) | 75 min | **expect.poll(), waitForResponse, pollUntil() utility, anti-pattern hall of shame** | Ch15, Ch26 |
 | 43 | [Real-World SDET War Stories](./05_Advanced_Topics/43_Real_World_SDET_War_Stories.md) | 60 min | **14 real problems: ghost click, stale session, silent 200, parallel collision, frame trap** | Ch08, Ch09, Ch26 |
 | 44 | [Enterprise API Client Library](./05_Advanced_Topics/44_Enterprise_API_Client_Library.md) | 90 min | **5-layer architecture, typed domain clients, Zod validation, retry middleware, error hierarchy** | Ch22, Ch23, Ch27 |
+| 45 | [AI Agents, MCP & Playwright](./05_Advanced_Topics/45_AI_Agents_MCP_And_Playwright.md) | 75 min | **MCP protocol, Playwright MCP server, AI scaffolding, Copilot integration, agentic boundaries** | Ch05, Ch06, Ch21 |
+| &nbsp; | **——— ENTERPRISE TOOLING ——— BDD, observability, test selection, feature flags, email, secrets** | | | |
+| 46 | [BDD with Cucumber](./05_Advanced_Topics/46_BDD_With_Cucumber.md) | 60 min | **Cucumber-js, Gherkin, step definitions, Playwright hooks, reporting** | Ch06, Ch07 |
+| 47 | [Allure & ReportPortal](./05_Advanced_Topics/47_Allure_ReportPortal.md) | 45 min | **Allure 2 annotations, custom steps, screenshots, ReportPortal CI integration** | Ch25 |
+| 48 | [Sharding & Test Selection](./05_Advanced_Topics/48_Sharding_And_Test_Selection.md) | 45 min | **--shard N/M, shard-aware CI matrix, test tagging, selective re-run strategy** | Ch09, Ch25 |
+| 49 | [Feature Flag Testing](./05_Advanced_Topics/49_Feature_Flag_Testing.md) | 60 min | **LaunchDarkly, env-based overrides, fixture-driven flag injection, matrix coverage** | Ch06, Ch28 |
+| 50 | [Email Service Testing](./05_Advanced_Topics/50_Email_Service_Testing.md) | 60 min | **Mailosaur, MailHog, inbox polling fixture, OTP flows, attachment assertions** | Ch06, Ch14 |
+| 51 | [Secrets Management for SDETs](./07_Specialised_Testing/51_Secrets_Management_For_SDETs.md) | 45 min | **gitleaks, Doppler, HashiCorp Vault, GitHub Actions secrets, .env discipline** | Ch25, Ch40 |
+| &nbsp; | **——— DEPTH TESTING ——— Component isolation, mutation score, synthetic monitoring** | | | |
+| 52 | [Component Testing with Playwright CT](./05_Advanced_Topics/52_Component_Testing_With_Playwright_CT.md) | 60 min | **@playwright/experimental-ct-react, mount(), props/events, CT vs E2E trade-offs** | Ch05, Ch06, Ch39 |
+| 53 | [Mutation Testing with Stryker](./07_Specialised_Testing/53_Mutation_Testing_With_Stryker.md) | 60 min | **Stryker mutator, mutation score, surviving mutants, assertion quality** | Ch27 |
+| 54 | [Synthetic Monitoring](./05_Advanced_Topics/54_Synthetic_Monitoring.md) | 45 min | **Checkly, cron-based Playwright monitors, alerting, SLA reporting** | Ch25, Ch48 |
+| &nbsp; | **——— DEBUGGING SURFACES ——— Inspector, Trace Viewer, UI Mode** | | | |
+| 55 | [Inspector, Trace Viewer & UI Mode — Walk-Through](./02_Core_Architecture/55_Inspector_TraceViewer_UIMode_Walkthrough.md) | 30 min | **Step-through live, time-travel past runs, UI Mode watch loop — hands-on only** | Ch26 |
 
 **Bolded chapters** = Advanced content built on your real codebase.
 **Ch33–36** = Read alongside the corresponding guide folder (DSA, OOP, TypeScript) for maximum cross-pollination.
 **Ch37–41** = Industry-standard open-source tools (Lighthouse, k6, Pact, axe-core, OWASP ZAP, GraphQL).
 **Ch42–44** = Real-world depth: the async waiting patterns, actual war stories, and the API library architecture that separates SDETs from senior SDEs.
+**Ch45** = AI & MCP: the frontier of agentic test automation and what AI can (and cannot) replace.
+**Ch46–51** = Enterprise tooling: BDD, observability, test selection, feature flags, email testing, secrets management.
+**Ch52–54** = Depth testing: component isolation, mutation score, synthetic monitoring — the upper tier of SDET competency.
+**Ch55** = Debugging surfaces: Inspector, Trace Viewer, UI Mode — hands-on only, no shortcuts.
 
-> **⏱ Total estimated study time: ~95–110 hours** (44 chapters × 60–90 min + quizzes)
+> **Total estimated study time: ~130–155 hours** (55 chapters x 60–90 min + quizzes)
 
 ---
 
@@ -125,6 +143,16 @@ Ch21 (Project Structure)       Ch22 (Headers/Payloads/Endpoints)
 
 Quiz 01 → after Chapters 01–16
 Quiz 02 → after Chapters 01–18
+Quiz 02 Solutions → after attempting Quiz 02 (self-check)
+
+Ch45 (AI/MCP)         → after Ch05+Ch06+Ch21 (needs POM, fixtures, project structure)
+Ch46 (Config Semantics) → read alongside Ch09 (workers belong to Ch09; config belongs here)
+Ch47 (Uploads/Downloads) → after Ch07 (E2E steps)
+Ch48 (Trace Artifacts) → after Ch26 (flakiness)
+Ch49 (Component Testing) → after Ch05+Ch06+Ch39
+Ch50 (SPA Tabs/No IDs) → after Ch05+Ch08+Ch10
+Ch51 (Login Taxonomy) → after Ch06+Ch16+Ch28
+Ch52 (UI Flow Fixtures) → after Ch06+Ch07+Ch50
 ```
 
 ---

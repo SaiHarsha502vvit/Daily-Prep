@@ -55,6 +55,12 @@ export class APIUtils {
   private log(method: string, url: string, status: number, ms: number, endpoint: string): void {
     if (!AppConstants.ENABLE_API_TEST_STEPS) return;
     const desc = this.describeEndpoint(endpoint);
+    // Attach a structured annotation to the Playwright HTML report when testInfo is available.
+    // This produces a line under the test in the report: "api:get — Users (42ms)"
+    this.testInfo?.annotations.push({
+      type: `api:${method.toLowerCase()}`,
+      description: `${status} — ${desc} (${ms}ms) → ${url}`,
+    });
     console.log(`\n[${method}] ${desc}`);
     console.log(`  URL:    ${url}`);
     console.log(`  Status: ${status}`);

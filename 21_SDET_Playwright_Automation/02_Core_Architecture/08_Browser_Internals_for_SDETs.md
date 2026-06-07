@@ -5,7 +5,7 @@
 **Cross-links:**
 - [`16_JavaScript/09_Browser_Internals_Rendering.md`](../../16_JavaScript/09_Browser_Internals_Rendering.md) — Complete rendering pipeline deep dive
 - [`15_React_Frontend/01_React_Fundamentals.md`](../../15_React_Frontend/01_React_Fundamentals.md) — React rendering lifecycle
-- [`21_SDET/09_Dynamics365_CRM_Testing.md`](../09_Dynamics365_CRM_Testing.md) — D365-specific patterns built on this chapter
+- [`21_SDET/09_Dynamics365_CRM_Testing.md`](../03_D365_And_Patterns/10_Dynamics365_CRM_Testing.md) — D365-specific patterns built on this chapter
 
 ---
 

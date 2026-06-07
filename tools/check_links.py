@@ -20,8 +20,8 @@ for md in ROOT.rglob("*.md"):
 
 print(f"Checked {total} internal .md links across {sum(1 for _ in ROOT.rglob('*.md'))} files.")
 print(f"Broken: {len(broken)}\n")
-for source, target_str, target in broken[:60]:
+for source, target_str, target in broken[:80]:
     rel_source = source.relative_to(ROOT.parent)
     print(f"  {rel_source}: {target_str}")
-if len(broken) > 60:
-    print(f"  ... and {len(broken) - 60} more")
+if len(broken) > 80:
+    print(f"  ... and {len(broken) - 80} more")

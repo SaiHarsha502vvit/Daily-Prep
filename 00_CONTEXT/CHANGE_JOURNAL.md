@@ -4,6 +4,29 @@
 
 Add short entries when context, structure, or domain boundaries change.
 
+## 2026-06-06 — Python Port of Context Update Script
+
+Changed:
+
+- Added `tools/update_context.py` — cross-platform equivalent of `tools/update_context.ps1`.
+  - Supports `update`, `check`, and `--strict-fences` modes with identical semantics.
+  - Handles UTF-8 BOM and non-UTF-8 encodings (replace mode).
+  - Reads manifest from `00_CONTEXT/.manifest/manifest.json` (current canonical).
+  - Writes `00_CONTEXT/FILE_REGISTRY.md` + `00_CONTEXT/.manifest/manifest.json`.
+- Updated `_Curriculum/02_KNOWN_ISSUES.md` — removed the "PowerShell unavailable" blocker; listed both Windows and Linux/macOS commands.
+- Updated `00_CONTEXT/UPDATE_PROTOCOL.md` — added `python3 tools/update_context.py` invocations alongside PowerShell.
+- Regenerated context: **678 active Markdown files** registered, manifest fresh.
+  - 2 structural warnings remain (unbalanced fences in `03_Algorithms/05e_Graphs_Patterns.md` and `_Curriculum/00_AGENT_START.md`) — pre-existing.
+
+Reason:
+
+- The context system was previously unrunnable on Linux, creating drift risk. The manifest (`00_CONTEXT/CONTEXT_MANIFEST.json`) was deleted from the repo root in commit `3f68270` and moved to `00_CONTEXT/.manifest/manifest.json`; the PowerShell script still references the old path. Rather than patch PowerShell on a Linux host, a Python port removes the OS dependency entirely.
+
+Verification:
+- `python3 tools/update_context.py check` — passes (context fresh).
+- `python3 tools/update_context.py update` — completes successfully.
+- `python3 tools/update_context.py check --strict-fences` — exits 1 with 2 fence warnings (expected, pre-existing).
+
 ## 2026-06-06 — University Curriculum Phase 2: Full 4-Semester Curriculum Built
 
 Changed:

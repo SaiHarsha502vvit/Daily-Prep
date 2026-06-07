@@ -3,10 +3,10 @@
 **Navigation**: [← Chapter 35: OOP Design Patterns](./35_OOP_Design_Patterns_for_SDETs.md) | [Index](../00_INDEX.md)
 
 **Cross-references (read these alongside):**
-- [`../../17_TypeScript/02_TS_Advanced_Types.md`](../../../17_TypeScript/02_TS_Advanced_Types.md) — Full coverage of conditional types, mapped types, infer — the same features used in your test framework
-- [`../../17_TypeScript/03_TS_Patterns_BestPractices.md`](../../../17_TypeScript/03_TS_Patterns_BestPractices.md) — TypeScript patterns for production code; identical patterns in test framework
-- [`../../17_TypeScript/04_TS_Deep_Reasoning.md`](../../../17_TypeScript/04_TS_Deep_Reasoning.md) — The "why" behind TypeScript's design decisions; makes advanced features make sense
-- [`../../04_Patterns_Templates`](../../../04_Patterns_Templates) — Programming patterns that cross language boundaries
+- [`../../17_TypeScript/02_TS_Advanced_Types.md`](../../17_TypeScript/02_TS_Advanced_Types.md) — Full coverage of conditional types, mapped types, infer — the same features used in your test framework
+- [`../../17_TypeScript/03_TS_Patterns_BestPractices.md`](../../17_TypeScript/03_TS_Patterns_BestPractices.md) — TypeScript patterns for production code; identical patterns in test framework
+- [`../../17_TypeScript/04_TS_Deep_Reasoning.md`](../../17_TypeScript/04_TS_Deep_Reasoning.md) — The "why" behind TypeScript's design decisions; makes advanced features make sense
+- [`../../04_Patterns_Templates`](../../04_Patterns_Templates) — Programming patterns that cross language boundaries
 
 ---
 
@@ -108,7 +108,7 @@ function processPayment(citation: CitationApiResponse) {
 
 ## 2. Generic Constraints — Enforcing Calling Conventions
 
-From [`../../17_TypeScript/02_TS_Advanced_Types.md`](../../../17_TypeScript/02_TS_Advanced_Types.md):
+From [`../../17_TypeScript/02_TS_Advanced_Types.md`](../../17_TypeScript/02_TS_Advanced_Types.md):
 
 **Generic constraints with `extends`:**
 
@@ -164,7 +164,7 @@ function createFixture<TCreate, TResponse extends HasId>(
 
 ## 3. Conditional Types — The Type System as a Decision Tree
 
-From [`../../17_TypeScript/02_TS_Advanced_Types.md`](../../../17_TypeScript/02_TS_Advanced_Types.md):
+From [`../../17_TypeScript/02_TS_Advanced_Types.md`](../../17_TypeScript/02_TS_Advanced_Types.md):
 
 Conditional types let you write `if/else` in the type system:
 
@@ -307,7 +307,7 @@ const data = {
 
 ## 6. Template Literal Types — Self-Documenting Endpoint Paths
 
-From [`../../17_TypeScript/02_TS_Advanced_Types.md`](../../../17_TypeScript/02_TS_Advanced_Types.md):
+From [`../../17_TypeScript/02_TS_Advanced_Types.md`](../../17_TypeScript/02_TS_Advanced_Types.md):
 
 ```typescript
 // Basic template literal type:
@@ -580,7 +580,7 @@ type ValidStatuses = Extract<StatusType, string>; // 'PENDING' | 'PAID'
 
 ## 12. Connecting to Your TypeScript Guide
 
-The guide at [`../../17_TypeScript/04_TS_Deep_Reasoning.md`](../../../17_TypeScript/04_TS_Deep_Reasoning.md) explains the **"why"** behind TypeScript's design:
+The guide at [`../../17_TypeScript/04_TS_Deep_Reasoning.md`](../../17_TypeScript/04_TS_Deep_Reasoning.md) explains the **"why"** behind TypeScript's design:
 
 ```
 TypeScript is a PROOF ASSISTANT for JavaScript.

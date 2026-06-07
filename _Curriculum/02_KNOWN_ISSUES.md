@@ -38,4 +38,55 @@ Baseline: 165,776 bytes (~165KB). New start: ~10.7KB. Reduction: ~155KB (93.6%).
 
 ## Verification Notes
 
-PowerShell is not available in this Linux environment (no `powershell`, `pwsh`, or `wsl`). The context check script (`tools/update_context.ps1`) cannot be run here. File sizes confirmed via `wc -c`. Context check should be run on a Windows machine. Per-folder `CONTEXT.md` files remain untouched. Legacy `00_CONTEXT/` files are preserved as on-demand references.
+Cross-platform: `tools/update_context.py` provides identical `update`/`check` semantics on Linux, macOS, and Windows (via `python3`). It regenerates `00_CONTEXT/FILE_REGISTRY.md` and updates `00_CONTEXT/.manifest/manifest.json`.
+
+```bash
+python3 tools/update_context.py check
+python3 tools/update_context.py update
+python3 tools/update_context.py check --strict-fences
+```
+
+PowerShell remains available for Windows users:
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check
+powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update
+```
+
+Context was regenerated on this Linux host: **678 active Markdown files** registered, manifest fresh. Per-folder `CONTEXT.md` files remain untouched. Legacy `00_CONTEXT/` files are preserved as on-demand references.
+
+## State Snapshot — 2026-06-06
+
+Generated after adding `tools/update_context.py` and refreshing the manifest.
+
+### Context System
+| Check | Result |
+|---|---|
+| Manifest status | **Fresh** (678 files match) |
+| Unbalanced fence warnings | 2 pre-existing (`03_Algorithms/05e_Graphs_Patterns.md` 27 fences, `_Curriculum/00_AGENT_START.md` 1 fence) |
+| Cross-platform tool | `tools/update_context.py` ✅ executable |
+| Windows tool | `tools/update_context.ps1` ✅ exists |
+
+### Repository Scale
+| Metric | Count |
+|---|---|
+| Problem Sets | 19 |
+| Project specs (`00_CURRICULUM/PROJECTS/`) | 13 |
+| Curriculum shells (`_Curriculum/`) | 48 |
+| Java solutions (`JavaSolutions/`) | 10 |
+| Numbered content folders (`[0-9][0-9]_*/`) | 26 |
+| Active Markdown files in manifest | **678** |
+
+### Open Items
+| # | Item | Location |
+|---|---|---|
+| 1 | Reconcile `00_CURRICULUM/` and `_Curriculum/` overlap | `_Curriculum/02_KNOWN_ISSUES.md` |
+| 2 | Fix unbalanced fences in 2 files | tracked above |
+| 3 | 12 TBD curriculum shells need content | `_Curriculum/S01–S08/` |
+| 4 | P09 CI/CD Pipeline has 0 code stubs | `00_CURRICULUM/PROJECTS/P09_CICD_Pipeline.md` |
+| 5 | Thin problem sets (< 5 challenges) | `21_Python_ML_DL_NLP/`, `07_Modern_Java/07_CONCURRENCY_`, `20_Interview_Mastery/20_SYSTEM_DESIGN_` |
+
+### Light Content Folders (< 10 `.md` files)
+- `01_Getting_Started/` (4)
+- `17_TypeScript/` (7)
+- `18_CSS_Complete/` (9)
+- `22_Advanced_API_Testing/` (8)

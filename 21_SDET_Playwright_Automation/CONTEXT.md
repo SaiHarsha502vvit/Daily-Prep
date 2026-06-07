@@ -6,7 +6,7 @@ Teach end-to-end test automation engineering at production grade: Playwright + T
 
 The target reader is a working SDET on Dynamics 365 CRM / JSP / ASP.NET ASPX apps who already knows basic Playwright and wants to go deeper into architecture, enterprise patterns, and career growth toward SDE-level thinking.
 
-## 48-File Map (Do NOT Duplicate)
+## 52-File Map (Do NOT Duplicate)
 
 | Range | Theme |
 |---|---|
@@ -19,7 +19,9 @@ The target reader is a working SDET on Dynamics 365 CRM / JSP / ASP.NET ASPX app
 | 32 | SDET interview prep |
 | 33–36 | SDET→SDE bridge — CS thinking, algorithms, OOP patterns, TypeScript type system |
 | 37–41 | Open-source specialised tools — Lighthouse/k6, Pact, axe-core, OWASP ZAP, GraphQL/WebSocket |
-| 42–44 | Real-world depth — polling, war stories, enterprise API client library |
+| 42–45 | Real-world depth — polling, war stories, enterprise API client library, AI/MCP |
+| 46–49 | Framework engineering — config semantics, media handling, trace artifacts, component testing |
+| 50–52 | Practical framework construction — SPA POMs without IDs, auth taxonomy, UI flow fixtures |
 | Q1–Q2 | MCQ quiz, code challenge quiz |
 
 **Before writing any new file:** check this map. If the concept is already covered, APPEND to the existing file — do not create a duplicate.

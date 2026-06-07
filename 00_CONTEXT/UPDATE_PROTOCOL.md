@@ -4,7 +4,7 @@ Use this when you edit the repo.
 
 ## Before Editing
 
-1. Run `tools/update_context.ps1 -Mode check`.
+1. Run `tools/update_context.ps1 -Mode check` (Windows) or `python3 tools/update_context.py check` (Linux/macOS).
 2. Read stale files if any are relevant.
 3. Read the local folder `CONTEXT.md`.
 4. Read the file entry in `00_CONTEXT/FILE_REGISTRY.md`.
@@ -25,11 +25,18 @@ Classify the change:
 
 ## After Editing
 
-Run:
+Run (Windows):
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode update
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check
+```
+
+Run (Linux / macOS):
+
+```bash
+python3 tools/update_context.py update
+python3 tools/update_context.py check
 ```
 
 If the check still fails, do not hide it. Explain the stale files in the final answer.
@@ -38,6 +45,12 @@ For stricter Markdown validation, run:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mode check -StrictFences
+```
+
+Or cross-platform:
+
+```bash
+python3 tools/update_context.py check --strict-fences
 ```
 
 ## What Not To Do
@@ -51,9 +64,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools/update_context.ps1 -Mo
 
 If a Codex agent, another Antigravity session, or any other agent is editing the repo concurrently:
 
-1. Run `tools/update_context.ps1 -Mode check` before starting any edit batch.
+1. Run `tools/update_context.ps1 -Mode check` (or `python3 tools/update_context.py check`) before starting any edit batch.
 2. Stale files = recently changed by the other agent. Inspect before touching.
-3. Edit your file batch, then run `tools/update_context.ps1 -Mode update` before the next batch.
+3. Edit your file batch, then run `tools/update_context.ps1 -Mode update` (or `python3 tools/update_context.py update`) before the next batch.
 4. This ensures the other agent's next check reflects your changes too.
 5. If two agents edit the same file concurrently, the second writer wins. Avoid this by claiming distinct file batches.
 
