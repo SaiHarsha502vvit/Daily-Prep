@@ -1,6 +1,6 @@
 # 50. Email Service Testing — Magic Links, OTPs, and Notifications Without `setTimeout(60000)`
 
-**Navigation**: [← 49. Feature Flag Testing](./49_Feature_Flag_Testing.md) | [Index](../00_INDEX.md) | [→ 51. Secrets Management](./51_Secrets_Management_For_SDETs.md)
+**Navigation**: [← 49. Feature Flag Testing](./49_Feature_Flag_Testing.md) | [Index](../00_INDEX.md) | [→ 51. Secrets Management](../07_Specialised_Testing/51_Secrets_Management_For_SDETs.md)
 
 ---
 

@@ -14,8 +14,8 @@
 - https://docs.pact.io/provider — Provider verification guide
 
 **Cross-references (this repo):**
-- [`../../06_OOP_Design/03_System_Design.md`](../../../06_OOP_Design/03_System_Design.md) — Microservices architecture that makes contract testing necessary
-- [`../../22_Advanced_API_Testing/01_API_Testing_Foundations.md`](../../../22_Advanced_API_Testing/01_API_Testing_Foundations.md) — REST fundamentals that Pact tests are built on
+- [`../../06_OOP_Design/03_System_Design.md`](../../06_OOP_Design/03_System_Design.md) — Microservices architecture that makes contract testing necessary
+- [`../../22_Advanced_API_Testing/01_API_Testing_Foundations.md`](../../22_Advanced_API_Testing/01_API_Testing_Foundations.md) — REST fundamentals that Pact tests are built on
 
 ---
 

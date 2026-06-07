@@ -14,7 +14,7 @@
 - https://github.com/GoogleChrome/lighthouse-ci/blob/main/docs/getting-started.md — LHCI Getting Started
 
 **Cross-references (this repo):**
-- [`../../14_Mental_Models/09_Complexity_Intuition.md`](../../../14_Mental_Models/09_Complexity_Intuition.md) — O(n) thinking applies to load test design
+- [`../../14_Mental_Models/09_Complexity_Intuition.md`](../../14_Mental_Models/09_Complexity_Intuition.md) — O(n) thinking applies to load test design
 - [`25_CICD_Integration_GitHub_Azure.md`](../05_Advanced_Topics/25_CICD_Integration_GitHub_Azure.md) — Where to run LHCI in CI pipeline
 
 ---

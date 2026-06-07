@@ -3,10 +3,10 @@
 **Navigation**: [← Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md) | [Index](../00_INDEX.md) | [→ Chapter 36: TypeScript Type System Mastery](./36_TypeScript_Type_System_Mastery.md)
 
 **Cross-references (read these alongside):**
-- [`../../06_OOP_Design/01_OOPS_Principles.md`](../../../06_OOP_Design/01_OOPS_Principles.md) — SOLID, encapsulation, polymorphism — all in your POM
-- [`../../06_OOP_Design/02_Design_Patterns.md`](../../../06_OOP_Design/02_Design_Patterns.md) — Full GoF catalogue with Java examples; map each to TypeScript test code
-- [`../../06_OOP_Design/08_Design_Patterns_Java.md`](../../../06_OOP_Design/08_Design_Patterns_Java.md) — Java implementations of the same patterns
-- [`../../06_OOP_Design/07_LLD_Solved_Problems.md`](../../../06_OOP_Design/07_LLD_Solved_Problems.md) — Low-level design problems: same design skills needed for framework architecture
+- [`../../06_OOP_Design/01_OOPS_Principles.md`](../../06_OOP_Design/01_OOPS_Principles.md) — SOLID, encapsulation, polymorphism — all in your POM
+- [`../../06_OOP_Design/02_Design_Patterns.md`](../../06_OOP_Design/02_Design_Patterns.md) — Full GoF catalogue with Java examples; map each to TypeScript test code
+- [`../../06_OOP_Design/08_Design_Patterns_Java.md`](../../06_OOP_Design/08_Design_Patterns_Java.md) — Java implementations of the same patterns
+- [`../../06_OOP_Design/07_LLD_Solved_Problems.md`](../../06_OOP_Design/07_LLD_Solved_Problems.md) — Low-level design problems: same design skills needed for framework architecture
 
 ---
 
@@ -34,7 +34,7 @@ They are the same concept.
 
 ## 1. SOLID Principles → Applied to POM Design
 
-From [`../../06_OOP_Design/01_OOPS_Principles.md`](../../../06_OOP_Design/01_OOPS_Principles.md):
+From [`../../06_OOP_Design/01_OOPS_Principles.md`](../../06_OOP_Design/01_OOPS_Principles.md):
 
 ### S — Single Responsibility Principle
 

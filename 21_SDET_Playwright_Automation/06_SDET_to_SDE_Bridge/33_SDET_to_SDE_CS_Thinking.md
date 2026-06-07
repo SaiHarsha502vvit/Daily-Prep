@@ -3,11 +3,11 @@
 **Navigation**: [← Chapter 32: Interview Prep](./32_SDET_Interview_Prep.md) | [Index](../00_INDEX.md) | [→ Chapter 34: Algorithms in Test Automation](./34_Algorithms_in_Test_Automation.md)
 
 **Cross-references (read these alongside this chapter):**
-- [`../../14_Mental_Models/05_Universal_Problem_Framework.md`](../../../14_Mental_Models/05_Universal_Problem_Framework.md) — Problem decomposition that applies to test design
-- [`../../14_Mental_Models/08_Debugging_DryRun.md`](../../../14_Mental_Models/08_Debugging_DryRun.md) — The dry-run debugging model → identical to trace-viewer analysis
-- [`../../14_Mental_Models/18_Production_Debugging_Thinking.md`](../../../14_Mental_Models/18_Production_Debugging_Thinking.md) — Production thinking that translates directly to test failure analysis
-- [`../../02_Data_Structures/05_DS_In_Production.md`](../../../02_Data_Structures/05_DS_In_Production.md) — How data structures appear in real systems you test
-- [`../../06_OOP_Design/01_OOPS_Principles.md`](../../../06_OOP_Design/01_OOPS_Principles.md) — OOP principles behind POM, Factory, Fixture patterns
+- [`../../14_Mental_Models/05_Universal_Problem_Framework.md`](../../14_Mental_Models/05_Universal_Problem_Framework.md) — Problem decomposition that applies to test design
+- [`../../14_Mental_Models/08_Debugging_DryRun.md`](../../14_Mental_Models/08_Debugging_DryRun.md) — The dry-run debugging model → identical to trace-viewer analysis
+- [`../../14_Mental_Models/18_Production_Debugging_Thinking.md`](../../14_Mental_Models/18_Production_Debugging_Thinking.md) — Production thinking that translates directly to test failure analysis
+- [`../../02_Data_Structures/05_DS_In_Production.md`](../../02_Data_Structures/05_DS_In_Production.md) — How data structures appear in real systems you test
+- [`../../06_OOP_Design/01_OOPS_Principles.md`](../../06_OOP_Design/01_OOPS_Principles.md) — OOP principles behind POM, Factory, Fixture patterns
 
 ---
 
@@ -47,7 +47,7 @@ The CS skills are identical.
 
 ## 2. Hash Maps → Test Data Lookup
 
-**The DSA concept** (from [`../../02_Data_Structures/01e_HashTable.md`](../../../02_Data_Structures/01e_HashTable.md)):
+**The DSA concept** (from [`../../02_Data_Structures/01e_HashTable.md`](../../02_Data_Structures/01e_HashTable.md)):
 - HashMap gives O(1) average lookup by key
 - Java: `HashMap<String, CitationRecord>`
 - TypeScript: `Map<string, CitationRecord>` or `Record<string, CitationRecord>`
@@ -91,7 +91,7 @@ you are applying the hash map from your DSA guide.
 
 ## 3. Queues and Stacks → Cleanup Order and Event Ordering
 
-**The DSA concept** (from [`../../02_Data_Structures/01d_Stack_Queue.md`](../../../02_Data_Structures/01d_Stack_Queue.md)):
+**The DSA concept** (from [`../../02_Data_Structures/01d_Stack_Queue.md`](../../02_Data_Structures/01d_Stack_Queue.md)):
 - **Stack (LIFO)**: Last In, First Out — `push`, `pop`
 - **Queue (FIFO)**: First In, First Out — `enqueue`, `dequeue`
 
@@ -152,7 +152,7 @@ expect(createIndex).toBeLessThan(payIndex);  // ← queue ordering assertion
 
 ## 4. Trees → DOM Structure and POM Hierarchy
 
-**The DSA concept** (from [`../../03_Algorithms/05_Trees.md`](../../../03_Algorithms/05_Trees.md)):
+**The DSA concept** (from [`../../03_Algorithms/05_Trees.md`](../../03_Algorithms/05_Trees.md)):
 - A tree has a root, internal nodes, leaves
 - Tree traversal: depth-first (DFS) or breadth-first (BFS)
 - Parent → child relationships
@@ -210,13 +210,13 @@ CitationCrmModule (root)
 When you call `masterSearchPage.resultsGrid.rows.first()`, you're traversing:
 `MasterSearchPage → ResultsGrid → rows → first()` — exactly a path from tree root to leaf.
 
-**Cross-reference:** [`../../03_Algorithms/05_Trees.md`](../../../03_Algorithms/05_Trees.md) — BFS tree traversal maps to `page.locator()` scope narrowing.
+**Cross-reference:** [`../../03_Algorithms/05_Trees.md`](../../03_Algorithms/05_Trees.md) — BFS tree traversal maps to `page.locator()` scope narrowing.
 
 ---
 
 ## 5. Graph Algorithms → Test Dependency Graphs
 
-**The DSA concept** (from [`../../03_Algorithms/05c_Graphs_Fundamentals.md`](../../../03_Algorithms/05c_Graphs_Fundamentals.md)):
+**The DSA concept** (from [`../../03_Algorithms/05c_Graphs_Fundamentals.md`](../../03_Algorithms/05c_Graphs_Fundamentals.md)):
 - A directed graph has edges with direction: A → B means "A depends on B" or "A must come before B"
 - Topological sort: order nodes such that all dependencies come first
 
@@ -257,13 +257,13 @@ const test = base.extend({
 // it knows there's a cycle — same as cycle detection in directed graphs.
 ```
 
-**Cross-reference:** [`../../03_Algorithms/05c_Graphs_Fundamentals.md`](../../../03_Algorithms/05c_Graphs_Fundamentals.md) — Topological sort for test setup order. [`../../03_Algorithms/05b_Graphs_Internals.md`](../../../03_Algorithms/05b_Graphs_Internals.md) — DFS cycle detection.
+**Cross-reference:** [`../../03_Algorithms/05c_Graphs_Fundamentals.md`](../../03_Algorithms/05c_Graphs_Fundamentals.md) — Topological sort for test setup order. [`../../03_Algorithms/05b_Graphs_Internals.md`](../../03_Algorithms/05b_Graphs_Internals.md) — DFS cycle detection.
 
 ---
 
 ## 6. Design Patterns → Your Test Framework Patterns
 
-**The OOP concept** (from [`../../06_OOP_Design/02_Design_Patterns.md`](../../../06_OOP_Design/02_Design_Patterns.md)):
+**The OOP concept** (from [`../../06_OOP_Design/02_Design_Patterns.md`](../../06_OOP_Design/02_Design_Patterns.md)):
 
 Every design pattern in your framework has a name in GoF (Gang of Four):
 
@@ -307,13 +307,13 @@ class PayloadsCitation {
 //   without touching any test file
 ```
 
-**Cross-reference:** [`../../06_OOP_Design/02_Design_Patterns.md`](../../../06_OOP_Design/02_Design_Patterns.md) — Full GoF pattern catalogue with Java examples. Map each one to your test code.
+**Cross-reference:** [`../../06_OOP_Design/02_Design_Patterns.md`](../../06_OOP_Design/02_Design_Patterns.md) — Full GoF pattern catalogue with Java examples. Map each one to your test code.
 
 ---
 
 ## 7. Time Complexity → Test Performance Thinking
 
-**The CS concept** (from [`../../14_Mental_Models/09_Complexity_Intuition.md`](../../../14_Mental_Models/09_Complexity_Intuition.md)):
+**The CS concept** (from [`../../14_Mental_Models/09_Complexity_Intuition.md`](../../14_Mental_Models/09_Complexity_Intuition.md)):
 - O(1): constant — doesn't grow with input size
 - O(n): linear — grows proportionally
 - O(n²): quadratic — danger zone
@@ -356,13 +356,13 @@ page.locator('#citationsGrid .ms-DetailsRow')  // scoped to one specific grid
 // O(1) version scans only the right grid's rows → fast and correct
 ```
 
-**Cross-reference:** [`../../14_Mental_Models/09_Complexity_Intuition.md`](../../../14_Mental_Models/09_Complexity_Intuition.md) — Full complexity intuition guide. Apply every example to your test framework.
+**Cross-reference:** [`../../14_Mental_Models/09_Complexity_Intuition.md`](../../14_Mental_Models/09_Complexity_Intuition.md) — Full complexity intuition guide. Apply every example to your test framework.
 
 ---
 
 ## 8. Recursion → `expect.poll()` and Retry Logic
 
-**The CS concept** (from [`../../03_Algorithms/03a_Recursion_Internals.md`](../../../03_Algorithms/03a_Recursion_Internals.md)):
+**The CS concept** (from [`../../03_Algorithms/03a_Recursion_Internals.md`](../../03_Algorithms/03a_Recursion_Internals.md)):
 - Recursion: a function that calls itself with a smaller problem
 - Base case: when to stop
 - Recursive case: subdivide and call again
@@ -413,13 +413,13 @@ each time is more efficient than linear scanning. You spend less time polling
 when results are fast, and don't hammers the API when they're slow.
 ```
 
-**Cross-reference:** [`../../03_Algorithms/03b_Recursion_Fundamentals.md`](../../../03_Algorithms/03b_Recursion_Fundamentals.md) — Base case / recursive case structure. [`../../14_Mental_Models/01_Recursion_Tree_Thinking.md`](../../../14_Mental_Models/01_Recursion_Tree_Thinking.md) — Visualising recursive calls as trees.
+**Cross-reference:** [`../../03_Algorithms/03b_Recursion_Fundamentals.md`](../../03_Algorithms/03b_Recursion_Fundamentals.md) — Base case / recursive case structure. [`../../14_Mental_Models/01_Recursion_Tree_Thinking.md`](../../14_Mental_Models/01_Recursion_Tree_Thinking.md) — Visualising recursive calls as trees.
 
 ---
 
 ## 9. Binary Search → Bisect Debugging (Finding Flaky Commits)
 
-**The CS concept** (from [`../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`](../../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)):
+**The CS concept** (from [`../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`](../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)):
 - Binary search: in a sorted space, eliminate half the search space each step → O(log n)
 - Precondition: the problem space must be monotonic (all passes before a point, all fails after)
 

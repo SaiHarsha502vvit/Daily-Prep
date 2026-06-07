@@ -3,11 +3,11 @@
 **Navigation**: [← Chapter 33: SDET→SDE CS Thinking](./33_SDET_to_SDE_CS_Thinking.md) | [Index](../00_INDEX.md) | [→ Chapter 35: OOP Design Patterns Deep-Dive for SDETs](./35_OOP_Design_Patterns_for_SDETs.md)
 
 **Cross-references (read these alongside this chapter):**
-- [`../../03_Algorithms/01_Algorithm_Thinking.md`](../../../03_Algorithms/01_Algorithm_Thinking.md) — The algorithm thinking framework that applies to test design
-- [`../../03_Algorithms/06e_Algorithm_Patterns.md`](../../../03_Algorithms/06e_Algorithm_Patterns.md) — Patterns like sliding window, two pointers — appear directly in assertion design
-- [`../../14_Mental_Models/14_Optimization_Pipeline.md`](../../../14_Mental_Models/14_Optimization_Pipeline.md) — Brute-force → optimise pipeline (how to improve slow tests)
-- [`../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md`](../../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md) — Always start with brute force, then optimise
-- [`../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md`](../../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md) — Constraint → algorithm selection maps to problem → test strategy
+- [`../../03_Algorithms/01_Algorithm_Thinking.md`](../../03_Algorithms/01_Algorithm_Thinking.md) — The algorithm thinking framework that applies to test design
+- [`../../03_Algorithms/06e_Algorithm_Patterns.md`](../../03_Algorithms/06e_Algorithm_Patterns.md) — Patterns like sliding window, two pointers — appear directly in assertion design
+- [`../../14_Mental_Models/14_Optimization_Pipeline.md`](../../14_Mental_Models/14_Optimization_Pipeline.md) — Brute-force → optimise pipeline (how to improve slow tests)
+- [`../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md`](../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md) — Always start with brute force, then optimise
+- [`../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md`](../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md) — Constraint → algorithm selection maps to problem → test strategy
 
 ---
 
@@ -37,7 +37,7 @@ This chapter makes those connections explicit.
 
 ## 1. The Algorithm Thinking Framework Applied to Test Design
 
-From [`../../03_Algorithms/01_Algorithm_Thinking.md`](../../../03_Algorithms/01_Algorithm_Thinking.md), the framework is:
+From [`../../03_Algorithms/01_Algorithm_Thinking.md`](../../03_Algorithms/01_Algorithm_Thinking.md), the framework is:
 
 ```
 1. Understand the problem completely
@@ -111,7 +111,7 @@ async function verifyGridSortedByDate(
 
 ## 2. Sliding Window → Paginated API Assertions
 
-**The algorithm** (from [`../../03_Algorithms/06e_Algorithm_Patterns.md`](../../../03_Algorithms/06e_Algorithm_Patterns.md)):
+**The algorithm** (from [`../../03_Algorithms/06e_Algorithm_Patterns.md`](../../03_Algorithms/06e_Algorithm_Patterns.md)):
 - Sliding window: maintain a fixed-size window over a sequence
 - Move the window forward without reprocessing everything already seen
 - Use for: subarray problems, stream processing, rate limiting
@@ -184,7 +184,7 @@ async function fetchAllPagesWithDuplicateCheck(
 
 ## 3. Two Pointers → Dual-Context Test Assertions
 
-**The algorithm** (from [`../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`](../../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)):
+**The algorithm** (from [`../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`](../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)):
 - Two pointers: two indices moving through an array, often toward each other or in sync
 
 **In test automation — admin + customer dual context:**
@@ -289,7 +289,7 @@ async function findCitationPage(
 
 ## 5. Greedy Algorithm → Test Suite Prioritisation
 
-**The algorithm** (from [`../../03_Algorithms/12_Greedy_Algorithms_Complete.md`](../../../03_Algorithms/12_Greedy_Algorithms_Complete.md)):
+**The algorithm** (from [`../../03_Algorithms/12_Greedy_Algorithms_Complete.md`](../../03_Algorithms/12_Greedy_Algorithms_Complete.md)):
 - Greedy: at each step, make the locally optimal choice
 - Works when: local optima compose to a global optimum
 - Classic example: activity selection problem (schedule maximum non-overlapping activities)
@@ -346,7 +346,7 @@ projects: [
 
 ## 6. Dynamic Programming → Optimal Retry Backoff
 
-**The algorithm** (from [`../../03_Algorithms/04a_DP_Internals.md`](../../../03_Algorithms/04a_DP_Internals.md)):
+**The algorithm** (from [`../../03_Algorithms/04a_DP_Internals.md`](../../03_Algorithms/04a_DP_Internals.md)):
 - DP: break a problem into overlapping subproblems, cache results
 - Key properties: optimal substructure + overlapping subproblems
 
@@ -396,7 +396,7 @@ await expect.poll(fn, {
 
 ## 7. Pattern Recognition → Test Strategy Selection
 
-From [`../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md`](../../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md), the idea is: given constraints, map to the right algorithm. The same applies to tests:
+From [`../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md`](../../20_Interview_Mastery/02_Constraint_to_Algorithm_Map.md), the idea is: given constraints, map to the right algorithm. The same applies to tests:
 
 ```
 Given constraint/observation → Select test strategy
@@ -453,7 +453,7 @@ Every practice challenge in this curriculum trains that graph.
 
 ## 8. Brute Force → Optimal: Applied to Test Design
 
-From [`../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md`](../../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md):
+From [`../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md`](../../14_Mental_Models/22_Brute_Force_To_Optimal_Playbook.md):
 
 ```
 The playbook:
