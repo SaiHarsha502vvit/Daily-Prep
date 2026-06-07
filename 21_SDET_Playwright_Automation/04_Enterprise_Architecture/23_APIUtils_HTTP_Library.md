@@ -1,6 +1,6 @@
 # 23. APIUtils — Writing Your Team's HTTP Library
 
-**Navigation**: [â† Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md) | [Index](../00_INDEX.md) | [→ Chapter 24: Test Script Architecture](./24_Test_Script_Architecture.md)
+**Navigation**: [← Chapter 22: Headers, Payloads & Endpoints](./22_Headers_Payloads_Endpoints_Factory.md) | [Index](../00_INDEX.md) | [→ Chapter 24: Test Script Architecture](./24_Test_Script_Architecture.md)
 
 **Cross-links:**
 - [`22_Headers_Payloads_Endpoints_Factory.md`](./22_Headers_Payloads_Endpoints_Factory.md) — The data factories that feed into APIUtils
@@ -24,7 +24,7 @@
 Without `APIUtils`:
 
 ```typescript
-// âŒ test-1: Create citation (raw HTTP in spec)
+// ❌ test-1: Create citation (raw HTTP in spec)
 const r1 = await request.post(`${process.env.API_URL}/api/v2/citations`, {
   headers: { 'Authorization': `Bearer ${account.token}`, 'Content-Type': 'application/json', 'X-Tenant-ID': process.env.TENANT_ID! },
   data: { customerId: account.userId, amount: 150, status: 'PENDING', citationType: 'PARKING', issueDate: today }
@@ -32,10 +32,10 @@ const r1 = await request.post(`${process.env.API_URL}/api/v2/citations`, {
 expect(r1.status()).toBe(201);
 const citation = await r1.json();
 
-// âŒ test-2: Same thing, 6 files later, with a subtle difference
+// ❌ test-2: Same thing, 6 files later, with a subtle difference
 const r2 = await request.post(`${process.env.API_URL}/api/v2/citations`, {
   headers: { 'Authorization': `Bearer ${account.token}`, 'Content-Type': 'application/json' },
-  // â† X-Tenant-ID forgotten! Works in dev, silently fails in staging
+  // ← X-Tenant-ID forgotten! Works in dev, silently fails in staging
   data: { ... }
 });
 ```
@@ -81,10 +81,10 @@ graph TD
 
 ```
 clients/
-├── CitationsApiClient.ts     â† only knows about citation endpoints
-├── NotificationsClient.ts    â† only knows about notification endpoints
-├── UsersApiClient.ts         â† only knows about user endpoints
-└── IvrClient.ts              â† only knows about IVR endpoints
+├── CitationsApiClient.ts     ← only knows about citation endpoints
+├── NotificationsClient.ts    ← only knows about notification endpoints
+├── UsersApiClient.ts         ← only knows about user endpoints
+└── IvrClient.ts              ← only knows about IVR endpoints
 ```
 
 Each client is small, focused, and easy to understand. This is what Chapter 22 showed.
@@ -93,7 +93,7 @@ Each client is small, focused, and easy to understand. This is what Chapter 22 s
 
 ```
 utils/
-└── APIUtils.ts               â† wraps ALL services with generic get/post/patch/delete methods
+└── APIUtils.ts               ← wraps ALL services with generic get/post/patch/delete methods
 ```
 
 `APIUtils` is a generic HTTP wrapper. Service-specific methods are added as needed, or it's subclassed per service.
@@ -368,7 +368,7 @@ import type { CreateCitationPayload, UpdateCitationPayload } from '../data/paylo
 import type { CitationApiResponse } from '../types/api-responses.types';
 
 export class CitationsApiClient {
-  private readonly api: APIUtils;  // â† composition, not inheritance
+  private readonly api: APIUtils;  // ← composition, not inheritance
 
   constructor(request: APIRequestContext, accessToken: string) {
     this.api = new APIUtils(request, accessToken);

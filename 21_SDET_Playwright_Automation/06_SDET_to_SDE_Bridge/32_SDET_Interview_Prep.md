@@ -1,6 +1,6 @@
 ﻿# 32. SDET Interview Preparation — Framework Design, Technical Questions & Behavioral
 
-**Navigation**: [â† Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
 - All chapters — this chapter synthesises the entire curriculum into interview-ready answers
@@ -141,8 +141,8 @@ The race:
   Time 0ms:  await page.click('#openInNewTab')
   Time 5ms:  browser fires the 'page' event (new tab opened)
   Time 10ms: await context.waitForEvent('page')
-             â† the event already fired 5ms ago — listener missed it
-             â† waitForEvent hangs until timeout
+             ← the event already fired 5ms ago — listener missed it
+             ← waitForEvent hangs until timeout
 
 Why it's a race:
   page.click() is async but the new tab can open before
@@ -177,8 +177,8 @@ When to use worker scope:
   ✅ HTTP client connections (reuse connection pool)
 
 When NOT to use worker scope:
-  âŒ Data that individual tests MODIFY — Test A modifies it, Test B reads stale data
-  âŒ Page objects (page fixture is test-scoped by definition)
+  ❌ Data that individual tests MODIFY — Test A modifies it, Test B reads stale data
+  ❌ Page objects (page fixture is test-scoped by definition)
 ```
 
 ---
@@ -344,7 +344,7 @@ export const test = base.extend({
       data: { customerId: 'USR-001', amount: 150, status: 'PENDING' }
     });
     const citation = await response.json();
-    use(citation);   // â† bug
+    use(citation);   // ← bug
     await request.delete(`/api/v2/citations/${citation.citationId}`);
   }
 });
@@ -374,7 +374,7 @@ Fixed version:
       data: { customerId: account.userId, amount: 150, status: 'PENDING' }
     });
     const citation = await response.json();
-    await use(citation);   // â† awaited
+    await use(citation);   // ← awaited
     try {
       await request.delete(`/api/v2/citations/${citation.citationId}`,
         { headers: { 'Authorization': `Bearer ${account.accessToken}` } }
@@ -593,7 +593,7 @@ expect(maxAvgRt, 'Worst 10-request average must be under 2000ms').toBeLessThan(2
 // Scenario: You want to assert that an API response looks like a valid citation.
 // You write this assertion in 20+ tests. Extract it as a custom matcher.
 
-// âŒ Duplicated in every test:
+// ❌ Duplicated in every test:
 const citation = await response.json();
 expect(citation.citationId).toMatch(/^CIT-/);
 expect(citation.status).toBeOneOf(['PENDING', 'PAID', 'OVERDUE', 'DISPUTED']);
@@ -841,7 +841,7 @@ QUESTIONS TO ASK:
 ```
 
 ---
-**Navigation**: [â† Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 31: API Mocking](../05_Advanced_Topics/31_API_Mocking_page_route.md) | [Index](../00_INDEX.md)
 
 
 ### Challenge: "Diagnose this CI failure without running the suite locally"

@@ -1,6 +1,6 @@
 # 42. Polling & Async Data Patterns — The Right Way to Wait for Slow APIs
 
-**Navigation**: [â† Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
+**Navigation**: [← Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
 
 **Cross-links:**
 - [`15_CrossSite_Pattern5_UI_API_Side_Effects.md`](../03_D365_And_Patterns/15_CrossSite_Pattern5_UI_API_Side_Effects.md) — expect.poll in side-effect verification
@@ -39,7 +39,7 @@ The total wait time is unpredictable: 30 seconds minimum, 2 minutes maximum.
 ### The BAD Pattern (for-loop + waitForTimeout) — What People Actually Write
 
 ```typescript
-// âŒ ANTI-PATTERN — for-loop with sleep
+// ❌ ANTI-PATTERN — for-loop with sleep
 // Seen in real enterprise test suites from multiple companies
 
 test('Citation payment flow', async ({ page, citationsClient }) => {
@@ -994,7 +994,7 @@ PRIORITY 8 — page.waitForLoadState (navigation lifecycle)
   → WARNING: 'networkidle' unreliable for SPAs with background polling
 
 NEVER — page.waitForTimeout
-  await page.waitForTimeout(ms)  â† BANNED except in last-resort debugging
+  await page.waitForTimeout(ms)  ← BANNED except in last-resort debugging
 ```
 
 ### Complete API Reference Table
@@ -1005,14 +1005,14 @@ NEVER — page.waitForTimeout
 | `expect(locator).toBeVisible()` | void (throws) | ✅ Yes | Element appears | Checking element state (use `isVisible()`) |
 | `expect(locator).toHaveCount(n)` | void (throws) | ✅ Yes | Number of elements | Complex counting logic |
 | `expect.poll(fn, opts)` | void (throws) | ✅ Yes | Any async value | Simple DOM assertions |
-| `page.waitForResponse(pred)` | `Promise<Response>` | âŒ No | Capturing API calls | Background jobs (use expect.poll) |
-| `page.waitForRequest(pred)` | `Promise<Request>` | âŒ No | Verifying API sent | Long-running ops |
-| `page.waitForURL(url)` | `Promise<void>` | âŒ No | Page navigation | SPA tab clicks |
-| `page.waitForFunction(fn)` | `Promise<JSHandle>` | âŒ No | Custom DOM/JS condition | Simple assertions |
-| `locator.waitFor({state})` | `Promise<void>` | âŒ No | Element lifecycle | Text content (use toHaveText) |
-| `page.waitForEvent(evt)` | `Promise<event>` | âŒ No | Downloads, new tabs, dialogs | API status |
-| `page.waitForLoadState(s)` | `Promise<void>` | âŒ No | MPA navigation | SPA navigation |
-| `page.waitForTimeout(ms)` | `Promise<void>` | âŒ No | Debugging ONLY | **All production use** |
+| `page.waitForResponse(pred)` | `Promise<Response>` | ❌ No | Capturing API calls | Background jobs (use expect.poll) |
+| `page.waitForRequest(pred)` | `Promise<Request>` | ❌ No | Verifying API sent | Long-running ops |
+| `page.waitForURL(url)` | `Promise<void>` | ❌ No | Page navigation | SPA tab clicks |
+| `page.waitForFunction(fn)` | `Promise<JSHandle>` | ❌ No | Custom DOM/JS condition | Simple assertions |
+| `locator.waitFor({state})` | `Promise<void>` | ❌ No | Element lifecycle | Text content (use toHaveText) |
+| `page.waitForEvent(evt)` | `Promise<event>` | ❌ No | Downloads, new tabs, dialogs | API status |
+| `page.waitForLoadState(s)` | `Promise<void>` | ❌ No | MPA navigation | SPA navigation |
+| `page.waitForTimeout(ms)` | `Promise<void>` | ❌ No | Debugging ONLY | **All production use** |
 
 ---
 
@@ -1021,7 +1021,7 @@ NEVER — page.waitForTimeout
 ### Anti-Pattern 1: The Sleeping Loop
 
 ```typescript
-// âŒ The original sin — seen in 70% of enterprise test suites
+// ❌ The original sin — seen in 70% of enterprise test suites
 let status = 'PENDING';
 while (status !== 'PAID') {
   await page.waitForTimeout(5000);  // sleeps BEFORE checking (always wastes 5s minimum)
@@ -1042,7 +1042,7 @@ await expect.poll(
 ### Anti-Pattern 2: The Safety Sleep After Every Action
 
 ```typescript
-// âŒ "Just to be safe" — seen everywhere
+// ❌ "Just to be safe" — seen everywhere
 await page.click('#saveBtn');
 await page.waitForTimeout(3000);  // "the page usually takes 2-3 seconds to save"
 await expect(page.locator('.success')).toBeVisible();
@@ -1057,7 +1057,7 @@ await expect(page.locator('.success')).toBeVisible({ timeout: 15_000 });
 ### Anti-Pattern 3: Reading textContent() Without Waiting
 
 ```typescript
-// âŒ Reads text immediately — might be empty during two-phase render
+// ❌ Reads text immediately — might be empty during two-phase render
 await page.goto(`/citations/${citationId}`);
 const status = await page.locator('[data-testid="status"]').textContent();
 expect(status).toBe('PAID');  // fails 40% of the time — element exists but empty
@@ -1076,7 +1076,7 @@ const status = await page.locator('[data-testid="status"]').textContent();
 ### Anti-Pattern 4: `networkidle` on SPAs
 
 ```typescript
-// âŒ Hangs indefinitely on apps with background heartbeat requests
+// ❌ Hangs indefinitely on apps with background heartbeat requests
 await page.goto('/dashboard');
 await page.waitForLoadState('networkidle');  // D365 polls CDS every 30s → never idle
 ```
@@ -1091,7 +1091,7 @@ await expect(page.locator('.ms-Spinner')).toHaveCount(0, { timeout: 30_000 });
 ### Anti-Pattern 5: Using `waitForNavigation()` in React/SPA
 
 ```typescript
-// âŒ Hangs forever — SPAs don't trigger browser navigation events
+// ❌ Hangs forever — SPAs don't trigger browser navigation events
 await Promise.all([
   page.waitForNavigation(),         // times out — React router changes URL without navigation
   page.click('[role="tab"][name="Payments"]'),
@@ -1108,7 +1108,7 @@ await expect(page.locator('.payments-panel')).toBeVisible();
 ### Anti-Pattern 6: The Missing `await` on expect.poll
 
 ```typescript
-// âŒ Missing await — poll runs but test doesn't wait for it
+// ❌ Missing await — poll runs but test doesn't wait for it
 expect.poll(
   async () => citationsClient.getById(id).then(c => c.status),
   { timeout: 60_000 }
@@ -1127,7 +1127,7 @@ await expect.poll(   // <— must await
 ### Anti-Pattern 7: Not Throwing on Permanent Failures
 
 ```typescript
-// âŒ Polls for 10 minutes even when the job has permanently FAILED
+// ❌ Polls for 10 minutes even when the job has permanently FAILED
 await expect.poll(
   async () => {
     const job = await jobsClient.getStatus(jobId);
@@ -1155,7 +1155,7 @@ await expect.poll(
 ### Anti-Pattern 8: Fixed Timeout That's Wrong for All Environments
 
 ```typescript
-// âŒ 5 seconds works locally, fails in CI (network latency to staging API)
+// ❌ 5 seconds works locally, fails in CI (network latency to staging API)
 await expect.poll(
   async () => citationsClient.getById(id).then(c => c.status),
   { timeout: 5_000 }  // 5s total — staging API call alone takes 800ms
@@ -1358,7 +1358,7 @@ await expect.poll(
 
 ---
 
-**Navigation**: [â† Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
+**Navigation**: [← Chapter 41: GraphQL & WebSocket](../07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) | [Index](../00_INDEX.md) | [→ Chapter 43: Real-World War Stories](./43_Real_World_SDET_War_Stories.md)
 
 ## 🏋️ Practice Challenges
 

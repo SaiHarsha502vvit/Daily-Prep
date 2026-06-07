@@ -1,6 +1,6 @@
 # 31. API Mocking with `page.route()` — Isolating Frontend Behaviour
 
-**Navigation**: [â† Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md) | [Index](../00_INDEX.md) | [→ Chapter 32: SDET Interview Prep](../06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md)
+**Navigation**: [← Chapter 30: Database Verification](./30_Database_Verification_Direct_SQL.md) | [Index](../00_INDEX.md) | [→ Chapter 32: SDET Interview Prep](../06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md)
 
 **Cross-links:**
 - [`08_Browser_Internals_for_SDETs.md`](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md) — Network layer in the browser
@@ -517,11 +517,11 @@ DO mock when:
   ✅ Isolating frontend performance (no network time)
 
 DO NOT mock when:
-  âŒ Testing that the API actually saves data correctly
-  âŒ Testing cross-service integration (notification service receives the event)
-  âŒ Testing authentication flows (real auth must be tested end-to-end)
-  âŒ Testing the API contract itself
-  âŒ Regression testing after a backend change
+  ❌ Testing that the API actually saves data correctly
+  ❌ Testing cross-service integration (notification service receives the event)
+  ❌ Testing authentication flows (real auth must be tested end-to-end)
+  ❌ Testing the API contract itself
+  ❌ Regression testing after a backend change
 
 The Rule:
   If the bug you're protecting against could live in the BACKEND — don't mock.

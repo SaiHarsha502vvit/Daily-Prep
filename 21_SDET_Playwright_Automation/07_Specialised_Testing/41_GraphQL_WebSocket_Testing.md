@@ -1,6 +1,6 @@
 # 41. GraphQL & WebSocket Testing with Playwright
 
-**Navigation**: [â† Chapter 40: Security Testing](./40_Security_Testing_OWASP.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 40: Security Testing](./40_Security_Testing_OWASP.md) | [Index](../00_INDEX.md)
 
 **Open-Source Tools Referenced:**
 - **graphql-request** — https://github.com/jasonkuhrt/graphql-request (MIT) — minimal GraphQL client
@@ -51,7 +51,7 @@ GraphQL (one request, client specifies fields):
         citationId
         status
         amount
-        customer {       â† nested — no second request needed
+        customer {       ← nested — no second request needed
           userId
           name
           email
@@ -75,8 +75,8 @@ Testing difference:
 
 // A broken response looks like:
 {
-  "data": null,                          // â† data is null
-  "errors": [                            // â† errors are HERE
+  "data": null,                          // ← data is null
+  "errors": [                            // ← errors are HERE
     {
       "message": "Citation not found",
       "locations": [{ "line": 2, "column": 3 }],
@@ -95,7 +95,7 @@ Testing difference:
 }
 
 // WRONG assertion (passes even on error):
-expect(response.status()).toBe(200);  // â† always true, tells you nothing
+expect(response.status()).toBe(200);  // ← always true, tells you nothing
 
 // CORRECT assertion:
 const body = await response.json();
@@ -547,9 +547,9 @@ test('Application reconnects WebSocket after network interruption', async ({ pag
   expect(connectionEvents).toContain('connected');
 
   // Simulate network interruption using Playwright's network conditions
-  await context.setOffline(true);   // â† go offline
+  await context.setOffline(true);   // ← go offline
   await page.waitForTimeout(2000);   // wait for disconnect to be detected
-  await context.setOffline(false);  // â† come back online
+  await context.setOffline(false);  // ← come back online
 
   // App should automatically reconnect within 10 seconds
   await expect.poll(
@@ -715,7 +715,7 @@ test('Citation update arrives via WebSocket', async ({ page, webSocketMessages, 
 - [MDN WebSocket API](https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API)
 
 ---
-**Navigation**: [â† Chapter 40: Security Testing](./40_Security_Testing_OWASP.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 40: Security Testing](./40_Security_Testing_OWASP.md) | [Index](../00_INDEX.md)
 
 ### Challenge 3 [Spot the Bug — GraphQL Aliases]
 

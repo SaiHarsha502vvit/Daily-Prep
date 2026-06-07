@@ -1,8 +1,16 @@
 # SDET & Playwright Automation — Start Here
 
-[Index](./00_INDEX.md)
+> **What's the difference between this and [00_INDEX.md](./00_INDEX.md)?**
+> **Start_Here** = reading paths (you pick one based on your background). Use this on first day.
+> **INDEX**     = chapter-by-chapter time/topic table + dependency map + quick-reference snippets. Use as ongoing reference.
 
-This module is a **52-chapter** production-grade curriculum for working SDETs on Dynamics 365 CRM, JSP, and ASP.NET ASPX applications. It assumes you are already writing tests professionally and want to go deeper into enterprise Playwright architecture, TypeScript patterns, CI/CD, API client library design, performance/security/accessibility tooling, and the SDET→SDE skill bridge. It is **not** a beginner intro to programming or testing concepts — it builds on those foundations immediately.
+> **New in this module (post-upgrade):**
+> - [`framework/`](./framework/README.md) — runnable Playwright + TS scaffold proving the Seven Laws.
+> - [`challenges/`](./challenges/README.md) — 7 graded challenges + 3 portfolio capstones.
+> - [`career/`](./career/README.md) — progress tracker, interview bank, portfolio plan, résumé bullets, DevSecOps thread.
+> - Chapters 46–55 — BDD, Allure/ReportPortal, sharding, feature flags, email testing, secrets, component testing, mutation testing, synthetics, Inspector/Trace/UI Mode.
+
+This module is a **55-chapter** production-grade curriculum for working SDETs on Dynamics 365 CRM, JSP, and ASP.NET ASPX applications. It assumes you are already writing tests professionally and want to go deeper into enterprise Playwright architecture, TypeScript patterns, CI/CD, API client library design, performance/security/accessibility tooling, and the SDET→SDE skill bridge. It is **not** a beginner intro to programming or testing concepts — it builds on those foundations immediately.
 
 ---
 
@@ -90,7 +98,7 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 3. [`37_Performance_Testing_Lighthouse_k6.md`](./07_Specialised_Testing/37_Performance_Testing_Lighthouse_k6.md) → [`38_Contract_Testing_Pact.md`](./07_Specialised_Testing/38_Contract_Testing_Pact.md) → [`39_Accessibility_Testing_axe_core.md`](./07_Specialised_Testing/39_Accessibility_Testing_axe_core.md) → [`40_Security_Testing_OWASP.md`](./07_Specialised_Testing/40_Security_Testing_OWASP.md) → [`41_GraphQL_WebSocket_Testing.md`](./07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md)
 4. [`42_Polling_Async_Data_Patterns.md`](./05_Advanced_Topics/42_Polling_Async_Data_Patterns.md) → [`43_Real_World_SDET_War_Stories.md`](./05_Advanced_Topics/43_Real_World_SDET_War_Stories.md) → [`44_Enterprise_API_Client_Library.md`](./05_Advanced_Topics/44_Enterprise_API_Client_Library.md)
 5. [`45_AI_Agents_MCP_And_Playwright.md`](./05_Advanced_Topics/45_AI_Agents_MCP_And_Playwright.md)
-6. [`46_Playwright_Config_Deep_Dive.md`](./05_Advanced_Topics/46_Playwright_Config_Deep_Dive.md) → [`47_File_Uploads_Downloads_Media.md`](./05_Advanced_Topics/47_File_Uploads_Downloads_Media.md) → [`48_Trace_Viewer_Video_Mastery.md`](./05_Advanced_Topics/48_Trace_Viewer_Video_Mastery.md) → [`49_Component_Testing_Playwright_CT.md`](./05_Advanced_Topics/49_Component_Testing_Playwright_CT.md) → [`50_Real_World_SPA_Tabs_Menuitems_No_IDs.md`](./05_Advanced_Topics/50_Real_World_SPA_Tabs_Menuitems_No_IDs.md) → [`51_Login_Fixture_Architecture.md`](./05_Advanced_Topics/51_Login_Fixture_Architecture.md) → [`52_UI_Flow_Fixtures.md`](./05_Advanced_Topics/52_UI_Flow_Fixtures.md)
+6. [`46_BDD_With_Cucumber.md`](./05_Advanced_Topics/46_BDD_With_Cucumber.md) → [`47_Allure_ReportPortal.md`](./05_Advanced_Topics/47_Allure_ReportPortal.md) → [`48_Sharding_And_Test_Selection.md`](./05_Advanced_Topics/48_Sharding_And_Test_Selection.md) → [`49_Feature_Flag_Testing.md`](./05_Advanced_Topics/49_Feature_Flag_Testing.md) → [`50_Email_Service_Testing.md`](./05_Advanced_Topics/50_Email_Service_Testing.md) → [`51_Secrets_Management_For_SDETs.md`](./07_Specialised_Testing/51_Secrets_Management_For_SDETs.md) → [`52_Component_Testing_With_Playwright_CT.md`](./05_Advanced_Topics/52_Component_Testing_With_Playwright_CT.md) → [`53_Mutation_Testing_With_Stryker.md`](./07_Specialised_Testing/53_Mutation_Testing_With_Stryker.md) → [`54_Synthetic_Monitoring.md`](./05_Advanced_Topics/54_Synthetic_Monitoring.md) → [`55_Inspector_TraceViewer_UIMode_Walkthrough.md`](./02_Core_Architecture/55_Inspector_TraceViewer_UIMode_Walkthrough.md)
 
 ---
 
@@ -102,6 +110,9 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 | — | [00_INDEX.md](./00_INDEX.md) | Full chapter index with time estimates, dependency map, quick-reference snippets |
 | — | [00_Testing_Fundamentals/](./00_Testing_Fundamentals) | Testing pyramid, all 14 test types, smoke vs sanity vs regression deep-dive |
 | — | [01_Environment_Setup_and_First_Test.md](./01_Foundations/01_Environment_Setup_and_First_Test.md) | Node.js, Playwright install, first test run, config baseline |
+| — | [framework/](./framework/README.md) | Runnable Playwright + TS scaffold: Seven Laws, POM, fixtures, account pool |
+| — | [challenges/](./challenges/README.md) | 7 graded challenges (CH01–CH07) + 3 portfolio capstones (C1–C3) |
+| — | [career/](./career/README.md) | Progress tracker, interview bank, portfolio plan, résumé bullets, DevSecOps thread |
 | 00 | [00_SDET_Foundations_Mindset.md](./01_Foundations/00_SDET_Foundations_Mindset.md) | SDET role, testing pyramid, 3 pillars, professional vocabulary |
 | 01 | [01_Playwright_TS_Basics.md](./01_Foundations/01_Playwright_TS_Basics.md) | Project setup, first test, config, locators intro |
 | 02 | [02_Enterprise_Locators_XPath.md](./01_Foundations/02_Enterprise_Locators_XPath.md) | CSS, XPath, getByRole, getByText, locator chaining |
