@@ -1,6 +1,6 @@
 # 37. Performance Testing — Core Web Vitals, Lighthouse & Response Time Assertions
 
-**Navigation**: [â† Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
+**Navigation**: [← Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
 
 **Open-Source Tools Referenced:**
 - **Lighthouse CI** — https://github.com/GoogleChrome/lighthouse-ci (Apache 2.0)
@@ -698,7 +698,7 @@ Your thresholds are: `citation_search_duration p(95)<1000` and `http_req_failed 
 **What to report:**
 ```
 Load Test Results — Citation Search API
-Status:       FAILED âŒ
+Status:       FAILED ❌
 Date:         2026-05-28
 Load:         [as configured]
 
@@ -758,7 +758,7 @@ This way: LCP or CLS regressions block the PR (they're real user experience regr
 - [MDN Navigation Timing](https://developer.mozilla.org/en-US/docs/Web/API/Navigation_timing_API) — browser timing spec
 
 ---
-**Navigation**: [â† Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
+**Navigation**: [← Chapter 36: TypeScript Type System](../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) | [Index](../00_INDEX.md) | [→ Chapter 38: Contract Testing with Pact](./38_Contract_Testing_Pact.md)
 
 ### Challenge 5 [Spot the Bug — Lighthouse Test Flow]
 

@@ -1,6 +1,6 @@
 # 27. Advanced TypeScript Patterns for SDETs
 
-**Navigation**: [â† Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
+**Navigation**: [← Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
 
 **Cross-links:**
 - [`04_JS_TS_For_Automation.md`](../01_Foundations/04_JS_TS_For_Automation.md) — TypeScript fundamentals
@@ -132,11 +132,11 @@ type CitationTestScenario =
 function runScenario(scenario: CitationTestScenario) {
   if (scenario.kind === 'logged-in') {
     scenario.userId;        // ✅ TypeScript knows this exists
-    scenario.email;         // âŒ TypeScript error: property doesn't exist on this variant
+    scenario.email;         // ❌ TypeScript error: property doesn't exist on this variant
   }
   if (scenario.kind === 'guest') {
     scenario.email;         // ✅ TypeScript knows this exists
-    scenario.userId;        // âŒ TypeScript error
+    scenario.userId;        // ❌ TypeScript error
   }
 }
 
@@ -204,8 +204,8 @@ async function callTypeSafeEndpoint(method: HttpMethod, path: ApiPath) {
 }
 
 callTypeSafeEndpoint('GET', '/api/v2/citations/CIT-001');   // ✅
-callTypeSafeEndpoint('GET', '/api/v2/citaions/CIT-001');    // âŒ TypeScript error: 'citaions' not in ServiceName
-callTypeSafeEndpoint('FETCH', '/api/v2/citations');          // âŒ TypeScript error: 'FETCH' not in HttpMethod
+callTypeSafeEndpoint('GET', '/api/v2/citaions/CIT-001');    // ❌ TypeScript error: 'citaions' not in ServiceName
+callTypeSafeEndpoint('FETCH', '/api/v2/citations');          // ❌ TypeScript error: 'FETCH' not in HttpMethod
 ```
 
 ### Template Literal Types for Event Names
@@ -339,7 +339,7 @@ const testPayload = {
   status: 'PENDING',
   citationType: 'PARKING',
   // Imagine a typo here: citationType: 'PRKING'
-  // satisfies catches it at definition time â† not at runtime
+  // satisfies catches it at definition time ← not at runtime
 } satisfies CreateCitationPayload;
 //  ↑ TypeScript error if 'PRKING' is not in the union — instant feedback in VS Code
 ```
@@ -469,7 +469,7 @@ type CitationPayloadWithoutId = Omit<CreateCitationPayload, 'customerId'>;
 
 // ── Readonly<T> ── Prevent mutation ──────────────────────────────────────────
 const testConfig: Readonly<EnvironmentConfig> = stagingConfig;
-// testConfig.crmUrl = 'other';  // âŒ TypeScript error: cannot assign to read-only
+// testConfig.crmUrl = 'other';  // ❌ TypeScript error: cannot assign to read-only
 // Ensures test configuration is never accidentally mutated during a test run
 ```
 
@@ -653,7 +653,7 @@ result.citationID;   // ✅ TypeScript: no error. Runtime: undefined (it's citat
 
 // With generic T:
 const result = await client.get<CitationApiResponse>('/api/citations/CIT-001');
-result.citationID;   // âŒ TypeScript error: Property 'citationID' does not exist
+result.citationID;   // ❌ TypeScript error: Property 'citationID' does not exist
 result.citationId;   // ✅ TypeScript: fine. Correct field name.
 ```
 </details>
@@ -671,7 +671,7 @@ type SearchMode =
 function buildSearchQuery(search: SearchMode): string {
   if (search.mode === 'byId') return `?citationId=${search.citationId}`;
   if (search.mode === 'byUser') return `?userId=${search.userId}`;
-  // â† What happens if someone adds a new variant to SearchMode?
+  // ← What happens if someone adds a new variant to SearchMode?
 }
 ```
 
@@ -746,7 +746,7 @@ citationTest('verify citation details', async ({ resource: citation }) => {
 </details>
 
 ---
-**Navigation**: [â† Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
+**Navigation**: [← Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md) | [Index](../00_INDEX.md) | [→ Chapter 28: Test Data Lifecycle](./28_Test_Data_Lifecycle_and_Cleanup.md)
 
 ### Challenge 4 [MCQ] — `satisfies` vs Type Annotation
 

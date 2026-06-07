@@ -1,6 +1,6 @@
 # 25. CI/CD Integration — Playwright in GitHub Actions & Azure DevOps
 
-**Navigation**: [â† Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
+**Navigation**: [← Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
 
 **Cross-links:**
 - [`09_Parallel_Execution_Workers.md`](../02_Core_Architecture/09_Parallel_Execution_Workers.md) — Sharding and workers
@@ -88,7 +88,7 @@ let hasErrors = false;
 for (const varName of REQUIRED_ENV_VARS) {
   const value = process.env[varName];
   if (!value) {
-    console.error(`âŒ Missing required env var: ${varName}`);
+    console.error(`❌ Missing required env var: ${varName}`);
     hasErrors = true;
   } else {
     const preview = value.length > 20 ? value.substring(0, 20) + '...' : value;
@@ -242,7 +242,7 @@ jobs:
       # This is where you get the HTML report, screenshots, videos, traces
       - name: Upload test results
         uses: actions/upload-artifact@v4
-        if: always()                         # â† CRITICAL: always upload, even on failure
+        if: always()                         # ← CRITICAL: always upload, even on failure
         with:
           name: playwright-smoke-report
           path: |
@@ -570,7 +570,7 @@ After a CI run, the HTML report at `playwright-report/index.html` shows:
 ```
 Summary:          237 passed | 3 failed | 2 skipped | 14m 32s
 Failures:
-  âŒ Citation Dispute Flow › Admin reviews → Status updates (attempt 2/3)
+  ❌ Citation Dispute Flow › Admin reviews → Status updates (attempt 2/3)
       Expected: 'DISPUTED'
       Received: 'PENDING'
       Screenshot: [click to view]
@@ -597,7 +597,7 @@ Rule 1: NEVER commit credentials to Git.
     .env
     .env.local
     .env.staging
-    auth-states/         â† storageState files contain tokens!
+    auth-states/         ← storageState files contain tokens!
     test-results/
 
 Rule 2: Rotate secrets regularly.
@@ -683,7 +683,7 @@ Fix:
 
 - name: Upload report
   uses: actions/upload-artifact@v4
-  if: always()      # â† required
+  if: always()      # ← required
   with:
     name: report
     path: playwright-report/
@@ -724,7 +724,7 @@ Write the `package.json` scripts section for a team that needs:
 </details>
 
 ---
-**Navigation**: [â† Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
+**Navigation**: [← Chapter 24: Test Script Architecture](../04_Enterprise_Architecture/24_Test_Script_Architecture.md) | [Index](../00_INDEX.md) | [→ Chapter 26: Flakiness Diagnosis](./26_Flakiness_Diagnosis_and_Fixing.md)
 
 ### Challenge 4 [MCQ] — Sharding: `fail-fast: false`
 

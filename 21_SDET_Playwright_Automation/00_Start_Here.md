@@ -1,8 +1,16 @@
 # SDET & Playwright Automation — Start Here
 
-[Index](./00_INDEX.md)
+> **What's the difference between this and [00_INDEX.md](./00_INDEX.md)?**
+> **Start_Here** = reading paths (you pick one based on your background). Use this on first day.
+> **INDEX**     = chapter-by-chapter time/topic table + dependency map + quick-reference snippets. Use as ongoing reference.
 
-This module is a 44-chapter production-grade curriculum for working SDETs on Dynamics 365 CRM, JSP, and ASP.NET ASPX applications. It assumes you are already writing tests professionally and want to go deeper into enterprise Playwright architecture, TypeScript patterns, CI/CD, API client library design, performance/security/accessibility tooling, and the SDET→SDE skill bridge. It is **not** a beginner intro to programming or testing concepts — it builds on those foundations immediately.
+> **New in this module (post-upgrade):**
+> - [`framework/`](./framework/README.md) — runnable Playwright + TS scaffold proving the Seven Laws.
+> - [`challenges/`](./challenges/README.md) — 7 graded challenges + 3 portfolio capstones.
+> - [`career/`](./career/README.md) — progress tracker, interview bank, portfolio plan, résumé bullets, DevSecOps thread.
+> - Chapters 46–54 — BDD, Allure/ReportPortal, sharding, feature flags, email testing, secrets, CT, mutation testing, synthetics.
+
+This module is a 54-chapter production-grade curriculum for working SDETs on Dynamics 365 CRM, JSP, and ASP.NET ASPX applications. It assumes you are already writing tests professionally and want to go deeper into enterprise Playwright architecture, TypeScript patterns, CI/CD, API client library design, performance/security/accessibility tooling, and the SDET→SDE skill bridge. It is **not** a beginner intro to programming or testing concepts — it builds on those foundations immediately.
 
 ---
 

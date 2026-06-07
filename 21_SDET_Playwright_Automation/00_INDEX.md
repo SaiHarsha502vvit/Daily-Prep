@@ -1,5 +1,17 @@
 # 21. SDET & Playwright Automation — Module Index
 
+> **What's the difference between this and [00_Start_Here.md](./00_Start_Here.md)?**
+> **Start_Here** = reading paths by background. Read once on day one.
+> **INDEX** (this file) = chapter table + dependency map + quick-reference snippets. Keep open while you work.
+
+> **Module add-ons (post-upgrade):**
+> | Folder | Purpose |
+> |---|---|
+> | [`framework/`](./framework/README.md) | Runnable enterprise Playwright + TS scaffold |
+> | [`challenges/`](./challenges/README.md) | 7 graded challenges + 3 portfolio capstones |
+> | [`career/`](./career/README.md) | Progress, interview bank, portfolio, résumé, DevSecOps thread |
+> | Chapters 46–54 | BDD, Allure/ReportPortal, sharding, feature flags, email, secrets, CT, mutation testing, synthetics |
+
 **Module Goal:** Take you from zero to a production-grade SDET / SDE who can architect, build, and maintain enterprise test automation systems — covering Playwright, TypeScript, real-world async patterns, API client library design, enterprise CI/CD, performance, security, and accessibility testing.
 
 ---

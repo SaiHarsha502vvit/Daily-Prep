@@ -520,27 +520,27 @@ NON-BREAKING changes (safe — existing consumers still work):
   ✅ Relax validation (accept more inputs)
 
 BREAKING changes (fail existing consumer contracts):
-  âŒ Rename a field
+  ❌ Rename a field
      citationId  →  citation_id  (consumers reading 'citationId' get undefined)
 
-  âŒ Change a field's type
+  ❌ Change a field's type
      amount: 150.00 (number)  →  amount: '150.00' (string)
 
-  âŒ Remove a field
+  ❌ Remove a field
      { citationId, status, notes }  →  { citationId, status }
      Consumers that read 'notes' get undefined
 
-  âŒ Make an optional field required on REQUEST
-  âŒ Remove a valid enum value
-  âŒ Change HTTP status codes (200 → 204)
-  âŒ Change the URL path structure
+  ❌ Make an optional field required on REQUEST
+  ❌ Remove a valid enum value
+  ❌ Change HTTP status codes (200 → 204)
+  ❌ Change the URL path structure
 ```
 
 ```typescript
 // How to make your consumer contract RESILIENT to non-breaking provider changes:
 // Use matchers instead of exact values:
 
-// âŒ Fragile — breaks if provider adds new enum values:
+// ❌ Fragile — breaks if provider adds new enum values:
 body: { status: 'PENDING' }
 
 // ✅ Resilient — only validates the values your consumer cares about:
@@ -554,7 +554,7 @@ body: {
   }),
 }
 
-// âŒ Fragile — breaks if response adds new fields (it shouldn't, but TypeScript strict mode might flag):
+// ❌ Fragile — breaks if response adds new fields (it shouldn't, but TypeScript strict mode might flag):
 body: { citationId: 'CIT-001', status: 'PENDING' }  // exact match
 
 // ✅ Resilient — use like() which validates TYPE, not exact content:
@@ -688,12 +688,12 @@ Your provider team is making these API changes to `GET /api/v2/citations/:id`. C
 | Change | Breaking? | Why |
 |---|---|---|
 | 1. Add `auditTrail` field | ✅ NON-BREAKING | Consumers that don't read this field are unaffected |
-| 2. Rename `issueDate` → `issuedAt` | âŒ BREAKING | All consumers reading `issueDate` get `undefined` |
-| 3. `amount`: number → string | âŒ BREAKING | Type mismatch — code doing `amount * taxRate` breaks |
+| 2. Rename `issueDate` → `issuedAt` | ❌ BREAKING | All consumers reading `issueDate` get `undefined` |
+| 3. `amount`: number → string | ❌ BREAKING | Type mismatch — code doing `amount * taxRate` breaks |
 | 4. New optional query param | ✅ NON-BREAKING | Existing consumers don't send it; API ignores its absence |
-| 5. Remove `notes` field | âŒ BREAKING | Consumers reading `notes` get `undefined` |
+| 5. Remove `notes` field | ❌ BREAKING | Consumers reading `notes` get `undefined` |
 | 6. Add `'ARCHIVED'` enum value | ⚠ DEPENDS | Non-breaking if consumer uses regex matcher. Breaking if consumer uses switch/exhaustive match |
-| 7. `200` → `204 No Content` | âŒ BREAKING | Consumers that read the response body get nothing. Pact contract explicitly includes `status: 200` |
+| 7. `200` → `204 No Content` | ❌ BREAKING | Consumers that read the response body get nothing. Pact contract explicitly includes `status: 200` |
 
 With Pact: changes 2, 3, 5, and 7 immediately fail provider verification. Change 6 fails if the consumer used an exact regex. Change 1 and 4 pass silently.
 </details>

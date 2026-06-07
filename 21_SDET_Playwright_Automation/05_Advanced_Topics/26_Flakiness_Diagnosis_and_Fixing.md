@@ -1,6 +1,6 @@
 # 26. Flakiness — Diagnosing, Classifying & Systematically Fixing Unstable Tests
 
-**Navigation**: [â† Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
+**Navigation**: [← Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
 
 **Cross-links:**
 - [`08_Browser_Internals_for_SDETs.md`](../02_Core_Architecture/08_Browser_Internals_for_SDETs.md) — Root cause: rendering timelines
@@ -141,7 +141,7 @@ Step 6: Apply the fix
 ### Type 1 Fix — Timing / Race Condition
 
 ```typescript
-// âŒ Root cause: asserting immediately after navigation
+// ❌ Root cause: asserting immediately after navigation
 await page.click('#processPayment');
 expect(await page.locator('.confirmation-id').textContent()).toMatch(/CONF-\d+/);
 // Fails when the confirmation renders slowly
@@ -151,7 +151,7 @@ await page.click('#processPayment');
 await expect(page.locator('.confirmation-id')).toHaveText(/CONF-\d+/, { timeout: 20_000 });
 // expect() retries the assertion for up to 20 seconds — timing safe
 
-// âŒ D365 specific: asserting before spinner hides
+// ❌ D365 specific: asserting before spinner hides
 await page.getByRole('menuitem', { name: 'Save & Close' }).click();
 const status = await page.locator('[data-automation-key="statecode"]').textContent();
 
@@ -165,7 +165,7 @@ await expect(page.locator('[data-automation-key="statecode"]'))
 ### Type 2 Fix — Data Pollution
 
 ```typescript
-// âŒ Root cause: search returns previous test's data
+// ❌ Root cause: search returns previous test's data
 await masterSearch.searchPanel.searchByCustomerName('AutoTest');
 const count = await masterSearch.resultsGrid.rows.count();
 expect(count).toBe(1);  // Fails if another test left AutoTest-1 in the DB
@@ -185,8 +185,8 @@ await masterSearch.searchPanel.searchByCitationId(data.citationId!);
 ### Type 3 Fix — Order Dependency
 
 ```typescript
-// âŒ Root cause: module-level state
-let createdUserId: string;   // â† shared across tests in module
+// ❌ Root cause: module-level state
+let createdUserId: string;   // ← shared across tests in module
 
 // ✅ Fix: use test.describe.serial() with a SCOPED object
 test.describe.serial('User lifecycle', () => {
@@ -207,7 +207,7 @@ test.describe.serial('User lifecycle', () => {
 ### Type 4 Fix — Environment / Network
 
 ```typescript
-// âŒ Root cause: hardcoded timeout too short for CI
+// ❌ Root cause: hardcoded timeout too short for CI
 await expect(page.locator('.search-results')).toBeVisible({ timeout: 5000 });
 // Fails in CI because the staging API takes 8-12 seconds
 
@@ -263,7 +263,7 @@ await page.addStyleTag({ content: '*, *::before, *::after { transition: none !im
 ### Type 6 Fix — Locator Ambiguity
 
 ```typescript
-// âŒ Root cause: index shifts
+// ❌ Root cause: index shifts
 await page.locator('.order-row').nth(0).click();  // which row? loaded in what order?
 
 // ✅ Fix: identify by data attribute, not position
@@ -272,7 +272,7 @@ await page.locator('.order-row').filter({ hasText: data.orderId! }).click();
 // ✅ Or: get the specific row by its unique ID attribute
 await page.locator(`[data-order-id="${data.orderId}"]`).click();
 
-// âŒ Root cause: text match too broad
+// ❌ Root cause: text match too broad
 await page.getByText('Edit').click();  // matches 5 Edit buttons on the same page
 
 // ✅ Fix: scope to the correct container
@@ -328,7 +328,7 @@ async function checkStateValidity(statePath: string): Promise<boolean> {
 ### Type 8 Fix — Animation / Transition
 
 ```typescript
-// âŒ Root cause: visual regression assertion fires during CSS animation
+// ❌ Root cause: visual regression assertion fires during CSS animation
 test('Login button visual regression', async ({ page }) => {
   await page.goto('/login');
   // Button has a 300ms fade-in animation on page load:
@@ -376,7 +376,7 @@ test.beforeEach(async ({ page }) => {
 ### Type 9 Fix — Third-Party Service
 
 ```typescript
-// âŒ Root cause: fixed wait for async notification
+// ❌ Root cause: fixed wait for async notification
 await page.waitForTimeout(3000);  // "should arrive in 3 seconds"
 const notif = await notificationsClient.getByUser(account.userId);
 // Fails when the notification service is slow and arrives in 5 seconds
@@ -537,8 +537,8 @@ DOM snapshots:
 ```
 Timeline shows:
   00:12.450 → Page click: Save & Close
-  00:12.680 → Assertion: expect(statusField).toHaveText('Active')  â† assertion fires HERE
-  00:13.200 → Network: PATCH /api/citations/CIT-001 → 200           â† API call completes HERE
+  00:12.680 → Assertion: expect(statusField).toHaveText('Active')  ← assertion fires HERE
+  00:13.200 → Network: PATCH /api/citations/CIT-001 → 200           ← API call completes HERE
 
 Discovery: The assertion fires 0.52 seconds BEFORE the API returns.
 The UI is showing the OLD status while the save is still in-flight.
@@ -694,7 +694,7 @@ test.describe('Citation search', () => {
     const citation = await citationsClient.create(
       PayloadsCitation.pending({ customerId: account.userId })
     );
-    testCitationId = citation.citationId;  // â† module-scoped
+    testCitationId = citation.citationId;  // ← module-scoped
   });
 
   test('Search by ID returns exactly 1 result', async ({ masterSearch }) => {
@@ -778,7 +778,7 @@ You have 3 tests in quarantine. Your manager asks: "Why are these tests quaranti
 </details>
 
 ---
-**Navigation**: [â† Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
+**Navigation**: [← Chapter 25: CI/CD Integration](./25_CICD_Integration_GitHub_Azure.md) | [Index](../00_INDEX.md) | [→ Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md)
 
 ### Challenge 5 [MCQ] — Statistical Confidence in Flakiness Testing
 

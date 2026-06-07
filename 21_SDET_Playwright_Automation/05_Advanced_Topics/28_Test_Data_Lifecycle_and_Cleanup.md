@@ -1,6 +1,6 @@
 # 28. Test Data Lifecycle — Seeding, Isolation & Guaranteed Cleanup
 
-**Navigation**: [â† Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md) | [Index](../00_INDEX.md)
+**Navigation**: [← Chapter 27: Advanced TypeScript Patterns](./27_Advanced_TypeScript_for_SDETs.md) | [Index](../00_INDEX.md)
 
 **Cross-links:**
 - [`06_Custom_Fixtures_Architecture.md`](../02_Core_Architecture/06_Custom_Fixtures_Architecture.md) — How fixtures handle teardown
@@ -278,10 +278,10 @@ citationWithUser: async ({ request, account }, use) => {
   );
 
   try {
-    // â† Provide both to the test
+    // ← Provide both to the test
     await use({ user, citation });
   } finally {
-    // â† This block ALWAYS runs — even if the test threw an error
+    // ← This block ALWAYS runs — even if the test threw an error
     // Delete in dependency order: citation first (references user), then user
     try {
       await citationsClient.delete(citation.citationId);
@@ -633,8 +633,8 @@ citationPair: async ({ citationsClient, account }, use) => {
   await use({ parent, linked });
 
   // Teardown:
-  await citationsClient.delete(parent.citationId);   // â† parent first
-  await citationsClient.delete(linked.citationId);   // â† child second
+  await citationsClient.delete(parent.citationId);   // ← parent first
+  await citationsClient.delete(linked.citationId);   // ← child second
 },
 ```
 
