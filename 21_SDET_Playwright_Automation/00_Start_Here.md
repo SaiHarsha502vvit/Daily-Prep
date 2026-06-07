@@ -2,7 +2,7 @@
 
 [Index](./00_INDEX.md)
 
-This module is a 44-chapter production-grade curriculum for working SDETs on Dynamics 365 CRM, JSP, and ASP.NET ASPX applications. It assumes you are already writing tests professionally and want to go deeper into enterprise Playwright architecture, TypeScript patterns, CI/CD, API client library design, performance/security/accessibility tooling, and the SDET→SDE skill bridge. It is **not** a beginner intro to programming or testing concepts — it builds on those foundations immediately.
+This module is a **52-chapter** production-grade curriculum for working SDETs on Dynamics 365 CRM, JSP, and ASP.NET ASPX applications. It assumes you are already writing tests professionally and want to go deeper into enterprise Playwright architecture, TypeScript patterns, CI/CD, API client library design, performance/security/accessibility tooling, and the SDET→SDE skill bridge. It is **not** a beginner intro to programming or testing concepts — it builds on those foundations immediately.
 
 ---
 
@@ -90,6 +90,7 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 3. [`37_Performance_Testing_Lighthouse_k6.md`](./07_Specialised_Testing/37_Performance_Testing_Lighthouse_k6.md) → [`38_Contract_Testing_Pact.md`](./07_Specialised_Testing/38_Contract_Testing_Pact.md) → [`39_Accessibility_Testing_axe_core.md`](./07_Specialised_Testing/39_Accessibility_Testing_axe_core.md) → [`40_Security_Testing_OWASP.md`](./07_Specialised_Testing/40_Security_Testing_OWASP.md) → [`41_GraphQL_WebSocket_Testing.md`](./07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md)
 4. [`42_Polling_Async_Data_Patterns.md`](./05_Advanced_Topics/42_Polling_Async_Data_Patterns.md) → [`43_Real_World_SDET_War_Stories.md`](./05_Advanced_Topics/43_Real_World_SDET_War_Stories.md) → [`44_Enterprise_API_Client_Library.md`](./05_Advanced_Topics/44_Enterprise_API_Client_Library.md)
 5. [`45_AI_Agents_MCP_And_Playwright.md`](./05_Advanced_Topics/45_AI_Agents_MCP_And_Playwright.md)
+6. [`46_Playwright_Config_Deep_Dive.md`](./05_Advanced_Topics/46_Playwright_Config_Deep_Dive.md) → [`47_File_Uploads_Downloads_Media.md`](./05_Advanced_Topics/47_File_Uploads_Downloads_Media.md) → [`48_Trace_Viewer_Video_Mastery.md`](./05_Advanced_Topics/48_Trace_Viewer_Video_Mastery.md) → [`49_Component_Testing_Playwright_CT.md`](./05_Advanced_Topics/49_Component_Testing_Playwright_CT.md) → [`50_Real_World_SPA_Tabs_Menuitems_No_IDs.md`](./05_Advanced_Topics/50_Real_World_SPA_Tabs_Menuitems_No_IDs.md) → [`51_Login_Fixture_Architecture.md`](./05_Advanced_Topics/51_Login_Fixture_Architecture.md) → [`52_UI_Flow_Fixtures.md`](./05_Advanced_Topics/52_UI_Flow_Fixtures.md)
 
 ---
 
@@ -148,7 +149,14 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 | 42 | [42_Polling_Async_Data_Patterns.md](./05_Advanced_Topics/42_Polling_Async_Data_Patterns.md) | expect.poll(), waitForResponse, pollUntil() utility, anti-pattern hall of shame |
 | 43 | [43_Real_World_SDET_War_Stories.md](./05_Advanced_Topics/43_Real_World_SDET_War_Stories.md) | 14 real problems: ghost click, stale session, silent 200, parallel collision, frame trap |
 | 44 | [44_Enterprise_API_Client_Library.md](./05_Advanced_Topics/44_Enterprise_API_Client_Library.md) | 5-layer architecture, typed domain clients, Zod validation, retry middleware, error hierarchy |
-| 45 | [45_AI_Agents_MCP_And_Playwright.md](./05_Advanced_Topics/45_AI_Agents_MCP_And_Playwright.md) | AI agent-driven test generation, MCP integration, LLM-assisted debugging |
+| 45 | [45_AI_Agents_MCP_And_Playwright.md](./05_Advanced_Topics/45_AI_Agents_MCP_And_Playwright.md) | MCP protocol, Playwright MCP server, AI scaffolding, Copilot integration |
+| 46 | [46_Playwright_Config_Deep_Dive.md](./05_Advanced_Topics/46_Playwright_Config_Deep_Dive.md) | Config merge algebra, projects DAG, reporter selection, anti-pattern taxonomy |
+| 47 | [47_File_Uploads_Downloads_Media.md](./05_Advanced_Topics/47_File_Uploads_Downloads_Media.md) | setInputFiles, download event, blob/CSV assertions, drag-and-drop, clipboard |
+| 48 | [48_Trace_Viewer_Video_Mastery.md](./05_Advanced_Topics/48_Trace_Viewer_Video_Mastery.md) | Trace file format, programmatic parsing, retention economics, video vs trace decision theory |
+| 49 | [49_Component_Testing_Playwright_CT.md](./05_Advanced_Topics/49_Component_Testing_Playwright_CT.md) | mount(), React/Vue/Svelte isolation, CT vs E2E boundary, CI integration |
+| 50 | [50_Real_World_SPA_Tabs_Menuitems_No_IDs.md](./05_Advanced_Topics/50_Real_World_SPA_Tabs_Menuitems_No_IDs.md) | Non-D365 SPA POMs, tab/menuitem role-based selectors, console reconnaissance, component POMs |
+| 51 | [51_Login_Fixture_Architecture.md](./05_Advanced_Topics/51_Login_Fixture_Architecture.md) | 5-level auth taxonomy, worker-scoped fixtures, API-first login, performance analysis |
+| 52 | [52_UI_Flow_Fixtures.md](./05_Advanced_Topics/52_UI_Flow_Fixtures.md) | Journey helpers, flow fixtures with data accumulator, multi-step wizard fixtures, anti-patterns |
 
 ---
 

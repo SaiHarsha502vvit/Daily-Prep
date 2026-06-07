@@ -1,0 +1,17 @@
+{
+  "id": "019e9dba-d6df-7287-974c-bd9f9b089242",
+  "name": "upgrading-notes",
+  "description": "upgrading-notes",
+  "status": "draft",
+  "worktree": {
+    "path": "/mnt/e/Dev_World/04_Practice/Daily-Prep",
+    "branch": "main",
+    "commit": "fb1784cdb750db22504467dcfa98a06b34f85544"
+  },
+  "scoping": {},
+  "phases": [],
+  "decisions": [],
+  "memories": [],
+  "createdAt": "2026-06-06T16:18:48.159Z",
+  "updatedAt": "2026-06-06T16:18:48.159Z"
+}

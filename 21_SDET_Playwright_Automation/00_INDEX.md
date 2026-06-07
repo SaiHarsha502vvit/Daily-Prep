@@ -58,13 +58,26 @@
 | 42 | [Polling & Async Data Patterns](./05_Advanced_Topics/42_Polling_Async_Data_Patterns.md) | 75 min | **expect.poll(), waitForResponse, pollUntil() utility, anti-pattern hall of shame** | Ch15, Ch26 |
 | 43 | [Real-World SDET War Stories](./05_Advanced_Topics/43_Real_World_SDET_War_Stories.md) | 60 min | **14 real problems: ghost click, stale session, silent 200, parallel collision, frame trap** | Ch08, Ch09, Ch26 |
 | 44 | [Enterprise API Client Library](./05_Advanced_Topics/44_Enterprise_API_Client_Library.md) | 90 min | **5-layer architecture, typed domain clients, Zod validation, retry middleware, error hierarchy** | Ch22, Ch23, Ch27 |
+| 45 | [AI Agents, MCP & Playwright](./05_Advanced_Topics/45_AI_Agents_MCP_And_Playwright.md) | 75 min | **MCP protocol, Playwright MCP server, AI scaffolding, Copilot integration, agentic boundaries** | Ch05, Ch06, Ch21 |
+| &nbsp; | **——— FRAMEWORK ENGINEERING & DEEP DIVES ——— The missing pieces that make you irreplaceable** | | | |
+| 46 | [Playwright Config Deep-Dive — The Engine Room](./05_Advanced_Topics/46_Playwright_Config_Deep_Dive.md) | 60 min | **playwright.config.ts field-by-field, projects[], retries, trace, globalSetup, reporter matrices** | Ch01, Ch09, Ch25 |
+| 47 | [File Uploads, Downloads & Media Handling](./05_Advanced_Topics/47_File_Uploads_Downloads_Media.md) | 45 min | **setInputFiles, download event, blob/CSV assertions, drag-and-drop, clipboard** | Ch07, Ch31 |
+| 48 | [Trace Viewer & Video Recording Mastery](./05_Advanced_Topics/48_Trace_Viewer_Video_Mastery.md) | 45 min | **Reading traces step-by-step, video retention, extracting artifacts from CI, trace-first debugging** | Ch26 |
+| 49 | [Component Testing with Playwright CT](./05_Advanced_Topics/49_Component_Testing_Playwright_CT.md) | 60 min | **mount(), testing React/Vue/Svelte in isolation, when CT vs E2E, component fixtures** | Ch05, Ch06, Ch39 |
+| &nbsp; | **——— PRACTICAL FRAMEWORK ENGINEERING ——— Building from scratch on real enterprise SPAs** | | | |
+| 50 | [Real-World SPA — Tabs, MenuItems & No IDs](./05_Advanced_Topics/50_Real_World_SPA_Tabs_Menuitems_No_IDs.md) | 90 min | **Multi-page POMs, iframe tab content, console reconnaissance, role-based selectors** | Ch05, Ch08, Ch10 |
+| 51 | [Login Fixture Architecture — 5 Levels](./05_Advanced_Topics/51_Login_Fixture_Architecture.md) | 75 min | **Hardcoded → env → test-scoped → worker-scoped → API-first. Performance comparison.** | Ch06, Ch16, Ch28 |
+| 52 | [UI Flow Fixtures — Encapsulating Journeys](./05_Advanced_Topics/52_UI_Flow_Fixtures.md) | 60 min | **Journey helpers, flow fixtures with data accumulator, wizard fixtures, anti-patterns** | Ch06, Ch07, Ch50 |
 
 **Bolded chapters** = Advanced content built on your real codebase.
 **Ch33–36** = Read alongside the corresponding guide folder (DSA, OOP, TypeScript) for maximum cross-pollination.
 **Ch37–41** = Industry-standard open-source tools (Lighthouse, k6, Pact, axe-core, OWASP ZAP, GraphQL).
 **Ch42–44** = Real-world depth: the async waiting patterns, actual war stories, and the API library architecture that separates SDETs from senior SDEs.
+**Ch45** = AI & MCP: the frontier of agentic test automation and what AI can (and cannot) replace.
+**Ch46–49** = Framework engineering: config semantics, media handling, trace artifacts, and component testing — the structural skills that make you the engineer other engineers rely on.
+**Ch50–52** = Practical framework construction: building POMs from hostile DOMs, the auth-strategy taxonomy, and flow fixtures — the chapters that bridge theory into production-grade frameworks.
 
-> **⏱ Total estimated study time: ~95–110 hours** (44 chapters × 60–90 min + quizzes)
+> **⏱ Total estimated study time: ~110–130 hours** (52 chapters × 60–90 min + quizzes)
 
 ---
 
@@ -113,6 +126,16 @@ Ch21 (Project Structure)       Ch22 (Headers/Payloads/Endpoints)
 
 Quiz 01 → after Chapters 01–16
 Quiz 02 → after Chapters 01–18
+Quiz 02 Solutions → after attempting Quiz 02 (self-check)
+
+Ch45 (AI/MCP)         → after Ch05+Ch06+Ch21 (needs POM, fixtures, project structure)
+Ch46 (Config Semantics) → read alongside Ch09 (workers belong to Ch09; config belongs here)
+Ch47 (Uploads/Downloads) → after Ch07 (E2E steps)
+Ch48 (Trace Artifacts) → after Ch26 (flakiness)
+Ch49 (Component Testing) → after Ch05+Ch06+Ch39
+Ch50 (SPA Tabs/No IDs) → after Ch05+Ch08+Ch10
+Ch51 (Login Taxonomy) → after Ch06+Ch16+Ch28
+Ch52 (UI Flow Fixtures) → after Ch06+Ch07+Ch50
 ```
 
 ---
