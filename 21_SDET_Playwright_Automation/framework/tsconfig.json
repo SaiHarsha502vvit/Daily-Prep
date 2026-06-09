@@ -29,13 +29,16 @@
     }
   },
   "include": [
+    "components/**/*.ts",
     "config/**/*.ts",
     "constants/**/*.ts",
     "fixtures/**/*.ts",
+    "pages/**/*.ts",
     "tests/**/*.ts",
     "types/**/*.ts",
     "utilities/**/*.ts",
     "websites/**/*.ts",
+    "quiz-solutions/**/*.ts",
     "playwright.config.ts"
   ],
   "exclude": ["node_modules", "dist", "playwright-report", "test-results"]

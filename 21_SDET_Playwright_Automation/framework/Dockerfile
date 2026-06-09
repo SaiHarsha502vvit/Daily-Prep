@@ -15,13 +15,31 @@
 
 FROM mcr.microsoft.com/playwright:v1.49.0-jammy
 
+# ── Security: run as non-root user ──────────────────────────
+# The MCR image ships with a 'pwuser' user (UID 1000). Re-use it.
+# If pwuser does not exist, create one.
+RUN id -u pwuser &>/dev/null || ( \
+    groupadd -r pwuser -g 1000 && \
+    useradd -r -g pwuser -u 1000 -m -s /bin/bash pwuser \
+    )
+
 # ── Working directory inside the container ──────────────────
 WORKDIR /app
+RUN chown -R pwuser:pwuser /app
+
+# ── Switch to non-root user for subsequent operations ────────
+USER pwuser
+
+# ── Environment defaults ──────────────────────────────────────
+# CI=true → forbidOnly, 4 workers, 2 retries (matches playwright.config.ts)
+ENV CI=true
+# The base image already has browsers at /ms-playwright; tell Playwright.
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright
 
 # ── Install Node dependencies ────────────────────────────────
 # Copy manifest files FIRST so Docker's layer cache skips npm install
 # when only source files change (common pattern for faster rebuilds).
-COPY package.json package-lock.json* ./
+COPY --chown=pwuser:pwuser package.json package-lock.json* ./
 
 # Install only production + devDependencies needed to run tests.
 # --ignore-scripts skips the postinstall browser download — the MCR image
@@ -31,17 +49,10 @@ RUN npm ci --ignore-scripts
 # ── Copy the rest of the framework source ───────────────────
 # .dockerignore should exclude: node_modules, playwright-report,
 # test-results, .env, *.json.lock, auth-states/
-COPY . .
-
-# ── Environment defaults ──────────────────────────────────────
-# CI=true → forbidOnly, 4 workers, 2 retries (matches playwright.config.ts)
-ENV CI=true
-# Playwright uses /dev/shm for shared memory; set to a safe size via Docker
-# --shm-size flag at run time (see docker-compose.yml).
-# Browsers crash with the default /dev/shm of 64 MB on some kernels.
+COPY --chown=pwuser:pwuser . .
 
 # ── Entrypoint ───────────────────────────────────────────────
-# Run all tests by default.  Override with a command argument:
+# Default: run all tests. Override with a command argument:
 #   docker run --rm playwright-framework npx playwright test --project=api
 ENTRYPOINT ["npx", "playwright", "test"]
 CMD []
