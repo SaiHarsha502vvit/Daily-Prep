@@ -1,6 +1,6 @@
 # All Testing Types — Complete Guide
 
-**Folder**: [00_Testing_Fundamentals](../../00_Testing_Fundamentals) | **Series**: [23_Mobile_Dev_And_Testing](../..)
+**Folder**: [00_Testing_Fundamentals](..) | **Module**: [21_SDET_Playwright_Automation](../..)
 
 > **Purpose of this file**: Most engineers learn testing tools before they learn WHY different test types exist. This is backwards. This file first teaches you the vocabulary — what each test type IS, what problem it solves, when it runs, and who owns it. The next file (`02_Smoke_Sanity_Regression_Deep_Dive.md`) goes deep on the three most confused types. Only once you have the mental model do the tool-specific chapters make sense.
 

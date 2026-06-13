@@ -1451,4 +1451,4 @@ const body = text ? JSON.parse(text) : null;
 - Mocking (page.route): [`./13_mocking.md`](./13_mocking.md)
 - Test data lifecycle: [`./12_data.md`](./12_data.md)
 - Real implementations: [`../framework/utilities/api/APIUtils.ts`](../framework/utilities/api/APIUtils.ts)
-- 5-layer architecture deep dive: [`../deep_dives/enterprise_api_client.md`](../deep_dives/enterprise_api_client.md) (planned)
+- 5-layer architecture deep dive: [`Ch44 Enterprise API Client Library`](../05_Advanced_Topics/44_Enterprise_API_Client_Library.md)

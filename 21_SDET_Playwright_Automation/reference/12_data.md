@@ -1193,5 +1193,5 @@ await page.clock.install({ time: new Date('2026-06-09T12:00:00Z') });
 
 - API setup patterns: [`./06_api_testing.md`](./06_api_testing.md)
 - Fixture lifecycle (cleanup timing): [`./04_fixtures.md`](./04_fixtures.md)
-- DB verification patterns: deep dive at [`../deep_dives/database_verification.md`](../deep_dives/database_verification.md) (planned)
+- DB verification patterns: deep dive at [`Ch30 Database Verification via Direct SQL`](../05_Advanced_Topics/30_Database_Verification_Direct_SQL.md)
 - Real test data layer: [`../framework/utilities/data/`](../framework/utilities/data/)

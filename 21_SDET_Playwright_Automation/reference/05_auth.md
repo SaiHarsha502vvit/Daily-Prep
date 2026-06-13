@@ -1603,5 +1603,5 @@ await page.context().storageState({ path: 'auth.json' });
 - Fixtures (worker scope, options, account pool): [`./04_fixtures.md`](./04_fixtures.md)
 - Setup project pattern: [`./02_config.md`](./02_config.md#7-projects)
 - Secrets management: [`../deep_dives/security.md`](../deep_dives/security.md)
-- Auth-related practice problems: Q6 in [`../practice/quiz_02_solutions/`](../practice/quiz_02_solutions/)
+- Auth-related practice problems: Q6 in [`../08_Practice_And_Quizzes/quiz_02_solutions/`](../08_Practice_And_Quizzes/quiz_02_solutions/)
 - Real auth fixtures in code: [`../framework/fixtures/auth.fixture.ts`](../framework/fixtures/auth.fixture.ts) (account pool), [`../framework/fixtures/auth.oauth.fixture.ts`](../framework/fixtures/auth.oauth.fixture.ts) (OAuth client credentials), [`../framework/utilities/auth/totp.helper.ts`](../framework/utilities/auth/totp.helper.ts) (TOTP)

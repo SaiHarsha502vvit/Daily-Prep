@@ -1,0 +1,113 @@
+name: Upload Playwright Test Report
+
+description: |
+  Composite GitHub Action that runs Playwright tests, uploads the JSON report
+  to the test analytics ingester, and optionally posts a Slack summary.
+
+inputs:
+  ingester-url:
+    description: Base URL of the test analytics ingester service
+    required: true
+    default: https://your-ingester.example.com
+  ingester-token:
+    description: Bearer token for the ingester API
+    required: true
+  playwright-report-path:
+    description: Path to the Playwright JSON report file
+    default: playwright-report/results.json
+  slack-webhook:
+    description: Optional Slack webhook URL for notifications
+    required: false
+  slack-channel:
+    description: Slack channel to post to
+    default: '#test-alerts'
+  min-pass-rate:
+    description: Minimum pass rate threshold for Slack alerts
+    default: '80'
+
+runs:
+  using: composite
+  steps:
+    - name: Upload report to ingester
+      id: upload
+      shell: bash
+      run: |
+        set -e
+
+        REPORT_PATH="${{ inputs.playwright-report-path }}"
+
+        if [ ! -f "$REPORT_PATH" ]; then
+          echo "No report found at $REPORT_PATH, skipping upload"
+          exit 0
+        fi
+
+        echo "Uploading Playwright report to ingester..."
+        HTTP_STATUS=$(curl -s -o /tmp/ingester-response.json -w "%{http_code}" \
+          -X POST "${{ inputs.ingester-url }}/api/runs" \
+          -H "Authorization: Bearer ${{ inputs.ingester-token }}" \
+          -H "Content-Type: application/json" \
+          -d @"$REPORT_PATH")
+
+        if [ "$HTTP_STATUS" = "201" ]; then
+          echo "Report uploaded successfully"
+          cat /tmp/ingester-response.json
+        elif [ "$HTTP_STATUS" = "422" ]; then
+          echo "Report validation failed (422):"
+          cat /tmp/ingester-response.json
+          exit 1
+        else
+          echo "Ingester returned status $HTTP_STATUS:"
+          cat /tmp/ingester-response.json
+          exit 1
+        fi
+
+    - name: Optionally post Slack summary
+      if: inputs.slack-webhook != ''
+      shell: bash
+      run: |
+        set -e
+
+        REPORT_PATH="${{ inputs.playwright-report-path }}"
+        MIN_PASS_RATE=${{ inputs.min-pass-rate }}
+
+        # Extract basic stats from report if available
+        if command -v jq &> /dev/null && [ -f "$REPORT_PATH" ]; then
+          TOTAL=$(jq '[.results[].tests[]] | length' "$REPORT_PATH" 2>/dev/null || echo "0")
+          PASSED=$(jq '[.results[].tests[] | select(.status == "passed")] | length' "$REPORT_PATH" 2>/dev/null || echo "0")
+          FAILED=$(jq '[.results[].tests[] | select(.status == "failed")] | length' "$REPORT_PATH" 2>/dev/null || echo "0")
+
+          if [ "$TOTAL" -gt 0 ]; then
+            PASS_RATE=$(( PASSED * 100 / TOTAL ))
+          else
+            PASS_RATE=0
+          fi
+
+          PAYLOAD=$(cat <<EOF
+          {
+            "channel": "${{ inputs.slack-channel }}",
+            "text": "Playwright Test Results: $PASS_RATE% pass rate ($PASSED/$TOTAL passed, $FAILED failed) on branch \${{ github.ref_name }}",
+            "attachments": [{
+              "color": "$([ "$PASS_RATE" -ge "$MIN_PASS_RATE" ] && echo "good" || echo "danger")",
+              "fields": [
+                { "title": "Pass Rate", "value": "$PASS_RATE%", "short": true },
+                { "title": "Passed", "value": "$PASSED", "short": true },
+                { "title": "Failed", "value": "$FAILED", "short": true },
+                { "title": "Branch", "value": "\${{ github.ref_name }}", "short": true },
+                { "title": "Commit", "value": "\${{ github.sha }}", "short": false }
+              ]
+            }]
+          }
+EOF)
+          curl -s -X POST "${{ inputs.slack-webhook }}" \
+            -H 'Content-Type: application/json' \
+            -d "$PAYLOAD"
+          echo "Slack notification sent"
+        else
+          echo "Skipping Slack notification (jq not available or report not found)"
+        fi
+
+        echo "::set-output name=pass-rate::$PASS_RATE"
+        echo "::set-output name=total::$TOTAL"
+        echo "::set-output name=passed::$PASSED"
+        echo "::set-output name=failed::$FAILED"
+      continue-on-error: true

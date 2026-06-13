@@ -1795,4 +1795,4 @@ WebdriverIO has hooks (`before`, `beforeEach`, `after`, `afterEach`) and a "serv
 - Auth fixtures (OAuth, TOTP, mTLS): [`./05_auth.md`](./05_auth.md)
 - POM construction details: [`../learn/03_pom.md`](../learn/03_pom.md)
 - Account pool pattern source: [`../framework/fixtures/auth.fixture.ts`](../framework/fixtures/auth.fixture.ts)
-- Practice problems: Q8, Q14, Q17, Q20 in [`../practice/quiz_02_solutions/`](../practice/quiz_02_solutions/)
+- Practice problems: Q8, Q14, Q17, Q20 in [`../08_Practice_And_Quizzes/quiz_02_solutions/`](../08_Practice_And_Quizzes/quiz_02_solutions/)

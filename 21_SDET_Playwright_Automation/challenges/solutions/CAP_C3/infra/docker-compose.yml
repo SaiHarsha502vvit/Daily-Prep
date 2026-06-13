@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: cap-c3-postgres
+    environment:
+      POSTGRES_USER: testanalytics
+      POSTGRES_PASSWORD: testanalytics
+      POSTGRES_DB: testanalytics
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U testanalytics -d testanalytics']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  ingester:
+    build:
+      context: ..
+      dockerfile: Dockerfile.ingester
+    container_name: cap-c3-ingester
+    environment:
+      DATABASE_URL: postgres://testanalytics:testanalytics@postgres:5432/testanalytics
+      PORT: '3001'
+      INGESTER_TOKEN: dev-token
+      NODE_ENV: development
+    ports:
+      - '3001:3001'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3001/health || exit 1']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build:
+      context: ..
+      dockerfile: Dockerfile.web
+    container_name: cap-c3-web
+    environment:
+      NEXT_PUBLIC_INGESTER_URL: http://localhost:3001
+      NODE_ENV: development
+    ports:
+      - '3000:3000'
+    depends_on:
+      ingester:
+        condition: service_healthy
+    healthcheck:
+      test: ['CMD-SHELL', 'curl -f http://localhost:3000 || exit 1']
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

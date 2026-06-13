@@ -1,7 +1,7 @@
 # Chapter 60 — Tool Comparison: Cypress / Selenium / WebdriverIO vs Playwright
 
 **← [Ch 59: Docker for Playwright](../05_Advanced_Topics/59_Docker_For_Playwright.md) | [Index](../00_INDEX.md)**  
-**Related:** [Ch 32 — Interview Prep](./32_Framework_Design_Interview_Prep.md) | [Playwright vs Appium](../../23_Mobile_Dev_And_Testing/01_Playwright_vs_Appium_Full_Comparison.md)
+**Related:** [Ch 32 — Interview Prep](./32_SDET_Interview_Prep.md) | [Playwright vs Appium](../../23_Mobile_Dev_And_Testing/01_Playwright_vs_Appium_Full_Comparison.md)
 
 > **Time estimate:** 60 minutes  
 > **Difficulty:** Intermediate  

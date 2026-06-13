@@ -1,0 +1,15 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+COPY apps/ingester/package*.json ./
+RUN npm install
+
+COPY apps/ingester/tsconfig.json ./
+COPY apps/ingester/src ./src
+
+RUN npx tsc
+
+EXPOSE 3001
+
+CMD ["node", "dist/server.js"]

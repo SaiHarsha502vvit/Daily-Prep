@@ -1001,4 +1001,4 @@ The `merge` job runs after all shards, regardless of pass/fail. Final report has
 - Config for parallelism: [`./02_config.md`](./02_config.md#7-projects)
 - CI integration: [`./10_ci_docker.md`](./10_ci_docker.md)
 - Reliability + flakiness: [`./08_reliability.md`](./08_reliability.md)
-- Practice problem: Q03 in [`../practice/quiz_02_solutions/Q03_module_level_state_parallel.ts`](../practice/quiz_02_solutions/Q03_module_level_state_parallel.ts)
+- Practice problem: Q03 in [`../08_Practice_And_Quizzes/quiz_02_solutions/Q03_module_level_state_parallel.ts`](../08_Practice_And_Quizzes/quiz_02_solutions/Q03_module_level_state_parallel.ts)

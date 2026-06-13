@@ -1556,4 +1556,4 @@ A comprehensive list of locator anti-patterns and their fixes.
 - Strict mode + assertions: [`../learn/04_architecture_walkthrough.md`](../learn/04_architecture_walkthrough.md)
 - D365 deep dive: [`../deep_dives/d365.md`](../deep_dives/d365.md)
 - Cross-site patterns (IFrames, popups): [`../deep_dives/cross_site_patterns.md`](../deep_dives/cross_site_patterns.md)
-- Locator practice problems: Q5, Q7, Q19 in [`../practice/quiz_02_solutions/`](../practice/quiz_02_solutions/)
+- Locator practice problems: Q5, Q7, Q19 in [`../08_Practice_And_Quizzes/quiz_02_solutions/`](../08_Practice_And_Quizzes/quiz_02_solutions/)

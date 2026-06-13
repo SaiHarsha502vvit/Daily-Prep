@@ -76,16 +76,16 @@ npx tsc --noEmit --project tsconfig.json \
 
 | If you struggled with… | Re-read… |
 |---|---|
-| Async loops (Q01) | [Ch 04 Async/Await](../../01_Foundations/04_Async_Await_TypeScript.md) |
-| Race conditions (Q02, Q16) | [Ch 12 New Tab Pattern](../../03_D365_And_Patterns/12_Cross_Site_New_Tab.md) |
-| Parallel test isolation (Q03) | [Ch 09 Parallel Workers](../../02_Core_Architecture/09_Parallel_Workers_Sharding.md) |
-| Wait strategies (Q04) | [Ch 17 Advanced Timing](../../03_D365_And_Patterns/17_Advanced_Timing_Patterns.md) |
-| TypeScript types (Q05, Q09, Q12) | [Ch 35 Advanced TypeScript](../../06_SDET_to_SDE_Bridge/35_Advanced_TypeScript_Mastery.md) |
-| storageState (Q06) | [Ch 16 StorageState Chaining](../../03_D365_And_Patterns/16_StorageState_Chaining.md) |
-| Locators / lazy evaluation (Q07, Q19) | [Ch 05 Page Object Model](../../02_Core_Architecture/05_Page_Object_Model_Deep_Dive.md) |
-| Fixture scopes (Q08, Q14, Q17, Q20) | [Ch 06 Custom Fixtures](../../02_Core_Architecture/06_Custom_Fixtures_Test_Extend.md) |
-| API / route mocking (Q16, Q18) | [Ch 29 API Mocking](../../05_Advanced_Topics/29_API_Mocking_Page_Route.md) |
-| POM component split (Q15) | [Ch 18 Mega POM](../../04_Enterprise_Architecture/18_Mega_POM_Component_Architecture.md) |
+| Async loops (Q01) | [Ch 04 JS/TS for Automation](../../01_Foundations/04_JS_TS_For_Automation.md) |
+| Race conditions (Q02, Q16) | [Ch 12 Cross-Site Pattern 2 (New Tab)](../../03_D365_And_Patterns/12_CrossSite_Pattern2_NewTab_SharedContext.md) |
+| Parallel test isolation (Q03) | [Ch 09 Parallel Execution & Workers](../../02_Core_Architecture/09_Parallel_Execution_Workers.md) |
+| Wait strategies (Q04) | [Ch 17 D365 Advanced Timing Patterns](../../03_D365_And_Patterns/17_D365_Advanced_Timing_Patterns.md) |
+| TypeScript types (Q05, Q09, Q12) | [Ch 36 TypeScript Type System Mastery](../../06_SDET_to_SDE_Bridge/36_TypeScript_Type_System_Mastery.md) |
+| storageState (Q06) | [Ch 16 Cross-Site Pattern 6 (storageState chaining)](../../03_D365_And_Patterns/16_CrossSite_Pattern6_StorageState_Chaining.md) |
+| Locators / lazy evaluation (Q07, Q19) | [Ch 05 POM Architecture Deep Dive](../../02_Core_Architecture/05_POM_Architecture_Deep_Dive.md) |
+| Fixture scopes (Q08, Q14, Q17, Q20) | [Ch 06 Custom Fixtures Architecture](../../02_Core_Architecture/06_Custom_Fixtures_Architecture.md) |
+| API / route mocking (Q16, Q18) | [Ch 31 API Mocking via `page.route`](../../05_Advanced_Topics/31_API_Mocking_page_route.md) |
+| POM component split (Q15) | [Ch 18 Mega POM Architecture](../../04_Enterprise_Architecture/18_Mega_POM_Architecture.md) |
 
 ---
 

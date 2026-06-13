@@ -1,6 +1,6 @@
 # Smoke, Sanity, and Regression Testing — Deep Dive
 
-**Folder**: [00_Testing_Fundamentals](../../00_Testing_Fundamentals) | **Previous**: [01_All_Testing_Types_Complete_Guide.md](./01_All_Testing_Types_Complete_Guide.md)
+**Folder**: [00_Testing_Fundamentals](..) | **Previous**: [01_All_Testing_Types_Complete_Guide.md](./01_All_Testing_Types_Complete_Guide.md)
 
 > **Purpose of this file**: These three test types are the most confused in the industry. Many QA engineers use the words interchangeably. They are NOT the same thing. Understanding the differences — precisely — is what separates a junior QA from a mid-level QA. This file gives you exact definitions, the real distinctions, how each fits into a CI/CD pipeline, what to write for each, and how to answer interview questions about them.
 
@@ -1064,6 +1064,6 @@ DECISION: What tests do you run, in what order?
 
 ---
 
-**Next**: Proceed to Android sub-folder for deep platform content → [../03_Android/](../../03_Android)
+**Next**: Continue to Ch00 Foundations → [`../00_SDET_Foundations_Mindset.md`](../00_SDET_Foundations_Mindset.md)
 
 **Back to**: [Series Index](../..)

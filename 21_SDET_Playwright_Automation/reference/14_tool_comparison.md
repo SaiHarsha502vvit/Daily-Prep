@@ -784,5 +784,5 @@ Yes. Cypress doesn't natively support tab control. Workaround: ignore the second
 ## Cross-references
 
 - Mobile testing comparison: [`../../23_Mobile_Dev_And_Testing/01_Playwright_vs_Appium_Full_Comparison.md`](../../23_Mobile_Dev_And_Testing/01_Playwright_vs_Appium_Full_Comparison.md)
-- Migration plan templates: [`../learn/07_interview_prep.md`](../learn/07_interview_prep.md)
+- Migration plan templates: [`Ch32 SDET Interview Prep`](../06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md)
 - Architecture comparison sources: official docs for each tool

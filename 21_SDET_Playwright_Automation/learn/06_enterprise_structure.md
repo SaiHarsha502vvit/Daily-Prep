@@ -205,7 +205,7 @@ This usually takes 6–12 months for a 200-test legacy suite. Faster if you're s
 
 ## What's next
 
-- [07. Interview prep](./07_interview_prep.md) — talking about this in interviews.
+- [Ch32 SDET Interview Prep](../06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md) — talking about this in interviews.
 - [`reference/06_api_testing.md`](../reference/06_api_testing.md) — the 5-layer pattern in detail.
 - [`reference/04_fixtures.md`](../reference/04_fixtures.md) — fixture composition.
 - [`framework/`](../framework/) — the runnable reference of all of this.

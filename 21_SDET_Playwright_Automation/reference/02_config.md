@@ -1482,7 +1482,7 @@ Tests within a file also run in parallel. Each test gets its own worker. Faster,
 When NOT to use `fullyParallel: true`:
 
 - A `describe.serial` block exists in any file (the serial constraint overrides `fullyParallel`)
-- Tests share module-level mutable state (see [Q03 in quiz_02_solutions](../practice/quiz_02_solutions/Q03_module_level_state_parallel.ts))
+- Tests share module-level mutable state (see [Q03 in quiz_02_solutions](../08_Practice_And_Quizzes/quiz_02_solutions/Q03_module_level_state_parallel.ts))
 - The app under test has DB-level state that can collide (use account pools — see [04_fixtures.md](./04_fixtures.md))
 
 For new code, `fullyParallel: true` is the default and the right choice.
@@ -1560,7 +1560,7 @@ Real bugs we've seen in production CI. Each one with the symptom, the root cause
 
 **Cause:** Setup wrote storageState too early — before the login POST response set cookies.
 
-**Fix:** Wait for a post-login URL or selector before saving. See [`05_auth.md`](./05_auth.md#storagestate-the-default) and [Q06](../practice/quiz_02_solutions/Q06_storage_state_saved_early.ts).
+**Fix:** Wait for a post-login URL or selector before saving. See [`05_auth.md`](./05_auth.md#storagestate-the-default) and [Q06](../08_Practice_And_Quizzes/quiz_02_solutions/Q06_storage_state_saved_early.ts).
 
 ### Failure 4 — Tests pass in `chromium` project, fail in `firefox`
 

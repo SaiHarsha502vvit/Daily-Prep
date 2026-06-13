@@ -22,7 +22,7 @@ Read these **before** starting this module:
 |---|---|
 | JavaScript (async, promises, DOM, closures) | [`16_JavaScript/`](../16_JavaScript) |
 | TypeScript (types, generics, interfaces) | [`17_TypeScript/`](../17_TypeScript) |
-| Testing fundamentals (pyramid, smoke vs regression, test types) | [`21_SDET_Playwright_Automation/00_Testing_Fundamentals/`](./00_Testing_Fundamentals) |
+| Testing fundamentals (pyramid, smoke vs regression, test types) | [`21_SDET_Playwright_Automation/00_Testing_Fundamentals/`](./01_Foundations/00_Testing_Fundamentals) |
 | Node.js + Playwright install | [`01_Environment_Setup_and_First_Test.md`](./01_Foundations/01_Environment_Setup_and_First_Test.md) |
 
 ---
@@ -41,7 +41,7 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 
 1. [`01_Environment_Setup_and_First_Test.md`](./01_Foundations/01_Environment_Setup_and_First_Test.md)
 2. [`00_SDET_Foundations_Mindset.md`](./01_Foundations/00_SDET_Foundations_Mindset.md)
-3. [`00_Testing_Fundamentals/`](./00_Testing_Fundamentals)
+3. [`00_Testing_Fundamentals/`](./01_Foundations/00_Testing_Fundamentals)
 4. [`01_Playwright_TS_Basics.md`](./01_Foundations/01_Playwright_TS_Basics.md)
 5. [`02_Enterprise_Locators_XPath.md`](./01_Foundations/02_Enterprise_Locators_XPath.md)
 6. [`03_Browser_Console_Scripting.md`](./01_Foundations/03_Browser_Console_Scripting.md)
@@ -108,7 +108,7 @@ If you haven't installed Node.js and Playwright yet, start with [`01_Environment
 |---|---|---|
 | — | [00_Start_Here.md](./00_Start_Here.md) | Navigation only — reading paths, prereqs, cross-links (this file) |
 | — | [00_INDEX.md](./00_INDEX.md) | Full chapter index with time estimates, dependency map, quick-reference snippets |
-| — | [00_Testing_Fundamentals/](./00_Testing_Fundamentals) | Testing pyramid, all 14 test types, smoke vs sanity vs regression deep-dive |
+| — | [00_Testing_Fundamentals/](./01_Foundations/00_Testing_Fundamentals) | Testing pyramid, all 14 test types, smoke vs sanity vs regression deep-dive |
 | — | [01_Environment_Setup_and_First_Test.md](./01_Foundations/01_Environment_Setup_and_First_Test.md) | Node.js, Playwright install, first test run, config baseline |
 | — | [framework/](./framework/README.md) | Runnable Playwright + TS scaffold: Seven Laws, POM, fixtures, account pool |
 | — | [challenges/](./challenges/README.md) | 7 graded challenges (CH01–CH07) + 3 portfolio capstones (C1–C3) |

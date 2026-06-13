@@ -1126,4 +1126,4 @@ Real production bugs and their resolution.
 - Parallel execution: [`./07_parallelism.md`](./07_parallelism.md)
 - Trace viewer setup: [`./11_reporting.md`](./11_reporting.md)
 - D365 patterns deep dive: [`../deep_dives/d365.md`](../deep_dives/d365.md)
-- Practice problems: Q01, Q02, Q04 in [`../practice/quiz_02_solutions/`](../practice/quiz_02_solutions/)
+- Practice problems: Q01, Q02, Q04 in [`../08_Practice_And_Quizzes/quiz_02_solutions/`](../08_Practice_And_Quizzes/quiz_02_solutions/)

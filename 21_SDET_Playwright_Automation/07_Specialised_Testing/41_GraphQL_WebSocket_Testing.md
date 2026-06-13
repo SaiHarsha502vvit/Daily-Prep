@@ -15,7 +15,7 @@
 - https://developer.mozilla.org/en-US/docs/Web/API/WebSockets_API — MDN WebSocket API
 
 **Cross-references (this repo):**
-- [`../../16_JavaScript/`](../../../16_JavaScript) — Promises, async/await — critical for WebSocket event handling
+- [`Ch04 JS/TS for Automation`](../01_Foundations/04_JS_TS_For_Automation.md) — Promises, async/await — critical for WebSocket event handling
 - [`31_API_Mocking_page_route.md`](../05_Advanced_Topics/31_API_Mocking_page_route.md) — `page.route()` used for GraphQL mocking
 
 ---

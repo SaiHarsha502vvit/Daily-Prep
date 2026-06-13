@@ -1,0 +1,20 @@
+{
+  "name": "playwright-flake-detector",
+  "version": "1.0.0",
+  "description": "CLI tool to detect and rank flaky Playwright tests from JSON reports",
+  "bin": {
+    "playwright-flake-detector": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test dist/tests/**/*.spec.js",
+    "lint": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "@types/node": "^22.10.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

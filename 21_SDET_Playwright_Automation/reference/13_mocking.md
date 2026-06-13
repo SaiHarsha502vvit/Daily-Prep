@@ -226,7 +226,7 @@ await page.goto('/dashboard');  // hangs forever — citations request never com
 
 The request hangs indefinitely. The page never receives a response. Tests time out with mysterious errors.
 
-This is the most common mocking bug. See Q16 in [practice solutions](../practice/quiz_02_solutions/Q16_api_mocking_trap.ts).
+This is the most common mocking bug. See Q16 in [practice solutions](../08_Practice_And_Quizzes/quiz_02_solutions/Q16_api_mocking_trap.ts).
 
 ### 4.3 What if you call two
 
@@ -1143,4 +1143,4 @@ After 1 hit, route is unregistered. Subsequent requests bypass the handler entir
 - API testing fundamentals: [`./06_api_testing.md`](./06_api_testing.md)
 - waitForEvent (events vs responses): [`./09_file_io.md#5-filechooser-event`](./09_file_io.md)
 - Reliability — race conditions: [`./08_reliability.md#12-race-conditions`](./08_reliability.md)
-- Practice problems: Q16, Q18 in [`../practice/quiz_02_solutions/`](../practice/quiz_02_solutions/)
+- Practice problems: Q16, Q18 in [`../08_Practice_And_Quizzes/quiz_02_solutions/`](../08_Practice_And_Quizzes/quiz_02_solutions/)

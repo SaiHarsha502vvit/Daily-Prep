@@ -5,7 +5,7 @@ Enterprise reference for Playwright + TypeScript test automation on Dynamics 365
 - **[`reference/`](./reference/)** — flat, topical lookup. Open one file, find one answer.
 - **[`learn/`](./learn/)** — curriculum path if you're working through the material in order.
 
-Backed by a runnable framework in [`framework/`](./framework/) and graded exercises in [`challenges/`](./challenges/) + [`practice/`](./practice/).
+Backed by a runnable framework in [`framework/`](./framework/) and graded exercises in [`challenges/`](./challenges/) + [`08_Practice_And_Quizzes/`](./08_Practice_And_Quizzes/).
 
 > If this is your first time here: open [`reference/01_quickstart.md`](./reference/01_quickstart.md). Five minutes, then you have a passing test.
 
@@ -40,7 +40,7 @@ Backed by a runnable framework in [`framework/`](./framework/) and graded exerci
 | 04 | [E2E architecture walkthrough — 15-step skeleton](./learn/04_architecture_walkthrough.md) | 1 |
 | 05 | [Browser internals for SDETs](./learn/05_browser_internals.md) | 1 |
 | 06 | [Enterprise project structure](./learn/06_enterprise_structure.md) | 1.5 |
-| 07 | [Interview prep — LADDER, system design, STAR](./learn/07_interview_prep.md) | 2 |
+| 07 | [Interview prep — LADDER, system design, STAR (canonical Ch32)](./06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md) | 2 |
 
 ## Deep dives — optional reads
 
@@ -60,7 +60,7 @@ Backed by a runnable framework in [`framework/`](./framework/) and graded exerci
 | [Synthetic monitoring](./deep_dives/synthetic_monitoring.md) | Checkly, cron-based monitors |
 | [BDD with Cucumber](./deep_dives/bdd_cucumber.md) | Stakeholder-readable Gherkin scenarios |
 | [AI agents / MCP](./deep_dives/ai_mcp.md) | Playwright MCP server, agentic test scaffolding |
-| [Login taxonomy advanced](./deep_dives/login_taxonomy_advanced.md) | Beyond `reference/05_auth.md` — full SAML, MFA edge cases |
+| [Ch57 Login Taxonomy — OAuth/OIDC/SAML/MFA/mTLS](./05_Advanced_Topics/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) | Beyond `reference/05_auth.md` — full SAML, MFA edge cases |
 
 ---
 
@@ -71,7 +71,7 @@ Backed by a runnable framework in [`framework/`](./framework/) and graded exerci
 | [`framework/`](./framework/README.md) | Production-grade Playwright + TS scaffold. The canonical example for every reference doc. |
 | [`projects/starter-playwright-ts/`](./projects/starter-playwright-ts/) | Learning scaffold — intentionally incomplete, grow it chapter by chapter |
 | [`challenges/`](./challenges/README.md) | 7 graded challenges (CH01–CH07) + 3 portfolio capstones (CAP_C1–C3) |
-| [`practice/`](./practice/) | Quizzes + 10-week practice plan + 20 reference solutions to Quiz 02 |
+| [`08_Practice_And_Quizzes/`](./08_Practice_And_Quizzes/) | Quizzes + 10-week practice plan + 20 reference solutions to Quiz 02 |
 | [`career/`](./career/README.md) | Progress tracker, interview bank, portfolio plan, résumé bullets, DevSecOps thread |
 
 ---
@@ -159,7 +159,7 @@ test('flow', async ({ page, account, citationsClient }) => {
 | JavaScript fundamentals (async, DOM, closures) | [`16_JavaScript/`](../16_JavaScript/) |
 | CSS selectors in depth | [`18_CSS_Complete/`](../18_CSS_Complete/) |
 | DSA / Algorithms (interview bridge) | [`03_Algorithms/`](../03_Algorithms/) |
-| OOP design patterns | [`06_OOP/`](../06_OOP/) |
+| OOP design patterns | [Ch35 OOP Design Patterns for SDETs](./06_SDET_to_SDE_Bridge/35_OOP_Design_Patterns_for_SDETs.md) |
 | SQL for DB verification | [`08_SQL/`](../08_SQL/) |
 | CI/CD beyond Playwright | [`22_DevOps/`](../22_DevOps/) |
 | Mobile / Appium | [`23_Mobile_Dev_And_Testing/`](../23_Mobile_Dev_And_Testing/) |

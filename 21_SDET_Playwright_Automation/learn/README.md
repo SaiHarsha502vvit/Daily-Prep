@@ -12,7 +12,7 @@
 | 04 | [Architecture walkthrough](./04_architecture_walkthrough.md) | The 15-step E2E skeleton; cross-step data flow | 60 min |
 | 05 | [Browser internals](./05_browser_internals.md) | DOM tree, accessibility tree, render pipeline; what this means for wait strategies | 60 min |
 | 06 | [Enterprise structure](./06_enterprise_structure.md) | Why the framework folder shape; the 5-layer API library | 90 min |
-| 07 | [Interview prep](./07_interview_prep.md) | LADDER framework; STAR answers; system design for testing | 2 hr |
+| 07 | [Interview prep (canonical Ch32)](../06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md) | LADDER framework; STAR answers; system design for testing | 2 hr |
 
 ## How to use this layer
 

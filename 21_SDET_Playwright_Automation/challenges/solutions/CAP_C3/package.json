@@ -1,0 +1,16 @@
+{
+  "name": "cap-c3-test-analytics-dashboard",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/ingester",
+    "apps/web",
+    "examples/playwright-suite"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspaces --if-present",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "install:all": "npm install"
+  }
+}
