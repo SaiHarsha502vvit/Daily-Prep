@@ -1,6 +1,12 @@
 import { test, expect } from '../../fixtures/api.fixture';
 
+// reqres.in introduced mandatory API-key auth on all public endpoints.
+// These specs hit the live service, so they require a key to run.
+// Set REQRES_API_KEY in .env (free key from app.reqres.in/api-keys) and
+// add it to the request headers in framework/utilities/api/HeadersBuilder.ts.
 test.describe('Users API — full CRUD flow', () => {
+  test.skip(!process.env.REQRES_API_KEY, 'Set REQRES_API_KEY to run reqres-based API specs');
+
   test('@api list users returns paginated results', async ({ usersClient }) => {
     const page1 = await usersClient.list(1);
 

@@ -1,6 +1,9 @@
 import { test, expect } from '../../fixtures/api.fixture';
 
+// See users.api.spec.ts header — reqres.in requires REQRES_API_KEY.
 test.describe('Resources API — list and get', () => {
+  test.skip(!process.env.REQRES_API_KEY, 'Set REQRES_API_KEY to run reqres-based API specs');
+
   test('@api list resources returns paginated results', async ({ resourcesClient }) => {
     const page1 = await resourcesClient.list(1);
 

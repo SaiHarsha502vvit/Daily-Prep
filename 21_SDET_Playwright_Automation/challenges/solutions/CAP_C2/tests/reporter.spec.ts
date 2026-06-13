@@ -80,7 +80,9 @@ describe('aggregate', () => {
     const { byOwner } = aggregate(results);
     assert.strictEqual(byOwner['alice'].total, 2);
     assert.strictEqual(byOwner['bob'].total, 1);
-    assert.strictEqual(byOwner['(unassigned)'].total, 0);
+    // `(unassigned)` bucket is only created when at least one test lacks an owner.
+    // All 3 tests here have owners, so the bucket is absent.
+    assert.strictEqual(byOwner['(unassigned)'], undefined);
   });
 
   it('collects failed tests with error messages', () => {

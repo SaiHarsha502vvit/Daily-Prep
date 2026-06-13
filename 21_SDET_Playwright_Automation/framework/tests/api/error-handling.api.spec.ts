@@ -1,7 +1,10 @@
 import { test, expect } from '../../fixtures/api.fixture';
 import { NotFoundError } from '../../utilities/api/errors';
 
+// See users.api.spec.ts header — reqres.in requires REQRES_API_KEY.
 test.describe('Error handling — typed error taxonomy', () => {
+  test.skip(!process.env.REQRES_API_KEY, 'Set REQRES_API_KEY to run reqres-based API specs');
+
   test('@api get non-existent user throws NotFoundError', async ({ usersClient }) => {
     // reqres.in returns 404 for user id 9999
     await expect(usersClient.getById(9999)).rejects.toThrow(NotFoundError);
