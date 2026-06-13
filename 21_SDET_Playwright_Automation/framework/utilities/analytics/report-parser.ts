@@ -57,7 +57,9 @@ export function parsePlaywrightReport(reportPath: string): TestResult[] {
   };
 
   for (const topLevel of report.suites ?? []) {
-    processSuite(topLevel);
+    // The report.suites array is `unknown[]` so the inner element must be
+    // narrowed before passing to processSuite, which expects the typed shape.
+    processSuite(topLevel as Parameters<typeof processSuite>[0]);
   }
 
   return results;
@@ -81,7 +83,11 @@ function normalizeStatus(status: string): TestResult['status'] {
 function extractErrors(
   results: Array<{ error?: { message?: string }; status?: string }>
 ): string[] {
-  return results
-    .filter((r) => r.status === 'failed' && r.error?.message)
-    .map((r) => r.error!.message!);
+  const messages: string[] = [];
+  for (const r of results) {
+    if (r.status !== 'failed') continue;
+    const msg = r.error?.message;
+    if (msg) messages.push(msg);
+  }
+  return messages;
 }

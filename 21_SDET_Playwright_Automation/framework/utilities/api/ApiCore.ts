@@ -172,7 +172,7 @@ export class ApiCore {
         default:
           // Exhaustive check — this branch is unreachable at runtime for valid HttpMethod values
           ((_: never) => _)(method);
-          throw new Error(`Unsupported HTTP method: ${method}`);
+          throw new Error(`Unsupported HTTP method: ${String(method)}`);
       }
 
       span.setAttribute('http.status_code', pwResponse.status());

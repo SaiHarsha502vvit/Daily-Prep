@@ -1,4 +1,8 @@
+import type * as AxeCorePlaywright from '@axe-core/playwright';
 import type { Page } from '@playwright/test';
+// Type-only namespace import — the runtime side-effect happens inside
+// runAxe() via dynamic `await import(...)`, so the module degrades gracefully
+// when @axe-core/playwright is absent.
 
 /**
  * Axe results type - subset of axe-core Result type for violation reporting.
@@ -40,7 +44,7 @@ export async function runAxe(
   page: Page,
   options?: { tags?: string[] },
 ): Promise<AxeResults> {
-  let axePlaywright: typeof import('@axe-core/playwright') | null = null;
+  let axePlaywright: typeof AxeCorePlaywright | null = null;
 
   try {
     axePlaywright = await import('@axe-core/playwright');

@@ -87,7 +87,7 @@ export class UsersClient {
    * @param id — user id to wait for
    * @param timeoutMs — max time to poll (default 10s)
    */
-  async waitForCreated(id: number, timeoutMs = Timeouts.TEN_SECONDS): Promise<User> {
+  async waitForCreated(id: number, timeoutMs: number = Timeouts.TEN_SECONDS): Promise<User> {
     const start = Date.now();
     let lastError: unknown;
 
@@ -101,7 +101,9 @@ export class UsersClient {
       }
     }
 
-    throw lastError ?? new Error(`Timeout waiting for user ${id} to appear`);
+    throw lastError instanceof Error
+      ? lastError
+      : new Error(`Timeout waiting for user ${id} to appear`);
   }
 
   private sleep(ms: number): Promise<void> {

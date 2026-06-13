@@ -111,7 +111,7 @@ function main(): void {
     try {
       results = parsePlaywrightReport(reportPath);
     } catch (e) {
-      console.error(`Failed to parse report: ${e}`);
+      console.error(`Failed to parse report: ${e instanceof Error ? e.message : String(e)}`);
       process.exit(1);
     }
 
