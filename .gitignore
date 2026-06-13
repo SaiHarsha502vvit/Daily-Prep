@@ -1,3 +1,39 @@
+# ─── Node / JS / TS — repo-wide ─────────────────────────────────────────────
+# Every subproject (framework, capstones, future modules) gets these for free.
+# Note: leading `**/` makes the pattern match at any depth.
+**/node_modules/
+**/dist/
+**/build/
+**/.next/
+**/.turbo/
+**/.cache/
+**/coverage/
+**/.nyc_output/
+**/playwright-report/
+**/blob-report/
+**/test-results/
+**/allure-results/
+**/allure-report/
+**/.parcel-cache/
+**/.vite/
+**/.tsbuildinfo
+
+# Env files — never commit secrets. .env.example IS tracked (no .example exclusion).
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# ─── Original Java template (kept for back-compat) ──────────────────────────
 # Created by https://www.toptal.com/developers/gitignore/api/java
 # Edit at https://www.toptal.com/developers/gitignore?templates=java
 
@@ -10,7 +46,7 @@
 
 
 # Obsidian
-.Obsidian 
+.Obsidian
 
 # BlueJ files
 *.ctxt
