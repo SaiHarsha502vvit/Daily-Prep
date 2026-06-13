@@ -6,7 +6,11 @@ Teach end-to-end test automation engineering at production grade: Playwright + T
 
 The target reader is a working SDET on Dynamics 365 CRM / JSP / ASP.NET ASPX apps who already knows basic Playwright and wants to go deeper into architecture, enterprise patterns, and career growth toward SDE-level thinking.
 
-## 52-File Map (Do NOT Duplicate)
+## Module File Map (Do NOT Duplicate)
+
+Current count: ~248 `.md` files across the module. The original 52-chapter
+plan has grown with Phase 2–5 work; see `00_INDEX.md` for the authoritative
+chapter list and `SITEMAP.md` for the folder breakdown.
 
 | Range | Theme |
 |---|---|
@@ -20,8 +24,9 @@ The target reader is a working SDET on Dynamics 365 CRM / JSP / ASP.NET ASPX app
 | 33–36 | SDET→SDE bridge — CS thinking, algorithms, OOP patterns, TypeScript type system |
 | 37–41 | Open-source specialised tools — Lighthouse/k6, Pact, axe-core, OWASP ZAP, GraphQL/WebSocket |
 | 42–45 | Real-world depth — polling, war stories, enterprise API client library, AI/MCP |
-| 46–49 | Framework engineering — config semantics, media handling, trace artifacts, component testing |
-| 50–52 | Practical framework construction — SPA POMs without IDs, auth taxonomy, UI flow fixtures |
+| 46–54 | Framework engineering — config semantics, BDD, Allure, sharding, feature flags, email, secrets, mutation, component, synthetic monitoring |
+| 55–59 | Reader-requested fills — inspector/trace viewer, config deep-dive, auth taxonomy, file I/O, Docker |
+| 60–69 | Principal-SDET extension (a.k.a. P1–P10) — analytics, leadership, FinOps, SLOs, healing, ADRs, PII, test impact, chaos, observability |
 | Q1–Q2 | MCQ quiz, code challenge quiz |
 
 **Before writing any new file:** check this map. If the concept is already covered, APPEND to the existing file — do not create a duplicate.

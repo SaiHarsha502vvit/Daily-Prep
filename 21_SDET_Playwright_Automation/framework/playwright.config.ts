@@ -129,5 +129,33 @@ export default defineConfig({
       },
       grep: /@mobile/,
     },
+    // Nightly projects below — kept out of the default `npm test` so a local run
+    // doesn't accidentally pull in visual baseline / Lighthouse / axe-core runs.
+    // They ARE discoverable via `--project=visual|a11y|perf` and via the nightly
+    // workflow's `--grep @visual|@a11y|@perf` matrix.
+    {
+      name: 'visual',
+      testDir: './visual/tests',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: envConfig.orangehrm.baseUrl,
+      },
+    },
+    {
+      name: 'a11y',
+      testDir: './a11y/tests',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: envConfig.orangehrm.baseUrl,
+      },
+    },
+    {
+      name: 'perf',
+      testDir: './perf/tests',
+      use: {
+        ...devices['Desktop Chrome'],
+        baseURL: envConfig.orangehrm.baseUrl,
+      },
+    },
   ],
 });

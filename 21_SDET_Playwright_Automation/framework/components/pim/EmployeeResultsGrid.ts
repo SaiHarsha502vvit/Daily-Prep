@@ -52,7 +52,14 @@ export class EmployeeResultsGrid {
   async confirmDeletion(): Promise<void> {
     const confirmButton = this.page.getByRole('button', { name: 'Yes, Delete' });
     await clickElement(confirmButton, { description: 'confirm deletion' });
-    await this.page.waitForLoadState('networkidle');
+    // Wait for the spinner (OrangeHRM shows one during the DELETE request) to
+    // settle, then for the confirmation dialog to be gone. Replaces
+    // `waitForLoadState('networkidle')` — see EmployeeSearchForm for rationale.
+    await this.page
+      .locator('.oxd-loading-spinner')
+      .waitFor({ state: 'hidden', timeout: 10_000 })
+      .catch(() => undefined);
+    await confirmButton.waitFor({ state: 'hidden', timeout: 10_000 }).catch(() => undefined);
   }
 
   async rowContainsText(text: string): Promise<boolean> {

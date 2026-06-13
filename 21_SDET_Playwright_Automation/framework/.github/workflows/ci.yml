@@ -119,22 +119,26 @@ jobs:
         env:
           CI: true
           ENV_FILE: .env.ci
-        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        # Use the `blob` reporter on sharded runs so the merge-reports job
+        # can stitch them back into one HTML report via `playwright merge-reports`.
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }} --reporter=blob
 
-      - name: Upload HTML report
+      - name: Upload blob report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-shard-${{ matrix.shardIndex }}
-          path: 21_SDET_Playwright_Automation/framework/playwright-report/
+          # OS in the artifact name so cross-platform matrix jobs with the
+          # same shard number don't collide.
+          name: blob-report-${{ matrix.os }}-shard-${{ matrix.shardIndex }}
+          path: 21_SDET_Playwright_Automation/framework/blob-report/
           retention-days: 14
 
       - name: Upload trace on failure
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-trace-shard-${{ matrix.shardIndex }}
-          path: 21_SDET_Playwright_Automation/framework/trace.zip
+          name: trace-${{ matrix.os }}-shard-${{ matrix.shardIndex }}
+          path: 21_SDET_Playwright_Automation/framework/test-results/
           retention-days: 14
 
   merge-reports:
@@ -143,10 +147,38 @@ jobs:
     needs: [test]
     if: always()
     steps:
-      - name: Download all reports
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 21_SDET_Playwright_Automation/framework/package-lock.json
+
+      - name: Install dependencies (needed for playwright merge-reports)
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm ci
+
+      - name: Download all blob reports (Ubuntu shards only — primary matrix)
         uses: actions/download-artifact@v4
         with:
-          path: 21_SDET_Playwright_Automation/framework/playwright-reports
+          # Only Ubuntu carries the full shard fan-out; macOS/Windows are
+          # cross-platform smoke gates with single shards each. Merge the
+          # primary Ubuntu sequence into a single HTML report.
+          pattern: blob-report-ubuntu-latest-shard-*
+          path: 21_SDET_Playwright_Automation/framework/all-blob-reports
+          merge-multiple: true
 
-      - name: Display structure
-        run: ls -la 21_SDET_Playwright_Automation/framework/playwright-reports
+      - name: Merge into HTML report
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload merged HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-merged
+          path: 21_SDET_Playwright_Automation/framework/playwright-report/
+          retention-days: 30

@@ -36,7 +36,7 @@ export class LeaveListPage extends OrangeHRMBasePage {
 
   async navigate(): Promise<void> {
     await this.sideMenu.navigateTo('Leave');
-    await this.page.waitForLoadState('networkidle');
+    await this.searchButton.waitFor({ state: 'visible', timeout: Timeouts.TEN_SECONDS });
   }
 
   async expectLoaded(): Promise<void> {
@@ -50,7 +50,17 @@ export class LeaveListPage extends OrangeHRMBasePage {
 
   async search(): Promise<void> {
     await clickElement(this.searchButton, { description: 'search leave' });
-    await this.page.waitForLoadState('networkidle');
+    // Wait for spinner to settle, then for either a result row or "No Records Found".
+    await this.page
+      .locator('.oxd-loading-spinner')
+      .waitFor({ state: 'hidden', timeout: 10_000 })
+      .catch(() => undefined);
+    const anyRow = this.page.locator('.oxd-table-body .oxd-table-card').first();
+    const noResults = this.page.getByText('No Records Found', { exact: false });
+    await Promise.race([
+      anyRow.waitFor({ state: 'visible', timeout: 10_000 }).catch(() => undefined),
+      noResults.waitFor({ state: 'visible', timeout: 10_000 }).catch(() => undefined),
+    ]);
   }
 
   async expectAtLeastOneRecord(): Promise<void> {

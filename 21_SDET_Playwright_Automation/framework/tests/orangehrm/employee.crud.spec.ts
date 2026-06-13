@@ -1,17 +1,31 @@
 import { test, expect } from '../../fixtures/orangehrm.fixture';
 import { generateEmployeeData, generateEmployeeUpdateData } from '../../utilities/data/employee.factory';
-import type { EmployeeData } from '../../utilities/data/employee.factory';
 
-interface TestData {
-  employee: EmployeeData | null;
-  createdId: string | null;
-}
+/**
+ * Employee CRUD lifecycle — three tests wrapped in `describe.serial` because
+ * edit and delete depend on the prior creation's externally-visible Employee Id.
+ *
+ * KNOWN LIMITATION: the OrangeHRM open-source demo
+ * (opensource-demo.orangehrmlive.com) does not reliably persist custom Employee
+ * Id values — save returns 200 OK, the redirect to viewPersonalDetails works,
+ * but the external Id we typed is sometimes silently dropped, so the search at
+ * the end of the @smoke add test misses the row. That breaks the whole chain.
+ *
+ * Until the test target moves to an OrangeHRM instance under our control, the
+ * whole serial block is marked fixme. The code stays as a teaching example of
+ * the proper shape (`describe.serial` + module-level data accumulator + null-
+ * guarded skip on dependents). Un-fixme the block when running against a real
+ * OrangeHRM where you can verify the Employee Id round-trips.
+ */
+// Using `describe.fixme` rather than `describe.serial` because every test in
+// the block is currently fixme'd anyway — the serial ordering only matters once
+// the block is un-fixme'd against a real OrangeHRM instance. When that day
+// comes, switch this line to `test.describe.serial(...)` and the dependent
+// `test.skip(!createdEmployeeId, ...)` guards become the safety net.
+test.describe.fixme('Employee CRUD Lifecycle', () => {
+  let createdEmployeeId: string | null = null;
 
-const data: TestData = { employee: null, createdId: null };
-
-test.describe('Employee CRUD Lifecycle', () => {
   test.beforeEach(async ({ loginPage, dashboardPage }) => {
-    // Ensure logged in for every test
     await loginPage.navigate();
     await loginPage.loginWith({
       username: process.env.ORANGEHRM_DEMO_USERNAME ?? 'Admin',
@@ -20,16 +34,8 @@ test.describe('Employee CRUD Lifecycle', () => {
     await dashboardPage.expectLoaded();
   });
 
-  test('@smoke add employee and verify presence', async ({ employeeListPage, addEmployeePage }) => {
-    // KNOWN LIMITATION: The OrangeHRM open-source demo (opensource-demo.orangehrmlive.com)
-    // does not reliably persist custom Employee Id values — save succeeds and an employee
-    // is created, but searching by the custom external Id often returns no rows. Marked
-    // fixme so the test code stays in tree as a teaching example; un-fixme it when running
-    // against a real OrangeHRM instance you own.
-    test.fixme(true, 'OrangeHRM demo does not reliably persist custom Employee Id');
-
+  test('@regression add employee and verify presence', async ({ employeeListPage, addEmployeePage }) => {
     const employee = generateEmployeeData();
-    data.employee = employee;
 
     await employeeListPage.navigate();
     await employeeListPage.clickAddEmployee();
@@ -37,19 +43,18 @@ test.describe('Employee CRUD Lifecycle', () => {
     await addEmployeePage.fillEmployeeDetails(employee);
     await addEmployeePage.save();
 
-    // After save, navigate back to list and verify
     await employeeListPage.navigate();
     await employeeListPage.searchForm.searchById(employee.employeeId);
     await employeeListPage.resultsGrid.expectAtLeastOneRecord();
 
-    data.createdId = employee.employeeId;
+    createdEmployeeId = employee.employeeId;
   });
 
   test('@regression edit existing employee personal details', async ({ employeeListPage, employeePersonalDetailsPage }) => {
-    test.skip(!data.createdId, 'Requires a previously created employee');
+    test.skip(!createdEmployeeId, 'Add-employee test did not complete');
 
     await employeeListPage.navigate();
-    await employeeListPage.searchForm.searchById(data.createdId!);
+    await employeeListPage.searchForm.searchById(createdEmployeeId!);
     await employeeListPage.resultsGrid.expectAtLeastOneRecord();
     await employeeListPage.resultsGrid.editFirstRecord();
     await employeePersonalDetailsPage.expectLoaded();
@@ -58,23 +63,20 @@ test.describe('Employee CRUD Lifecycle', () => {
     await employeePersonalDetailsPage.updatePersonalDetails(update);
     await employeePersonalDetailsPage.save();
 
-    // Verify still on details page after save (no redirect away on successful save)
     await expect(employeePersonalDetailsPage.savePersonalDetailsButton).toBeVisible({ timeout: 10000 });
   });
 
   test('@regression delete employee after creation', async ({ employeeListPage }) => {
-    test.skip(!data.createdId, 'Requires a previously created employee');
+    test.skip(!createdEmployeeId, 'Add-employee test did not complete');
 
     await employeeListPage.navigate();
-    await employeeListPage.searchForm.searchById(data.createdId!);
+    await employeeListPage.searchForm.searchById(createdEmployeeId!);
     await employeeListPage.resultsGrid.expectAtLeastOneRecord();
     await employeeListPage.resultsGrid.deleteFirstRecord();
     await employeeListPage.resultsGrid.confirmDeletion();
 
-    // Verify deletion
-    await employeeListPage.searchForm.searchById(data.createdId!);
+    await employeeListPage.searchForm.searchById(createdEmployeeId!);
     await employeeListPage.resultsGrid.expectNoRecords();
-    data.createdId = null;
-    data.employee = null;
+    createdEmployeeId = null;
   });
 });

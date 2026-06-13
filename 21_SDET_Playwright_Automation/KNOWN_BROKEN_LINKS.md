@@ -32,15 +32,18 @@ These are matched by the grep because they look like markdown links but are plac
 
 **No action needed.** These are documentation artifacts, not real links.
 
-### 3 aspirational sibling-module cross-references
+### ~~3 aspirational sibling-module cross-references~~ — RESOLVED
 
-These point to other top-level curriculum modules at the repo root (`15_React_Frontend`, `16_JavaScript`, `18_CSS_Complete`) that don't exist yet:
+**Original claim** (2026-06-11 audit): "These point to other top-level curriculum modules at the repo root (`15_React_Frontend`, `16_JavaScript`, `18_CSS_Complete`) that don't exist yet."
 
-- [`07_Specialised_Testing/39_Accessibility_Testing_axe_core.md`](./07_Specialised_Testing/39_Accessibility_Testing_axe_core.md) → `../../../15_React_Frontend`
-- [`07_Specialised_Testing/39_Accessibility_Testing_axe_core.md`](./07_Specialised_Testing/39_Accessibility_Testing_axe_core.md) → `../../../18_CSS_Complete`
-- [`07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md`](./07_Specialised_Testing/41_GraphQL_WebSocket_Testing.md) → `../../../16_JavaScript`
+**Both halves of that claim were wrong:**
 
-**No action recommended yet.** These are cross-curriculum pointers waiting on those modules to be built. The chapters explicitly call them out as "see also" references; removing them would lose the navigational intent. If those modules never get built, a future cleanup pass can replace them with internal-chapter pointers.
+1. Those modules **do exist** in the repo (confirmed by the wider-repo inventory audit in `00_MASTER_INDEX.md` — modules 15, 16, 17, 18, etc. are all populated).
+2. The references themselves have been **rewritten** to point at internal canonical chapters instead. The previous entries in `Ch39_Accessibility_Testing_axe_core.md` and `Ch41_GraphQL_WebSocket_Testing.md` now read:
+   - Ch39 → `Ch52 Component Testing` and `Ch02 Enterprise Locators (XPath, getByRole)`
+   - Ch41 → `Ch04 JS/TS for Automation`
+
+The pre-existing scan that listed these as broken predated the wider-repo verification and was kept here as a known issue. Resolved in 2026-06-13.
 
 ---
 

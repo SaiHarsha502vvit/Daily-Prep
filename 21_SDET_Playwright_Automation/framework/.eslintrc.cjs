@@ -85,19 +85,31 @@ module.exports = {
     '@typescript-eslint/restrict-template-expressions': 'warn',
 
     // === Correctness — Playwright ===
+    // Real bug-prevention rules — kept at error / warn.
     'playwright/no-wait-for-timeout': 'warn',
     'playwright/no-force-option': 'warn',
-    'playwright/no-conditional-in-test': 'warn',
-    'playwright/no-skipped-test': 'warn',
     'playwright/no-focused-test': 'error',
     'playwright/no-networkidle': 'warn',
     'playwright/no-standalone-expect': 'warn',
-    'playwright/expect-expect': 'warn',
     'playwright/missing-playwright-await': 'error',
     'playwright/no-page-pause': 'error',
     'playwright/no-element-handle': 'warn',
     'playwright/no-eval': 'error',
     'playwright/valid-expect': 'error',
+    // The next three are turned off intentionally:
+    //   no-skipped-test: `test.fixme` is the project's standard way to mark a
+    //     test as known-broken (e.g. an OrangeHRM-demo limitation). Failing
+    //     the suite when fixmes exist would defeat their purpose.
+    //   expect-expect: POMs encapsulate assertions in `expectLoaded`,
+    //     `expectAllWidgetsVisible`, etc. Lint cannot tell those are real
+    //     assertions, so the rule produces false positives at scale.
+    //   no-conditional-in-test / no-conditional-expect: search forms with
+    //     "type-ahead optional inputs" need branching; the alternative is
+    //     two duplicated specs.
+    'playwright/no-skipped-test': 'off',
+    'playwright/expect-expect': 'off',
+    'playwright/no-conditional-in-test': 'off',
+    'playwright/no-conditional-expect': 'off',
 
     // === Correctness — Imports ===
     'import/order': [

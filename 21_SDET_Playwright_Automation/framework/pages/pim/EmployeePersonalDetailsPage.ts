@@ -26,8 +26,17 @@ export class EmployeePersonalDetailsPage extends OrangeHRMBasePage {
     this.nationalityDropdown = page.locator('.orangehrm-edit-employee-content .oxd-select-wrapper').first();
     this.maritalStatusDropdown = page.locator('.orangehrm-edit-employee-content .oxd-select-wrapper').nth(1);
     this.dateOfBirthInput = page.locator('.orangehrm-edit-employee-content .oxd-date-input input').first();
-    this.genderMaleRadio = page.locator('input[type="radio"][value="1"]');
-    this.genderFemaleRadio = page.locator('input[type="radio"][value="2"]');
+    // Click the label (`.oxd-radio-wrapper`) rather than the visually-hidden
+    // radio input — clicking the input directly requires `{ force: true }`,
+    // which Playwright's lint config (rightly) blocks.
+    this.genderMaleRadio = page
+      .locator('.oxd-radio-wrapper')
+      .filter({ hasText: 'Male' })
+      .first();
+    this.genderFemaleRadio = page
+      .locator('.oxd-radio-wrapper')
+      .filter({ hasText: 'Female' })
+      .first();
     this.savePersonalDetailsButton = page.locator('.orangehrm-edit-employee-content form').getByRole('button', { name: 'Save' });
   }
 
@@ -68,9 +77,9 @@ export class EmployeePersonalDetailsPage extends OrangeHRMBasePage {
       await fillInput(this.dateOfBirthInput, data.dateOfBirth, { description: 'date of birth' });
     }
     if (data.gender === 'Male') {
-      await this.genderMaleRadio.click({ force: true });
+      await this.genderMaleRadio.click();
     } else if (data.gender === 'Female') {
-      await this.genderFemaleRadio.click({ force: true });
+      await this.genderFemaleRadio.click();
     }
   }
 
