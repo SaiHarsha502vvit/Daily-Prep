@@ -1,0 +1,36 @@
+# Gitleaks configuration — extends the default ruleset.
+#
+# Default rules: https://github.com/gitleaks/gitleaks/blob/master/config/gitleaks.toml
+# Repo-specific allowlists below permit public-demo creds that legitimately
+# appear in chapter examples and .env.example files.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allowlist for known-safe demo credentials and curriculum examples"
+
+paths = [
+  # Example env files are intentionally committed with demo placeholders.
+  '''.*\.env\.example$''',
+  '''.*\.env\.ci$''',
+  # Chapter prose contains code samples with deliberately fake credentials.
+  '''21_SDET_Playwright_Automation/.*\.md''',
+  # Quiz solutions show example code with fake API keys.
+  '''.*/quiz-solutions/.*\.ts''',
+  '''.*/quiz_0[12]_solutions/.*''',
+  # Broken/anti-pattern specs are teaching examples, not real code.
+  '''.*/tests/broken/.*''',
+]
+
+regexes = [
+  # OrangeHRM open-source demo credentials (Admin / admin123) are public.
+  # They appear in framework code as defaults for the public demo at
+  # opensource-demo.orangehrmlive.com — not a real secret.
+  '''Admin / admin123''',
+  '''ORANGEHRM_DEMO_(USERNAME|PASSWORD)=(Admin|admin123)''',
+  # Reqres.in is a public test API — its base URL is not a secret.
+  '''https://reqres\.in''',
+  # OAuth demo keys in chapter examples follow the pattern `demo-` or `test-`.
+  '''(?i)(demo|test|example|fake)[_-](client[_-]id|client[_-]secret|api[_-]key)''',
+]

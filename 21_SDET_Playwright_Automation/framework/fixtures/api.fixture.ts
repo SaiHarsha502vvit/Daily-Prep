@@ -1,19 +1,23 @@
 import { test as base, request } from '@playwright/test';
 import type { APIRequestContext } from '@playwright/test';
-import { UsersClient } from '../clients/UsersClient';
+
 import { ResourcesClient } from '../clients/ResourcesClient';
+import { UsersClient } from '../clients/UsersClient';
 import { envConfig } from '../config/env.loader';
 
-type ApiFixtures = {
-  /** Worker-scoped isolated APIRequestContext. */
-  apiContext: APIRequestContext;
+type ApiTestFixtures = {
   /** Test-scoped UsersClient built over apiContext. */
   usersClient: UsersClient;
   /** Test-scoped ResourcesClient built over apiContext. */
   resourcesClient: ResourcesClient;
 };
 
-export const test = base.extend<ApiFixtures>({
+type ApiWorkerFixtures = {
+  /** Worker-scoped isolated APIRequestContext. */
+  apiContext: APIRequestContext;
+};
+
+export const test = base.extend<ApiTestFixtures, ApiWorkerFixtures>({
   apiContext: [
     async ({}, use) => {
       const context = await request.newContext({

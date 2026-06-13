@@ -1,4 +1,4 @@
-import { test, expect } from '../../fixtures/orangehrm.fixture';
+import { test } from '../../fixtures/orangehrm.fixture';
 import { loadTestData } from '../../utilities/data/data.loader';
 
 interface NegativeCredentials {

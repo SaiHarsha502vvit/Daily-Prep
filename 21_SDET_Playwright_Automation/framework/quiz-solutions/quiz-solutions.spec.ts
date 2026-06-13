@@ -7,6 +7,7 @@
  */
 
 import { test, expect } from '@playwright/test';
+
 import { openNewTab } from './part-c-write-it/challenge-10-new-tab-handler';
 import { waitForD365Spinner } from './part-c-write-it/challenge-11-d365-spinner';
 import { fetchTyped } from './part-c-write-it/challenge-12-typed-interface';
@@ -22,7 +23,7 @@ test('demo ch01: sequential iteration is safe', async ({ page }) => {
   for (const name of items) {
     await page.getByText(name, { exact: false }).first().click();
   }
-  expect(items.length).toBe(3);
+  expect(items).toHaveLength(3);
 });
 
 /* ───────────────────────────────────────────────────────────────────────────

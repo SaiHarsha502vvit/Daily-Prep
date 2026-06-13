@@ -1,5 +1,5 @@
 node_modules/
-package-lock.json
+# package-lock.json is now tracked — required for deterministic `npm ci` in CI.
 dist/
 playwright-report/
 test-results/

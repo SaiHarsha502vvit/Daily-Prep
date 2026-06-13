@@ -1,8 +1,9 @@
-import { expect, type Locator, type Page } from '@playwright/test';
+import { type Locator, type Page } from '@playwright/test';
+
 import { Timeouts } from '../../constants/timeouts';
-import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
-import { fillInput, clickElement, selectOption } from '../../utilities/helpers/action.helpers';
 import type { EmployeeUpdateData } from '../../utilities/data/employee.factory';
+import { fillInput, clickElement } from '../../utilities/helpers/action.helpers';
+import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
 
 export class EmployeePersonalDetailsPage extends OrangeHRMBasePage {
   readonly firstNameInput: Locator;
@@ -28,6 +29,22 @@ export class EmployeePersonalDetailsPage extends OrangeHRMBasePage {
     this.genderMaleRadio = page.locator('input[type="radio"][value="1"]');
     this.genderFemaleRadio = page.locator('input[type="radio"][value="2"]');
     this.savePersonalDetailsButton = page.locator('.orangehrm-edit-employee-content form').getByRole('button', { name: 'Save' });
+  }
+
+  async navigate(): Promise<void> {
+    // Personal details is reached via clicking an employee row in the PIM list;
+    // navigating directly requires an employee id, which is caller-supplied.
+    throw new Error(
+      'EmployeePersonalDetailsPage.navigate() requires an employee id — use navigateForEmployee(id) instead, or reach this page by clicking an employee row.',
+    );
+  }
+
+  async navigateForEmployee(employeeId: number | string): Promise<void> {
+    await this.goto(
+      `/web/index.php/pim/viewPersonalDetails/empNumber/${employeeId}`,
+      'employee personal details',
+    );
+    await this.expectLoaded();
   }
 
   async expectLoaded(): Promise<void> {

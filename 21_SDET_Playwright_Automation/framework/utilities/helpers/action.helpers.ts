@@ -1,4 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
+
 import { Timeouts } from '../../constants/timeouts';
 
 export interface ActionOptions {

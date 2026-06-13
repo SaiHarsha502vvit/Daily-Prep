@@ -1,9 +1,10 @@
 import { type Locator, type Page } from '@playwright/test';
+
 import { endpoints } from '../../constants/endpoints';
-import { Timeouts } from '../../constants/timeouts';
 import { Messages } from '../../constants/messages';
-import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
+import { Timeouts } from '../../constants/timeouts';
 import { clickElement, fillInput } from '../../utilities/helpers/action.helpers';
+import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
 
 export class LoginPage extends OrangeHRMBasePage {
   readonly usernameInput: Locator;

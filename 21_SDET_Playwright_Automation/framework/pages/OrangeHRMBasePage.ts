@@ -1,7 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { Timeouts } from '../constants/timeouts';
+
 import { HeaderNav } from '../components/common/HeaderNav';
 import { SideMenu } from '../components/common/SideMenu';
+import { Timeouts } from '../constants/timeouts';
 import { safeNavigate } from '../utilities/helpers/action.helpers';
 
 export abstract class OrangeHRMBasePage {

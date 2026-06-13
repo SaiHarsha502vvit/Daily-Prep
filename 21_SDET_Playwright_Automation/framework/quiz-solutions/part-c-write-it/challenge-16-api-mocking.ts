@@ -149,10 +149,10 @@ test('quiz-02-ch16: layered mocking with fallback', async ({ page }) => {
   expect(userResponse.name).toBe('Mock User');
 });
 
-/**
+/*
  * MOCKING CHECKLIST:
- * ☐ Pin the route pattern as narrowly as possible (avoid `**/*`)
- * ☐ Check request.method() and route only the intended verbs
+ * - Pin the route pattern as narrowly as possible (avoid `**\/*`)
+ * - Check request.method() and route only the intended verbs
  * ☐ Provide realistic Content-Type headers
  * ☐ Track mockHit and assert it at the end of the test
  * ☐ Use `route.fallback()` when layering multiple mocks

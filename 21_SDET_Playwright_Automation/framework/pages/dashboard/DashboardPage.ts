@@ -1,7 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { Timeouts } from '../../constants/timeouts';
-import { Messages } from '../../constants/messages';
+
 import { endpoints } from '../../constants/endpoints';
+import { Messages } from '../../constants/messages';
+import { Timeouts } from '../../constants/timeouts';
 import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
 
 export class DashboardPage extends OrangeHRMBasePage {
@@ -15,13 +16,13 @@ export class DashboardPage extends OrangeHRMBasePage {
 
   constructor(page: Page) {
     super(page);
-    this.timeAtWorkWidget = page.locator('.orangehrm-dashboard-widget', { hasText: 'Time at Work' });
-    this.myActionsWidget = page.locator('.orangehrm-dashboard-widget', { hasText: 'My Actions' });
-    this.quickLaunchWidget = page.locator('.orangehrm-dashboard-widget', { hasText: 'Quick Launch' });
-    this.buzzLatestPostsWidget = page.locator('.orangehrm-dashboard-widget', { hasText: 'Buzz Latest Posts' });
-    this.employeesOnLeaveTodayWidget = page.locator('.orangehrm-dashboard-widget', { hasText: 'Employees on Leave Today' });
-    this.employeeDistributionBySubunitWidget = page.locator('.orangehrm-dashboard-widget', { hasText: 'Employee Distribution by Sub Unit' });
-    this.employeeDistributionByLocationWidget = page.locator('.orangehrm-dashboard-widget', { hasText: 'Employee Distribution by Location' });
+    this.timeAtWorkWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Time at Work' });
+    this.myActionsWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'My Actions' });
+    this.quickLaunchWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Quick Launch' });
+    this.buzzLatestPostsWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Buzz Latest Posts' });
+    this.employeesOnLeaveTodayWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Employees on Leave Today' });
+    this.employeeDistributionBySubunitWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Employee Distribution by Sub Unit' });
+    this.employeeDistributionByLocationWidget = page.locator('.oxd-sheet.orangehrm-dashboard-widget', { hasText: 'Employee Distribution by Location' });
   }
 
   async navigate(): Promise<void> {

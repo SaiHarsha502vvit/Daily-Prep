@@ -1,7 +1,10 @@
 import type { APIRequestContext, APIResponse as PlaywrightAPIResponse } from '@playwright/test';
+
 import { AppConstants } from '../../constants/app.constants';
 import { Timeouts } from '../../constants/timeouts';
-import { createStatusError, NetworkError, ValidationError, type ApiError } from './errors';
+
+import { ApiError, createStatusError, NetworkError } from './errors';
+import { getApiTracer, createApiSpan, propagation } from './telemetry';
 
 export interface ApiClientResponse<T> {
   status: number;
@@ -28,6 +31,7 @@ export class ApiCore {
   private readonly request: APIRequestContext;
   private readonly maxRetries: number;
   private readonly defaultTimeoutMs: number;
+  private readonly tracer = getApiTracer();
 
   constructor(request: APIRequestContext, options: ApiCoreOptions = {}) {
     this.request = request;
@@ -112,7 +116,9 @@ export class ApiCore {
     }
 
     // Should never reach here because the loop either returns or throws.
-    throw lastError || new Error(`Unexpected retry exhaustion for ${method} ${endpoint}`);
+    throw lastError instanceof Error
+      ? lastError
+      : new Error(`Unexpected retry exhaustion for ${method} ${endpoint}`);
   }
 
   private async executeOnce<T>(
@@ -123,13 +129,22 @@ export class ApiCore {
       payload?: unknown;
     }
   ): Promise<ApiClientResponse<T>> {
-    const start = Date.now();
+    const span = createApiSpan(this.tracer, `http.${method.toLowerCase()}`, {
+      'http.method': method,
+      'http.url': endpoint,
+      'http.target': endpoint,
+    });
+
     const mergedHeaders: Record<string, string> = {
       Accept: 'application/json',
       ...options.headers,
     };
 
+    // Propagate trace context so downstream services can correlate spans
+    propagation.inject(mergedHeaders);
+
     let pwResponse: PlaywrightAPIResponse;
+    const start = Date.now();
 
     try {
       const requestOptions = {
@@ -159,9 +174,15 @@ export class ApiCore {
           ((_: never) => _)(method);
           throw new Error(`Unsupported HTTP method: ${method}`);
       }
+
+      span.setAttribute('http.status_code', pwResponse.status());
     } catch (networkErr) {
+      span.recordException(networkErr instanceof Error ? networkErr : new Error(String(networkErr)));
+      span.setAttribute('error', true);
       const errMsg = networkErr instanceof Error ? networkErr.message : String(networkErr);
       throw new NetworkError(errMsg, endpoint, networkErr instanceof Error ? networkErr : new Error(errMsg));
+    } finally {
+      span.end();
     }
 
     const status = pwResponse.status();

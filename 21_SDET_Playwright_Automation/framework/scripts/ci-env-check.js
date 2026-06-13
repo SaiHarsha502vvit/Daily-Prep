@@ -11,9 +11,9 @@
 //   node scripts/ci-env-check.js
 // ============================================================
 
+const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
-const { execSync } = require('child_process');
 
 const MIN_NODE_MAJOR = 18;
 const REQUIRED_VARS = [

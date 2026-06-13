@@ -1,8 +1,9 @@
 import { expect, type Locator, type Page } from '@playwright/test';
+
 import { Timeouts } from '../../constants/timeouts';
-import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
-import { fillInput, clickElement } from '../../utilities/helpers/action.helpers';
 import type { EmployeeData } from '../../utilities/data/employee.factory';
+import { fillInput, clickElement } from '../../utilities/helpers/action.helpers';
+import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
 
 export class AddEmployeePage extends OrangeHRMBasePage {
   readonly firstNameInput: Locator;
@@ -21,14 +22,20 @@ export class AddEmployeePage extends OrangeHRMBasePage {
     this.firstNameInput = page.locator("input[name='firstName']");
     this.middleNameInput = page.locator("input[name='middleName']");
     this.lastNameInput = page.locator("input[name='lastName']");
-    // The employeeId input is inside the Add Employee form and visible as a plain input
-    this.employeeIdInput = page.locator('.oxd-form-row .oxd-input').first();
+    // OrangeHRM Add Employee form has 4 `.oxd-input` text inputs in order:
+    // 0=firstName, 1=middleName, 2=lastName, 3=employeeId. Use index 3.
+    this.employeeIdInput = page.locator('input.oxd-input').nth(3);
     this.saveButton = page.getByRole('button', { name: 'Save' });
     this.cancelButton = page.getByRole('button', { name: 'Cancel' });
     this.createLoginDetailsSwitch = page.locator('.oxd-switch-input');
     this.usernameInput = page.locator('.oxd-form-row input.oxd-input').nth(1);
     this.passwordInput = page.locator("input[type='password']").first();
     this.confirmPasswordInput = page.locator("input[type='password']").nth(1);
+  }
+
+  async navigate(): Promise<void> {
+    await this.goto('/web/index.php/pim/addEmployee', 'add employee form');
+    await this.expectLoaded();
   }
 
   async expectLoaded(): Promise<void> {

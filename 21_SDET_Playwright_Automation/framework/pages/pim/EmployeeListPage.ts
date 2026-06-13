@@ -1,10 +1,11 @@
 import { type Page } from '@playwright/test';
+
+import { EmployeeResultsGrid } from '../../components/pim/EmployeeResultsGrid';
+import { EmployeeSearchForm } from '../../components/pim/EmployeeSearchForm';
 import { endpoints } from '../../constants/endpoints';
 import { Timeouts } from '../../constants/timeouts';
-import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
-import { EmployeeSearchForm } from '../../components/pim/EmployeeSearchForm';
-import { EmployeeResultsGrid } from '../../components/pim/EmployeeResultsGrid';
 import { clickElement } from '../../utilities/helpers/action.helpers';
+import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
 
 export class EmployeeListPage extends OrangeHRMBasePage {
   readonly searchForm: EmployeeSearchForm;

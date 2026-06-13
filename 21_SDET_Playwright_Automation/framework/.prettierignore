@@ -1,0 +1,12 @@
+node_modules/
+dist/
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+.locks/
+package-lock.json
+*.min.js
+*.min.css
+allure-results/
+allure-report/

@@ -1,19 +1,18 @@
 import type { APIRequestContext } from '@playwright/test';
-import { ApiCore } from '../utilities/api/ApiCore';
-import { HeadersBuilder } from '../utilities/api/HeadersBuilder';
-import { Endpoints } from '../utilities/api/Endpoints';
-import { ValidationError } from '../utilities/api/errors';
+
+import { Timeouts , PollIntervals } from '../constants/timeouts';
 import type {
   CreateUserRequest,
   CreateUserResponse,
-  GetUserResponse,
   ListUsersResponse,
   UpdateUserRequest,
   UpdateUserResponse,
   User,
 } from '../types/api.types';
-import { Timeouts } from '../constants/timeouts';
-import { PollIntervals } from '../constants/timeouts';
+import { ApiCore } from '../utilities/api/ApiCore';
+import { Endpoints } from '../utilities/api/Endpoints';
+import { ValidationError } from '../utilities/api/errors';
+import { HeadersBuilder } from '../utilities/api/HeadersBuilder';
 
 /**
  * Layer 5 — Domain client for Users API.
@@ -161,7 +160,7 @@ function validateGetUserResponse(data: unknown): User {
   assertString(u, 'last_name');
   assertString(u, 'avatar');
 
-  return u as User;
+  return u as unknown as User;
 }
 
 function validateCreateUserResponse(data: unknown): CreateUserResponse {
@@ -173,7 +172,7 @@ function validateCreateUserResponse(data: unknown): CreateUserResponse {
   assertString(d, 'name');
   assertString(d, 'job');
   assertString(d, 'createdAt');
-  return d as CreateUserResponse;
+  return d as unknown as CreateUserResponse;
 }
 
 function validateUpdateUserResponse(data: unknown): UpdateUserResponse {
@@ -184,7 +183,7 @@ function validateUpdateUserResponse(data: unknown): UpdateUserResponse {
   assertString(d, 'name');
   assertString(d, 'job');
   assertString(d, 'updatedAt');
-  return d as UpdateUserResponse;
+  return d as unknown as UpdateUserResponse;
 }
 
 /* ------------------------------------------------------------------ */

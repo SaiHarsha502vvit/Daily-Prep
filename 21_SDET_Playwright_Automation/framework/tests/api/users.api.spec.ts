@@ -12,9 +12,9 @@ test.describe('Users API — full CRUD flow', () => {
 
     const first = page1.data[0];
     expect(first).toBeDefined();
-    expect(first.email).toContain('@');
-    expect(first.first_name).toBeTruthy();
-    expect(first.last_name).toBeTruthy();
+    expect(first!.email).toContain('@');
+    expect(first!.first_name).toBeTruthy();
+    expect(first!.last_name).toBeTruthy();
   });
 
   test('@api get user by id returns a valid user', async ({ usersClient }) => {

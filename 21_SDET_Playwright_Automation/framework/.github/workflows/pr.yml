@@ -1,0 +1,167 @@
+name: PR Checks
+
+on:
+  pull_request:
+
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  CI: true
+  NODE_VERSION: '18'
+
+jobs:
+  pre-checks:
+    name: Detect Changed Files
+    runs-on: ubuntu-latest
+    outputs:
+      changed_specs: ${{ steps.changes.outputs.spec_files }}
+      has_changes: ${{ steps.changes.outputs.has_changes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changed .spec.ts and .ts files
+        id: changes
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD -- '*.spec.ts' '*.ts' | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "Changed files: $CHANGED_FILES"
+          echo "spec_files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+          if [ "$CHANGED_FILES" == "[]" ]; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      # Smart test selection: In the future, this output can be used to run only
+      # tests whose files or imports changed. For now, the test job runs the full suite.
+      # To implement smart selection, modify the test job to conditionally run:
+      #   npx playwright test --grep "$(echo '${{ steps.changes.outputs.spec_files }}' | jq -r '.[]')"
+      # or use a custom script to build the grep pattern from changed files.
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 21_SDET_Playwright_Automation/framework/package-lock.json
+
+      - name: Install dependencies
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('21_SDET_Playwright_Automation/framework/package-lock.json') }}
+
+      - name: Lint
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm run lint
+
+  typecheck:
+    name: TypeScript Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 21_SDET_Playwright_Automation/framework/package-lock.json
+
+      - name: Install dependencies
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm ci
+
+      - name: TypeScript check
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm run typecheck
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: [pre-checks, lint, typecheck]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 21_SDET_Playwright_Automation/framework/package-lock.json
+
+      - name: Install dependencies
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('21_SDET_Playwright_Automation/framework/package-lock.json') }}
+
+      - name: Install Playwright browsers
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npx playwright install --with-deps
+
+      - name: Run tests
+        working-directory: 21_SDET_Playwright_Automation/framework
+        env:
+          CI: true
+          ENV_FILE: .env.ci
+        # Smart selection note: Use ${{ needs.pre-checks.outputs.changed_specs }} to run
+        # only tests for changed files. Currently running full suite for safety.
+        run: npx playwright test
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: pr-test-report-${{ github.event.pull_request.number }}
+          path: 21_SDET_Playwright_Automation/framework/playwright-report/
+          retention-days: 7
+
+      - name: Post PR comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            // Check for test results summary
+            const summaryPath = path.join(process.env.GITHUB_WORKSPACE, '21_SDET_Playwright_Automation/framework', 'playwright-report', 'summary.json');
+            let summaryText = 'Test results are available in the artifacts.';
+
+            if (fs.existsSync(summaryPath)) {
+              const summary = JSON.parse(fs.readFileSync(summaryPath, 'utf8'));
+              summaryText = `## Test Results\n- Total: ${summary.total || 'N/A'}\n- Passed: ${summary.passed || 0}\n- Failed: ${summary.failed || 0}\n- Skipped: ${summary.skipped || 0}`;
+            }
+
+            const prNumber = context.payload.pull_request.number;
+            const comment = `### PR Check Results\n\n${summaryText}\n\n**Artifacts:** Playwright report and traces are attached to this run.`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: prNumber,
+              body: comment
+            });

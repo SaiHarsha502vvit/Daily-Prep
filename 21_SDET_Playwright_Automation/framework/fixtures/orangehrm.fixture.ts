@@ -1,15 +1,17 @@
 import { test as base, type Page } from '@playwright/test';
-import { LoginPage } from '../pages/login/LoginPage';
+
 import { DashboardPage } from '../pages/dashboard/DashboardPage';
-import { EmployeeListPage } from '../pages/pim/EmployeeListPage';
-import { AddEmployeePage } from '../pages/pim/AddEmployeePage';
-import { EmployeePersonalDetailsPage } from '../pages/pim/EmployeePersonalDetailsPage';
 import { LeaveListPage } from '../pages/leave/LeaveListPage';
-import { APIUtils } from '../utilities/api/APIUtils';
-import { TestDataBridge } from '../utilities/data/test-data.bridge';
-import { acquireAccount, releaseAccount } from './auth.fixture';
+import { LoginPage } from '../pages/login/LoginPage';
+import { AddEmployeePage } from '../pages/pim/AddEmployeePage';
+import { EmployeeListPage } from '../pages/pim/EmployeeListPage';
+import { EmployeePersonalDetailsPage } from '../pages/pim/EmployeePersonalDetailsPage';
 import type { PooledAccount } from '../types/user.types';
+import { APIUtils } from '../utilities/api/APIUtils';
 import type { EmployeeData } from '../utilities/data/employee.factory';
+import { BridgeKeys, TestDataBridge } from '../utilities/data/test-data.bridge';
+
+import { acquireAccount, releaseAccount } from './auth.fixture';
 
 type OrangeHRMFixtures = {
   loginPage: LoginPage;
@@ -92,7 +94,7 @@ export const test = base.extend<OrangeHRMFixtures>({
       // keep generated id if not found
     }
 
-    bridge.set('CREATED_RECORD', employee);
+    bridge.set(BridgeKeys.CREATED_RECORD, employee);
 
     await use(employee);
 

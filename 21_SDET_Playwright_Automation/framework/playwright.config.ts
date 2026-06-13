@@ -1,5 +1,7 @@
-import { defineConfig, devices } from '@playwright/test';
 import * as path from 'path';
+
+import { defineConfig, devices } from '@playwright/test';
+
 import { envConfig } from './config/env.loader';
 import { Timeouts } from './constants/timeouts';
 
@@ -40,8 +42,9 @@ export default defineConfig({
     : undefined,
 
   // Apply shard configuration when provided (CI / Docker overrides).
+  // Playwright expects `current` (1-based), not `index`.
   ...(shardCfg.shardIndex && shardCfg.shardTotal
-    ? { shard: { index: shardCfg.shardIndex, total: shardCfg.shardTotal } }
+    ? { shard: { current: shardCfg.shardIndex, total: shardCfg.shardTotal } }
     : {}),
 
   timeout: Timeouts.SIXTY_SECONDS,
@@ -61,6 +64,12 @@ export default defineConfig({
       },
     ],
     ['json', { outputFile: path.join('test-results', `results-${ciTimestamp}.json`) }],
+    // Allure — disabled by default to keep local runs lean. Enable by setting
+    // ALLURE=1 in your env; the reporter writes to ./allure-results.
+    ...(process.env.ALLURE === '1'
+      ? [['allure-playwright', { outputFolder: 'allure-results', detail: true, suiteTitle: true }] as const]
+      : []),
+    // Custom matchers registered in global setup or test fixture
   ],
 
   use: {
@@ -107,6 +116,18 @@ export default defineConfig({
       use: {
         ...devices['Desktop Chrome'],
       },
+    },
+    {
+      // Mobile-Chromium emulation (Pixel 5 device descriptor). NOT real native mobile.
+      // For native Appium-driven Android/iOS, see the sibling module:
+      //   21_SDET_Playwright_Automation/CONTEXT.md → 23_Mobile_Dev_And_Testing/
+      name: 'mobile-chromium',
+      testDir: './tests/orangehrm',
+      use: {
+        ...devices['Pixel 5'],
+        baseURL: envConfig.orangehrm.baseUrl,
+      },
+      grep: /@mobile/,
     },
   ],
 });

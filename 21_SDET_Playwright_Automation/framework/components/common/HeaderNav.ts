@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test';
+
 import { Timeouts } from '../../constants/timeouts';
-import { Messages } from '../../constants/messages';
 
 export class HeaderNav {
   readonly page: Page;
@@ -14,7 +14,9 @@ export class HeaderNav {
 
   constructor(page: Page) {
     this.page = page;
-    this.headerTitle = page.locator('h6.oxd-text--h6');
+    // Use the breadcrumb class to target the module name (e.g., "PIM"),
+    // not the sub-page main title (e.g., "Add Employee") which is also an h6.oxd-text--h6.
+    this.headerTitle = page.locator('h6.oxd-topbar-header-breadcrumb-module');
     this.userDropdown = page.locator('.oxd-userdropdown-tab');
     this.logoutLink = page.getByRole('menuitem', { name: 'Logout' });
     this.aboutLink = page.getByRole('menuitem', { name: 'About' });

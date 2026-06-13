@@ -9,8 +9,9 @@
  */
 
 import { type Page } from '@playwright/test';
-import { OrderSearchForm } from './OrderSearchForm';
+
 import { OrderResultsGrid } from './OrderResultsGrid';
+import { OrderSearchForm } from './OrderSearchForm';
 
 export class OrdersPage {
   readonly page: Page;

@@ -11,9 +11,10 @@
  *           when the test (or worker) finishes, even if the test fails.
  */
 
-import { test as base, expect } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
+
+import { test as base, expect } from '@playwright/test';
 
 /* ───────────────────────────────────────────────────────────────────────────
    Fixture types

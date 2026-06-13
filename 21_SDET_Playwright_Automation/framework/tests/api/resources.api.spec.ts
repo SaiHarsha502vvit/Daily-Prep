@@ -12,10 +12,10 @@ test.describe('Resources API — list and get', () => {
 
     const first = page1.data[0];
     expect(first).toBeDefined();
-    expect(first.name).toBeTruthy();
-    expect(first.year).toBeGreaterThan(0);
-    expect(first.color).toMatch(/^#/);
-    expect(first.pantone_value).toBeTruthy();
+    expect(first!.name).toBeTruthy();
+    expect(first!.year).toBeGreaterThan(0);
+    expect(first!.color).toMatch(/^#/);
+    expect(first!.pantone_value).toBeTruthy();
   });
 
   test('@api get resource by id returns complete record', async ({ resourcesClient }) => {

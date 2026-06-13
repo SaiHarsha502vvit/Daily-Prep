@@ -13,8 +13,9 @@
 #   View report:        docker compose run --rm playwright npx playwright show-report playwright-report
 #   Tear down:          docker compose down --volumes
 # ============================================================
-
-version: "3.9"
+# Note: the `version:` field is deliberately omitted — Compose v2+
+# treats it as informational only and emits a deprecation warning.
+# ============================================================
 
 services:
   # ── Playwright test runner ─────────────────────────────────

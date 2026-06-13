@@ -38,8 +38,18 @@
     "types/**/*.ts",
     "utilities/**/*.ts",
     "websites/**/*.ts",
-    "quiz-solutions/**/*.ts",
+    "visual/**/*.ts",
+    "a11y/**/*.ts",
+    "perf/**/*.ts",
     "playwright.config.ts"
   ],
-  "exclude": ["node_modules", "dist", "playwright-report", "test-results"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "playwright-report",
+    "test-results",
+    "tests/broken",
+    "quiz-solutions",
+    "challenges"
+  ]
 }

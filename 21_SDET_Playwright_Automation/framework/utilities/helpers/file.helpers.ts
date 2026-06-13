@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+
 import { type Locator, type Page, type Download, type JSHandle } from '@playwright/test';
 
 export interface InMemoryFile {
@@ -48,7 +49,8 @@ export async function downloadAndRead(
 
 export function readTextNormalised(filePath: string): string {
   const raw = fs.readFileSync(filePath, 'utf8');
-  return raw.replace(/^﻿/, '');
+  // Strip UTF-8 BOM (U+FEFF) if present — common in files saved by Windows Notepad.
+  return raw.replace(/^\uFEFF/, '');
 }
 
 export function parseCsv<T extends Record<string, string>>(text: string): T[] {

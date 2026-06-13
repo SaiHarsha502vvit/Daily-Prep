@@ -12,9 +12,10 @@
  *          BEFORE saving storageState.
  */
 
-import { test, expect, type BrowserContext, type Page } from '@playwright/test';
 import * as fs from 'fs';
 import * as path from 'path';
+
+import { test, expect, type BrowserContext, type Page } from '@playwright/test';
 
 const AUTH_STATE_PATH = path.resolve(__dirname, '..', '..', '.auth', 'user.json');
 

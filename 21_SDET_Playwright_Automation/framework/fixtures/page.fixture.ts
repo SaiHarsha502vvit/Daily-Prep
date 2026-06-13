@@ -1,10 +1,13 @@
 import { test as base, type Page } from '@playwright/test';
-import { LoginPage } from '../websites/orangehrm/pages/LoginPage';
-import { DashboardPage } from '../websites/orangehrm/pages/DashboardPage';
+
+import type { PooledAccount } from '../types/user.types';
 import { APIUtils } from '../utilities/api/APIUtils';
 import { TestDataBridge } from '../utilities/data/test-data.bridge';
+import { DashboardPage } from '../websites/orangehrm/pages/DashboardPage';
+import { LoginPage } from '../websites/orangehrm/pages/LoginPage';
+
 import { acquireAccount, releaseAccount } from './auth.fixture';
-import type { PooledAccount } from '../types/user.types';
+
 
 type AppFixtures = {
   loginPage: LoginPage;

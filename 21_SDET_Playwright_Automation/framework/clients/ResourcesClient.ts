@@ -1,9 +1,10 @@
 import type { APIRequestContext } from '@playwright/test';
+
+import type { ListResourcesResponse, Resource } from '../types/api.types';
 import { ApiCore } from '../utilities/api/ApiCore';
-import { HeadersBuilder } from '../utilities/api/HeadersBuilder';
 import { Endpoints } from '../utilities/api/Endpoints';
 import { ValidationError } from '../utilities/api/errors';
-import type { GetResourceResponse, ListResourcesResponse, Resource } from '../types/api.types';
+import { HeadersBuilder } from '../utilities/api/HeadersBuilder';
 
 /**
  * Layer 5 — Domain client for Resources API.
@@ -87,7 +88,7 @@ function validateGetResourceResponse(data: unknown): Resource {
   assertString(r, 'color');
   assertString(r, 'pantone_value');
 
-  return r as Resource;
+  return r as unknown as Resource;
 }
 
 /* ------------------------------------------------------------------ */

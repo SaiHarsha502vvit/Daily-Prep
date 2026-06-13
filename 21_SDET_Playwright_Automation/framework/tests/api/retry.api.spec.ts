@@ -1,7 +1,8 @@
+import type { APIRequestContext, APIResponse as PlaywrightAPIResponse } from '@playwright/test';
+
 import { test, expect } from '../../fixtures/api.fixture';
 import { ApiCore } from '../../utilities/api/ApiCore';
-import { ServerError, RateLimitError } from '../../utilities/api/errors';
-import type { APIRequestContext, APIResponse as PlaywrightAPIResponse } from '@playwright/test';
+import { ServerError } from '../../utilities/api/errors';
 
 /**
  * Minimal mock of APIRequestContext that counts calls and optionally fails.

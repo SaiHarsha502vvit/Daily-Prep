@@ -1,0 +1,210 @@
+name: Nightly Tests
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: nightly-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CI: true
+  NODE_VERSION: '18'
+
+jobs:
+  nightly-core:
+    name: Nightly Core Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 21_SDET_Playwright_Automation/framework/package-lock.json
+
+      - name: Install dependencies
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-nightly-${{ runner.os }}-${{ hashFiles('21_SDET_Playwright_Automation/framework/package-lock.json') }}
+
+      - name: Install Playwright browsers
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npx playwright install --with-deps
+
+      - name: Run nightly tests
+        working-directory: 21_SDET_Playwright_Automation/framework
+        env:
+          CI: true
+          ENV_FILE: .env.ci
+        run: npx playwright test --grep '@nightly'
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nightly-core-report
+          path: 21_SDET_Playwright_Automation/framework/playwright-report/
+          retention-days: 7
+
+  visual-regression:
+    name: Visual Regression Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 21_SDET_Playwright_Automation/framework/package-lock.json
+
+      - name: Install dependencies
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-nightly-${{ runner.os }}-${{ hashFiles('21_SDET_Playwright_Automation/framework/package-lock.json') }}
+
+      - name: Install Playwright browsers
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npx playwright install --with-deps
+
+      - name: Run visual tests
+        working-directory: 21_SDET_Playwright_Automation/framework
+        env:
+          CI: true
+          ENV_FILE: .env.ci
+        run: npx playwright test --grep '@visual'
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: visual-regression-report
+          path: 21_SDET_Playwright_Automation/framework/playwright-report/
+          retention-days: 7
+
+  accessibility:
+    name: Accessibility Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 21_SDET_Playwright_Automation/framework/package-lock.json
+
+      - name: Install dependencies
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-nightly-${{ runner.os }}-${{ hashFiles('21_SDET_Playwright_Automation/framework/package-lock.json') }}
+
+      - name: Install Playwright browsers
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npx playwright install --with-deps
+
+      - name: Run a11y tests
+        working-directory: 21_SDET_Playwright_Automation/framework
+        env:
+          CI: true
+          ENV_FILE: .env.ci
+        run: npx playwright test --grep '@a11y'
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accessibility-report
+          path: 21_SDET_Playwright_Automation/framework/playwright-report/
+          retention-days: 7
+
+  performance:
+    name: Performance Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 21_SDET_Playwright_Automation/framework/package-lock.json
+
+      - name: Install dependencies
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm ci
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-nightly-${{ runner.os }}-${{ hashFiles('21_SDET_Playwright_Automation/framework/package-lock.json') }}
+
+      - name: Install Playwright browsers
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npx playwright install --with-deps
+
+      - name: Run perf tests
+        working-directory: 21_SDET_Playwright_Automation/framework
+        env:
+          CI: true
+          ENV_FILE: .env.ci
+        run: npx playwright test --grep '@perf'
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-report
+          path: 21_SDET_Playwright_Automation/framework/playwright-report/
+          retention-days: 7
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: 21_SDET_Playwright_Automation/framework/package-lock.json
+
+      - name: Install dependencies
+        working-directory: 21_SDET_Playwright_Automation/framework
+        run: npm ci
+
+      - name: Run npm audit
+        working-directory: 21_SDET_Playwright_Automation/framework
+        continue-on-error: true
+        run: npm audit --audit-level=moderate

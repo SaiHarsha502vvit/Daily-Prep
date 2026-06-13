@@ -1,6 +1,7 @@
 import { expect, type Locator, type Page } from '@playwright/test';
-import { Timeouts } from '../../../constants/timeouts';
+
 import { Messages } from '../../../constants/messages';
+import { Timeouts } from '../../../constants/timeouts';
 
 export class DashboardPage {
   readonly page: Page;

@@ -1,0 +1,27 @@
+name: Gitleaks Secret Scan
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gitleaks:
+    name: Scan for committed secrets
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Full history so we scan every commit, not just the PR delta.
+          fetch-depth: 0
+
+      - name: Run gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Use the repo's .gitleaks.toml allowlist for known demo creds.
+          GITLEAKS_CONFIG: 21_SDET_Playwright_Automation/framework/.gitleaks.toml

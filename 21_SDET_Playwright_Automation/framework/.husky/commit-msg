@@ -1,0 +1,40 @@
+#!/usr/bin/env sh
+# Conventional Commits validator — POSIX shell, no external deps.
+#
+# Allowed types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert
+# Optional scope in parens. Optional ! for breaking change. Subject required.
+#
+# Examples:
+#   feat(api): add UsersClient retry budget
+#   fix(pom)!: rename LoginPage.submit to LoginPage.login
+#   docs: expand Ch52 component testing chapter
+#
+# To bypass intentionally (rare): git commit --no-verify
+
+commit_msg_file="$1"
+first_line=$(head -n1 "$commit_msg_file")
+
+# Allow merge commits, revert commits, and fixup/squash commits unmodified.
+case "$first_line" in
+  "Merge "*|"Revert "*|"fixup! "*|"squash! "*)
+    exit 0
+    ;;
+esac
+
+pattern='^(feat|fix|docs|style|refactor|perf|test|chore|ci|build|revert)(\([a-z0-9_.-]+\))?!?: .{1,100}$'
+
+if ! printf '%s' "$first_line" | grep -Eq "$pattern"; then
+  printf '\n\033[31mCommit message rejected.\033[0m\n' >&2
+  printf '\nExpected Conventional Commits format:\n' >&2
+  printf '  <type>(<scope>)!?: <subject>\n\n' >&2
+  printf 'Allowed types: feat, fix, docs, style, refactor, perf, test, chore, ci, build, revert\n' >&2
+  printf 'Subject must be 1-100 chars. Scope is optional.\n\n' >&2
+  printf 'Got:\n  %s\n\n' "$first_line" >&2
+  printf 'Examples:\n' >&2
+  printf '  feat(api): add UsersClient retry budget\n' >&2
+  printf '  fix(pom)!: rename LoginPage.submit to LoginPage.login\n' >&2
+  printf '  docs: expand Ch52 component testing chapter\n\n' >&2
+  exit 1
+fi
+
+exit 0

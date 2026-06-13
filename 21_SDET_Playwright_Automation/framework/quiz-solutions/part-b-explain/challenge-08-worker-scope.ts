@@ -12,8 +12,9 @@
  *         all tests assigned to that worker. This saves expensive setup time.
  */
 
-import { test as base } from '@playwright/test';
 import * as fs from 'fs';
+
+import { test as base } from '@playwright/test';
 
 /* ───────────────────────────────────────────────────────────────────────────
    Simulating an expensive setup operation (e.g., DB seeding, build, auth)

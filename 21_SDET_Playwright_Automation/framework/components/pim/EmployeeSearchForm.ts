@@ -1,5 +1,5 @@
 import { type Locator, type Page } from '@playwright/test';
-import { Timeouts } from '../../constants/timeouts';
+
 import { fillInput, clickElement } from '../../utilities/helpers/action.helpers';
 
 export class EmployeeSearchForm {
@@ -18,7 +18,11 @@ export class EmployeeSearchForm {
     this.page = page;
     // The employee name input inside the PIM search area uses a wrapper pattern
     this.employeeNameInput = page.locator('.oxd-form-row input[placeholder="Type for hints..."]').first();
-    this.employeeIdInput = page.locator('.oxd-form-row input.oxd-input').first();
+    // Label-anchored locator — robust against autocomplete inputs that also have class .oxd-input.
+    this.employeeIdInput = page
+      .locator('.oxd-input-group')
+      .filter({ has: page.getByText('Employee Id', { exact: true }) })
+      .locator('input.oxd-input');
     this.searchButton = page.getByRole('button', { name: 'Search' });
     this.resetButton = page.getByRole('button', { name: 'Reset' });
     this.includeDropdown = page.locator('.oxd-form-row .oxd-select-wrapper').first();

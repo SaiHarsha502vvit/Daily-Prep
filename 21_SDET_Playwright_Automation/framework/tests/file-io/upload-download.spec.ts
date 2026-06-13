@@ -1,5 +1,7 @@
 import * as path from 'node:path';
+
 import { test, expect } from '@playwright/test';
+
 import {
   uploadBuffer,
   uploadFile,

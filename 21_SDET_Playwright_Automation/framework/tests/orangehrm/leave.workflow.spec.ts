@@ -5,7 +5,9 @@ interface TestData {
   leaveToDate: string | null;
 }
 
-const data: TestData = { leaveFromDate: null, leaveToDate: null };
+// Module-level accumulator — intentionally mutated across tests to demo cross-step data flow.
+const _data: TestData = { leaveFromDate: null, leaveToDate: null };
+void _data;
 
 test.describe('Leave Module Workflow', () => {
   test.beforeEach(async ({ loginPage, dashboardPage }) => {
@@ -25,7 +27,7 @@ test.describe('Leave Module Workflow', () => {
     await expect.soft(leaveListPage.toDateInput).toBeVisible();
     await expect.soft(leaveListPage.searchButton).toBeVisible();
     await expect.soft(leaveListPage.resetButton).toBeVisible();
-    expect(await leaveListPage.fromDateInput.isVisible()).toBe(true);
+    await expect(leaveListPage.fromDateInput).toBeVisible();
   });
 
   test('@regression apply leave and verify record in list', async ({ leaveListPage }) => {

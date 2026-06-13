@@ -27,7 +27,7 @@ interface BrokenFixtures {
 const brokenTest = base.extend<BrokenFixtures>({
   sharedCounter: [
     async ({}, use) => {
-      let counter = 0;
+      const counter = 0;
       await use(counter);
     },
     { scope: 'worker' },
@@ -62,7 +62,7 @@ interface FixedFixtures {
 const fixedTest = base.extend<FixedFixtures>({
   // FIXED: Removed scope:'worker'. Now counter is created fresh for EVERY test.
   isolatedCounter: async ({}, use) => {
-    let counter = 0;
+    const counter = 0;
     await use(counter);
   },
 
@@ -109,7 +109,7 @@ const workerTest = base.extend<WorkerSharedFixtures>({
 });
 
 workerTest('quiz-02-ch17-fixB: worker-scoped dependency chain', async ({ userPool }) => {
-  expect(userPool.length).toBe(2);
+  expect(userPool).toHaveLength(2);
   expect(userPool[0]).toContain('postgres');
 });
 

@@ -1,7 +1,8 @@
 import { expect, type Locator, type Page } from '@playwright/test';
+
 import { Timeouts } from '../../constants/timeouts';
-import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
 import { clickElement } from '../../utilities/helpers/action.helpers';
+import { OrangeHRMBasePage } from '../OrangeHRMBasePage';
 
 export class LeaveListPage extends OrangeHRMBasePage {
   readonly fromDateInput: Locator;
