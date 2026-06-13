@@ -68,5 +68,5 @@ One-page map of what's in this module. Use it when you can't remember where some
 ## Stale / known-issue notes
 
 - `_Curriculum/` at the **repo root** (not inside this module) is a partial draft mirror (3 files: Ch65, Ch66, Ch67) from an intermediate Kimi-2.6 session. Pending user decision; not deleted, not authoritative.
-- There are two `46_5_Playwright_Config_Deep_Dive.md` files — one in `02_Core_Architecture/` (richer, 1460 L) and one in `05_Advanced_Topics/` (shorter, 668 L). Both valid; canonical location to be decided.
+- ~~Two `46_5_Playwright_Config_Deep_Dive.md` files~~ — Resolved: the canonical (1460 L) version was renamed to `02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md`; the brief overview (668 L) was deleted as redundant with Ch56.
 - INDEX uses **P1–P10** labels for the Principal SDET Extension chapters whose files are named `60_…md` through `69_…md` — this is intentional to avoid colliding with `06_SDET_to_SDE_Bridge/60_Tool_Comparison…`.

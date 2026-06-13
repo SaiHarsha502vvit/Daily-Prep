@@ -6,12 +6,11 @@
 
 > ### 📍 This is the canonical config chapter
 >
-> Two alternate-format reference files also exist (kept for reader convenience, not separate content):
+> A companion reference also exists:
 >
-> - [`02_Core_Architecture/46_5_Playwright_Config_Deep_Dive.md`](./46_5_Playwright_Config_Deep_Dive.md) — **long theoretical reference (~1460 L)**, every field abstractly.
-> - [`05_Advanced_Topics/46_5_Playwright_Config_Deep_Dive.md`](../05_Advanced_Topics/46_5_Playwright_Config_Deep_Dive.md) — **brief overview (~670 L)**.
+> - [`02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md`](./57_Playwright_Config_Theory_Catalog.md) — **long theoretical reference (~1460 L)**, every field abstractly. (This is the renamed former `46_5_Playwright_Config_Deep_Dive.md`.)
 >
-> **Open this chapter (Ch56) first** — it walks the real [`framework/playwright.config.ts`](../framework/playwright.config.ts) field-by-field. Use the other two as supplementary reading only.
+> **Open this chapter (Ch56) first** — it walks the real [`framework/playwright.config.ts`](../framework/playwright.config.ts) field-by-field. Use Ch57 as supplementary reading only.
 
 ---
 

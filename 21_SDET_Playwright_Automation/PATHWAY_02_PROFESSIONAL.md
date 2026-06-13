@@ -59,7 +59,7 @@ The "junior writes tests, senior writes the architecture that makes tests cheap 
 | 4 | [`04_Enterprise_Architecture/23_APIUtils_HTTP_Library.md`](./04_Enterprise_Architecture/23_APIUtils_HTTP_Library.md) | R4 | Layer 1 of the 5-layer API client. | 2 hr | Read [`framework/utilities/api/APIUtils.ts`](./framework/utilities/api/APIUtils.ts) alongside. |
 | 5 | [`04_Enterprise_Architecture/24_Test_Script_Architecture.md`](./04_Enterprise_Architecture/24_Test_Script_Architecture.md) | R2, R3 | "POMs before steps" + the data accumulator pattern. | 2 hr | Pick one ugly test at work. Apply the pattern. |
 | 6 | [`05_Advanced_Topics/44_Enterprise_API_Client_Library.md`](./05_Advanced_Topics/44_Enterprise_API_Client_Library.md) | R4 | The full 5-layer client with retry, typed errors, schema validation. The single longest chapter in the curriculum. | 5 hr | Read [`framework/utilities/api/ApiCore.ts`](./framework/utilities/api/ApiCore.ts), [`HeadersBuilder.ts`](./framework/utilities/api/HeadersBuilder.ts), [`Endpoints.ts`](./framework/utilities/api/Endpoints.ts), [`errors.ts`](./framework/utilities/api/errors.ts), [`UsersClient.ts`](./framework/clients/UsersClient.ts) in order. |
-| 7 | [`02_Core_Architecture/46_5_Playwright_Config_Deep_Dive.md`](./02_Core_Architecture/46_5_Playwright_Config_Deep_Dive.md) | R1, R5 | Every config field and how to reason about its blast radius. | 2 hr | Audit your work's `playwright.config.ts` field by field. Note 3 things you'd change. |
+| 7 | [`02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md`](./02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md) | R1, R5 | Every config field and how to reason about its blast radius. (Renamed from `46_5_Playwright_Config_Deep_Dive.md`.) | 2 hr | Audit your work's `playwright.config.ts` field by field. Note 3 things you'd change. |
 
 ### Checkpoint 1
 
@@ -120,16 +120,6 @@ The chapters that separate a senior from a principal. Each is in `05_Advanced_To
 
 | # | Read | Rubric | Why now | Est | Lab |
 |---|------|--------|---------|-----|-----|
-| 24 | [P1: Test Analytics & Flake Detection](./05_Advanced_Topics/60_Test_Analytics_And_Flake_Detection.md) | R7, R8, R9 | Import-graph selection (`madge`, `ts-morph`), ML flake prediction, cost-per-test, dashboard build. | 5 hr | Stand up [`framework/utilities/analytics/cli.ts`](./framework/utilities/analytics/cli.ts) against your suite's history. |
-| 25 | [P2: Leadership & Mentoring Playbook](./05_Advanced_Topics/61_Leadership_And_Mentoring_Playbook.md) | R10 | 1:1 frameworks, incident command, hiring loops, code-review rubric. | 4 hr | Schedule a recurring 1:1 with a junior using the template. Use [`career/CODE_REVIEW_RUBRIC.md`](./career/CODE_REVIEW_RUBRIC.md) on the next 3 PRs you review. |
-| 26 | [P3: Cost Governance & FinOps](./05_Advanced_Topics/62_Cost_Governance_And_FinOps.md) | R11 | Cloud spend attribution, sharding ROI curves, BrowserStack/Sauce pricing math. | 3 hr | Calculate your suite's cost per run. Surface to your manager. |
-| 27 | [P4: SLOs & Error Budgets](./05_Advanced_Topics/63_SLOs_And_Error_Budgets.md) | R11 | p95 runtime, pass-rate, flake-rate, error-budget policy. | 3 hr | Draft 3 SLOs for your team's suite. Circulate. |
-| 28 | [P5: Self-Healing Locators](./05_Advanced_Topics/64_Self_Healing_Locators.md) | R12 | DOM stability scoring, ML repair, rule-based fallback chains, healing metrics. | 3 hr | Add a 2-tier fallback locator strategy to one POM. |
-| 29 | [P6: Architecture Decision Records](./05_Advanced_Topics/65_Architecture_Decision_Records.md) | R2, R10 | ADR template, when to write one, RFC-lite process. Cross-reference [`framework/docs/adrs/`](./framework/docs/adrs/). | 2 hr | Write one ADR for a real decision at work. Use [`career/TEST_STRATEGY_TEMPLATE.md`](./career/TEST_STRATEGY_TEMPLATE.md) and [`career/RFC_TEMPLATE.md`](./career/RFC_TEMPLATE.md). |
-| 30 | [P7: Data Anonymization & PII Masking](./05_Advanced_Topics/66_Data_Anonymization_And_PII_Masking.md) | R3 | GDPR/CCPA compliance, synthetic data generation, tokenization, multi-tenant isolation. | 3 hr | Audit your test data. Identify 3 PII risks. Sketch mitigation. |
-| 31 | [P8: Test Impact Analysis](./05_Advanced_Topics/67_Test_Impact_Analysis.md) | R8 | Dependency graph tools, changed-files → affected-tests, monorepo optimization. | 3 hr | Run `madge` against your repo. Predict which tests run for a hypothetical change. |
-| 32 | [P9: Chaos Engineering & Resilience Testing](./05_Advanced_Topics/68_Chaos_Engineering_And_Resilience_Testing.md) | R6 | Network degradation via `page.route()`, API fault injection, GameDay process. | 3 hr | Inject one degradation into a critical-path test. Watch what breaks. |
-| 33 | [P10: Observability for Tests](./05_Advanced_Topics/69_Observability_For_Tests.md) | R9 | OpenTelemetry tracing, test-to-log correlation, custom metrics. | 4 hr | Read [`framework/utilities/api/telemetry.ts`](./framework/utilities/api/telemetry.ts) alongside. |
 
 ### Checkpoint 4
 

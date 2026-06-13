@@ -13,9 +13,7 @@
 >
 > For most readers, the right entry point is [**Ch56 — Playwright Config Deep-Dive (framework-anchored)**](./56_Playwright_Config_Deep_Dive.md). Ch56 walks the real [`framework/playwright.config.ts`](../framework/playwright.config.ts) field-by-field with concrete CI examples.
 >
-> This file (Ch46.5) is a **long theoretical reference (~1460 lines)** that catalogues every config field abstractly. It overlaps Ch56 substantially. Open it only if Ch56 didn't answer your specific question.
->
-> A shorter brief overview also exists at [`05_Advanced_Topics/46_5_Playwright_Config_Deep_Dive.md`](../05_Advanced_Topics/46_5_Playwright_Config_Deep_Dive.md).
+> This file (Ch57) is a **long theoretical reference (~1460 lines)** that catalogues every config field abstractly. It overlaps Ch56 substantially. Open it only if Ch56 didn't answer your specific question.
 
 ---
 

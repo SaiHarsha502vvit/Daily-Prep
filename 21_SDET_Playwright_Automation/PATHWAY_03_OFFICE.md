@@ -34,7 +34,7 @@ For the fastest answers, [`reference/`](./reference/) has 10 cheat-sheet cards t
 
 ### "A test hangs / times out"
 → Ch26 [Flakiness](./05_Advanced_Topics/26_Flakiness_Diagnosis_and_Fixing.md) — the timing & race section
-→ Ch46.5 [Playwright Config Deep-Dive](./05_Advanced_Topics/46_5_Playwright_Config_Deep_Dive.md) — timeout hierarchy (test / expect / action / navigation)
+→ Ch57 [Playwright Config Theory Catalog](./02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md) — timeout hierarchy (test / expect / action / navigation)
 → [`framework/constants/timeouts.ts`](./framework/constants/timeouts.ts) — named timeout enum to replace magic numbers
 → Anti-pattern: `await page.waitForTimeout(N)` — use `expect.poll`, `waitForResponse`, or `waitFor({state:'visible'})` instead
 
@@ -49,7 +49,7 @@ For the fastest answers, [`reference/`](./reference/) has 10 cheat-sheet cards t
 
 ### "I need to reuse a login across many tests (storageState)"
 → Ch16 [Cross-site Pattern 6 — storageState chaining](./03_D365_And_Patterns/16_CrossSite_Pattern6_StorageState_Chaining.md)
-→ Ch46.5 [Config Deep-Dive](./05_Advanced_Topics/46_5_Playwright_Config_Deep_Dive.md) — `globalSetup` vs `dependencies: [setup]`
+→ Ch57 [Config Theory Catalog](./02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md) — `globalSetup` vs `dependencies: [setup]`
 → [`framework/fixtures/auth.fixture.ts`](./framework/fixtures/auth.fixture.ts) — file-locked account pool (better than naive storageState for multi-role suites)
 → Anti-pattern: writing `storageState` before login completes — see [`tests/broken/06-storageState-too-early.spec.ts`](./framework/tests/broken/)
 
@@ -114,7 +114,7 @@ For the fastest answers, [`reference/`](./reference/) has 10 cheat-sheet cards t
 → [`framework/fixtures/orangehrm.fixture.ts`](./framework/fixtures/orangehrm.fixture.ts) — `testEmployee` auto-cleanup fixture pattern
 
 ### "I need PII-safe synthetic data"
-→ P7 (Ch66) [Data Anonymization & PII Masking](./05_Advanced_Topics/66_Data_Anonymization_And_PII_Masking.md) — GDPR/CCPA-compliant patterns, Faker presets
+→ _(P-chapter removed in cleanup; see `13_Developer_Essentials/` for related principles)_
 
 ### "Multiple workers need different test data"
 → Ch09 [Parallel Execution](./02_Core_Architecture/09_Parallel_Execution_Workers.md) — worker isolation
@@ -131,8 +131,8 @@ For the fastest answers, [`reference/`](./reference/) has 10 cheat-sheet cards t
 
 ### "I need to shard the suite to run faster"
 → Ch48 [Sharding & Test Selection](./05_Advanced_Topics/48_Sharding_And_Test_Selection.md)
-→ Ch46.5 [Config Deep-Dive](./05_Advanced_Topics/46_5_Playwright_Config_Deep_Dive.md) — shard config field
-→ P8 (Ch67) [Test Impact Analysis](./05_Advanced_Topics/67_Test_Impact_Analysis.md) — smart selection beyond brute-force sharding
+→ Ch57 [Config Theory Catalog](./02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md) — shard config field
+→ _(P-chapter removed in cleanup)_
 
 ### "I need to use Docker for tests"
 → Ch59 [Docker for Playwright](./05_Advanced_Topics/59_Docker_For_Playwright.md) — MCR image, /dev/shm gotcha, non-root user
@@ -142,7 +142,7 @@ For the fastest answers, [`reference/`](./reference/) has 10 cheat-sheet cards t
 → Ch47 [Allure & ReportPortal](./05_Advanced_Topics/47_Allure_ReportPortal.md) — annotations (epic/feature/severity/owner), auto-analyzer, trends API
 
 ### "My PM is asking why our tests cost $X/month"
-→ P3 (Ch62) [Cost Governance & FinOps for Test Infra](./05_Advanced_Topics/62_Cost_Governance_And_FinOps.md) — cost-per-test calculation, sharding ROI, BrowserStack/Sauce pricing math
+→ _(P-chapter removed in cleanup; see `22_DevOps/` for FinOps principles)_
 
 ---
 
@@ -217,22 +217,19 @@ For the fastest answers, [`reference/`](./reference/) has 10 cheat-sheet cards t
 ## Career & process
 
 ### "I need to write a test strategy doc"
-→ P6 (Ch65) [Architecture Decision Records](./05_Advanced_Topics/65_Architecture_Decision_Records.md) — ADR + test-strategy doc anatomy
 → [`career/TEST_STRATEGY_TEMPLATE.md`](./career/TEST_STRATEGY_TEMPLATE.md) — fill-in template
 
 ### "I need to write an RFC for a testing change"
-→ P6 (Ch65) [Architecture Decision Records](./05_Advanced_Topics/65_Architecture_Decision_Records.md) — RFC-lite process
 → [`career/RFC_TEMPLATE.md`](./career/RFC_TEMPLATE.md)
 
 ### "I need to do a code review of test PRs"
 → [`career/CODE_REVIEW_RUBRIC.md`](./career/CODE_REVIEW_RUBRIC.md)
-→ P2 (Ch61) [Leadership & Mentoring Playbook](./05_Advanced_Topics/61_Leadership_And_Mentoring_Playbook.md)
 
 ### "I need to mentor a junior SDET"
-→ P2 (Ch61) [Leadership & Mentoring Playbook](./05_Advanced_Topics/61_Leadership_And_Mentoring_Playbook.md) — 1:1 frameworks, pair-programming structure
+→ _(P-chapter removed in cleanup)_
 
 ### "I need to define SLOs for the test platform"
-→ P4 (Ch63) [SLOs & Error Budgets](./05_Advanced_Topics/63_SLOs_And_Error_Budgets.md) — p95 runtime, pass-rate, flake-rate, time-to-feedback
+→ _(P-chapter removed in cleanup; see `13_Developer_Essentials/` for SRE/SLO concepts)_
 
 ### "I have an interview soon"
 → Ch32 [SDET Interview Prep](./06_SDET_to_SDE_Bridge/32_SDET_Interview_Prep.md) — LADDER + STAR + live-coding
@@ -251,18 +248,15 @@ For the fastest answers, [`reference/`](./reference/) has 10 cheat-sheet cards t
 ## Advanced / Principal SDET problems
 
 ### "We have 10,000 tests and selection is hurting us"
-→ P8 (Ch67) [Test Impact Analysis](./05_Advanced_Topics/67_Test_Impact_Analysis.md) — `madge`/`ts-morph` dependency graphs, git-diff selection
-→ P1 (Ch60) [Test Analytics & Flake Detection](./05_Advanced_Topics/60_Test_Analytics_And_Flake_Detection.md) — historical duration optimization
+→ _(P-chapter removed in cleanup)_
 
 ### "We need self-healing locators / AI test repair"
-→ P5 (Ch64) [Self-Healing Locators](./05_Advanced_Topics/64_Self_Healing_Locators.md) — Playwright suggestions, commercial tools, rule-based fallback chains
 → Ch45 [AI Agents, MCP & Playwright](./05_Advanced_Topics/45_AI_Agents_MCP_And_Playwright.md) — agentic boundaries
 
 ### "We need chaos / resilience testing"
-→ P9 (Ch68) [Chaos Engineering & Resilience Testing](./05_Advanced_Topics/68_Chaos_Engineering_And_Resilience_Testing.md) — Toxiproxy, Gremlin, `page.route()` degradation injection
+→ _(P-chapter removed in cleanup)_
 
 ### "We need distributed tracing of tests"
-→ P10 (Ch69) [Observability for Tests](./05_Advanced_Topics/69_Observability_For_Tests.md) — OpenTelemetry, test-to-log correlation
 → [`framework/utilities/api/telemetry.ts`](./framework/utilities/api/telemetry.ts) — OTel span emission in API client
 
 ---

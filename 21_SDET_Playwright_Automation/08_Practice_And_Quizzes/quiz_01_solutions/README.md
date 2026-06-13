@@ -61,7 +61,7 @@ All Quiz 01 solutions are in a single file:
 | CAPTCHA bypass (Q33) | [Ch 40 — Security Testing OWASP](../../07_Specialised_Testing/40_Security_Testing_OWASP.md) |
 | Response modification (Q34) | [Ch 31 — API Mocking via `page.route`](../../05_Advanced_Topics/31_API_Mocking_page_route.md) |
 | Accessibility (Q35) | [Ch 39 — Accessibility Testing with axe-core](../../07_Specialised_Testing/39_Accessibility_Testing_axe_core.md) |
-| Global setup (Q36) | [Ch 46.5 — Playwright Config Deep-Dive](../../02_Core_Architecture/46_5_Playwright_Config_Deep_Dive.md) |
+| Global setup (Q36) | [Ch 57 — Playwright Config Theory Catalog](../../02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md) |
 | File downloads (Q37) | [Ch 58 — File Uploads & Downloads](../../05_Advanced_Topics/58_File_Uploads_Downloads.md) |
 | Dialog handling (Q39) | [Ch 26 — Flakiness Diagnosis & Fixing](../../05_Advanced_Topics/26_Flakiness_Diagnosis_and_Fixing.md) (dialog timing patterns) |
 | Component POM pattern (Q40) | [Ch 18 — Mega POM Architecture](../../04_Enterprise_Architecture/18_Mega_POM_Architecture.md) |

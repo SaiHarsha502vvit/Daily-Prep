@@ -86,22 +86,11 @@
 | 55 | [Inspector, Trace Viewer & UI Mode — Walk-Through](./02_Core_Architecture/55_Inspector_TraceViewer_UIMode_Walkthrough.md) | 30 min | **Step-through live, time-travel past runs, UI Mode watch loop — hands-on only** | Ch26 |
 | &nbsp; | **——— CONFIG, AUTH, FILE I/O, DOCKER, TOOL COMPARISON ——— Reader-requested fills** | | | |
 | 56 | [Playwright Config Deep-Dive](./02_Core_Architecture/56_Playwright_Config_Deep_Dive.md) | 75 min | **Every config field: projects, use-merging, reporters, timeouts, retries, trace, devices, globalSetup vs dependencies** | Ch09, Ch26, Ch55 |
+| &nbsp; | ↳ [Ch57 Theory Catalog — 02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md](./02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md) — companion reference / encyclopedia | | | |
 | 57 | [Login Taxonomy — OAuth2 / OIDC / SAML / MFA / mTLS](./05_Advanced_Topics/57_Login_Taxonomy_OAuth_OIDC_SAML_MFA_mTLS.md) | 90 min | **5 production auth flows beyond storageState — OAuth2+PKCE, OIDC, SAML, TOTP, client certs; worker-scoped token caches** | Ch06, Ch16 |
 | 58 | [File Uploads & Downloads](./05_Advanced_Topics/58_File_Uploads_Downloads.md) | 60 min | **setInputFiles single/multi/buffer, drag-drop, download event race, CSV/XLSX/PDF assertion helpers** | Ch04, Ch07 |
 | 59 | [Docker for Playwright](./05_Advanced_Topics/59_Docker_For_Playwright.md) | 60 min | **mcr.microsoft.com/playwright base image, multi-stage builds, sharding via docker-compose, /dev/shm gotcha, CI integration** | Ch09, Ch25, Ch48 |
 | 60 | [Tool Comparison — Cypress / Selenium / WebdriverIO](./06_SDET_to_SDE_Bridge/60_Tool_Comparison_Cypress_Selenium_WDIO.md) | 60 min | **Honest trade-offs, architecture, locator model, cross-domain, parallel, API testing, when to pick what — interview prep** | Ch32, `23_Mobile_Dev_And_Testing/01` |
-| &nbsp; | **——— PRINCIPAL SDET EXTENSION (Module II) ——— Test platform, leadership, governance, resilience** | | | |
-| &nbsp; | _Filenames keep the 60–69 numbering for stability; logical chapter numbers are P1–P10 to avoid colliding with Ch60 Tool Comparison above._ | | | |
-| P1 | [Test Analytics & Flake Detection](./05_Advanced_Topics/60_Test_Analytics_And_Flake_Detection.md) | 90 min | **Import graph analysis, ML flake detection, cost-per-test, dashboard build** | Ch48, Ch26 |
-| P2 | [Leadership & Mentoring Playbook](./05_Advanced_Topics/61_Leadership_And_Mentoring_Playbook.md) | 90 min | **Career ladders, 1:1 frameworks, incident command, technical strategy, cross-team influence** | Ch32, Ch43 |
-| P3 | [Cost Governance & FinOps](./05_Advanced_Topics/62_Cost_Governance_And_FinOps.md) | 75 min | **Cloud spend attribution, test infrastructure TCO, spot instances, budget alerts** | Ch25, Ch48 |
-| P4 | [SLOs & Error Budgets](./05_Advanced_Topics/63_SLOs_And_Error_Budgets.md) | 75 min | **Defining test-platform SLOs, burn-rate alerts, release gates, error-budget policies** | Ch25, Ch26, Ch54 |
-| P5 | [Self-Healing Locators](./05_Advanced_Topics/64_Self_Healing_Locators.md) | 90 min | **DOM stability scoring, ML-based locator repair, fallback chains, healing metrics** | Ch02, Ch05, Ch18 |
-| P6 | [Architecture Decision Records](./05_Advanced_Topics/65_Architecture_Decision_Records.md) | 60 min | **ADR format, when to write one, deprecation strategies, RFC-lite process** | Ch21, Ch44 |
-| P7 | [Data Anonymization & PII Masking](./05_Advanced_Topics/66_Data_Anonymization_And_PII_Masking.md) | 75 min | **GDPR/CCPA compliance, synthetic data generation, tokenization, audit trails** | Ch28, Ch40 |
-| P8 | [Test Impact Analysis](./05_Advanced_Topics/67_Test_Impact_Analysis.md) | 75 min | **Dependency graph tooling, changed-files → affected-tests, monorepo optimization** | Ch09, Ch48 |
-| P9 | [Chaos Engineering & Resilience Testing](./05_Advanced_Topics/68_Chaos_Engineering_And_Resilience_Testing.md) | 90 min | **Network degradation, API fault injection, graceful-failure assertions, GameDay process** | Ch31, Ch41, Ch44 |
-| P10 | [Observability for Tests](./05_Advanced_Topics/69_Observability_For_Tests.md) | 90 min | **OpenTelemetry tracing, test-to-log correlation, SLO-based alerting, custom metrics** | Ch42, Ch47, Ch54 |
 
 **Bolded chapters** = Advanced content built on your real codebase.
 **Ch33–36** = Read alongside the corresponding guide folder (DSA, OOP, TypeScript) for maximum cross-pollination.
@@ -111,7 +100,7 @@
 **Ch46–51** = Enterprise tooling: BDD, Allure/ReportPortal, sharding, feature flags, email testing, secrets management.
 **Ch52–54** = Depth testing: component isolation, mutation score, synthetic monitoring — the upper tier of SDET competency.
 **Ch55** = Debugging surfaces: Inspector, Trace Viewer, UI Mode — hands-on only, no shortcuts.
-**Ch56–60** = Reader-requested fills: config deep-dive, auth taxonomy beyond storageState, file I/O, Docker, and an honest tool comparison for interview prep.
+**Ch56–60** = Reader-requested fills: config deep-dive (with companion theory catalog at Ch57), auth taxonomy beyond storageState, file I/O, Docker, and an honest tool comparison for interview prep.
 **P1–P10** (Module II — files named 60–69 inside `05_Advanced_Topics/`) = Principal SDET extension: analytics, leadership, FinOps, SLOs, self-healing locators, ADRs, data privacy, test impact analysis, chaos engineering, and observability. These cover the competencies expected at staff+ and principal SDET levels.
 
 > **Total estimated study time: ~175–210 hours** (60 core chapters + 10 Module II chapters x 60–90 min + quizzes)

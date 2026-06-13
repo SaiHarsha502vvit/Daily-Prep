@@ -12,7 +12,7 @@ Format: file path → chapter(s) → one-line "what it demonstrates". `P1`–`P1
 
 | File | Chapter(s) | What it demonstrates |
 |------|------------|----------------------|
-| [`framework/playwright.config.ts`](./framework/playwright.config.ts) | Ch09, Ch46.5 ([02_Core_Architecture](./02_Core_Architecture/46_5_Playwright_Config_Deep_Dive.md), [05_Advanced_Topics](./05_Advanced_Topics/46_5_Playwright_Config_Deep_Dive.md)) | Every config field with intent: projects, reporters, shard, retries, timeouts, trace, devices. |
+| [`framework/playwright.config.ts`](./framework/playwright.config.ts) | Ch09, Ch56 ([tutorial](./02_Core_Architecture/56_Playwright_Config_Deep_Dive.md)), Ch57 ([theory catalog](./02_Core_Architecture/57_Playwright_Config_Theory_Catalog.md)) | Every config field with intent: projects, reporters, shard, retries, timeouts, trace, devices. |
 | [`framework/tsconfig.json`](./framework/tsconfig.json) | Ch31 (TS for Tests), Ch36 (TS Mastery) | Strict TS for tests: `noUncheckedIndexedAccess`, path aliases, project includes. |
 | [`framework/config/env.loader.ts`](./framework/config/env.loader.ts) | Ch21 (Enterprise Project Structure), Ch28 (Test Data Lifecycle) | Fail-fast env-var loader with `requireEnv` / `optionalEnv` / `boolEnv` / `numberEnv`. |
 | [`framework/Dockerfile`](./framework/Dockerfile), [`framework/docker-compose.yml`](./framework/docker-compose.yml) | Ch59 (Docker for Playwright) | MCR base image, non-root user, shm_size, env injection. |
