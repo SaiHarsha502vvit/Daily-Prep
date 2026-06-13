@@ -341,7 +341,7 @@ Test infrastructure on-call differs from production on-call: you are not page fo
 **Principles**:
 - One-week rotations, never less. One-day rotations cause more context-switching than they prevent.
 - Primary + secondary (shadow). The secondary observes for a week before taking primary. No one goes solo without prior exposure.
-- Rotations should be visible on a shared calendar with clear交接 (handoff) notes.
+- Rotations should be visible on a shared calendar with clear handoff notes.
 
 **On-Call Responsibilities** (the on-caller's job is to):
 1. Monitor the CI dashboard for anomalies at the start of each workday.
