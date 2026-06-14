@@ -1280,3 +1280,131 @@ LL search is always O(n); there is no shortcut. Compare to array: same O(n), but
 - **`01g_DS_Internals.md`** — `LinkedList` Java implementation; `ConcurrentLinkedQueue` lock-free design.
 - **`02_PROBLEM_SETS.md`** — Floyd's cycle detection proof, reverse-LL proof, merge-two-sorted-LL proof.
 - **`A1_DS_Correctness_Invariants.md`** — formal proofs of pointer integrity invariants I1–I7.
+
+---
+
+## 💥 When Linked List Breaks
+
+> These are the exact failure modes that cause production bugs. Each one has a specific root cause and fix.
+
+### 1. Cache Thrashing — 16× Slower Than Array for Sequential Access
+**What breaks**: Iterating a linked list to compute a sum, find a max, or copy to another structure.
+**Why**: Each node lives at an arbitrary heap address. The CPU prefetcher cannot predict the next address — every node access is a cache miss (~100ns vs ~4ns for array). At 500K nodes, this difference is measurable seconds.
+**Fix**: If random access or sequential scan dominates, use `ArrayList`. Use `LinkedList` only when O(1) insertions/deletions at arbitrary positions via an iterator are the dominant operation.
+**Production rule**: Java's `LinkedList` is rarely the right choice. `ArrayDeque` is faster for both stack and queue. `ArrayList` is faster for everything else.
+
+📎 **Reference Anchor**: [OpenJDK LinkedList source](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedList.java)
+**Invariant learned**: `size` is maintained as a field — O(1) `size()` — but every structural modification increments `modCount` to detect `ConcurrentModificationException` during iteration.
+**Constraint warning**: Java's `LinkedList` implements both `List` and `Deque` — but its `get(i)` is O(n) since it traverses from head or tail. Never use it as a `List` with index access.
+
+### 2. Losing the Head Pointer During In-Place Reversal
+**What breaks**: Reversing a linked list by moving `head` without saving the rest of the list first.
+```java
+// BUG — head.next is lost before it's saved:
+head.next = prev;  // now we can't reach the rest of the list
+```
+**Fix**: Save `next` before severing the link:
+```java
+ListNode next = curr.next;  // save
+curr.next = prev;            // reverse
+prev = curr;
+curr = next;                 // advance
+```
+**Invariant**: At the start of each iteration, `prev` points to the already-reversed portion and `curr` is the next node to process.
+
+### 3. Infinite Loop Without Cycle Detection
+**What breaks**: Traversing a corrupt or cyclic linked list without a visited-set or two-pointer check.
+**Example**: A `next` pointer is accidentally set to an earlier node (common in LRU cache bugs or manual node manipulation). A naive `while (curr != null)` loop runs forever.
+**Fix — Floyd's Tortoise and Hare**:
+```java
+ListNode slow = head, fast = head;
+while (fast != null && fast.next != null) {
+    slow = slow.next;
+    fast = fast.next.next;
+    if (slow == fast) return true;  // cycle detected
+}
+return false;
+```
+**Why it works**: If a cycle of length L exists, fast gains 1 step per iteration on slow → they meet in at most L iterations. If no cycle, fast reaches null in O(n) steps.
+
+### 4. Memory Leak via Strong Reference Cycle (Java)
+**What breaks**: An LRU cache or object pool backed by a custom linked list holds strong references to values. Even after "eviction," the GC cannot collect the node if it's referenced elsewhere.
+**Fix**: Use `WeakReference<V>` for cache values, or use `LinkedHashMap` with `removeEldestEntry` override which Java GC handles correctly.
+
+### 5. `ConcurrentModificationException` During Iteration
+**What breaks**: Modifying the list (add/remove) while iterating via a `for-each` loop in Java.
+**Root cause**: Iterator stores `expectedModCount` at construction; any structural change increments `modCount`; iterator checks on each `next()` call.
+**Fix**: Use `Iterator.remove()` for safe remove during iteration, or collect nodes to remove in a separate list and remove after the loop.
+
+---
+
+## 📝 Exam-Style Problems (MIT 6.006 / KTH DD1352 style)
+
+> **Instructions**: Work these on paper before checking the answer. These are the problems a university exam would ask.
+
+---
+
+**Problem 1 (Correctness — 8 min)**: Prove that Floyd's cycle detection algorithm terminates in O(n) time.
+
+<details><summary>Model Answer</summary>
+
+**Claim**: If a cycle exists, `slow` and `fast` meet within 2n steps.
+
+**Proof**: Let the cycle start at position μ (distance from head) and have length L.
+- After μ steps, slow is at the cycle entry; fast is at position 2μ mod L inside the cycle.
+- Inside the cycle, fast gains exactly 1 step on slow per iteration (fast moves 2, slow moves 1).
+- The gap between them is (2μ - μ) mod L = μ mod L. This gap decreases by 1 each iteration.
+- They meet after at most L more iterations.
+- Total: μ + L ≤ n + n = O(n) steps. ✓
+
+If no cycle exists, fast reaches null after ⌈n/2⌉ steps. ✓
+
+</details>
+
+---
+
+**Problem 2 (Invariant — 6 min)**: State the loop invariant for in-place linked-list reversal and prove it holds at termination.
+
+<details><summary>Model Answer</summary>
+
+**Invariant**: At the start of each iteration, `prev` is the head of the reversed portion (reversed in correct order), and `curr` is the first node of the unreversed portion.
+
+- **Init**: `prev = null`, `curr = head`. Reversed portion is empty (trivially correct). ✓
+- **Maintenance**: After each iteration, `curr.next` is set to `prev`, moving one node from unreversed to reversed. The invariant holds for the next iteration. ✓
+- **Termination**: When `curr == null`, the entire list is in `prev`. Return `prev` as the new head. ✓
+
+</details>
+
+---
+
+**Problem 3 (Complexity — 5 min)**: A singly-linked list of n nodes is stored with only a head pointer. What is the time complexity of each: (a) insert at head, (b) insert at tail, (c) delete a given node given a pointer to its predecessor, (d) search for a value k?
+
+<details><summary>Model Answer</summary>
+
+(a) **Insert at head**: O(1) — update new node's next to current head, update head pointer.
+(b) **Insert at tail**: O(n) — must traverse from head to find the last node (no tail pointer). With a tail pointer: O(1).
+(c) **Delete given predecessor**: O(1) — `pred.next = pred.next.next`.
+(d) **Search**: O(n) — must traverse from head; no random access, no sorted structure to exploit.
+
+</details>
+
+---
+
+**Problem 4 (Design — 10 min)**: Design an O(1) `getMin()` stack. Prove your solution is correct.
+
+<details><summary>Model Answer</summary>
+
+**Structure**: Maintain two stacks — `main` (all elements) and `minStack` (running minimums).
+- `push(x)`: push x to main; push `min(x, minStack.peek())` to minStack.
+- `pop()`: pop from both stacks.
+- `getMin()`: return `minStack.peek()`.
+
+**Correctness proof**: **Invariant** — `minStack.peek()` equals the minimum of all elements currently in `main`.
+- Init: both stacks empty — vacuously true. ✓
+- Maintenance on push(x): new min = `min(x, previous_min)` — pushed to minStack. ✓
+- Maintenance on pop(): the popped element was the top of main. `minStack.peek()` was `min` of main including that element. After removing it, `minStack.pop()` removes that min and exposes the min of the remaining elements (which was correctly pushed when they were pushed). ✓
+- Termination: holds after any sequence of push/pop. ✓
+
+All operations O(1). ✓
+
+</details>

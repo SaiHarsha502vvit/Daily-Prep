@@ -1255,3 +1255,105 @@ Despite nested-looking loops, the total work is O(n) because each element enters
 - **`01g_DS_Internals.md`** — `ArrayDeque` resize proof; `ArrayBlockingQueue` lock design.
 - **`02_PROBLEM_SETS.md`** — exam-style monotonic-stack correctness proof; BFS shortest-path proof.
 - **`13_Developer_Essentials/19_Concurrency_Models_Coroutines.md`** — backpressure and bounded queues in concurrency.
+
+---
+
+## 💥 When Stack / Queue Breaks
+
+> These are the exact failure modes that bite production systems and trip up interviewers.
+
+### 1. Stack Overflow — Unbounded Recursive Depth
+**What breaks**: Using an implicit call stack (DFS, parser, expression evaluator) on deep inputs. JVM default stack size ≈ 512KB–1MB → ~10,000 frames → `StackOverflowError` with no useful stack trace.
+**Trigger constraint**: Any graph with depth > 10K nodes, any JSON/XML with > 10K nesting levels.
+**Fix**: Convert to an explicit `ArrayDeque` stack (heap-allocated, no depth limit).
+```java
+// Instead of recursive DFS:
+Deque<Node> stack = new ArrayDeque<>();
+stack.push(root);
+while (!stack.isEmpty()) { Node n = stack.pop(); ... }
+```
+
+### 2. Java's `Stack` Class — Wrong Tool
+**What breaks**: Using `java.util.Stack` in production code.
+**Why**: `Stack` extends `Vector`, which is fully `synchronized`. Every push/pop acquires a lock — 3–5× slower than `ArrayDeque` in single-threaded use.
+**Fix**: Always use `Deque<T> stack = new ArrayDeque<>()` instead. For thread-safe use: `ConcurrentLinkedDeque` or `LinkedBlockingDeque`.
+
+📎 **Reference Anchor**: [OpenJDK ArrayDeque source](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/ArrayDeque.java)
+**Invariant learned**: `ArrayDeque` doubles its backing array when full (same amortized O(1) as ArrayList). Head/tail pointers wrap around the circular array.
+**Constraint warning**: `ArrayDeque` does not allow null elements — it uses null as a sentinel internally. Use `null`-safe wrappers if nulls are required.
+
+### 3. Monotonic Stack — Forgetting the Remaining Elements
+**What breaks**: Processing only the elements that caused a pop during the main loop, forgetting that elements still in the stack after the loop represent "no right boundary found."
+```java
+// BUG — stack still has elements after the loop:
+for (int i = 0; i < n; i++) {
+    while (!stack.isEmpty() && arr[stack.peek()] < arr[i])
+        result[stack.pop()] = i; // next greater found
+    stack.push(i);
+}
+// MISSING: process remaining elements in stack
+while (!stack.isEmpty()) result[stack.pop()] = -1; // no right boundary
+```
+**Invariant**: After the main loop, every index still in the stack has no greater element to its right → answer is -1 (or n, or ∞, depending on the problem).
+
+### 4. Unbounded Queue → OutOfMemoryError
+**What breaks**: Using a `LinkedBlockingQueue` with no capacity limit (the default constructor in `LinkedBlockingQueue` is `Integer.MAX_VALUE` capacity) in a producer-consumer system where the producer is faster than the consumer. The queue grows without bound until OOM.
+**Fix**: Always specify capacity: `new LinkedBlockingQueue<>(1000)`. This creates natural backpressure — the producer blocks when the queue is full.
+**Production war story**: Java's `Executors.newFixedThreadPool()` uses an unbounded `LinkedBlockingQueue` for task queuing. If tasks are submitted faster than they complete, memory grows unboundedly. Use `ThreadPoolExecutor` with a bounded queue and a `RejectedExecutionHandler`.
+
+### 5. Deque Used as Both Stack and Queue — Wrong-End Operations
+**What breaks**: Using `addFirst`/`removeFirst` for one role and `addLast`/`removeFirst` for another in the same `ArrayDeque` — correct Java API but easy to confuse which end is which.
+**Fix**: Use named roles explicitly: `push`/`pop` for stack semantics (both operate on head), `offer`/`poll` for queue semantics (offer at tail, poll from head).
+
+---
+
+## 📝 Exam-Style Problems (MIT 6.006 / KTH DD1352 style)
+
+---
+
+**Problem 1 (Correctness — 8 min)**: Prove that the monotonic decreasing stack computes the "next greater element" for every index correctly in O(n) total time.
+
+<details><summary>Model Answer</summary>
+
+**Invariant**: The stack, from bottom to top, contains indices of elements in strictly decreasing order. Every element in the stack has not yet found its "next greater element."
+
+- **Init**: Stack empty — invariant holds vacuously. ✓
+- **Maintenance**: When `arr[i] > arr[stack.peek()]`, we found the next greater element for `stack.peek()`. Pop until the invariant is restored, then push `i`. ✓
+- **Termination**: After the loop, elements still in the stack have no greater element to their right → answer = -1. ✓
+
+**Total O(n)**: Each index is pushed exactly once and popped at most once. Total push + pop ≤ 2n operations → O(n). ✓
+
+</details>
+
+---
+
+**Problem 2 (Analysis — 6 min)**: A `Queue` is implemented using two stacks `S1` and `S2`. `enqueue` pushes to `S1`. `dequeue` pops from `S2`; if `S2` is empty, all elements are moved from `S1` to `S2` first. Prove that the amortised cost per `dequeue` is O(1).
+
+<details><summary>Model Answer</summary>
+
+**Potential function**: Φ = size of S1 (number of elements waiting to be transferred).
+
+- **enqueue**: actual cost = 1; ΔΦ = +1; amortised = 1 + 1 = 2 = O(1). ✓
+- **dequeue (S2 not empty)**: actual cost = 1; ΔΦ = 0 (S1 unchanged); amortised = 1 = O(1). ✓
+- **dequeue (S2 empty, transfer k elements)**: actual cost = k + 1; ΔΦ = -k (S1 empties); amortised = (k+1) + (-k) = 1 = O(1). ✓
+
+Every operation is O(1) amortised. ✓
+
+</details>
+
+---
+
+**Problem 3 (Design — 10 min)**: Design a queue that supports `enqueue`, `dequeue`, and `getMax()` — all O(1) amortised.
+
+<details><summary>Model Answer</summary>
+
+**Structure**: Main queue + monotonic decreasing deque (max-deque).
+- `enqueue(x)`: add x to main queue; pop from back of deque while `deque.back() < x`; push x to back of deque.
+- `dequeue()`: remove from front of main queue; if front equals `deque.front()`, remove from front of deque too.
+- `getMax()`: return `deque.front()`.
+
+**Correctness**: The deque always holds, in decreasing order, the indices of elements that could still be the maximum (the "candidates"). Elements smaller than a newer element can never be max, so they're discarded. ✓
+
+**Amortised O(1)**: Each element enters and exits the deque at most once → O(n) total deque operations for n enqueues. ✓
+
+</details>

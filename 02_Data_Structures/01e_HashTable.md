@@ -988,3 +988,99 @@ Java's `String.hashCode()` and `Integer.hashCode()` pass these tests. Custom has
 - **`02_PROBLEM_SETS.md`** — exam-style two-sum problem; LRU cache design (HashMap + LinkedHashMap).
 - **`A1_DS_Correctness_Invariants.md`** — formal proofs of H1-H7 invariants.
 - **`A4_Randomized_Data_Structures.md`** — randomized hash families, cuckoo hashing, bloom filters (probabilistic membership).
+
+---
+
+## 💥 When Hash Table Breaks
+
+> These failure modes have caused production outages. Each one maps to a specific invariant violation.
+
+### 1. Load Factor > 0.75 → O(n) Degradation
+**What breaks**: A `HashMap` with too many entries and too small a table. Chains grow long, destroying O(1) lookup.
+**Trigger**: Java's default `HashMap` rehashes at 75% capacity. If you pre-fill a map with `new HashMap<>(16)` but insert 13+ entries, a rehash is triggered. More critically: if you initialise with the right final size but forget the load factor, you still trigger rehash.
+**Fix**: Pre-size to the expected number of entries divided by load factor: `new HashMap<>((int)(expectedSize / 0.75) + 1)`.
+**Diagnosis**: In production, monitor `bucket.size()` via reflection or JMX; a bucket with 8+ entries treeifies (Java 8+), which is a signal the table is too small.
+
+### 2. Birthday Attack → Expected First Collision at √m Insertions
+**What breaks**: A hash table with m buckets expects the first collision after approximately √(2m) insertions (birthday paradox). For m = 1024 buckets, first collision is expected after ~45 insertions — not 1024.
+**Implication**: Load factor 0.75 is not "75% empty" — at 75% capacity collisions are already common. The expected chain length at LF = 0.75 is 0.75 (one comparison per lookup on average), which is acceptable. At LF = 2.0, expected chain length is 2.0 — significantly slower.
+
+### 3. HashDoS — Non-Randomized Seeds → Adversarial O(n) Chains
+**What breaks**: If the hash function has a fixed seed (no per-process randomization), an attacker can craft O(n) input strings that all hash to the same bucket.
+**Historical incident**: In 2011, researchers showed that PHP, Python, Java, Ruby, and most web frameworks were vulnerable — a POST request with ~65,000 crafted form parameters could consume 100% CPU for 100+ seconds.
+**Fix**: Java 5+ randomizes `String.hashCode()` at the JVM level per process. Verify with `System.identityHashCode()` behaviour. For custom key types, use `Objects.hash()` or derive from `HashCode.fromString()` in Guava.
+
+📎 **Reference Anchor**: [OpenJDK HashMap.hash()](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/HashMap.java#L336)
+**Invariant learned**: Java's `HashMap.hash()` applies a secondary "spread" step: `(h = key.hashCode()) ^ (h >>> 16)` — XORs high bits into low bits to reduce collisions in small tables. Without this, power-of-2 table sizes cluster all keys with the same low bits.
+**Constraint warning**: This spread is only applied in `HashMap`. If you implement your own table using `hashCode()` directly, you miss this correction.
+
+### 4. Mutating a Key After Insertion → Key Becomes Unretrievable
+**What breaks**: Using a mutable object as a `HashMap` key, then modifying the object.
+```java
+List<Integer> key = Arrays.asList(1, 2, 3);
+map.put(key, "value");
+key.set(0, 99);  // mutates the key
+map.get(Arrays.asList(99, 2, 3));  // returns null — hash changed
+map.get(Arrays.asList(1, 2, 3));   // also null — key is at wrong bucket
+```
+**The invariant violated**: `HashMap` stores the key's hash at insertion time. When the key's `hashCode()` changes, the key is at the wrong bucket — unreachable via `get()` and not found by `containsKey()`.
+**Fix**: Only use immutable objects as keys (Strings, Integer, Long, record types, or custom immutable classes).
+
+### 5. `ConcurrentModificationException` on Structural Modification During Iteration
+**What breaks**: Adding or removing entries while iterating with a `for-each` or `Iterator`.
+**Root cause**: `HashMap` maintains a `modCount` field incremented on every structural change. The iterator stores `expectedModCount`; if they differ at `next()`, it throws `CME`.
+**Fix**: Collect keys to remove in a `Set<K> toRemove`, then call `map.keySet().removeAll(toRemove)` after the loop. Or use `entrySet().removeIf(...)` in Java 8+.
+
+---
+
+## 📝 Exam-Style Problems (MIT 6.006 / KTH DD1352 style)
+
+---
+
+**Problem 1 (Analysis — 8 min)**: A hash table uses chaining with m buckets and stores n keys. The load factor is α = n/m. Assume simple uniform hashing. Derive the expected time for a successful `get()`.
+
+<details><summary>Model Answer</summary>
+
+**Claim**: Expected time for successful search = Θ(1 + α).
+
+**Proof**:
+- Consider searching for key k. k was the i-th key inserted (i uniform in 1..n).
+- At the time k was inserted, i-1 keys were already present in table.
+- Expected chain length at k's bucket when k was inserted = (i-1)/m.
+- We search by probing the chain; we find k after examining the elements inserted before k that hash to the same bucket.
+- Expected cost = 1 + Σᵢ₌₁ⁿ (1/n) × (i-1)/m = 1 + (1/mn) × n(n-1)/2 = 1 + (n-1)/(2m) = Θ(1 + α). ✓
+
+</details>
+
+---
+
+**Problem 2 (Design — 10 min)**: Design an O(1) average time LRU Cache supporting `get(key)` and `put(key, value)` for capacity c.
+
+<details><summary>Model Answer</summary>
+
+**Structure**: `HashMap<K, Node>` + doubly-linked list ordered by recency. Head = most recent, tail = least recent.
+
+- `get(k)`: HashMap lookup O(1); if found, move node to head O(1) via pointer update; return value.
+- `put(k, v)`: If k exists, update value and move to head. If new: create node at head, put in HashMap. If `size > c`: remove tail node and delete from HashMap.
+
+**Invariant**: Every key in the HashMap has a corresponding node in the linked list; the list order reflects recency; the HashMap enables O(1) node access for move-to-head.
+
+Java shortcut: `new LinkedHashMap<>(c, 0.75f, true)` with `removeEldestEntry` override gives the same semantics using standard library.
+
+</details>
+
+---
+
+**Problem 3 (Proof — 6 min)**: Prove that a hash table with open addressing at load factor α < 1 finds an empty slot in at most 1/(1-α) expected probes.
+
+<details><summary>Model Answer</summary>
+
+**Model**: Each probe hits an occupied slot with probability α (fraction of occupied slots). Probes are independent under uniform hashing assumption.
+
+**Geometric distribution**: The expected number of probes to find an empty slot = geometric random variable with success probability (1-α).
+
+**Derivation**: E[probes] = Σₖ₌₁^∞ k × α^(k-1) × (1-α) = 1/(1-α). ✓
+
+**Implication**: At α = 0.5, expected probes = 2. At α = 0.9, expected probes = 10. At α = 0.99, expected probes = 100. This is why keeping LF < 0.75 matters enormously.
+
+</details>

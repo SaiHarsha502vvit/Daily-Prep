@@ -1240,3 +1240,113 @@ This is why databases use B-trees: each disk access fetches many keys, so the di
 - **`02_PROBLEM_SETS.md`** — exam-style BST correctness proof, AVL rotation proof, heap extract-min invariant proof.
 - **`A1_DS_Correctness_Invariants.md`** — formal proofs of T1-T4, A1-A3, R1-R5, H1-H4, B1-B4.
 - **`A3_DS_Lower_Bounds.md`** — Ω(n log n) lower bound on comparison-based sorting; Ω(log n) lower bound on BST lookup.
+
+---
+
+## 💥 When Trees / Heaps Break
+
+> These failure modes are what separate an engineer who "knows BSTs" from one who has shipped them in production.
+
+### 1. BST Degenerates to O(n) Linked List on Sorted Input
+**What breaks**: Inserting keys in sorted (or reverse-sorted) order into a plain BST. Every new key goes to the rightmost (or leftmost) child → the tree becomes a linked list → O(n) search.
+**Trigger constraint**: Any sorted dataset — database records inserted in ID order, log entries by timestamp, alphabetically sorted config keys.
+**Example**: Insert 1, 2, 3, 4, 5 → right-skewed tree; `get(5)` takes 5 comparisons, not log₂5 ≈ 2.3.
+**Fix**: Use a self-balancing BST: `TreeMap`/`TreeSet` (Red-Black, guaranteed O(log n)), AVL tree (stricter balance, faster lookup), or B-Tree (disk-friendly, used in databases).
+
+📎 **Reference Anchor**: [OpenJDK TreeMap](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/TreeMap.java)
+**Invariant learned**: TreeMap maintains 5 Red-Black invariants at all times. After each `put()`, `fixAfterInsertion()` propagates recolourings upward, then rotates at most 2 times — O(log n) guaranteed.
+**Constraint warning**: TreeMap requires keys to be `Comparable` or a `Comparator` to be provided. Using a comparator that violates the total-order contract (anti-symmetry, transitivity) produces non-deterministic behaviour — no exception thrown.
+
+### 2. Non-Total-Order Comparator → Silent Data Corruption
+**What breaks**: A `TreeMap` or `PriorityQueue` with a comparator that is not a strict total order (e.g., returns 0 for unequal objects, or is non-transitive).
+```java
+// BUG — this comparator can return 0 for different strings:
+Comparator<String> buggy = (a, b) -> a.length() - b.length();
+// "abc" vs "def" → 0, treated as equal → one overwrites the other in TreeMap
+```
+**Result**: Keys are silently dropped from `TreeMap`; heap ordering invariant violated in `PriorityQueue`.
+**Fix**: Compare by primary key first, then break ties with a secondary criterion (e.g., `Comparator.comparingInt(String::length).thenComparing(Comparator.naturalOrder())`).
+
+### 3. Heap: Equal Priorities → Non-Deterministic Ordering
+**What breaks**: Using a `PriorityQueue` for task scheduling with tasks that share priority. The queue gives no guarantee about which equal-priority task is returned first — it is not a stable sort.
+**Fix**: Add a tie-breaking field (insertion sequence number): `Comparator.comparingInt(Task::priority).thenComparingLong(Task::insertionOrder)`.
+
+### 4. `heapify` vs Repeated `insert` — Complexity Trap
+**What breaks**: Building a heap by n successive `insert()` calls costs O(n log n). If the data is known upfront, this is avoidable.
+**Fix**: Use `heapify` (also called "Floyd's build-heap"): build bottom-up by calling `siftDown` on all non-leaf nodes from right to left. Total cost = O(n) — proved by summing the geometric series of sift-down heights.
+**Java**: `PriorityQueue(Collection<>)` constructor uses heapify internally → O(n). Use it when all elements are known upfront.
+
+### 5. Recursive Tree Traversal Stack Overflow on Deep Trees
+**What breaks**: Recursive in-order traversal on a degenerate (right-skewed) BST with 1M+ nodes.
+**Root cause**: Each recursive call adds a frame to the JVM call stack. At ~10K depth, `StackOverflowError`.
+**Fix**: Use iterative traversal with an explicit stack:
+```java
+Deque<TreeNode> stack = new ArrayDeque<>();
+TreeNode curr = root;
+while (curr != null || !stack.isEmpty()) {
+    while (curr != null) { stack.push(curr); curr = curr.left; }
+    curr = stack.pop();
+    visit(curr);
+    curr = curr.right;
+}
+```
+
+---
+
+## 📝 Exam-Style Problems (MIT 6.006 / KTH DD1352 style)
+
+---
+
+**Problem 1 (Correctness — 8 min)**: Prove that BST in-order traversal returns keys in sorted order.
+
+<details><summary>Model Answer</summary>
+
+**Claim**: In-order traversal (left → root → right) of a BST returns all keys in strictly ascending order.
+
+**Proof by structural induction** on tree height h:
+- **Base (h=0)**: A single node has no children. The traversal visits only the root. A single element is sorted. ✓
+- **Inductive hypothesis**: Assume any BST of height < h is correctly traversed.
+- **Inductive step**: For a tree with root r, left subtree L, right subtree R:
+  - By BST property: all keys in L < r.key < all keys in R.
+  - By IH: L is traversed in sorted order; R is traversed in sorted order.
+  - In-order: traverse L (sorted), then r.key, then traverse R (sorted).
+  - Since all L keys < r.key < all R keys, the concatenation is sorted. ✓
+
+</details>
+
+---
+
+**Problem 2 (Complexity — 6 min)**: Prove that Floyd's build-heap algorithm runs in O(n) time.
+
+<details><summary>Model Answer</summary>
+
+**Setup**: A complete binary tree of n nodes has ⌊n/2⌋ non-leaf nodes. `siftDown` on a node at height h costs O(h).
+
+**Total cost**: Σₕ₌₁^{log n} (nodes at height h) × h = Σₕ₌₁^{log n} ⌈n/2^{h+1}⌉ × h
+
+≤ n × Σₕ₌₁^∞ h/2^h = n × 2 = **O(n)**
+
+(The geometric series Σₕ₌₁^∞ h × x^h = x/(1-x)² at x=1/2 gives 2.)
+
+Contrast with n insertions: each costs O(log n) → O(n log n) total. Build-heap is asymptotically better. ✓
+
+</details>
+
+---
+
+**Problem 3 (Design — 10 min)**: Design a data structure that supports `insert(x)`, `deleteMin()`, and `getMedian()` all in O(log n). Prove `getMedian()` is O(1).
+
+<details><summary>Model Answer</summary>
+
+**Structure**: Two heaps — `maxHeap` (lower half) and `minHeap` (upper half). Maintain: `maxHeap.size() == minHeap.size()` or `maxHeap.size() == minHeap.size() + 1`.
+
+- `insert(x)`: If `x <= maxHeap.peek()`, insert into maxHeap; else into minHeap. Rebalance (move top from larger to smaller) if sizes differ by more than 1.
+- `getMedian()`: If sizes equal → average of both tops. If maxHeap larger → `maxHeap.peek()`.
+- `deleteMin()`: Remove from `minHeap`; rebalance.
+
+**Invariant**: After every operation, the lower half is in maxHeap and upper half in minHeap, with sizes differing by at most 1.
+
+`getMedian()` is O(1) because it only inspects the heap tops, not the full heaps. ✓
+`insert()` and `deleteMin()` are O(log n) — at most 2 heap operations (insert + possible rebalance move). ✓
+
+</details>
