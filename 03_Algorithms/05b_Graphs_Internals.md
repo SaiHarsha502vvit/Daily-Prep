@@ -69,6 +69,11 @@ Adjacency matrix: O(V²) regardless of E — wastes O(V²−E) space on sparse g
 
 > BFS/Dijkstra proofs: [05c — Graphs Fundamentals](05c_Graphs_Fundamentals.md) | Lower bound for graph problems: [A3 — Lower Bounds & NP](A3_Lower_Bounds_And_NP.md)
 
+📎 **Reference Anchor**: [Guava ImmutableGraph / Graph API](https://github.com/google/guava/blob/master/guava/src/com/google/common/graph/Graph.java) · [JGraphT AdjacencyList impl](https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/graph/AbstractBaseGraph.java)
+**Invariant learned**: Guava's `Graph<N>` API separates the *graph interface* (node/edge set, adjacency queries) from the *traversal algorithm* — the exact split the Handshaking Lemma makes. The API exposes `graph.edges()` returning a `Set<EndpointPair<N>>`, so |E| and ∑deg(v) can be computed directly from the contract without inspecting adjacency list internals.
+**Local rewrite**: This chapter's O(V+E) space proof (V list headers + 2E entries for undirected) maps directly to JGraphT's `AbstractBaseGraph` which stores one `vertexMap` (the V headers) and one `edgeMap` (the 2E directed-edge records that represent undirected pairs).
+**Constraint warning**: `HashMap`-backed adjacency lists (the default in JGraphT for `SimpleGraph`) do NOT guarantee iteration order of neighbors. If BFS/DFS results must be deterministic (e.g., in tests), use `LinkedHashMap`-backed graphs or explicitly sort the neighbor list.
+
 ---
 
 🔬 **Section Challenge — From Fundamentals to Advanced Graph Algorithms**

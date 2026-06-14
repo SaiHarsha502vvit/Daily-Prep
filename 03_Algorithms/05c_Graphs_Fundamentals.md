@@ -40,6 +40,11 @@
 
 > Full proofs with worked examples: [A1 — Algorithm Correctness](A1_Correctness_Proofs.md) (Section 7: BFS + Dijkstra)
 
+📎 **Reference Anchor**: [Guava GraphTraverser](https://github.com/google/guava/blob/master/guava/src/com/google/common/graph/Traverser.java) · [OpenJDK LinkedList (BFS queue)](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/LinkedList.java)
+**Invariant learned**: Guava's `Traverser.forGraph(graph).breadthFirst(start)` maintains the BFS invariant explicitly: it uses a `Queue<N>` and a `Set<N> visited`. Every node is added to `visited` before being enqueued — preventing the "enqueue twice" bug that produces incorrect distance counts in manual BFS implementations.
+**Local rewrite**: This chapter's BFS correctness proof (induction on distance d) is exactly the invariant `Traverser` relies on. The `visited` set is the mechanization of the invariant: "once d[v] is set, it is final."
+**Constraint warning**: `Traverser.breadthFirst()` returns a lazy `Iterable` — nodes are not expanded until you iterate. Calling `.iterator()` twice creates two independent BFS traversals, each restarting from scratch. Materialise to a `List` if you need to traverse the order multiple times.
+
 ---
 
 | Problem Signal                   | Algorithm to use                     | Time Complexity |

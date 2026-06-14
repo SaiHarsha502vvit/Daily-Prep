@@ -51,6 +51,11 @@ Binary search: a=1, b=2, p=0, f(n)=1=Θ(1) → **Case 2 → Θ(log n)**.
 
 > Recurrence analysis (all 3 methods): [A2 — Complexity from First Principles](A2_Complexity_FirstPrinciples.md) | Correctness proofs: [A1](A1_Correctness_Proofs.md)
 
+📎 **Reference Anchor**: [OpenJDK DualPivotQuicksort](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/DualPivotQuicksort.java)
+**Invariant learned**: DualPivotQuicksort maintains two pivots p1 ≤ p2, creating three partitions: `arr[lo..p1-1] < p1`, `p1 ≤ arr[p1+1..p2-1] ≤ p2`, `arr[p2+1..hi] > p2`. This reduces the expected number of comparisons vs single-pivot Quicksort by ~20% due to the tighter partition buckets, while preserving in-place O(log n) average-case stack depth.
+**Local rewrite**: The Master Theorem quick-ref in this Proof Corner explains why DualPivotQuicksort is still O(n log n) average case — the 3-way partition doesn't change the asymptotic class (a=3 subproblems of size n/3 → log₃3 = 1 = same exponent as f(n)=n → Case 2).
+**Constraint warning**: DualPivotQuicksort has O(n²) worst case on adversarial inputs (carefully constructed to maximize pivot skew). Java switches to heapsort after a certain recursion depth to guarantee O(n log n) — this is the "introsort" pattern.
+
 ---
 
 🔬 **Section Challenge — Algorithm Analysis Fundamentals + D&C + Binary Search + Master Theorem**

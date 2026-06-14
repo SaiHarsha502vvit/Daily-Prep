@@ -63,6 +63,11 @@ Exponential state space is unavoidable for NP-hard problems; pruning reduces the
 
 > Backtracking completeness and constraint satisfaction: [A3 — Lower Bounds & NP](A3_Lower_Bounds_And_NP.md)
 
+📎 **Reference Anchor**: [OpenJDK regex engine (backtracking NFA)](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/regex/Pattern.java)
+**Invariant learned**: Java's `java.util.regex.Pattern` uses a non-deterministic finite automaton (NFA) with backtracking. The engine tries each alternative; on failure it backtracks and tries the next. This is exactly the "choose/explore/unchoose" pattern — the engine's "state" is the current position in the regex and string; backtracking restores both. Catastrophic backtracking occurs when the NFA generates exponential paths (e.g., `(a+)+b` on "aaaaaaa") — same exponential root as worst-case backtracking search.
+**Local rewrite**: The completeness proof in this Proof Corner ("unchoose restores state exactly → no valid solution skipped") directly explains why regex backtracks find every possible match: the unchoose restores the string position, so no prefix-position pair is skipped.
+**Constraint warning**: `Pattern.compile("(a+)+b").matcher("aaaaaa").matches()` runs in O(2ⁿ) time — a real DoS vector (ReDoS). Mitigation: use possessive quantifiers `(a++)` or atomic groups, or replace with a DFA-based library.
+
 ---
 
 ## PART 9: Advanced Recursion Patterns
