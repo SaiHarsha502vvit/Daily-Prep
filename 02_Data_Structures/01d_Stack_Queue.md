@@ -973,6 +973,89 @@ Invariant Q4 (empty/full):  head == tail is ambiguous. With a size field, empty 
 
 The Linux kernel `kfifo` and the Java `ArrayBlockingQueue` both use this design.
 
+---
+
+## 🔄 Brute Force → Optimal: Stack / Queue Motivation
+
+> **The university way**: show what breaks before introducing the data structure.
+
+### Problem 1: Valid Parentheses — O(n²) Brute Force vs O(n) Stack
+
+**Given**: string of `(`, `)`, `[`, `]`, `{`, `}`. Return true if all brackets are properly matched and closed.
+
+**Brute force — O(n²)**: repeatedly scan the string, removing adjacent matching pairs until none remain or the string is non-empty:
+```java
+while (s.contains("()") || s.contains("[]") || s.contains("{}")) {
+    s = s.replace("()", "").replace("[]", "").replace("{}", "");
+}
+return s.isEmpty();
+```
+- Time: O(n) per replacement pass, O(n) passes in worst case → O(n²).
+- Space: O(n) new string each pass.
+- **Also wrong** for inputs like `([)]` — the pair-removal order matters.
+
+**The insight**: We only ever need to check if the MOST RECENTLY OPENED bracket is closed next. "Most recently opened" = LIFO = **stack**.
+
+**Optimal — O(n) with stack**:
+```java
+Deque<Character> stack = new ArrayDeque<>();
+for (char c : s.toCharArray()) {
+    if (c == '(' || c == '[' || c == '{') { stack.push(c); continue; }
+    if (stack.isEmpty()) return false;
+    char top = stack.pop();
+    if ((c==')' && top!='(') || (c==']' && top!='[') || (c=='}' && top!='{')) return false;
+}
+return stack.isEmpty();
+```
+- Time: O(n) — one pass.
+- Space: O(n) — at most n/2 unmatched open brackets.
+
+| Approach | Time | Space | Correct? |
+|----------|------|-------|---------|
+| String.replace loop | O(n²) | O(n) | No (order-sensitive bugs) |
+| **Stack (LIFO)** | **O(n)** | O(n) | Yes |
+
+**Stack pattern signal**: "most recent / deepest / innermost" → push on open, pop on close.
+
+---
+
+### Problem 2: Moving Window Maximum — O(nk) Brute Force vs O(n) Monotonic Deque
+
+**Given**: array of n integers and window size k. Find the maximum in each sliding window.
+
+**Brute force — O(nk)**: scan each window independently:
+```java
+for (int i = 0; i <= n-k; i++) {
+    int max = arr[i];
+    for (int j = i+1; j < i+k; j++) max = Math.max(max, arr[j]);
+    result.add(max);
+}
+```
+- Time: O(nk). For n=10⁶, k=1000 → 10⁹ operations.
+
+**The insight**: Most elements are in multiple windows. The maximum from the previous window is still valid unless it slid out OR a larger element slid in. A **monotonic deque** keeps candidates in decreasing order; the front is always the current window maximum.
+
+**Optimal — O(n) with monotonic deque**:
+```java
+Deque<Integer> dq = new ArrayDeque<>();  // stores indices, decreasing values
+for (int i = 0; i < n; i++) {
+    while (!dq.isEmpty() && dq.peekFirst() < i-k+1) dq.pollFirst(); // remove out-of-window
+    while (!dq.isEmpty() && arr[dq.peekLast()] <= arr[i]) dq.pollLast(); // remove smaller
+    dq.addLast(i);
+    if (i >= k-1) result.add(arr[dq.peekFirst()]);
+}
+```
+- Time: O(n) — each element added and removed from deque at most once.
+
+| Approach | Time | Space |
+|----------|------|-------|
+| Brute force per window | O(nk) | O(1) |
+| **Monotonic deque** | **O(n)** | O(k) |
+
+**Deque signal**: "window max/min with efficient slide" → monotonic deque (decreasing for max, increasing for min).
+
+---
+
 ## Constraint-First Decision Framework — Stack, Queue, Deque, or Priority Queue?
 
 ### Decision Tree

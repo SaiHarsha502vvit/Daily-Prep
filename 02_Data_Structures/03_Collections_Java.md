@@ -1119,6 +1119,79 @@ These are the most common production failures from misuse of Java Collections. E
 
 **Cost in production:** Defensive immutability violated; mutations propagate unexpectedly.
 
+## 🔄 Brute Force → Optimal: Collection Selection
+
+> **The university way**: show the cost of wrong collection choice before teaching the right one.
+
+### Problem 1: Deduplicate a Stream and Count Occurrences — List vs Set vs Map
+
+**Brute force with ArrayList — O(n²)**:
+```java
+List<String> seen = new ArrayList<>();
+for (String s : stream) {
+    if (!seen.contains(s)) seen.add(s);  // contains() = O(n) scan every time
+}
+```
+- `contains()` on ArrayList is O(n) — full scan. For n=10⁶ unique items: ~5×10¹¹ total comparisons.
+
+**With HashSet — O(n)**:
+```java
+Set<String> seen = new HashSet<>();
+for (String s : stream) seen.add(s);  // add() = O(1) amortized
+```
+- `add()` calls `hashCode()` then bucket lookup: O(1) average.
+- **Rule**: deduplication → `HashSet`. No iteration order guarantee needed.
+
+**With LinkedHashSet — O(n), insertion-order preserved**:
+```java
+Set<String> seen = new LinkedHashSet<>();  // maintains encounter order
+```
+- Same O(1) ops as HashSet but adds a doubly-linked list through entries to preserve insertion order. Cost: ~24 extra bytes per entry vs HashSet.
+
+**For frequency count — O(n) with HashMap**:
+```java
+Map<String, Integer> freq = new HashMap<>();
+for (String s : stream) freq.merge(s, 1, Integer::sum);
+```
+
+| Goal | Brute Force | Optimal | Speedup |
+|------|-------------|---------|---------|
+| Dedup (any order) | ArrayList O(n²) | HashSet O(n) | n× |
+| Dedup (insertion order) | Sorted list O(n log n) | LinkedHashSet O(n) | log n× |
+| Dedup (sorted output) | Sort after O(n log n) | TreeSet O(n log n) | Same asymptote; cleaner API |
+| Count occurrences | List+sort O(n log n) | HashMap O(n) | Cleaner + faster |
+
+---
+
+### Problem 2: Priority Processing — List Sort vs PriorityQueue
+
+**Brute force — sort before every extraction: O(n log n) per batch**:
+```java
+List<Task> tasks = new ArrayList<>(incoming);
+Collections.sort(tasks);   // O(n log n) every time you want the next task
+Task next = tasks.remove(0);  // O(n) remove from front
+```
+- Sorting entire list after each new arrival: O(n log n) + O(n) = O(n log n) per task.
+
+**PriorityQueue — O(log n) per insert and extract**:
+```java
+PriorityQueue<Task> pq = new PriorityQueue<>(Comparator.comparingInt(t -> t.priority));
+pq.offer(newTask);        // O(log n) sift-up
+Task next = pq.poll();    // O(log n) sift-down
+```
+- Heap property maintained on every insert/remove. No full re-sort.
+
+**Critical gotcha**: `PriorityQueue.iterator()` is NOT in priority order — it returns elements in heap-array order. Only `poll()` returns the minimum. A for-each loop over a PriorityQueue is a common source of bugs:
+```java
+// BUG: not in priority order
+for (Task t : pq) System.out.println(t);  // heap-array order, not sorted
+
+// CORRECT: drain in priority order
+while (!pq.isEmpty()) System.out.println(pq.poll());
+```
+
+---
+
 ## Constraint-First Collection Selection
 
 The body has decision guidance; this section formalizes it as a decision tree for university-level reasoning.
