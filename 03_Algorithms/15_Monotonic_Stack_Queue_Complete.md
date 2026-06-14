@@ -1503,12 +1503,63 @@ public int[] maxWindow(int[] arr, int k) {
 
 ---
 
-🔬 **Section Challenge — Summary**
+---
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+## 📎 Reference Anchor
 
-<details><summary>Answer</summary>
+**OpenJDK `ArrayDeque` — the production monotonic stack/queue**
+- `ArrayDeque`: [ArrayDeque.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/ArrayDeque.java) — backed by a circular array; `offerFirst/Last()` and `pollFirst/Last()` all O(1) amortized. **Invariant**: `head` and `tail` indices modulo capacity; `size = (tail - head) & (elements.length - 1)`.
+- **Local rewrite rule**: Never use `java.util.Stack` or `LinkedList` as a stack/queue for monotonic operations — `Stack` is synchronized (10-50× slower), `LinkedList` has O(1) amortized but worse cache locality than `ArrayDeque`'s contiguous array.
+- **Constraint warning**: `ArrayDeque.peekFirst()` / `peekLast()` return `null` on empty deque (not exception). For monotonic stack, always check `!dq.isEmpty()` before peeking. Using `peek()` without the check is a silent NPE on the first element.
 
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+---
+
+## When Monotonic Stack/Queue Breaks
+
+### 1. Wrong Monotonic Direction — Increasing vs Decreasing
+**What breaks**: "Next Greater Element" requires a *decreasing* monotonic stack (pop when arr[i] > stack.top). Using an *increasing* stack instead produces "Next Smaller Element." The direction is load-bearing and the bug is silent — results look plausible but are systematically wrong.
+**Mnemonic**: "What do I pop for?" If you pop when you find something BIGGER → the popped elements needed BIGGER → you're finding next greater. If you pop when you find something SMALLER → finding next smaller.
+
+### 2. Sliding Window Max — Queue Direction and Window Expiry
+**What breaks**: Monotonic deque for sliding window max must:
+  a. Pop from FRONT when `deque.peekFirst() < i - k` (element left the window).
+  b. Pop from BACK when `arr[i] >= arr[deque.peekLast()]` (new element dominates older smaller ones).
+Swapping a or b causes wrong answers — missing expired elements or keeping dominated elements.
+
+### 3. Storing Values Instead of Indices
+**What breaks**: Storing `arr[i]` in the deque instead of `i`. When you need to check if an element is outside the sliding window (`deque.peekFirst() < i - k`), you can't — you stored the value, not the index.
+**Fix**: Always store indices in the deque. Access the value via `arr[deque.peekFirst()]`.
+
+---
+
+## Proof Corner
+
+### Monotonic Stack O(n) — Each Element Pushed and Popped Exactly Once
+
+**Claim**: A monotonic stack processes an array of n elements in O(n) total time, even though the inner `while (!stack.isEmpty() && ...)` loop runs many times.
+
+**Proof**: Consider the total number of push and pop operations across the entire algorithm.
+- Each element is pushed at most once (when we process index i, we push i once).
+- Each element is popped at most once (once an element is popped from the stack, it is never re-pushed).
+- Total pushes ≤ n. Total pops ≤ n.
+- Therefore: total operations = pushes + pops ≤ 2n = O(n). □
+
+**Key insight**: The apparent O(n²) from the nested `while` loop is a fallacy. The inner loop doesn't run n times *per outer iteration* — it runs *in total* at most n times across all outer iterations. This is the "aggregate method" of amortized analysis.
+
+🔬 **Section Challenge — Monotonic Stack/Queue**
+
+**Challenge 1 (Analysis — 8 min):** Prove that the monotonic stack algorithm for "Next Greater Element" runs in O(n) time even though there is a `while` loop inside the `for` loop.
+
+<details><summary>Model Answer</summary>
+
+Use the aggregate amortized method. Consider the total number of push and pop operations:
+- Each of the n elements is pushed exactly once (when i = that element's index).
+- Each element is popped at most once (once popped, it is never re-pushed).
+- Total pushes = n, total pops ≤ n.
+- All other work per iteration is O(1) (the `arr[i] > arr[stack.peek()]` comparison and the `result[popped] = arr[i]` assignment).
+
+Therefore: total work = O(pushes + pops + n comparisons) = O(n + n + n) = O(n).
+
+The `while` loop amortizes over all iterations of the `for` loop — it can run a total of at most n times, not n times per iteration.
 
 </details>

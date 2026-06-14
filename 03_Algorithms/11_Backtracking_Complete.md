@@ -1312,12 +1312,60 @@ All three share: CHOOSE → EXPLORE → UNCHOOSE
 
 **Navigation**: [< Previous](10_Bit_Manipulation_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](12_Greedy_Algorithms_Complete.md)
 
-🔬 **Section Challenge — Summary: Master These 3 Templates**
+---
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+## 📎 Reference Anchor
 
-<details><summary>Answer</summary>
+**OpenJDK / Apache Commons — backtracking in production**
+- Java `regex` engine (NFA backtracking): [Pattern.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/regex/Pattern.java) — uses Thompson NFA with backtracking for quantifiers. **Invariant**: tries each alternative left-to-right; on failure, backtracks to the last choice point. `(a+)+b` on `"aaa...a"` (no trailing b) causes O(2ⁿ) backtracking — ReDoS vulnerability.
+- Apache Commons `PermutationIterator`: [PermutationIterator.java](https://github.com/apache/commons-collections/blob/master/src/main/java/org/apache/commons/collections4/iterators/PermutationIterator.java) — generates permutations using Steinhaus-Johnson-Trotter algorithm (no backtracking, O(1) per step). Use this instead of recursive backtracking when you need ALL permutations of large n.
+- **Local rewrite rule**: Prune before recursing, not after. Every early prune saves an entire subtree — check `if (invalid(partial)) return` before the recursive call, not inside it.
+- **Constraint warning**: N-Queens with n > 15 takes seconds; n > 20 takes minutes. Pure backtracking is exponential — add pruning (column/diagonal bitmasks) to make n=15 run in < 1ms.
 
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+---
+
+## When Backtracking Breaks
+
+### 1. Forgetting to Unchoose — State Leaks Between Branches
+**What breaks**: Adding an element to `currentPath` and recursing, but forgetting `currentPath.remove(currentPath.size()-1)` before the next branch. Result: subsequent branches inherit polluted state → wrong subsets/permutations.
+**Fix**: The choose/recurse/unchoose triple is atomic. Write all three before testing. Alternatively, pass a new list copy to each recursive call (cleaner but uses O(n) extra space per level).
+
+### 2. Generating Duplicates from Duplicate Input
+**What breaks**: Subsets of `[1,1,2]` without deduplication produces `{1,2}` twice (once for each `1`). The backtracking tree visits both `1`s identically.
+**Fix**: Sort the input. Skip `nums[i]` if `i > start && nums[i] == nums[i-1]` within the same recursion level.
+
+### 3. Pruning Too Late — Exponential Work Before Pruning
+**What breaks**: Generating a complete candidate and then checking validity at the leaf. For N-Queens, this means generating all N! arrangements and filtering — O(N! × N) instead of O(N!/(N/3)!) with diagonal pruning.
+**Fix**: Check constraints incrementally at each step (is this column/diagonal safe?) and prune the whole branch early.
+
+---
+
+## Proof Corner
+
+### Backtracking Correctness — Exhaustive Search Invariant
+
+**Claim**: The choose→recurse→unchoose template correctly enumerates all valid solutions without duplicates (given unique input).
+
+**Proof by induction on tree depth**:
+- **Base**: At depth 0 (empty partial solution), the invariant holds trivially — the partial solution is valid and complete solutions are the leaves.
+- **Step**: Assume at depth d, all partial solutions of length d have been correctly enumerated. At depth d+1: for each choice c available at the current state:
+  1. **Choose**: add c to partial solution — the invariant holds (c was a valid next step by the check before recursion).
+  2. **Recurse**: by induction hypothesis, all extensions of the partial solution with c prepended are correctly enumerated.
+  3. **Unchoose**: restore state to exactly what it was before choosing c — the invariant holds for subsequent choices.
+- Since we try all available choices exhaustively and restore state between them, every valid solution is reached exactly once. □
+
+**Corollary**: Any pruning that eliminates a subtree must prove that NO valid solution exists in that subtree. If the pruning condition is sound (never eliminates valid solutions), the algorithm remains correct while reducing work.
+
+🔬 **Section Challenge — Backtracking**
+
+**Challenge 1 (Design — 8 min)**: Explain why the backtracking template for permutations uses a `boolean[] used` array rather than removing the element from the list. What bug does removing from list introduce?
+
+<details><summary>Model Answer</summary>
+
+**Why `used[]` instead of list removal**: Removing element at index i from the list shifts all subsequent elements left. When the recursion backtracks and we "unchoose" element at position i, the index i now points to a different element (the one that was shifted). This produces incorrect permutations — we'd skip some elements and repeat others.
+
+**Correct approach**: Mark `used[i] = true` before recursion, mark `used[i] = false` after (unchoose). The element stays at its index throughout. Access via `nums[i]` is always stable.
+
+**Alternative**: Swap `nums[i]` with `nums[start]`, recurse on `nums[start+1..n-1]`, then swap back. This avoids the `used[]` array entirely — O(1) space for the marker — but changes iteration order.
 
 </details>

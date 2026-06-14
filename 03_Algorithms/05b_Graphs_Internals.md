@@ -486,3 +486,44 @@ In _The Algorithm Design Manual_, Steven Skiena emphasizes that the hardest part
 - **Algorithm:** Bipartite Graph checking (Coloring) or Maximum Flow.
 
 ---
+
+## When Graph Internals Break
+
+### 1. HashMap Adjacency List — Non-Deterministic Traversal Order
+**What breaks**: `Map<Integer, Set<Integer>> adj` with `HashSet` for neighbors. BFS/DFS iteration order is non-deterministic between JVM runs (hash seeds differ since Java 8). Tests that assert a specific traversal order pass locally and fail in CI.
+**Fix**: Use `LinkedHashSet` to preserve insertion order, or `TreeSet` for sorted order. For competitive programming: use `List<Integer>` (insertion order, fastest iteration).
+
+### 2. Directed vs Undirected — Adding Edge Only Once
+**What breaks**: For an undirected graph, forgetting to add the reverse edge: `adj.get(u).add(v)` without `adj.get(v).add(u)`. Result: a directed graph masquerading as undirected. BFS from u reaches v, but BFS from v doesn't reach u.
+**Debug signal**: If `|edges from A| != |edges from B|` for a "symmetric" graph, one direction is missing.
+
+### 3. DFS Stack Overflow on Dense Graphs
+**What breaks**: Recursive DFS on a path graph with 10⁵ nodes causes `StackOverflowError` (JVM default stack ~8k–15k frames). Happens specifically on star graphs, path graphs, or any graph with high depth.
+**Fix**: Convert to iterative DFS with an explicit `ArrayDeque<Integer>` stack. The stack mirrors the recursion stack but lives on the heap.
+
+### 4. Forgetting to Initialize All Nodes in the Adjacency List
+**What breaks**: Calling `adj.get(node)` for an isolated node (no edges) returns `null` if you only initialized nodes that appear in edge lists. `NullPointerException` on `.size()` or `.iterator()`.
+**Fix**: Always pre-initialize: `for (int i = 0; i < n; i++) adj.add(new ArrayList<>())` before adding edges.
+
+---
+
+## Brute Force → Optimal: Graph Traversal
+
+### Problem: Find if Path Exists Between Two Nodes
+
+**Brute Force — O(V! ) try all permutations:**
+Enumerate every possible sequence of nodes, check if any forms a valid path. Obviously impractical.
+
+**Naive — O(V+E) DFS, risk of infinite loop without visited set:**
+```java
+boolean dfs(int u, int target, boolean[] visited, List<List<Integer>> adj) {
+    if (u == target) return true;
+    visited[u] = true;
+    for (int v : adj.get(u))
+        if (!visited[v] && dfs(v, target, visited, adj)) return true;
+    return false;
+}
+```
+
+**Optimal for connectivity — O(α(n)) Union-Find:**
+Build DSU once from all edges, then answer `connected(src, dst)` in O(1) per query after O(E·α(V)) build. For repeated queries, Union-Find dominates BFS/DFS by 10–100× on query throughput.

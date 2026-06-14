@@ -1517,3 +1517,30 @@ BFS explores by 'hop count' (number of edges). Each level = one more edge away f
 3 states: UNVISITED, IN_PROGRESS (currently in DFS path), DONE. DFS: mark node IN_PROGRESS before visiting neighbors. If we reach an IN_PROGRESS node → cycle found. Mark DONE when all neighbors processed. Why 3 states: with 2 (visited/unvisited), we'd get false positives — reaching a VISITED node that was processed in a DIFFERENT DFS subtree is not a cycle. IN_PROGRESS specifically marks nodes in the CURRENT DFS path (potential back edge).
 
 </details>
+
+---
+
+## 📎 Reference Anchor
+
+**JGraphT — production graph algorithms library (Java)**
+- `JGraphT BellmanFordShortestPath`: [BellmanFordShortestPath.java](https://github.com/jgrapht/jgrapht/blob/master/jgrapht-core/src/main/java/org/jgrapht/alg/shortestpath/BellmanFordShortestPath.java) — handles negative edges. **Invariant**: After V-1 relaxation rounds, all shortest paths found (no negative cycle). Vth round detects negative cycles.
+- `JGraphT KosarajuStrongConnectivity`: two-pass DFS. First pass orders by finish time on G; second pass traverses transpose G in reverse finish order. Each DFS tree in second pass = one SCC.
+- **Constraint warning**: Guava `Graphs.reachableNodes()` returns a lazy `Set` — materialise with `new HashSet<>(...)` if you need repeated `contains()` calls.
+
+---
+
+## Brute Force → Optimal: Shortest Path on Weighted Graphs
+
+**Brute Force — O(V!) enumerate all paths:** Exponential. Impractical for V > 10.
+
+**Naive — Bellman-Ford O(VE):** V-1 relaxation rounds over all E edges. Correct with negative weights; slow for dense graphs.
+
+**Optimal — Dijkstra O((V+E) log V):** Greedy expansion from minimum-distance unfinalized node. Requires non-negative weights.
+
+| Condition | Algorithm | Complexity |
+|-----------|-----------|-----------|
+| Unweighted | BFS | O(V+E) |
+| Non-negative weights | Dijkstra | O((V+E) log V) |
+| Negative weights, no negative cycles | Bellman-Ford | O(VE) |
+| All-pairs, small V | Floyd-Warshall | O(V³) |
+| DAG (any weights) | Topo-order relaxation | O(V+E) |

@@ -1635,12 +1635,56 @@ class UnionFind {
 
 **Navigation**: [< Previous](13_String_Algorithms_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](15_Monotonic_Stack_Queue_Complete.md)
 
-🔬 **Section Challenge — Summary**
+---
 
-**Challenge 1 (Reasoning):** Prefix sum initialized as `prefix[0] = 0` — why the leading zero and not `prefix[0] = arr[0]`?
+## 📎 Reference Anchor
 
-<details><summary>Answer</summary>
+**OpenJDK / Apache Commons — Union-Find in production**
+- Apache Commons `UnionFind`: [UnionFind.java](https://github.com/apache/commons-math/blob/master/commons-math-core/src/main/java/org/apache/commons/math4/legacy/graph/spanning/UnionFind.java) — implements path compression and union by rank. **Invariant**: `parent[x] == x` iff x is a root; `rank[x]` is an upper bound on subtree height, never decreased.
+- JGraphT `AsUndirectedGraph.getConnectedComponents()` uses Union-Find internally for static connectivity queries.
+- **Local rewrite rule**: Use `int[] parent` and `int[] rank` primitive arrays, NOT `HashMap<Integer,Integer>` — the map version has 3–5× overhead per operation from boxing and hash computation.
+- **Constraint warning**: Do NOT call `find()` and then immediately check `parent[x] == x` to determine if x is a root — after path compression, `parent[x]` may have been updated but `find()` returns the root. Always compare `find(x) == find(y)`, never compare parents directly.
 
-`prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
+---
+
+## When Union-Find Breaks
+
+### 1. Calling `union()` Without Path Compression in `find()` — O(n) Degeneration
+**What breaks**: Union by rank without path compression keeps trees shallow, but without either optimization, a chain of unions produces a bamboo (linear chain) with O(n) `find()`. Without both optimizations together, worst case is O(log n) not O(α(n)).
+**Fix**: Always implement BOTH — path compression in `find()` AND union by rank/size in `union()`.
+
+### 2. Using `parent[x] == x` to Check for Roots After Merging
+**What breaks**: After `union(x, y)`, if y becomes the root of x, then `parent[x] = y`. Checking `parent[x] == x` returns false, which you might interpret as "x is not in the set" — but x IS in the set, it's just not a root. The root check is `find(x) == x`, not `parent[x] == x`.
+
+### 3. Forgetting to Initialize All Nodes
+**What breaks**: Calling `union(3, 7)` before initializing all nodes 0..n-1 leaves `parent[5]`, `parent[6]`, etc. as 0 (Java default) instead of pointing to themselves. Subsequent `find(5)` follows the chain `5 → 0 → 0` (a loop!) and diverges.
+**Fix**: Always `for (int i = 0; i < n; i++) parent[i] = i;` before any `union()` or `find()` calls.
+
+---
+
+## Proof Corner
+
+### Union-Find Amortized O(α(n)) — Sketch
+
+**Claim**: A sequence of m `union` and `find` operations on n elements costs O((m+n)·α(n)) total, where α is the inverse Ackermann function.
+
+**Key ideas**:
+1. **Union by rank**: if `rank[x] < rank[y]`, set `parent[x] = y`. Rank never decreases. A tree of rank r has ≥ 2ʳ nodes (proof by induction). Max rank = log₂(n).
+2. **Path compression**: `find(x)` makes every node on the path from x to root point directly at the root. Amortizes future `find` costs.
+3. **Tarjan's proof (1975)**: Assigns a "potential" to each node based on its rank relationship to its parent. Path compression reduces potential; union increases it by at most 1. The amortized cost per operation is bounded by O(α(n)).
+
+**Practical implication**: For all n ≤ 10⁸⁰ (more atoms than the observable universe), α(n) ≤ 4. So O(α(n)) is effectively O(1) in all real-world usage.
+
+🔬 **Section Challenge — Union-Find**
+
+**Challenge 1 (Analysis — 7 min):** Why does Union-Find with only path compression (no union by rank) have O(log n) amortized cost, but with both optimizations it drops to O(α(n))?
+
+<details><summary>Model Answer</summary>
+
+**Path compression alone**: Compresses paths on `find()`, but without rank, `union()` may always attach higher-ranked trees under lower-ranked ones, creating tall trees. The inverse Ackermann bound requires that both the tree height AND the path compression work together — compression must "see" short paths to be effective.
+
+**Union by rank alone**: Keeps tree height at most log₂(n), so `find()` is O(log n). But compression doesn't happen, so every `find()` takes O(log n) — no amortization.
+
+**Both together**: Union by rank ensures trees stay "structured" (bounded height). Path compression then effectively short-circuits future finds. The combined analysis (Tarjan 1975, Seidel-Sharir 2005) shows the amortized cost is O(α(n)) — below O(log* n) and for all practical n, O(1).
 
 </details>

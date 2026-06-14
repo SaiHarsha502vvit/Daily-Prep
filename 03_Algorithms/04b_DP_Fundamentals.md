@@ -960,3 +960,33 @@ public int lcsOptimized(String s1, String s2) {
 | Memoization in React (useMemo)        | [React Hooks](../15_React_Frontend/03_Hooks_Deep_Dive.md)                       |
 | Optimization in ML (gradient descent) | [Math for ML](../21_Python_ML_DL_NLP/04_Math_For_ML.md)                         |
 | Greedy vs DP                          | [Greedy Algorithms](12_Greedy_Algorithms_Complete.md)                           |
+
+---
+
+## 📎 Reference Anchor
+
+**OpenJDK / Apache Commons — DP in production**
+- `String.valueOf()` / `String.format()`: Java's `String` class uses DP-like memoization internally for `intern()` — strings are deduplicated in the string pool, equivalent to memoizing character sequences.
+- Apache Commons Text `LevenshteinDistance`: [LevenshteinDistance.java](https://github.com/apache/commons-text/blob/master/src/main/java/org/apache/commons/text/similarity/LevenshteinDistance.java) — production edit-distance DP with space-optimized rolling array (O(min(m,n)) space). **Invariant**: `dp[i][j]` = edit distance between first i chars of s1 and first j chars of s2. Rolling array keeps only current and previous row.
+- **Local rewrite rule**: Top-down (memoized) DP has function call overhead per subproblem. Bottom-up avoids call stack entirely — for n > 10⁴ subproblems, bottom-up is 2–5× faster in Java due to reduced GC and call overhead.
+- **Constraint warning**: `int[][] dp = new int[n+1][m+1]` for n=m=10⁴ = 400 MB — exceeds default heap. Use rolling array (O(m)) or sparse map for large-n DP.
+
+---
+
+## When DP Breaks
+
+### 1. Identifying the Wrong State — Missing a Dimension
+**What breaks**: Coin change with coin limit — "minimum coins to make amount A, using each coin at most k times." Naive state `dp[a]` loses track of how many times each coin was used. The correct state is `dp[a][coin_index]` or `dp[a][count]`.
+**Rule**: If the recurrence's "remaining choice" doesn't fit in a single integer, add a dimension. Missing state dimensions cause silently wrong answers, not runtime errors.
+
+### 2. Memoizing with Mutable State (Wrong Cache Key)
+**What breaks**: Using an array reference as a HashMap key in top-down memoization. Two calls with arrays `{1,2,3}` and `{1,2,3}` (different objects, same values) produce different keys → cache is never hit → exponential time despite the memo table.
+**Fix**: Serialize state to a canonical key (e.g., `Arrays.toString(arr) + "," + index`) or convert to an `int` index if state space is bounded.
+
+### 3. Off-by-One in Base Case Initialization
+**What breaks**: `dp[0] = 1` vs `dp[0] = 0` is the most common DP bug. For coin change (minimum coins): `dp[0] = 0` (0 coins for amount 0). For count of ways: `dp[0] = 1` (one way to make 0: use no coins). Mixing these gives answers off by 1 or wrong by a factor.
+**Debug technique**: Trace the base case by hand for amount=0 and amount=1 before running. These two values exercise the init and the first step.
+
+### 4. Unbounded vs 0/1 vs Bounded — Wrong Loop Direction
+**What breaks**: 0/1 Knapsack requires iterating the weight dimension *backwards* (to prevent reusing the same item). Iterating forwards accidentally makes it unbounded knapsack (each item usable many times). This is the single most common knapsack implementation bug.
+**Fix**: 0/1 → inner loop `for (w = capacity; w >= weight[i]; w--)`. Unbounded → inner loop `for (w = weight[i]; w <= capacity; w++)`.

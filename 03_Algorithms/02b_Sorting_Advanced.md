@@ -1479,3 +1479,47 @@ Sort the unique values, map each value to its compressed rank, and answer counts
 | Minimum Number of Arrows            | LC 452         | Sort intervals + greedy                          |
 | Count of Smaller Numbers After Self | Hard LC 315    | Merge sort + counting inversions                 |
 | Magnetic Force Between Two Balls    | Medium LC 1552 | Binary search on answer (like Aggressive Cows)   |
+
+---
+
+## 📎 Reference Anchor
+
+**OpenJDK — TimSort and DualPivotQuicksort source**
+- `TimSort`: [TimSort.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/TimSort.java) — used by `Arrays.sort(Object[])` and `Collections.sort()`. **Invariant**: Merges only runs of length ≥ MIN_MERGE (32 by default); maintains a run stack where consecutive runs satisfy the Timsort merge invariants (`run[n-2].len > run[n-1].len + run[n].len` and `run[n-1].len > run[n].len`). This ensures O(n log n) worst case and O(n) on already-sorted input.
+- `DualPivotQuicksort`: [DualPivotQuicksort.java](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/DualPivotQuicksort.java) — used by `Arrays.sort(int[])` and other primitives. **Invariant**: Selects two pivots p1 < p2; partitions into 3 regions `[< p1]`, `[p1..p2]`, `[> p2]`. Falls back to insertion sort for n < 47; uses merge sort for "nearly sorted" sections.
+- **Constraint warning**: `Arrays.sort(int[])` is NOT stable. `Arrays.sort(Integer[])` IS stable (uses TimSort). If you sort primitive arrays and need to preserve equal-key order, box to `Integer[]` first — but accept the boxing overhead.
+
+---
+
+## When Advanced Sorting Breaks
+
+### 1. Radix Sort — Incorrect Number of Passes or Base
+**What breaks**: LSD Radix Sort on numbers with d digits in base B requires exactly d passes. Miscounting d (e.g., using `Math.log10(max)` which returns `log10(0) = -Infinity` for max=0) causes either too few passes (wrong result) or too many (wasted time).
+**Fix**: `int d = max == 0 ? 1 : (int) Math.log10(max) + 1`. Handle max=0 explicitly.
+
+### 2. Counting Sort — Array Size Proportional to Max Value
+**What breaks**: `int[] count = new int[max+1]` with max = 10⁹ allocates 4 GB — an OOM crash. Counting sort is only practical when max ≤ ~10⁶.
+**Signal**: If the value range >> n, use comparison sort (O(n log n)) not counting sort (O(n + max)).
+
+### 3. External Sort — Wrong Chunk Size / Missing Merge Pass
+**What breaks**: K-way external merge of sorted chunks with a heap: if chunks are larger than available RAM, the initial sort pass itself OOMs. Or if the chunk count k is too large, the k-way merge heap is still too large for memory.
+**Fix**: Chunk size = available RAM / 2 (leave room for the merge buffer). If k chunks don't fit in one merge pass, do multi-level merging: merge groups of sqrt(k) chunks first.
+
+---
+
+## Brute Force → Optimal: Counting Inversions
+
+**Problem**: Count pairs (i, j) with i < j and arr[i] > arr[j].
+
+**Brute Force — O(n²) nested loop:**
+```java
+int count = 0;
+for (int i = 0; i < n; i++)
+    for (int j = i+1; j < n; j++)
+        if (arr[i] > arr[j]) count++;
+```
+
+**Optimal — O(n log n) merge sort:**
+During the merge step, when we take an element from the RIGHT half before the LEFT half is exhausted, all remaining left-half elements form inversions with this right element. Add `leftRemaining = mid - i + 1` to the count at each such event.
+
+**Why this works**: Merge sort naturally processes pairs (left[i], right[j]) in sorted order of j. The "right element chosen first" event is exactly the inversion condition for all remaining left elements.
