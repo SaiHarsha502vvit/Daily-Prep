@@ -39,21 +39,25 @@ This chapter is not theory-heavy; it is a navigation and execution layer.
   - `02_Sorting_Searching_Complete.md`
   - `13_Binary_Search_Deep_Dive.md`
 
-🔬 **Section Challenge — 2.2 Binary Search and Variants**
+🔬 **Section Challenge — Pattern Recognition & Coverage**
 
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+**Challenge 1 (Classification):** You are given an array of integers and need to find two numbers that sum to a target value. List three distinct algorithmic approaches. For each, state the pattern category, time complexity, and space complexity.
 
 <details><summary>Answer</summary>
 
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+1. **Brute force (nested loops)** — no pattern, O(n²) time, O(1) space. Check every pair.
+2. **Hash set (complement lookup)** — Hash Map pattern. O(n) time, O(n) space. For each element x, check if `target - x` is in the set.
+3. **Two-pointer (sorted array)** — Two Pointer pattern. O(n log n) time (sort), O(1) extra space. Place pointers at both ends; move inward based on sum vs target.
+
+Pattern insight: these three are the canonical triad (brute force → hash for O(n) lookups → two-pointer for sorted arrays). ~80% of array problems reduce to one of these three patterns.
 
 </details>
 
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+**Challenge 2 (Coverage gap):** Which of the following patterns is MISSING from the Java Standard Library as a built-in utility, forcing you to implement it yourself: (A) Binary Search, (B) Sliding Window, (C) Heap/Priority Queue, (D) BFS/Graph traversal?
 
 <details><summary>Answer</summary>
 
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+Both **(B) Sliding Window** and **(D) BFS/Graph traversal** are missing as built-in utilities. `java.util.Arrays.binarySearch()` covers A. `java.util.PriorityQueue` covers C. But there is no `java.util.SlidingWindow` or `java.util.Graph` — these are patterns/algorithms you implement using the collections that are provided. Key implication: you must know the pattern well enough to implement it from scratch; you cannot rely on importing a library method.
 
 </details>
 

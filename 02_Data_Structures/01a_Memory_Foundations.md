@@ -1219,4 +1219,73 @@ This is why `Integer[]` is *never* used in performance-critical code; `int[]` is
 - **`A2_DS_Complexity_FirstPrinciples.md`** — the formal Big-O derivations here are specializations of the general complexity framework.
 - **`A3_DS_Lower_Bounds.md`** — proves why some layout choices cannot be improved (e.g., comparison-based sorting is Ω(n log n) regardless of layout).
 
+---
+
+## 💥 When Memory Model Breaks
+
+> These are the memory-layer failures that are hardest to diagnose — they show up as performance regressions, GC pauses, or Heisenbugs, not as exceptions.
+
+### 1. False Sharing — Cache-Line Contention in Multithreaded Code
+**What breaks**: Two threads write to different fields that live in the same 64-byte cache line. Every write by Thread A invalidates Thread B's cached copy — forcing a cross-core memory bus round-trip (~200–300ns) instead of an L1 hit (~1ns).
+```java
+// BUG — counter0 and counter1 share one cache line:
+class Counters { long counter0; long counter1; }
+// Thread A writes counter0; Thread B writes counter1 → cache ping-pong
+```
+**Fix**: Pad fields to separate cache lines (6 longs of padding = 48 bytes between fields). Java 8+: `@jdk.internal.vm.annotation.Contended` with `-XX:-RestrictContended`.
+
+📎 **Reference Anchor**: [OpenJDK LongAdder](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/concurrent/atomic/LongAdder.java)
+**Invariant learned**: `LongAdder` maintains per-thread cells, each padded to its own cache line. Only aggregates on `sum()`. That's why `LongAdder` scales better than `AtomicLong` under high write contention — no false sharing.
+**Constraint warning**: `@Contended` is an internal JVM annotation not part of the public API. In production, prefer `LongAdder`/`LongAccumulator` which handle padding internally.
+
+### 2. Escape Analysis Defeat → Heap Allocation Where Stack Was Expected
+**What breaks**: JVM escape analysis can stack-allocate short-lived objects (no GC overhead), but only if the object stays local. Passing it to a non-inlined method, storing in an array, or returning it forces heap allocation.
+**Symptom**: GC pause frequency increases with an allocation-heavy inner loop. `-XX:+PrintEscapeAnalysis` reveals heap-allocated objects that look local.
+**Fix**: Keep hot-path objects fully within the method scope. For repeated small allocations in tight loops, use primitive arrays instead of object arrays.
+
+### 3. Off-Heap Memory Leak with `DirectByteBuffer`
+**What breaks**: `ByteBuffer.allocateDirect(n)` allocates outside the Java heap. It is freed by a finalizer — but only when the `ByteBuffer` object itself is GC'd. A long-lived reference (e.g., in a static field or cache) prevents the off-heap memory from ever being released.
+**Symptom**: `OutOfMemoryError: Direct buffer memory` while heap usage looks normal.
+**Fix**: Explicitly call `((sun.nio.ch.DirectBuffer) buf).cleaner().clean()`, or use Java 9+ `Cleaner` API. Always close `FileChannel` and `SocketChannel` which hold `DirectByteBuffer`s internally.
+
+### 4. Autoboxing in Hot Loops → GC Pressure
+**What breaks**: Using `Integer`, `Long`, `Double` in arithmetic-heavy inner loops. Every `Integer x = a + b` allocates a new object on the heap. At 10M iterations, that's 10M object allocations → GC pause.
+**Benchmark**: Summing 10M integers via `Integer` ≈ 200ms; via `int` ≈ 5ms — 40× difference from boxing alone.
+**Fix**: Use primitive arrays (`int[]`, `long[]`), `IntStream`, or specialized collections (`IntArrayList` in Eclipse Collections). Never use `Integer[]` in performance-critical numeric code.
+
+### 5. Stack Depth Exhaustion
+**What breaks**: Default JVM thread stack = 512KB–1MB. At ~1KB per frame, that allows ~500–1000 recursive frames. Deep tree traversal, parsing, or divide-and-conquer without tail-call elimination exceeds this.
+**Symptom**: `StackOverflowError` with no useful stack trace (the trace itself overflows).
+**Fix**: Convert to iterative with an explicit `ArrayDeque` stack. Or increase per-thread stack: `-Xss2m` (but this applies to all threads — costs 2MB × thread count in memory).
+
+---
+
+## 📝 Exam-Style Problems (MIT 6.042J / TU Munich Memory Model)
+
+---
+
+**Problem 1 (Analysis — 6 min)**: An array of 1000 `int` values is accessed sequentially. A CPU cache line holds 64 bytes. How many cache misses occur on first pass? Repeat for `Integer[]`.
+
+<details><summary>Model Answer</summary>
+
+**`int[]`**: each `int` = 4 bytes → 16 ints per 64-byte cache line. First access of each line = 1 miss; subsequent 15 reads = hits. Total misses: ⌈1000 / 16⌉ = **63 cache misses**.
+
+**`Integer[]`**: the array holds 8-byte references (JVM compressed OOPs: 4 bytes). Each `Integer` object is a separate heap allocation at an arbitrary address. Pointer-chasing: each dereference likely misses. Worst case: **1000 cache misses** (one per element, since objects don't live adjacent in memory).
+
+**Ratio**: `int[]` is ~16× more cache-friendly for sequential access. For a hot inner loop, this is the difference between 63ns and 1000ns of memory latency.
+
+</details>
+
+---
+
+**Problem 2 (Reasoning — 5 min)**: Why does `long counter0; long counter1;` in the same Java object cause performance regression under concurrent writes from two threads?
+
+<details><summary>Model Answer</summary>
+
+Both longs are adjacent in heap memory (8 bytes each). A CPU cache line = 64 bytes — both fields fit in one line. When Thread A writes `counter0`, the CPU invalidates the entire 64-byte cache line (MESI protocol: Exclusive → Invalid). Thread B, which was using `counter1` from that same line, must reload the entire line from L3/main memory before it can read or write `counter1`. This repeats on every write from either thread: **false sharing** — two independent variables fighting over one cache line.
+
+**Fix**: Pad to 64 bytes between fields so they occupy separate cache lines. `LongAdder` (JDK) does this via `@Contended`.
+
+</details>
+
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](01b_Arrays.md)

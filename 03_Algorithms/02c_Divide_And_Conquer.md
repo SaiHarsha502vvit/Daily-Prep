@@ -548,21 +548,27 @@ public int findLast(int[] arr, int target) {
 
 ---
 
-🔬 **Section Challenge — Binary Search — Complete Understanding**
+🔬 **Section Challenge — Divide & Conquer Recurrences**
 
-**Challenge 1 (Reasoning):** Binary search on `[1,3,5,7,9]` with `target=6`. Trace `lo`, `hi`, `mid` at each step and explain the final state.
+**Challenge 1 (Derive):** Merge sort splits an array of n elements into two halves, recursively sorts each half, and merges them. Write the recurrence relation T(n) and solve it. Show your work using the recursion-tree method.
 
 <details><summary>Answer</summary>
 
-lo=0,hi=4 → mid=2(val=5): 5<6 → lo=3. lo=3,hi=4 → mid=3(val=7): 7>6 → hi=2. lo(3)>hi(2): loop ends, return -1 (not found). Key insight: lo overtakes hi — this is the standard termination condition. `lo` ends at the insertion point where 6 would go.
+**Recurrence**: T(n) = 2T(n/2) + Θ(n), with T(1) = Θ(1).
+
+**Recursion tree**: Level 0: cost n. Level 1: two subproblems of size n/2, total cost 2×(n/2) = n. Level k: 2^k subproblems of size n/2^k, total cost 2^k × (n/2^k) = n. Depth = log₂n (until subproblems reach size 1). Total cost = n × (log₂n + 1) = **Θ(n log n)**.
+
+**Master Theorem check**: a=2, b=2, f(n)=n. Critical exponent p = log₂2 = 1. f(n) = Θ(n^p) → Case 2 → T(n) = Θ(n log n). ✓
 
 </details>
 
-**Challenge 2 (Design):** Binary search on a rotated array `[4,5,6,7,0,1,2]`. How do you determine which half is sorted?
+**Challenge 2 (Compare):** Strassen's matrix multiplication runs in T(n) = 7T(n/2) + Θ(n²). Apply the Master Theorem and compare against the naïve O(n³) algorithm. At what matrix size does Strassen become faster in practice?
 
 <details><summary>Answer</summary>
 
-Compare `nums[lo]` and `nums[mid]`. If `nums[lo] <= nums[mid]`: left half is sorted. Check if target is in `[nums[lo], nums[mid])` — if yes, search left; else search right. Otherwise right half is sorted. Check if target is in `(nums[mid], nums[hi]]` — if yes, search right; else search left. This always works because at least one half of a rotated sorted array is always sorted.
+a=7, b=2, f(n)=n². Critical exponent p = log₂7 ≈ 2.807. Since f(n) = n² = O(n^(p-ε)) for ε≈0.807 → Case 1 → T(n) = Θ(n^(log₂7)) ≈ Θ(n^2.807).
+
+Naïve: Θ(n³). Strassen wins asymptotically. In practice, Strassen has large constants (7 recursive calls + 18 additions vs 8 recursive calls + 4 additions) so it only beats naïve for n ≥ ~1000 in real implementations (BLAS libraries use a threshold, switching to naïve below it).
 
 </details>
 

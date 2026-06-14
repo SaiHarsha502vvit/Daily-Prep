@@ -1963,3 +1963,115 @@ For linear growth (`+1` per resize), the same proof gives `O(n)` per append — 
 - **`02_PROBLEM_SETS.md`** — exam-style problems on arrays (Kadane's invariant, address-formula derivation, rotation proof).
 - **`A2_DS_Complexity_FirstPrinciples.md`** — formal Big-O derivations for all array operations.
 - **`A3_DS_Lower_Bounds.md`** — proves Ω(n log n) lower bound on comparison-based array sorting.
+
+---
+
+## 💥 When Arrays Break
+
+> Every one of these has caused a real production bug. Know the failure mode before you need to debug it.
+
+### 1. Integer Overflow in Binary Search Mid Calculation
+**What breaks**: `int mid = (lo + hi) / 2` overflows when `lo + hi > Integer.MAX_VALUE` (≈ 2.1 billion). The sum wraps to a negative number → mid is negative → `ArrayIndexOutOfBoundsException`.
+**History**: This bug lived in textbooks since 1946 and was in Java's `Arrays.binarySearch()` from 1997 until Joshua Bloch reported it at Google in 2006.
+**Fix**: `int mid = lo + (hi - lo) / 2;` — equivalent result, no overflow.
+**Production scope**: Any binary search on an array of size > 1 billion elements (common in distributed sorted datasets).
+
+📎 **Reference Anchor**: [OpenJDK Arrays.binarySearch()](https://github.com/openjdk/jdk/blob/master/src/java.base/share/classes/java/util/Arrays.java)
+**Invariant learned**: The invariant `lo ≤ target_index ≤ hi` must hold at every step. The correct mid formula preserves this by staying within the [lo, hi] range even at Integer boundary values.
+
+### 2. Off-By-One in Two-Pointer Shrink Condition
+**What breaks**: Using `<` instead of `<=` (or vice versa) in sliding-window or two-pointer shrink condition. Classic example in longest substring without repeating characters:
+```java
+// BUG — uses < instead of >:
+while (charCount.get(s.charAt(right)) < 1) { // should be > 1
+    charCount.merge(s.charAt(left++), -1, Integer::sum);
+}
+```
+**Root cause**: The shrink condition decides when the window is invalid. Getting `<` vs `>` backwards admits invalid windows silently — no exception, just wrong answers.
+**Fix**: Write the invariant explicitly first: "the window is valid when all char counts ≤ 1." Shrink when any count > 1.
+
+### 3. 2D Array Row-Major vs Column-Major Access Pattern
+**What breaks**: Iterating a 2D array in the wrong order causes cache misses on every element.
+```java
+// SLOW — column-major access on a row-major array:
+for (int col = 0; col < N; col++)
+    for (int row = 0; row < N; row++)
+        sum += matrix[row][col];  // jumps N elements between accesses
+
+// FAST — row-major access:
+for (int row = 0; row < N; row++)
+    for (int col = 0; col < N; col++)
+        sum += matrix[row][col];  // sequential in memory
+```
+**Impact**: For a 1000×1000 `int[][]`, the slow version can be 5–10× slower due to cache misses. Java 2D arrays are arrays of references to row arrays (row-major), so row-sequential access is always cache-friendly.
+
+### 4. Sorting Parallel Arrays Destroys Correlation
+**What breaks**: When two arrays represent related data (e.g., `names[]` and `scores[]`), sorting one array by value breaks the index correspondence with the other.
+```java
+Arrays.sort(scores);  // now scores[0] is the lowest score,
+                      // but names[0] is still the original first person
+                      // → correlation destroyed
+```
+**Fix**: Use an array of objects (`record Person(String name, int score)`) or sort indices instead: `Integer[] idx = ...; Arrays.sort(idx, (a,b) -> scores[a] - scores[b]);`
+
+### 5. `Arrays.asList()` Returns a Fixed-Size List
+**What breaks**: `Arrays.asList(1, 2, 3)` returns a fixed-size list backed by the array. Calling `.add()` or `.remove()` throws `UnsupportedOperationException`.
+**Root cause**: `Arrays.asList()` returns `Arrays.ArrayList` — not `java.util.ArrayList`. It wraps the array without copying.
+**Fix**: `new ArrayList<>(Arrays.asList(...))` creates a mutable copy. Or `List.of(...)` (Java 9+) for an immutable list with a clearer contract.
+
+---
+
+## 📝 Exam-Style Problems (MIT 6.006 / KTH DD1352 style)
+
+---
+
+**Problem 1 (Correctness — 8 min)**: State the loop invariant for standard binary search and use it to prove the algorithm is correct and terminates.
+
+<details><summary>Model Answer</summary>
+
+**Invariant**: At the start of each iteration, if `target` exists in the array, it is in `arr[lo..hi]`.
+
+- **Init**: `lo=0, hi=n-1` — the entire array. If target exists, it's here. ✓
+- **Maintenance**: We compute `mid = lo + (hi-lo)/2`. If `arr[mid] == target` → return mid. If `arr[mid] < target` → target can only be in `arr[mid+1..hi]`, so `lo = mid+1`. If `arr[mid] > target` → target can only be in `arr[lo..mid-1]`, so `hi = mid-1`. In each case, the invariant holds for the new range. ✓
+- **Termination**: Each iteration reduces `hi - lo` by at least 1 (since `mid` is strictly between lo and hi when `hi > lo`). When `lo > hi`, the range is empty → target is not present, return -1. ✓
+
+</details>
+
+---
+
+**Problem 2 (Analysis — 5 min)**: Prove that a dynamic array with geometric growth factor r > 1 achieves O(1) amortised append.
+
+<details><summary>Model Answer</summary>
+
+**Potential function**: Φ = 2 × (current size) − capacity.
+
+When the array is at size k with capacity k (full):
+- Actual cost of append with resize: copy k elements + insert 1 = k+1.
+- New capacity = r×k; new Φ = 2(k+1) − rk.
+- Old Φ = 2k − k = k.
+- Amortised = (k+1) + (2(k+1) − rk) − k = 3 + (2−r)k.
+- For r=2: amortised = 3 − 0 = 3 = **O(1)**. ✓
+
+When append does NOT trigger resize (normal case): actual cost = 1; Φ increases by 2; amortised = 3. ✓
+
+</details>
+
+---
+
+**Problem 3 (Reasoning — 5 min)**: An array contains n distinct integers. Describe an O(n) algorithm to find the single missing integer in range [1, n+1] without using extra space.
+
+<details><summary>Model Answer</summary>
+
+**Key insight**: Sum of integers 1 to (n+1) = (n+1)(n+2)/2. The actual sum of the array is some value S. The missing integer = (n+1)(n+2)/2 − S.
+
+```java
+int missing = (n+1)*(n+2)/2;
+for (int x : arr) missing -= x;
+return missing;
+```
+
+**Complexity**: O(n) time, O(1) extra space. No sorting, no hash set needed.
+
+**Overflow note**: For large n, use `long` arithmetic. `(long)(n+1)*(n+2)/2` avoids int overflow.
+
+</details>
