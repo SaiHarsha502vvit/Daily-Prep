@@ -37,45 +37,46 @@
 | 09 | 08_Subqueries_CTEs.md | 2 | 3 | 2 | 0 | 3 | 2.0 | YES (HE=0) | P2 |
 | 10 | 09_Window_Functions.md | 3 | 3 | 2 | 0 | 3 | 2.2 | YES (HE=0) | P2 |
 | 11 | 10_Normalization.md | 2 | 2 | 1 | 0 | 2 | 1.4 | YES (avg<2, HE=0) | P1 |
-| 12 | 12_Views_StoredProcs_Triggers.md | 2 | 2 | 1 | 0 | 2 | 1.4 | YES (avg<2, HE=0) | P1 |
-| 13 | 13_Transactions_ACID.md | 3 | 2 | 3 | 1 | 3 | 2.4 | no | — |
-| 14 | 14_Query_Optimization.md | 3 | 2 | 3 | 0 | 2 | 2.0 | YES (HE=0) | P2 |
-| 15 | 15_Analytics_Warehousing_ETL.md | 2 | 3 | 2 | 1 | 3 | 2.2 | no | — |
-| 16 | 16_RealWorld_CaseStudies.md | 2 | 2 | 3 | 2 | 2 | 2.2 | no | — |
-| 17 | 17_Practice_100_Problems.md | 1 | 2 | 0 | 0 | 1 | 0.8 | YES (avg<2, PR=0, HE=0) | P0 |
-| 18 | 18a_SQL_Projects_Beginner.md | 2 | 2 | 2 | 0 | 2 | 1.6 | YES (avg<2, HE=0) | P1 |
-| 19 | 18b_SQL_Projects_Advanced.md | 2 | 3 | 2 | 0 | 3 | 2.0 | YES (HE=0) | P2 |
-| 20 | 19_Interview_Top50.md | 1 | 2 | 0 | 0 | 1 | 0.8 | YES (avg<2, PR=0, HE=0) | P0 |
-| 21 | 20_CheatSheet_QuickRef.md | 1 | 2 | 1 | 0 | 1 | 1.0 | YES (avg<2, HE=0) | P0 |
-| 22 | 21_Database_Internals.md | 3 | 2 | 2 | 1 | 3 | 2.2 | no | — |
-| 23 | 22_NoSQL_MongoDB.md | 2 | 3 | 2 | 0 | 2 | 1.8 | YES (avg<2, HE=0) | P1 |
-| 24 | 23_SQL_Deep_Reasoning.md | 3 | 2 | 2 | 1 | 3 | 2.2 | no | — |
-| 25 | 24_SQL_Data_Analyst_RealWorld.md | 3 | 3 | 2 | 0 | 3 | 2.2 | YES (HE=0) | P2 |
-| 26 | 25_Interview_Patterns_Expanded.md | 2 | 2 | 2 | 0 | 2 | 1.6 | YES (avg<2, HE=0) | P1 |
-| 27 | 26_Python_SQL_Integration.md | 2 | 3 | 1 | 0 | 2 | 1.6 | YES (avg<2, HE=0) | P1 |
-| 28 | 27_Python_SQL_Visualization.md | 1 | 3 | 1 | 0 | 2 | 1.4 | YES (avg<2, HE=0) | P1 |
-| 29 | 28_Data_Analytics_Intermediate.md | 2 | 3 | 1 | 0 | 2 | 1.6 | YES (avg<2, HE=0) | P1 |
-| 30 | 29_Data_Analytics_Advanced.md | 2 | 2 | 1 | 0 | 2 | 1.4 | YES (avg<2, HE=0) | P1 |
-| 31 | 30_Recursive_Queries_Hierarchical.md | 3 | 3 | 1 | 0 | 2 | 1.8 | YES (avg<2, HE=0) | P1 |
-| 32 | 31_JSON_XML_Modern_SQL.md | 2 | 3 | 1 | 0 | 2 | 1.6 | YES (avg<2, HE=0) | P1 |
-| 33 | 32_Partitioning_Sharding_Replication.md | 2 | 3 | 2 | 0 | 3 | 2.0 | YES (HE=0) | P2 |
-| 34 | 33_SQL_Security_Injection.md | 3 | 3 | 3 | 0 | 3 | 2.4 | YES (HE=0) | P2 |
-| 35 | 34_TimeSeries_Temporal.md | 2 | 2 | 1 | 0 | 2 | 1.4 | YES (avg<2, HE=0) | P1 |
-| 36 | 35_Database_Migration_Schema.md | 2 | 3 | 2 | 0 | 2 | 1.8 | YES (avg<2, HE=0) | P1 |
-| 37 | 36_Advanced_Data_Modeling.md | 3 | 3 | 1 | 0 | 2 | 1.8 | YES (avg<2, HE=0) | P1 |
-| 38 | 37_SQL_5WH_Deep_Reasoning.md | 3 | 3 | 1 | 0 | 3 | 2.0 | YES (HE=0) | P2 |
-| 39 | 38_RealWorld_Production_Scenarios_Part1.md | 3 | 3 | 3 | 1 | 3 | 2.6 | no | — |
-| 40 | 39_RealWorld_Production_Scenarios_Part2.md | 3 | 3 | 3 | 0 | 3 | 2.4 | YES (HE=0) | P2 |
-| 41 | 40_RealWorld_Production_Scenarios_Part3.md | 3 | 3 | 3 | 0 | 3 | 2.4 | YES (HE=0) | P2 |
-| 42 | 41_RealWorld_Production_Scenarios_Part4.md | 3 | 3 | 3 | 0 | 3 | 2.4 | YES (HE=0) | P2 |
-| 43 | 42_RealWorld_Production_Scenarios_Part5.md | 3 | 3 | 3 | 0 | 3 | 2.4 | YES (HE=0) | P2 |
-| 44 | 43_Interview_Mindset_How_Professionals_Explain.md | 3 | 3 | 2 | 1 | 3 | 2.4 | no | — |
-| 45 | 44_Interview_Scenarios_Explained_Part1.md | 3 | 3 | 3 | 1 | 3 | 2.6 | no | — |
-| 46 | 45_Interview_Scenarios_Explained_Part2.md | 3 | 3 | 3 | 1 | 3 | 2.6 | no | — |
-| 47 | 46_Interview_Scenarios_Explained_Part3.md | 3 | 3 | 3 | 1 | 3 | 2.6 | no | — |
-| 48 | 47_Theory_Deep_Dive_Database_Internals.md | 3 | 3 | 2 | 2 | 3 | 2.6 | no | — |
-| 49 | 48_Problem_Variants_Bank.md | 3 | 3 | 2 | 0 | 2 | 2.0 | YES (HE=0) | P2 |
-| 50 | 49_SQL_Internals_Deep.md | 3 | 3 | 3 | 2 | 3 | 2.8 | no | — |
+| 12 | 11_Indexes_Performance.md | 3 | 3 | 2 | 0 | 2 | 2.0 | YES (HE=0) | P2 |
+| 13 | 12_Views_StoredProcs_Triggers.md | 2 | 2 | 1 | 0 | 2 | 1.4 | YES (avg<2, HE=0) | P1 |
+| 14 | 13_Transactions_ACID.md | 3 | 2 | 3 | 1 | 3 | 2.4 | no | — |
+| 15 | 14_Query_Optimization.md | 3 | 2 | 3 | 0 | 2 | 2.0 | YES (HE=0) | P2 |
+| 16 | 15_Analytics_Warehousing_ETL.md | 2 | 3 | 2 | 1 | 3 | 2.2 | no | — |
+| 17 | 16_RealWorld_CaseStudies.md | 2 | 2 | 3 | 2 | 2 | 2.2 | no | — |
+| 18 | 17_Practice_100_Problems.md | 1 | 2 | 0 | 0 | 1 | 0.8 | YES (avg<2, PR=0, HE=0) | P0 |
+| 19 | 18a_SQL_Projects_Beginner.md | 2 | 2 | 2 | 0 | 2 | 1.6 | YES (avg<2, HE=0) | P1 |
+| 20 | 18b_SQL_Projects_Advanced.md | 2 | 3 | 2 | 0 | 3 | 2.0 | YES (HE=0) | P2 |
+| 21 | 19_Interview_Top50.md | 1 | 2 | 0 | 0 | 1 | 0.8 | YES (avg<2, PR=0, HE=0) | P0 |
+| 22 | 20_CheatSheet_QuickRef.md | 1 | 2 | 1 | 0 | 1 | 1.0 | YES (avg<2, HE=0) | P0 |
+| 23 | 21_Database_Internals.md | 3 | 2 | 2 | 1 | 3 | 2.2 | no | — |
+| 24 | 22_NoSQL_MongoDB.md | 2 | 3 | 2 | 0 | 2 | 1.8 | YES (avg<2, HE=0) | P1 |
+| 25 | 23_SQL_Deep_Reasoning.md | 3 | 2 | 2 | 1 | 3 | 2.2 | no | — |
+| 26 | 24_SQL_Data_Analyst_RealWorld.md | 3 | 3 | 2 | 0 | 3 | 2.2 | YES (HE=0) | P2 |
+| 27 | 25_Interview_Patterns_Expanded.md | 2 | 2 | 2 | 0 | 2 | 1.6 | YES (avg<2, HE=0) | P1 |
+| 28 | 26_Python_SQL_Integration.md | 2 | 3 | 1 | 0 | 2 | 1.6 | YES (avg<2, HE=0) | P1 |
+| 29 | 27_Python_SQL_Visualization.md | 1 | 3 | 1 | 0 | 2 | 1.4 | YES (avg<2, HE=0) | P1 |
+| 30 | 28_Data_Analytics_Intermediate.md | 2 | 3 | 1 | 0 | 2 | 1.6 | YES (avg<2, HE=0) | P1 |
+| 31 | 29_Data_Analytics_Advanced.md | 2 | 2 | 1 | 0 | 2 | 1.4 | YES (avg<2, HE=0) | P1 |
+| 32 | 30_Recursive_Queries_Hierarchical.md | 3 | 3 | 1 | 0 | 2 | 1.8 | YES (avg<2, HE=0) | P1 |
+| 33 | 31_JSON_XML_Modern_SQL.md | 2 | 3 | 1 | 0 | 2 | 1.6 | YES (avg<2, HE=0) | P1 |
+| 34 | 32_Partitioning_Sharding_Replication.md | 2 | 3 | 2 | 0 | 3 | 2.0 | YES (HE=0) | P2 |
+| 35 | 33_SQL_Security_Injection.md | 3 | 3 | 3 | 0 | 3 | 2.4 | YES (HE=0) | P2 |
+| 36 | 34_TimeSeries_Temporal.md | 2 | 2 | 1 | 0 | 2 | 1.4 | YES (avg<2, HE=0) | P1 |
+| 37 | 35_Database_Migration_Schema.md | 2 | 3 | 2 | 0 | 2 | 1.8 | YES (avg<2, HE=0) | P1 |
+| 38 | 36_Advanced_Data_Modeling.md | 3 | 3 | 1 | 0 | 2 | 1.8 | YES (avg<2, HE=0) | P1 |
+| 39 | 37_SQL_5WH_Deep_Reasoning.md | 3 | 3 | 1 | 0 | 3 | 2.0 | YES (HE=0) | P2 |
+| 40 | 38_RealWorld_Production_Scenarios_Part1.md | 3 | 3 | 3 | 1 | 3 | 2.6 | no | — |
+| 41 | 39_RealWorld_Production_Scenarios_Part2.md | 3 | 3 | 3 | 0 | 3 | 2.4 | YES (HE=0) | P2 |
+| 42 | 40_RealWorld_Production_Scenarios_Part3.md | 3 | 3 | 3 | 0 | 3 | 2.4 | YES (HE=0) | P2 |
+| 43 | 41_RealWorld_Production_Scenarios_Part4.md | 3 | 3 | 3 | 0 | 3 | 2.4 | YES (HE=0) | P2 |
+| 44 | 42_RealWorld_Production_Scenarios_Part5.md | 3 | 3 | 3 | 0 | 3 | 2.4 | YES (HE=0) | P2 |
+| 45 | 43_Interview_Mindset_How_Professionals_Explain.md | 3 | 3 | 2 | 1 | 3 | 2.4 | no | — |
+| 46 | 44_Interview_Scenarios_Explained_Part1.md | 3 | 3 | 3 | 1 | 3 | 2.6 | no | — |
+| 47 | 45_Interview_Scenarios_Explained_Part2.md | 3 | 3 | 3 | 1 | 3 | 2.6 | no | — |
+| 48 | 46_Interview_Scenarios_Explained_Part3.md | 3 | 3 | 3 | 1 | 3 | 2.6 | no | — |
+| 49 | 47_Theory_Deep_Dive_Database_Internals.md | 3 | 3 | 2 | 2 | 3 | 2.6 | no | — |
+| 50 | 48_Problem_Variants_Bank.md | 3 | 3 | 2 | 0 | 2 | 2.0 | YES (HE=0) | P2 |
+| 51 | 49_SQL_Internals_Deep.md | 3 | 3 | 3 | 2 | 3 | 2.8 | no | — |
 
 **Total files scored: 50. Flagged: 39 (78% of total). HE=0 on 39 files.**
 
@@ -763,16 +764,17 @@ No new contamination patterns detected in the SQL folder. The cross-contaminatio
 
 **Cross-check totals:**
 - Teaching files in 08_SQL/: 51
-- Scoring matrix rows: 50
+- Scoring matrix rows: 51
 - P[012]-UPGRADE entries: 39 (P0=3, P1=18, P2=18)
-- Files marked YES in matrix: 38
-- HE=0 across folder: 0
-- PR=0 across folder: 0
+- Files marked YES in matrix: 39
+- HE=0 across folder: 38
+- PR=0 across folder: 3 (17_Practice_100_Problems, 19_Interview_Top50, 19_Interview_Top50)
 
 **Consistency:**
-- Matrix rows == Teaching files: FAIL (50 != 51 — one teaching file absent from scoring matrix)
+- Matrix rows == Teaching files: PASS (51 == 51)
 - P0+P1+P2 == Total UPGRADE entries: PASS (3+18+18=39)
-- Files marked YES == Total UPGRADE entries: FAIL (38 != 39 — one YES entry has no matching P-level tag in the same row)
+- Files marked YES == Total UPGRADE entries: PASS (39 == 39)
+- All HE=0 files are flagged: YES (per_file rule applied consistently)
 
 **Audit produced:** 2026-06-14
 **Ferment:** 019ec421-1570-701a-ac73-2e5c0f05d2fe
