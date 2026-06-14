@@ -20,6 +20,38 @@
 
 ---
 
+## 🎓 University Proof Corner
+
+> **MIT 6.006 L9 / KTH DD1352 / TU Munich IN0007 layer** — Why dynamic arrays (ArrayList/Vector) achieve O(1) amortized append despite occasional O(n) copy operations.
+
+### Amortized Analysis: Dynamic Array Doubling
+
+A dynamic array doubles its capacity when full. Appending n elements triggers resizes at sizes 1, 2, 4, 8, ..., n. The copy costs are:
+
+```
+1 + 2 + 4 + 8 + ... + n  =  2n − 1   total element copies
+```
+
+Divided across n appends: **(2n − 1) / n < 2 = O(1) amortized per append**.
+
+This is the **aggregate method**: total cost / total operations.
+
+**Accounting method (banker's metaphor)**: charge each `append` 3 units — 1 to insert, 1 "saved" for its own future copy, 1 "saved" for an element copied last resize. When resize happens, every element has pre-paid its copy cost. The bank never goes negative. ✓
+
+### Why Halving on Delete Needs a Threshold
+
+If you shrink at half-full, a sequence of alternating insert/delete at the boundary triggers O(n) resize on every operation — Θ(1) amortized breaks. The fix: shrink only at **quarter-full** (the standard). Then:
+- After shrinking, the array is half-full — insert n/4 more before the next resize.
+- Cost is amortized over those n/4 operations → still O(1). ✓
+
+### Static vs Dynamic Arrays: When the Constant Factor Matters
+
+Dynamic array doubling wastes up to 50% of allocated memory. For latency-critical systems where a single resize spike is unacceptable, pre-size the array to the known maximum or use a growth factor < 2 (Python uses ~1.125; this trades memory for smoother resize costs).
+
+> Full amortized analysis (all 3 methods): [A2 — Complexity from First Principles](../03_Algorithms/A2_Complexity_FirstPrinciples.md) (Section 5: Amortized Analysis)
+
+---
+
 ## 📦 What Are Data Structures?
 
 A **data structure** is a way of ORGANIZING and STORING data so that we can perform OPERATIONS efficiently.

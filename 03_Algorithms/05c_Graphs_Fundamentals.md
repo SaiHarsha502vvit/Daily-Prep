@@ -17,6 +17,31 @@
 
 ---
 
+## 🎓 University Proof Corner
+
+> **MIT 6.006 L13–L14 / KTH DD1352 / TU Munich IN0007 layer** — Why BFS computes shortest paths and why Dijkstra is correct; both proved by induction on discovery order.
+
+### BFS Shortest-Path Correctness (Induction on Distance d)
+
+**Claim**: BFS assigns the correct shortest-path distance `δ(s, v)` to every reachable vertex `v`.
+
+**Proof by induction** on `d = δ(s, v)`:
+- **Base (d=0)**: `δ(s,s) = 0`. BFS sets `dist[s] = 0` at initialisation. ✓
+- **Inductive step**: Assume every vertex at distance `< d` gets the correct label. A vertex `v` at distance `d` has some predecessor `u` at distance `d-1`. By hypothesis `dist[u] = d-1`. BFS processes `u` and sets `dist[v] = d-1+1 = d` — the first time `v` is reached. Any other path to `v` has length ≥ d, so BFS cannot assign a shorter label. ✓
+- **Termination**: BFS visits vertices in non-decreasing distance order (FIFO queue property). Every reachable vertex is eventually dequeued. ✓
+
+### Dijkstra Correctness (Greedy + Induction)
+
+**Claim**: When a vertex `u` is extracted from the min-heap, `dist[u] = δ(s, u)`.
+
+**Proof by contradiction**: Suppose `u` is the first vertex extracted with `dist[u] > δ(s, u)`. Then some shorter path `s → x → y → ... → u` exists where `x` is the last visited vertex before `y` (unvisited). At the time we extracted `u`, `dist[x] = δ(s, x)` (x was extracted correctly). Edge relaxation set `dist[y] ≤ dist[x] + w(x,y) = δ(s,y)`. Since `y` is on the shorter path to `u` and all edge weights ≥ 0, `dist[y] ≤ δ(s,u) < dist[u]` — so Dijkstra would have extracted `y` before `u`. Contradiction. ✓
+
+**Why negative edges break Dijkstra**: A negative-weight edge can decrease a "finalised" distance, invalidating the induction hypothesis. Use Bellman-Ford (O(VE)) for negative weights.
+
+> Full proofs with worked examples: [A1 — Algorithm Correctness](A1_Correctness_Proofs.md) (Section 7: BFS + Dijkstra)
+
+---
+
 | Problem Signal                   | Algorithm to use                     | Time Complexity |
 | -------------------------------- | ------------------------------------ | --------------- |
 | Shortest path, unweighted        | **BFS** (level-by-level)             | O(V+E)          |

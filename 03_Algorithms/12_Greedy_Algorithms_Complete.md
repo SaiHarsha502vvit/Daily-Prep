@@ -21,6 +21,44 @@ Make the Locally Optimal Choice at Each Step
 
 ---
 
+## 🎓 University Proof Corner
+
+> **MIT 6.046J / KTH DD2352 / RWTH Aachen Algo II layer** — Why greedy algorithms are provably optimal, and a precise test for when they fail.
+
+### Correctness: The Exchange Argument
+
+The standard proof method for any greedy algorithm:
+
+1. **Assume** the greedy solution G and some optimal solution OPT differ — i.e., OPT makes a different choice at the first point of divergence.
+2. **Transform** OPT into G one step at a time by "exchanging" OPT's choice for the greedy choice at that step.
+3. **Show** each exchange does not worsen the objective value.
+4. **Conclude** G is at least as good as OPT — so G is optimal. ✓
+
+### Worked Example: Activity Selection (Earliest Deadline First)
+
+**Claim**: Selecting the activity that finishes earliest and recursing on the rest gives a maximum-size compatible subset.
+
+**Exchange argument proof**:
+- Let G = {a₁, a₂, ..., aₖ} (greedy, sorted by finish time), OPT = {b₁, b₂, ..., bₘ} (any optimal set, sorted by finish time).
+- Goal: show k ≥ m (greedy is at least as large).
+- **Key lemma**: For each prefix i, finish(aᵢ) ≤ finish(bᵢ). Proof by induction: a₁ has the earliest possible finish time; given aᵢ finishes ≤ bᵢ, there is at least as much room for aᵢ₊₁ as for bᵢ₊₁, so finish(aᵢ₊₁) ≤ finish(bᵢ₊₁).
+- If k < m: greedy stopped early, but bₖ₊₁ starts after finish(bₖ) ≤ finish(aₖ) — so bₖ₊₁ is compatible with G's choices. Greedy would have picked it. Contradiction. So k ≥ m. ✓
+
+### When Greedy Fails: Counterexample Pattern
+
+Greedy fails when a locally optimal early choice **blocks a globally better future choice**. Classic example:
+
+- **Coin change with non-standard denominations** {1, 3, 4}: making change for 6.
+  - Greedy (largest first): 4 + 1 + 1 = 3 coins.
+  - Optimal: 3 + 3 = 2 coins.
+- The exchange argument breaks: choosing 4 blocks the pair of 3s.
+
+**Test before assuming greedy works**: try to construct an exchange; if the exchange can worsen the objective, greedy is wrong here.
+
+> Full proof methodology: [A1 — Algorithm Correctness](A1_Correctness_Proofs.md) (Section 5: Exchange Argument)
+
+---
+
 ## PART 0: COMPLETE UNDERSTANDING — The WHY Before the WHAT <a name="part-0"></a>
 
 ## What Problem Does Greedy Solve
