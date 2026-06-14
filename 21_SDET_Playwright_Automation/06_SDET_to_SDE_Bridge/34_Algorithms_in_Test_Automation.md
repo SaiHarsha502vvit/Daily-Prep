@@ -3,6 +3,7 @@
 **Navigation**: [← Chapter 33: SDET→SDE CS Thinking](./33_SDET_to_SDE_CS_Thinking.md) | [Index](../00_INDEX.md) | [→ Chapter 35: OOP Design Patterns Deep-Dive for SDETs](./35_OOP_Design_Patterns_for_SDETs.md)
 
 **Cross-references (read these alongside this chapter):**
+
 - [`../../03_Algorithms/01_Algorithm_Thinking.md`](../../03_Algorithms/01_Algorithm_Thinking.md) — The algorithm thinking framework that applies to test design
 - [`../../03_Algorithms/06e_Algorithm_Patterns.md`](../../03_Algorithms/06e_Algorithm_Patterns.md) — Patterns like sliding window, two pointers — appear directly in assertion design
 - [`../../14_Mental_Models/14_Optimization_Pipeline.md`](../../14_Mental_Models/14_Optimization_Pipeline.md) — Brute-force → optimise pipeline (how to improve slow tests)
@@ -32,6 +33,34 @@ This is wrong. Here is where algorithms appear every single day:
 Every algorithm has a test automation equivalent.
 This chapter makes those connections explicit.
 ```
+
+---
+
+## 0. War Stories — When Algorithmic Thinking Saved the Run
+
+### Story 1: O(n²) pagination check that took 4 hours in CI
+
+A colleague wrote the "verify no duplicates" check for a paginated API response. It worked fine in development where the dataset had 200 citations. In CI against the staging database (11,000 citations), the test took 4 hours and was marked as "infrastructure issue." The test was retried 3 times automatically, consuming 12 hours of CI time on each nightly run.
+
+The problem: a nested loop checking every citation against every other citation — O(n²). With 11,000 citations that's 121 million comparisons. The fix was a HashSet (Section 2 of this chapter) — O(n) time, O(n) space. The test dropped from 4 hours to 3.7 seconds.
+
+The lesson: any assertion that iterates over "all results" is hiding an O(n²) time bomb. When the dataset grows, you pay.
+
+### Story 2: 90-minute test suite that ran in 14 minutes after dependency-graph ordering
+
+A test suite for a D365 module had 70 tests, each setting up its own data from scratch: login, navigate to admin, create record, navigate back, run assertion. Average setup time: 72 seconds per test. Total: 5,040 seconds (~84 minutes).
+
+Applying topological sort (Section 6): some tests could share setup data. Tests that only READ didn't need their own data — they could use data created by tests that WRITE. After mapping dependencies and reordering using DFS topological sort, 38 tests were able to share setup. Runtime: 14 minutes.
+
+The lesson: test execution order is a graph problem. Ignoring it costs you wall-clock time every single CI run.
+
+### Story 3: Binary search that found the flaky commit in 7 minutes instead of 7 days
+
+A flaky test appeared in CI. The last known-green state was a commit 180 commits ago. One engineer estimated "a week" to bisect manually by checking commits one by one. Another knew `git bisect` — which performs binary search on the commit history. 180 commits → log₂(180) ≈ 7 checks. The flaky commit was identified in 7 minutes.
+
+`git bisect start HEAD <known-good-sha>` hands you the midpoint commit. You run the test. If it fails, `git bisect bad`. If it passes, `git bisect good`. After 7 iterations: `git bisect good` tells you the first bad commit and the changed file.
+
+The lesson: git bisect is binary search. If you don't recognize the pattern, you do it manually and it takes a week.
 
 ---
 
@@ -85,20 +114,21 @@ Step 6 — Edge cases:
 // The O(n) sorted verification test
 async function verifyGridSortedByDate(
   grid: MasterSearchResultsGrid,
-  direction: 'asc' | 'desc' = 'desc'
+  direction: "asc" | "desc" = "desc",
 ): Promise<void> {
   const rows = await grid.rows.all();
-  if (rows.length <= 1) return;  // edge case: 0 or 1 rows are trivially sorted
+  if (rows.length <= 1) return; // edge case: 0 or 1 rows are trivially sorted
 
   const dates: Date[] = [];
   for (const row of rows) {
-    const dateText = await row.locator('[data-col="issueDate"]').textContent() ?? '';
-    dates.push(parseMMDDYYYY(dateText));  // parse "05/28/2026" → Date
+    const dateText =
+      (await row.locator('[data-col="issueDate"]').textContent()) ?? "";
+    dates.push(parseMMDDYYYY(dateText)); // parse "05/28/2026" → Date
   }
 
   // Check adjacent pairs — O(n), no sorting needed
   for (let i = 0; i < dates.length - 1; i++) {
-    if (direction === 'desc') {
+    if (direction === "desc") {
       expect(dates[i].getTime()).toBeGreaterThanOrEqual(dates[i + 1].getTime());
     } else {
       expect(dates[i].getTime()).toBeLessThanOrEqual(dates[i + 1].getTime());
@@ -112,6 +142,7 @@ async function verifyGridSortedByDate(
 ## 2. Sliding Window → Paginated API Assertions
 
 **The algorithm** (from [`../../03_Algorithms/06e_Algorithm_Patterns.md`](../../03_Algorithms/06e_Algorithm_Patterns.md)):
+
 - Sliding window: maintain a fixed-size window over a sequence
 - Move the window forward without reprocessing everything already seen
 - Use for: subarray problems, stream processing, rate limiting
@@ -125,7 +156,12 @@ async function verifyGridSortedByDate(
 
 interface PaginatedResponse<T> {
   data: T[];
-  pagination: { page: number; totalPages: number; pageSize: number; total: number };
+  pagination: {
+    page: number;
+    totalPages: number;
+    pageSize: number;
+    total: number;
+  };
 }
 
 // BRUTE FORCE: fetch all pages, concatenate, scan for duplicates — O(n²)
@@ -140,15 +176,15 @@ do {
 // O(n²) duplicate check:
 for (let i = 0; i < all.length; i++) {
   for (let j = i + 1; j < all.length; j++) {
-    expect(all[i].citationId).not.toBe(all[j].citationId);  // O(n²)
+    expect(all[i].citationId).not.toBe(all[j].citationId); // O(n²)
   }
 }
 
 // OPTIMISED: sliding window over pages + HashSet for O(1) duplicate detection
 async function fetchAllPagesWithDuplicateCheck(
-  searchFn: (page: number) => Promise<PaginatedResponse<CitationApiResponse>>
+  searchFn: (page: number) => Promise<PaginatedResponse<CitationApiResponse>>,
 ): Promise<CitationApiResponse[]> {
-  const seen = new Set<string>();          // HashSet — O(1) lookup
+  const seen = new Set<string>(); // HashSet — O(1) lookup
   const all: CitationApiResponse[] = [];
   let currentPage = 1;
 
@@ -159,7 +195,9 @@ async function fetchAllPagesWithDuplicateCheck(
     // Sliding window: process current page's window
     for (const citation of data) {
       if (seen.has(citation.citationId)) {
-        throw new Error(`Duplicate citation detected: ${citation.citationId} on page ${currentPage}`);
+        throw new Error(
+          `Duplicate citation detected: ${citation.citationId} on page ${currentPage}`,
+        );
       }
       seen.add(citation.citationId);
       all.push(citation);
@@ -176,6 +214,7 @@ async function fetchAllPagesWithDuplicateCheck(
 ```
 
 **Why this is better:**
+
 - The window slides forward: only the current page is in active memory, previous pages released
 - Duplicate detection is O(1) per item (HashSet) instead of O(n) per item (array scan)
 - Fails fast: stops at the first duplicate rather than collecting all data first
@@ -185,6 +224,7 @@ async function fetchAllPagesWithDuplicateCheck(
 ## 3. Two Pointers → Dual-Context Test Assertions
 
 **The algorithm** (from [`../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md`](../../20_Interview_Mastery/14_DSA_Problems_BinarySearch_TwoPointers_SlidingWindow.md)):
+
 - Two pointers: two indices moving through an array, often toward each other or in sync
 
 **In test automation — admin + customer dual context:**
@@ -197,10 +237,11 @@ async function fetchAllPagesWithDuplicateCheck(
 // Pointer 2: customerPage (moves forward by observing effects)
 // They must stay "in sync" — customer pointer catches up before admin advances.
 
-test('Admin changes credit limit → customer sees updated limit', async ({
-  adminContext, customerContext
+test("Admin changes credit limit → customer sees updated limit", async ({
+  adminContext,
+  customerContext,
 }) => {
-  const adminPage  = adminContext.pages()[0];  // pointer 1
+  const adminPage = adminContext.pages()[0]; // pointer 1
   const customerPage = customerContext.pages()[0]; // pointer 2
 
   const creditModule = new CreditLimitPage(adminPage);
@@ -213,8 +254,9 @@ test('Admin changes credit limit → customer sees updated limit', async ({
   // SYNC POINT: pointer 2 must catch up before we assert
   // (same as two-pointer convergence — wait for pointers to meet at the same value)
   await customerPage.reload();
-  await expect(customerDashboard.creditLimitDisplay)
-    .toHaveText('£5,000', { timeout: 30_000 });
+  await expect(customerDashboard.creditLimitDisplay).toHaveText("£5,000", {
+    timeout: 30_000,
+  });
 
   // Pointer 1 advances again:
   await creditModule.setCreditLimit(account.userId, 7500);
@@ -222,12 +264,14 @@ test('Admin changes credit limit → customer sees updated limit', async ({
 
   // SYNC POINT again:
   await customerPage.reload();
-  await expect(customerDashboard.creditLimitDisplay)
-    .toHaveText('£7,500', { timeout: 30_000 });
+  await expect(customerDashboard.creditLimitDisplay).toHaveText("£7,500", {
+    timeout: 30_000,
+  });
 });
 ```
 
 **The invariant** (same as two-pointer invariant in algorithms):
+
 > At every sync point, both pointers must be observing the SAME state.
 > Violating this gives incorrect assertions — same as reading a stale left pointer in a two-pointer algorithm.
 
@@ -242,11 +286,14 @@ test('Admin changes credit limit → customer sees updated limit', async ({
 // You need to find citation CIT-500 without scrolling through all 1000 rows.
 
 // BRUTE FORCE O(n): check each row until found
-const rows = await grid.locator('.ms-DetailsRow').all();
+const rows = await grid.locator(".ms-DetailsRow").all();
 let targetRow = null;
 for (const row of rows) {
   const id = await row.locator('[data-col="citationId"]').textContent();
-  if (id?.trim() === 'CIT-500') { targetRow = row; break; }
+  if (id?.trim() === "CIT-500") {
+    targetRow = row;
+    break;
+  }
 }
 // O(n): checks up to 1000 rows
 
@@ -256,17 +303,18 @@ for (const row of rows) {
 
 async function findCitationPage(
   citationId: string,
-  pageSize = 20
+  pageSize = 20,
 ): Promise<number> {
   // Binary search: which page is the citation on?
-  let low = 1, high = 50;  // assume ≤50 pages
+  let low = 1,
+    high = 50; // assume ≤50 pages
 
   while (low <= high) {
     const mid = Math.floor((low + high) / 2);
     const response = await citationsClient.search({ page: mid, pageSize });
 
-    const ids = response.data.map(c => c.citationId);
-    if (ids.includes(citationId)) return mid;  // FOUND
+    const ids = response.data.map((c) => c.citationId);
+    if (ids.includes(citationId)) return mid; // FOUND
 
     // Since sorted: if first ID on this page > target → target is on earlier page
     if (ids[0] > citationId) {
@@ -281,6 +329,7 @@ async function findCitationPage(
 ```
 
 **The deeper insight:**
+
 > Any time you have a SORTED, MONOTONIC problem space in tests,
 > ask: "Can I binary search instead of linear scan?"
 > Tests that navigate to "page N" to find an item are doing binary search implicitly.
@@ -290,6 +339,7 @@ async function findCitationPage(
 ## 5. Greedy Algorithm → Test Suite Prioritisation
 
 **The algorithm** (from [`../../03_Algorithms/12_Greedy_Algorithms_Complete.md`](../../03_Algorithms/12_Greedy_Algorithms_Complete.md)):
+
 - Greedy: at each step, make the locally optimal choice
 - Works when: local optima compose to a global optimum
 - Classic example: activity selection problem (schedule maximum non-overlapping activities)
@@ -323,7 +373,7 @@ Implementation in CI:
 
 interface TestActivity {
   name: string;
-  usesAccount: string;  // which test account it uses
+  usesAccount: string; // which test account it uses
   durationMs: number;
 }
 
@@ -334,10 +384,10 @@ interface TestActivity {
 // playwright.config.ts:
 projects: [
   // Each project uses a DIFFERENT account → no overlap → no data pollution
-  { name: 'admin-tests',     use: { storageState: 'auth/admin.json' } },
-  { name: 'supervisor-tests', use: { storageState: 'auth/supervisor.json' } },
-  { name: 'customer-tests',  use: { storageState: 'auth/customer.json' } },
-]
+  { name: "admin-tests", use: { storageState: "auth/admin.json" } },
+  { name: "supervisor-tests", use: { storageState: "auth/supervisor.json" } },
+  { name: "customer-tests", use: { storageState: "auth/customer.json" } },
+];
 // Greedy assignment: tests using admin account → admin project.
 // No two tests in the same project share state → activity selection satisfied.
 ```
@@ -347,6 +397,7 @@ projects: [
 ## 6. Dynamic Programming → Optimal Retry Backoff
 
 **The algorithm** (from [`../../03_Algorithms/04a_DP_Internals.md`](../../03_Algorithms/04a_DP_Internals.md)):
+
 - DP: break a problem into overlapping subproblems, cache results
 - Key properties: optimal substructure + overlapping subproblems
 
@@ -369,7 +420,7 @@ projects: [
 function generateBackoffIntervals(
   base: number,
   maxInterval: number,
-  maxAttempts: number
+  maxAttempts: number,
 ): number[] {
   const intervals: number[] = [];
   let current = base;
@@ -386,10 +437,12 @@ function generateBackoffIntervals(
 // Total max wait: 36 seconds — you knew the upper bound before running
 
 // This IS Playwright's built-in intervals:
-await expect.poll(fn, {
-  intervals: [500, 1000, 2000, 4000, 8000, 10_000],  // exponential backoff
-  timeout: 36_000,
-}).toBe(expected);
+await expect
+  .poll(fn, {
+    intervals: [500, 1000, 2000, 4000, 8000, 10_000], // exponential backoff
+    timeout: 36_000,
+  })
+  .toBe(expected);
 ```
 
 ---
@@ -518,21 +571,27 @@ The citations are sorted by `dueDate` ascending (oldest due date first). Overdue
 // Worst case: O(log n) for a single OVERDUE citation — treat like binary search.
 
 async function findFirstOverdueCitation(
-  client: CitationsApiClient
+  client: CitationsApiClient,
 ): Promise<{ citation: CitationApiResponse; page: number } | null> {
   let page = 1;
-  const totalPages = 500;  // upper bound
+  const totalPages = 500; // upper bound
 
   while (page <= totalPages) {
-    const response = await client.search({ page, size: 20, sort: 'dueDate:asc' });
+    const response = await client.search({
+      page,
+      size: 20,
+      sort: "dueDate:asc",
+    });
 
-    const overdue = response.data.find(c => c.status === 'OVERDUE');
+    const overdue = response.data.find((c) => c.status === "OVERDUE");
     if (overdue) return { citation: overdue, page };
 
     // Early termination: if no OVERDUE on this page AND dueDate > today,
     // all future pages will have even newer dates → definitely not OVERDUE
-    const allFuture = response.data.every(c => new Date(c.dueDate!) > new Date());
-    if (allFuture) return null;  // no OVERDUE will exist on subsequent pages
+    const allFuture = response.data.every(
+      (c) => new Date(c.dueDate!) > new Date(),
+    );
+    if (allFuture) return null; // no OVERDUE will exist on subsequent pages
 
     if (page >= response.pagination.totalPages) return null;
     page++;
@@ -544,6 +603,7 @@ async function findFirstOverdueCitation(
 // Worst case: O(n) pages (OVERDUE only on the last page, or none exists)
 // With early termination: practically O(1) for well-behaved data
 ```
+
 </details>
 
 ---
@@ -552,21 +612,22 @@ async function findFirstOverdueCitation(
 
 Match each test problem to its algorithm pattern and implementation strategy:
 
-| Problem | Algorithm | Implementation |
-|---|---|---|
-| Find all tests that cover a changed file | ? | ? |
-| Verify API response list has no duplicates | ? | ? |
-| Test that credit limit updates propagate in order (A then B, not B then A) | ? | ? |
-| Find minimum set of tests that cover all critical paths | ? | ? |
+| Problem                                                                    | Algorithm | Implementation |
+| -------------------------------------------------------------------------- | --------- | -------------- |
+| Find all tests that cover a changed file                                   | ?         | ?              |
+| Verify API response list has no duplicates                                 | ?         | ?              |
+| Test that credit limit updates propagate in order (A then B, not B then A) | ?         | ?              |
+| Find minimum set of tests that cover all critical paths                    | ?         | ?              |
 
 <details><summary>Answer</summary>
 
-| Problem | Algorithm | Implementation |
-|---|---|---|
-| Find all tests that cover a changed file | **Graph reachability / BFS** — changed file is a node; tests that import it are neighbors | Build an import dependency graph, BFS from changed file, collect all reachable test files |
-| Verify API response list has no duplicates | **HashSet O(1)** | Iterate once, insert each ID into a Set; throw on first collision |
-| Test that credit limit updates propagate in order (A then B) | **Queue ordering / two-pointer** | Assert `index(updateA) < index(updateB)` in the audit log or notification list |
-| Find minimum set of tests that cover all critical paths | **Set Cover (NP-hard) → Greedy approximation** | Sort tests by coverage density (paths covered / time), greedily select until all paths covered |
+| Problem                                                      | Algorithm                                                                                 | Implementation                                                                                 |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| Find all tests that cover a changed file                     | **Graph reachability / BFS** — changed file is a node; tests that import it are neighbors | Build an import dependency graph, BFS from changed file, collect all reachable test files      |
+| Verify API response list has no duplicates                   | **HashSet O(1)**                                                                          | Iterate once, insert each ID into a Set; throw on first collision                              |
+| Test that credit limit updates propagate in order (A then B) | **Queue ordering / two-pointer**                                                          | Assert `index(updateA) < index(updateB)` in the audit log or notification list                 |
+| Find minimum set of tests that cover all critical paths      | **Set Cover (NP-hard) → Greedy approximation**                                            | Sort tests by coverage density (paths covered / time), greedily select until all paths covered |
+
 </details>
 
 ### Challenge 3 [MCQ] — Sliding Window for Log Analysis
@@ -585,10 +646,10 @@ D) Binary search for every event's 10-second boundary. O(n log n).
 ```typescript
 function findBruteForceWindow(
   events: AuditEvent[],
-  windowSeconds: number = 10
+  windowSeconds: number = 10,
 ): { start: number; end: number; count: number } {
   // Assumes events are sorted by timestamp (audit logs are chronological)
-  const failedLogins = events.filter(e => e.type === 'FAILED_LOGIN');
+  const failedLogins = events.filter((e) => e.type === "FAILED_LOGIN");
 
   let left = 0;
   let maxCount = 0;
@@ -597,7 +658,8 @@ function findBruteForceWindow(
   for (let right = 0; right < failedLogins.length; right++) {
     // Shrink window from left while it exceeds 10 seconds
     while (
-      failedLogins[right].timestamp - failedLogins[left].timestamp > windowSeconds * 1000
+      failedLogins[right].timestamp - failedLogins[left].timestamp >
+      windowSeconds * 1000
     ) {
       left++;
     }
@@ -618,8 +680,10 @@ function findBruteForceWindow(
 
 // In test:
 const bruteForceWindow = findBruteForceWindow(auditLog);
-expect(bruteForceWindow.count, 'No brute force window should exceed 5 attempts in 10s')
-  .toBeLessThanOrEqual(5);
+expect(
+  bruteForceWindow.count,
+  "No brute force window should exceed 5 attempts in 10s",
+).toBeLessThanOrEqual(5);
 ```
 
 The sliding window makes each element enter and exit the window at most once — O(n) total. Option A (nested loop) is O(n²): for 50,000 events this is 2.5 billion comparisons. Option C's O(n) handles 50,000 events in milliseconds.
@@ -658,10 +722,10 @@ function buildExecutionOrder(dependencies: Map<string, string[]>): string[] {
 
 // Dependencies: A depends on B, B depends on C
 const deps = new Map([
-  ['testA', ['testB']],
-  ['testB', ['testC']],
-  ['testC', []],
-  ['testD', ['testA', 'testC']],  // testD depends on testA and testC
+  ["testA", ["testB"]],
+  ["testB", ["testC"]],
+  ["testC", []],
+  ["testD", ["testA", "testC"]], // testD depends on testA and testC
 ]);
 
 const order = buildExecutionOrder(deps);
@@ -673,6 +737,7 @@ There is a critical missing check. What happens if the dependency graph has a cy
 <details><summary>Answer</summary>
 
 **Bug**: The DFS has no cycle detection. If `testA` depends on `testB` and `testB` depends on `testA`, the call stack recurses infinitely:
+
 ```
 dfs('testA') → visits 'testA', calls dfs('testB')
   dfs('testB') → visits 'testB', calls dfs('testA')
@@ -686,28 +751,30 @@ The fix: distinguish between "currently in stack" (grey) and "fully processed" (
 ```typescript
 function buildExecutionOrder(dependencies: Map<string, string[]>): string[] {
   const order: string[] = [];
-  const state = new Map<string, 'unvisited' | 'in-stack' | 'done'>();
+  const state = new Map<string, "unvisited" | "in-stack" | "done">();
 
   for (const test of dependencies.keys()) {
-    state.set(test, 'unvisited');
+    state.set(test, "unvisited");
   }
 
   function dfs(test: string): void {
-    if (state.get(test) === 'done') return;
-    if (state.get(test) === 'in-stack') {
-      throw new Error(`Circular dependency detected: ${test} depends on itself transitively`);
+    if (state.get(test) === "done") return;
+    if (state.get(test) === "in-stack") {
+      throw new Error(
+        `Circular dependency detected: ${test} depends on itself transitively`,
+      );
     }
 
-    state.set(test, 'in-stack');
+    state.set(test, "in-stack");
     for (const dep of dependencies.get(test) ?? []) {
       dfs(dep);
     }
-    state.set(test, 'done');
+    state.set(test, "done");
     order.push(test);
   }
 
   for (const test of dependencies.keys()) {
-    if (state.get(test) === 'unvisited') dfs(test);
+    if (state.get(test) === "unvisited") dfs(test);
   }
 
   return order;
@@ -734,10 +801,14 @@ An API returns a list of citation fines. Business rule: "No two citations issued
  * Uses hash-complement pattern for O(n) time.
  */
 function findFraudPair(
-  citations: { citationId: string; amount: number; customerId: string; issuedDate: string }[],
-  targetSum: number = 500
+  citations: {
+    citationId: string;
+    amount: number;
+    customerId: string;
+    issuedDate: string;
+  }[],
+  targetSum: number = 500,
 ): [string, string] | null {
-
   // Group by customer+date (the same-day-same-customer constraint)
   const groups = new Map<string, typeof citations>();
   for (const c of citations) {
@@ -748,33 +819,36 @@ function findFraudPair(
 
   // For each group, apply two-sum with hash complement
   for (const [, group] of groups) {
-    const seen = new Map<number, string>();  // amount → citationId
+    const seen = new Map<number, string>(); // amount → citationId
 
     for (const c of group) {
       const complement = targetSum - c.amount;
 
       if (seen.has(complement)) {
-        return [seen.get(complement)!, c.citationId];  // fraud pair found
+        return [seen.get(complement)!, c.citationId]; // fraud pair found
       }
 
       seen.set(c.amount, c.citationId);
     }
   }
 
-  return null;  // no fraud pair
+  return null; // no fraud pair
 }
 
 // In test:
-test('No fraud-pattern citation pairs exist', async ({ citationsClient }) => {
+test("No fraud-pattern citation pairs exist", async ({ citationsClient }) => {
   const citations = await citationsClient.getAllForAudit();
   const fraudPair = findFraudPair(citations, 500);
 
-  expect(fraudPair, `Fraud pair found: ${fraudPair?.[0]} + ${fraudPair?.[1]} = £500`)
-    .toBeNull();
+  expect(
+    fraudPair,
+    `Fraud pair found: ${fraudPair?.[0]} + ${fraudPair?.[1]} = £500`,
+  ).toBeNull();
 });
 ```
 
 **Why O(n²) fails at scale:**
+
 - With 100,000 citations: O(n²) = 10 billion comparisons → ~100 seconds of CPU time → test timeout
 - O(n) hash-complement: 100,000 lookups → ~10ms
 
@@ -785,4 +859,5 @@ test('No fraud-pattern citation pairs exist', async ({ citationsClient }) => {
 </details>
 
 ---
+
 **Navigation**: [← Chapter 33: SDET→SDE CS Thinking](./33_SDET_to_SDE_CS_Thinking.md) | [Index](../00_INDEX.md) | [→ Chapter 35: OOP Design Patterns Deep-Dive for SDETs](./35_OOP_Design_Patterns_for_SDETs.md)

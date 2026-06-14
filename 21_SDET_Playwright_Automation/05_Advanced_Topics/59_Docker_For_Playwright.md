@@ -10,13 +10,53 @@
 
 ## 5W1H
 
-| | |
-|---|---|
-| **What** | Running Playwright tests inside Docker containers using the official `mcr.microsoft.com/playwright` image — consistent, reproducible, CI-ready |
-| **Why** | "Works on my machine" is the most expensive bug in automation. Docker eliminates OS dependency drift, browser version mismatches, and locale differences between developer laptops and CI agents |
-| **Who** | SDETs wiring Playwright into a CI pipeline; platform engineers building shared test infrastructure; developers who need to run the full suite without installing Chromium locally |
-| **When** | From day one of the project if CI pipelines exist; retrofit when you see flaky tests that pass locally but fail on CI |
-| **How** | Build a Docker image from the official Playwright base, mount artifact volumes, pass secrets as environment variables, and run the container in your CI pipeline |
+|          |                                                                                                                                                                                                  |
+| -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **What** | Running Playwright tests inside Docker containers using the official `mcr.microsoft.com/playwright` image — consistent, reproducible, CI-ready                                                   |
+| **Why**  | "Works on my machine" is the most expensive bug in automation. Docker eliminates OS dependency drift, browser version mismatches, and locale differences between developer laptops and CI agents |
+| **Who**  | SDETs wiring Playwright into a CI pipeline; platform engineers building shared test infrastructure; developers who need to run the full suite without installing Chromium locally                |
+| **When** | From day one of the project if CI pipelines exist; retrofit when you see flaky tests that pass locally but fail on CI                                                                            |
+| **How**  | Build a Docker image from the official Playwright base, mount artifact volumes, pass secrets as environment variables, and run the container in your CI pipeline                                 |
+
+---
+
+## 0. War Stories — Docker Lessons from the Hard Way
+
+### The /dev/shm crash that nobody could reproduce locally
+
+Our CI pipeline was failing with Chromium crashing mid-test: `SIGSEGV` inside the browser process. It happened every 3rd run, always on different tests, always in CI, never locally.
+
+Root cause: Linux's `/dev/shm` (shared memory) defaults to 64 MB. Chromium uses shared memory heavily for IPC between the renderer and browser processes. When the shared memory fills, the renderer crashes. On macOS and Windows, there's no 64 MB cap. Developer machines never hit it. CI runners did.
+
+Fix: `--shm-size=2g` on every `docker run` call. One flag. Crashed tests: zero.
+
+This is Section 6 of this chapter. The reason it's a war story and not a footnote is that without knowing it exists, you'll spend days blaming your tests.
+
+### The image that bloated to 4.2 GB and ate our CI budget
+
+An engineer joined, saw a Dockerfile with `FROM mcr.microsoft.com/playwright:v1.49.0-jammy`, thought "should add more tools," and added:
+
+```dockerfile
+RUN apt-get install -y python3 python3-pip curl wget git vim htop
+RUN pip install boto3 requests pandas
+RUN npm install -g typescript eslint prettier allure-commandline
+```
+
+Each `RUN` layer is cached separately. When the base image updated, all layers rebuilt from scratch. The image went from 1.8 GB to 4.2 GB. Build time: 22 minutes. Our CI bill increased by 40%.
+
+Fix: keep the Playwright image lean. Everything you add to the image is pulled on every CI runner. If you need Python for a data script, use a separate service container — don't pollute the test image.
+
+### The node_modules copy that made every build take 8 minutes
+
+```dockerfile
+# What the engineer wrote
+COPY . .
+RUN npm ci
+```
+
+`COPY . .` copies `node_modules/` (280 MB) into the build context before `npm ci` runs. The build context upload alone took 3 minutes. Then `npm ci` ran and downloaded 280 MB again.
+
+Fix: add `.dockerignore`, reorder layers. The `.dockerignore` file is the second thing you should add to any Docker-enabled project (the Dockerfile is first).
 
 ---
 
@@ -24,13 +64,13 @@
 
 ### The "works on my machine" axis
 
-| Source of drift | Without Docker | With Docker |
-|---|---|---|
-| Browser version | Developer: Chromium 125; CI: Chromium 120 → selector changes break tests | Same version, pinned in the `FROM` line |
-| OS locale | macOS en-US date formats vs Ubuntu en-GB → `toHaveText('Jan 1')` fails | Controlled via `LANG=en_US.UTF-8` in image |
-| Font rendering | Different visual baselines per OS → visual regression test noise | Identical font stack in the image |
-| Node version | Developer: 20.x; CI: 18.x → subtle API differences | Pinned in the `FROM` line |
-| OS shared memory | macOS: /dev/shm is large; Linux: /dev/shm defaults to 64 MB → Chromium OOM crash | Controlled with `--shm-size` |
+| Source of drift  | Without Docker                                                                   | With Docker                                |
+| ---------------- | -------------------------------------------------------------------------------- | ------------------------------------------ |
+| Browser version  | Developer: Chromium 125; CI: Chromium 120 → selector changes break tests         | Same version, pinned in the `FROM` line    |
+| OS locale        | macOS en-US date formats vs Ubuntu en-GB → `toHaveText('Jan 1')` fails           | Controlled via `LANG=en_US.UTF-8` in image |
+| Font rendering   | Different visual baselines per OS → visual regression test noise                 | Identical font stack in the image          |
+| Node version     | Developer: 20.x; CI: 18.x → subtle API differences                               | Pinned in the `FROM` line                  |
+| OS shared memory | macOS: /dev/shm is large; Linux: /dev/shm defaults to 64 MB → Chromium OOM crash | Controlled with `--shm-size`               |
 
 ### Secondary benefits
 
@@ -51,11 +91,11 @@ Playwright publishes official images at `mcr.microsoft.com/playwright`.
 mcr.microsoft.com/playwright:v{version}-{ubuntu-codename}
 ```
 
-| Tag | Ubuntu version | Use when |
-|---|---|---|
-| `v1.49.0-jammy` | 22.04 LTS | ✅ Recommended for production pipelines |
-| `v1.49.0-focal` | 20.04 LTS | Legacy — use only if your CI agent is Ubuntu 20 |
-| `v1.49.0-noble` | 24.04 LTS | Cutting-edge, less tested |
+| Tag             | Ubuntu version | Use when                                        |
+| --------------- | -------------- | ----------------------------------------------- |
+| `v1.49.0-jammy` | 22.04 LTS      | ✅ Recommended for production pipelines         |
+| `v1.49.0-focal` | 20.04 LTS      | Legacy — use only if your CI agent is Ubuntu 20 |
+| `v1.49.0-noble` | 24.04 LTS      | Cutting-edge, less tested                       |
 
 > **Always pin the exact Playwright version in `FROM`** and keep it in sync with the `@playwright/test` version in `package.json`. Mismatching them causes subtle selector failures because the browser binaries shipped in the image were tested against a specific Playwright version.
 
@@ -100,12 +140,12 @@ CMD []
 
 ### Key Dockerfile decisions
 
-| Decision | Rationale |
-|---|---|
-| `npm ci --ignore-scripts` | Skip `playwright install` — browsers are already baked into the base image. Running it would download ~500 MB of browser binaries for nothing. |
-| `COPY package.json ... / RUN npm ci / COPY . .` | Layer ordering. If only `.ts` files change, Docker reuses the cached `npm ci` layer — no re-install. |
-| `ENV CI=true` | Activates `forbidOnly`, `retries: 2`, and `workers: 4` in `playwright.config.ts`. |
-| `ENTRYPOINT` + `CMD` split | `ENTRYPOINT` is always `npx playwright test`. `CMD []` is the default argument. Override at `docker run` time with `--project=api`. |
+| Decision                                        | Rationale                                                                                                                                      |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `npm ci --ignore-scripts`                       | Skip `playwright install` — browsers are already baked into the base image. Running it would download ~500 MB of browser binaries for nothing. |
+| `COPY package.json ... / RUN npm ci / COPY . .` | Layer ordering. If only `.ts` files change, Docker reuses the cached `npm ci` layer — no re-install.                                           |
+| `ENV CI=true`                                   | Activates `forbidOnly`, `retries: 2`, and `workers: 4` in `playwright.config.ts`.                                                              |
+| `ENTRYPOINT` + `CMD` split                      | `ENTRYPOINT` is always `npx playwright test`. `CMD []` is the default argument. Override at `docker run` time with `--project=api`.            |
 
 ### The .dockerignore file
 
@@ -156,6 +196,7 @@ docker run --rm --shm-size=2g playwright-framework
 ```
 
 Or in `docker-compose.yml`:
+
 ```yaml
 services:
   playwright:
@@ -203,7 +244,7 @@ services:
     shm_size: "2gb"
     depends_on:
       app:
-        condition: service_healthy  # ← waits until app passes healthcheck
+        condition: service_healthy # ← waits until app passes healthcheck
     environment:
       CI: "true"
       API_BASE_URL: ${API_BASE_URL:-https://reqres.in}
@@ -251,7 +292,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        shard: [1, 2, 3, 4]  # ← 4 parallel jobs
+        shard: [1, 2, 3, 4] # ← 4 parallel jobs
     steps:
       - uses: actions/checkout@v4
       - name: Run shard ${{ matrix.shard }}/4
@@ -269,14 +310,14 @@ jobs:
 After all shards finish, merge their JSON reports into one HTML report:
 
 ```yaml
-      - name: Merge reports
-        run: npx playwright merge-reports ./all-blob-reports --reporter=html
-        if: always()
-      - uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: playwright-report/
-        if: always()
+- name: Merge reports
+  run: npx playwright merge-reports ./all-blob-reports --reporter=html
+  if: always()
+- uses: actions/upload-artifact@v4
+  with:
+    name: playwright-report
+    path: playwright-report/
+  if: always()
 ```
 
 ---
@@ -316,7 +357,7 @@ env:
 # Azure DevOps
 - task: Docker@2
   env:
-    ORANGEHRM_USERNAME: $(orangehrm-username)   # ← from Azure Key Vault
+    ORANGEHRM_USERNAME: $(orangehrm-username) # ← from Azure Key Vault
     ORANGEHRM_PASSWORD: $(orangehrm-password)
 ```
 
@@ -602,6 +643,7 @@ COPY . .
 **Fix:** `RUN npm ci --ignore-scripts`
 
 Also: use `npm ci` (not `npm install`) for reproducible installs from `package-lock.json`.
+
 </details>
 
 <details>
@@ -609,20 +651,23 @@ Also: use `npm ci` (not `npm install`) for reproducible installs from `package-l
 
 **Answer:**  
 Use a matrix strategy with 4 shards:
+
 - 4 containers each run 50 tests in parallel (4 workers each → 16 total browser instances)
 - Wall-clock time: ~15 min ÷ 4 = ~4 min per shard
 
 GitHub Actions matrix:
+
 ```yaml
 strategy:
   matrix:
     shard: [1, 2, 3, 4]
 steps:
   - run: docker run --rm --shm-size=2g playwright-framework \
-           npx playwright test --shard=${{ matrix.shard }}/4
+      npx playwright test --shard=${{ matrix.shard }}/4
 ```
 
 After all shards: merge blob reports with `npx playwright merge-reports`.
+
 </details>
 
 <details>
@@ -697,6 +742,7 @@ jobs:
           path: framework/playwright-report/
           retention-days: 30
 ```
+
 </details>
 
 ---

@@ -7,22 +7,22 @@
 ## 5W1H
 
 - **WHAT**: Running your Playwright tests on a schedule against production (or staging) to detect outages, regressions, and performance drift before users notice.
-- **WHY**: The best E2E in CI catches *deploy-time* breakage. It misses cert expiries, third-party outages, DNS issues, CDN regressions, partial deploys. Synthetics catch those.
+- **WHY**: The best E2E in CI catches _deploy-time_ breakage. It misses cert expiries, third-party outages, DNS issues, CDN regressions, partial deploys. Synthetics catch those.
 - **WHO**: Teams owning user-facing flows that must "always work." Especially: login, payment, signup, key dashboards.
-- **WHEN**: Once you have at least one *stable* E2E test covering a critical user journey. Flaky tests as synthetic monitors page the on-call for nothing — fix flake first.
+- **WHEN**: Once you have at least one _stable_ E2E test covering a critical user journey. Flaky tests as synthetic monitors page the on-call for nothing — fix flake first.
 - **HOW**: [Checkly](https://checklyhq.com/), [Datadog Synthetics](https://www.datadoghq.com/product/synthetic-monitoring/), or self-hosted (cron + Playwright in a container) wired to PagerDuty/Slack.
 
 ---
 
 ## 1. CI tests vs synthetics — the mindset shift
 
-| | CI tests | Synthetics |
-|---|---|---|
-| **When they run** | On PR | On a 1/5/15 min cadence |
-| **Goal** | Block bad code from merging | Detect production incidents |
-| **Failure response** | Author fixes code | On-call paged |
-| **Acceptable flake rate** | Low but tolerated | **Zero** — one flake wakes someone up |
-| **Coverage** | Wide and deep | Narrow and bulletproof |
+|                           | CI tests                    | Synthetics                            |
+| ------------------------- | --------------------------- | ------------------------------------- |
+| **When they run**         | On PR                       | On a 1/5/15 min cadence               |
+| **Goal**                  | Block bad code from merging | Detect production incidents           |
+| **Failure response**      | Author fixes code           | On-call paged                         |
+| **Acceptable flake rate** | Low but tolerated           | **Zero** — one flake wakes someone up |
+| **Coverage**              | Wide and deep               | Narrow and bulletproof                |
 
 Synthetics are not "all your E2E tests on a schedule." They are a **selected subset**, polished to bulletproof.
 
@@ -45,14 +45,14 @@ Rule of thumb: 3–8 synthetic tests for a typical product. **Resist the urge to
 Checkly accepts your Playwright tests almost as-is:
 
 ```typescript
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test('synthetic / login still works', async ({ page }) => {
-  await page.goto('https://app.example.com/login');
-  await page.fill('input[name=email]', process.env.SYNTHETIC_EMAIL!);
-  await page.fill('input[name=password]', process.env.SYNTHETIC_PASSWORD!);
-  await page.click('button[type=submit]');
-  await expect(page.getByText('Dashboard')).toBeVisible({ timeout: 15_000 });
+test("synthetic / login still works", async ({ page }) => {
+  await page.goto("https://app.example.com/login");
+  await page.fill("input[name=email]", process.env.SYNTHETIC_EMAIL!);
+  await page.fill("input[name=password]", process.env.SYNTHETIC_PASSWORD!);
+  await page.click("button[type=submit]");
+  await expect(page.getByText("Dashboard")).toBeVisible({ timeout: 15_000 });
 });
 ```
 
@@ -70,7 +70,7 @@ If your org won't pay for Checkly:
 # .github/workflows/synthetic.yml
 on:
   schedule:
-    - cron: '*/5 * * * *'   # every 5 minutes
+    - cron: "*/5 * * * *" # every 5 minutes
   workflow_dispatch:
 jobs:
   monitor:
@@ -127,6 +127,36 @@ It's also where SDET work becomes SRE work. Most synthetic monitoring teams sit 
 
 ---
 
+## 7.5. War Stories — What Went Wrong in Production
+
+### Incident 1: The cert expiry we missed for 11 days
+
+We had a staging synthetic that ran our login flow. It tested the login, not the HTTPS handshake. Our production cert expired on a Tuesday at 4am. The synthetic passed — because it was testing HTTP on staging, not HTTPS on production. Users started calling support at 8am. We discovered the cert had been expired for 11 days on staging without anyone noticing because staging was HTTP-only.
+
+**Fix:** The synthetic now explicitly asserts that the TLS cert is valid for at least 30 more days using the `checkCertExpiry` function in Section 16. It runs against the production domain, not staging.
+
+### Incident 2: The synthetic that paged us 47 times a night
+
+We moved our login synthetic to every 1 minute, as suggested by a vendor. The first night we were paged 47 times between midnight and 6am for "failures." Every alert was a false positive — our authentication provider had a 50ms spike in response time which occasionally pushed our 3-second wait past the threshold.
+
+The on-call team muted the channel by 2am. When a real outage happened three weeks later, nobody saw the alert.
+
+**Fix:** Synthetics + retries = zero. We moved back to a 5-minute schedule, removed retries entirely, and required 3 consecutive failures before paging. False positive rate went to zero. We also widened the timeout from 3s to 10s (production auth realistically takes 2-5s under load).
+
+### Incident 3: The synthetic account that triggered billing
+
+Our synthetic test account completed a "purchase" flow during the morning run. The test account wasn't excluded from billing. The synthetic ran 288 times a day. We sent 288 fake purchase confirmations to a real email address that belonged to an employee who'd used that email years ago to sign up. She got 11,232 confirmation emails before operations noticed.
+
+**Fix:** Synthetic accounts must: (a) be excluded from all transactional emails at the application level, (b) use a dedicated `+synthetic@domain.com` email address that routes to a monitored no-op mailbox, (c) have a dedicated test credit card that always declines at the payment processor.
+
+### Incident 4: The synthetic that never ran
+
+We added a synthetic for the checkout flow and set it to run "every 5 minutes." Three months later, during an incident review for a checkout outage that lasted 2 hours, someone checked the monitoring. The synthetic had not run in 73 days — a quota limit on our self-hosted runner had silently suspended it.
+
+**Fix:** Your synthetic monitoring system needs its own uptime monitor. Run a meta-check every hour that verifies the last synthetic result was within the last 10 minutes. If the meta-check fails, page the platform team. "The monitor that monitors the monitors" sounds redundant until the monitor silently stops running.
+
+---
+
 ## 8. DevSecOps seed
 
 Run a synthetic test that:
@@ -159,7 +189,7 @@ The `@playwright/test` library can run outside the test runner context. A Node.j
 
 ```typescript
 // scripts/synthetic-login.ts
-import { chromium, Browser, ConsoleMessage } from 'playwright';
+import { chromium, Browser, ConsoleMessage } from "playwright";
 
 interface SyntheticResult {
   check: string;
@@ -172,7 +202,7 @@ interface SyntheticResult {
 async function runSyntheticCheck(): Promise<SyntheticResult> {
   const start = Date.now();
   const result: SyntheticResult = {
-    check: 'login-flow',
+    check: "login-flow",
     passed: false,
     durationMs: 0,
     timestamp: new Date().toISOString(),
@@ -183,7 +213,7 @@ async function runSyntheticCheck(): Promise<SyntheticResult> {
   try {
     browser = await chromium.launch({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
     const context = await browser.newContext({
@@ -195,39 +225,38 @@ async function runSyntheticCheck(): Promise<SyntheticResult> {
 
     // Capture console errors — a security header regression shows here
     const consoleErrors: string[] = [];
-    page.on('console', (msg: ConsoleMessage) => {
-      if (msg.type() === 'error') {
+    page.on("console", (msg: ConsoleMessage) => {
+      if (msg.type() === "error") {
         consoleErrors.push(msg.text());
       }
     });
 
     // Step 1: Navigate to login
-    await page.goto(process.env.APP_URL!, { waitUntil: 'networkidle' });
+    await page.goto(process.env.APP_URL!, { waitUntil: "networkidle" });
 
     // Step 2: Fill credentials
-    await page.fill('input[name=email]', process.env.SYNTHETIC_EMAIL!);
-    await page.fill('input[name=password]', process.env.SYNTHETIC_PASSWORD!);
+    await page.fill("input[name=email]", process.env.SYNTHETIC_EMAIL!);
+    await page.fill("input[name=password]", process.env.SYNTHETIC_PASSWORD!);
 
     // Step 3: Submit and wait for redirect
     await Promise.all([
-      page.waitForNavigation({ waitUntil: 'networkidle' }),
-      page.click('button[type=submit]'),
+      page.waitForNavigation({ waitUntil: "networkidle" }),
+      page.click("button[type=submit]"),
     ]);
 
     // Step 4: Assert dashboard is visible (15-second timeout for prod flows)
-    const dashboard = page.getByText('Dashboard').first();
-    await dashboard.waitFor({ state: 'visible', timeout: 15_000 });
+    const dashboard = page.getByText("Dashboard").first();
+    await dashboard.waitFor({ state: "visible", timeout: 15_000 });
 
     // Step 5: Capture a screenshot on failure for post-mortem
     // (Screenshots are large — only capture on failure, not every run)
     if (consoleErrors.length > 0) {
       const screenshotPath = `/var/log/synthetics/screenshot-${Date.now()}.png`;
       await page.screenshot({ path: screenshotPath });
-      result.error = `Console errors: ${consoleErrors.join('; ')}`;
+      result.error = `Console errors: ${consoleErrors.join("; ")}`;
     }
 
     result.passed = true;
-
   } catch (err) {
     // Screenshot on failure — essential for on-call post-mortem
     if (browser) {
@@ -239,7 +268,6 @@ async function runSyntheticCheck(): Promise<SyntheticResult> {
       }
     }
     result.error = (err as Error).message;
-
   } finally {
     if (browser) await browser.close().catch(() => {});
     result.durationMs = Date.now() - start;
@@ -251,7 +279,10 @@ async function runSyntheticCheck(): Promise<SyntheticResult> {
 // Retry logic: run the check up to 3 times before declaring failure.
 // Only use retries for transient infrastructure issues (network blip, pod restart).
 // Never retry if the app itself is broken — that hides real failures.
-async function runWithRetry(fn: () => Promise<SyntheticResult>, retries = 2): Promise<SyntheticResult> {
+async function runWithRetry(
+  fn: () => Promise<SyntheticResult>,
+  retries = 2,
+): Promise<SyntheticResult> {
   let lastResult: SyntheticResult | null = null;
 
   for (let attempt = 0; attempt <= retries; attempt++) {
@@ -260,7 +291,9 @@ async function runWithRetry(fn: () => Promise<SyntheticResult>, retries = 2): Pr
 
     if (attempt < retries) {
       // Exponential backoff: 5s, 10s
-      await new Promise((resolve) => setTimeout(resolve, 5_000 * Math.pow(2, attempt)));
+      await new Promise((resolve) =>
+        setTimeout(resolve, 5_000 * Math.pow(2, attempt)),
+      );
     }
   }
 
@@ -282,6 +315,7 @@ runWithRetry(runSyntheticCheck)
 ```
 
 Run it with:
+
 ```bash
 APP_URL=https://app.example.com \
 SYNTHETIC_EMAIL=monitor@yourorg.com \
@@ -301,32 +335,32 @@ Self-hosted synthetics produce metrics as JSON logs. To make them observable, ex
 
 ```typescript
 // scripts/metrics-pusher.ts
-import client, { Registry, Counter, Histogram, Gauge } from 'prom-client';
+import client, { Registry, Counter, Histogram, Gauge } from "prom-client";
 
 const register = new Registry();
 
 // Pass/fail gauge — 1 = passing, 0 = failing
 export const syntheticPassGauge = new Gauge({
-  name: 'synthetic_check_pass',
-  help: '1 if the synthetic check passed last run, 0 if it failed',
-  labelNames: ['check_name', 'region'],
+  name: "synthetic_check_pass",
+  help: "1 if the synthetic check passed last run, 0 if it failed",
+  labelNames: ["check_name", "region"],
   registers: [register],
 });
 
 // Duration histogram — tracks latency distribution
 export const syntheticDurationHistogram = new Histogram({
-  name: 'synthetic_check_duration_seconds',
-  help: 'Duration of synthetic check in seconds',
-  labelNames: ['check_name', 'region'],
+  name: "synthetic_check_duration_seconds",
+  help: "Duration of synthetic check in seconds",
+  labelNames: ["check_name", "region"],
   buckets: [0.5, 1, 2, 5, 10, 30],
   registers: [register],
 });
 
 // Error counter — counts failures by error type
 export const syntheticErrorCounter = new Counter({
-  name: 'synthetic_check_errors_total',
-  help: 'Total number of synthetic check errors',
-  labelNames: ['check_name', 'error_type'],
+  name: "synthetic_check_errors_total",
+  help: "Total number of synthetic check errors",
+  labelNames: ["check_name", "error_type"],
   registers: [register],
 });
 
@@ -335,19 +369,21 @@ export async function pushMetrics(
   region: string,
   passed: boolean,
   durationMs: number,
-  error?: string
+  error?: string,
 ): Promise<void> {
   syntheticPassGauge.labels(checkName, region).set(passed ? 1 : 0);
-  syntheticDurationHistogram.labels(checkName, region).observe(durationMs / 1000);
+  syntheticDurationHistogram
+    .labels(checkName, region)
+    .observe(durationMs / 1000);
   if (error) {
-    syntheticErrorCounter.labels(checkName, error.split(' ')[0]).inc();
+    syntheticErrorCounter.labels(checkName, error.split(" ")[0]).inc();
   }
 
   // Push to Pushgateway (pushes, not pull — synthetic runs are ephemeral)
-  await fetch('http://pushgateway:9091/metrics/job/synthetic_checks', {
-    method: 'POST',
+  await fetch("http://pushgateway:9091/metrics/job/synthetic_checks", {
+    method: "POST",
     body: await register.metrics(),
-    headers: { 'Content-Type': register.contentType },
+    headers: { "Content-Type": register.contentType },
   });
 }
 ```
@@ -356,33 +392,33 @@ The Pushgateway is a stateless intermediate. Prometheus scrapes it every 15 seco
 
 ### Grafana Dashboard Panels
 
-| Panel | Query | Alert |
-|---|---|---|
-| **Pass rate** | `avg(synthetic_check_pass{check_name=~"$check"}) * 100` | Alert if < 95% over 5 min |
-| **P50/P95/P99 latency** | `histogram_quantile(0.50/0.95/0.99, rate(synthetic_check_duration_seconds_bucket[5m]))` | Alert if P99 > 10s |
-| **Failure rate by region** | `sum(rate(synthetic_check_errors_total[5m])) by (region)` | Alert if any region > 0 |
-| **Failure count by check** | `sum(increase(synthetic_check_errors_total[1h])) by (check_name)` | Alert if > 5 failures/hr |
+| Panel                      | Query                                                                                   | Alert                     |
+| -------------------------- | --------------------------------------------------------------------------------------- | ------------------------- |
+| **Pass rate**              | `avg(synthetic_check_pass{check_name=~"$check"}) * 100`                                 | Alert if < 95% over 5 min |
+| **P50/P95/P99 latency**    | `histogram_quantile(0.50/0.95/0.99, rate(synthetic_check_duration_seconds_bucket[5m]))` | Alert if P99 > 10s        |
+| **Failure rate by region** | `sum(rate(synthetic_check_errors_total[5m])) by (region)`                               | Alert if any region > 0   |
+| **Failure count by check** | `sum(increase(synthetic_check_errors_total[1h])) by (check_name)`                       | Alert if > 5 failures/hr  |
 
 ### Alertmanager Routing
 
 ```yaml
 # alertmanager.yml (excerpt)
 route:
-  group_by: ['alertname', 'severity']
+  group_by: ["alertname", "severity"]
   group_wait: 30s
   group_interval: 5m
-  receiver: 'default'
+  receiver: "default"
   routes:
     # P1: All synthetic checks failing — full service outage
     - match:
         severity: critical
-      receiver: 'pagerduty-p1'
+      receiver: "pagerduty-p1"
       continue: true
 
     # P2: Single check failing — partial outage, degraded experience
     - match:
         severity: warning
-      receiver: 'slack-incidents'
+      receiver: "slack-incidents"
 ```
 
 ---
@@ -391,19 +427,20 @@ route:
 
 Synthetic monitoring tools vary widely. Here is how to evaluate them honestly.
 
-| Dimension | Checkly | Datadog Synthetics | Pingdom/UptimeRobot | Grafana Cloud | Playwright self-hosted |
-|---|---|---|---|---|---|
-| **Cost model** | $13/10k checks/mo | $15/10k checks + host fees | $15/mo flat (limited checks) | $10/10k checks + metrics | Worker nodes + infra only |
-| **JS execution depth** | Full Playwright | Partial (limited APIs) | None (HTTP only) | None (HTTP/TCP) | Full Playwright |
-| **CAPTCHA handling** | Via SDK workaround | No first-class support | No | No | Custom fingerprinting possible |
-| **On-premise option** | No | No | No | No | Yes (run in your VPC) |
-| **Multi-region** | 22 regions | 25+ AWS/Azure/GCP regions | 4 regions | No | Manual setup required |
-| **Alert routing** | Slack, PagerDuty, custom webhook | Native Datadog alerts | Limited | Grafana Alerting | Custom via Alertmanager |
-| **CI integration** | Native PR comments | Native | Webhook only | No | Custom script |
-| **Private network** | No | Yes (private location) | No | No | Yes — run in your network |
-| **Best for** | Fast startup, small teams | Existing Datadog shop | Simple HTTP checks | Tight Grafana budget | Custom flows + data residency |
+| Dimension              | Checkly                          | Datadog Synthetics         | Pingdom/UptimeRobot          | Grafana Cloud            | Playwright self-hosted         |
+| ---------------------- | -------------------------------- | -------------------------- | ---------------------------- | ------------------------ | ------------------------------ |
+| **Cost model**         | $13/10k checks/mo                | $15/10k checks + host fees | $15/mo flat (limited checks) | $10/10k checks + metrics | Worker nodes + infra only      |
+| **JS execution depth** | Full Playwright                  | Partial (limited APIs)     | None (HTTP only)             | None (HTTP/TCP)          | Full Playwright                |
+| **CAPTCHA handling**   | Via SDK workaround               | No first-class support     | No                           | No                       | Custom fingerprinting possible |
+| **On-premise option**  | No                               | No                         | No                           | No                       | Yes (run in your VPC)          |
+| **Multi-region**       | 22 regions                       | 25+ AWS/Azure/GCP regions  | 4 regions                    | No                       | Manual setup required          |
+| **Alert routing**      | Slack, PagerDuty, custom webhook | Native Datadog alerts      | Limited                      | Grafana Alerting         | Custom via Alertmanager        |
+| **CI integration**     | Native PR comments               | Native                     | Webhook only                 | No                       | Custom script                  |
+| **Private network**    | No                               | Yes (private location)     | No                           | No                       | Yes — run in your network      |
+| **Best for**           | Fast startup, small teams        | Existing Datadog shop      | Simple HTTP checks           | Tight Grafana budget     | Custom flows + data residency  |
 
 **Decision shortcuts**:
+
 - You have a small team and need uptime monitoring in 30 minutes → Checkly.
 - You are already paying for Datadog → Use Datadog Synthetics (consolidate vendor).
 - You need to test a private API inside a VPC → Self-hosted Playwright with private location.
@@ -444,7 +481,7 @@ spec:
             value: frontend-canary
       steps:
         - setWeight: 5
-        - pause: { duration: 5m }  # 5-minute synthetic verification window
+        - pause: { duration: 5m } # 5-minute synthetic verification window
 ```
 
 ```yaml
@@ -461,7 +498,7 @@ spec:
       interval: 1m
       count: 5
       successCondition: result[0] == 1
-      failureLimit: 1  # One failure within 5 checks → rollback
+      failureLimit: 1 # One failure within 5 checks → rollback
       provider:
         job:
           spec:
@@ -491,7 +528,7 @@ A synthetic running from a single region will miss regional failures. Cloud prov
 
 ```typescript
 // scripts/multi-region-synthetics.ts
-import { chromium } from 'playwright';
+import { chromium } from "playwright";
 
 interface RegionResult {
   region: string;
@@ -503,19 +540,19 @@ interface RegionResult {
 }
 
 const REGIONS = [
-  { name: 'us-east-1', browserRegion: 'us-east-1' },
-  { name: 'eu-west-1', browserRegion: 'europe-west1' },
-  { name: 'ap-south-1', browserRegion: 'asia-south1' },
+  { name: "us-east-1", browserRegion: "us-east-1" },
+  { name: "eu-west-1", browserRegion: "europe-west1" },
+  { name: "ap-south-1", browserRegion: "asia-south1" },
 ];
 
 async function runCheckForRegion(
   region: { name: string; browserRegion: string },
-  checkUrl: string
+  checkUrl: string,
 ): Promise<RegionResult> {
   const start = Date.now();
   const result: RegionResult = {
     region: region.name,
-    check: 'login-flow',
+    check: "login-flow",
     passed: false,
     durationMs: 0,
     timestamp: new Date().toISOString(),
@@ -526,16 +563,16 @@ async function runCheckForRegion(
     const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({
       geolocation: { latitude: 37.7749, longitude: -122.4194 }, // varies per region
-      permissions: ['geolocation'],
+      permissions: ["geolocation"],
     });
 
     const page = await context.newPage();
-    await page.goto(checkUrl, { waitUntil: 'networkidle', timeout: 30_000 });
+    await page.goto(checkUrl, { waitUntil: "networkidle", timeout: 30_000 });
 
     // Region-specific assertions
     // e.g., a CDN issue that only affects EU users:
     const title = await page.title();
-    result.passed = title.length > 0;  // Simplistic; replace with real assertion
+    result.passed = title.length > 0; // Simplistic; replace with real assertion
 
     await browser.close();
   } catch (err) {
@@ -547,18 +584,21 @@ async function runCheckForRegion(
 }
 
 async function runMultiRegionChecks(
-  checkUrl: string
+  checkUrl: string,
 ): Promise<{ passed: boolean; results: RegionResult[] }> {
   // Run all regions in parallel — total time ≈ slowest region, not sum of all
   const results = await Promise.all(
-    REGIONS.map((region) => runCheckForRegion(region, checkUrl))
+    REGIONS.map((region) => runCheckForRegion(region, checkUrl)),
   );
 
   const allPassed = results.every((r) => r.passed);
 
   // Log results for later analysis
-  const logLine = JSON.stringify({ timestamp: new Date().toISOString(), results });
-  console.log(logLine);  // Collect via stdout → log aggregator
+  const logLine = JSON.stringify({
+    timestamp: new Date().toISOString(),
+    results,
+  });
+  console.log(logLine); // Collect via stdout → log aggregator
 
   return { passed: allPassed, results };
 }
@@ -566,13 +606,16 @@ async function runMultiRegionChecks(
 // Aggregate and alert on regional discrepancies
 function detectRegionalAnomalies(results: RegionResult[]): void {
   const failures = results.filter((r) => !r.passed);
-  const passRates = results.map((r) => ({ region: r.region, passed: r.passed }));
+  const passRates = results.map((r) => ({
+    region: r.region,
+    passed: r.passed,
+  }));
 
   if (failures.length > 0 && failures.length < results.length) {
     // Mixed results = potential CDN/routing issue, not app failure
     console.warn(
       `REGIONAL ANOMALY: ${failures.length}/${results.length} regions failing`,
-      JSON.stringify(passRates)
+      JSON.stringify(passRates),
     );
   }
 }
@@ -585,6 +628,7 @@ runMultiRegionChecks(checkUrl).then(({ passed, results }) => {
 ```
 
 **What multi-region checks catch that single-region misses**:
+
 - CDN cache invalidation failures affecting only some geographic regions.
 - DNS propagation delays after routing changes.
 - Cloud provider regional outages (e.g., AWS us-east-1 degradation).
@@ -615,16 +659,16 @@ runMultiRegionChecks(checkUrl).then(({ passed, results }) => {
 
 ## 15. Decision Matrix
 
-| Factor | Build (Playwright) | Buy (SaaS) |
-|---|---|---|
-| Time to first synthetic | 1-3 days to set up infra + first check | 30 minutes to import Playwright test |
-| Multi-region infra | Manual setup per region | Included (typically 20+ regions) |
-| Cost at 100k checks/month | ~$50-200/month (compute + Pushgateway) | $130-500/month depending on vendor |
-| Data residency (GDPR) | Yes — run in your own VPC | Depends — some vendors offer EU-only hosting |
-| Custom integration depth | Full — any internal API, VPN-protected endpoint | Limited to publicly accessible URLs |
-| Maintenance burden | High — you own the runner, alerting, on-call | Low — vendor manages infrastructure |
-| CAPTCHA/BOT protection | Custom fingerprinting possible | Usually blocked or requires workarounds |
-| Existing toolchain | Works with your existing monitoring stack | May require vendor lock-in for alerts |
+| Factor                    | Build (Playwright)                              | Buy (SaaS)                                   |
+| ------------------------- | ----------------------------------------------- | -------------------------------------------- |
+| Time to first synthetic   | 1-3 days to set up infra + first check          | 30 minutes to import Playwright test         |
+| Multi-region infra        | Manual setup per region                         | Included (typically 20+ regions)             |
+| Cost at 100k checks/month | ~$50-200/month (compute + Pushgateway)          | $130-500/month depending on vendor           |
+| Data residency (GDPR)     | Yes — run in your own VPC                       | Depends — some vendors offer EU-only hosting |
+| Custom integration depth  | Full — any internal API, VPN-protected endpoint | Limited to publicly accessible URLs          |
+| Maintenance burden        | High — you own the runner, alerting, on-call    | Low — vendor manages infrastructure          |
+| CAPTCHA/BOT protection    | Custom fingerprinting possible                  | Usually blocked or requires workarounds      |
+| Existing toolchain        | Works with your existing monitoring stack       | May require vendor lock-in for alerts        |
 
 **When to build**: You have strict GDPR data-residency requirements, you need to test internal/private endpoints behind a VPN, you have a custom auth flow that SaaS tools cannot handle, or your volume is high enough that SaaS pricing is prohibitive.
 
@@ -651,6 +695,7 @@ The SDET who owns synthetics owns the quality signal that leadership and SRE car
 This also means the SDET who owns synthetics is the natural bridge between QA and SRE. SRE owns production reliability; SDETs who understand synthetics can speak SRE's language and advocate for quality investment from the platform team.
 
 **The ownership model**: One SDET on the team is the synthetic owner. Their responsibilities:
+
 - The synthetic suite is maintained in the same repo as the app (not a separate vendor portal).
 - Any PR that changes a monitored flow must update the corresponding synthetic script.
 - The owner triages synthetic failures in the on-call rotation alongside SRE.
@@ -667,81 +712,103 @@ Synthetic checks for security endpoints detect security regressions before they 
 
 // Check 1: Login page enforces rate limiting
 // An attacker brute-forcing credentials will trigger this if rate limiting is removed.
-async function checkRateLimiting(page: Page): Promise<{ passed: boolean; detail: string }> {
+async function checkRateLimiting(
+  page: Page,
+): Promise<{ passed: boolean; detail: string }> {
   const errors: string[] = [];
 
   for (let i = 0; i < 5; i++) {
-    await page.fill('input[name=email]', `attacker${i}@bad.com`);
-    await page.fill('input[name=password]', 'wrongpassword');
-    await page.click('button[type=submit]');
+    await page.fill("input[name=email]", `attacker${i}@bad.com`);
+    await page.fill("input[name=password]", "wrongpassword");
+    await page.click("button[type=submit]");
     await page.waitForTimeout(500);
 
     // Check if rate limit message appears
-    const rateLimitMsg = await page.getByText(/rate limit|too many attempts/i).count();
+    const rateLimitMsg = await page
+      .getByText(/rate limit|too many attempts/i)
+      .count();
     if (rateLimitMsg > 0) {
-      return { passed: true, detail: 'Rate limiting active after 5 attempts' };
+      return { passed: true, detail: "Rate limiting active after 5 attempts" };
     }
   }
 
-  return { passed: false, detail: 'No rate limit after 5 failed attempts — security regression' };
+  return {
+    passed: false,
+    detail: "No rate limit after 5 failed attempts — security regression",
+  };
 }
 
 // Check 2: MFA code cannot be reused within 30 seconds
-async function checkMFANonReplay(page: Page, validCode: string): Promise<{ passed: boolean; detail: string }> {
+async function checkMFANonReplay(
+  page: Page,
+  validCode: string,
+): Promise<{ passed: boolean; detail: string }> {
   // Enter valid MFA code once
-  await page.fill('input[name=mfa]', validCode);
-  await page.click('button[type=submit]');
-  await page.waitForURL('**/dashboard');
+  await page.fill("input[name=mfa]", validCode);
+  await page.click("button[type=submit]");
+  await page.waitForURL("**/dashboard");
 
   // Logout
-  await page.click('button[name=logout]');
-  await page.waitForURL('**/login');
+  await page.click("button[name=logout]");
+  await page.waitForURL("**/login");
 
   // Attempt login with same MFA code
-  await page.fill('input[name=email]', 'user@example.com');
-  await page.fill('input[name=password]', 'correctpassword');
-  await page.fill('input[name=mfa]', validCode);  // Reusing same code
-  await page.click('button[type=submit]');
+  await page.fill("input[name=email]", "user@example.com");
+  await page.fill("input[name=password]", "correctpassword");
+  await page.fill("input[name=mfa]", validCode); // Reusing same code
+  await page.click("button[type=submit]");
 
   // Should reject — invalid/expired code
-  const dashboard = await page.getByText('Dashboard').count();
+  const dashboard = await page.getByText("Dashboard").count();
   return {
     passed: dashboard === 0,
-    detail: dashboard === 0 ? 'MFA non-replay enforced' : 'MFA code was reused — critical security bug',
+    detail:
+      dashboard === 0
+        ? "MFA non-replay enforced"
+        : "MFA code was reused — critical security bug",
   };
 }
 
 // Check 3: Security headers present on all responses
-async function checkSecurityHeaders(page: Page): Promise<{ passed: boolean; detail: string }> {
-  const response = await page.goto('https://app.example.com/');
+async function checkSecurityHeaders(
+  page: Page,
+): Promise<{ passed: boolean; detail: string }> {
+  const response = await page.goto("https://app.example.com/");
   const headers = response?.headers() ?? {};
 
   const missing: string[] = [];
-  if (!headers['strict-transport-security']) missing.push('HSTS');
-  if (!headers['content-security-policy']) missing.push('CSP');
-  if (!headers['x-content-type-options']) missing.push('X-Content-Type-Options');
+  if (!headers["strict-transport-security"]) missing.push("HSTS");
+  if (!headers["content-security-policy"]) missing.push("CSP");
+  if (!headers["x-content-type-options"])
+    missing.push("X-Content-Type-Options");
 
   return {
     passed: missing.length === 0,
-    detail: missing.length > 0 ? `Missing headers: ${missing.join(', ')}` : 'All required security headers present',
+    detail:
+      missing.length > 0
+        ? `Missing headers: ${missing.join(", ")}`
+        : "All required security headers present",
   };
 }
 
 // Check 4: Certificate expiry monitoring
-async function checkCertExpiry(page: Page): Promise<{ passed: boolean; detail: string }> {
-  const url = new URL('https://app.example.com/');
+async function checkCertExpiry(
+  page: Page,
+): Promise<{ passed: boolean; detail: string }> {
+  const url = new URL("https://app.example.com/");
   const connection = await page.evaluate((hostname) => {
     // In Node.js, use tls.connect() directly — here shown as a simplified Playwright check
-    return { hostname, checked: true };  // Replace with actual TLS cert inspection
+    return { hostname, checked: true }; // Replace with actual TLS cert inspection
   }, url.hostname);
 
   // Alert if cert expires within 90 days
-  const daysUntilExpiry = 45;  // Replace with actual cert expiry calculation
+  const daysUntilExpiry = 45; // Replace with actual cert expiry calculation
   return {
     passed: daysUntilExpiry >= 90,
-    detail: daysUntilExpiry >= 90
-      ? `Certificate valid for ${daysUntilExpiry} days`
-      : `Certificate expiring in ${daysUntilExpiry} days — renew immediately`,
+    detail:
+      daysUntilExpiry >= 90
+        ? `Certificate valid for ${daysUntilExpiry} days`
+        : `Certificate expiring in ${daysUntilExpiry} days — renew immediately`,
   };
 }
 ```
@@ -765,6 +832,7 @@ These checks run on a 15-minute schedule alongside your functional synthetics. S
    - Exit with code 0 on pass, 1 on failure.
 
 2. Configure a cron job (or Kubernetes CronJob) to run it every 5 minutes:
+
    ```bash
    */5 * * * * node --import tsx /app/scripts/synthetic-login.ts >> /var/log/synthetics/cron.log 2>&1
    ```
@@ -777,7 +845,7 @@ These checks run on a 15-minute schedule alongside your functional synthetics. S
    - **Average duration** over the last 24 hours (from timestamp in each log entry).
    - **Failure rate** as a percentage over the last 24 hours.
    - **Last 5 failures** — timestamp, duration, error message.
-   - **Availability %** = (total - failed) / total * 100.
+   - **Availability %** = (total - failed) / total \* 100.
 
 5. Print a human-readable summary table.
 
@@ -785,17 +853,17 @@ These checks run on a 15-minute schedule alongside your functional synthetics. S
 
 **Self-grading rubric**:
 
-| Criterion | 3 pts | 2 pts | 1 pt | 0 pts |
-|---|---|---|---|---|
-| Synthetic runner runs | Runs and exits 0/1 correctly | Runs but exit code wrong | Runs but crashes on errors | Does not run or crashes on startup |
-| JSON log written | Appends to `.jsonl` with all required fields | Writes JSON but some fields missing | Writes log but not valid JSON | No log file produced |
-| Screenshot on failure | Screenshot captured to `/tmp/synthetics/` | Screenshot captured but wrong path | Screenshot attempted but fails | No screenshot |
-| Cron schedule | Configured for 5-minute interval | Configured but wrong interval | Configured but not enabled | Not configured |
-| Parser — avg duration | Correct average over 24h window | Correct average (no window filter) | Average computed but wrong | Average not computed |
-| Parser — failure rate | Correct failure rate as % | Failure count shown but not % | Something printed | Not implemented |
-| Parser — last 5 failures | Printed with timestamp and error | Last failures printed | Something about failures | Not implemented |
-| Error handling | Missing log file handled gracefully | Crashes on empty file | Crashes on missing file | Not handled |
-| **Total** | **24** | **16** | **8** | **0** |
+| Criterion                | 3 pts                                        | 2 pts                               | 1 pt                           | 0 pts                              |
+| ------------------------ | -------------------------------------------- | ----------------------------------- | ------------------------------ | ---------------------------------- |
+| Synthetic runner runs    | Runs and exits 0/1 correctly                 | Runs but exit code wrong            | Runs but crashes on errors     | Does not run or crashes on startup |
+| JSON log written         | Appends to `.jsonl` with all required fields | Writes JSON but some fields missing | Writes log but not valid JSON  | No log file produced               |
+| Screenshot on failure    | Screenshot captured to `/tmp/synthetics/`    | Screenshot captured but wrong path  | Screenshot attempted but fails | No screenshot                      |
+| Cron schedule            | Configured for 5-minute interval             | Configured but wrong interval       | Configured but not enabled     | Not configured                     |
+| Parser — avg duration    | Correct average over 24h window              | Correct average (no window filter)  | Average computed but wrong     | Average not computed               |
+| Parser — failure rate    | Correct failure rate as %                    | Failure count shown but not %       | Something printed              | Not implemented                    |
+| Parser — last 5 failures | Printed with timestamp and error             | Last failures printed               | Something about failures       | Not implemented                    |
+| Error handling           | Missing log file handled gracefully          | Crashes on empty file               | Crashes on missing file        | Not handled                        |
+| **Total**                | **24**                                       | **16**                              | **8**                          | **0**                              |
 
 Score ≥ 20: Excellent — production-ready synthetic pipeline.
 Score 13-19: Good — core loop is sound, address error handling gaps.

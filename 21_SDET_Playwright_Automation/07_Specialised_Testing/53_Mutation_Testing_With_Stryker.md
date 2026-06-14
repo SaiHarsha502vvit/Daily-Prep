@@ -7,7 +7,7 @@
 ## 5W1H
 
 - **WHAT**: A tool that introduces small, deliberate bugs (mutants) in your production code and re-runs your tests. If tests still pass, the mutant **survived** — your test is asserting too little.
-- **WHY**: Code coverage measures *which lines were executed*. Mutation testing measures *which lines are actually being asserted against*. Coverage of 100% can still have surviving mutants.
+- **WHY**: Code coverage measures _which lines were executed_. Mutation testing measures _which lines are actually being asserted against_. Coverage of 100% can still have surviving mutants.
 - **WHO**: Teams that already have decent test coverage and want to know if it means anything.
 - **WHEN**: After you have a real test suite (~50+ tests). Not as your first quality tool.
 - **HOW**: [Stryker Mutator](https://stryker-mutator.io/) for JS/TS. Runs your existing tests against mutated code, scores mutation kill rate.
@@ -27,7 +27,7 @@ function isAdult(age: number): boolean {
 And a test:
 
 ```typescript
-test('30 is adult', () => {
+test("30 is adult", () => {
   expect(isAdult(30)).toBe(true);
 });
 ```
@@ -39,8 +39,8 @@ Stryker mutates `>=` to `>`. Now `isAdult(18) === false`. The test still passes 
 The fix is a better test, not better coverage:
 
 ```typescript
-test('exactly 18 is adult', () => expect(isAdult(18)).toBe(true));
-test('17 is not adult', () => expect(isAdult(17)).toBe(false));
+test("exactly 18 is adult", () => expect(isAdult(18)).toBe(true));
+test("17 is not adult", () => expect(isAdult(17)).toBe(false));
 ```
 
 Both these kill the mutant.
@@ -51,7 +51,35 @@ Both these kill the mutant.
 
 This chapter is in the SDET module on purpose: **the SDET who advocates for mutation testing is the SDET who gets noticed**. Most teams have never heard of it. Bringing it up in a code review or quality meeting is rare and high-signal.
 
-That said: you don't run Stryker against Playwright E2E tests (too slow). You run it against the codebase the E2E suite *exercises*, or against unit tests in the same repo.
+That said: you don't run Stryker against Playwright E2E tests (too slow). You run it against the codebase the E2E suite _exercises_, or against unit tests in the same repo.
+
+---
+
+## 2.5. War Stories — When Mutation Testing Exposed What Code Coverage Hid
+
+### Story 1: 100% coverage, 11 surviving mutants, one security hole
+
+The auth module had 100% line coverage. Every line ran. The security team signed off on the coverage report. Six months later, a penetration tester found that changing `>=` to `>` in the age-gate check would allow 17-year-olds to access adult content.
+
+We ran Stryker on the auth module retrospectively. 11 surviving mutants. Three of them were boundary conditions on the age gate: `>=18` (we tested 20, never 18), `<=65` (we tested 50, never 65), and a null check (we never sent a null age to the validator).
+
+The penetration tester had essentially done mutation testing manually. The difference: they got paid $15,000 to find what a free Stryker run would have flagged in 4 minutes.
+
+### Story 2: the factory function that survived 6 months of "tests"
+
+A payment factory function built a `PaymentPayload` object. It had a `required: true` field for `amount`. The unit tests passed an amount of 150 in every single test. A Stryker run mutated `amount: payload.amount` to `amount: 0`. Tests still passed.
+
+Why? Every assertion downstream was checking whether the payment went through (`status === 'approved'`), not whether the amount field was correctly propagated. The factory could have silently zeroed out every amount and the tests would never have noticed.
+
+This kind of surviving mutant — one that changes a data transformation but your assertion doesn't verify the output data — is the most common and most dangerous class. You need assertions on the data values, not just the side effects.
+
+### Story 3: Stryker killed the CI budget, CI killed the enthusiasm
+
+We enabled Stryker in CI as a required gate on every PR. Our JS unit test suite took 45 seconds to run. Stryker generated 312 mutants and ran the suite 312 times: 45s × 312 = 3.9 hours per PR.
+
+Engineers started abandoning PRs mid-build. The platform team got complaints about burned CI minutes. The mutation gate was disabled after two weeks.
+
+**Fix:** Mutation testing belongs in a nightly job, not a PR gate. We enabled it as a scheduled nightly run with `coverageAnalysis: 'perTest'` (only re-runs tests that covered each mutant's line, not the full suite). Runtime: 22 minutes. We report the mutation score to a dashboard and set a team OKR: "maintain mutation score ≥ 70%." No one's PR is blocked; the score trends over time.
 
 ---
 
@@ -85,13 +113,13 @@ You get an HTML report with every surviving mutant highlighted.
 
 ## 4. Reading a Stryker report
 
-| Status | Meaning | Action |
-|---|---|---|
-| Killed | A test failed for the mutant | ✅ good |
-| Survived | All tests passed | ❌ your tests aren't asserting enough |
-| Timeout | Mutant caused infinite loop, tests timed out | Counts as killed |
-| NoCoverage | No test exercised the line | Add a test |
-| CompileError | Mutant didn't typecheck | Counts as killed |
+| Status       | Meaning                                      | Action                                |
+| ------------ | -------------------------------------------- | ------------------------------------- |
+| Killed       | A test failed for the mutant                 | ✅ good                               |
+| Survived     | All tests passed                             | ❌ your tests aren't asserting enough |
+| Timeout      | Mutant caused infinite loop, tests timed out | Counts as killed                      |
+| NoCoverage   | No test exercised the line                   | Add a test                            |
+| CompileError | Mutant didn't typecheck                      | Counts as killed                      |
 
 **Target mutation score**: 60% is realistic for legacy code. 80% is strong. 95% is research territory.
 
@@ -140,16 +168,16 @@ Every field in `stryker.config.mjs` (or `.json`, `.ts`) has a purpose. This sect
 
 ```javascript
 // stryker.config.mjs
-import { defineConfig } from '@stryker-mutator/core/schema';
+import { defineConfig } from "@stryker-mutator/core/schema";
 
 export default defineConfig({
   // $schema: included by defineConfig — enables IDE autocomplete and validation.
   // Without it, Stryker silently ignores misnamed keys.
 
-  packageManager: 'npm',       // Used for `npm install` in the temp dir Stryker creates.
-                               // Alternatives: 'yarn', 'pnpm'. Match your project's lock file.
+  packageManager: "npm", // Used for `npm install` in the temp dir Stryker creates.
+  // Alternatives: 'yarn', 'pnpm'. Match your project's lock file.
 
-  reporters: ['html', 'json', 'clear-text', 'dashboard'],
+  reporters: ["html", "json", "clear-text", "dashboard"],
   // html   — human-readable report at `reports/mutation/html/index.html`.
   //         Open in browser; surviving mutants are red, killed are green.
   // json   — machine-readable report at `reports/mutation/mutation.json`.
@@ -159,13 +187,13 @@ export default defineConfig({
   //         Enables historical score tracking per branch and trend graphs.
 
   mutate: [
-    'src/**/*.ts',            // Files to mutate. Stryker injects mutants into these.
-    '!src/**/*.spec.ts',      // Exclude test files — mutating tests themselves is meaningless.
-    '!src/**/*.d.ts',         // Exclude type declarations.
-    '!src/generated/**/*',   // Exclude generated code (auto-generated = not human-tested).
+    "src/**/*.ts", // Files to mutate. Stryker injects mutants into these.
+    "!src/**/*.spec.ts", // Exclude test files — mutating tests themselves is meaningless.
+    "!src/**/*.d.ts", // Exclude type declarations.
+    "!src/generated/**/*", // Exclude generated code (auto-generated = not human-tested).
   ],
 
-  testRunner: 'jest',
+  testRunner: "jest",
   // jest — runs Jest as the test harness. Stryker runs `jest --config jest.config.js`.
   // Alternatives:
   //   vitest       — faster, Vite-native. Use for Vite projects.
@@ -173,30 +201,30 @@ export default defineConfig({
   //   karma        — browser-based. Rarely needed in Node projects.
   //   command      — run any shell command as test runner. Useful for custom setups.
 
-  coverageAnalysis: 'perTest',
+  coverageAnalysis: "perTest",
   // perTest — Instruments code so Stryker knows which tests covered each line.
   //           Only tests that exercise a mutant's line are re-run against it.
   //           Most accurate but slowest. Best for projects with < 500 tests.
   // off     — Runs all tests against every mutant. Fast but noisy.
   //           Use when perTest overhead is prohibitive (> 10 min run time).
 
-  tsconfigFile: 'tsconfig.json',
+  tsconfigFile: "tsconfig.json",
   // Path to TypeScript config. The TypeScript checker uses this to:
   //   1. Validate that mutants type-check (mutations that break types are killed automatically).
   //   2. Resolve paths and aliases so mutation locations are accurate.
   // Include a tsconfig that matches your production build, not a test-specific one,
   // otherwise mutants may appear in dead code paths that the production build would strip.
 
-  checkers: ['typescript'],
+  checkers: ["typescript"],
   // TypeScript checker runs `tsc --noEmit` on every mutant.
   // A mutant that causes a compile error is immediately marked "Killed (CompileError)".
   // This saves test execution time for obviously broken mutants.
   // Without this checker, a TypeScript type error would need a real test to catch it.
 
   thresholds: {
-    high: 80,    // Team should aspire to 80%+ mutation score.
-    low: 60,     // CI warning at 60-80%. Still green but should improve.
-    break: 50,   // CI failure below 50%. Blocks merge. Adjust to your reality.
+    high: 80, // Team should aspire to 80%+ mutation score.
+    low: 60, // CI warning at 60-80%. Still green but should improve.
+    break: 50, // CI failure below 50%. Blocks merge. Adjust to your reality.
   },
   // Common mistake: setting break: 80 on a legacy codebase with no prior mutation history.
   // You will spend two weeks just getting to 55% before writing any feature code.
@@ -218,8 +246,8 @@ export default defineConfig({
   //   Run: `npx stryker run --clean_tmp dir` or delete `.stryker-mutator/tmp/`.
 
   dashboard: {
-    project: 'your-org/your-repo',
-    module: 'frontend' // optional, for monorepo splitting
+    project: "your-org/your-repo",
+    module: "frontend", // optional, for monorepo splitting
   },
   // stryker-mutator.io free dashboard. Tracks mutation score per branch.
   // Shows trend line: is quality improving or degrading over commits?
@@ -239,13 +267,13 @@ Stryker ships ~30+ built-in mutators. Understanding the major ones helps you rea
 
 **What changes**: Binary arithmetic operators are swapped among a set.
 
-| Original | Possible mutants |
-|---|---|
-| `a + b` | `a - b`, `a * b`, `a / b` |
-| `a - b` | `a + b`, `a * b`, `a / b` |
-| `a * b` | `a + b`, `a - b`, `a / b` |
-| `a / b` | `a + b`, `a - b`, `a * b` |
-| `a % b` | `a + b`, `a - b`, `a * b` |
+| Original | Possible mutants          |
+| -------- | ------------------------- |
+| `a + b`  | `a - b`, `a * b`, `a / b` |
+| `a - b`  | `a + b`, `a * b`, `a / b` |
+| `a * b`  | `a + b`, `a - b`, `a / b` |
+| `a / b`  | `a + b`, `a - b`, `a * b` |
+| `a % b`  | `a + b`, `a - b`, `a * b` |
 
 ```typescript
 // BEFORE — original code
@@ -255,14 +283,14 @@ function discount(price: number, rate: number): number {
 
 // AFTER — Stryker mutant: * → /
 function discount(price: number, rate: number): number {
-  return price / rate;  // If rate=0.1, original gives $90 discount.
-                        // Mutant gives $1000. Test passes with price=100, rate=0.1.
+  return price / rate; // If rate=0.1, original gives $90 discount.
+  // Mutant gives $1000. Test passes with price=100, rate=0.1.
 }
 ```
 
 ```typescript
 // Test that kills this mutant:
-test('discount applies correctly', () => {
+test("discount applies correctly", () => {
   expect(discount(100, 0.1)).toBeCloseTo(10, 2); // 100 * 0.1 = 10, not 1000
   expect(discount(200, 0.2)).toBeCloseTo(40, 2); // kills the / mutant too
 });
@@ -284,20 +312,20 @@ function isWinner(score: number, threshold: number): boolean {
 
 // AFTER — Stryker mutant: === → !==
 function isWinner(score: number, threshold: number): boolean {
-  return score !== threshold;  // Every non-zero score that is not equal to threshold
-                               // now returns true. Zero-score non-winners are still false.
+  return score !== threshold; // Every non-zero score that is not equal to threshold
+  // now returns true. Zero-score non-winners are still false.
 }
 ```
 
 ```typescript
 // Test that kills this mutant:
-test('exactly matching score is a winner', () => {
+test("exactly matching score is a winner", () => {
   expect(isWinner(100, 100)).toBe(true);
 });
-test('non-matching score is not a winner', () => {
-  expect(isWinner(99, 100)).toBe(false);  // This kills the !== mutant
+test("non-matching score is not a winner", () => {
+  expect(isWinner(99, 100)).toBe(false); // This kills the !== mutant
 });
-test('zero score is not winner', () => {
+test("zero score is not winner", () => {
   expect(isWinner(0, 100)).toBe(false);
 });
 ```
@@ -305,13 +333,13 @@ test('zero score is not winner', () => {
 ```typescript
 // BEFORE — loose equality (avoid this in new code, but Stryker still mutates it)
 function isLoggedIn(userId: number | null): boolean {
-  return userId == null;  // TypeScript avoids this, but legacy JS code has it
+  return userId == null; // TypeScript avoids this, but legacy JS code has it
 }
 
 // AFTER — Stryker mutant: == null → != null
 function isLoggedIn(userId: number | null): boolean {
-  return userId != null;  // userId=0 returns true (0 != null is true in JS)
-                           // but null guard was meant to catch 0 too
+  return userId != null; // userId=0 returns true (0 != null is true in JS)
+  // but null guard was meant to catch 0 too
 }
 ```
 
@@ -331,17 +359,17 @@ function canWithdraw(balance: number, dailyLimit: number): boolean {
 
 // AFTER — Stryker mutant: && → ||
 function canWithdraw(balance: number, dailyLimit: number): boolean {
-  return balance > 0 || dailyLimit > 0;  // Allows withdrawal if only balance OR limit is positive,
-                                         // not both. A $0 balance with a $1000 limit passes.
+  return balance > 0 || dailyLimit > 0; // Allows withdrawal if only balance OR limit is positive,
+  // not both. A $0 balance with a $1000 limit passes.
 }
 ```
 
 ```typescript
 // Tests that kill this mutant:
-test('requires positive balance AND positive limit', () => {
+test("requires positive balance AND positive limit", () => {
   expect(canWithdraw(100, 100)).toBe(true);
-  expect(canWithdraw(0, 100)).toBe(false);   // kills &&→||
-  expect(canWithdraw(100, 0)).toBe(false);   // kills &&→||
+  expect(canWithdraw(0, 100)).toBe(false); // kills &&→||
+  expect(canWithdraw(100, 0)).toBe(false); // kills &&→||
   expect(canWithdraw(0, 0)).toBe(false);
 });
 ```
@@ -351,14 +379,14 @@ test('requires positive balance AND positive limit', () => {
 const isEnabled = true;
 
 // AFTER — Stryker mutant: true → false
-const isEnabled = false;  // Any test that reads isEnabled but never asserts it
-                          // will have this mutant survive
+const isEnabled = false; // Any test that reads isEnabled but never asserts it
+// will have this mutant survive
 ```
 
 ```typescript
 // Test that kills this mutant:
-test('feature flag is enabled', () => {
-  expect(isEnabled).toBe(true);  // Directly asserts the flag's value
+test("feature flag is enabled", () => {
+  expect(isEnabled).toBe(true); // Directly asserts the flag's value
 });
 ```
 
@@ -371,28 +399,28 @@ test('feature flag is enabled', () => {
 ```typescript
 // BEFORE
 function buildGreeting(name: string): string {
-  return 'Hello, '.concat(name, '!');  // Stryker: remove .concat(), replace with ''
+  return "Hello, ".concat(name, "!"); // Stryker: remove .concat(), replace with ''
 }
 
 // AFTER — Stryker mutant: .concat() removed
 function buildGreeting(name: string): string {
-  return 'Hello, !';  // name is lost entirely. Test that checks
-                      // `expect(greeting).toContain(name)` kills this.
+  return "Hello, !"; // name is lost entirely. Test that checks
+  // `expect(greeting).toContain(name)` kills this.
 }
 
 // AFTER — Stryker mutant: string literal → ''
 function buildGreeting(name: string): string {
-  return '';  // Test that checks greeting length or content kills this.
+  return ""; // Test that checks greeting length or content kills this.
 }
 ```
 
 ```typescript
 // Test that kills both mutants:
-test('greeting contains name', () => {
-  const result = buildGreeting('Alice');
-  expect(result).toBe('Hello, Alice!');
-  expect(result).toContain('Alice');   // kills the .concat()-removal mutant
-  expect(result.length).toBeGreaterThan(6);  // kills the '' mutant
+test("greeting contains name", () => {
+  const result = buildGreeting("Alice");
+  expect(result).toBe("Hello, Alice!");
+  expect(result).toContain("Alice"); // kills the .concat()-removal mutant
+  expect(result.length).toBeGreaterThan(6); // kills the '' mutant
 });
 ```
 
@@ -411,21 +439,21 @@ function addItem(cart: string[], item: string): string[] {
 
 // AFTER — Stryker mutant: .push() → .pop()
 function addItem(cart: string[], item: string): string[] {
-  cart.pop();  // Removes the most recent item instead of adding.
-               // If cart was ['apple', 'banana'] and we call addItem(cart, 'cherry'):
-               // Original: ['apple', 'banana', 'cherry']
-               // Mutant:   ['apple', 'banana']
+  cart.pop(); // Removes the most recent item instead of adding.
+  // If cart was ['apple', 'banana'] and we call addItem(cart, 'cherry'):
+  // Original: ['apple', 'banana', 'cherry']
+  // Mutant:   ['apple', 'banana']
 }
 ```
 
 ```typescript
 // Test that kills this mutant:
-test('addItem appends to cart', () => {
-  const cart = ['apple'];
-  const result = addItem(cart, 'banana');
-  expect(result).toEqual(['apple', 'banana']);
-  expect(result.length).toBe(2);           // catches pop()
-  expect(result[result.length - 1]).toBe('banana');  // direct last-element check
+test("addItem appends to cart", () => {
+  const cart = ["apple"];
+  const result = addItem(cart, "banana");
+  expect(result).toEqual(["apple", "banana"]);
+  expect(result.length).toBe(2); // catches pop()
+  expect(result[result.length - 1]).toBe("banana"); // direct last-element check
 });
 ```
 
@@ -443,17 +471,17 @@ function getDisplayName(user: { name: string; age: number }): string {
 
 // AFTER — Stryker mutant: delete user.age (property deletion)
 function getDisplayName(user: { name: string; age: number }): string {
-  delete user.age;  // Only survives if no test reads user.age or checks its existence
+  delete user.age; // Only survives if no test reads user.age or checks its existence
 }
 ```
 
 ```typescript
 // Test that kills this mutant:
-test('getDisplayName returns name and preserves age', () => {
-  const user = { name: 'Bob', age: 30 };
+test("getDisplayName returns name and preserves age", () => {
+  const user = { name: "Bob", age: 30 };
   const result = getDisplayName(user);
-  expect(result).toBe('Bob');
-  expect(user.age).toBe(30);  // Explicitly checks age was not deleted
+  expect(result).toBe("Bob");
+  expect(user.age).toBe(30); // Explicitly checks age was not deleted
 });
 ```
 
@@ -466,22 +494,22 @@ test('getDisplayName returns name and preserves age', () => {
 ```typescript
 // BEFORE
 function isAdult(age: number): boolean {
-  return age >= 18;  // The canonical Stryker example
+  return age >= 18; // The canonical Stryker example
 }
 
 // AFTER — Stryker mutant: >= → >
 function isAdult(age: number): boolean {
-  return age > 18;  // 18-year-olds are now classified as minors.
-                    // Any test that checks exactly age=18 kills this.
+  return age > 18; // 18-year-olds are now classified as minors.
+  // Any test that checks exactly age=18 kills this.
 }
 ```
 
 ```typescript
 // Test that kills this mutant:
-test('exactly 18 is adult', () => {
-  expect(isAdult(18)).toBe(true);  // Directly kills >= → >
+test("exactly 18 is adult", () => {
+  expect(isAdult(18)).toBe(true); // Directly kills >= → >
 });
-test('17 is not adult', () => {
+test("17 is not adult", () => {
   expect(isAdult(17)).toBe(false);
 });
 ```
@@ -495,25 +523,25 @@ test('17 is not adult', () => {
 ```typescript
 // BEFORE
 function absoluteValue(n: number): number {
-  return Math.abs(n);  // Stryker may inject: +n, -n, or remove the call
+  return Math.abs(n); // Stryker may inject: +n, -n, or remove the call
 }
 
 // AFTER — Stryker mutant: +a → -a
 function absoluteValue(n: number): number {
-  return -Math.abs(n);  // Sign is flipped. With n=0 the mutant survives
-                        // because -Math.abs(0) === 0 === Math.abs(0)
+  return -Math.abs(n); // Sign is flipped. With n=0 the mutant survives
+  // because -Math.abs(0) === 0 === Math.abs(0)
 }
 ```
 
 ```typescript
 // Tests that kill this mutant:
-test('absoluteValue of positive is itself', () => {
+test("absoluteValue of positive is itself", () => {
   expect(absoluteValue(5)).toBe(5);
-  expect(absoluteValue(42)).toBe(42);  // kills -Math.abs → +Math.abs
+  expect(absoluteValue(42)).toBe(42); // kills -Math.abs → +Math.abs
 });
-test('absoluteValue of zero is zero', () => {
-  expect(absoluteValue(0)).toBe(0);  // Also true for the mutant, but combined
-                                      // with the above, the - sign is detectable
+test("absoluteValue of zero is zero", () => {
+  expect(absoluteValue(0)).toBe(0); // Also true for the mutant, but combined
+  // with the above, the - sign is detectable
 });
 ```
 
@@ -523,15 +551,15 @@ test('absoluteValue of zero is zero', () => {
 
 ### Mutant Status Meanings
 
-| Status | What happened | Good or bad? | Action |
-|---|---|---|---|
-| **Killed** | At least one test failed when this mutant was active | Good — your tests caught it | None |
-| **Survived** | All tests passed despite this mutant being active | Bad — tests miss this case | Add or improve assertions |
-| **Timeout** | The mutant caused an infinite loop or hang; test timed out | Counts as Killed | The mutant is dead, but investigate the root cause |
-| **No Coverage** | No test covered the mutated line | Bad — untested code | Add a test that exercises this line |
-| **Compile Error** | The mutant produces invalid TypeScript/JavaScript | Counts as Killed | None — the type checker killed it |
-| **Ignored** | You explicitly marked this line with `// Stryker disable next-line` | Neutral | Review periodically |
-| **Skipped** | Mutant not run (e.g., feature-flagged or excluded in config) | Neutral | Confirm exclusion is intentional |
+| Status            | What happened                                                       | Good or bad?                | Action                                             |
+| ----------------- | ------------------------------------------------------------------- | --------------------------- | -------------------------------------------------- |
+| **Killed**        | At least one test failed when this mutant was active                | Good — your tests caught it | None                                               |
+| **Survived**      | All tests passed despite this mutant being active                   | Bad — tests miss this case  | Add or improve assertions                          |
+| **Timeout**       | The mutant caused an infinite loop or hang; test timed out          | Counts as Killed            | The mutant is dead, but investigate the root cause |
+| **No Coverage**   | No test covered the mutated line                                    | Bad — untested code         | Add a test that exercises this line                |
+| **Compile Error** | The mutant produces invalid TypeScript/JavaScript                   | Counts as Killed            | None — the type checker killed it                  |
+| **Ignored**       | You explicitly marked this line with `// Stryker disable next-line` | Neutral                     | Review periodically                                |
+| **Skipped**       | Mutant not run (e.g., feature-flagged or excluded in config)        | Neutral                     | Confirm exclusion is intentional                   |
 
 ---
 
@@ -552,7 +580,10 @@ test('absoluteValue of zero is zero', () => {
           "id": "1",
           "mutatorName": "EqualityOperator",
           "replacement": "token !== null",
-          "location": { "start": { "line": 12, "column": 10 }, "end": { "line": 12, "column": 19 } },
+          "location": {
+            "start": { "line": 12, "column": 10 },
+            "end": { "line": 12, "column": 19 }
+          },
           "status": "Killed",
           "killedBy": ["auth.test.ts::JWT validation rejects null token"],
           "description": "Changed !== to === on line 12"
@@ -561,7 +592,10 @@ test('absoluteValue of zero is zero', () => {
           "id": "2",
           "mutatorName": "BooleanLiteral",
           "replacement": "return false",
-          "location": { "start": { "line": 45, "column": 3 }, "end": { "line": 45, "column": 14 } },
+          "location": {
+            "start": { "line": 45, "column": 3 },
+            "end": { "line": 45, "column": 14 }
+          },
           "status": "Survived",
           "killedBy": [],
           "description": "Changed return true to return false on line 45"
@@ -570,16 +604,31 @@ test('absoluteValue of zero is zero', () => {
           "id": "3",
           "mutatorName": "StringLiteral",
           "replacement": "\"\"",
-          "location": { "start": { "line": 67, "column": 20 }, "end": { "line": 67, "column": 37 } },
+          "location": {
+            "start": { "line": 67, "column": 20 },
+            "end": { "line": 67, "column": 37 }
+          },
           "status": "NoCoverage",
           "killedBy": [],
           "description": "Changed string literal to '' on line 67"
         }
       ],
-      "totals": { "total": 15, "killed": 10, "survived": 2, "noCoverage": 2, "timeout": 1 }
+      "totals": {
+        "total": 15,
+        "killed": 10,
+        "survived": 2,
+        "noCoverage": 2,
+        "timeout": 1
+      }
     }
   },
-  "totals": { "total": 87, "killed": 63, "survived": 11, "noCoverage": 9, "timeout": 4 },
+  "totals": {
+    "total": 87,
+    "killed": 63,
+    "survived": 11,
+    "noCoverage": 9,
+    "timeout": 4
+  },
   "mutationScore": 72.4,
   "projectRoot": "/users/dev/my-repo"
 }
@@ -599,6 +648,7 @@ test('absoluteValue of zero is zero', () => {
 A **false positive** in mutation testing is a surviving mutant that represents a tested, correct behaviour — but Stryker cannot tell. Common cases:
 
 1. **Mathematically equivalent expressions**:
+
    ```typescript
    const rate = (a * 100) / b;
    // Stryker mutates to (a / b) * 100 — different overflow characteristics in JS,
@@ -606,8 +656,11 @@ A **false positive** in mutation testing is a surviving mutant that represents a
    ```
 
 2. **Dead code or compile-time eliminated paths** (TypeScript `never` type guards):
+
    ```typescript
-   function assertNever(x: never): never { throw new Error('unexpected'); }
+   function assertNever(x: never): never {
+     throw new Error("unexpected");
+   }
    // Stryker mutates the throw — but x is never passed anything in practice.
    ```
 
@@ -672,8 +725,8 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -732,6 +785,7 @@ npx stryker run
 Without incremental mode, a 200-file TypeScript project can take 40-90 minutes. With incremental mode on a PR touching 5 files, it runs in 3-8 minutes.
 
 **When to force a full run:**
+
 - After a TypeScript upgrade that might affect type-checking mutants.
 - After upgrading Stryker itself (the mutation algorithm may have changed).
 - When moving a threshold — a full re-run ensures no stale cache is hiding regressions.
@@ -748,16 +802,16 @@ npx stryker run
 
 ## 13. Decision Matrix
 
-| Factor | Mutation testing is worth it | Mutation testing is overkill |
-|---|---|---|
-| Project age | Greenfield (write tests right the first time) | Legacy code with no tests |
-| Test volume | > 500 unit/integration tests | < 50 tests |
-| Domain | Safety-critical, financial, auth, crypto | Internal tooling, prototypes |
-| Team stage | Established team with CI/CD discipline | Startup with daily pivots |
-| CI budget | Minutes available for a 10-30 min extra job | Tight CI budget, every minute counts |
-| Deadlines | Quality is a first-class concern | Ship-or-die pressure |
-| Purpose | Validating test quality after coverage is good | Substituting for actual tests |
-| Culture | Team wants to learn from surviving mutants | Team treats tests as a checkbox |
+| Factor      | Mutation testing is worth it                   | Mutation testing is overkill         |
+| ----------- | ---------------------------------------------- | ------------------------------------ |
+| Project age | Greenfield (write tests right the first time)  | Legacy code with no tests            |
+| Test volume | > 500 unit/integration tests                   | < 50 tests                           |
+| Domain      | Safety-critical, financial, auth, crypto       | Internal tooling, prototypes         |
+| Team stage  | Established team with CI/CD discipline         | Startup with daily pivots            |
+| CI budget   | Minutes available for a 10-30 min extra job    | Tight CI budget, every minute counts |
+| Deadlines   | Quality is a first-class concern               | Ship-or-die pressure                 |
+| Purpose     | Validating test quality after coverage is good | Substituting for actual tests        |
+| Culture     | Team wants to learn from surviving mutants     | Team treats tests as a checkbox      |
 
 **Practical rule**: If you have 100% line coverage but have never run Stryker, run it once. The results will tell you whether mutation testing is worth the investment for your codebase. If the first run produces 40+ surviving mutants in a 20-file module, there is signal there. If it produces 2 surviving mutants in 500 lines, your test quality is already high.
 
@@ -791,15 +845,16 @@ Mutation score is a **team metric**, not an individual one. The score belongs to
 
 ```typescript
 // A test that technically kills every mutant in a function but asserts nothing real:
-test('getUserEmail does something', () => {
+test("getUserEmail does something", () => {
   const email = getUserEmail(user);
-  expect(email).toBeDefined();  // Kills every mutant but doesn't validate correctness
+  expect(email).toBeDefined(); // Kills every mutant but doesn't validate correctness
 });
 ```
 
 The metric went up. The code quality did not. This is why Stryker dashboard trend lines over months are more informative than a single snapshot — a team that moved from 55% to 60% with genuine test improvements is doing better work than a team that gamed from 72% to 80% by suppressing mutants.
 
 **It is not a standalone quality signal**. Mutation testing answers one question: "Are the tests actually checking the right values?" It does not answer:
+
 - Is the architecture sound? (Architecture review)
 - Is the code maintainable? (Code review, cyclomatic complexity)
 - Does it meet security requirements? (Security testing, penetration testing)
@@ -815,14 +870,14 @@ In security-critical code, a surviving mutant is not a test quality gap — it i
 
 Run Stryker specifically on these modules and bring the report to your security lead:
 
-| Module | Risk if mutant survives |
-|---|---|
-| `validateJWT()` | Token validation bypass — authentication forgery |
-| `sanitizeInput()` | XSS injection — arbitrary script execution |
-| `checkAuthorization()` | Access control bypass — horizontal or vertical privilege escalation |
-| `hashPassword()` | Weak or missing hashing — credential exposure on breach |
-| `rateLimitCheck()` | DoS mitigation bypass — API exhaustion |
-| `generateCSRFToken()` | CSRF protection failure — state-changing operations on behalf of users |
+| Module                 | Risk if mutant survives                                                |
+| ---------------------- | ---------------------------------------------------------------------- |
+| `validateJWT()`        | Token validation bypass — authentication forgery                       |
+| `sanitizeInput()`      | XSS injection — arbitrary script execution                             |
+| `checkAuthorization()` | Access control bypass — horizontal or vertical privilege escalation    |
+| `hashPassword()`       | Weak or missing hashing — credential exposure on breach                |
+| `rateLimitCheck()`     | DoS mitigation bypass — API exhaustion                                 |
+| `generateCSRFToken()`  | CSRF protection failure — state-changing operations on behalf of users |
 
 **The triage question**: For each surviving mutant in a security module, ask: "Could an attacker craft an input that triggers this mutant's altered behaviour?" If yes, that is a test gap — add a security-focused test for that case. If no, mark it as a false positive and document why.
 
@@ -841,10 +896,12 @@ Run a one-time full Stryker pass on all security modules. Set thresholds for tho
 2. Write Jest tests for the module until line coverage is 100% (check with `npx jest --coverage`). Record the coverage percentage.
 
 3. Install and configure Stryker:
+
    ```bash
    npm i -D @stryker-mutator/core @stryker-mutator/typescript-checker @stryker-mutator/jest-runner
    npx stryker init  # Creates stryker.config.mjs
    ```
+
    Configure with `coverageAnalysis: 'perTest'`, `thresholds: { high: 80, low: 60, break: 50 }`, and the TypeScript checker enabled.
 
 4. Run `npx stryker run`. Note: initial run may take 10-20 minutes on a 500+ line module.
@@ -861,13 +918,13 @@ Run a one-time full Stryker pass on all security modules. Set thresholds for tho
 
 **Self-grading rubric**:
 
-| Criterion | 3 pts | 2 pts | 1 pt | 0 pts |
-|---|---|---|---|---|
-| Stryker installation | Configured with recommended settings | Configured with most settings | Partially configured | Not installed / errors |
-| Initial mutation score | Recorded ≥ 70% | Recorded 50-69% | Recorded < 50% | Not recorded |
-| Top 3 mutants identified | 3 correctly classified | 2 correctly classified | 1 correctly classified | Not identified |
-| Real gaps vs false positives | All 3 correctly classified | 2/3 correct | 1/3 correct | None correct |
-| Fixes applied | Real gaps fixed, score ≥ 80% | Score improved by ≥ 15 pts | Score improved < 15 pts | No improvement |
-| **Total** | **15** | **10** | **5** | **0** |
+| Criterion                    | 3 pts                                | 2 pts                         | 1 pt                    | 0 pts                  |
+| ---------------------------- | ------------------------------------ | ----------------------------- | ----------------------- | ---------------------- |
+| Stryker installation         | Configured with recommended settings | Configured with most settings | Partially configured    | Not installed / errors |
+| Initial mutation score       | Recorded ≥ 70%                       | Recorded 50-69%               | Recorded < 50%          | Not recorded           |
+| Top 3 mutants identified     | 3 correctly classified               | 2 correctly classified        | 1 correctly classified  | Not identified         |
+| Real gaps vs false positives | All 3 correctly classified           | 2/3 correct                   | 1/3 correct             | None correct           |
+| Fixes applied                | Real gaps fixed, score ≥ 80%         | Score improved by ≥ 15 pts    | Score improved < 15 pts | No improvement         |
+| **Total**                    | **15**                               | **10**                        | **5**                   | **0**                  |
 
 Score ≥ 12: Excellent. Score 8-11: Good. Score 4-7: Developing. Score < 4: Review sections 9-11 and retry.
