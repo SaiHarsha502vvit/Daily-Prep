@@ -385,4 +385,120 @@ int rangeXOR = xorPrefix[hi + 1] ^ xorPrefix[lo];
 
 ---
 
+## Step-by-Step Execution Traces
+
+> These are the 4 algorithms most commonly traced wrong in interviews. Study the exact state after each step.
+
+### Trace 1 — Merge Sort Merge Step
+
+Input: left = `[1, 4, 7]`, right = `[2, 5, 6]`
+
+```
+i=0  j=0  result=[]          compare 1 vs 2 → take 1 (left)
+i=1  j=0  result=[1]         compare 4 vs 2 → take 2 (right)
+i=1  j=1  result=[1,2]       compare 4 vs 5 → take 4 (left)
+i=2  j=1  result=[1,2,4]     compare 7 vs 5 → take 5 (right)
+i=2  j=2  result=[1,2,4,5]   compare 7 vs 6 → take 6 (right)
+i=2  j=3  result=[1,2,4,5,6] j exhausted → append remaining left: [7]
+         result=[1,2,4,5,6,7] ✓
+```
+
+**Invariant at each step**: result contains the i+j smallest elements from the combined arrays, in sorted order.
+
+---
+
+### Trace 2 — Dijkstra (small graph)
+
+Graph: A→B(4), A→C(2), C→B(1), B→D(3), C→D(5)
+
+```
+Init:  dist={A:0, B:∞, C:∞, D:∞}   pq=[(0,A)]
+
+Extract A (dist=0):
+  Relax A→B: dist[B] = min(∞, 0+4) = 4 → pq=[(2,C),(4,B)]
+  Relax A→C: dist[C] = min(∞, 0+2) = 2 → pq=[(2,C),(4,B)]
+
+Extract C (dist=2):
+  Relax C→B: dist[B] = min(4, 2+1) = 3 → pq=[(3,B),(4,B←stale)]
+  Relax C→D: dist[D] = min(∞, 2+5) = 7 → pq=[(3,B),(4,B←stale),(7,D)]
+
+Extract B (dist=3):
+  Relax B→D: dist[D] = min(7, 3+3) = 6 → pq=[(4,B←stale),(6,D),(7,D←stale)]
+
+Extract (4,B): dist[B]=3 < 4 → SKIP (stale entry)
+
+Extract D (dist=6):
+  No outgoing edges.
+
+Final: dist={A:0, B:3, C:2, D:6}
+```
+
+**Key**: stale entries in the priority queue are recognized by `if (d > dist[u]) continue;` — never process a vertex a second time at a higher distance.
+
+---
+
+### Trace 3 — LCS DP Table Fill
+
+`s1 = "ABCB"`, `s2 = "BCAB"`, find Longest Common Subsequence.
+
+```
+dp[i][j] = LCS length for s1[0..i-1] and s2[0..j-1]
+
+     ""  B   C   A   B
+""  [ 0   0   0   0   0 ]
+A   [ 0   0   0   1   1 ]   s1[0]='A' matches s2[2]='A' → dp[1][3]=dp[0][2]+1=1
+B   [ 0   1   1   1   2 ]   s1[1]='B' matches s2[0]='B' → dp[2][1]=1; also s2[3]='B' → dp[2][4]=2
+C   [ 0   1   2   2   2 ]   s1[2]='C' matches s2[1]='C' → dp[3][2]=dp[2][1]+1=2
+B   [ 0   1   2   2   3 ]   s1[3]='B' matches s2[3]='B' → dp[4][4]=dp[3][3]+1=3
+
+Answer: dp[4][4] = 3 → LCS = "BCB" (or "BAB" — multiple valid answers)
+```
+
+**Recurrence**:
+- If `s1[i-1] == s2[j-1]`: `dp[i][j] = dp[i-1][j-1] + 1`
+- Else: `dp[i][j] = max(dp[i-1][j], dp[i][j-1])`
+
+---
+
+### Trace 4 — Heap Insert (min-heap) + Sift-Up
+
+Initial heap: `[1, 3, 6, 5, 9, 8]` (array representation, 0-indexed)
+
+```
+        1
+      /   \
+     3     6
+    / \   /
+   5   9 8
+```
+
+**Insert 2**: append to end → `[1, 3, 6, 5, 9, 8, 2]`
+
+```
+        1
+      /   \
+     3     6
+    / \   / \
+   5   9 8   2   ← new node at index 6
+```
+
+**Sift-up from index 6**:
+```
+Step 1: child=2 (idx 6), parent=6 (idx 2). 2 < 6 → swap
+  [1, 3, 2, 5, 9, 8, 6]
+        1
+      /   \
+     3     2
+    / \   / \
+   5   9 8   6
+
+Step 2: child=2 (idx 2), parent=1 (idx 0). 2 > 1 → stop (heap property satisfied)
+
+Final: [1, 3, 2, 5, 9, 8, 6]  ← valid min-heap
+```
+
+**Parent/child formula** (0-indexed): parent of i = `(i-1)/2`; children of i = `2i+1`, `2i+2`.
+
+---
+
 > **Cross-references**: [Sorting →](02a_Sorting_Fundamentals.md) · [D&C →](02c_Divide_And_Conquer.md) · [Graphs →](05c_Graphs_Fundamentals.md) · [DP →](04b_DP_Fundamentals.md) · [Greedy →](12_Greedy_Algorithms_Complete.md) · [Backtracking →](11_Backtracking_Complete.md) · [Algorithm Timeline →](00_ALGORITHM_TIMELINE.md)
