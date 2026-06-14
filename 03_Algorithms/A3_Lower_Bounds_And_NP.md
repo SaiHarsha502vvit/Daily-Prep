@@ -418,4 +418,60 @@ General TSP                  │ No constant approximation unless P=NP
 FPTAS                        │ (1+ε)-approximation in poly(n, 1/ε) time
 ```
 
+---
+
+## 📝 Exam-Style Problems (MIT 6.046J / KTH DD2352 style)
+
+---
+
+**Problem 1 (Lower bound — 8 min)**: Prove that any comparison-based algorithm for finding the minimum of n elements requires at least n-1 comparisons.
+
+<details><summary>Model Answer</summary>
+
+**Information-theoretic argument**: Consider an adversary that initially assigns all elements as "potentially minimum." Each comparison `a < b` can eliminate at most one element (the larger one) from "potentially minimum" status. After k comparisons, at most k elements have been eliminated. To identify the unique minimum, all n-1 non-minimum elements must be eliminated. Therefore at least **n-1 comparisons** are required. ✓
+
+**Adversary argument alternative**: An adversary answers comparisons consistently but keeps all elements as potential minimum until forced. Before n-1 comparisons, at least one element has never "lost" a comparison → the algorithm cannot distinguish it from the true minimum. The adversary can swap it with any other element to produce a consistent input where the wrong element was returned.
+
+**Tight bound**: SELECT (tournament tree) achieves exactly n-1 comparisons for minimum. The bound is tight.
+
+</details>
+
+---
+
+**Problem 2 (NP-completeness — 10 min)**: Prove that 3-SAT is in NP. (You do not need to prove NP-hardness — just membership in NP.)
+
+<details><summary>Model Answer</summary>
+
+A problem is in NP if: given a proposed solution, a polynomial-time verifier can check correctness.
+
+**Certificate**: a truth assignment — for each of the n variables, a Boolean value (True/False). The certificate has size O(n).
+
+**Verifier**: For each of the m clauses, check if at least one literal in the clause is satisfied by the assignment. Each clause has ≤ 3 literals; checking all m clauses takes O(m) time = polynomial in input size. If all m clauses are satisfied, accept; otherwise reject.
+
+**Conclusion**: A valid truth assignment is a polynomial-size certificate verifiable in polynomial time → 3-SAT ∈ NP. ✓
+
+**Note**: Proving 3-SAT is NP-hard (Cook-Levin theorem) requires showing that every NP problem reduces to 3-SAT in polynomial time — a much harder argument involving Turing machine simulation.
+
+</details>
+
+---
+
+**Problem 3 (Approximation — 6 min)**: The Vertex Cover problem: find the minimum set of vertices that touches every edge. The greedy "pick any uncovered edge, take both endpoints" gives a 2-approximation. Why?
+
+<details><summary>Model Answer</summary>
+
+**Algorithm**: while uncovered edges exist, pick any edge (u,v), add both u and v to cover, remove all edges incident to u or v.
+
+**Let M** = set of edges picked by the algorithm. The edges in M form a **matching** (no two share an endpoint — each picked edge's endpoints are added and all incident edges removed).
+
+**Lower bound**: Any vertex cover must include at least one endpoint of every edge in M. Since M is a matching, these edges are disjoint → any optimal cover needs at least |M| vertices. So OPT ≥ |M|.
+
+**Algorithm output**: The algorithm adds exactly 2 vertices per edge in M → |cover| = 2|M|.
+
+**Ratio**: |cover| / OPT ≤ 2|M| / |M| = **2**. ✓
+
+This is a tight 2-approximation: there exist instances where OPT = |M| and the algorithm returns 2|M|.
+
+</details>
+
 *[← A2: Complexity First Principles](A2_Complexity_FirstPrinciples.md) | [A4: Randomized Algorithms →](A4_Randomized_Algorithms.md)*

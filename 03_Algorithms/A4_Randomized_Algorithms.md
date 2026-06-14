@@ -419,4 +419,59 @@ Randomization vs adversary     │ Enemy can't predict random choices → no wor
 Yao minimax                    │ Best rand algo = best det algo on best distribution
 ```
 
+---
+
+## 📝 Exam-Style Problems (MIT 6.046J L9–L12 / RWTH Aachen style)
+
+---
+
+**Problem 1 (Expected value — 8 min)**: Randomized quicksort picks a pivot uniformly at random. Prove the expected number of comparisons is O(n log n).
+
+<details><summary>Model Answer</summary>
+
+**Indicator random variable**: Let X_{ij} = 1 if elements i and j (in sorted order) are compared, 0 otherwise. Two elements i < j are compared if and only if one of them is chosen as pivot before any other element in {i, i+1, ..., j} is chosen. (If any element between them is chosen first, they end up in different partitions and are never compared.)
+
+**Probability**: Pr[X_{ij} = 1] = 2 / (j - i + 1). (There are j-i+1 elements in range; we need i or j to be the first pivot chosen.)
+
+**Expected comparisons**: E[total] = Σ_{i<j} Pr[X_{ij}] = Σ_{i<j} 2/(j-i+1).
+
+Let d = j-i (gap). For each gap d from 1 to n-1, there are (n-d) pairs:
+= Σ_{d=1}^{n-1} (n-d) · 2/(d+1) ≤ Σ_{d=1}^{n-1} 2n/(d+1) ≤ 2n · Σ_{k=2}^{n} 1/k = 2n · (H_n - 1) = **O(n log n)**. ✓
+
+</details>
+
+---
+
+**Problem 2 (Universal hashing — 6 min)**: Define a universal hash family. Show that for any two distinct keys x ≠ y, universal hashing guarantees Pr[collision] ≤ 1/m where m is the table size.
+
+<details><summary>Model Answer</summary>
+
+**Definition**: A family H of functions h: U → {0,...,m-1} is **universal** if for any distinct x, y ∈ U:
+
+Pr_{h ∈ H}[h(x) = h(y)] ≤ 1/m
+
+where the probability is over a uniformly random choice of h from H.
+
+**Construction**: Fix prime p > |U|. For a, b ∈ {0,...,p-1} with a≠0, define h_{a,b}(x) = ((ax + b) mod p) mod m. The family {h_{a,b}} is universal.
+
+**Why the guarantee matters**: If we hash n keys into a table of size m=n using a random h from H, the expected number of collisions for any key x is at most (n-1)/m ≤ 1. Expected lookup time = O(1). This holds for ANY set of keys (no bad-input pathology, unlike non-randomized hashing that can be attacked via HashDoS).
+
+</details>
+
+---
+
+**Problem 3 (Bloom filter — 6 min)**: A Bloom filter with m bits and k hash functions has n elements inserted. Derive the false positive probability and explain the optimal k.
+
+<details><summary>Model Answer</summary>
+
+**After n insertions**: Each of the k hash functions sets one bit per insertion. The probability a specific bit remains 0 is (1 - 1/m)^{kn} ≈ e^{-kn/m} for large m.
+
+**False positive**: A query element (not inserted) hashes to k positions; all must be 1 by coincidence. Probability ≈ (1 - e^{-kn/m})^k.
+
+**Optimal k**: Set derivative w.r.t. k = 0. Solution: k = (m/n) ln 2. This minimizes false positive probability. At optimal k: Pr[FP] ≈ (1/2)^k = (1/2)^{(m/n)ln2}.
+
+**Practical rule**: For 1% false positive rate and n elements, use m ≈ 9.6n bits and k ≈ 6-7 hash functions. Space cost is ~10 bits per element vs O(n log n) bits for a hash set.
+
+</details>
+
 *[← A3: Lower Bounds & NP](A3_Lower_Bounds_And_NP.md) | [Back to Index](00_INDEX.md)*

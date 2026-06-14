@@ -393,4 +393,65 @@ DP vs greedy decision   │ Try exchange argument; if it fails, use DP
 Algorithm is wrong      │ Construct counterexample (break the invariant)
 ```
 
+---
+
+## 📝 Exam-Style Problems (MIT 6.042J / TU Munich Algorithms style)
+
+---
+
+**Problem 1 (Loop Invariant — 10 min)**: Prove that the following iterative algorithm correctly computes xⁿ for integer n ≥ 0. State the loop invariant, prove init/maintenance/termination.
+
+```java
+long power(long x, int n) {
+    long result = 1;
+    long base = x;
+    int exp = n;
+    while (exp > 0) {
+        if ((exp & 1) == 1) result *= base;
+        base *= base;
+        exp >>= 1;
+    }
+    return result;
+}
+```
+
+<details><summary>Model Answer</summary>
+
+**Loop invariant**: At the start of each iteration, `result * base^exp = x^n`.
+
+- **Init**: Before the loop, `result=1`, `base=x`, `exp=n`. Invariant: `1 * x^n = x^n`. ✓
+- **Maintenance**: Case 1 (`exp` is odd): `result' = result * base`, `base' = base²`, `exp' = (exp-1)/2`. Check: `result' * (base')^(exp') = (result * base) * base^(exp-1) = result * base^exp = x^n`. ✓  Case 2 (`exp` is even): `result' = result`, `base' = base²`, `exp' = exp/2`. Check: `result' * (base')^(exp') = result * (base²)^(exp/2) = result * base^exp = x^n`. ✓
+- **Termination**: `exp` halves each iteration → reaches 0 in O(log n) iterations. When `exp=0`: `result * base^0 = result * 1 = result`. By invariant, `result = x^n`. ✓
+
+</details>
+
+---
+
+**Problem 2 (Exchange Argument — 8 min)**: Prove or disprove: the greedy algorithm that always picks the coin with the largest denomination finds the minimum number of coins for any coin system.
+
+<details><summary>Model Answer</summary>
+
+**Disprove by counterexample**: Consider coins {1, 3, 4} and target = 6.
+- Greedy: pick 4 (remaining=2), pick 1 (remaining=1), pick 1 (remaining=0) → **3 coins** {4,1,1}.
+- Optimal: pick 3 (remaining=3), pick 3 (remaining=0) → **2 coins** {3,3}.
+
+The exchange argument fails because replacing a greedy choice (4) with a non-greedy choice (3+3) yields a better solution. The greedy choice is NOT always locally optimal globally.
+
+**When greedy DOES work**: standard denominations {1, 5, 10, 25} (US coins) and canonical coin systems where each denomination divides evenly into the next. The exchange argument holds there because swapping a larger coin for smaller ones always requires at least as many coins.
+
+</details>
+
+---
+
+**Problem 3 (Induction — 8 min)**: Prove by structural induction that a binary tree with n internal nodes has exactly n+1 leaves.
+
+<details><summary>Model Answer</summary>
+
+Let P(T) = "if T has n internal nodes, T has n+1 leaves."
+
+- **Base case**: T is a single leaf (n=0 internal nodes). Leaves = 1 = 0+1. ✓
+- **Inductive step**: Assume P holds for all trees with fewer internal nodes than T. T has at least one internal node (the root), which has a left subtree L and right subtree R. Let n_L, n_R be internal nodes of L, R. Then: n = 1 + n_L + n_R. By IH: leaves(L) = n_L + 1, leaves(R) = n_R + 1. Total leaves(T) = leaves(L) + leaves(R) = (n_L+1) + (n_R+1) = n_L + n_R + 2 = (n-1) + 2 = **n+1**. ✓
+
+</details>
+
 *[Back to Index](00_INDEX.md) | [A2: Complexity from First Principles →](A2_Complexity_FirstPrinciples.md)*

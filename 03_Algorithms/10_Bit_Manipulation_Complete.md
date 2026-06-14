@@ -1139,4 +1139,70 @@ Select **bit ops** for flag manipulation, set checking, and XOR-pattern problems
 
 ---
 
+## 📝 Exam-Style Problems (MIT 6.006 / KTH DD1352 style)
+
+---
+
+**Problem 1 (Correctness — 8 min)**: Prove that `x ^ x = 0` for any 32-bit integer x. Use this to prove the "missing number" algorithm: given an array containing every integer from 0 to n except one, XOR all indices with all values to find the missing number.
+
+<details><summary>Model Answer</summary>
+
+**`x ^ x = 0`**: XOR is bitwise. For any bit position i: `bit_i(x) XOR bit_i(x) = 0` (same values cancel). Applying across all 32 bits: every bit of `x ^ x` is 0. ✓
+
+**Missing number algorithm**: Let `result = 0`. For i from 0 to n: `result ^= i`. For each value v in the array: `result ^= v`. Every integer from 0 to n that IS present is XORed twice (once as index, once as value) → cancels to 0. The missing integer appears only once (as an index) → remains in `result`. ✓
+
+```java
+int findMissing(int[] nums, int n) {
+    int result = 0;
+    for (int i = 0; i <= n; i++) result ^= i;
+    for (int v : nums) result ^= v;
+    return result;
+}
+```
+**Time**: O(n). **Space**: O(1). No sorting, no hash set.
+
+</details>
+
+---
+
+**Problem 2 (Analysis — 6 min)**: Brian Kernighan's bit-count: `int count = 0; while (n != 0) { n &= (n-1); count++; }`. Prove this runs in O(k) where k is the number of set bits, not O(32).
+
+<details><summary>Model Answer</summary>
+
+**Key observation**: `n & (n-1)` clears the lowest set bit of n.
+
+**Why**: If the lowest set bit is at position p:
+- n binary: `...1 0...0` (bit p=1, bits 0..p-1=0)
+- (n-1) binary: `...0 1...1` (bit p=0, bits 0..p-1=1)
+- `n & (n-1)`: bit p = `1 & 0` = 0; bits 0..p-1 = `0 & 1` = 0; higher bits unchanged.
+
+Each iteration removes exactly one set bit → loop runs exactly k times → **O(k)**. For sparse integers (few set bits), vastly faster than the naïve 32-iteration approach.
+
+</details>
+
+---
+
+**Problem 3 (Design — 8 min)**: An array has n elements where every element appears exactly three times, except one which appears once. Find it in O(n) time, O(1) space. State and prove the invariant.
+
+<details><summary>Model Answer</summary>
+
+**Invariant**: For each bit position, count how many elements have that bit set mod 3. If count ≡ 0 (mod 3) → unique element has 0 in that position. If count ≡ 1 (mod 3) → unique element has 1 in that position. This holds because every "triple" element contributes 3 ≡ 0 (mod 3), while the unique element contributes exactly 1.
+
+```java
+int singleNumber(int[] nums) {
+    int ones = 0, twos = 0;
+    for (int n : nums) {
+        ones = (ones ^ n) & ~twos;  // bits seen 1 (mod 3) times
+        twos = (twos ^ n) & ~ones;  // bits seen 2 (mod 3) times
+    }
+    return ones;  // bits seen exactly once after full pass
+}
+```
+
+**Proof**: After processing a "triple" element, `ones` and `twos` both return to their pre-element state (bits go through 0→1→2→0). After processing the unique element once, its bits move into `ones` and stay there. ✓
+
+</details>
+
+---
+
 > **Navigation**: [< Previous](09_Pattern_Programs_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](11_Backtracking_Complete.md)

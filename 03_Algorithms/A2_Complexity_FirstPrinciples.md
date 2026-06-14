@@ -511,4 +511,57 @@ Potential amortized     │ Global "energy" function models work savings
 Space analysis          │ Count stack depth (recursion) + heap allocations
 ```
 
+---
+
+## 📝 Exam-Style Problems (MIT 6.006 / RWTH Aachen Algorithm Theory style)
+
+---
+
+**Problem 1 (Master Theorem — 6 min)**: Solve each recurrence using the Master Theorem. State which case applies and why.
+
+(a) T(n) = 4T(n/2) + n  
+(b) T(n) = 4T(n/2) + n²  
+(c) T(n) = 4T(n/2) + n³
+
+<details><summary>Model Answer</summary>
+
+For T(n) = aT(n/b) + f(n), critical exponent p = log_b(a).
+
+**(a)** a=4, b=2, p = log₂4 = 2. f(n) = n = O(n^(2-1)) → Case 1 → **T(n) = Θ(n²)**.
+
+**(b)** a=4, b=2, p=2. f(n) = n² = Θ(n²) = Θ(n^p) → Case 2 → **T(n) = Θ(n² log n)**.
+
+**(c)** a=4, b=2, p=2. f(n) = n³ = Ω(n^(2+1)) → need regularity: 4f(n/2) = 4(n/2)³ = n³/2 ≤ cn³ for c=1/2 < 1. ✓ → Case 3 → **T(n) = Θ(n³)**.
+
+**Intuition for the 3 cases**: (a) subproblem work dominates (root at bottom of tree); (b) work is equal at each level (sum is height × work per level); (c) top-level work dominates.
+
+</details>
+
+---
+
+**Problem 2 (Amortized — 8 min)**: A stack supports push, pop, and multi-pop (pops up to k elements at once). Show that any sequence of n operations takes O(n) total time, so the amortized cost per operation is O(1).
+
+<details><summary>Model Answer</summary>
+
+**Aggregate method**: Count total stack operations over the entire sequence. Each element can be pushed at most once and popped at most once (whether by pop or multi-pop). Total pushes ≤ n (one push per push operation), total pops ≤ total pushes ≤ n. So total work = O(n), amortized cost = O(n)/n = **O(1) per operation**. ✓
+
+**Accounting method alternative**: Assign 2 credits to each push (1 for the push itself, 1 saved for a future pop). Pop/multi-pop of each element uses the 1 saved credit. Balance never goes negative. Total credits charged = 2n → O(n) total → O(1) amortized.
+
+**Key insight**: the expensive case (multi-pop k elements) can only happen if k elements were previously pushed. Those pushes already "paid" for the pop work.
+
+</details>
+
+---
+
+**Problem 3 (Space Complexity — 5 min)**: An iterative merge sort uses an auxiliary array of size n. A recursive merge sort with call-stack depth log₂n. Compare the total space complexity of both implementations.
+
+<details><summary>Model Answer</summary>
+
+- **Iterative merge sort**: auxiliary array of size n + O(1) other variables = **O(n) space**.
+- **Recursive merge sort**: auxiliary array of size n (for merging) + O(log n) stack frames (each frame stores lo, hi, mid = O(1) per frame) = **O(n + log n) = O(n) space**.
+
+Both are O(n) asymptotically, but the recursive version has a real O(log n) stack overhead that matters in production: for n = 2^20 (≈ 1M elements), the recursive version uses ~20 additional stack frames. The iterative version avoids `StackOverflowError` risk on arrays larger than ~10M elements.
+
+</details>
+
 *[← A1: Correctness Proofs](A1_Correctness_Proofs.md) | [A3: Lower Bounds & NP →](A3_Lower_Bounds_And_NP.md)*
