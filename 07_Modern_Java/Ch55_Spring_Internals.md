@@ -45,7 +45,7 @@ Most developers think: "It starts the app." Here's what ACTUALLY happens — 23 
            │
   Step 4:  Environment created (StandardServletEnvironment)
            │  → System properties loaded (java.home, os.name, etc.)
-           │  → Environment variables loaded  
+           │  → Environment variables loaded
            │  → application.properties / application.yml parsed
            │  → Command-line args (--server.port=8081) override everything
            │  → Profile-specific files loaded (application-dev.yml)
@@ -164,7 +164,7 @@ Most developers think: "It starts the app." Here's what ACTUALLY happens — 23 
 @Service
 public class OrderService {
     private final UserRepository userRepo;
-    
+
     public OrderService(UserRepository userRepo) {
         this.userRepo = userRepo;
     }
@@ -187,16 +187,15 @@ public class OrderService {
 
 ---
 
-
-
 🔬 **Section Challenge — 1. How Spring Boots Up — The Complete Startup Sequence**
 
 **Challenge 1 (Reasoning):** What happens if two Spring Beans have a Circular Dependency (A depends on B, and B depends on A) and both use Constructor Injection?
+
 <details><summary>Answer</summary>
 
 The application fails to start with a `BeanCurrentlyInCreationException`. Spring cannot instantiate Bean A without first having a fully constructed Bean B, but it cannot construct Bean B without Bean A. This creates an unresolvable deadlock. If you use Field or Setter injection, Spring can bypass this by instantiating both objects first (using empty constructors) and injecting the references afterward. However, Constructor Injection strictly enforces dependency resolution at creation time, exposing poor architectural design.
-</details>
 
+</details>
 
 ## 2. How Annotations ACTUALLY Work — From @Component to Bean
 
@@ -265,7 +264,7 @@ public class PaymentService { ... }
   ├── Loads class using ClassLoader:
   │   Class<?> clazz = classLoader.loadClass("com.myapp.PaymentService");
   │
-  ├── Checks: clazz.isAnnotationPresent(Component.class)?  
+  ├── Checks: clazz.isAnnotationPresent(Component.class)?
   │   @Service is meta-annotated with @Component, so YES!
   │   (Spring checks the annotation hierarchy recursively)
   │
@@ -368,11 +367,11 @@ public class OrderService {
           for (Field field : clazz.getDeclaredFields()) {
               if (field.isAnnotationPresent(Autowired.class)) {
                   // Found @Autowired on 'paymentService' field!
-                  
+
                   // Resolve the bean from the container:
                   Object dependency = beanFactory.getBean(field.getType());
                   // → Returns the PaymentService singleton
-                  
+
                   // Inject via reflection:
                   field.setAccessible(true);  // bypass private
                   field.set(orderServiceInstance, dependency);
@@ -461,11 +460,11 @@ public class OrderService {
               → Starts embedded Netty
 
   INTERVIEW: "What's the difference between BeanFactory and ApplicationContext?"
-  
+
   BeanFactory = Lazy. Creates beans ONLY when requested.
   ApplicationContext = Eager. Creates ALL singletons at startup.
   ApplicationContext adds: events, i18n, resource loading, AOP.
-  
+
   In practice: Always use ApplicationContext. BeanFactory is too low-level.
 ```
 
@@ -478,28 +477,28 @@ public class OrderService {
 // Simplified version of AbstractBeanFactory.doGetBean():
 
 protected Object doGetBean(String name) {
-    
+
     // 1. Check singleton cache FIRST (fast path)
     Object singleton = singletonObjects.get(name);
     if (singleton != null) {
         return singleton;  // Already created, return cached
     }
-    
+
     // 2. Check if currently being created (circular dependency)
     Object earlySingleton = earlySingletonObjects.get(name);
     if (earlySingleton != null) {
         return earlySingleton;  // Return partially-created bean
     }
-    
+
     // 3. Get BeanDefinition
     BeanDefinition bd = beanDefinitionMap.get(name);
-    
+
     // 4. Check dependencies first (recursive!)
     String[] dependsOn = bd.getDependsOn();
     for (String dep : dependsOn) {
         getBean(dep);  // Create dependency first!
     }
-    
+
     // 5. Create the bean
     if (bd.isSingleton()) {
         singleton = createBean(name, bd);
@@ -513,8 +512,6 @@ protected Object doGetBean(String name) {
 
 ---
 
-
-
 🔬 **Section Challenge — 3. The Bean Container — ApplicationContext Internals**
 
 **Challenge 1 (Trace — Who/When/What):** You have two `DataSource` beans — `primaryDataSource` and `backupDataSource`. `@Autowired DataSource ds` in a service. Spring throws `NoUniqueBeanDefinitionException`. **Who** is responsible for resolution? **When** does it fail — startup or first use? **What** are the three ways to resolve?
@@ -525,14 +522,17 @@ protected Object doGetBean(String name) {
 
 </details>
 
-
 ## 4. Bean Creation — The 11-Step Lifecycle You Must Know
 
 ```
   ┌────────────────────────────────────────────────────────────────────────────┐
   │              THE COMPLETE BEAN LIFECYCLE — ALL 11 STEPS                    │
-  │                                                                           │
-  │  Each step is a REAL method call. This is what Spring executes.           │
+  │                      STATE MACHINE VISUALIZATION                          │
+  ┌────────────────────────────────────────────────────────────────────────────┐
+  │  STATE: NEW ──► INSTANTIATED ──► POPULATED ──► AWARE ──► INITIALIZING ──► READY │
+  │  BeanDefinition      Constructor    @Autowired    Callbacks    @PostConstruct │
+  │  loaded              called         injected      processed    + afterPropertiesSet │
+  └────────────────────────────────────────────────────────────────────────────┘
   │                                                                           │
   │  BeanDefinition loaded                                                    │
   │         │                                                                 │
@@ -643,7 +643,7 @@ protected Object doGetBean(String name) {
 public class LifecycleDemo implements BeanNameAware, BeanFactoryAware,
                                       ApplicationContextAware,
                                       InitializingBean, DisposableBean {
-    
+
     @Autowired
     private SomeDependency dep;
 
@@ -719,7 +719,7 @@ public class LifecycleDemo implements BeanNameAware, BeanFactoryAware,
   ──────────────
   @Autowired
   private PaymentService paymentService;
-  
+
   Spring: "Find all beans of type PaymentService"
   → If exactly ONE found → inject it ✅
   → If ZERO found → throw NoSuchBeanDefinitionException ❌
@@ -730,7 +730,7 @@ public class LifecycleDemo implements BeanNameAware, BeanFactoryAware,
   @Autowired
   @Qualifier("stripePayment")
   private PaymentService paymentService;
-  
+
   Spring: "Find bean named 'stripePayment' of type PaymentService"
   → If found → inject it ✅
   → If not found → go to Step 3
@@ -740,10 +740,10 @@ public class LifecycleDemo implements BeanNameAware, BeanFactoryAware,
   @Primary
   @Service
   public class StripePaymentService implements PaymentService { }
-  
+
   @Service
   public class PayPalPaymentService implements PaymentService { }
-  
+
   Spring: "Multiple PaymentService beans. Is one @Primary?"
   → If one is @Primary → inject it ✅
   → If none is @Primary → go to Step 4
@@ -752,7 +752,7 @@ public class LifecycleDemo implements BeanNameAware, BeanFactoryAware,
   ─────────────────────
   @Autowired
   private PaymentService stripePaymentService;  // field name matches bean name!
-  
+
   Spring: "Field name 'stripePaymentService' matches a bean name?"
   → If match → inject it ✅
   → If no match → throw NoUniqueBeanDefinitionException ❌
@@ -782,8 +782,6 @@ public void processOrder(Order order) {
 
 ---
 
-
-
 🔬 **Section Challenge — 5. How @Autowired Works — The Full Resolution Chain**
 
 **Challenge 1 (Ambiguity Resolution):** You have two beans implementing `PaymentService`: `StripePaymentService` and `PaypalPaymentService`. You inject `@Autowired PaymentService service`. **Who** resolves the ambiguity? **When** does it fail vs. succeed? **What** are the three resolution strategies Spring uses in order?
@@ -801,14 +799,14 @@ public void processOrder(Order order) {
 ```
   THE FUNDAMENTAL PROBLEM:
   ════════════════════════
-  
+
   You write:
   @Transactional
   public void transferMoney(Account from, Account to, BigDecimal amount) {
       from.debit(amount);
       to.credit(amount);
   }
-  
+
   But WHO starts the transaction? WHO commits/rolls back?
   YOUR CODE doesn't have any transaction management!
 ```
@@ -833,10 +831,10 @@ sequenceDiagram
 
 ```text
   ANSWER: A PROXY wraps your bean and adds transaction logic:
-  
+
   What you think happens:          What ACTUALLY happens:
   ═══════════════════════          ════════════════════════
-  
+
   caller → transferMoney()         caller → PROXY.transferMoney()
                                             │
                                             ├── Begin transaction
@@ -848,19 +846,19 @@ sequenceDiagram
 ### CGLIB Proxy — How It Works (Spring Boot Default)
 
 ```
-  CGLIB = Code Generation Library 
+  CGLIB = Code Generation Library
   → Generates a SUBCLASS of your class at runtime
   → The subclass OVERRIDES your methods to add behavior
 
   YOUR CLASS                          GENERATED PROXY CLASS
   ══════════                          ═════════════════════
-  
+
   class OrderService {                class OrderService$$EnhancerBySpring
     @Transactional                          extends OrderService {
-    void placeOrder() {                 
+    void placeOrder() {
       // your code                      // Spring-generated field:
     }                                   private MethodInterceptor interceptor;
-  }                                   
+  }
                                         @Override
                                         void placeOrder() {
                                           // BEFORE: start transaction
@@ -896,12 +894,12 @@ sequenceDiagram
 
   YOUR INTERFACE & CLASS                GENERATED PROXY
   ═════════════════════                 ═════════════════
-  
+
   interface PaymentService {            class $Proxy42
     void process(Order o);                implements PaymentService {
-  }                                     
+  }
                                           InvocationHandler handler;
-  class StripePayment                   
+  class StripePayment
     implements PaymentService {            @Override
     void process(Order o) {               void process(Order o) {
       // your code                          handler.invoke(
@@ -915,33 +913,33 @@ sequenceDiagram
 
 ### CGLIB vs JDK Proxy — Decision Table
 
-| Aspect | CGLIB Proxy | JDK Dynamic Proxy |
-|--------|-------------|-------------------|
-| **Mechanism** | Generates subclass | Implements interface |
-| **Requires interface?** | No | Yes, mandatory |
-| **Can proxy final class?** | ❌ No (can't subclass final) | N/A (uses interface) |
-| **Can proxy final method?** | ❌ No (can't override final) | ✅ Yes (interface method) |
-| **Performance** | Slightly faster (direct method call) | Slightly slower (reflection) |
-| **Spring Boot default** | ✅ Yes (since Spring Boot 2.0) | Used when explicitly configured |
-| **Generated class** | `MyClass$$EnhancerBySpringCGLIB` | `$Proxy42` |
-| **Library** | ASM bytecode manipulation | java.lang.reflect.Proxy |
+| Aspect                      | CGLIB Proxy                          | JDK Dynamic Proxy               |
+| --------------------------- | ------------------------------------ | ------------------------------- |
+| **Mechanism**               | Generates subclass                   | Implements interface            |
+| **Requires interface?**     | No                                   | Yes, mandatory                  |
+| **Can proxy final class?**  | ❌ No (can't subclass final)         | N/A (uses interface)            |
+| **Can proxy final method?** | ❌ No (can't override final)         | ✅ Yes (interface method)       |
+| **Performance**             | Slightly faster (direct method call) | Slightly slower (reflection)    |
+| **Spring Boot default**     | ✅ Yes (since Spring Boot 2.0)       | Used when explicitly configured |
+| **Generated class**         | `MyClass$$EnhancerBySpringCGLIB`     | `$Proxy42`                      |
+| **Library**                 | ASM bytecode manipulation            | java.lang.reflect.Proxy         |
 
 ### Why @Transactional Fails — The 5 Cases
 
 ```
   CASE 1: SELF-INVOCATION (Most common trap!)
   ─────────────────────────────────────────────
-  
+
   @Service
   public class OrderService {
       @Transactional
       public void placeOrder() { ... }
-      
+
       public void batchProcess() {
           placeOrder();  // ❌ CALLS this.placeOrder() — BYPASSES PROXY!
       }
   }
-  
+
   WHY: When you call this.placeOrder(), you're calling the REAL object's
   method directly. The proxy only intercepts EXTERNAL calls.
 ```
@@ -953,7 +951,7 @@ flowchart TD
         EXT["External Class"]
         PROXY1["CGLIB Proxy<br/>(Starts Transaction)"]
         REAL1["Real Target Bean<br/>placeOrder()"]
-        
+
         EXT -->|proxy.placeOrder()| PROXY1
         PROXY1 -->|super.placeOrder()| REAL1
 
@@ -962,16 +960,16 @@ flowchart TD
         PROXY2["CGLIB Proxy<br/>(No TX on batchProcess)"]
         REAL2["Real Target Bean<br/>batchProcess()"]
         REAL3["Real Target Bean<br/>placeOrder()"]
-        
+
         EXT2 -->|proxy.batchProcess()| PROXY2
         PROXY2 -->|super.batchProcess()| REAL2
         REAL2 -->|this.placeOrder()<br/>BYPASSES PROXY| REAL3
-    
+
 ```
 
 ```text
   The proxy wraps the outside. Self-calls go through the INSIDE:
-  
+
   ┌─── Proxy ──────────────────────────────────────────────┐
   │                                                         │
   │  External call → proxy.placeOrder() → TX starts ✅      │
@@ -983,7 +981,7 @@ flowchart TD
   │  │                                                    │  │
   │  └────────────────────────────────────────────────────┘  │
   └─────────────────────────────────────────────────────────┘
-  
+
   FIX: Inject self, or use AopContext.currentProxy()
 
 
@@ -991,7 +989,7 @@ flowchart TD
   ───────────────────────
   @Transactional
   private void helper() { }  // ❌ CGLIB can't override private methods!
-  
+
   FIX: Make it public or package-private.
 
 
@@ -1001,7 +999,7 @@ flowchart TD
   public void process() throws IOException {
       throw new IOException("file error");  // ❌ NOT rolled back!
   }
-  
+
   FIX: @Transactional(rollbackFor = Exception.class)
 
 
@@ -1024,8 +1022,6 @@ flowchart TD
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 6. How Proxies Work — CGLIB vs JDK Dynamic Proxy Internal Mechanics**
 
@@ -1103,13 +1099,13 @@ flowchart TD
     subgraph T1_GROUP ["OS Thread 1 (Handling Request A)"]
         T1["ThreadLocal Map"]
         CONN_A["Connection-A<br/>(AutoCommit=false)"]
-        
+
         T1 -->|Binds| CONN_A
-        
+
         SERV_A["OrderService.placeOrder()"]
         REPO_A1["UserRepository.save()"]
         REPO_A2["OrderRepository.save()"]
-        
+
         SERV_A -.->|Retrieves| CONN_A
         REPO_A1 -.->|Retrieves| CONN_A
         REPO_A2 -.->|Retrieves| CONN_A
@@ -1117,18 +1113,18 @@ flowchart TD
     subgraph T2_GROUP ["OS Thread 2 (Handling Request B)"]
         T2["ThreadLocal Map"]
         CONN_B["Connection-B<br/>(AutoCommit=false)"]
-        
+
         T2 -->|Binds| CONN_B
-        
+
         SERV_B["OrderService.placeOrder()"]
-        
+
         SERV_B -.->|Retrieves| CONN_B
-    
+
 ```
 
 ```text
   TransactionSynchronizationManager uses ThreadLocal:
-  
+
   Thread-1:  [Connection-A] ← bound to this thread
       │
       ├── orderService.placeOrder()     → uses Connection-A
@@ -1136,7 +1132,7 @@ flowchart TD
       │   └── orderRepo.save()          → uses Connection-A ← same!
       │
       └── Transaction committed on Connection-A
-  
+
   Thread-2:  [Connection-B] ← different thread, different connection
       │
       └── orderService.placeOrder()     → uses Connection-B
@@ -1147,28 +1143,27 @@ flowchart TD
 
 ### Propagation Behaviors — When You Actually Need Them
 
-| Propagation | Existing TX? | Behavior | Use Case |
-|-------------|-------------|----------|----------|
-| **REQUIRED** (default) | Yes → Join; No → Create | Most common. Safe default. | 95% of methods |
-| **REQUIRES_NEW** | Always create NEW (suspend existing) | Independent commit/rollback | Audit logging that must persist even if parent rolls back |
-| **SUPPORTS** | Yes → Join; No → Run without TX | Optional TX | Read-only methods that can work either way |
-| **NOT_SUPPORTED** | Suspend existing; Run without TX | Force no TX | Long-running operations that shouldn't hold a transaction |
-| **MANDATORY** | Yes → Join; No → THROW exception | Require existing TX | Methods that must be called within a TX |
-| **NEVER** | Yes → THROW exception; No → Run without TX | Forbid TX | Methods that must NOT run in a transaction |
-| **NESTED** | Yes → Create SAVEPOINT; No → Create new | Partial rollback | Retry individual items in a batch |
+| Propagation            | Existing TX?                               | Behavior                    | Use Case                                                  |
+| ---------------------- | ------------------------------------------ | --------------------------- | --------------------------------------------------------- |
+| **REQUIRED** (default) | Yes → Join; No → Create                    | Most common. Safe default.  | 95% of methods                                            |
+| **REQUIRES_NEW**       | Always create NEW (suspend existing)       | Independent commit/rollback | Audit logging that must persist even if parent rolls back |
+| **SUPPORTS**           | Yes → Join; No → Run without TX            | Optional TX                 | Read-only methods that can work either way                |
+| **NOT_SUPPORTED**      | Suspend existing; Run without TX           | Force no TX                 | Long-running operations that shouldn't hold a transaction |
+| **MANDATORY**          | Yes → Join; No → THROW exception           | Require existing TX         | Methods that must be called within a TX                   |
+| **NEVER**              | Yes → THROW exception; No → Run without TX | Forbid TX                   | Methods that must NOT run in a transaction                |
+| **NESTED**             | Yes → Create SAVEPOINT; No → Create new    | Partial rollback            | Retry individual items in a batch                         |
 
 ---
-
-
 
 🔬 **Section Challenge — 7. How @Transactional ACTUALLY Works — From Annotation to Commit**
 
 **Challenge 1 (Reasoning):** Two transactions T1 and T2 both run `SELECT balance WHERE id=1; UPDATE balance=balance-100 WHERE id=1`. What anomaly occurs at READ COMMITTED and how does REPEATABLE READ fix it?
+
 <details><summary>Answer</summary>
 
 READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 900. Final balance: 900 (expected: 800). Lost update! REPEATABLE READ (with locking SELECT FOR UPDATE): first SELECT acquires a read lock. T2's SELECT blocks until T1 commits. After T1 commits (balance=900), T2 reads 900, writes 800. Correct! Alternatively: use `UPDATE ... WHERE balance=1000` (optimistic locking with version check).
-</details>
 
+</details>
 
 ## 8. How Auto-Configuration Works — spring.factories to Bean
 
@@ -1177,7 +1172,7 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 ```
   When Spring Boot starts, it needs to know:
   "Which auto-configuration classes should I evaluate?"
-  
+
   SPRING BOOT 2.x:
   ═════════════════
   Location: META-INF/spring.factories (inside each JAR)
@@ -1188,7 +1183,7 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
   │   com.example.WebMvcAutoConfiguration,\                              │
   │   com.example.SecurityAutoConfiguration                              │
   └───────────────────────────────────────────────────────────────────────┘
-  
+
   SPRING BOOT 3.x:
   ═════════════════
   Location: META-INF/spring/
@@ -1199,7 +1194,7 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
   │ com.example.WebMvcAutoConfiguration                                  │
   │ com.example.SecurityAutoConfiguration                                │
   └───────────────────────────────────────────────────────────────────────┘
-  
+
   Why the change? spring.factories loaded ALL types (not just auto-config)
   → performance overhead. The new format is specific to auto-configuration.
 ```
@@ -1220,7 +1215,7 @@ READ COMMITTED: both T1 and T2 read balance=1000. Both compute 900. Both write 9
 @EnableConfigurationProperties(DataSourceProperties.class)
 // ↑ Binds spring.datasource.* properties to DataSourceProperties class
 
-@Import({ 
+@Import({
     DataSourcePoolMetadataProvidersConfiguration.class,
     DataSourceCheckpointRestoreConfiguration.class
 })
@@ -1231,8 +1226,8 @@ public class DataSourceAutoConfiguration {
     // ↑ Only if connection pooling is available
     @ConditionalOnMissingBean({ DataSource.class, XADataSource.class })
     // ↑ ONLY IF YOU HAVEN'T DEFINED YOUR OWN DataSource bean!
-    @Import({ 
-        HikariJdbcConnectionDetailsBeanRegistrar.class 
+    @Import({
+        HikariJdbcConnectionDetailsBeanRegistrar.class
     })
     static class PooledDataSourceConfiguration {
         // This creates HikariDataSource if HikariCP is on classpath
@@ -1249,7 +1244,7 @@ public class DataSourceAutoConfiguration {
 
 ```
   THE DECISION TREE:
-  
+
   Is DataSource.class on classpath?
   ├── NO  → Skip entirely (no JDBC dependency)
   └── YES
@@ -1294,13 +1289,11 @@ public class DataSourceAutoConfiguration {
 @ConditionalOnExpression("${cache.enabled:false} && ${cache.type:none} != 'none'")
 
 // JAVA VERSION conditions
-@ConditionalOnJava(range = ConditionalOnJava.Range.EQUAL_OR_NEWER, 
+@ConditionalOnJava(range = ConditionalOnJava.Range.EQUAL_OR_NEWER,
                    value = JavaVersion.SEVENTEEN)
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 8. How Auto-Configuration Works — spring.factories to Bean**
 
@@ -1323,19 +1316,19 @@ public class DataSourceAutoConfiguration {
   Step 1: CONVERT PACKAGE TO FILE PATH
   ─────────────────────────────────────
   "com.myapp" → "com/myapp"
-  
+
   Step 2: SCAN CLASSPATH FOR ALL .class FILES
   ────────────────────────────────────────────
   ClassLoader scans:
   ├── target/classes/com/myapp/**/*.class    (your compiled classes)
   ├── dependency.jar!/com/myapp/**/*.class   (unlikely, but checked)
-  
+
   Uses Spring's PathMatchingResourcePatternResolver:
   Resource[] resources = resolver.getResources(
       "classpath*:com/myapp/**/*.class"
   );
   // Returns: [OrderService.class, UserRepo.class, AppConfig.class, ...]
-  
+
   Step 3: FOR EACH .class FILE → CHECK ANNOTATIONS
   ─────────────────────────────────────────────────
   Uses ASM bytecode reader (NOT Class.forName — too slow!):
@@ -1364,26 +1357,24 @@ public class DataSourceAutoConfiguration {
 
   WHY ASM AND NOT REFLECTION?
   ═══════════════════════════
-  
+
   Reflection (Class.forName):
   ├── Loads class into JVM memory
   ├── Runs static initializers
   ├── May trigger ClassNotFoundException for optional deps
   ├── SLOW for 1000+ classes
-  
+
   ASM bytecode reading:
   ├── Reads .class file bytes directly
   ├── Does NOT load the class
   ├── No static initializers
   ├── No ClassNotFoundException risk
   ├── FAST even for 10,000+ classes
-  
+
   Spring scans EVERY class file but only LOADS the ones with @Component.
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 9. How @ComponentScan Works — Classpath Scanning Algorithm**
 
@@ -1401,17 +1392,17 @@ public class DataSourceAutoConfiguration {
 
 ```
   When Spring encounters @Profile("dev"):
-  
+
   Step 1: READ ACTIVE PROFILES
   ─────────────────────────────
   Sources checked (highest to lowest priority):
-  
+
   1. spring.profiles.active=dev           (command-line arg: --spring.profiles.active=dev)
-  2. SPRING_PROFILES_ACTIVE=dev           (environment variable)  
+  2. SPRING_PROFILES_ACTIVE=dev           (environment variable)
   3. spring.profiles.active=dev           (application.properties)
   4. @ActiveProfiles("dev")               (test annotation)
   5. SpringApplication.setAdditionalProfiles("dev")  (programmatic)
-  
+
   Step 2: MATCH PROFILE EXPRESSION
   ─────────────────────────────────
   @Profile("dev")                 → active profiles contain "dev"
@@ -1419,7 +1410,7 @@ public class DataSourceAutoConfiguration {
   @Profile({"dev", "staging"})    → contains "dev" OR "staging"
   @Profile("dev & feature-x")    → contains "dev" AND "feature-x" (Spring 5.1+)
   @Profile("dev | staging")      → contains "dev" OR "staging" (Spring 5.1+)
-  
+
   Step 3: INCLUDE OR EXCLUDE BEAN
   ────────────────────────────────
   If profile matches → BeanDefinition included
@@ -1455,8 +1446,6 @@ public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata)
 
 ---
 
-
-
 🔬 **Section Challenge — 10. How Profiles & @Conditional Work — The Decision Engine**
 
 **Challenge 1 (Profile Misfire):** You have `@Profile("prod") @Service class EmailService`. In test, `spring.profiles.active=test`. A test autowires `EmailService`. **Who** throws? **When**? **What** is the standard fix for test environments needing a stub?
@@ -1478,7 +1467,7 @@ class A {
     private B b;  // A needs B
 }
 
-@Service  
+@Service
 class B {
     @Autowired
     private A a;  // B needs A
@@ -1493,11 +1482,11 @@ class B {
   Spring's "Three-Level Cache" (only works for FIELD/SETTER injection):
 
   Level 1: singletonObjects        → Fully initialized beans
-  Level 2: earlySingletonObjects   → Partially initialized beans  
+  Level 2: earlySingletonObjects   → Partially initialized beans
   Level 3: singletonFactories      → Bean factories (creates proxies if needed)
 
   THE RESOLUTION PROCESS:
-  
+
   Step 1: Start creating A
           │  A's BeanDefinition found
           │  Constructor called: new A()
@@ -1537,44 +1526,42 @@ class B {
   WHY THREE LEVELS (why not just two)?
   ═════════════════════════════════════
   Level 3 exists because of PROXIES.
-  
+
   If A is @Transactional, the "early reference" needs to be
   the PROXY, not the raw object. The ObjectFactory in Level 3
   can decide: "Should I return raw A or proxy-wrapped A?"
-  
+
   Without Level 3, we'd have to create the proxy too early
   (before BeanPostProcessors run), which breaks the lifecycle.
 
 
   CONSTRUCTOR INJECTION CIRCULAR DEPENDENCY:
   ═══════════════════════════════════════════
-  
+
   @Service
   class A {
       public A(B b) { this.b = b; }  // CONSTRUCTOR needs B
   }
-  
+
   @Service
   class B {
       public B(A a) { this.a = a; }  // CONSTRUCTOR needs A
   }
-  
+
   ❌ FAILS! Spring cannot resolve this because:
   → To create A, you need B in the constructor
   → But to create B, you need A in the constructor
   → Neither can be partially created
-  
+
   The three-level cache only works when the bean can be
   CONSTRUCTED first (empty), then populated with dependencies later.
   Constructor injection doesn't allow that.
-  
+
   FIX: Use @Lazy on one constructor parameter:
   public A(@Lazy B b) { this.b = b; }  // Injects a proxy that resolves later
 ```
 
 ---
-
-
 
 🔬 **Section Challenge — 11. How Spring Resolves Circular Dependencies**
 
@@ -1660,8 +1647,6 @@ class B {
 
 ---
 
-
-
 🔬 **Section Challenge — 12. How Spring MVC Processes a Request — All 14 Steps**
 
 **Challenge 1 (Handler Not Found):** A `GET /api/users/123` request arrives. **Who** returns 404? **When** in the 14-step flow does it happen? **What** is the difference between a 404 from "no handler found" vs. 404 from a `@ResponseStatus(NOT_FOUND)` thrown inside the handler?
@@ -1730,10 +1715,10 @@ class B {
   │  │  └─────────────────────────────────────────────────────────────┘  │  │
   │  └───────────────────────────────────────────────────────────────────┘  │
   └─────────────────────────────────────────────────────────────────────────┘
-  
+
   HOW THEY CONNECT:
   Spring Boot auto-configures Spring Framework modules.
-  Spring Framework provides DI/AOP to ALL modules.  
+  Spring Framework provides DI/AOP to ALL modules.
   Spring MVC uses DI for controllers, AOP for exception handling.
   Spring Data uses DI for repositories, AOP for @Transactional.
   Spring Security uses DI for config, Filters for request security.
@@ -1742,29 +1727,28 @@ class B {
 
 ### Quick Interview Reference: "Explain the Difference Between..."
 
-| Spring vs Spring Boot |
-|---|
-| **Spring** = The framework (IoC, DI, AOP, MVC, Data, Security). You configure everything manually: XML or @Configuration. |
+| Spring vs Spring Boot                                                                                                                                   |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Spring** = The framework (IoC, DI, AOP, MVC, Data, Security). You configure everything manually: XML or @Configuration.                               |
 | **Spring Boot** = An opinionated wrapper around Spring. Auto-configures beans based on classpath. Embedded server. Starter dependencies. No XML needed. |
-| **Analogy**: Spring = the engine, transmission, chassis, custom build. Spring Boot = the fully assembled car with defaults. |
+| **Analogy**: Spring = the engine, transmission, chassis, custom build. Spring Boot = the fully assembled car with defaults.                             |
 
-| Spring MVC vs Spring WebFlux |
-|---|
-| **Spring MVC** = Servlet-based (blocking). One thread per request. Thread blocked during DB calls. Easier to understand. |
+| Spring MVC vs Spring WebFlux                                                                                                               |
+| ------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Spring MVC** = Servlet-based (blocking). One thread per request. Thread blocked during DB calls. Easier to understand.                   |
 | **Spring WebFlux** = Reactive (non-blocking). Event loop (like Node.js). Thread NEVER blocks. Returns Mono/Flux instead of actual objects. |
-| **When to use WebFlux**: High concurrency (10k+ simultaneous), streaming data, microservices with many I/O calls. **Otherwise use MVC.** |
+| **When to use WebFlux**: High concurrency (10k+ simultaneous), streaming data, microservices with many I/O calls. **Otherwise use MVC.**   |
 
-| Spring Data JPA vs Hibernate vs JDBC |
-|---|
-| **JDBC** = Raw SQL. You write queries, map results manually. Full control. |
-| **Hibernate** = ORM. Maps Java objects to tables. Generates SQL. Caching. Session management. |
+| Spring Data JPA vs Hibernate vs JDBC                                                                                                |
+| ----------------------------------------------------------------------------------------------------------------------------------- |
+| **JDBC** = Raw SQL. You write queries, map results manually. Full control.                                                          |
+| **Hibernate** = ORM. Maps Java objects to tables. Generates SQL. Caching. Session management.                                       |
 | **Spring Data JPA** = Abstraction over Hibernate. Auto-generates repository implementations from method names. Pagination built-in. |
-| **Hierarchy**: Spring Data JPA → calls → Hibernate → generates → JDBC → sends → SQL to DB |
+| **Hierarchy**: Spring Data JPA → calls → Hibernate → generates → JDBC → sends → SQL to DB                                           |
 
 ---
 
 **Next Chapter**: [Hibernate & JPA Internals →](Ch56_Hibernate_JPA_Internals.md)
-
 
 🔬 **Section Challenge — 13. The Entire Spring Ecosystem — How Pieces Fit Together**
 
@@ -1775,4 +1759,3 @@ class B {
 **Startup sequence:** (1) `SpringApplication.run()` creates `ApplicationContext`. (2) `Environment` + `PropertySources` loaded. (3) `ApplicationContextInitializers` run. (4) `BeanDefinitionReader` scans `@ComponentScan` packages. (5) `BeanFactoryPostProcessors` run (`ConfigurationClassPostProcessor` processes `@Configuration`). (6) `BeanPostProcessors` registered. (7) Singleton beans instantiated (in dependency order). (8) `@Autowired` dependencies injected. (9) `@PostConstruct` methods called. (10) `ApplicationReadyEvent` fired. (11) Embedded Tomcat starts → HTTP traffic accepted. **When beans available for injection:** After step 8 — `@Autowired` completes. But `@PostConstruct` (step 9) runs after injection, so beans may not be "ready" until step 9 completes. **Graceful shutdown:** `SIGTERM` received → Spring Boot 2.3+ triggers `GracefulShutdown`. Tomcat stops accepting NEW connections. In-flight requests: given a configurable grace period (`server.shutdown.timeout`, default 30s) to complete. After timeout, forcibly terminated. `@PreDestroy` beans called in REVERSE creation order. `ApplicationContext` closed. **Key:** HTTP traffic is drained before beans are destroyed — ensuring no `NullPointerException` on half-destroyed services.
 
 </details>
-

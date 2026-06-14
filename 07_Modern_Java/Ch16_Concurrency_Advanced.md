@@ -29,7 +29,6 @@
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## Thread Pool Types
 
 ```java
@@ -80,7 +79,6 @@ ThreadPoolExecutor production = new ThreadPoolExecutor(
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ## Submitting Tasks — Runnable vs Callable
 
 ```java
@@ -115,21 +113,27 @@ executor.awaitTermination(10, TimeUnit.SECONDS);
 🔬 **Section Challenge — Executor Framework & Thread Pools**
 
 **Challenge 1 (Design):** Your service processes 1000 HTTP requests/sec, each taking ~200ms I/O. How many threads do you size your pool to? Show the formula.
+
 <details><summary>Answer</summary>
 
 Formula: `Threads = CPU cores × (1 + Wait time/Compute time)`. I/O-bound: wait=200ms, compute≈5ms → ratio=40. On a 4-core machine: `4 × (1 + 40) = 164 threads`. Start with this and load-test. Also needs a bounded queue to handle traffic spikes without OOM.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** `Executors.newCachedThreadPool()` is used to submit 50,000 tasks that each make a database call. What disaster happens?
+
 <details><summary>Answer</summary>
 
 `newCachedThreadPool()` creates a new thread for every task if no idle thread is available (unbounded). 50,000 tasks → potentially 50,000 threads → ~50GB stack memory → `OutOfMemoryError`. Fix: `new ThreadPoolExecutor(50, 200, 60s, LinkedBlockingQueue(10000), CallerRunsPolicy)` — bounded threads + bounded queue + backpressure.
+
 </details>
 
 **Challenge 3 (Reasoning):** `submit(Runnable)` vs `execute(Runnable)` — when does the choice matter for exception handling?
+
 <details><summary>Answer</summary>
 
 `execute()`: uncaught exception → `UncaughtExceptionHandler` → then thread dies. `submit()`: exception is captured in the returned `Future` — silently swallowed unless `future.get()` is called. In practice: if you discard the Future from `submit()`, exceptions disappear. Always either: use `execute()` + set UncaughtExceptionHandler, OR use `submit()` + call `future.get()` (possibly in `.whenComplete()`).
+
 </details>
 
 # PART 9: COMPLETABLEFUTURE — Async Programming
@@ -148,7 +152,6 @@ Formula: `Threads = CPU cores × (1 + Wait time/Compute time)`. I/O-bound: wait=
 │  Pattern: Start async → Chain transformations → Handle errors → Combine         │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 import java.util.concurrent.CompletableFuture;
@@ -224,12 +227,15 @@ CompletableFuture<Object> fastest = CompletableFuture.anyOf(
 🔬 **Section Challenge — CompletableFuture Combining**
 
 **Challenge 1 (Reasoning):** `thenApply(fn)` vs `thenApplyAsync(fn)` — you chain 3 `thenApply()` calls. Which thread executes each one?
+
 <details><summary>Answer</summary>
 
 `thenApply()` runs the function on WHICHEVER thread completed the previous stage (could be the common pool, a custom executor, or the calling thread if the future was already complete). All 3 `thenApply()` calls may run on the SAME thread sequentially. `thenApplyAsync()` always submits to the ForkJoinPool (or specified executor) — guaranteeing async execution even if the previous stage is already complete. Use `async` variants when the transformation is I/O-bound or CPU-heavy.
+
 </details>
 
 **Challenge 2 (Design):** Load a user profile + order history + recommendations concurrently (3 independent calls), then combine them into a response. Write it with `CompletableFuture`.
+
 <details><summary>Answer</summary>
 
 ```java
@@ -242,7 +248,9 @@ CompletableFuture.allOf(userF, ordersF, recsF).thenRun(() -> {
     sendResponse(d);
 });
 ```
+
 `allOf()` waits for all 3. `join()` is safe here because we know all futures are complete.
+
 </details>
 
 ## Error Handling
@@ -302,12 +310,11 @@ CompletableFuture<String> logged = CompletableFuture
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 # PART 10: java.util.concurrent LOCKS (The Physics of Mutex vs CAS)
 
-> *"There are exactly two ways to prevent thread collisions: Pessimistic OS Locking and Optimistic CPU Locking. `java.util.concurrent.locks` provides the mechanical abstractions to interact directly with the OS Scheduler and the CPU's atomic instruction sets."*
+> _"There are exactly two ways to prevent thread collisions: Pessimistic OS Locking and Optimistic CPU Locking. `java.util.concurrent.locks` provides the mechanical abstractions to interact directly with the OS Scheduler and the CPU's atomic instruction sets."_
 
 ### 10.1 The Hardware Reality: Pessimistic Mutexes vs Optimistic CAS
 
@@ -315,11 +322,12 @@ Before using `ReentrantLock` or `AtomicInteger`, you must understand the physica
 
 **1. Pessimistic Locking (The OS Mutex / `ReentrantLock`)**
 When multiple threads contend for a `ReentrantLock` or a `synchronized` block that has escalated to a "Fat Lock":
+
 1. The JVM makes an OS System Call (e.g., `futex` on Linux).
 2. The OS Scheduler physically rips the competing threads off the CPU core.
 3. The OS places them in a Wait Queue and dumps their L1 cache registers to RAM.
 4. When the lock is released, the OS wakes up a thread, triggering a violently expensive **Context Switch** (~10,000 nanoseconds).
-*Rule:* Pessimistic locks assume contention will be high. They sacrifice massive overhead to prevent the CPU from spinning wastefully.
+   _Rule:_ Pessimistic locks assume contention will be high. They sacrifice massive overhead to prevent the CPU from spinning wastefully.
 
 ```mermaid
 sequenceDiagram
@@ -343,12 +351,13 @@ sequenceDiagram
 
 **2. Optimistic Locking (The CPU CAS / `AtomicInteger`)**
 When multiple threads contend for an `AtomicInteger`:
+
 1. The JVM issues a hardware-level instruction: **Compare-And-Swap (CAS)** (e.g., `LOCK CMPXCHG` on x86).
 2. The CPU locks the memory bus (or just the Cache Line via MESI) for a single clock cycle.
 3. Thread A checks if the value is exactly what it expects. If yes, it updates it.
 4. If Thread B tries to update it at the exact same nanosecond, the CPU hardware itself rejects Thread B.
-5. Thread B does *not* go to sleep. It stays on the CPU core and immediately retries the operation in a tight `while` loop (Spin Lock).
-*Rule:* Optimistic locks assume contention will be low. They avoid the 10,000ns OS Context Switch, but if contention is high, they burn 100% CPU cycles spinning in an infinite retry loop.
+5. Thread B does _not_ go to sleep. It stays on the CPU core and immediately retries the operation in a tight `while` loop (Spin Lock).
+   _Rule:_ Optimistic locks assume contention will be low. They avoid the 10,000ns OS Context Switch, but if contention is high, they burn 100% CPU cycles spinning in an infinite retry loop.
 
 ```mermaid
 sequenceDiagram
@@ -440,42 +449,50 @@ if (!sl.validate(stamp)) {    // Check if a write happened
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 🔬 **Section Challenge — ReentrantLock**
 
 **Challenge 1 (Bug Hunt):** What's wrong with this `ReentrantLock` usage?
+
 ```java
 lock.lock();
 processData();
 lock.unlock();
 ```
+
 <details><summary>Answer</summary>
 
 If `processData()` throws an exception, `lock.unlock()` is never called — the lock is held forever, causing all other threads trying to acquire it to block indefinitely. **Always** use try-finally:
+
 ```java
 lock.lock();
 try { processData(); }
 finally { lock.unlock(); } // guaranteed regardless of exception
 ```
+
 </details>
 
 **Challenge 2 (Design):** A cache that allows unlimited concurrent reads but exclusive writes. Which lock type and which methods?
+
 <details><summary>Answer</summary>
 
 `ReentrantReadWriteLock`. `readLock().lock()` for reads (multiple simultaneous readers allowed). `writeLock().lock()` for writes (exclusive — waits for all readers to finish and blocks new readers). Pattern:
+
 ```java
 ReadWriteLock rwLock = new ReentrantReadWriteLock();
 // reads: rwLock.readLock().lock() / unlock()
 // writes: rwLock.writeLock().lock() / unlock()
 ```
+
 </details>
 
 **Challenge 3 (Reasoning):** `tryLock()` returns false. Should you retry immediately, back off, or give up? Design the policy.
+
 <details><summary>Answer</summary>
 
 Depends on context: (1) **Deadlock prevention**: retry with exponential backoff + jitter (prevents thundering herd). (2) **Best-effort (skip if busy)**: return immediately if `tryLock()` fails — don't block. (3) **Bounded wait**: `tryLock(100, MILLISECONDS)` — throw `TooManyRequestsException` if still fails. Immediate retry without backoff = spin — wastes CPU and increases contention. Always add jitter in distributed retry.
+
 </details>
 
 # PART 11: VIRTUAL THREADS (Java 21 — Project Loom)
@@ -507,7 +524,6 @@ Depends on context: (1) **Deadlock prevention**: retry with exponential backoff 
 │  2 OS threads              2 OS threads carry 6 virtual threads                 │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ```java
 // Creating virtual threads (Java 21+)
@@ -569,27 +585,31 @@ try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 🔬 **Section Challenge — Virtual Threads**
 
 **Challenge 1 (Reasoning):** You migrate a Spring Boot app to virtual threads. Performance gets WORSE for batch data processing. Why?
+
 <details><summary>Answer</summary>
 
 Virtual threads only help I/O-bound tasks (where a thread is mostly blocked waiting). CPU-bound batch processing (sorting, transforming millions of records) keeps threads continuously RUNNING — no I/O blocking — so virtual threads provide zero benefit (carrier thread is always occupied). You still need the same number of physical CPU cores. Use `ForkJoinPool` with work-stealing for CPU-bound parallel work instead.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** This code causes virtual thread pinning. Identify and fix:
+
 ```java
 synchronized(dbPool) {
     Connection conn = dbPool.borrow();
     conn.query("SELECT ..."); // I/O call while holding synchronized lock
 }
 ```
+
 <details><summary>Answer</summary>
 
 `synchronized` block + I/O = **carrier thread is pinned** — the virtual thread cannot be unmounted from the carrier during the I/O wait. This defeats the purpose of virtual threads. Fix:
+
 ```java
 ReentrantLock lock = new ReentrantLock(); // ← not synchronized
 lock.lock();
@@ -598,13 +618,17 @@ try {
     conn.query("SELECT ..."); // VT can now unmount during I/O!
 } finally { lock.unlock(); }
 ```
+
 Always replace `synchronized` with `ReentrantLock` before switching to virtual threads.
+
 </details>
 
 **Challenge 3 (Design):** Should you use a thread pool with virtual threads? `Executors.newVirtualThreadPerTaskExecutor()` vs `Executors.newFixedThreadPool(200)`?
+
 <details><summary>Answer</summary>
 
 For I/O-bound: `newVirtualThreadPerTaskExecutor()` — create a new virtual thread per task, no pooling needed (virtual threads are cheap: ~few hundred bytes vs ~1MB for platform threads). The JVM manages carrier thread reuse internally. Thread POOLING of virtual threads is an anti-pattern — it defeats their purpose. Remove any thread-pool size caps from your I/O tasks. For CPU-bound: still use `newFixedThreadPool(N_CPU_CORES)` — more threads won't help.
+
 </details>
 
 # 🎨 Part 12: Concurrency Patterns in Production
@@ -613,7 +637,7 @@ For I/O-bound: `newVirtualThreadPerTaskExecutor()` — create a new virtual thre
 // PATTERN 1: Thread-Safe Singleton (Double-Checked Locking)
 class DatabaseConnection {
     private static volatile DatabaseConnection instance;  // volatile required!
-    
+
     static DatabaseConnection getInstance() {
         if (instance == null) {                    // First check (no lock)
             synchronized (DatabaseConnection.class) {
@@ -685,7 +709,6 @@ for (int i = 0; i < tasks.size(); i++) {
 │  □ Log thread name in every log statement                                       │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
-
 
 ---
 
@@ -897,19 +920,66 @@ ForkJoinPool ioForkJoinPool = new ForkJoinPool(100);  // 100 worker threads
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│  WORK-STEALING MECHANISM                                                         │
+│  WORK-STEALING MECHANISM — SEQUENCE DIAGRAM                                     │
 │                                                                                 │
-│  Thread 1 deque: [Task1, Task2, Task3]  ← pushes/pops from LEFT                │
-│  Thread 2 deque: []  (empty, done!)                                             │
-│  Thread 3 deque: [Task4, Task5, Task6, Task7]  (busy!)                          │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │  STEP 1: Fork (Divide)                                                   │    │
+│  │  Main Thread                                                             │    │
+│  │  ─────────                                                               │    │
+│  │  leftTask.fork()  ──────────────────────────────────────────►  Thread 1  │    │
+│  │                             Push to Thread 1's deque (LEFT side)        │    │
+│  │  rightTask.compute()  ───────────────────────────────────►  Thread 1    │    │
+│  │                             Work on RIGHT half immediately               │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                   │                                              │
+│                                   ▼                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │  STEP 2: Thread 1 Dequeue Operations                                     │    │
+│  │                                                                          │    │
+│  │  Thread 1 deque: [Task1, Task2, Task3]  ← LEFT: push/pop (this worker) │    │
+│  │                              ────────────────────────────────────────    │    │
+│  │                              RIGHT: steal target (other workers)        │    │
+│  │                                                                          │    │
+│  │  Thread 1 (working from LEFT):                                          │    │
+│  │  pop() Task3 ──► execute() ──► Task3 done                               │    │
+│  │  pop() Task2 ──► execute() ──► Task2 done                               │    │
+│  │  ...                                                                     │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                   │                                              │
+│                                   ▼                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │  STEP 3: Work Stealing (When deque is empty)                            │    │
+│  │                                                                          │    │
+│  │  Thread 1 deque: []           Thread 2 deque: [A, B, C, D, E, F]        │    │
+│  │  (empty, goes to steal)       (busy!)                                   │    │
+│  │                                                                          │    │
+│  │  Thread 1 ──► Steal from Thread 2's RIGHT:                              │    │
+│  │              take() F ──► execute()  ← OLDEST task (largest sub-prob)  │    │
+│  │                                                                          │    │
+│  │  WHY RIGHT SIDE?                                                         │    │
+│  │  ─────────────────                                                       │    │
+│  │  • Right = OLDER tasks = LARGER sub-problems (better load balance)      │    │
+│  │  • Left  = NEWER tasks = SMALLER sub-problems (better cache locality)   │    │
+│  │  • Owner pops from LEFT (small), stealer pops from RIGHT (large)        │    │
+│  │  • Rarely same end = minimal synchronization!                           │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
+│                                   │                                              │
+│                                   ▼                                              │
+│  ┌─────────────────────────────────────────────────────────────────────────┐    │
+│  │  STEP 4: Join (Merge)                                                   │    │
+│  │                                                                          │    │
+│  │  leftTask.join()  ─────────────────────────────────────►  Wait for done │    │
+│  │                                      (Another worker may STEAL leftTask!)│    │
+│  │                                                                          │    │
+│  │  Result: Thread 1 has both halves sorted                                 │    │
+│  │  merge(array, left, mid, right)  ──► Final sorted result               │    │
+│  └─────────────────────────────────────────────────────────────────────────┘    │
 │                                                                                 │
-│  Thread 2 STEALS from Thread 3's RIGHT end:                                    │
-│  Thread 3: [Task4, Task5, Task6]    Thread 2: [Task7]                           │
-│                                                                                 │
-│  STEALING from RIGHT = stealing OLDER tasks (larger sub-problems)               │
-│  WORKING from LEFT = working on NEWER tasks (smaller sub-problems)             │
-│  → This minimizes synchronization between the stealer and the owner            │
-│  → They rarely touch the same end of the deque                                 │
+│  ╔═══════════════════════════════════════════════════════════════════════╗   │
+│  ║  KEY INSIGHT: No shared queue = no lock contention!                   ║   │
+│  ║  Each worker owns their deque. Only stealing needs synchronization.   ║   │
+│  ║  LIFO on worker's side (cache-friendly) + FIFO on steal side         ║   │
+│  ╚═══════════════════════════════════════════════════════════════════════╝   │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -1012,5 +1082,3 @@ try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
 ---
 
 **Previous**: [Part 1 — Thread Fundamentals, synchronized, Atomic, Collections ←](Ch15_Concurrency_Core.md)
-
-
