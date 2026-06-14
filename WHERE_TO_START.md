@@ -53,6 +53,8 @@ That folder has its own complete decision tree, 3 curated learning pathways (jun
 ### C. I want to learn TypeScript / JavaScript / React (web frontend)
 **Who this is for:** developers learning the web frontend stack — whether new to JS or moving from another language.
 
+**Full detailed path:** [PATH_FRONTEND.md](PATH_FRONTEND.md) — stages 1-5 with checkpoints and time estimates.
+
 **Beginner path (new to web):**
 1. [JS Foundations](16_JavaScript/01_JS_Foundations.md) — variables, functions, scope
 2. [JS Async & Promises](16_JavaScript/04_JS_Async_Promises.md) — async/await, event loop
@@ -73,6 +75,8 @@ If you're a frontend dev wanting to add testing skills → [TypeScript Type Syst
 
 ### D. I want to master Java / Spring Boot / Backend
 **Who this is for:** backend developers learning Java or Spring Boot, or developers coming from another language (Python, JS, C#).
+
+**Full detailed path:** [PATH_JAVA_BACKEND.md](PATH_JAVA_BACKEND.md) — 5 stages with checkpoints, time estimates, and cross-subject connections.
 
 **Core Java path (no Spring yet):**
 1. [Java Core Foundations](07_Modern_Java/Ch01_Core_Foundations.md) — inner classes, equals/hashCode, Optional, Iterator
