@@ -496,3 +496,72 @@ That sentence is the difference between trivia and engineering.
 | **Misra-Gries / Space-Saving** | Who are the heavy hitters?       | $O(k)$ counters                | Trending topics, abuse detection.                  |
 | **CRDTs**                      | Can replicas merge safely?       | Depends on CRDT                | Offline edits, multi-region availability.          |
 | **Skip List**                  | Sorted tree lacking locks?       | $O(N)$ with $O(\log N)$ layers | `ConcurrentSkipListMap`, Redis ZSET.               |
+
+
+---
+
+## Proof Corner -- Skip List Expected Search Time
+
+**Claim**: A skip list with n elements and level promotion probability p = 0.5 supports expected O(log n) search time.
+
+**Proof via backward analysis** (Pugh 1990): Consider the search for element x. The search follows a path backward from x. At each node, either:
+- The search climbed up a level from the current position (probability 0.5), or
+- The search went left (probability 0.5).
+
+This is equivalent to a random walk: we start at the bottom level and count steps until we climb to the top. The expected number of levels = log_{1/p}(n) = log_2(n). Expected horizontal steps at each level = O(1/p) = O(1). Total expected steps = O(log n / p) = O(log n). QED.
+
+**Bloom filter false positive rate derivation**: See A4_Randomized_Algorithms.md Proof Corner for the full derivation. Key result: with m bits, n insertions, k hash functions, FP rate = (1 - e^{-kn/m})^k, minimised at k = (m/n) ln 2.
+
+---
+
+## Section Challenge -- Probabilistic Data Structures
+
+**Problem 1 (6 min)**: A Bloom filter with m=1000 bits and k=7 hash functions has n=100 elements inserted. Estimate the false positive probability.
+
+<details><summary>Model Answer</summary>
+
+FP probability = (1 - e^{-kn/m})^k = (1 - e^{-7*100/1000})^7 = (1 - e^{-0.7})^7.
+
+e^{-0.7} approx 0.497. So (1 - 0.497)^7 = (0.503)^7 approx 0.008 = 0.8%.
+
+This matches the rule of thumb: m/n = 10 bits per element gives FP rate ~1% with k = 7. At m/n = 10, the actual rate is slightly below 1%.
+
+</details>
+
+---
+
+## Reference Anchor
+
+**java.util.concurrent.ConcurrentSkipListMap -- production skip list**:
+```java
+// java.util.concurrent.ConcurrentSkipListMap: thread-safe sorted map, O(log n) per op
+// Used in: cache implementation, sorted concurrent queues, range queries with concurrency
+// Source: jdk/src/java.base/share/classes/java/util/concurrent/ConcurrentSkipListMap.java
+
+ConcurrentSkipListMap<Integer, String> skipMap = new ConcurrentSkipListMap<>();
+skipMap.put(5, "five");
+skipMap.put(3, "three");
+// Thread-safe: multiple threads can read/write concurrently
+String result = skipMap.get(3); // O(log n) expected
+
+// Redis ZSET (Sorted Sets) uses a skip list internally:
+// - ZADD key score member -- O(log n)
+// - ZRANGEBYSCORE key min max -- O(log n + k) for k results
+// - ZRANK key member -- O(log n)
+// Skip list chosen over AVL tree because concurrent insertions are simpler to implement
+
+// For Bloom filters in production: Google Guava BloomFilter (see A4_Randomized_DS.md)
+```
+
+---
+
+## Brute Force to Optimal -- Probabilistic DS Tradeoffs
+
+| Problem | Exact (no error) | Space | Probabilistic | Space | Error bound |
+|---------|-----------------|-------|---------------|-------|-------------|
+| Membership test | HashSet | O(n) | Bloom filter | O(n bits) | 1% FP, 0% FN |
+| Cardinality | HashSet | O(n) | HyperLogLog | O(m) | ~1.04/sqrt(m) |
+| Top-k frequency | HashMap + sort | O(n) | Count-Min Sketch | O(w*d) | epsilon*n additive |
+| Sorted concurrent access | TreeMap | O(n log n) | ConcurrentSkipListMap | O(n log n) | exact (no error) |
+
+**Rule**: Use probabilistic structures when space is the bottleneck and a bounded error is acceptable. Use exact structures when correctness is mandatory.

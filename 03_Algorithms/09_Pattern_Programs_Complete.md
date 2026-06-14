@@ -1953,4 +1953,78 @@ _Master patterns = Master loops = Master DSA_
 
 ---
 
+
+
+---
+
+## Proof Corner -- Two Pointers O(n) Correctness
+
+**Claim**: The two-pointer technique for finding a pair with a given sum in a sorted array runs in O(n) and is correct.
+
+**Algorithm**: Initialize lo=0, hi=n-1. While lo < hi:
+- If arr[lo]+arr[hi] == target: found.
+- If arr[lo]+arr[hi] < target: lo++ (need larger sum).
+- If arr[lo]+arr[hi] > target: hi-- (need smaller sum).
+
+**Correctness proof**: We maintain the invariant: if a pair (a,b) exists with a=arr[i] for some i < lo, then b cannot be in arr[lo..hi] (because arr[lo]+arr[i's old pair] < target, and arr[lo] > arr[i], so arr[lo] + arr[hi] >= target; we needed a larger value for arr[i] but that would require hi >= hi_when_we_moved_lo, contradiction).
+
+**Simpler argument by elimination**: Each lo++ eliminates arr[lo] as a valid left element for any remaining right element (too small). Each hi-- eliminates arr[hi] as a valid right element (too large). We only eliminate elements that cannot be part of a valid pair.
+
+---
+
+## When It Breaks -- Algorithm Patterns
+
+**1. Two pointers on unsorted array** -- the elimination argument only works because the array is sorted. On an unsorted array, lo++ doesn't guarantee we've eliminated arr[lo] as a valid partner for all remaining elements. Fix: sort first (O(n log n)), or use a HashSet for O(n) on unsorted.
+
+**2. Sliding window with invalid state** -- expanding the window when it's already invalid (before shrinking to fix the violation) leads to double-counting or missed elements. Fix: always shrink to a valid state before moving the right pointer forward.
+
+**3. BFS/DFS layer confusion** -- using DFS to find shortest path (minimum edges) in an unweighted graph. DFS finds A path, not the SHORTEST path. Fix: always use BFS for shortest unweighted path.
+
+**4. Missing visited set in graph traversal** -- DFS/BFS without a visited set revisits nodes, causing infinite loops in cyclic graphs. Symptom: StackOverflowError (DFS) or infinite loop (BFS).
+
+---
+
+## Reference Anchor
+
+**JDK -- pattern-applicable utilities**:
+```java
+// Two pointers pattern -- standard Java idiom:
+int lo = 0, hi = arr.length - 1;
+while (lo < hi) {
+    int sum = arr[lo] + arr[hi];
+    if (sum == target) { /* found */ break; }
+    else if (sum < target) lo++;
+    else hi--;
+}
+
+// Sliding window pattern -- fixed size k:
+int windowSum = 0;
+for (int i = 0; i < k; i++) windowSum += arr[i]; // initial window
+int maxSum = windowSum;
+for (int i = k; i < arr.length; i++) {
+    windowSum += arr[i] - arr[i-k]; // slide: add new, remove old
+    maxSum = Math.max(maxSum, windowSum);
+}
+
+// BFS for shortest path:
+int[] dist = new int[n];
+Arrays.fill(dist, -1);
+Queue<Integer> queue = new ArrayDeque<>();
+dist[src] = 0; queue.offer(src);
+while (!queue.isEmpty()) {
+    int u = queue.poll();
+    for (int v : adj[u]) if (dist[v] == -1) { dist[v] = dist[u]+1; queue.offer(v); }
+}
+```
+
+---
+
+## Brute Force to Optimal -- Common Patterns
+
+| Pattern | Brute Force | Optimal | Condition |
+|---------|-------------|---------|-----------|
+| Pair sum in array | O(n^2) check all pairs | Two pointers O(n) | Sorted array |
+| Subarray max/min | O(k) per window | Sliding window O(n) | Fixed-size window |
+| Shortest path | DFS finds a path | BFS O(V+E) | Unweighted graph |
+| Count subarrays with sum k | O(n^2) | Prefix sum + HashMap O(n) | Any array |
 **Navigation**: [< Previous](08b_NumberTheory_Advanced.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](10_Bit_Manipulation_Complete.md)

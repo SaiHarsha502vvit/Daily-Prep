@@ -1288,7 +1288,7 @@ Summary
 
 ---
 
-## When String Algorithms Break
+## When It Breaks -- String Algorithms
 
 ### 1. KMP — Wrong Failure Function Computation
 **What breaks**: Computing `fail[]` (partial match table) with off-by-one: starting at `fail[0] = -1` vs `fail[0] = 0` differs by convention. Code from two different KMP implementations can have inconsistent base cases, causing wrong shifts.

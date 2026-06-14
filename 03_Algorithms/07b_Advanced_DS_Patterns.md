@@ -1545,3 +1545,62 @@ START: What problem are you solving?
 ---
 
 _Master these structures, and you can build anything!_ 🚀
+
+
+---
+
+## Proof Corner -- Fenwick Tree (BIT) Correctness
+
+**Claim**: A Fenwick tree (Binary Indexed Tree) on n elements supports prefix sum queries and point updates each in O(log n) time using O(n) space.
+
+**lowbit trick**: For index i (1-indexed), `lowbit(i) = i & (-i)` gives the value of the lowest set bit of i.
+
+**Invariant**: `bit[i]` stores the sum of arr[i - lowbit(i) + 1 .. i] (the range of length lowbit(i) ending at i).
+
+**Update(i, delta)**: Add delta to all BIT nodes that "cover" position i:
+```
+while (i <= n) { bit[i] += delta; i += i & (-i); }
+```
+Each step moves to the parent in the BIT implicit tree. Number of steps = number of bits that can carry = O(log n).
+
+**Query prefix_sum(i)**: Sum all BIT nodes that together cover [1..i]:
+```
+while (i > 0) { sum += bit[i]; i -= i & (-i); }
+```
+Each step removes the lowest set bit of i; stops when i=0. Number of steps = number of set bits in i <= log n. O(log n). QED.
+
+---
+
+## When It Breaks -- Advanced DS Patterns
+
+**1. Fenwick tree 0-indexed vs 1-indexed** -- BITs are naturally 1-indexed (lowbit(0) = 0, infinite loop). If your data is 0-indexed, always add +1 when inserting/querying. Forgetting this causes infinite loops or ArrayIndexOutOfBoundsException.
+
+**2. Sparse table for mutable arrays** -- sparse tables support O(1) range minimum/maximum queries but require O(n log n) preprocessing and do NOT support updates. If the array changes, the sparse table must be rebuilt entirely. Use segment tree for mutable arrays.
+
+**3. Union-Find without path compression on chain input** -- a union-find that uses union-by-rank but not path compression still achieves O(log n) per operation. But path compression alone (without union-by-rank) can still produce O(log n) amortised. Both together give O(alpha(n)). Omitting both on chain-like unions (always union smaller into larger) gives O(log n) per op, not O(alpha(n)).
+
+**4. Skip list with poor random choices** -- the expected O(log n) height of a skip list assumes each level promotion happens with probability p=0.5 independently. Using a biased RNG (always promoting) produces a list with O(n) levels and O(n) search time. Production implementations use a cryptographically seeded RNG.
+
+---
+
+## Reference Anchor
+
+**JDK has no built-in Fenwick tree or sparse table.** Production graph/query libraries:
+
+```java
+// Apache Commons Math -- no BIT, but has StatUtils for descriptive statistics
+// For range queries in production, use database SQL window functions or
+// pre-aggregated rollup tables rather than custom BIT/sparse-table.
+
+// Guava -- RangeMap for interval-based lookups (different from range queries):
+RangeMap<Integer, String> rangeMap = TreeRangeMap.create();
+rangeMap.put(Range.closed(1, 10), "low");
+rangeMap.put(Range.closed(11, 100), "mid");
+String label = rangeMap.get(5); // "low" -- O(log n) lookup
+
+// For competitive/interview use -- Fenwick tree Java idiom:
+int[] bit = new int[n + 1]; // 1-indexed
+// Update: for (int i = pos; i <= n; i += i & (-i)) bit[i] += val;
+// Query: int s = 0; for (int i = pos; i > 0; i -= i & (-i)) s += bit[i];
+// Range query [l, r]: query(r) - query(l-1)
+```

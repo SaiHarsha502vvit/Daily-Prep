@@ -1022,3 +1022,55 @@ When a production DS-related bug surfaces:
 - **`13_Developer_Essentials/02_SRE_Monitoring.md`** — observability and incident response.
 - **`13_Developer_Essentials/19_Concurrency_Models_Coroutines.md`** — concurrency patterns and backpressure.
 - **`05_Problem_Solving/24_Common_Mistakes.md`** — Knight Capital, Cloudflare, GitHub incidents are catalogued here.
+
+
+---
+
+## Proof Corner -- Why HashMap O(1) Holds in Practice
+
+**Expected O(1) proof**: With n elements in a table of size m and a uniform hash function:
+
+E[probe length for any key] = E[number of keys in the same bucket]
+= n/m = load factor alpha.
+
+With alpha <= 0.75 (Java HashMap default), E[probe length] <= 0.75. So expected O(1) per lookup.
+
+**Why Java's HashMap maintains this**: Java HashMap doubles capacity and rehashes all entries when load factor exceeds 0.75. This keeps alpha bounded. Rehash cost = O(n) but amortised over n insertions = O(1) per insertion (same doubling argument as dynamic array).
+
+**Tree fallback invariant (JDK 8+)**: When a single bucket accumulates >= 8 entries (pathological collision), it converts to a TreeMap (Red-Black tree) giving O(log n) worst-case per bucket instead of O(n). This caps worst-case at O(log n) even under collision attacks.
+
+---
+
+## Reference Anchor
+
+**Production DS patterns -- JDK and Guava**:
+```java
+// Guava's ImmutableMap -- zero allocation per get, compact memory layout
+Map<String, Integer> lookup = ImmutableMap.of("a", 1, "b", 2, "c", 3);
+// Backed by a closed-addressing hash table optimised for read-heavy workloads
+
+// java.util.LinkedHashMap -- O(1) access + insertion-order iteration
+// Used for LRU cache (removeEldestEntry):
+LinkedHashMap<String, byte[]> lruCache = new LinkedHashMap<>(16, 0.75f, true) {
+    protected boolean removeEldestEntry(Map.Entry<String, byte[]> e) {
+        return size() > MAX_CACHE_SIZE;
+    }
+};
+
+// java.util.concurrent.ConcurrentHashMap -- O(1) expected, lock-free reads in JDK 8
+// Used in servlet request attribute maps, Spring bean registry
+ConcurrentHashMap<String, Integer> freq = new ConcurrentHashMap<>();
+freq.merge("key", 1, Integer::sum); // atomic increment -- no synchronized needed
+```
+
+---
+
+## Brute Force to Optimal -- Production DS Selection
+
+| Use case | Naive choice | Problem | Optimal production choice |
+|----------|-------------|---------|--------------------------|
+| Frequency count | Array scan per query | O(n) per query | HashMap -- O(1) |
+| LRU cache | Scan + evict oldest | O(n) evict | LinkedHashMap with removeEldestEntry -- O(1) |
+| Rate limiting | Count all timestamps | O(events) per window | Sliding window ring buffer -- O(1) |
+| Deduplication at scale | HashSet in memory | OOM for > 10^9 elements | Bloom filter -- O(1) with 1% FP |
+| Priority task queue | Sort every dequeue | O(n log n) per dequeue | PriorityQueue -- O(log n) per op |

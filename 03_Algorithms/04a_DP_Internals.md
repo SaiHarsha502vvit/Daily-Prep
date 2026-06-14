@@ -689,3 +689,37 @@ for (int i = 1; i < n; i++)
 Maintain a `tails[]` array where `tails[k]` = smallest tail element of all IS of length k+1. For each element, binary search in `tails[]` to find where it fits. Length of `tails` at the end = LIS length.
 
 **Why**: `tails[]` is always sorted. Binary search finds the correct position in O(log n) per element. Total: O(n log n).
+
+---
+
+## Proof Corner -- Optimal Substructure for LCS
+
+**Claim**: Let LCS(i,j) = length of the longest common subsequence of A[0..i-1] and B[0..j-1].
+
+**Recurrence correctness** (by case analysis):
+
+Case 1: A[i-1] == B[j-1]. The last characters match. They must appear together in any optimal LCS (if one appears, including the other costs nothing and can only help). So LCS(i,j) = LCS(i-1,j-1) + 1.
+
+Case 2: A[i-1] != B[j-1]. The optimal LCS either excludes A[i-1] (giving LCS(i-1,j)) or excludes B[j-1] (giving LCS(i,j-1)), or both. Taking the max covers all cases: LCS(i,j) = max(LCS(i-1,j), LCS(i,j-1)).
+
+**Base cases**: LCS(i,0) = LCS(0,j) = 0 (empty string has no common subsequence). Correct.
+
+**Loop invariant for the tabulation nested loops**: After the inner loop completes for row i, `dp[i][j]` = LCS(A[0..i-1], B[0..j-1]) for all j in [0..m].
+
+- *Init*: dp[0][j] = 0 for all j (outer loop hasn't started). Correct.
+- *Maintenance*: Each dp[i][j] is computed from dp[i-1][j], dp[i][j-1], dp[i-1][j-1] -- all previously computed. Correct.
+- *Termination*: dp[n][m] = LCS of full A and B. QED.
+
+---
+
+## When It Breaks -- DP Internals
+
+**1. Backward vs forward loop for 0/1 Knapsack** -- the most common DP bug. 1D rolling array needs `w` from W down to weight[i]. Scanning forward re-uses item i in the same pass (accidentally solving unbounded knapsack). Debug: add item with weight=2, value=10, capacity=6. 0/1 answer=10; unbounded answer=30.
+
+**2. Traceback on rolled array** -- 1D rolling arrays save space but lose the traceback path. You cannot reconstruct which items were chosen because dp[w] is overwritten. Fix: keep the full 2D array if you need the actual subsequence/items, not just the length/value.
+
+**3. int overflow in counting DP** -- "count the ways" problems (LC 70 Climbing Stairs, LC 91 Decode Ways) silently overflow int for large n. Always use `long`; apply `% MOD` at every addition step, not just at the end. Applying mod only at the end can overflow before you reach that line.
+
+**4. HashMap with array keys** -- using `dp[int[]]` or `Map<int[], V>` in Java compares by reference, not content. Two `new int[]{1,2}` keys never collide. Fix: encode as `String.valueOf(arr)`, use `Arrays.toString()`, or encode as a long if dimensions allow (e.g., i*1000+j for 0<=i,j<1000).
+
+**5. Off-by-one in string indices** -- LCS/Edit Distance tables are (n+1)x(m+1). dp[i][j] represents prefixes A[0..i-1] and B[0..j-1]. A common mistake: `dp[i][j] = dp[i-1][j-1]` when `A[i] == B[j]` (off by one -- should be `A[i-1]` and `B[j-1]`). Produces wrong answers that only show up for certain string pairs.

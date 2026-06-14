@@ -149,3 +149,87 @@ The selection rule: use **CCW** when you need orientation checks (line intersect
 1. **Avoid floating point division** until the absolute last step. Compare cross products using `long` to check collinearity rather than computing slopes (which suffer from divide-by-zero and precision loss).
 2. **Counter-Clockwise (CCW)** is your best friend.
 3. When vertices are integer coordinates, the polygon's area is always either an integer or half an integer (e.g., $10.0$ or $10.5$).
+
+
+---
+
+## Proof Corner -- Cross Product for Orientation Test
+
+**Claim**: For three points P1, P2, P3, the sign of the cross product (P2-P1) x (P3-P1) determines their orientation:
+
+cross = (P2.x - P1.x) * (P3.y - P1.y) - (P2.y - P1.y) * (P3.x - P1.x)
+
+- cross > 0: P1, P2, P3 are counter-clockwise (left turn at P2)
+- cross < 0: clockwise (right turn at P2)
+- cross = 0: collinear
+
+**Proof**: The cross product of vectors u = P2-P1 and v = P3-P1 gives the signed area of the parallelogram spanned by u and v. Positive = CCW by the right-hand rule. The formula avoids floating-point division (unlike slope comparison), so it is exact for integer coordinates.
+
+**Convex hull correctness (Graham scan)**: Sort by polar angle; maintain a stack where every three consecutive points make a left turn. When a right turn is detected, pop until left turns resume. The result is a convex polygon. Correctness follows because every discarded point is inside the convex hull of the remaining stack.
+
+---
+
+## When It Breaks -- Math and Geometry
+
+**1. Floating-point slope comparison** -- computing slope as y/x introduces division and floating-point error. Two parallel lines may appear to intersect. Fix: use cross products (integer arithmetic for integer coordinates, no precision loss).
+
+**2. Collinear point handling in convex hull** -- Graham scan with strict left-turn check omits collinear boundary points. With >= 0 check it includes them but requires careful handling at the start. Decide upfront: do you want collinear points on the hull?
+
+**3. Angle wraparound in polar sort** -- sorting by atan2 angle groups points correctly but atan2 returns values in (-pi, pi]. Points at exactly -pi and pi are the same direction but compare unequal. Fix: treat the anchor point's angle as 0 and handle the wraparound explicitly.
+
+**4. Integer overflow in geometry** -- for coordinates up to 10^9, cross product computation involves (x2-x1)*(y3-y1) which can reach 2*10^18, overflowing long (max ~9.2*10^18). Use long carefully; for coordinates > 10^9, switch to BigInteger or scale down.
+
+---
+
+## Section Challenge -- Math and Geometry
+
+**Problem 1 (6 min)**: Given three points A(0,0), B(4,0), C(4,3), compute the cross product of AB x AC. What does the sign tell you about orientation?
+
+<details><summary>Model Answer</summary>
+
+AB = B - A = (4, 0). AC = C - A = (4, 3).
+
+Cross product = AB.x * AC.y - AB.y * AC.x = 4*3 - 0*4 = 12 > 0.
+
+Positive cross product: A, B, C are in counter-clockwise (CCW) order. If you walk from A to B to C, you turn left at B. This is the standard CCW orientation.
+
+Note: the area of triangle ABC = |cross| / 2 = 12 / 2 = 6.
+
+</details>
+
+---
+
+## Reference Anchor
+
+**java.awt.geom and java.lang.Math for geometry**:
+```java
+// Exact integer cross product (no floating point):
+static long cross(long ax, long ay, long bx, long by, long cx, long cy) {
+    return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+    // Positive = CCW, Negative = CW, Zero = collinear
+}
+
+// GCD for fraction reduction and Bezout coefficients:
+// java.math.BigInteger.gcd(BigInteger) -- handles arbitrary precision
+BigInteger g = BigInteger.valueOf(48).gcd(BigInteger.valueOf(18)); // 6
+
+// Modular exponentiation for number theory in geometry:
+// java.math.BigInteger.modPow(exponent, modulus) -- O(log exponent) with Montgomery mult
+BigInteger result = BigInteger.valueOf(3).modPow(BigInteger.valueOf(100), BigInteger.valueOf(1000000007));
+
+// java.util.Arrays.sort for angular sort (by polar angle from anchor):
+// Comparator using cross product -- avoids atan2 floating point:
+// compare(P, Q): if cross(anchor, P, Q) > 0, P comes before Q (CCW order)
+```
+
+---
+
+## Brute Force to Optimal -- Geometry Algorithms
+
+| Problem | Brute Force | Time | Optimal | Time |
+|---------|-------------|------|---------|------|
+| Convex hull | Check all O(n^3) triples | O(n^3) | Graham Scan | O(n log n) |
+| Closest pair of points | Check all O(n^2) pairs | O(n^2) | Divide & conquer | O(n log n) |
+| Line segment intersection | Check all O(n^2) pairs | O(n^2) | Shamos-Hoey sweep | O(n log n) |
+| Point in polygon | N/A (exact) | O(n) | O(n) ray casting | O(n) -- irreducible |
+| Polygon area | Shoelace formula (exact) | O(n) | O(n) -- already optimal | O(n) |

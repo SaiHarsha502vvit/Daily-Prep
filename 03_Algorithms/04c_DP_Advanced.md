@@ -1735,3 +1735,82 @@ _DP is not about memorizing solutions - it's about SEEING the substructure!_
 | Maximum Length of Pair Chain     | LC 646 | Greedy or DP — compare both approaches      |
 | Largest Divisible Subset         | LC 368 | LIS variant with divisibility               |
 | Counting Bits                    | LC 338 | DP on bits — beautiful O(n) pattern         |
+
+---
+
+## Proof Corner — Optimal Substructure and DP Correctness
+
+**Claim**: The 2D grid shortest-path DP `dp[i][j] = grid[i][j] + min(dp[i-1][j], dp[i][j-1])` computes the minimum-cost path from (0,0) to (i,j).
+
+**Proof by strong induction on i+j**:
+
+- **Base** (i+j=0): `dp[0][0] = grid[0][0]`. The only path is the cell itself. Correct.
+- **Inductive step**: Assume dp is correct for all cells (r,c) with r+c < i+j. Any path to (i,j) arrives from (i-1,j) or (i,j-1). By the inductive hypothesis both `dp[i-1][j]` and `dp[i][j-1]` are the minimum-cost paths to those cells. Taking the min and adding `grid[i][j]` gives the optimal. QED.
+
+**Why this matters**: The argument generalises to all "prefix-suffix" DP (LCS, Edit Distance, Matrix Chain): the optimal answer for a sub-range depends only on optimal answers for strictly smaller sub-ranges — the optimal-substructure property.
+
+**Knapsack 0/1 loop-invariant**: After processing items 1..i with capacity w, `dp[i][w]` = maximum value using a subset of items {1..i} with total weight ≤ w.
+
+- *Init*: `dp[0][w] = 0` for all w — no items, no value.
+- *Maintenance*: `dp[i][w] = max(dp[i-1][w], dp[i-1][w - weight[i]] + value[i])` — either skip item i (use same previous row) or take it (reduce capacity).
+- *Termination*: `dp[n][W]` holds the answer for all n items, capacity W.
+
+**Backward inner loop correctness**: In the 1D rolling array, scanning `w` from W down to `weight[i]` ensures each item is used at most once: when we update `dp[w]`, `dp[w - weight[i]]` still reflects the state *before* item i was considered.
+
+---
+
+## When Advanced DP Breaks
+
+**1. Wrong state dimensionality** — adding a state variable that depends on the *output* of the DP, not just the *input*. Example: trying to encode "which items were chosen" in the state blows up to O(2^n) states. Fix: traceback through `dp[][]` after computing the answer.
+
+**2. Unbounded vs 0/1 loop direction** — using forward inner loop (`w = weight[i] to W`) for a 0/1 knapsack lets item i contribute multiple times, accidentally solving the unbounded variant. The subtle symptom: "I can take 3 of item 2" on a test with repeated values.
+
+**3. HashMap with mutable/array keys** — `Map<int[], Integer>` uses reference equality in Java, so two `new int[]{1,2}` keys never match. Fix: `Arrays.toString(arr)` as key, or encode as a long (if dimensions allow).
+
+**4. Base-case off-by-one in string DP** — LCS/Edit Distance uses 1-indexed strings over a (n+1)×(m+1) table with row/col 0 = empty string. Forgetting to initialise `dp[i][0] = i` (delete i characters) breaks the edit-distance base case.
+
+**5. Integer overflow in counting DP** — "count the number of ways" problems easily overflow int (LC 91, LC 70). Use `long`; if mod is required, apply `% MOD` at every addition, not just at the end.
+
+---
+
+## Reference Anchor
+
+**Apache Commons Text — LevenshteinDistance**:
+```java
+// commons-text 1.10: org.apache.commons.text.similarity.LevenshteinDistance
+// Uses O(min(m,n)) rolling-array — exactly the 1D knapsack trick applied to edit distance
+LevenshteinDistance ld = LevenshteinDistance.getDefaultInstance();
+int dist = ld.apply("kitten", "sitting"); // 3
+// Source: commons-text/src/main/java/org/apache/commons/text/similarity/LevenshteinDistance.java
+// Key invariant: dp[j] at start of outer loop i = edit distance between s1[0..i-1] and s2[0..j-1]
+```
+
+**JDK — String.intern() and the LCS/Edit Distance connection**:
+```java
+// java.lang.String.intern() pools identical strings, so repeated substring comparisons
+// in naive O(n^2*m^2) LCS variants use reference equality after interning.
+// Modern approach: use dp[i][j] directly on char arrays (no String creation in inner loop).
+String a = "ABCBDAB";
+char[] ca = a.toCharArray();  // avoid charAt overhead in tight loops
+```
+
+**JDK — Arrays.fill for DP initialisation**:
+```java
+int[][] dp = new int[n+1][m+1];
+// Fill entire 2D array with -1 for memoization:
+for (int[] row : dp) Arrays.fill(row, -1);
+```
+
+---
+
+## Brute Force to Optimal
+
+| Problem | Brute Force | Why Slow | DP Solution | Complexity |
+|---------|-------------|----------|-------------|------------|
+| 0/1 Knapsack | Try all 2^n subsets | Exponential | 1D rolling dp[w] | O(n·W) |
+| LCS | Try all 2^n subsequences of s1 | Exponential | dp[i][j] = LCS of s1[0..i], s2[0..j] | O(nm) |
+| Edit Distance | Try all edit sequences (exponential) | Exponential | dp[i][j] via 3-way recurrence | O(nm) |
+| Fibonacci | Naive recursion — 2^n calls | O(2^n) | Bottom-up dp[i] = dp[i-1]+dp[i-2] | O(n) |
+| Matrix Chain | Try all n! orderings | O(n!) | Interval DP dp[i][j] = min over k | O(n^3) |
+
+**The structural insight**: brute force fails when sub-problems *overlap* (same (i,j) computed many times). DP trades time for space by storing sub-problem answers. When sub-problems don't overlap, divide-and-conquer without memoization is sufficient.

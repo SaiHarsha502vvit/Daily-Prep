@@ -1133,3 +1133,67 @@ Register this class in `META-INF/spring/org.springframework.boot.autoconfigure.A
 ---
 
 **Navigation**: [< Previous](06e_Algorithm_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](07b_Advanced_DS_Patterns.md)
+
+---
+
+## Proof Corner -- Segment Tree O(log n) Update and Query
+
+**Claim**: A segment tree on n elements supports point update and range query each in O(log n) time.
+
+**Tree structure**: A full binary tree with 4n nodes. Node covering [l, r] has children covering [l, mid] and [mid+1, r]. At most 2*ceil(n) - 1 internal nodes plus n leaves. Height = ceil(log_2 n).
+
+**Update proof**: Updating position i requires updating all ancestors of leaf i. The path from root to leaf i has length = height = O(log n). Each ancestor update is O(1) (recompute from children). Total: O(log n).
+
+**Query proof**: Query [ql, qr] recursively visits children only if they intersect [ql, qr]. At each level, at most 2 "boundary" nodes are visited (leftmost and rightmost intersecting nodes). All others are either fully inside (return precomputed value) or fully outside (return identity). Total nodes visited at each of log n levels: O(1) boundary + O(1) = O(1) per level. Total: O(log n). QED.
+
+**Lazy propagation invariant**: A lazy tag at node v means "this tag must be pushed down to children before accessing children". Before any child access, call `pushdown(v)`. This ensures every query and update sees the correct values.
+
+---
+
+## When It Breaks -- Advanced Data Structures
+
+**1. Wrong identity element in segment tree** -- for range minimum queries, the identity is `Integer.MAX_VALUE` (not 0). For range XOR, identity is 0. For range AND, identity is `~0` (all bits set). Using 0 as identity for min-query silently returns 0 for any range that has no elements, corrupting empty-range results.
+
+**2. Lazy propagation push-down order** -- when the lazy tag represents "add delta to all elements in range," the push-down must first apply the parent tag to the child values AND propagate the tag further down. Applying the tag to children but NOT propagating it means the next push-down will double-apply. Standard bug: lazy applied twice.
+
+**3. Segment tree index bounds (4n rule)** -- allocating exactly n nodes causes ArrayIndexOutOfBoundsException for certain n values where the tree is not a perfect binary tree. Always allocate 4*n nodes. The exact bound is 4*n for safety; tight bound is 2*nextPowerOf2(n).
+
+**4. Persistent segment tree version aliasing** -- in a persistent segment tree, creating a new version shares unchanged subtrees with the previous version. If you mistakenly update a shared node in-place, all versions sharing that node see the change. Fix: always create new nodes on the update path; never mutate shared nodes.
+
+---
+
+## Reference Anchor
+
+**No standard JDK segment tree** -- Java provides only `java.util.TreeMap` (BST, not segment tree). For production use, implement from scratch:
+
+```java
+// Segment tree with lazy propagation for range add + range sum:
+class SegTree {
+    long[] sum, lazy;
+    int n;
+    SegTree(int n) { this.n = n; sum = new long[4*n]; lazy = new long[4*n]; }
+    void push(int node, int l, int r) {
+        if (lazy[node] != 0) {
+            int mid = (l+r)/2;
+            apply(2*node, l, mid, lazy[node]);
+            apply(2*node+1, mid+1, r, lazy[node]);
+            lazy[node] = 0;
+        }
+    }
+    void apply(int node, int l, int r, long delta) {
+        sum[node] += delta * (r - l + 1);
+        lazy[node] += delta;
+    }
+    void update(int node, int l, int r, int ql, int qr, long delta) {
+        if (ql > r || qr < l) return;
+        if (ql <= l && r <= qr) { apply(node, l, r, delta); return; }
+        push(node, l, r);
+        int mid = (l+r)/2;
+        update(2*node, l, mid, ql, qr, delta);
+        update(2*node+1, mid+1, r, ql, qr, delta);
+        sum[node] = sum[2*node] + sum[2*node+1];
+    }
+}
+// Used in: Netflix job scheduling, database range queries, competitive programming
+```
+

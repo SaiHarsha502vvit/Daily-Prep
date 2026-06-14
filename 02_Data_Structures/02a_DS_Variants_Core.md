@@ -2363,3 +2363,38 @@ Where k = number of values for key, n = total entries.
 - **`01g_DS_Internals.md`** — implementation-specific invariants (AL, HM, TM, LL).
 - **`02b_DS_Variants_Advanced.md`** — skip list, bloom filter, B-tree, LSM-tree, randomized structures.
 - **`02_PROBLEM_SETS.md`** — exam-style variant selection problems.
+
+---
+
+## Proof Corner — Why Monotonic Deque is O(n) Amortised
+
+**Claim**: The sliding window maximum algorithm using a monotonic deque runs in O(n) total time for an array of n elements, even though there is a `while` loop inside the outer `for` loop.
+
+**Proof by amortised aggregate analysis**:
+
+- Each of the n elements is **enqueued exactly once** (in the outer `for` loop).
+- Each element is **dequeued at most once** (either popped from the back when a larger element arrives, or removed from the front when it slides out of the window).
+- Total enqueue operations: n. Total dequeue operations: ≤ n.
+- Total operations: ≤ 2n = O(n). QED.
+
+**Invariant maintained**: At all times, the deque contains indices whose values form a **decreasing sequence** from front to back. This ensures the front is always the maximum in the current window.
+
+**Loop invariant for the outer for-loop**: After processing index i, `deque.peekFirst()` is the index of the maximum element in `arr[max(0, i-k+1)..i]`.
+
+- *Init*: Before i=0, deque is empty. Processing i=0 adds index 0.
+- *Maintenance*: We remove front indices outside the window (< i-k+1), then remove back indices with values ≤ arr[i] (they can never be future maxima), then add i. The deque front is the window maximum.
+- *Termination*: After i=n-1, we've computed the maximum for all n-k+1 windows.
+
+---
+
+## Brute Force to Optimal — DS Variant Selection
+
+| Problem | Brute Force Choice | Why It Fails | Optimal Choice | Gain |
+|---------|--------------------|--------------|----------------|------|
+| Frequency count | Loop and count per query — O(n) per query | O(n*q) total | HashMap — O(1) per query | O(q) → O(1) |
+| Ordered iteration | Sort on every access — O(n log n) | Too slow for many insertions | TreeMap/TreeSet — O(log n) per op | Sorted order always maintained |
+| Last-inserted priority | Search through list — O(n) | O(n) per pop | ArrayDeque as stack — O(1) push/pop | O(n) → O(1) |
+| Sliding window max | Scan every window — O(k) per window | O(nk) total | MonotonicDeque — O(1) amortised | O(nk) → O(n) |
+| Membership test | Linear scan — O(n) | O(nq) total | HashSet — O(1) expected | O(n) → O(1) |
+
+**Decision rule**: choose a DS by the *bottleneck operation* that is called most frequently. The data structure whose worst-case for that operation is best wins.

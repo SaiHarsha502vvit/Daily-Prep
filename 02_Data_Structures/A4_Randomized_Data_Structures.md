@@ -1209,4 +1209,48 @@ Randomized data structures exploit probability to bypass deterministic worst-cas
 
 ---
 
+## When It Breaks -- Randomized Data Structures
+
+**1. Bloom filter deletion** -- standard Bloom filters have no delete operation. Unsetting bits on deletion creates false negatives for other elements that share those bits. Use a Counting Bloom Filter (counts instead of bits) if deletion is needed.
+
+**2. HyperLogLog on tiny sets** -- HLL is inaccurate for cardinalities below ~2.5*m (m = register count). For small sets (< 100 elements), exact counting is cheaper and more accurate. Always check the cardinality range before choosing HLL.
+
+**3. Skip list with biased RNG** -- fixed seed or biased promotion creates a deterministic non-random structure. Long chains at certain levels degrade O(log n) to O(n). Use `ThreadLocalRandom` or `SecureRandom` for level promotion.
+
+**4. Count-Min Sketch overestimates** -- CMS can only overestimate (not underestimate). A freshly inserted key can already have count > 1 due to hash collisions with other keys. Queries for non-existent keys return positive counts. Design downstream code to tolerate overestimates.
+
+---
+
+## Reference Anchor
+
+**Google Guava -- production Bloom filter**:
+```java
+// com.google.common.hash.BloomFilter -- used at scale in Cassandra, HBase, Chrome
+BloomFilter<String> bf = BloomFilter.create(
+    Funnels.stringFunnel(StandardCharsets.UTF_8),
+    1_000_000,  // expected insertions
+    0.01        // 1% false positive rate
+);
+bf.put("user:1234");
+boolean mightContain = bf.mightContain("user:1234"); // true
+// Serializable: bf.writeTo(outputStream) for storage/replication
+
+// HyperLogLog -- no JDK implementation; use stream-lib or HdrHistogram:
+// com.clearspring.analytics.stream.cardinality.HyperLogLog
+HyperLogLog hll = new HyperLogLog(0.01); // 1% std error
+hll.offer("user:1234");
+long estimate = hll.cardinality();
+```
+
+---
+
+## Brute Force to Optimal -- Space-Accuracy Tradeoffs
+
+| Problem | Exact | Space | Approximate | Space | Error |
+|---------|-------|-------|-------------|-------|-------|
+| Set membership | HashSet | O(n) | Bloom filter | O(n/9.6 bits) | 1% FP |
+| Cardinality | HashSet | O(n) | HyperLogLog | O(m registers) | ~1.04/sqrt(m) |
+| Frequency | HashMap | O(n) | Count-Min Sketch | O(w*d) | epsilon*n additive |
+| Quantiles | Sort | O(n log n) | t-digest | O(compression*100) | ~0.01% relative |
+
 *[← A3: DS Lower Bounds](A3_DS_Lower_Bounds.md) | [Back to DS Index](00_INDEX.md)*

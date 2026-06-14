@@ -1731,7 +1731,7 @@ _Trees and graphs are everywhere - master them and unlock many problems!_
 
 ---
 
-## When Trees Break
+## When It Breaks -- Trees
 
 ### 1. Recursive DFS StackOverflow on Skewed Tree
 **What breaks**: A degenerate BST (all elements inserted in sorted order) becomes a linked list of depth n. Recursive DFS causes `StackOverflowError` at n ~= 8000 (default JVM stack). This is the real-world case — most textbook BST code breaks on sorted inputs.

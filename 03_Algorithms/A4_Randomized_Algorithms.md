@@ -544,4 +544,88 @@ where the probability is over a uniformly random choice of h from H.
 
 </details>
 
+---
+
+## Proof Corner — Expected Complexity of Randomized QuickSort
+
+**Claim**: Randomized QuickSort runs in expected O(n log n) comparisons, regardless of input order.
+
+**Proof via indicator random variables** (CLRS §7.4):
+
+Let X_{ij} = 1 if element z_i and z_j (z_i < z_j) are ever compared, 0 otherwise. Total comparisons X = sum_{i<j} X_{ij}.
+
+**Key observation**: z_i and z_j are compared if and only if the first element chosen as pivot from the set {z_i, z_{i+1}, ..., z_j} is either z_i or z_j itself. (If any intermediate element is chosen first as pivot, z_i and z_j go into different sub-arrays and are never compared.)
+
+**Probability**: Pr[X_{ij} = 1] = 2 / (j - i + 1) since each of the (j-i+1) elements in that range is equally likely to be the first pivot chosen.
+
+**Expected total comparisons**:
+```
+E[X] = sum_{i=1}^{n} sum_{j=i+1}^{n} 2/(j-i+1)
+     = sum_{i=1}^{n} sum_{k=2}^{n-i+1} 2/k
+     <= 2n * sum_{k=2}^{n} 1/k
+     = 2n * (H_n - 1)
+     = O(n log n)
+```
+
+where H_n is the n-th harmonic number ≈ ln n. **QED.**
+
+**Why the random pivot eliminates worst-case**: On sorted input, deterministic QuickSort (pivot = last element) always picks the min, giving O(n^2). A uniformly random pivot has only a 1/n chance of being the min, giving O(n log n) in expectation. The adversary cannot predict the pivot.
+
+---
+
+## When It Breaks — Randomized Algorithms
+
+**1. PRNG seed attacks (HashDoS)** — Java's `HashMap` (pre-JDK 8) used `hashCode()` without randomization. Adversaries could craft inputs where all keys hash to the same bucket: O(n^2) lookup per query. Fix: JDK 8+ uses hash-seed randomization and treeifies long chains (to O(log n) per bucket). Lesson: randomness must be secret from the adversary.
+
+**2. Birthday paradox undersizing** — choosing a Bloom filter with m bits without accounting for the birthday threshold. For n elements and k hash functions, the expected number of collisions starts growing rapidly once n/m > 1/(k ln 2). Rule: m ≥ 10n for k=7 gives ~1% FP rate; halving m quadruples the FP rate.
+
+**3. Bad random number generator** — `Math.random()` (backed by `Random`) is a linear congruential generator: period 2^48, not cryptographically secure, predictable from 2 outputs. Never use it for security tokens, shuffles that must be unpredictable, or randomized algorithms where the adversary controls input. Use `SecureRandom` for security; `ThreadLocalRandom` for throughput.
+
+**4. Rejection sampling infinite loop** — if the acceptance probability is very low (e.g., sampling a point uniformly from a hypersphere in high dimensions), rejection sampling may run for an enormous number of iterations in the worst case. Always bound iterations: retry at most MAX_ITER times, then throw or fall back.
+
+**5. Monte Carlo confidence without enough samples** — a Monte Carlo estimate with N=100 samples has std error ~1/sqrt(100) ≈ 10%. Reporting "our algorithm is 5% faster" from a 100-sample run is noise, not signal. Rule: for 1% error at 95% confidence, need N ≥ 10,000 samples.
+
+---
+
+## Reference Anchor
+
+**java.security.SecureRandom** — cryptographically strong PRNG:
+```java
+// For security-sensitive applications (tokens, nonces, shuffles users bet money on):
+SecureRandom rng = new SecureRandom();
+byte[] token = new byte[32];
+rng.nextBytes(token);  // OS entropy source (urandom on Linux, CSPRNG on Windows)
+// Slower than Random (~10x), but the only correct choice for security
+```
+
+**java.util.concurrent.ThreadLocalRandom** — high-throughput randomness for algorithmic use:
+```java
+// For randomized algorithms, simulations, random pivots — NOT security:
+int pivot = ThreadLocalRandom.current().nextInt(lo, hi + 1);
+// Thread-local: no contention in parallel code; faster than synchronized Random
+// XorShift128+ generator — period 2^128, passes statistical tests, NOT cryptographic
+```
+
+**java.util.Collections.shuffle** — Fisher-Yates using Random:
+```java
+List<Integer> arr = new ArrayList<>(Arrays.asList(1,2,3,4,5));
+Collections.shuffle(arr, ThreadLocalRandom.current());
+// Knuth shuffle: for i from n-1 down to 1, swap arr[i] with arr[rand(0,i)]
+// Produces uniform permutation in O(n). Source: OpenJDK Collections.java
+```
+
+---
+
+## Brute Force to Optimal
+
+| Problem | Deterministic Worst Case | Randomized Expected | Why Randomization Helps |
+|---------|--------------------------|--------------------|-----------------------|
+| QuickSort | O(n^2) (sorted input, bad pivot) | O(n log n) | Random pivot prevents adversarial input |
+| Hashing (fixed function) | O(n) per lookup (crafted collision attack) | O(1) expected | Random hash function; adversary can't predict |
+| Primality testing | Trial division O(sqrt(n)) | Miller-Rabin O(k log^2 n) | Probabilistic witness test, error < 4^{-k} |
+| Minimum cut | Deterministic O(nm) | Karger's O(n^2 log n) with repetition | Random edge contractions; simpler to implement |
+| Approximate counting | Exact count O(n) space | Morris counter O(log log n) space | Probabilistic increment; unbiased estimate |
+
+**The trade-off**: Randomized algorithms trade deterministic worst-case guarantees for expected-case performance. They require a source of randomness, and the analysis assumes the randomness is independent of the input. Always document what "expected" means in your algorithm's contract.
+
 *[← A3: Lower Bounds & NP](A3_Lower_Bounds_And_NP.md) | [Back to Index](00_INDEX.md)*

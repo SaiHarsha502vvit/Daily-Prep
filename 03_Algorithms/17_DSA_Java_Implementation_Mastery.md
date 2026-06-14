@@ -1,4 +1,76 @@
-﻿**Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
+﻿
+
+---
+
+## Proof Corner -- Why -ea Assertions Don't Slow Production
+
+**Java assertion JVM contract**: `assert expr` is a no-op when assertions are disabled (the default). The bytecode compiles to:
+```
+if (assertionsEnabled) { if (!expr) throw AssertionError; }
+```
+The JIT compiler eliminates the disabled branch entirely after warmup. Zero overhead in production.
+
+**Implication**: You can and SHOULD write assertions for all loop invariants and postconditions during development (`-ea`), then ship the same code without `-ea` in production. No extra branch = no performance penalty.
+
+**Correctness verification pattern for implementations**:
+```
+Assert invariant at loop entry (pre-condition)
+Run one iteration
+Assert invariant at loop exit (post-condition = next pre-condition)
+Use induction: if holds for n iterations and is established at start, holds for n+1
+```
+
+---
+
+## When It Breaks -- Java DSA Implementation
+
+**1. Autoboxing in hot loops** -- `List<Integer>` instead of `int[]` autoboxes every element. For n=10^6 elements, this creates 10^6 Integer objects, consuming ~16MB of heap and triggering GC. Fix: prefer primitive arrays for numerical DSA code.
+
+**2. Wrong generic type bounds** -- `Comparable<T>` vs `Comparable<? super T>`. A custom comparator for a subclass of T needs `Comparable<? super T>` to accept parent class comparators. Using the wrong bound causes compile errors when extending the implementation.
+
+**3. Stack overflow in recursive implementations** -- recursive DFS/mergesort on n=100,000 nodes hits JVM default stack limit (~10,000 frames). Fix: use explicit `Deque<>` for DFS or iterative mergesort.
+
+**4. HashCode/equals contract violation** -- overriding `hashCode` but not `equals` (or vice versa) breaks HashMap/HashSet semantics. If `a.equals(b)`, then `a.hashCode() == b.hashCode()` must hold. Violating this causes "ghost" duplicates in HashSet or unreachable keys in HashMap.
+
+---
+
+## Reference Anchor
+
+**OpenJDK -- production-grade DSA implementations to study**:
+```java
+// java.util.Arrays: DualPivotQuicksort for primitives, TimSort for objects
+// Source: jdk/src/java.base/share/classes/java/util/DualPivotQuicksort.java
+// Key technique: 2-pivot partitioning creates 3 regions, reduces cache misses
+
+// java.util.HashMap: hash table with tree fallback (JDK 8+)
+// Source: jdk/src/java.base/share/classes/java/util/HashMap.java
+// Key technique: (h = key.hashCode()) ^ (h >>> 16) -- spread upper bits into lower bits
+// to reduce collisions when key.hashCode() has patterns in upper bits only
+
+// java.util.PriorityQueue: binary min-heap
+// Source: jdk/src/java.base/share/classes/java/util/PriorityQueue.java
+// Heapify bottom-up O(n): start at n/2, sift down each node
+
+// java.util.TreeMap: Red-Black tree
+// Source: jdk/src/java.base/share/classes/java/util/TreeMap.java
+// Rotation and recoloring after insert/delete maintain RB invariants
+
+// Study pattern: read the invariant comments in each class header,
+// then read the put/offer/add methods to see how invariants are maintained.
+```
+
+---
+
+## Brute Force to Optimal -- Java Implementation Choices
+
+| Operation | Naive Java | Problem | Optimal Java | Gain |
+|-----------|-----------|---------|-------------|------|
+| Sort integers | `Arrays.sort(Integer[])` (TimSort) | Autoboxing, non-primitive | `Arrays.sort(int[])` (DualPivotQuicksort) | No boxing, intrinsic |
+| Queue | `LinkedList<>` | Pointer chasing | `ArrayDeque<>` | 2-4x cache speedup |
+| Stack | `Stack<>` (synchronized) | Unnecessary locking | `ArrayDeque<>` as stack | 10-50x throughput |
+| Set membership | `ArrayList.contains()` | O(n) scan | `HashSet.contains()` | O(1) expected |
+| Range min/max | Scan range each query | O(n) per query | Sparse table (static) or SegTree | O(1) or O(log n) |
+**Navigation**: [< Previous](16_DSA_Deep_Reasoning.md) | [Back to Index](00_INDEX.md) | [Next >](18_Bitwise_Trie_Java_Complete.md)
 
 # Chapter 17 — DSA Java Implementation Mastery: The Language-Specific Reasoning
 

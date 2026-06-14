@@ -723,3 +723,67 @@ The advanced patterns in this chapter each exploit a different constraint bounda
 | Wavelet Tree              | O(log sigma)      | None (static only) | O(n log sigma) | Static range k-th order, median queries     |
 
 Select **Meet-in-the-Middle** when n is between 20-30 and the problem is a subset or partition problem. Select **Sqrt Decomposition** as the simplest offline range query structure before reaching for segment tree. Select **Mo's** when you have hundreds of range queries on a static array. Select **HLD** when the problem explicitly asks for path aggregates on a tree. Default to **Segment Tree** for dynamic range queries with updates.
+
+
+---
+
+## Proof Corner -- Sqrt Decomposition O(sqrt(n)) per Query
+
+**Claim**: With sqrt decomposition, each range-sum query over [l, r] costs O(sqrt(n)) time.
+
+**Setup**: Partition array A[0..n-1] into blocks of size B = sqrt(n). Precompute block sums B[k] = sum of A[k*B..(k+1)*B-1].
+
+**Query[l, r]**: Three parts:
+1. Left partial block: sum A[l..end of its block] -- at most B-1 elements.
+2. Complete middle blocks: sum B[k] for whole blocks inside [l,r] -- at most n/B blocks.
+3. Right partial block: sum A[start of last partial block..r] -- at most B-1 elements.
+
+**Total work**: O(B) + O(n/B) + O(B) = O(B + n/B).
+
+**Optimal B**: Minimise B + n/B. By AM-GM, B + n/B >= 2*sqrt(n), achieved when B = sqrt(n).
+
+**Therefore**: Each query costs O(sqrt(n)). Preprocessing O(n). n queries total: O(n + n*sqrt(n)) = O(n*sqrt(n)). QED.
+
+---
+
+## When It Breaks -- Algorithm Patterns
+
+**1. Mo's algorithm on dynamic arrays** -- Mo's algorithm requires a STATIC array (no updates). If the problem has point updates, you need Mo's with updates (3D sorting) which is O(n^(5/3)). Applying standard Mo's with updates gives wrong answers silently.
+
+**2. Meet-in-the-Middle for n > 30** -- MitM halves the search space from 2^n to 2*2^(n/2). For n=40, 2^20 = 1M (fine). For n=60, 2^30 = 1B (too slow). Always compute 2^(n/2) from the problem's n before choosing MitM.
+
+**3. HLD with wrong DFS entry order** -- Heavy-Light Decomposition requires the DFS to visit the heavy child first to guarantee each heavy chain occupies a contiguous segment tree range. Visiting light children first breaks the contiguity invariant: the chain segment tree range becomes non-contiguous, and path queries give wrong results.
+
+**4. Wavelet tree on mutable arrays** -- wavelet trees are static-only (built once). For range k-th queries with updates, you need persistent segment trees or sqrt decomposition. Wavelet tree on a modified array gives stale/wrong answers.
+
+---
+
+## Reference Anchor
+
+**No standard JDK implementations** for sqrt decomp, Mo's, or HLD -- these are competitive programming patterns. Reference implementations:
+
+```java
+// Sqrt Decomposition -- range sum with point update:
+int[] arr = new int[n];
+int B = (int) Math.sqrt(n);
+int[] block = new int[(n + B - 1) / B];
+// Build: for (int i = 0; i < n; i++) block[i/B] += arr[i];
+// Update(i, val): block[i/B] += val - arr[i]; arr[i] = val;
+// Query(l, r): sum partial left + sum complete blocks + sum partial right
+
+// Segment tree -- standard pattern in Java:
+int[] tree = new int[4 * n];
+void build(int node, int l, int r) {
+    if (l == r) { tree[node] = arr[l]; return; }
+    int mid = (l + r) / 2;
+    build(2*node, l, mid); build(2*node+1, mid+1, r);
+    tree[node] = tree[2*node] + tree[2*node+1];
+}
+int query(int node, int l, int r, int ql, int qr) {
+    if (ql > r || qr < l) return 0; // identity for sum
+    if (ql <= l && r <= qr) return tree[node];
+    int mid = (l + r) / 2;
+    return query(2*node, l, mid, ql, qr) + query(2*node+1, mid+1, r, ql, qr);
+}
+// Key: tree[node] covers [l,r]. Children cover [l,mid] and [mid+1,r]. 4*n space for safety.
+```

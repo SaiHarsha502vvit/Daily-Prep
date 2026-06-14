@@ -189,6 +189,109 @@ To predict if User A will like Movie B, the system simply takes the dot product 
 
 </details>
 
+---
+
+## Proof Corner — Why Dijkstra Is Correct (Greedy Exchange Argument)
+
+**Claim**: When all edge weights are non-negative, Dijkstra's algorithm computes the shortest-path distance `dist[v]` for every reachable vertex v.
+
+**Proof sketch (by induction on the number of vertices settled)**:
+
+- **Invariant**: Every vertex extracted from the priority queue has its true shortest-path distance.
+- **Base**: The source s is extracted first with dist[s] = 0 (correct since weights ≥ 0).
+- **Step**: Suppose the invariant holds for the first k extracted vertices S. Let v be the (k+1)-th extracted vertex. Assume for contradiction there exists a shorter path P* from s to v not through S. P* must at some point leave S via an edge (u, x) where u ∈ S and x ∉ S. Since dist[u] is correct (inductive hypothesis) and w(u,x) ≥ 0, we have `dist[u] + w(u,x) ≥ dist[x] ≥ dist[v]` (v was extracted before x). So P* ≥ dist[v]. Contradiction. QED.
+
+**Why negative weights break this**: A negative-weight edge (u, w) could create a shortcut discovered *after* u was already settled, invalidating the invariant. Bellman-Ford relaxes all edges n-1 times to handle this.
+
+---
+
+## When It Breaks — Algorithms in Production
+
+**1. O(n^2) sort on unexpectedly large input** — A comparator bug (returning 0 for all pairs → TimSort degrades to O(n log n) but stable; returning inconsistent results → `IllegalArgumentException: Comparison method violates its general contract`). Java 7+ throws this exception when transitivity is violated. Fix: always verify `sgn(compare(x,y)) == -sgn(compare(y,x))` and transitivity.
+
+**2. Hash collision DoS (HashDoS)** — In Java pre-8, all strings with the same `hashCode()` (trivially crafted) land in one bucket: O(n) per lookup. A web form with n fields all hashing to the same slot → O(n^2) request processing. Fix: JDK 8 treeifies buckets after 8 collisions; use randomized hashing for user-controlled keys.
+
+**3. Integer overflow in index arithmetic** — The classic Josh Bloch binary search bug: `mid = (lo + hi) / 2` overflows when lo + hi > Integer.MAX_VALUE. Production symptom: binary search returns wrong results on arrays with > 2^30 elements (rare in Java heap, common in file offsets). Fix: `lo + (hi - lo) / 2`.
+
+**4. PageRank / BFS on disconnected graphs** — Forgetting to multi-source BFS from all nodes (not just one starting node) leaves disconnected components unvisited. Production symptom: "People You May Know" never suggests connections from other clusters.
+
+**5. Dijkstra with stale priority queue entries** — A common lazy-deletion implementation: after relaxing a neighbour, push a new (dist, node) entry without removing the old one. You must check `if (d > dist[u]) continue` when popping. Missing this check gives correct answers (the old entry is dominated) but the queue grows to O(m) entries — memory leak under high load.
+
+---
+
+## Reference Anchor
+
+**OpenJDK — java.util.Arrays.sort (DualPivotQuicksort)**:
+```java
+// For primitive arrays, Java uses DualPivotQuicksort (Yaroslavskiy 2009).
+// Source: jdk/src/java.base/share/classes/java/util/DualPivotQuicksort.java
+// Key property: O(n log n) average, uses 2 pivots to create 3 partitions.
+// For object arrays: TimSort (merge sort + insertion sort for small runs).
+// WHY the split: primitive arrays can use unstable sort (no identity equality);
+// object arrays require stable sort (equal objects must preserve input order).
+int[] prims = {5, 3, 1, 4}; Arrays.sort(prims);      // DualPivotQuicksort
+Integer[] objs = {5, 3, 1, 4}; Arrays.sort(objs);    // TimSort (stable)
+```
+
+**java.util.PriorityQueue for Dijkstra** (lazy deletion):
+```java
+// OpenJDK PriorityQueue: binary min-heap, O(log n) offer/poll, O(n) remove(Object)
+// For Dijkstra: use lazy deletion (offer duplicate entries, skip stale on pop)
+PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(e -> e[0]));
+// e[0] = dist, e[1] = node
+pq.offer(new long[]{0, src});
+while (!pq.isEmpty()) {
+    long[] cur = pq.poll();
+    long d = cur[0]; int u = (int)cur[1];
+    if (d > dist[u]) continue;  // stale entry — skip
+    for (int[] edge : adj[u]) pq.offer(new long[]{d + edge[1], edge[0]});
+}
+```
+
+---
+
+## Java Example — Timing Algorithms in Production
+
+```java
+public class AlgorithmBenchmark {
+    /** Demonstrates production-style timing + assertion verification. */
+    public static void main(String[] args) {
+        int n = 1_000_000;
+        int[] arr = new int[n];
+        java.util.Random rng = new java.util.Random(42);
+        for (int i = 0; i < n; i++) arr[i] = rng.nextInt();
+
+        // Measure sort time
+        long t0 = System.nanoTime();
+        java.util.Arrays.sort(arr);
+        long t1 = System.nanoTime();
+
+        // Verify sorted (spot-check — not full scan in benchmarks)
+        assert arr[0] <= arr[n/2] && arr[n/2] <= arr[n-1]
+            : "Sort invariant violated";
+        assert arr[0] == findMin(arr) : "First element must be minimum";
+
+        System.out.printf("Sorted %,d elements in %.2f ms%n",
+            n, (t1 - t0) / 1e6);
+        // Typical: 80-120ms on modern JVM (DualPivotQuicksort, JIT-compiled)
+        // Run with: java -ea AlgorithmBenchmark
+    }
+
+    static int findMin(int[] a) {
+        int m = a[0];
+        for (int x : a) if (x < m) m = x;
+        return m;
+    }
+}
+```
+
+**Production lessons from this snippet**:
+- `System.nanoTime()` for elapsed time (not `currentTimeMillis` which is wall-clock and affected by NTP adjustments).
+- Run JVM warmup passes before measuring (JIT tiered compilation takes ~10k invocations to reach peak performance).
+- Always assert postconditions in benchmarks: a "fast" incorrect sort is worse than a slow correct one.
+
+---
+
 ## 🔗 Cross-References
 
 | Topic                                   | Detailed Guide                                                                    |

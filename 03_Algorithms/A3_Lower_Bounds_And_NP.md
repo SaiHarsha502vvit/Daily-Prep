@@ -550,3 +550,91 @@ This is a tight 2-approximation: there exist instances where OPT = |M| and the a
 </details>
 
 *[← A2: Complexity First Principles](A2_Complexity_FirstPrinciples.md) | [A4: Randomized Algorithms →](A4_Randomized_Algorithms.md)*
+
+---
+
+## Proof Corner -- NP-Completeness and Reduction Correctness
+
+**NP definition**: A language L is in NP if there exists a polynomial-time verifier V such that for every x in L, there exists a polynomial-size certificate c with V(x, c) = 1; and for every x not in L, no certificate satisfies V(x, c) = 1.
+
+**NP-hardness proof template**:
+1. Choose a known NP-hard problem P (e.g., 3-SAT, Clique, Vertex Cover).
+2. Show a polynomial-time reduction f: P -> Q (P instances to Q instances).
+3. Correctness: x is YES for P iff f(x) is YES for Q.
+4. Conclusion: if Q were solvable in poly-time, so would P -- contradicting P NP-hard.
+
+**Vertex Cover 2-approximation correctness**: Find a maximal matching M (greedily). Add both endpoints of each matching edge to the cover C. Claim: |C| <= 2*OPT.
+
+Proof: Every edge in M must be covered; no two matching edges share an endpoint (matching property); so OPT must include at least one endpoint of each matching edge; |OPT| >= |M|. But |C| = 2|M| <= 2*OPT. QED.
+
+---
+
+## When It Breaks -- Lower Bounds and NP
+
+**1. Reducing in the wrong direction** -- to prove Q NP-hard, reduce FROM a known NP-hard problem TO Q. Reducing FROM Q to a known NP-hard problem only proves Q is in NP (or nothing, if the reduction goes wrong). This is the most common error in NP-hardness proofs.
+
+**2. Non-polynomial reduction** -- the reduction must run in polynomial time in the input size. If f(x) itself requires exponential time or produces exponential output, the hardness transfer fails.
+
+**3. Approximation ratio direction confusion** -- for minimisation, ratio = ALG/OPT >= 1. For maximisation, ratio = OPT/ALG >= 1. Reporting "we achieve a 2-approximation" for the wrong objective gives a misleading claim.
+
+**4. P = NP misunderstanding** -- P = NP would make NP-hard problems solvable in polynomial time, but problems outside NP (PSPACE, EXPTIME) remain hard. "P = NP solves everything" is incorrect.
+
+---
+
+## Reference Anchor
+
+**Standard NP references and Java SAT solving**:
+```
+Garey and Johnson, "Computers and Intractability" (1979) -- canonical NP hardness catalog
+Karp's 21 NP-complete problems (1972) -- foundation of practical reductions
+CLRS Chapter 34 -- NP-completeness with formal proof templates
+
+Key reductions for interviews:
+  3-SAT -> Independent Set (clause gadgets -> clique; variable gadgets)
+  Clique -> Vertex Cover (complement: VC of G = n - clique of complement(G))
+  3-SAT -> Subset Sum (arithmetic gadget: one row per literal)
+```
+
+```java
+// 2-Approximation for Vertex Cover:
+Set<Integer> cover = new HashSet<>();
+boolean[] inMatching = new boolean[n];
+for (int[] edge : edges) {
+    int u = edge[0], v = edge[1];
+    if (!inMatching[u] && !inMatching[v]) {
+        cover.add(u); cover.add(v);
+        inMatching[u] = inMatching[v] = true;
+    }
+}
+// |cover| <= 2 * OPT: each matching edge must be in OPT, |matching| <= OPT, |cover|=2|matching|
+
+// 2-SAT in polynomial time (P class) via SCC:
+// Build implication graph: for each clause (a OR b), add edges !a->b and !b->a
+// x is satisfiable iff x and !x are in different SCCs (Kosaraju/Tarjan in O(V+E))
+```
+
+---
+
+## Brute Force to Optimal -- NP-Hard Problem Strategies
+
+| Strategy | When to use | Example | Guarantee |
+|----------|------------|---------|-----------|
+| Exact exponential | Small n < 20 | Branch-and-bound, ILP | Optimal |
+| Approximation | Poly time, bounded error | Greedy VC, LP relax | rho*OPT |
+| FPT algorithm | Hard but parameter k is small | Vertex Cover FPT: O(2^k * n) | Exact, fast for small k |
+| Heuristic | Large n, no guarantee needed | Simulated annealing | No guarantee |
+| Special case | Restricted input structure | PTAS for planar TSP | (1+eps)*OPT |
+
+```java
+// Brute-force for Vertex Cover (n <= 20): try all 2^n subsets
+// O(2^n * n): check each subset if it covers all edges
+for (int mask = 0; mask < (1 << n); mask++) {
+    if (Integer.bitCount(mask) < bestSize && coversAll(mask, edges)) {
+        bestSize = Integer.bitCount(mask);
+        bestMask = mask;
+    }
+}
+// For n=20: 2^20 = 1M subsets * 20n check = 20M ops -- feasible
+// For n=40: 2^40 = 1T -- infeasible without pruning
+```
+

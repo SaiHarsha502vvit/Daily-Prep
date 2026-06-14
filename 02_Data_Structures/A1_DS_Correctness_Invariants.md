@@ -797,3 +797,49 @@ Union-Find            │ parent pointers lead to unique root per set │ Induct
 ```
 
 *[Back to DS Index](00_INDEX.md) | [A2: DS Complexity from First Principles →](A2_DS_Complexity_FirstPrinciples.md)*
+
+---
+
+## When It Breaks -- DS Correctness Invariants
+
+**1. TreeMap comparator inconsistent with equals** -- `TreeMap` uses `compare(a,b)==0` to identify equal keys. If your comparator returns 0 for two objects that are not `.equals()`, the second put silently overwrites the first. Fix: ensure `compare(a,b)==0` iff `a.equals(b)`.
+
+**2. PriorityQueue element mutation** -- modifying an object inside a PriorityQueue that is used as the comparison key silently breaks the heap invariant. Symptom: `poll()` returns elements in wrong order, no exception. Fix: remove the element (O(n)), modify it, re-insert (O(log n)).
+
+**3. Concurrent modification of invariant-critical collections** -- modifying a HashMap while iterating it (via iterator + put in same thread) throws `ConcurrentModificationException`. Fix: collect changes in a separate list; apply after the iteration completes.
+
+**4. CopyOnWriteArrayList stale reads** -- `CopyOnWriteArrayList` iterators see a snapshot of the list at iterator creation time. Writes after the iterator is created are invisible to it. Design code to expect stale reads if using COW collections with concurrent writers.
+
+---
+
+## Reference Anchor
+
+**JDK -- invariant-maintaining data structures**:
+```java
+// TreeMap: comparator must be consistent with equals
+TreeMap<String, Integer> tm = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+tm.put("hello", 1); tm.put("HELLO", 2); // silently overwrites -- same key by comparator
+assert tm.size() == 1; // NOT 2
+
+// PriorityQueue: no update-key operation -- use lazy deletion instead
+PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(a -> a[0]));
+// To "update" dist[v]: don't remove old entry; push new (dist, v) and skip stale on pop
+// if (d > dist[u]) continue; // stale entry guard
+
+// Collections.unmodifiableMap -- publish an immutable view of a mutable map
+Map<String, Integer> safe = Collections.unmodifiableMap(mutableMap);
+// UnsupportedOperationException on put/remove -- enforces invariant at call boundary
+```
+
+---
+
+## Brute Force to Optimal -- Invariant Verification
+
+| DS | Full invariant check | Cost | Production approach |
+|----|---------------------|------|---------------------|
+| BST | Walk all nodes, verify BST property | O(n) | Trust TreeMap; assert in tests only |
+| Heap | Check all parent-child pairs | O(n) | Assert heap property in unit test |
+| Union-Find | Trace all paths to root, verify rank | O(n alpha(n)) | Log rank at union; spot-check in test |
+| HashMap | Verify all keys hash to correct bucket | O(n) | Trust JDK implementation |
+
+Rule: invariant checks are O(n) or worse -- too expensive for production hot paths. Assert in test mode; trust proven library implementations in production.

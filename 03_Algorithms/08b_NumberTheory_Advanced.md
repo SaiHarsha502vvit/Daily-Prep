@@ -1013,4 +1013,78 @@ Section 1 = fundamentals. Section 2 = medium applications. Section 3 = advanced/
 
 ---
 
+
+
+---
+
+## Proof Corner -- Fermat's Little Theorem and Modular Inverse
+
+**Fermat's Little Theorem**: For prime p and integer a not divisible by p:
+a^(p-1) ≡ 1 (mod p).
+
+**Proof sketch**: Consider the set {a, 2a, 3a, ..., (p-1)a} modulo p. All elements are distinct (if ia ≡ ja mod p then i ≡ j mod p since gcd(a,p)=1). All are non-zero. So the set is a permutation of {1, 2, ..., p-1}.
+
+Product of all elements: a * 2a * ... * (p-1)a = a^(p-1) * (p-1)! ≡ (p-1)! (mod p).
+
+Cancel (p-1)! (non-zero mod p): a^(p-1) ≡ 1 (mod p). QED.
+
+**Modular inverse**: Since a^(p-1) ≡ 1 (mod p), we have a^(-1) ≡ a^(p-2) (mod p). This is computed in O(log p) using fast modular exponentiation.
+
+**When Fermat fails**: p must be prime. For composite m, use the extended Euclidean algorithm to find a^(-1) mod m (when gcd(a,m) = 1). Fermat does NOT work for composite moduli.
+
+---
+
+## When It Breaks -- Advanced Number Theory
+
+**1. Applying Fermat's Little Theorem with composite modulus** -- modPow(a, MOD-2, MOD) gives the modular inverse only when MOD is prime. With composite MOD, a^(phi(MOD)-1) is the inverse if gcd(a,MOD)=1, but phi(MOD) is expensive to compute. Fix: always verify MOD is prime before using Fermat.
+
+**2. Integer overflow in factorisation** -- trial division for n up to 10^18 needs to check primes up to sqrt(n) ~ 10^9. A naive loop overflows int; even long arithmetic can overflow when computing trial divisions. Use BigInteger.isProbablePrime() for large n.
+
+**3. CRT (Chinese Remainder Theorem) with non-coprime moduli** -- CRT requires moduli to be pairwise coprime. If gcd(m1, m2) != 1, the system x ≡ a1 mod m1, x ≡ a2 mod m2 may have no solution. Always verify coprimality before applying CRT.
+
+**4. Euler's totient wrong for p^k** -- phi(p^k) = p^(k-1) * (p-1), NOT p-1. A common error: phi(8) = phi(2^3) should be 4, not 1. This matters for RSA key generation and period calculations.
+
+---
+
+## Reference Anchor
+
+**java.math.BigInteger -- number theory operations**:
+```java
+// Primality (probabilistic Miller-Rabin):
+BigInteger n = BigInteger.valueOf(104729);
+boolean prime = n.isProbablePrime(50); // error < 4^{-50} ≈ 10^{-30}
+
+// Modular inverse (Euclidean -- works for any modulus, not just prime):
+BigInteger a = BigInteger.valueOf(7);
+BigInteger mod = BigInteger.valueOf(11);
+BigInteger inv = a.modInverse(mod); // 7^{-1} mod 11 = 8
+// Verify: 7 * 8 mod 11 = 56 mod 11 = 1. Correct.
+
+// Fast exponentiation:
+BigInteger result = BigInteger.valueOf(2).modPow(BigInteger.valueOf(100),
+    BigInteger.valueOf(1_000_000_007L)); // 2^100 mod 10^9+7
+
+// For long arithmetic -- manual modPow:
+static long modPow(long base, long exp, long mod) {
+    long result = 1; base %= mod;
+    while (exp > 0) {
+        if ((exp & 1) == 1) result = result * base % mod;
+        base = base * base % mod; exp >>= 1;
+    }
+    return result;
+}
+// Caution: base * base can overflow long for base ~ 10^9. Use (long)(...)*(long)(...) carefully.
+```
+
+---
+
+## Brute Force to Optimal -- Number Theory
+
+| Problem | Brute Force | Time | Optimal | Time |
+|---------|-------------|------|---------|------|
+| Primality test | Trial division to sqrt(n) | O(sqrt(n)) | Miller-Rabin | O(k log^2 n) |
+| All primes up to n | Trial division each | O(n sqrt(n)) | Sieve of Eratosthenes | O(n log log n) |
+| GCD(a, b) | Subtract smaller from larger | O(max(a,b)) | Euclidean algorithm | O(log(min(a,b))) |
+| Modular inverse | Extended Euclid | O(log m) | Fermat (prime mod only) | O(log p) |
+| Factorisation | Trial division | O(sqrt(n)) | Pollard's rho | O(n^{1/4}) |
 **Navigation**: [< Previous](08a_NumberTheory_Core.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](09_Pattern_Programs_Complete.md)

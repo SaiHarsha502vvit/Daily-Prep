@@ -101,6 +101,7 @@ SKIP_PATTERNS = [
     r"AUDIT",
     r"COVERAGE_MAP",
     r"_PROBLEM_BRIDGES",
+    r"^CONTEXT$",   # meta-description files, not teaching chapters
 ]
 
 SCORE_COLORS = {6: "######", 5: "#####.", 4: "####..", 3: "###...", 2: "##....", 1: "#.....", 0: "......"}

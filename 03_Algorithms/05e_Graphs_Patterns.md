@@ -1143,7 +1143,7 @@ Which graph problem type am I facing?
 
 ---
 
-## When Graph Patterns Break
+## When It Breaks -- Graph Patterns
 
 ### 1. Flood Fill — Modifying Grid During BFS Causes Re-Visit
 **What breaks**: Flood fill that marks cells as visited by changing their value (e.g., `grid[r][c] = 2`) but then checks `grid[r][c] != original` — if the original value was the same as the "visited" marker, all cells are skipped.

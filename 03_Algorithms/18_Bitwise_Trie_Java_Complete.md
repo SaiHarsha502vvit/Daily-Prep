@@ -494,3 +494,56 @@ Select **max XOR trie** when the problem asks for maximum XOR of any pair or pai
 `prefix[0] = 0` (empty prefix) makes range sum formula uniform: `sum(l,r) = prefix[r+1] - prefix[l]`. Without the 0: `sum(0,r) = prefix[r] - 0` (special case needed). With it: `sum(0,r) = prefix[r+1] - prefix[0] = prefix[r+1]`. Same formula everywhere. This is the 'sentinel' pattern — adding a dummy initial value to eliminate special cases. Same trick used in dummy linked list nodes.
 
 </details>
+
+
+---
+
+## Proof Corner -- Trie O(L) per Operation
+
+**Claim**: Insert, search, and prefix-exists on a Trie each cost O(L) where L is the word/prefix length.
+
+**Proof**: Each operation traverses at most L edges from the root to a depth-L node. At each node, we access `children[c]` for character c -- O(1) array access (or O(log sigma) for sorted map children). No backtracking: the path is uniquely determined by the characters of the word. Therefore: O(L) operations per step * 1 step per character = O(L). QED.
+
+**Space**: A Trie with n words each of average length L has at most n*L nodes (no sharing) and at least L distinct nodes (maximum sharing along common prefixes). Space = O(n*L) worst case.
+
+**Proof that Trie outperforms HashSet for prefix queries**: HashSet.contains("cat") is O(L) for hashing + O(L) for equality check = O(L). Trie.startsWith("ca") is also O(L). BUT: "enumerate all words with prefix X" requires O(n*L) scanning in a HashSet vs O(matches*L) in a Trie (following the prefix path then DFS). For k matches, Trie wins when k << n.
+
+---
+
+## When It Breaks -- Bitwise Operations and Tries
+
+**1. Missing isEnd flag in Trie** -- "cat" and "ca" share the path c->a->t. Without `isEnd` at the 'a' node, a search for "ca" traverses to 'a' successfully and incorrectly returns true (thinking "cat" means "ca" exists). Always set `isEnd = true` at the exact end node of each inserted word.
+
+**2. Trie deletion corrupting other words** -- deleting "cat" by removing the 'c', 'a', 't' nodes also deletes "cats" and "catch". Fix: only remove a node if it has no children and `isEnd = false` after clearing the end marker. Traverse bottom-up and delete only empty leaf nodes.
+
+**3. XOR maximum in bitwise Trie -- wrong bit order** -- when inserting numbers into a XOR-max Trie, you must insert from the most significant bit (bit 31 or 30) down to bit 0. Inserting LSB-first builds a Trie that gives the wrong greedy choice at each bit position.
+
+**4. Signed shift vs unsigned shift** -- `n >> 1` in Java is arithmetic right shift (fills MSB with sign bit). For negative n, `n >> 1` != n / 2 in all cases. For bit manipulation of unsigned values, use `n >>> 1` (logical right shift, fills with 0). Swapping these causes wrong XOR, popcount, or number of set bits for negative inputs.
+
+---
+
+## Reference Anchor
+
+**JDK bit manipulation utilities**:
+```java
+// java.lang.Integer -- intrinsic methods (JVM maps to hardware instructions)
+Integer.bitCount(n);          // POPCNT instruction -- O(1) hardware
+Integer.highestOneBit(n);     // isolate highest set bit
+Integer.numberOfLeadingZeros(n);  // BSR instruction
+Integer.numberOfTrailingZeros(n); // BSF instruction
+Integer.reverse(n);           // bit reversal
+Integer.toBinaryString(n);    // for debugging (no leading zeros)
+
+// XOR tricks -- standard bit-manipulation idioms:
+// n & (n-1) -- clear lowest set bit (check if power of 2: n & (n-1) == 0)
+// n & (-n)  -- isolate lowest set bit (same as lowbit in BIT)
+// n ^ (n-1) -- toggle all bits up to and including lowest set bit
+// a ^ b ^ b == a -- self-inverse property used in single-number problems
+
+// Apache Commons Collections -- Patricia Trie (for String keys):
+// org.apache.commons.collections4.trie.PatriciaTrie
+// Compressed trie (radix tree) for String keys, O(L) per op, space-efficient
+PatriciaTrie<Integer> trie = new PatriciaTrie<>();
+trie.put("hello", 1);
+SortedMap<String, Integer> prefix = trie.prefixMap("he"); // all keys starting with "he"
+```

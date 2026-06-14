@@ -1,4 +1,42 @@
-﻿**Navigation**: [< Previous](15_Monotonic_Stack_Queue_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_DSA_Java_Implementation_Mastery.md)
+﻿## When It Breaks -- DSA Deep Reasoning
+
+**1. Dijkstra with negative edges** -- once a node is settled, Dijkstra never revisits it. A negative-weight edge discovered later can produce a shorter path that was missed. Symptom: wrong shortest-path distances, not an exception. Fix: Bellman-Ford or SPFA for graphs with negative (but no negative-cycle) edges.
+
+**2. Greedy without exchange argument** -- applying a greedy heuristic where the greedy-stays-ahead argument fails. Classic: fractional knapsack greedy (sort by value/weight ratio) does NOT work for 0/1 knapsack. Symptom: a close-but-wrong answer that passes most test cases but fails when item weights are incompatible.
+
+**3. Wrong loop invariant direction** -- in binary search, using `lo = mid` (not `mid+1`) when hi = lo+1 creates an infinite loop. Safe form: `lo = mid+1` or `hi = mid` with correct convergence guarantee. Always verify the invariant shrinks the search space by at least 1 per iteration.
+
+**4. BFS on unweighted graph vs Dijkstra on weighted** -- treating a weighted graph as unweighted (running BFS) produces shortest hop count, not shortest weighted path. Symptom: correct for uniform edge weights, wrong when edges have different costs.
+
+**5. Confusing DFS pre/in/post-order** -- pre-order visits root before children (copy/serialise), in-order visits left->root->right (BST sorted output), post-order visits children before root (deletion/size). Mixing these gives wrong results without any exception.
+
+---
+
+## Reference Anchor
+
+**OpenJDK -- priority queue and graph algorithm foundations**:
+```java
+// java.util.PriorityQueue: binary min-heap, O(log n) offer/poll
+// Used for Dijkstra, Prim's MST, A*, scheduling simulations
+PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> a[0] - b[0]);
+// a[0] = dist, a[1] = node
+
+// java.util.ArrayDeque: BFS queue (much faster than LinkedList for queue use)
+// Circular array doubling, O(1) amortised offer/poll
+Deque<Integer> queue = new ArrayDeque<>();
+queue.offer(source);
+while (!queue.isEmpty()) {
+    int u = queue.poll();
+    for (int v : adj[u]) if (!visited[v]) { visited[v] = true; queue.offer(v); }
+}
+
+// java.util.TreeMap: Red-Black BST, O(log n) put/get/floorKey/ceilingKey
+// Used for interval scheduling, sweep-line, "next greater element"
+TreeMap<Integer, Integer> events = new TreeMap<>();
+Map.Entry<Integer, Integer> prev = events.floorEntry(queryTime);
+```
+
+**Navigation**: [< Previous](15_Monotonic_Stack_Queue_Complete.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](17_DSA_Java_Implementation_Mastery.md)
 
 # Chapter 16 — DSA Deep Reasoning: The Questions That Freeze People
 

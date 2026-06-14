@@ -925,4 +925,55 @@ Explain why the cascade must stop after O(log n) cuts (the **rank bound lemma**)
 
 > **Key theorem to remember**: For any mutable data structure where expensive operations are **triggered by** cheap ones and are **bounded in frequency**, amortized analysis converts O(n) worst-case into O(1) average-per-operation. The three methods — aggregate, accounting, potential — are different proof styles for the same underlying truth.
 
+
+
+---
+
+## When It Breaks — Complexity Analysis
+
+**1. Confusing worst-case with amortised** — saying "dynamic array append is O(n)" (technically true for the single resize operation) when the amortised cost is O(1). The symptom: performance model predicts slowness for n appends, but benchmarks show O(n) total time.
+
+**2. Potential function doesn't start at 0** — in a potential-based amortised proof, Φ must satisfy Φ_0 = 0 (or ≥ 0 always). If you define a potential that starts negative, the amortised cost underestimates real cost. Fix: verify Φ_0 = 0 and Φ_i ≥ 0 for all i before proceeding.
+
+**3. Mistaking O(log* n) for O(log n)** — the iterated logarithm log*(n) (how many times you apply log before reaching ≤ 1) is effectively constant for all practical n (log*(2^65536) = 5). Union-Find with path compression and union by rank is O(α(n)) per operation (inverse Ackermann), even smaller than log*, but commonly stated as "practically O(1)". Confusing it with O(log n) leads to overcounting in complexity analysis.
+
+**4. Amortised argument breaks for partial sequences** — amortised analysis guarantees cost for a *complete* sequence of operations. If you only run m < n operations and the last one triggers an expensive resize, the amortised O(1) bound doesn't cover just that single operation. Amortised is a statement about totals, not individual worst cases.
+
+**5. Average-case vs expected-case** — average-case (over inputs drawn from a distribution) and expected-case (over algorithm's random choices) are different guarantees. QuickSort with random pivot is O(n log n) expected-case for any input. "Average-case O(n log n)" means nothing without specifying the input distribution.
+
+---
+
+## Section Challenge — Complexity First Principles
+
+**Challenge 1 (Exam — 6 min)**: A hash table doubles its array when load factor > 0.75. Starting from capacity 1, how many total element copies occur to insert n elements? Show the amortised cost per insertion using aggregate analysis.
+
+<details><summary>Model Answer</summary>
+
+**Resizes happen at insertions**: 1, 2, 4, 8, ..., 2^k where 2^k ≈ n. Number of resizes: log₂(n).
+
+**Copies at each resize** (copying all existing elements):
+- At capacity 2: copy 1 element.
+- At capacity 4: copy 2 elements.
+- At capacity 2^k: copy 2^(k-1) elements.
+
+**Total copies** = 1 + 2 + 4 + ... + n/2 = n - 1 (geometric series sum).
+
+**Amortised cost per insertion** = (n insertions + (n-1) copies) / n ≈ 2 = **O(1) amortised**. QED.
+
+This is the aggregate method: spread the total work across all operations. Each insertion "pre-pays" 1 unit for its own future copy cost.
+
+</details>
+
+**Challenge 2 (Tricky — 4 min)**: Can a data structure have O(n) amortised cost per operation but O(1) worst-case per operation? Give an example or prove impossible.
+
+<details><summary>Model Answer</summary>
+
+**Yes.** A structure where most operations are free (O(1) worst-case) but occasionally one operation does O(n) work still has O(n) amortised if those expensive operations are rare.
+
+But the question asks the opposite: O(n) amortised with O(1) worst-case. This is impossible: if every individual operation is O(1), then n operations total O(n) work, giving O(1) amortised — a contradiction with O(n) amortised.
+
+**Formally**: amortised cost ≥ average of worst-case costs ≥ average of actual costs. If every operation is O(1) worst-case, amortised is also O(1).
+
+</details>
+
 *[← A1: DS Correctness](A1_DS_Correctness_Invariants.md) | [A3: DS Lower Bounds →](A3_DS_Lower_Bounds.md)*

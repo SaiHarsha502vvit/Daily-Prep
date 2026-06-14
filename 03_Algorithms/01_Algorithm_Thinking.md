@@ -1003,3 +1003,64 @@ Let me code this up..."
 ---
 
 _Practice this thinking framework every day!_ 🧠
+
+
+---
+
+## Proof Corner -- Why Correctness Precedes Optimisation
+
+**Claim**: An algorithm that is fast but incorrect produces wrong answers faster. Correctness must be established before optimisation.
+
+**Formal argument**: For any algorithm A and input x, define correct(A, x) = 1 if A(x) equals the expected output. An optimised A with correct(A, x) = 0 for some x has undefined practical value -- it may fail exactly on the edge case that matters most in production.
+
+**Verification order** (MIT 6.006 lecture 1 principle):
+1. Prove correctness (invariant, base case, inductive step).
+2. Prove termination (strictly decreasing measure).
+3. Analyse time/space complexity.
+4. Optimise ONLY after 1-3 are established.
+
+**Exchange argument for greedy correctness** (Activity Selection): Greedy picks earliest-finishing activity. If OPT chooses differently at step k, swap the OPT choice for the greedy choice -- OPT improves or stays equal. Repeating this gives OPT = Greedy. QED greedy is optimal.
+
+---
+
+## When It Breaks -- Algorithm Thinking
+
+**1. Premature optimisation** -- optimising before proving correctness. A fast but wrong algorithm produces wrong answers faster. Rule: always prove correctness first; benchmark second.
+
+**2. Wrong problem decomposition** -- treating a max-flow problem as greedy, or a greedy problem as DP. The wrong framework gives wrong recurrences or exchange arguments that don't hold. Fix: identify the problem class (single-choice greedy, overlapping subproblems DP, graph connectivity) before picking an algorithm.
+
+**3. Off-by-one in time complexity estimates** -- O(n) + O(n log n) = O(n log n), not O(n^2). Summing O(n) over log n levels = O(n log n). These are common errors in interview whiteboard analysis.
+
+**4. Confusing worst-case with expected** -- QuickSort is O(n log n) expected and O(n^2) worst-case. Reporting "QuickSort is O(n log n)" without qualifying "expected" (or "randomised pivot") misleads. Be precise about which case you're analysing.
+
+---
+
+## Reference Anchor
+
+**MIT 6.006 Introduction to Algorithms -- open courseware**:
+```
+Lecture 1: Algorithmic thinking -- the peak-finding problem
+Lecture 2: Models of computation and document distance
+CLRS Chapters 1-3: Foundations of algorithm analysis
+
+Key open-source algorithm implementations for study:
+- OpenJDK java.util.Arrays (TimSort, DualPivotQuicksort): jdk/src/java.base/share/classes/java/util/
+- Apache Commons Math ArithmeticUtils: commons-math3/src/main/java/org/apache/commons/math3/util/
+```
+
+```java
+// Algorithm correctness verification pattern:
+public static int binarySearch(int[] arr, int target) {
+    int lo = 0, hi = arr.length - 1;
+    // Invariant: if target in arr, it is in arr[lo..hi]
+    while (lo <= hi) {
+        int mid = lo + (hi - lo) / 2; // overflow-safe
+        if (arr[mid] == target) return mid;
+        if (arr[mid] < target) lo = mid + 1; // narrow left
+        else hi = mid - 1; // narrow right
+    }
+    return -1; // target not found
+}
+// Test: assert binarySearch(new int[]{1,3,5,7}, 5) == 2;
+// Test: assert binarySearch(new int[]{1,3,5,7}, 4) == -1;
+```

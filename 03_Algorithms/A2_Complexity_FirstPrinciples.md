@@ -647,4 +647,60 @@ Both are O(n) asymptotically, but the recursive version has a real O(log n) stac
 
 </details>
 
+---
+
+## Section Challenge -- Complexity First Principles (Algorithms)
+
+**Problem 1 (Recurrence -- 8 min)**: Solve T(n) = 2T(n/2) + O(n) using the Master Theorem. State which case applies and why.
+
+<details><summary>Model Answer</summary>
+
+Master Theorem: T(n) = aT(n/b) + f(n). Here a=2, b=2, f(n)=O(n).
+
+Compute n^{log_b a} = n^{log_2 2} = n^1 = n.
+
+f(n) = O(n) = O(n^1). This matches n^{log_b a} exactly (within a constant).
+
+**Case 2**: f(n) = Theta(n^{log_b a}) => T(n) = Theta(n^{log_b a} * log n) = Theta(n log n).
+
+This is the merge sort recurrence. The O(n) merge work at each of log n levels sums to O(n log n).
+
+**Intuition check**: At level k (0-indexed from top), there are 2^k subproblems each of size n/2^k, doing O(n/2^k) merge work each. Total work at level k = 2^k * O(n/2^k) = O(n). Summing over log n levels: O(n log n).
+
+</details>
+
+**Problem 2 (Lower Bound -- 6 min)**: Prove that any comparison-based sorting algorithm requires Omega(n log n) comparisons in the worst case.
+
+<details><summary>Model Answer</summary>
+
+**Decision tree argument**: Model a comparison-based sort as a binary decision tree. Each internal node is a comparison (a_i <= a_j?); each leaf is a sorted permutation. For n elements, there are n! possible permutations, so the tree needs >= n! leaves. A binary tree of height h has at most 2^h leaves. Therefore: 2^h >= n!, so h >= log_2(n!).
+
+By Stirling: log_2(n!) = sum_{k=1}^{n} log_2(k) >= integral_1^n log_2(x)dx = n*log_2(n) - n/ln(2) = Omega(n log n).
+
+Therefore any comparison-based sort makes Omega(n log n) comparisons in the worst case. Merge sort and heapsort achieve this bound.
+
+</details>
+
+---
+
+## Reference Anchor
+
+**OpenJDK -- complexity verification through TimSort and binary search**:
+```java
+// java.util.TimSort (Arrays.sort for objects) -- production merge sort
+// Key property: O(n) on already-sorted input (detects natural runs)
+//               O(n log n) worst case for random input
+// MIN_MERGE = 32: runs shorter than 32 elements use binary insertion sort
+
+// java.util.Arrays.binarySearch -- O(log n) search on sorted arrays
+// Uses lo + (hi-lo)/2 mid formula (overflow-safe)
+int idx = Arrays.binarySearch(sortedArr, key);
+// Returns: index if found; -(insertionPoint)-1 if not found
+
+// Why complexity matters in production:
+// O(n^2) sort on 10k elements = 100M ops @ 10ns = 1 second
+// O(n log n) sort on 10k elements = 130k ops @ 10ns = 0.001 seconds
+// Difference is irrelevant for n=100; catastrophic for n=100,000
+```
+
 *[← A1: Correctness Proofs](A1_Correctness_Proofs.md) | [A3: Lower Bounds & NP →](A3_Lower_Bounds_And_NP.md)*

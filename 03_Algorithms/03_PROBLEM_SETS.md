@@ -515,3 +515,56 @@ public class Graph {
 ---
 
 [← Back to Semester 1 Guide](../00_CURRICULUM/SEMESTER_1_GUIDE.md) | [DS Problem Sets ←](../02_Data_Structures/02_PROBLEM_SETS.md) | [Java Problem Sets →](../07_Modern_Java/07_PROBLEM_SETS.md)
+
+---
+
+## Proof Corner -- Algorithm Problem-Solving Correctness
+
+**Exchange Argument Template** (for greedy correctness proofs):
+
+1. Assume OPT is an optimal solution that differs from Greedy on some step k.
+2. Show you can swap the greedy choice at step k into OPT without decreasing the objective.
+3. Repeat until OPT has been transformed into Greedy, step by step.
+4. Conclude Greedy is also optimal.
+
+**Example -- Activity Selection**: Greedy picks the activity with the earliest finish time. Suppose OPT picks activity b instead of a (where finish(a) <= finish(b)). Swap b for a: a finishes no later than b, so all subsequent activities still fit. OPT with a is no worse. QED.
+
+**Reduction correctness template**: To prove algorithm A solves problem P:
+1. Define a reduction f: P -> Q (transform P-instance to Q-instance).
+2. Show correctness: x is a YES for P if and only if f(x) is a YES for Q.
+3. Show efficiency: f runs in polynomial time.
+
+---
+
+## When It Breaks -- Problem-Solving Strategy
+
+**1. Wrong problem model** -- the most common interview failure. "Minimum number of jumps" sounds like greedy but the wrong model (DFS) produces wrong answers. Always verify: is the problem asking for shortest PATH (BFS), minimum COST (DP), or minimum COUNT (DP)?
+
+**2. Greedy without proof** -- applying greedy intuition without verifying the exchange argument. Common failure: "sort by size" for interval covering -- this fails when longer intervals cover more critical positions. Always ask: what property am I optimising, and why does greedy choice not harm future options?
+
+**3. O(n^2) nested loop accepted for n=10^5** -- missing that the constraint n <= 10^5 with 1-second time limit means O(n log n) at most. A naive O(n^2) solution will TLE. Rule: always estimate operation count from constraints before coding.
+
+**4. Off-by-one in recurrence base cases** -- forgetting dp[0] for "empty prefix" in string DP, or starting BFS from the wrong node. These are silent errors that produce answers off by 1 for specific inputs.
+
+---
+
+## Reference Anchor
+
+**Java competitive programming patterns**:
+```java
+// Fast I/O (Scanner is ~10x slower than BufferedReader for large inputs):
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+StringTokenizer st = new StringTokenizer(br.readLine());
+int n = Integer.parseInt(st.nextToken());
+
+// StringBuilder beats println for many outputs:
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < n; i++) sb.append(result[i]).append("
+");
+System.out.print(sb);
+
+// Overflow-safe comparator (avoid a - b for Integer comparisons):
+Arrays.sort(arr, Comparator.comparingInt(x -> x)); // safe, no overflow
+// NOT: (a, b) -> a - b  (overflows when a = Integer.MIN_VALUE, b > 0)
+```
+

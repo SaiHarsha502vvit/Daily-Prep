@@ -487,7 +487,7 @@ In _The Algorithm Design Manual_, Steven Skiena emphasizes that the hardest part
 
 ---
 
-## When Graph Internals Break
+## When It Breaks -- Graph Internals
 
 ### 1. HashMap Adjacency List — Non-Deterministic Traversal Order
 **What breaks**: `Map<Integer, Set<Integer>> adj` with `HashSet` for neighbors. BFS/DFS iteration order is non-deterministic between JVM runs (hash seeds differ since Java 8). Tests that assert a specific traversal order pass locally and fail in CI.

@@ -587,3 +587,67 @@ Practice these in order:
 | **Interval Tree**        | Calendars / range conflicts             | Stores `maxEnd` metadata to prune impossible overlap branches.                          |
 | **Persistent Tree**      | Versioned snapshots / kth range queries | Path-copying preserves history with only `O(log N)` new nodes per update.               |
 | **Merkle Tree**          | Crypto / Git / DB Anti-Entropy          | Hashes bubble up to a single Root allowing $O(\log N)$ mathematical state verification. |
+
+
+---
+
+## Proof Corner -- B-Tree Minimum Degree and Height
+
+**Claim**: A B-tree of minimum degree t and n keys has height at most log_t((n+1)/2).
+
+**Proof**: The root has at least 1 key. Every other node has at least t-1 keys. The tree of height h has at least 1 key at the root + 2*(t-1) keys at level 1 + 2*t*(t-1) keys at level 2 + ... = 1 + 2*(t-1)*(t^{h-1} - 1)/(t-1) + ...
+
+**Simplified lower bound**: n+1 >= 2*t^h, so h <= log_t((n+1)/2). For t=1000 (typical disk page), a B-tree with 10^12 keys has height <= log_1000(5*10^11) <= 4. This is why databases use B-trees: 4 disk reads to find any of a trillion records.
+
+**Trie vs B-tree**: Trie height = key length L (independent of n). B-tree height = O(log_t n). For fixed-length keys, Trie is O(L) per op; B-tree is O(L log_t n). Trie wins for short keys in memory; B-tree wins on disk (fewer I/Os due to large branching factor t).
+
+---
+
+## Section Challenge -- Advanced Trees
+
+**Problem 1 (8 min)**: An AVL tree has height at most 1.44 log_2 n. Prove the minimum number of nodes in an AVL tree of height h.
+
+<details><summary>Model Answer</summary>
+
+Let N(h) = minimum number of nodes in an AVL tree of height h.
+
+Base cases: N(-1) = 0 (empty tree), N(0) = 1 (single node), N(1) = 2.
+
+Recurrence: An AVL tree of height h has a root, one subtree of height h-1 (to achieve height h), and one subtree of height >= h-2 (minimum, to satisfy AVL balance). So N(h) = 1 + N(h-1) + N(h-2).
+
+This is similar to Fibonacci: N(h) = Fib(h+3) - 1 where Fib is the Fibonacci sequence. Since Fib(k) ~ phi^k / sqrt(5), N(h) ~ phi^(h+3) / sqrt(5). Therefore h <= log_phi(n * sqrt(5)) - 3 ≈ 1.44 log_2(n).
+
+</details>
+
+---
+
+## Reference Anchor
+
+**java.util.TreeMap -- Red-Black tree in production**:
+```java
+// java.util.TreeMap: O(log n) per put/get/remove. Backed by a Red-Black tree.
+// Red-Black invariants: (1) root is black, (2) red node has black children,
+// (3) all paths from any node to null have same number of black nodes.
+// These invariants guarantee height <= 2*log_2(n+1) -- so O(log n) operations.
+
+TreeMap<Integer, String> tm = new TreeMap<>();
+tm.put(5, "five"); tm.put(3, "three"); tm.put(7, "seven");
+System.out.println(tm.floorKey(6));   // 5 -- largest key <= 6
+System.out.println(tm.ceilingKey(4)); // 5 -- smallest key >= 4
+System.out.println(tm.subMap(3, 7));  // {3=three, 5=five} -- [3,7) range
+
+// Source: jdk/src/java.base/share/classes/java/util/TreeMap.java
+// Production use: TreeMap is the standard for ordered key access in Java.
+// Use NavigableMap interface for floor/ceiling/higher/lower operations.
+```
+
+---
+
+## Brute Force to Optimal -- Tree Structure Selection
+
+| Use case | Brute Force | Problem | Optimal tree | Gain |
+|----------|-------------|---------|-------------|------|
+| Ordered iteration | Sort on every access | O(n log n) per access | TreeMap (BST) | O(log n) insert, O(n) iterate |
+| Prefix search | Scan all keys | O(n*L) | Trie | O(L) per query |
+| Range overlap queries | Scan all intervals | O(n) per query | Interval Tree | O(log n + k) where k=matches |
+| Large dataset on disk | Full scan | O(n/B) disk I/Os | B-Tree | O(log_B n) disk I/Os |

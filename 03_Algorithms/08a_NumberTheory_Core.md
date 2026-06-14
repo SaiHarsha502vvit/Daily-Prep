@@ -1220,3 +1220,59 @@ public static String zigzagConvert(String s, int numRows) {
 ---
 
 > **Navigation**: [< Previous](07b_Advanced_DS_Patterns.md) | [Back to Index](../00_MASTER_INDEX.md) | [Next >](08b_NumberTheory_Advanced.md)
+
+---
+
+## Proof Corner -- Sieve of Eratosthenes O(n log log n)
+
+**Claim**: The Sieve of Eratosthenes marks all composite numbers up to n in O(n log log n) time.
+
+**Proof**: For each prime p, we mark p^2, p^2+p, p^2+2p, ... up to n. The number of markings for prime p is (n - p^2)/p + 1 <= n/p.
+
+**Total markings** = sum over all primes p <= n of n/p = n * sum_{p prime, p<=n} 1/p.
+
+By the prime harmonic series (Mertens second theorem): sum_{p prime, p<=n} 1/p ~ ln ln n.
+
+Therefore total markings = O(n log log n). QED.
+
+**Why start at p^2**: All composites p*k with k < p have already been marked by the prime factors of k (which are less than p). Starting at p^2 avoids redundant work and is the key optimisation.
+
+**GCD correctness (Euclidean algorithm)**: gcd(a, b) = gcd(b, a mod b) because any common divisor of a and b also divides a mod b = a - floor(a/b)*b, and conversely any common divisor of b and a mod b divides a.
+
+---
+
+## When It Breaks -- Number Theory
+
+**1. int overflow in modular arithmetic** -- `(a * b) % MOD` where a, b are close to Integer.MAX_VALUE (10^9) and MOD = 10^9+7. a*b can reach ~10^18, which overflows int (max ~2*10^9). Always use `long` for intermediate products: `(long) a * b % MOD`.
+
+**2. Euler totient for prime powers** -- phi(p^k) = p^k - p^{k-1} (not p-1). A common mistake: phi(8) = phi(2^3) should be 4, not 1 (phi for prime p). Using phi(p) = p-1 for prime powers gives wrong answers in modular inverse calculations.
+
+**3. Modular inverse assumptions** -- `modPow(a, MOD-2, MOD)` (Fermat little theorem) gives the inverse of a only when MOD is prime AND gcd(a, MOD) = 1. If a is divisible by MOD, the inverse does not exist. Always check a % MOD != 0 before computing modular inverse.
+
+**4. GCD of negative numbers** -- in Java, `%` operator returns negative values for negative dividends: `-7 % 3 = -1` in Java, but mathematically `(-7) mod 3 = 2`. Euclidean algorithm breaks if a or b can be negative. Always pass `Math.abs(a)` to GCD functions.
+
+---
+
+## Reference Anchor
+
+**java.math.BigInteger -- production number theory**:
+```java
+// Primality test (Miller-Rabin probabilistic):
+BigInteger n = BigInteger.valueOf(997);
+boolean isPrime = n.isProbablePrime(50); // 50 rounds, error prob < 4^{-50}
+// Certainty 50 means error prob < (1/4)^50 -- effectively zero for practical purposes
+
+// Modular arithmetic with BigInteger:
+BigInteger mod = BigInteger.valueOf(1_000_000_007L);
+BigInteger result = a.multiply(b).mod(mod); // (a*b) % MOD -- handles arbitrary precision
+
+// GCD:
+BigInteger g = a.gcd(b); // Euclidean algorithm, always non-negative
+
+// For int/long -- Apache Commons Math:
+// org.apache.commons.math3.util.ArithmeticUtils.gcd(int a, int b)
+// Handles negative inputs correctly (returns non-negative GCD)
+import org.apache.commons.math3.util.ArithmeticUtils;
+long g2 = ArithmeticUtils.gcd(48L, -18L); // returns 6
+```
+

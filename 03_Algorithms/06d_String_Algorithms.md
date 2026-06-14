@@ -1236,3 +1236,57 @@ The string matching algorithms in this chapter form a clear trade-off space alon
 | Z-Algorithm | O(m)          | O(n+m)         | O(n+m)                                | O(n+m) | When Z-array needed for other purposes        |
 
 Select **KMP** when you need a guaranteed O(n+m) bound and the pattern is known upfront. Select **Rabin-Karp** when searching multiple patterns against the same text (precompute text hash once). Select **Z-Algorithm** when you also need period detection or prefix-suffix properties. Default to **KMP** for single-pattern interviews unless the problem hints at hashing.
+
+
+---
+
+## Proof Corner -- Z-Algorithm O(n+m) Correctness
+
+**Z-array definition**: For string S of length n, Z[i] = length of the longest substring starting from S[i] that matches a prefix of S. Z[0] is undefined (or n by convention).
+
+**Claim**: The Z-algorithm computes all Z-values in O(n) time.
+
+**Proof via window maintenance**: Maintain a window [L, R] = the rightmost Z-box seen so far (interval where S[L..R] = S[0..R-L]).
+
+For each i:
+- If i > R: compute Z[i] naively by comparing S[i..] with S[0..]. Update [L,R] if Z[i] > 0.
+- If i <= R: we know S[i..R] = S[i-L..R-L]. So Z[i] >= min(Z[i-L], R-i+1). If Z[i-L] < R-i+1, Z[i] = Z[i-L] (no extension needed). If Z[i-L] >= R-i+1, extend from R+1 vs R-L+1.
+
+**Key invariant**: Whenever we extend beyond R, we advance R. R advances at most n times total across all iterations. Total naive comparisons <= 2n. O(n) overall. QED.
+
+**Pattern matching application**: Concatenate P + "$" + T (separator "$" not in alphabet). Z-values at positions len(P)+1..len(P)+1+len(T)-1 give how much of P matches at each position in T. Z[i] = len(P) means a complete match starting at T[i - len(P) - 1].
+
+---
+
+## When It Breaks -- String Algorithms
+
+**1. KMP failure function off-by-one** -- `fail[0] = -1` vs `fail[0] = 0` convention determines how you handle mismatches at position 0. Mixing conventions between the failure function builder and the search function produces silent wrong answers. Pick one convention and stick to it.
+
+**2. Rolling hash collision** -- Rabin-Karp uses a polynomial hash mod a prime. Two different substrings can hash to the same value (false positive). Always verify the actual string match on hash collision. With a single 64-bit prime, collision probability per comparison is ~1/p; over n*m comparisons can accumulate. Use double hashing (two independent primes) for high-security matching.
+
+**3. Suffix array with non-ASCII characters** -- standard SA-IS algorithm assumes integer alphabet in range [0..sigma]. For Java strings (UTF-16), cast chars to int but watch for negative values from `charAt()` on supplementary characters. Use `codePointAt()` for Unicode correctness.
+
+**4. Trie vs hash map** -- using a HashMap for prefix matching is O(L) per query (hash the prefix string) but requires the full prefix to exist as a key. A Trie supports O(L) prefix existence check AND O(L) enumeration of all words with a given prefix. Trie is strictly better for prefix queries; HashMap wins for exact-match only.
+
+---
+
+## Reference Anchor
+
+**JDK -- java.lang.String and pattern matching**:
+```java
+// java.util.regex.Pattern: compiled regex, cached for reuse
+// Source: java.base/share/classes/java/util/regex/Pattern.java
+// Uses NFA-based matching -- WARNING: catastrophic backtracking on pathological patterns
+// e.g., Pattern.compile("(a+)+").matcher("aaaaaaaab") -- exponential time
+Pattern p = Pattern.compile("^[a-z]+$");
+Matcher m = p.matcher(input);
+boolean matches = m.matches(); // O(n) for simple patterns, O(2^n) worst case for nested quantifiers
+
+// java.lang.String.indexOf: two-way matching algorithm in JDK 17+ (O(n+m))
+// Before JDK 17: naive O(nm) with early exit optimization
+int idx = haystack.indexOf(needle); // prefer over manual KMP for single-pattern search
+
+// com.google.common.hash.Hashing for polynomial string hashing:
+// HashCode hc = Hashing.murmur3_128().hashString(s, StandardCharsets.UTF_8);
+// For rolling hash, implement manually: hashCode = (hashCode * BASE + c) % MOD
+```

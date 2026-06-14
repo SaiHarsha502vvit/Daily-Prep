@@ -455,3 +455,52 @@ Let P(T) = "if T has n internal nodes, T has n+1 leaves."
 </details>
 
 *[Back to Index](00_INDEX.md) | [A2: Complexity from First Principles →](A2_Complexity_FirstPrinciples.md)*
+
+---
+
+## When It Breaks -- Correctness Proofs
+
+**1. Loop invariant too weak** -- the invariant doesn't constrain the key variable enough to imply the postcondition. Example: "i <= n" is maintained by a binary search but doesn't prove it finds the target. Fix: "if target is in arr, it's in arr[lo..hi]" -- directly implies the postcondition on loop exit.
+
+**2. Induction without a base case** -- inductive step proven for n->n+1, but n=0 case skipped. Many recurrence proofs skip the n=1 case when the recurrence only applies for n>=2. Always check both the base(s) and the inductive step.
+
+**3. Measure not strictly decreasing** -- proving termination requires a measure that strictly decreases AND has a lower bound. "The distance to the target decreases or stays the same" doesn't prove termination. For Euclidean GCD: gcd(b, a mod b) terminates because a mod b < b (strictly less) for b > 0.
+
+**4. Exchange argument with non-total order** -- greedy proofs via exchange argument require a TOTAL ORDER on choices. Using a comparison like "finish time" that depends on two attributes without a tiebreaker produces an intransitive relation, breaking the exchange argument.
+
+---
+
+## Reference Anchor
+
+**JDK assertions for invariant runtime checking**:
+```java
+// Enable with: java -ea MyClass
+// Loop invariant documentation and verification:
+int lo = 0, hi = arr.length - 1;
+while (lo <= hi) {
+    // Invariant: if target in arr[0..n-1], it's in arr[lo..hi]
+    assert lo >= 0 && hi < arr.length;
+    int mid = lo + (hi - lo) / 2;
+    if (arr[mid] == target) return mid;
+    else if (arr[mid] < target) lo = mid + 1;
+    else hi = mid - 1;
+}
+// Postcondition: target not present
+assert java.util.Arrays.binarySearch(arr, target) < 0;
+
+// CLRS reference: Chapter 2.1 (insertion sort invariant), Chapter 22.3 (DFS white path theorem)
+```
+
+---
+
+## Brute Force to Optimal -- Correctness Verification
+
+| Method | Coverage | Cost | When to use |
+|--------|----------|------|-------------|
+| Manual testing | Sampled inputs | O(tests * run) | Always |
+| Assertions (-ea) | Every run in dev | O(check) per assert | Dev and test |
+| Property-based testing | Hundreds of random inputs | O(N * run) | Algorithmic code |
+| Formal proof (CLRS style) | 100% of cases | High one-time cost | Safety-critical |
+
+Rule: assertions document the invariant AND catch violations during development; formal proofs prevent the invariant from being wrong in the first place.
+

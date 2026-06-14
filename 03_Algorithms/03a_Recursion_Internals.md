@@ -581,12 +581,104 @@ STACK (much shorter!):
 
 **Navigation**: [< Back to Index](../00_MASTER_INDEX.md) | [Next: Recursion Fundamentals >](03b_Recursion_Fundamentals.md)
 
-🔬 **Section Challenge — 🧠 Memoization — Caching Recursive Results**
+🔬 **Section Challenge — Recursion Internals**
 
-**Challenge 1 (Design):** Cache-aside vs write-through vs write-behind — when does each cause stale data?
+**Challenge 1 (Analysis):** The naive recursive Fibonacci has time complexity O(2^n). After adding a `memo[]` array and caching each `fib(k)` the first time it's computed, what is the new time and space complexity? Explain the call-stack depth.
 
 <details><summary>Answer</summary>
 
-Cache-aside (lazy load): on cache miss, load from DB and populate cache. Stale: if DB updated externally (direct DB write bypassing cache). Write-through: write to cache AND DB simultaneously. Stale: never (cache always reflects writes). Write-behind (write-back): write to cache, async write to DB. Stale: if cache crashes before DB write → data loss. Rule: cache-aside for read-heavy. Write-through for write+read. Write-behind for write-heavy (accept loss risk).
+**Time**: O(n). Each of the n+1 distinct sub-problems `fib(0)..fib(n)` is computed exactly once. Every subsequent call hits the cache in O(1). Total: O(n) work.
+
+**Space**: O(n) for the memo array, plus O(n) call-stack depth (the first chain `fib(n)->fib(n-1)->...->fib(0)` before any cache hits). Total stack depth is n, so JVM default stack (-Xss 512k) handles up to ~5,000-10,000 before StackOverflowError. For large n, convert to bottom-up tabulation to eliminate the stack depth entirely.
+
+**Key insight**: memoization converts an exponential call tree into a DAG by collapsing all duplicate branches to cache lookups. The call-stack depth equals the longest non-repeating chain, which is n for Fibonacci.
 
 </details>
+
+---
+
+## Proof Corner — Recursion Termination and Correctness
+
+**Termination via well-ordering**: A recursive algorithm terminates if there exists a *well-ordered measure* (a non-negative integer or lexicographic pair) that strictly decreases at every recursive call.
+
+**Example — mergesort**: Measure = size of the array segment. Each call splits size n into two calls of size n/2. Since n/2 < n for n ≥ 1 and the base case handles n ≤ 1, the measure strictly decreases to 0. No infinite recursion is possible.
+
+**Example — mutual recursion (isEven/isOdd)**:
+```
+isEven(n) -> isOdd(n-1)  (n decreases by 1)
+isOdd(n)  -> isEven(n-1) (n decreases by 1)
+```
+Measure = n; base cases `isEven(0) = true`, `isOdd(0) = false`. Each call decreases n by 1; the pair (isEven,n) and (isOdd,n) are covered. QED termination for n ≥ 0.
+
+**JVM stack frame layout** (per method call):
+```
+Frame n: [ local vars | operand stack | frame data | return address ]
+Frame n-1: [ ... ]
+...
+Thread stack (default 512KB-1MB depending on JVM settings)
+```
+Each frame costs ~100-400 bytes depending on local variable count. Rough max depth before StackOverflowError: ~2,000-10,000 frames on a JVM with default settings.
+
+**Loop-invariant for recursive DFS**:
+
+At the start of each call `dfs(node)`, the set `visited` contains exactly the nodes reachable from the starting node via paths fully explored so far. After `dfs(node)` returns, every node reachable from `node` is in `visited`.
+
+---
+
+## When It Breaks — Recursion Internals
+
+**1. Missing or unreachable base case** — the most common bug. `fib(n)` without a `n <= 1` check calls `fib(-1)`, `fib(-2)`, ... infinitely. Symptom: StackOverflowError with a very long repeated stack trace.
+
+**2. Stack overflow on large n** — JVM default stack handles ~10,000 recursive calls. Recursive DFS on a graph with 100,000 nodes hits this easily. Fix: convert to explicit stack (Deque<>), or increase stack size via `new Thread(null, runnable, "name", 1 << 26)`.
+
+**3. Mutual recursion infinite cycle** — two methods calling each other without a terminating base case. Harder to debug because the stack trace alternates between methods. Fix: draw the call graph; ensure every cycle has a base case that exits the cycle.
+
+**4. Accidental sharing of mutable state across branches** — in backtracking recursion, failing to "unchoose" (undo the choice before returning) corrupts the shared state for sibling branches. The bug is silent: you get fewer results than expected, or wrong ones, with no exception.
+
+**5. Integer overflow in recursive parameters** — `f(n)` where n is close to Integer.MAX_VALUE and incremented/decremented leads to wraparound. Use `long` parameters for recursion depth-sensitive algorithms.
+
+---
+
+## Reference Anchor
+
+**JDK — recursion and the JVM call stack**:
+```java
+// java.lang.Thread: constructor allows custom stack size
+Thread t = new Thread(null, () -> deepRecursive(100_000), "deep-worker", 1 << 26);
+// 1<<26 = 64MB stack — avoids StackOverflowError for deep recursion
+
+// java.util.ArrayDeque as an explicit stack to replace tail-recursive DFS:
+Deque<Integer> stack = new ArrayDeque<>();
+stack.push(root);
+while (!stack.isEmpty()) {
+    int node = stack.pop();
+    // process node
+    for (int neighbor : adj[node]) stack.push(neighbor);
+}
+```
+
+**java.lang.StackOverflowError** is an Error (not Exception) — catching it is rarely correct. The right fix is eliminating the recursion or increasing the thread stack size.
+
+```java
+// Memoization pattern — standard Java idiom:
+private Map<Integer, Long> memo = new HashMap<>();
+
+long fib(int n) {
+    if (n <= 1) return n;
+    return memo.computeIfAbsent(n, k -> fib(k-1) + fib(k-2));
+}
+// computeIfAbsent is thread-safe on ConcurrentHashMap; HashMap version is single-threaded only
+```
+
+---
+
+## Brute Force to Optimal
+
+| Problem | Brute Force | Time | Optimal (Memoized) | Time |
+|---------|-------------|------|--------------------|------|
+| Fibonacci | Recursive tree — recomputes fib(k) 2^(n-k) times | O(2^n) | Top-down memo or bottom-up dp | O(n) |
+| Power set | Enumerate all subsets from scratch per call | O(2^n * n) | Backtracking with choose/unchoose | O(2^n) — irreducible, but no redundant work |
+| GCD | Naive subtraction loop | O(max(a,b)) | Euclid's algorithm (recursive) | O(log(min(a,b))) |
+| Merge sort | Insertion sort (compare-swap adjacent) | O(n^2) | Recursive divide + merge | O(n log n) |
+
+**The key structural insight**: overlapping sub-problems are the signal to switch from brute-force recursion to memoized recursion or tabulation. If the recursion tree is a *tree* (no shared sub-problems), brute-force and memoized have the same complexity — memoization only helps when sub-problems repeat.

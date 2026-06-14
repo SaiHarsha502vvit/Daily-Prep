@@ -1,5 +1,72 @@
 **Navigation**: [< Previous](18_Bitwise_Trie_Java_Complete.md) | [Back to Index](00_INDEX.md) | [Next >](20_DSA_Patterns_PDF_Java_Coverage_Map.md)
 
+---
+
+## Proof Corner -- Prefix Sum Correctness and 2D Extension
+
+**1D Prefix Sum Invariant**: After computing `prefix[i]`, it equals the sum of arr[0..i-1] (i exclusive, 0-indexed with sentinel prefix[0]=0).
+
+**Proof by induction**:
+- Base: prefix[0] = 0 = sum of empty prefix. Correct.
+- Step: prefix[i] = prefix[i-1] + arr[i-1] = (sum arr[0..i-2]) + arr[i-1] = sum arr[0..i-1]. QED.
+
+**Range sum correctness**: sum(l, r) = prefix[r+1] - prefix[l].
+- prefix[r+1] = sum arr[0..r]
+- prefix[l] = sum arr[0..l-1]
+- Difference = sum arr[l..r]. QED.
+
+**2D Prefix Sum**: prefix2D[i][j] = sum of rectangle arr[0..i-1][0..j-1].
+
+**Inclusion-exclusion identity** (proven by Venn diagram argument):
+sum(r1,c1, r2,c2) = prefix2D[r2+1][c2+1] - prefix2D[r1][c2+1] - prefix2D[r2+1][c1] + prefix2D[r1][c1]
+
+The +prefix2D[r1][c1] corrects for double-subtraction of the top-left rectangle.
+
+**Prefix XOR self-inverse property**: XOR is its own inverse (a XOR a = 0). Therefore:
+xorPrefix[r+1] XOR xorPrefix[l] = xorPrefix of arr[l..r].
+
+This works for any group where every element is its own inverse.
+
+---
+
+## When It Breaks -- Prefix Sum and XOR
+
+**1. Off-by-one in 1D range query** -- the most common prefix sum bug. With 0-indexed arrays and 0-indexed prefix (no sentinel): sum(l,r) = prefix[r+1] - prefix[l], NOT prefix[r] - prefix[l-1] (which fails for l=0). Always add the sentinel prefix[0]=0 to eliminate the l=0 special case.
+
+**2. 2D prefix sum index confusion** -- prefix2D[i][j] includes row i and column j (0-indexed) or excludes them (1-indexed)? Mixing conventions between build and query gives off-by-one or off-by-row errors. Fix: always use 1-indexed prefix2D (add one row/column of zeros at top and left). Then sum(r1,c1,r2,c2) uses r2+1, c2+1 uniformly.
+
+**3. Prefix XOR on non-commutative operations** -- the prefix trick works only for operations that are associative and have an inverse (group). XOR satisfies this (inverse = itself). But matrix multiplication is not commutative, so prefix[r] * inverse(prefix[l-1]) != range product for non-commutative operations.
+
+**4. Overflow in prefix sum of int[] for large arrays** -- prefix sum of 10^5 elements each up to 10^9 reaches 10^14, overflowing int. Always use long[] for prefix arrays when element values can be large.
+
+---
+
+## Reference Anchor
+
+**JDK -- Arrays.parallelPrefix for parallel prefix computation**:
+```java
+// java.util.Arrays.parallelPrefix -- computes prefix operation in O(n) with parallelism
+int[] arr = {1, 2, 3, 4, 5};
+// Cumulative sum (in-place):
+Arrays.parallelPrefix(arr, Integer::sum);
+// arr is now [1, 3, 6, 10, 15]
+// Uses work-stealing fork/join pool -- faster than sequential for n > ~10,000
+
+// For range sum queries -- standard idiom:
+long[] prefix = new long[arr.length + 1]; // +1 for sentinel
+for (int i = 0; i < arr.length; i++) prefix[i+1] = prefix[i] + arr[i];
+long rangeSum = prefix[r+1] - prefix[l]; // sum of arr[l..r]
+
+// For 2D prefix sum:
+int[][] grid = new int[m][n];
+long[][] p = new long[m+1][n+1];
+for (int i = 1; i <= m; i++)
+    for (int j = 1; j <= n; j++)
+        p[i][j] = grid[i-1][j-1] + p[i-1][j] + p[i][j-1] - p[i-1][j-1];
+// Query sum(r1,c1,r2,c2) [0-indexed]: p[r2+1][c2+1] - p[r1][c2+1] - p[r2+1][c1] + p[r1][c1]
+```
+
+
 # Chapter 19 - Prefix Sum, Prefix XOR, and 2D Prefix Java Complete Guide
 
 Purpose: Build one unified Java playbook for all prefix-family interview problems: 1D sum, XOR, modular prefix, 2D matrix prefix, and difference arrays.

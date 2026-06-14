@@ -439,7 +439,7 @@ In Fractional Knapsack, the domain of items is infinitely divisible. If we have 
 
 ---
 
-## When Greedy + Bit Manipulation Break
+## When It Breaks -- Greedy + Bit Manipulation
 
 ### 1. Greedy — Exchange Argument Assumed Without Verification
 **What breaks**: Applying greedy to a problem where the greedy choice property does NOT hold. E.g., "minimum number of operations to reduce n to 1" — greedy "always halve if even, subtract 1 if odd" fails for n=15: greedy does 15→14→7→6→3→2→1 (6 steps), but optimal is 15→16→8→4→2→1 (5 steps via +1 first).
