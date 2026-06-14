@@ -421,6 +421,76 @@ Yao minimax                    │ Best rand algo = best det algo on best distri
 
 ---
 
+## 🎯 Interview Proof Templates — Randomized Algorithms
+
+> Use these templates for expected-value proofs in algorithm design interviews.
+
+### Template A4-1 — Expected Value via Indicator Random Variables
+
+```
+"I'll compute the expected [quantity] using indicator random variables.
+
+Step 1 — Decompose into indicator variables:
+  Let Xᵢⱼ = 1 if [event Eᵢⱼ occurs], 0 otherwise.
+  Total [quantity] X = Σᵢ Σⱼ Xᵢⱼ.
+
+Step 2 — Apply linearity of expectation:
+  E[X] = Σᵢ Σⱼ E[Xᵢⱼ] = Σᵢ Σⱼ Pr[Eᵢⱼ].
+  (Linearity holds even if Xᵢⱼ are not independent.)
+
+Step 3 — Compute each probability:
+  Pr[Eᵢⱼ] = [compute from the problem structure].
+
+Step 4 — Sum:
+  E[X] = Σᵢ Σⱼ [Pr] = [closed-form or asymptotic result].
+
+Conclusion: expected [quantity] = [result]."
+```
+
+**Worked example — randomized quicksort comparisons**:
+Xᵢⱼ = 1 if elements i and j (in sorted order) are ever compared. Pr[Xᵢⱼ = 1] = 2/(j−i+1). E[comparisons] = Σᵢ<ⱼ 2/(j−i+1) = O(n log n).
+
+---
+
+### Template A4-2 — Las Vegas to Monte Carlo Conversion (Markov)
+
+```
+"I have a Las Vegas algorithm A with expected runtime E[T] = O(f(n)).
+I'll show it can be converted to a Monte Carlo algorithm that runs in O(c·f(n)) and
+fails with probability ≤ 1/c.
+
+By Markov's inequality: Pr[T > c·E[T]] ≤ 1/c.
+
+So run A for c·E[T] time. If it hasn't finished, declare failure.
+Runtime = O(c·f(n)) deterministically.
+Failure probability ≤ 1/c.
+
+For constant failure probability ε: set c = 1/ε → O(f(n)/ε) time, probability ε of failure.
+For polynomially-small failure probability: run k independent times, take first success.
+Pr[all k fail] ≤ (1/c)^k — negligible for k = O(log n)."
+```
+
+---
+
+### Template A4-3 — Randomized vs Adversary Argument
+
+```
+"I'll argue that randomization defeats the adversary for [algorithm].
+
+Without randomization: the adversary can construct an input I_worst such that
+the deterministic algorithm always takes Ω([bad complexity]) time.
+Proof: [describe the adversarial input construction].
+
+With randomization: the algorithm's random choices are independent of the input.
+The adversary must fix the input BEFORE the algorithm makes its random choices.
+For any fixed input I:
+  E[runtime on I] = O([good complexity]).
+Therefore the expected runtime is O([good complexity]) for ALL inputs —
+the adversary cannot exploit any specific input distribution.
+
+Conclusion: randomization reduces worst-case to expected [good complexity]."
+```
+
 ## 📝 Exam-Style Problems (MIT 6.046J L9–L12 / RWTH Aachen style)
 
 ---

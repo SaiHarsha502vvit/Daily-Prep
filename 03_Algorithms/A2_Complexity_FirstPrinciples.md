@@ -513,6 +513,89 @@ Space analysis          │ Count stack depth (recursion) + heap allocations
 
 ---
 
+## 🎯 Interview Proof Templates — Complexity Analysis
+
+> Use these fill-in-the-blank templates during whiteboard or written interviews. State each step explicitly — interviewers assess reasoning, not just the answer.
+
+### Template A2-1 — Master Theorem (for divide-and-conquer recurrences)
+
+```
+"I'll solve T(n) = [a]T(n/[b]) + [f(n)] using the Master Theorem.
+
+Step 1 — Identify parameters:
+  a = [number of subproblems]
+  b = [factor by which problem size reduces]
+  f(n) = [cost of divide + combine steps]
+
+Step 2 — Compute critical exponent:
+  p = log_b(a) = log_[b]([a]) = [value]
+
+Step 3 — Compare f(n) to n^p:
+  f(n) = [expression]  vs  n^p = n^[value]
+
+Step 4 — Identify case and state result:
+  [Case 1: f(n) = O(n^(p-ε)) → T(n) = Θ(n^p)]
+  [Case 2: f(n) = Θ(n^p)    → T(n) = Θ(n^p · log n)]
+  [Case 3: f(n) = Ω(n^(p+ε)) + regularity → T(n) = Θ(f(n))]
+
+Conclusion: T(n) = [answer]."
+```
+
+**Worked example for merge sort** (T(n) = 2T(n/2) + n):
+a=2, b=2, p=log₂2=1. f(n)=n=Θ(n¹)=Θ(n^p) → **Case 2** → T(n) = Θ(n log n).
+
+---
+
+### Template A2-2 — Amortized Analysis (potential method)
+
+```
+"I'll use the potential method to show the amortized cost of [operation] is O([result]).
+
+Step 1 — Define potential function:
+  Φ(state) = [expression — must be ≥ 0 always, and Φ(initial) = 0]
+
+Step 2 — Amortized cost = actual cost + ΔΦ:
+  Amortized(op) = actual(op) + Φ(after) − Φ(before)
+
+Step 3 — Analyze the expensive case:
+  When [expensive condition]: actual cost = [large value].
+  ΔΦ = [large negative change that offsets it].
+  Amortized = [large cost] + [large negative] = O([small]).
+
+Step 4 — Analyze the cheap case:
+  When [normal case]: actual cost = O(1).
+  ΔΦ = [small positive]. Amortized = O(1) + [small] = O(1).
+
+Conclusion: total work for n operations = n · O([result]) = O([result × n])."
+```
+
+**Worked example for dynamic array push** (Φ = 2×size − capacity):
+- Normal push: actual=1, ΔΦ=+2. Amortized = 3 = O(1). ✓
+- Resize push: actual=n+1 (copy n + insert 1), ΔΦ = 2(n+1) − 2n − n = 2−n. Amortized = (n+1) + (2−n) = 3 = O(1). ✓
+
+---
+
+### Template A2-3 — Space Complexity (for recursive algorithms)
+
+```
+"Space complexity = heap allocations + stack depth.
+
+Stack depth: [algorithm] recurses [depth description].
+  Maximum simultaneous stack frames = [value] (e.g., O(log n) for balanced recursion).
+  Each frame uses O([variables per frame]) space.
+  Total stack space = O([depth × frame size]).
+
+Heap allocations: [algorithm] creates [description of heap objects].
+  Total heap space = O([expression]).
+
+Dominant term: [stack / heap], so space = O([result]).
+
+Java note: default stack allows ~[N] frames before StackOverflowError.
+  For n > [threshold], convert to iterative using an explicit stack on the heap."
+```
+
+---
+
 ## 📝 Exam-Style Problems (MIT 6.006 / RWTH Aachen Algorithm Theory style)
 
 ---

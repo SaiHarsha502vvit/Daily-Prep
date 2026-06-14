@@ -420,6 +420,81 @@ FPTAS                        │ (1+ε)-approximation in poly(n, 1/ε) time
 
 ---
 
+## 🎯 Interview Proof Templates — Lower Bounds & NP
+
+> Use these templates when an interviewer asks you to prove hardness or lower bounds.
+
+### Template A3-1 — Decision Tree Lower Bound
+
+```
+"I'll prove a lower bound of Ω([f(n)]) for [problem] using a decision tree argument.
+
+Step 1 — Define the decision tree:
+  Each leaf = one distinct output (correct answer for some input).
+  Number of distinct outputs = [N] (e.g., n! orderings, n positions).
+
+Step 2 — Tree height lower bound:
+  A binary tree with N leaves has height ≥ log₂(N).
+  So any decision tree algorithm needs ≥ log₂([N]) comparisons.
+
+Step 3 — Simplify:
+  log₂([N]) = [Θ(f(n))] by [Stirling's approximation / direct calculation].
+
+Conclusion: any [problem type] algorithm needs Ω([f(n)]) comparisons.
+This lower bound is [tight / not tight — best upper bound is O([g(n)])]."
+```
+
+**Example — comparison sort**: N = n! outputs. log₂(n!) = Ω(n log n) by Stirling. Tight (merge sort achieves it).
+
+---
+
+### Template A3-2 — NP-Completeness Proof (two-step)
+
+```
+"I'll prove [Problem X] is NP-complete.
+
+Step 1 — Show X ∈ NP:
+  Certificate: [describe the certificate — size O(poly(n))].
+  Verifier: given certificate C and input I, check [condition] in O(poly(n)) time.
+  → X ∈ NP. ✓
+
+Step 2 — Show X is NP-hard (reduce known NP-complete problem Y ≤_p X):
+  Known NP-complete problem: [Y — e.g., 3-SAT, CLIQUE, VERTEX-COVER].
+  
+  Reduction f: given instance of Y, construct instance f(Y) of X such that:
+    - Y is a YES-instance ↔ f(Y) is a YES-instance.
+    - f runs in polynomial time.
+  
+  Construction: [describe f(Y)].
+  
+  Correctness (→): if Y = YES, then [explain why f(Y) = YES].
+  Correctness (←): if f(Y) = YES, then [explain why Y = YES].
+  
+  Polynomial time: f constructs [description] in O(poly(n)).
+
+Conclusion: X ∈ NP and Y ≤_p X for NP-complete Y → X is NP-complete. ✓"
+```
+
+---
+
+### Template A3-3 — Approximation Ratio Proof
+
+```
+"I'll prove algorithm A achieves a [c]-approximation for [Problem].
+
+Step 1 — Lower bound OPT:
+  OPT ≥ [bound on optimal solution — e.g., max clique size, matching size].
+
+Step 2 — Bound A's output:
+  A outputs a solution of cost ≤ [c] × [bound from Step 1].
+
+Step 3 — Ratio:
+  A's cost / OPT ≤ [c × bound] / [bound] = [c].
+
+Conclusion: A is a [c]-approximation. ✓
+The bound is tight: instance [describe tight example] achieves ratio exactly [c]."
+```
+
 ## 📝 Exam-Style Problems (MIT 6.046J / KTH DD2352 style)
 
 ---
