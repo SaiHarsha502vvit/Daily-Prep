@@ -14,6 +14,96 @@ Everything you need to understand before writing production React — Components
 
 ---
 
+## Section 0: War Stories — When React Basics Caused Production Bugs
+
+> Three incidents caused by misunderstanding React's fundamentals — not advanced hooks or performance, just the basics in this chapter.
+
+### Story 1: Direct State Mutation — Cart Showed Wrong Item Count for 4 Months
+
+A junior developer built a shopping cart. The item count in the nav bar never updated after adding items:
+
+```jsx
+// ❌ Direct mutation — React never knows state changed
+function addItem(newItem) {
+  cart.items.push(newItem);  // mutating the existing array
+  setCart(cart);             // passing the SAME object reference
+}
+```
+
+`setCart(cart)` passes the same object reference that was already in state. React compares old state to new state by reference (`===`). Since it's the same object, React sees "nothing changed" and skips the re-render. The cart internally updated (the `push` worked), but the UI was stale.
+
+The fix: always create new objects/arrays for state updates:
+
+```jsx
+// ✅ New array reference — React knows state changed
+function addItem(newItem) {
+  setCart(prev => ({
+    ...prev,
+    items: [...prev.items, newItem]  // spread = new array
+  }));
+}
+```
+
+**The lesson:** React uses **immutable state updates** — state must be replaced, not mutated. This chapter's "State Updates" section explains exactly why.
+
+---
+
+### Story 2: Props Passed the Wrong Type — Form Silently Submitted Empty
+
+A form component expected `onSubmit` as a function prop:
+
+```jsx
+// Child component
+function LoginForm({ onSubmit }) {
+  return <button onClick={onSubmit}>Login</button>;
+}
+
+// Parent — accidentally passed a string instead of a function
+<LoginForm onSubmit="handleLogin" />
+//                  ^^^^^^^^^^ string, not the function reference
+```
+
+In JSX, `onSubmit="handleLogin"` passes the string `"handleLogin"`, not the function `handleLogin`. When the button was clicked, the browser tried to call a string as a function and threw `TypeError: onSubmit is not a function` — swallowed by a try-catch wrapping the form. The form appeared to "submit" (button styling triggered) but nothing happened. Bug lived for 4 months on a rarely-used admin page.
+
+The fix:
+
+```jsx
+// ✅ Curly braces = JS expression = the function itself
+<LoginForm onSubmit={handleLogin} />
+```
+
+**The lesson:** in JSX, `prop="value"` always passes a string. `prop={expression}` passes a JavaScript value. Props are typed — you can enforce this with PropTypes or TypeScript.
+
+---
+
+### Story 3: Missing `key` Prop — List Reorder Corrupted Input Values
+
+A team had a to-do list where items could be reordered by drag-and-drop. After reordering, text inputs inside the items showed wrong values — the text from item 2 appeared in item 1's input after drag:
+
+```jsx
+// ❌ Missing key — React can't track which list item is which
+{todos.map((todo, index) => (
+  <TodoItem todo={todo} />  // no key prop
+  // React uses the array index implicitly → wrong after reorder
+))}
+```
+
+React uses `key` to track which DOM element corresponds to which list item between renders. Without `key`, React matches by array position. After reordering `[A, B, C]` to `[C, A, B]`:
+- React sees position 0 changed from A to C → updates the text content but **reuses the DOM node**
+- The input element (which React doesn't control if it's uncontrolled) retains its DOM state — the user-typed text from A's input stays, now showing under C
+
+Fix: use the item's unique ID as the key:
+
+```jsx
+{todos.map((todo) => (
+  <TodoItem key={todo.id} todo={todo} />  // stable unique ID
+))}
+```
+
+**The lesson:** `key` must be unique and stable. Using array index as key only works when the list never reorders or changes length. This chapter's "Lists and Keys" section explains the reconciliation algorithm.
+
+---
+
 ## 5W1H — Why This Chapter?
 
 ```
@@ -54,15 +144,15 @@ Everything you need to understand before writing production React — Components
 
 ### 🔗 Cross-References to DSA Concepts
 
-| React Concept | Underlying DSA/Algorithm |
-|---|---|
-| Virtual DOM Diffing | [Tree Algorithms — DFS/BFS](../03_Algorithms/05_Trees.md) |
-| Reconciliation (O(n) heuristic) | [Algorithm Thinking](../03_Algorithms/01_Algorithm_Thinking.md) |
-| useState hooks array | [Arrays](../02_Data_Structures/01b_Arrays.md) |
-| Context API (Provider tree) | [Trees & Heaps](../02_Data_Structures/01f_Trees_Heaps.md) |
-| Event delegation (single listener) | [Design Patterns — Observer](../06_OOP_Design/02_Design_Patterns.md) |
-| useMemo / React.memo (caching) | [DP — Memoization](../03_Algorithms/04b_DP_Fundamentals.md) |
-| Component composition | [OOP — Composition vs Inheritance](../06_OOP_Design/01_OOPS_Principles.md) |
+| React Concept                      | Underlying DSA/Algorithm                                                   |
+| ---------------------------------- | -------------------------------------------------------------------------- |
+| Virtual DOM Diffing                | [Tree Algorithms — DFS/BFS](../03_Algorithms/05_Trees.md)                  |
+| Reconciliation (O(n) heuristic)    | [Algorithm Thinking](../03_Algorithms/01_Algorithm_Thinking.md)            |
+| useState hooks array               | [Arrays](../02_Data_Structures/01b_Arrays.md)                              |
+| Context API (Provider tree)        | [Trees & Heaps](../02_Data_Structures/01f_Trees_Heaps.md)                  |
+| Event delegation (single listener) | [Design Patterns — Observer](../06_OOP_Design/02_Design_Patterns.md)       |
+| useMemo / React.memo (caching)     | [DP — Memoization](../03_Algorithms/04b_DP_Fundamentals.md)                |
+| Component composition              | [OOP — Composition vs Inheritance](../06_OOP_Design/01_OOPS_Principles.md) |
 
 ---
 
@@ -104,6 +194,7 @@ React's insight: What if the UI was just a FUNCTION of data?
 React is a LIBRARY for building user interfaces (not a framework!)
 
 KEY IDEAS:
+
 1. **Component-Based**: UI = tree of reusable components
 2. **Declarative**: Describe WHAT to render, React handles HOW
 3. **Virtual DOM**: React diffs changes, updates only what changed
@@ -162,10 +253,10 @@ This is why React has such a large ecosystem (Next.js, Redux, etc.)
 ```jsx
 // JSX is syntactic sugar for React.createElement()
 // ❌ Without JSX:
-React.createElement('h1', { className: 'title' }, 'Hello World');
+React.createElement("h1", { className: "title" }, "Hello World");
 
 // ✅ With JSX:
-<h1 className="title">Hello World</h1>
+<h1 className="title">Hello World</h1>;
 
 // JSX RULES:
 // 1. Return single root element (use <> fragment if needed)
@@ -179,11 +270,11 @@ function UserCard({ user }) {
   return (
     <>
       <h2>{user.name}</h2>
-      <p>{user.age > 18 ? 'Adult' : 'Minor'}</p>
+      <p>{user.age > 18 ? "Adult" : "Minor"}</p>
       {user.isActive && <span className="badge">Active</span>}
       <ul>
         {user.hobbies.map((hobby, i) => (
-          <li key={i}>{hobby}</li>  // key is REQUIRED in lists
+          <li key={i}>{hobby}</li> // key is REQUIRED in lists
         ))}
       </ul>
     </>
@@ -267,15 +358,19 @@ function App() {
 🔬 **Section Challenge — Part 3: Components — Function Components**
 
 **Challenge 1 (Reasoning):** React says "component render must be a pure function". What does PURE mean and what breaks if it's impure?
+
 <details><summary>Answer</summary>
 
 Pure = same inputs (props + state) always return same output (JSX). No side effects during render. Impure examples: writing to a global variable, calling fetch(), reading mutable globals. Why it breaks: React may call your render function multiple times in development (StrictMode) or abort renders mid-way (Concurrent Mode). If render has side effects, those effects run multiple times with unpredictable results. Rule: ALL side effects must go inside `useEffect`, not in the render body.
+
 </details>
 
 **Challenge 2 (Structural):** Parent has `useState`. Parent re-renders. Child receives the SAME props as before. Does Child re-render?
+
 <details><summary>Answer</summary>
 
 YES — by default, when a parent re-renders, ALL children re-render too, even if their props didn't change. React re-calls the child function. This is why `React.memo()` exists: it wraps a component to skip re-render if props are shallowly equal. Key insight: re-rendering ≠ DOM update. React re-renders (calls the function), then reconciles — only changed DOM nodes are actually updated. Unnecessary re-renders waste CPU time but don't always cause visible issues.
+
 </details>
 
 ## Part 4: Props — Data Flows Down
@@ -327,9 +422,7 @@ function ProductCard({ title, price, onAddToCart }) {
     <div className="card">
       <h3>{title}</h3>
       <p>${price.toFixed(2)}</p>
-      <button onClick={() => onAddToCart(title)}>
-        Add to Cart
-      </button>
+      <button onClick={() => onAddToCart(title)}>Add to Cart</button>
     </div>
   );
 }
@@ -337,7 +430,7 @@ function ProductCard({ title, price, onAddToCart }) {
 // Parent passes data + callbacks
 function ProductList() {
   const handleAdd = (title) => console.log(`Added: ${title}`);
-  
+
   return (
     <div>
       <ProductCard title="Laptop" price={999.99} onAddToCart={handleAdd} />
@@ -360,7 +453,9 @@ function Card({ children, title }) {
 
 // Default props:
 function Button({ variant = "primary", size = "md", children }) {
-  return <button className={`btn btn-${variant} btn-${size}`}>{children}</button>;
+  return (
+    <button className={`btn btn-${variant} btn-${size}`}>{children}</button>
+  );
 }
 ```
 
@@ -409,17 +504,17 @@ HOW useState WORKS INTERNALLY:
 ```
 
 ```jsx
-import { useState } from 'react';
+import { useState } from "react";
 
 function Counter() {
   // state variable, setter function = useState(initialValue)
   const [count, setCount] = useState(0);
-  
+
   return (
     <div>
       <p>Count: {count}</p>
       <button onClick={() => setCount(count + 1)}>+1</button>
-      <button onClick={() => setCount(prev => prev - 1)}>-1</button>
+      <button onClick={() => setCount((prev) => prev - 1)}>-1</button>
       {/*                     ↑ functional update for safety */}
       <button onClick={() => setCount(0)}>Reset</button>
     </div>
@@ -442,25 +537,31 @@ function Counter() {
 // which forces React to recognize the change and trigger a render.
 
 // ❌ THE BUG (Pointer Copy)
-// const oldForm = form; 
-// oldForm.name = 'Bob'; 
+// const oldForm = form;
+// oldForm.name = 'Bob';
 // setForm(oldForm); // React does nothing!
 
 // ✅ THE SYSTEMS FIX (Brand New Memory Address)
 function Form() {
-  const [form, setForm] = useState({ name: '', email: '' });
-  
+  const [form, setForm] = useState({ name: "", email: "" });
+
   const handleChange = (field, value) => {
     // The spread operator creates a new object in the Heap.
-    // WARNING: Spread is a SHALLOW copy. For deeply nested objects, 
+    // WARNING: Spread is a SHALLOW copy. For deeply nested objects,
     // you must use structuredClone() or nested spreads.
-    setForm(prev => ({ ...prev, [field]: value })); 
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
-  
+
   return (
     <>
-      <input value={form.name} onChange={e => handleChange('name', e.target.value)} />
-      <input value={form.email} onChange={e => handleChange('email', e.target.value)} />
+      <input
+        value={form.name}
+        onChange={(e) => handleChange("name", e.target.value)}
+      />
+      <input
+        value={form.email}
+        onChange={(e) => handleChange("email", e.target.value)}
+      />
     </>
   );
 }
@@ -471,15 +572,19 @@ function Form() {
 🔬 **Section Challenge — Part 5: State — useState Hook**
 
 **Challenge 1 (Reasoning):** You call `setState(state.value + 1)` twice in the same event handler. The value increments by 1, not 2. Why?
+
 <details><summary>Answer</summary>
 
 Both calls use the SAME `state` closure value captured at render time. Both compute `oldValue + 1` and schedule the same update. React batches them into one re-render. Fix: use functional update `setState(prev => prev + 1)`. Each functional update receives the most recent pending state — two calls correctly increment by 2. Always use functional update when new state depends on old state.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** You initialize state as `useState(expensiveComputation())`. The function runs on EVERY render. How do you fix it?
+
 <details><summary>Answer</summary>
 
 `useState(expensiveComputation)` (pass the function, don't call it). This is 'lazy initialization' — React calls the function once during initial render only. The difference: `useState(fn())` calls `fn` every render but ignores the result after mount. `useState(fn)` calls `fn` only once. Same pattern: `useReducer(reducer, undefined, expensiveInit)`.
+
 </details>
 
 ## Part 6: Event Handling
@@ -521,24 +626,24 @@ HOW IT WORKS INTERNALLY (Event Delegation):
 function EventExamples() {
   // Click
   const handleClick = (e) => {
-    e.preventDefault();       // prevent default behavior
-    e.stopPropagation();      // stop event bubbling
-    console.log('Clicked!');
+    e.preventDefault(); // prevent default behavior
+    e.stopPropagation(); // stop event bubbling
+    console.log("Clicked!");
   };
-  
+
   // 🎓 MIT/KTH SYSTEMS DEEP DIVE: The C++ Browser Reality
-  // Why is `e.preventDefault()` necessary? 
-  // Browsers (1993) natively submit `<form>` data via HTTP `GET`/`POST` 
+  // Why is `e.preventDefault()` necessary?
+  // Browsers (1993) natively submit `<form>` data via HTTP `GET`/`POST`
   // which PHYSICALLY destroys the current HTML document and fetches a new one.
   // JavaScript loses control of the Heap and single-page execution is annihilated.
   // We use `e.preventDefault()` to violently hijack the 1993 C++ behavior.
-  
+
   // Form submit
   const handleSubmit = (e) => {
-    e.preventDefault();       // Hijack network destruction & retain JS control
+    e.preventDefault(); // Hijack network destruction & retain JS control
     // process form data safely in JS Memory
   };
-  
+
   return (
     <form onSubmit={handleSubmit}>
       <button onClick={handleClick}>Click Me</button>
@@ -586,17 +691,21 @@ function Dashboard({ user, notifications }) {
   return (
     <div>
       {user ? <UserProfile user={user} /> : <LoginPrompt />}
-      
+
       {/* Pattern 2: Short-circuit (show only if true) */}
-      {notifications.length > 0 && <NotificationBadge count={notifications.length} />}
-      
+      {notifications.length > 0 && (
+        <NotificationBadge count={notifications.length} />
+      )}
+
       {/* Pattern 3: Early return */}
       {!user && <Navigate to="/login" />}
-      
+
       {/* Lists with unique keys */}
       <ul>
-        {notifications.map(notif => (
-          <li key={notif.id}>  {/* key = unique, stable identifier */}
+        {notifications.map((notif) => (
+          <li key={notif.id}>
+            {" "}
+            {/* key = unique, stable identifier */}
             {notif.message}
           </li>
         ))}
@@ -725,7 +834,6 @@ THE FIBER ARCHITECTURE (React 16+):
 └──────────────────────────────────────────────────────────────────────────────────┘
 ```
 
-
 ---
 
 ## Part 10: Real-World Simulation — How a Click Updates the Screen
@@ -795,7 +903,7 @@ In development, React 18 mounts, unmounts, and remounts your components instantl
 
 ### 💻 System Challenge (VSCode / Real World): The Batching Disaster
 
-*VSCode Pro-Tip: Drop a `console.log("Rendered!")` in your component body. Watch how many times it logs during multiple sequential `setCount` calls. React batches them to only log once!*
+_VSCode Pro-Tip: Drop a `console.log("Rendered!")` in your component body. Watch how many times it logs during multiple sequential `setCount` calls. React batches them to only log once!_
 
 ```jsx
 // ❌ THE BUG: User clicks the "+3" button, but the counter only goes up by 1!
@@ -821,9 +929,9 @@ function Counter() {
   const handleAddThree = () => {
     // When next state depends on previous state, you MUST use a callback.
     // React passes the "most recently queued" state to the callback.
-    setCount(prev => prev + 1); // turns 0 into 1
-    setCount(prev => prev + 1); // turns 1 into 2
-    setCount(prev => prev + 1); // turns 2 into 3
+    setCount((prev) => prev + 1); // turns 0 into 1
+    setCount((prev) => prev + 1); // turns 1 into 2
+    setCount((prev) => prev + 1); // turns 2 into 3
   };
 
   return <button onClick={handleAddThree}>+3 (Count: {count})</button>;

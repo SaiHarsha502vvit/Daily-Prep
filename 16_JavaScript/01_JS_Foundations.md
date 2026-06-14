@@ -4,30 +4,138 @@
 
 # JavaScript Foundations — Types, Variables, Scope & Hoisting
 
-## 5W1H — Why This Chapter?
+## Section 0: War Stories — When JS Basics Burned Us in Production
 
+> These incidents were caused by misunderstanding the exact concepts this chapter teaches. Read them first so the later sections land with the right weight.
+
+### Story 1: The `var` That Survived its Block — and Lied for 3 Months
+
+A developer wrote a pricing calculation function:
+
+```javascript
+function calculateDiscount(user) {
+  if (user.isPremium) {
+    var discount = 0.20;
+  }
+  return price * (1 - discount); // ← discount used here
+}
+```
+
+For premium users: worked correctly. For non-premium users: `discount` should be `undefined` and throw a ReferenceError, right? No — `var` is **function-scoped and hoisted**. JavaScript hoisted `var discount` to the top of `calculateDiscount`, initializing it as `undefined`. Non-premium users got `price * (1 - undefined)` = `NaN`. The checkout page displayed `$NaN` for non-premium users for 3 months — until a customer screenshot went viral on Twitter.
+
+The fix: `let discount` inside the `if` block throws a `ReferenceError` when accessed outside its scope — a loud, immediate failure instead of a silent `NaN`.
+
+```javascript
+// ✅ let is block-scoped — accessing outside the if = ReferenceError at runtime
+if (user.isPremium) {
+  let discount = 0.20;
+}
+// ReferenceError: discount is not defined ← loud failure, catches the bug early
+```
+
+**The lesson from this chapter:** `var` is function-scoped and hoisted with value `undefined`. `let` and `const` are block-scoped — the temporal dead zone makes accessing them before declaration throw an error. Always prefer `let`/`const`.
+
+---
+
+### Story 2: The Type Coercion that Made `0` Equal `false` — and Logged Out Every Free User
+
+An auth guard checked if a user had remaining API credits:
+
+```javascript
+function canMakeRequest(user) {
+  if (user.credits == false) {  // ← "falsy check" intended
+    return false; // block request
+  }
+  return true;
+}
+```
+
+The developer intended: "block if no credits." But `==` (loose equality) triggers type coercion. `0 == false` is `true` in JavaScript. So users with exactly `0` credits were blocked. But also: `0 == false` is `true` even when the developer meant "check for the boolean value `false`". When the API returned credits as a number (`0`, `1`, `100`), any user with `0` remaining credits was blocked. Expected. But what if credits was `""` (empty string from a parsing bug)? `"" == false` is also `true`. What if credits was `null`? `null == false` is **false** — free users with null credits passed through.
+
+The result: paid users with 0 credits were blocked (correct), users with `null` credits (data migration artifact) were let through (wrong), and users with `""` credits (API response parsing bug) were blocked (wrong, and silent).
+
+Fix — use `===` (strict equality) and be explicit:
+
+```javascript
+function canMakeRequest(user) {
+  if (user.credits === 0) return false;   // only the number zero
+  if (user.credits == null) return false; // null OR undefined (the one valid == use)
+  return true;
+}
+```
+
+**The lesson:** `==` performs type coercion — use `===` for all comparisons unless you explicitly want null/undefined to be interchangeable. The full coercion table is in Section 4.
+
+---
+
+### Story 3: `this` Lost in a Callback — 6 Months of Silent Logging Failures
+
+A telemetry class collected user events:
+
+```javascript
+class Tracker {
+  constructor() {
+    this.events = [];
+  }
+
+  track(eventName) {
+    this.events.push(eventName); // ← 'this' is Tracker instance here
+  }
+
+  startListening() {
+    document.addEventListener('click', this.track); // ← 'this' is NOT Tracker here
+  }
+}
+
+const tracker = new Tracker();
+tracker.startListening();
+// User clicks → 'track' is called → 'this' = undefined (strict mode) → TypeError
+```
+
+When `this.track` is passed as a callback, it's detached from the `Tracker` instance. The browser calls it as a plain function, not as a method — `this` becomes `undefined` (or the global object in sloppy mode). Every click threw `TypeError: Cannot read properties of undefined (reading 'push')` — swallowed by a try-catch upstream. Telemetry silently dropped for 6 months. 
+
+Fix: arrow function preserves `this` lexically:
+
+```javascript
+startListening() {
+  document.addEventListener('click', (e) => this.track(e.type));
+  // Arrow function captures 'this' from startListening's scope = Tracker instance ✅
+}
+```
+
+Or: bind at assignment time:
+
+```javascript
+startListening() {
+  document.addEventListener('click', this.track.bind(this));
+}
+```
+
+**The lesson:** `this` in JavaScript is determined at **call time**, not definition time. When a method is passed as a callback, it loses its `this` context. Arrow functions fix this by capturing `this` lexically. Section 3 of this chapter covers the full `this` binding rules.
+
+---
+
+## 5W1H — Why This Chapter?
 
 WHAT: The absolute foundations of JavaScript — types, variables,
 scope, coercion, hoisting — things that trip up everyone.
 
-WHY:  Every JS bug traces back to misunderstanding these basics.
+WHY: Every JS bug traces back to misunderstanding these basics.
 Closures won't make sense without scope. Async won't make
 sense without the event loop. This chapter is the bedrock.
 
-WHO:  Anyone writing JS — frontend, backend (Node), full-stack.
+WHO: Anyone writing JS — frontend, backend (Node), full-stack.
 
 WHEN: Before learning React, Node, or any framework.
 
 WHERE: Browsers (Chrome V8), Node.js (V8), Deno, Bun.
 
-HOW:  Read each concept → understand the reasoning → run the
+HOW: Read each concept → understand the reasoning → run the
 examples in browser console (F12) → predict before you run.
-
 
 ---
 
 ## 1. What IS JavaScript? (The Reasoning)
-
 
 JavaScript is a DYNAMIC, WEAKLY-TYPED, SINGLE-THREADED language
 with FIRST-CLASS FUNCTIONS and PROTOTYPE-BASED inheritance.
@@ -54,7 +162,6 @@ PROTOTYPE-BASED: No classical classes (until ES6 sugar).
 → Objects inherit from other objects via prototype chain.
 WHY this matters: understanding `this`, inheritance.
 
-
 ### JS Engine — How Code Actually Runs
 
 ```
@@ -80,11 +187,7 @@ It interprets first (fast startup) then optimizes hot paths
 (fast execution). Best of both worlds.
 ```
 
-
 ---
-
-
-
 
 ## 2. Data Types — The 8 Types
 
@@ -115,27 +218,26 @@ NON-PRIMITIVE (mutable, stored by REFERENCE):
    number type. Use Number.isNaN() to check.
 ```
 
-
 ### Value vs Reference — The #1 Source of Bugs
 
 ```javascript
 // PRIMITIVES: Copied by VALUE (independent copies)
 let a = 10;
-let b = a;      // b gets a COPY of 10
+let b = a; // b gets a COPY of 10
 b = 20;
 console.log(a); // 10 — unchanged! They're independent.
 
 // OBJECTS: Copied by REFERENCE (same memory address)
 let obj1 = { name: "Harsha" };
-let obj2 = obj1;         // obj2 points to SAME object
+let obj2 = obj1; // obj2 points to SAME object
 obj2.name = "Changed";
-console.log(obj1.name);  // "Changed" — BOTH changed!
+console.log(obj1.name); // "Changed" — BOTH changed!
 
 // WHY? Because obj2 = obj1 copies the POINTER, not the object.
 // Think of it like two people holding the same leash to the same dog.
 
 // HOW to make a real copy:
-let obj3 = { ...obj1 };           // Shallow copy (spread)
+let obj3 = { ...obj1 }; // Shallow copy (spread)
 let obj4 = structuredClone(obj1); // Deep copy (modern)
 let obj5 = JSON.parse(JSON.stringify(obj1)); // Deep copy (old way)
 ```
@@ -156,20 +258,19 @@ Objects can be large → stored on heap, stack holds a pointer.
 Assignment copies what's on the stack (value OR pointer).
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 2. Data Types — The 8 Types**
 
 **Challenge 1 (Trace):** A developer uses `typeof` to check an API response: `if (typeof data.settings === 'object') { data.settings.enabled = true; }`. What is the dangerous flaw here, and how does the JS engine evaluate it?
+
 <details><summary>Answer</summary>
 
 **Scenario:** Checking if a property is an object before assigning to it.
 **Trace:** In JS, `typeof null === 'object'`. This is a legacy bug from the first implementation where values were stored in 32-bit units with the lowest 3 bits representing the type tag. The object type tag was `000`. `null` was represented as the NULL pointer (all zeros), so its type tag matched objects.
 **Debug:** If `data.settings` is `null`, the `if` condition passes, and `null.enabled = true` throws a `TypeError: Cannot set properties of null`.
 **Fix:** Always use an explicit null check or optional chaining: `if (data.settings && typeof data.settings === 'object')`.
+
 </details>
 
 ## 3. Type Coercion — JS's Most Confusing Feature
@@ -186,17 +287,16 @@ Assignment copies what's on the stack (value OR pointer).
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```javascript
 // STRING + anything = STRING (concatenation wins)
-"5" + 3       // "53"  ← "5" + String(3) = "5" + "3"
-"5" + true    // "5true"
-"5" + null    // "5null"
+"5" + 3; // "53"  ← "5" + String(3) = "5" + "3"
+"5" + true; // "5true"
+"5" + null; // "5null"
 
 // MATH operators (-, *, /) convert to NUMBER
-"5" - 3       // 2    ← Number("5") - 3
-"5" * "2"     // 10
-"hello" - 3   // NaN  ← Number("hello") is NaN
+"5" - 3; // 2    ← Number("5") - 3
+"5" * "2"; // 10
+"hello" - 3; // NaN  ← Number("hello") is NaN
 
 // The WHY behind the RULE:
 // + is OVERLOADED — it does both addition AND concatenation.
@@ -204,10 +304,10 @@ Assignment copies what's on the stack (value OR pointer).
 // Other math operators only do math, so they convert to number.
 
 // COMPARISON coercion:
-"5" == 5      // true  ← converts string to number
-null == undefined // true  ← special rule: they equal each other
-null == 0     // false ← null doesn't coerce in ==
-NaN == NaN    // false ← NaN is not equal to ANYTHING, even itself
+"5" == 5; // true  ← converts string to number
+null == undefined; // true  ← special rule: they equal each other
+null == 0; // false ← null doesn't coerce in ==
+NaN == NaN; // false ← NaN is not equal to ANYTHING, even itself
 
 // BOOLEAN coercion (truthy/falsy):
 // FALSY values (only 8 of them — MEMORIZE):
@@ -215,7 +315,7 @@ NaN == NaN    // false ← NaN is not equal to ANYTHING, even itself
 // Everything else is TRUTHY (including "0", "false", [], {})
 
 if ("0") console.log("truthy!"); // PRINTS! "0" is truthy (non-empty string)
-if ([]) console.log("truthy!");  // PRINTS! empty array is truthy
+if ([]) console.log("truthy!"); // PRINTS! empty array is truthy
 ```
 
 ### The == vs === Rule (and REASONING)
@@ -237,26 +337,25 @@ if ([]) console.log("truthy!");  // PRINTS! empty array is truthy
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 3. Type Coercion — JS's Most Confusing Feature**
 
 **Challenge 1 (Reasoning):** Explain the exact internal coercion algorithm that makes `[] + {}` evaluate to `"[object Object]"` but `{} + []` (in a console) evaluate to `0`.
+
 <details><summary>Answer</summary>
 
 **Scenario:** Bizarre results when using the `+` operator on complex objects.
 **Trace:** The `+` operator forces the JS engine to call `ToPrimitive()` on both operands.
 For `[] + {}`:
+
 1. `[].valueOf()` is `[]` (not primitive). `[].toString()` is `""` (empty string).
 2. `{}.valueOf()` is `{}` (not primitive). `{}.toString()` is `"[object Object]"`.
 3. `"" + "[object Object]"` results in `"[object Object]"`.
-For `{} + []`:
-1. The JS parser interprets the leading `{}` not as an empty object, but as an **empty code block**.
-2. Thus, the expression is evaluated as `+ []` (unary plus on an empty array).
-3. `+` forces `ToNumber()`. `[].toString()` is `""`. `Number("")` is `0`.
+   For `{} + []`:
+4. The JS parser interprets the leading `{}` not as an empty object, but as an **empty code block**.
+5. Thus, the expression is evaluated as `+ []` (unary plus on an empty array).
+6. `+` forces `ToNumber()`. `[].toString()` is `""`. `Number("")` is `0`.
 **Debug/Design:** This exposes the danger of implicit coercion and the JS parser's ambiguity between object literals and code blocks. Never rely on implicit object-to-primitive conversion in arithmetic operations.
 </details>
 
@@ -277,18 +376,17 @@ For `{} + []`:
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```javascript
 // SCOPE comparison:
 function demo() {
-    if (true) {
-        var x = 1;   // function-scoped → leaks out of if block!
-        let y = 2;   // block-scoped → stays inside { }
-        const z = 3; // block-scoped → stays inside { }
-    }
-    console.log(x); // 1 ← var leaked!
-    console.log(y); // ReferenceError: y is not defined
-    console.log(z); // ReferenceError: z is not defined
+  if (true) {
+    var x = 1; // function-scoped → leaks out of if block!
+    let y = 2; // block-scoped → stays inside { }
+    const z = 3; // block-scoped → stays inside { }
+  }
+  console.log(x); // 1 ← var leaked!
+  console.log(y); // ReferenceError: y is not defined
+  console.log(z); // ReferenceError: z is not defined
 }
 
 // HOISTING comparison:
@@ -301,8 +399,8 @@ const c = 3;
 
 // const doesn't mean IMMUTABLE — it means can't REASSIGN:
 const obj = { name: "Harsha" };
-obj.name = "Changed";  // ✅ allowed! The OBJECT is mutable.
-obj = {};               // ❌ TypeError! Can't reassign the variable.
+obj.name = "Changed"; // ✅ allowed! The OBJECT is mutable.
+obj = {}; // ❌ TypeError! Can't reassign the variable.
 
 // REASONING: const locks the BINDING (variable → value pointer),
 // not the value itself. For true immutability, use Object.freeze().
@@ -325,7 +423,6 @@ TDZ = Temporal Dead Zone (the time between hoisting and
 declaration where accessing the variable throws an error)
 ```
 
-
 ---
 
 ## 5. Scope — The Visibility Rules
@@ -340,7 +437,6 @@ declaration where accessing the variable throws an error)
 ║        by WHERE you WRITE the code, not where you call it.           ║
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
-
 
 ```
 THREE TYPES OF SCOPE:
@@ -373,30 +469,29 @@ Outer scopes CANNOT access inner scopes.
 This is the foundation of CLOSURES (next chapter).
 ```
 
-
 ### The Scope Chain (Lookup Mechanism)
 
 ```javascript
 const global = "I'm global";
 
 function outer() {
-    const outerVar = "I'm outer";
+  const outerVar = "I'm outer";
 
-    function inner() {
-        const innerVar = "I'm inner";
+  function inner() {
+    const innerVar = "I'm inner";
 
-        // JS looks for variables in this order:
-        // 1. Current scope (inner) → found innerVar
-        // 2. Parent scope (outer) → found outerVar
-        // 3. Grandparent scope (global) → found global
-        // 4. Not found anywhere → ReferenceError
+    // JS looks for variables in this order:
+    // 1. Current scope (inner) → found innerVar
+    // 2. Parent scope (outer) → found outerVar
+    // 3. Grandparent scope (global) → found global
+    // 4. Not found anywhere → ReferenceError
 
-        console.log(innerVar);  // ✅ found in current scope
-        console.log(outerVar);  // ✅ found in parent scope
-        console.log(global);    // ✅ found in global scope
-        console.log(missing);   // ❌ ReferenceError
-    }
-    inner();
+    console.log(innerVar); // ✅ found in current scope
+    console.log(outerVar); // ✅ found in parent scope
+    console.log(global); // ✅ found in global scope
+    console.log(missing); // ❌ ReferenceError
+  }
+  inner();
 }
 
 // REASONING: The scope chain is determined at WRITE TIME (lexical).
@@ -425,35 +520,34 @@ function outer() {
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```javascript
 // WHAT JS SEES vs WHAT ACTUALLY HAPPENS:
 
 // --- You write: ---
-console.log(x);     // undefined (not ReferenceError!)
+console.log(x); // undefined (not ReferenceError!)
 var x = 5;
 
 // --- JS interprets as: ---
-var x;               // Declaration hoisted (value = undefined)
-console.log(x);     // undefined
-x = 5;              // Assignment stays in place
+var x; // Declaration hoisted (value = undefined)
+console.log(x); // undefined
+x = 5; // Assignment stays in place
 
 // --- Function declarations are FULLY hoisted: ---
-greet("Harsha");     // ✅ Works! "Hello Harsha"
+greet("Harsha"); // ✅ Works! "Hello Harsha"
 function greet(name) {
-    console.log("Hello " + name);
+  console.log("Hello " + name);
 }
 // The entire function is available before its line.
 
 // --- Function EXPRESSIONS are NOT fully hoisted: ---
-greet2("Harsha");    // ❌ TypeError: greet2 is not a function
-var greet2 = function(name) {
-    console.log("Hello " + name);
+greet2("Harsha"); // ❌ TypeError: greet2 is not a function
+var greet2 = function (name) {
+  console.log("Hello " + name);
 };
 // WHY? var greet2 is hoisted as undefined. undefined() → TypeError.
 
 // --- let/const have TDZ (Temporal Dead Zone): ---
-console.log(y);     // ❌ ReferenceError: Cannot access 'y' before initialization
+console.log(y); // ❌ ReferenceError: Cannot access 'y' before initialization
 let y = 10;
 // let IS hoisted (JS knows y exists) but NOT initialized.
 // Accessing it before declaration throws immediately.
@@ -478,11 +572,7 @@ before declaring it, that's almost certainly a mistake.
 let/const throw immediately instead of silently being undefined.
 ```
 
-
 ---
-
-
-
 
 ## 7. Operators — Beyond The Basics
 
@@ -490,13 +580,13 @@ let/const throw immediately instead of silently being undefined.
 
 ```javascript
 // || returns first TRUTHY value
-const a = 0 || "default";     // "default" — 0 is falsy!
-const b = "" || "default";    // "default" — "" is falsy!
+const a = 0 || "default"; // "default" — 0 is falsy!
+const b = "" || "default"; // "default" — "" is falsy!
 
 // ?? returns first NON-NULLISH value (only null/undefined are nullish)
-const c = 0 ?? "default";     // 0 — 0 is NOT null/undefined
-const d = "" ?? "default";    // "" — "" is NOT null/undefined
-const e = null ?? "default";  // "default"
+const c = 0 ?? "default"; // 0 — 0 is NOT null/undefined
+const d = "" ?? "default"; // "" — "" is NOT null/undefined
+const e = null ?? "default"; // "default"
 const f = undefined ?? "def"; // "def"
 
 // REASONING: Use ?? when 0, "", false are VALID values.
@@ -504,8 +594,8 @@ const f = undefined ?? "def"; // "def"
 
 // Optional chaining (?.)
 const user = { address: { city: "Hyderabad" } };
-console.log(user?.address?.city);     // "Hyderabad"
-console.log(user?.phone?.number);     // undefined (no error!)
+console.log(user?.address?.city); // "Hyderabad"
+console.log(user?.phone?.number); // undefined (no error!)
 // WITHOUT ?.: user.phone.number → TypeError: Cannot read property of undefined
 
 // REASONING: ?. short-circuits to undefined if any part is null/undefined.
@@ -517,13 +607,14 @@ console.log(user?.phone?.number);     // undefined (no error!)
 ```javascript
 // SPREAD: "Expand" an iterable into individual elements
 const arr1 = [1, 2, 3];
-const arr2 = [...arr1, 4, 5];     // [1, 2, 3, 4, 5]
+const arr2 = [...arr1, 4, 5]; // [1, 2, 3, 4, 5]
 const obj1 = { a: 1, b: 2 };
-const obj2 = { ...obj1, c: 3 };   // { a: 1, b: 2, c: 3 }
+const obj2 = { ...obj1, c: 3 }; // { a: 1, b: 2, c: 3 }
 
 // REST: "Collect" remaining elements into an array/object
-function sum(...numbers) {          // rest parameter
-    return numbers.reduce((a, b) => a + b, 0);
+function sum(...numbers) {
+  // rest parameter
+  return numbers.reduce((a, b) => a + b, 0);
 }
 sum(1, 2, 3, 4); // 10
 
@@ -567,10 +658,7 @@ Functions are PUSHED when called, POPPED when they return.
 Stack Overflow = too many pushes without pops (infinite recursion)
 ```
 
-
 ---
-
-
 
 🔬 **Section Challenge — 8. Execution Context — How JS Runs Your Code**
 
@@ -582,7 +670,6 @@ Stack Overflow = too many pushes without pops (infinite recursion)
 
 </details>
 
-
 ## 9. Strict Mode
 
 ```javascript
@@ -592,11 +679,11 @@ Stack Overflow = too many pushes without pops (infinite recursion)
 // Without it, JS silently ignores many mistakes.
 
 // Without strict mode:
-x = 10;  // Creates a global variable silently! (bad)
+x = 10; // Creates a global variable silently! (bad)
 
 // With strict mode:
-"use strict";
-x = 10;  // ❌ ReferenceError: x is not defined (catches the bug)
+("use strict");
+x = 10; // ❌ ReferenceError: x is not defined (catches the bug)
 
 // Other strict mode changes:
 // • Can't delete variables: delete x; → SyntaxError
@@ -638,68 +725,79 @@ Q: "5" + 3 vs "5" - 3?
   2 (- only does math, converts "5" to 5)
 ```
 
-
 ---
 
 [Next → Chapter 2: Functions & Closures](02_JS_Functions_Closures.md)
 
-
 ---
-
 
 ---
 
 ## 🏋️ Practice & Interview Questions — JavaScript
 
 ### Predict / Trace
+
 **Q1.** What prints?
+
 ```js
 console.log(typeof null);
 console.log(null instanceof Object);
 ```
+
 <details><summary>Answer</summary>
 
 `"object"` (historical JS bug), `false` (null is not an Object instance). This is a well-known JS quirk.
+
 </details>
 
 **Q2.** What is the output?
+
 ```js
 console.log(1 + "2");
 console.log("3" - 1);
 console.log(true + false);
 ```
+
 <details><summary>Answer</summary>
 
 `"12"` (string concat), `2` (- coerces to number), `1` (true=1, false=0)
+
 </details>
 
 **Q3.** What prints and why?
+
 ```js
 for (var i = 0; i < 3; i++) {
   setTimeout(() => console.log(i), 0);
 }
 ```
+
 <details><summary>Answer</summary>
 
 `3 3 3` — `var` is function-scoped, all closures share same `i`. By the time timeouts run, loop is done, i=3. **Fix**: use `let` (block-scoped) or `setTimeout(() => console.log(i), 0, i)`.
+
 </details>
 
 ### Coding Problems
+
 **Q4.** ⭐ Implement `debounce(fn, delay)`.
+
 <details><summary>Solution</summary>
 
 ```js
 function debounce(fn, delay) {
   let timer;
-  return function(...args) {
+  return function (...args) {
     clearTimeout(timer);
     timer = setTimeout(() => fn.apply(this, args), delay);
   };
 }
 ```
+
 </details>
 
 **Q5.** ⭐ Implement `Promise.all` from scratch.
+
 <details><summary>Solution</summary>
 
 ```js
@@ -709,85 +807,98 @@ function promiseAll(promises) {
     let count = 0;
     promises.forEach((p, i) => {
       Promise.resolve(p)
-        .then(val => { results[i] = val; if(++count === promises.length) resolve(results); })
+        .then((val) => {
+          results[i] = val;
+          if (++count === promises.length) resolve(results);
+        })
         .catch(reject);
     });
-    if(promises.length === 0) resolve([]);
+    if (promises.length === 0) resolve([]);
   });
 }
 ```
+
 </details>
 
 **Q6.** ⭐ Deep clone an object without `JSON.parse(JSON.stringify(...))`.
+
 <details><summary>Solution</summary>
 
 ```js
 function deepClone(obj) {
-  if(obj === null || typeof obj !== 'object') return obj;
-  if(obj instanceof Date) return new Date(obj);
-  if(obj instanceof Array) return obj.map(deepClone);
+  if (obj === null || typeof obj !== "object") return obj;
+  if (obj instanceof Date) return new Date(obj);
+  if (obj instanceof Array) return obj.map(deepClone);
   const clone = {};
-  for(const key in obj) if(obj.hasOwnProperty(key)) clone[key] = deepClone(obj[key]);
+  for (const key in obj)
+    if (obj.hasOwnProperty(key)) clone[key] = deepClone(obj[key]);
   return clone;
 }
 // Modern: structuredClone(obj) — built-in, handles more types
 ```
+
 </details>
 
 **Q7.** ⭐⭐ Implement `curry` function.
+
 <details><summary>Solution</summary>
 
 ```js
 function curry(fn) {
   return function curried(...args) {
-    if(args.length >= fn.length) return fn(...args);
-    return function(...more) { return curried(...args, ...more); };
+    if (args.length >= fn.length) return fn(...args);
+    return function (...more) {
+      return curried(...args, ...more);
+    };
   };
 }
 const add = curry((a, b, c) => a + b + c);
 add(1)(2)(3); // 6
 add(1, 2)(3); // 6
 ```
+
 </details>
 
 **Q8.** ⭐⭐ Implement `memoize(fn)`.
+
 <details><summary>Solution</summary>
 
 ```js
 function memoize(fn) {
   const cache = new Map();
-  return function(...args) {
+  return function (...args) {
     const key = JSON.stringify(args);
-    if(cache.has(key)) return cache.get(key);
+    if (cache.has(key)) return cache.get(key);
     const result = fn.apply(this, args);
     cache.set(key, result);
     return result;
   };
 }
 ```
+
 </details>
 
 ### MCQ Rapid Fire
-| # | Question | Answer |
-|---|---|---|
-| 1 | == vs === | == coerces types; === strict (no coercion) |
-| 2 | `typeof undefined` | "undefined" |
-| 3 | `typeof function(){}` | "function" |
-| 4 | Prototype chain end | null |
-| 5 | Event loop: microtasks vs macrotasks | Microtasks (Promises) run before macrotasks (setTimeout) |
-| 6 | `const` prevents | Reassignment, not mutation |
-| 7 | `var` vs `let` hoisting | var: hoisted+initialized to undefined; let: hoisted but in TDZ |
-| 8 | `this` in arrow function | Lexical (inherited from enclosing scope) |
-| 9 | Optional chaining `?.` | Returns undefined instead of throwing on null/undefined |
-| 10 | Nullish coalescing `??` | Returns right side only if left is null/undefined (not 0 or '') |
 
-
+| #   | Question                             | Answer                                                          |
+| --- | ------------------------------------ | --------------------------------------------------------------- |
+| 1   | == vs ===                            | == coerces types; === strict (no coercion)                      |
+| 2   | `typeof undefined`                   | "undefined"                                                     |
+| 3   | `typeof function(){}`                | "function"                                                      |
+| 4   | Prototype chain end                  | null                                                            |
+| 5   | Event loop: microtasks vs macrotasks | Microtasks (Promises) run before macrotasks (setTimeout)        |
+| 6   | `const` prevents                     | Reassignment, not mutation                                      |
+| 7   | `var` vs `let` hoisting              | var: hoisted+initialized to undefined; let: hoisted but in TDZ  |
+| 8   | `this` in arrow function             | Lexical (inherited from enclosing scope)                        |
+| 9   | Optional chaining `?.`               | Returns undefined instead of throwing on null/undefined         |
+| 10  | Nullish coalescing `??`              | Returns right side only if left is null/undefined (not 0 or '') |
 
 ---
 
 ## 🧠 Deep Conceptual Questions — JavaScript Engine & Language
 
 **C1. How does the JavaScript event loop actually work?**
+
 <details><summary>Deep Answer</summary>
 
 ```
@@ -801,43 +912,58 @@ Macrotask Queue → setTimeout, setInterval, I/O, requestAnimationFrame
 One "tick": (1) Run all synchronous code in call stack until empty, (2) Run ALL microtasks until queue empty (even if new microtasks added!), (3) Run ONE macrotask from the macrotask queue, (4) Repeat.
 
 Critical: microtasks drain COMPLETELY before any macrotask. A microtask that continually enqueues microtasks → infinite loop, browser freezes (no macrotasks can run). `Promise.resolve().then(...)` vs `setTimeout(fn, 0)`: Promise runs BEFORE the timeout even with a 0ms delay.
+
 </details>
 
 **C2. What is the prototype chain and how does `class` syntax relate to it?**
+
 <details><summary>Deep Answer</summary>
 
 Every JS object has an internal `[[Prototype]]` link. Property lookup: check own properties → check `[[Prototype]]` → check `[[Prototype]][[Prototype]]` → ... until null. `class` is syntactic sugar over prototype-based inheritance:
+
 ```js
-class Animal { speak() {} }  // same as:
+class Animal {
+  speak() {}
+} // same as:
 function Animal() {}
-Animal.prototype.speak = function() {};
+Animal.prototype.speak = function () {};
 ```
+
 `class extends` sets up the prototype chain: `Dog.prototype.__proto__ = Animal.prototype`. `super` works via `[[HomeObject]]` — a hidden reference to the class where the method was defined. Key: `typeof Dog === 'function'` — classes ARE functions. `instanceof` checks the prototype chain, not the class definition.
+
 </details>
 
 **C3. Explain closures: why do they exist and what problems do they solve?**
+
 <details><summary>Deep Answer</summary>
 
 A closure = a function + references to its lexical environment (the variables in scope when the function was created). It solves: **data encapsulation without classes**. Private state in JS (pre-class): use closure.
+
 ```js
 function makeCounter() {
   let count = 0; // private — inaccessible outside
   return { increment: () => ++count, get: () => count };
 }
 ```
+
 `count` lives on even after `makeCounter` returns because the returned object's methods close over it. Closures keep the enclosing scope alive in memory as long as any reference to them exists — the classic memory leak: `button.addEventListener('click', heavyFunction)` — even after button is removed from DOM, heavyFunction and all its closed-over variables stay in memory.
+
 </details>
 
 **C4. What is the difference between `==` and `===` at the engine level?**
+
 <details><summary>Deep Answer</summary>
 
 `===` (strict equality): checks type first — if types differ, returns false immediately. No coercion. Two objects: only true if same reference. `==` (abstract equality): if types differ, coerces using the "Abstract Equality Comparison Algorithm" (ECMAScript spec §7.2.13). Examples: `null == undefined` → true (special case). `0 == ''` → true ('' → 0). `1 == true` → true (true → 1). `[] == false` → true ([] → '' → 0, false → 0). `[] == ![]` → true (both 0). These coercions are unintuitive and context-dependent. Always use `===` unless specifically relying on null/undefined equivalence.
+
 </details>
 
 **C5. `this` binding: what determines `this` in JavaScript?**
+
 <details><summary>Deep Answer</summary>
 
 `this` is determined at CALL TIME, not at definition time (except arrow functions):
+
 1. **new binding**: `new Foo()` — `this` = new object
 2. **Explicit binding**: `foo.call(obj)` / `foo.apply(obj)` / `foo.bind(obj)` — `this` = obj
 3. **Implicit binding**: `obj.foo()` — `this` = obj (the object before the dot)
@@ -845,19 +971,23 @@ function makeCounter() {
 5. **Arrow function**: no own `this` — lexically inherits from enclosing context at DEFINITION time
 
 Priority: new > explicit > implicit > default. Arrow functions use none of these rules — they close over `this` from their lexical scope. Common trap: `obj.method` passed as callback loses its `this` binding (becomes default/undefined-in-strict-mode). Fix: `obj.method.bind(obj)` or arrow function.
+
 </details>
 
 **C6. What is the Temporal Dead Zone (TDZ) and why does `let` have it?**
+
 <details><summary>Deep Answer</summary>
 
 All declarations (`var`, `let`, `const`) are hoisted. BUT: `var` is initialized to `undefined` at hoist time. `let`/`const` are hoisted but NOT initialized — they're in the TDZ (temporal dead zone) from block start until the declaration line is reached. Accessing a `let`/`const` variable in its TDZ → `ReferenceError`. WHY it exists: `var`'s behavior (usable before declaration returns undefined) was a source of confusing bugs. TDZ makes it impossible to use a variable before you declared it — forces cleaner code. The declaration IS "seen" by the engine (hence "temporal" — it's available AFTER the declaration, just not before).
+
 </details>
 
 **C7. What are WeakMap and WeakSet used for, and what makes them "weak"?**
+
 <details><summary>Deep Answer</summary>
 
 "Weak" = the keys are weakly referenced — they don't prevent garbage collection. If the only reference to an object is a WeakMap key, the GC can collect it, and the WeakMap entry disappears automatically. Normal Map holds strong references: `map.set(node, data)` — `node` can't be GC'd as long as the map exists (memory leak if node removed from DOM). WeakMap: GC can collect `node` when it's no longer referenced elsewhere. Entry disappears. Use cases: (1) private data per instance (WeakMap as private field store), (2) caching computed data per DOM node without memory leaks, (3) tracking active objects without preventing their collection. Cannot iterate WeakMap/WeakSet (indeterminate state due to GC).
-</details>
 
+</details>
 
 > **Navigation**: [Back to Index](../00_MASTER_INDEX.md) | [Next >](02_JS_Functions_Closures.md)
