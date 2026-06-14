@@ -95,10 +95,28 @@ Reason: multiple agents (Antigravity, Codex, or others) may run simultaneously o
 When linking open-source implementations, always use a stable permalink (commit SHA or tagged release URL), not a `main`/`master` HEAD URL.
 
 Examples:
+
 - ✅ `https://github.com/openjdk/jdk/blob/jdk-21-ga/src/java.base/share/classes/java/util/HashMap.java#L274`
 - ❌ `https://github.com/openjdk/jdk/blob/main/src/java.base/share/classes/java/util/HashMap.java#L274`
 
 Reason: HEAD links rot within weeks. Stable permalink commits preserve the exact code the guide explains, even after upstream rewrites.
+
+## D014 - 5W1H Methodology Is Protected Backbone
+
+The 5W1H (WHAT/WHY/WHO/WHEN/WHERE/HOW) framing block at the top of every chapter is the **canonical pedagogical backbone** of this curriculum. It MUST NOT be removed, replaced, shrunk, or relocated by any upgrade, audit, cleanup, or rewrite.
+
+Reason: 5W1H is the primary scaffold readers use to orient before diving into depth. The 2026-06-01 pedagogy refinement pass extended it with challenge blocks, depth/theory framing, and 5W1H was preserved on every file. Removing it would break the curriculum's pedagogical identity and violate D003 (preserve existing content) by stealth.
+
+Scope:
+
+- Applies to all folders where 5W1H currently exists (notably `02_Data_Structures/`, `03_Algorithms/`, `07_Modern_Java/`, `08_SQL/`, `13_Developer_Essentials/`, `14_Mental_Models/`, `15_React_Frontend/`).
+- The Combined Lens rubric in `PEDAGOGY_STANDARDS.md` is explicitly additive to 5W1H; new dimensions may be added alongside but never instead of 5W1H.
+- Any future agent that removes a 5W1H block during a cleanup or "modernization" pass MUST revert the change immediately and record the incident in `CHANGE_JOURNAL.md`.
+
+Verification:
+
+- `grep -lE '5W1H' 02_Data_Structures/*.md | wc -l` should match the number of `.md` files in `02_Data_Structures/` after any change.
+- Pre-upgrade audits that touch 5W1H-bearing folders MUST include a "5W1H preserved" line in their summary.
 
 ## D013 - Lean Agent Start Sequence
 

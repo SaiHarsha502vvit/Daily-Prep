@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Teach algorithmic thinking, complexity, recursion, DP, graphs, greedy, strings, number theory, bit manipulation, and advanced algorithm engineering.
+Teach algorithmic thinking, complexity, recursion, DP, graphs, greedy, strings, number theory, bit manipulation, and advanced algorithm engineering. Also contains the **University Methodology Layer** (`A1..A4`) — the proof-based, complexity-based, lower-bound, and randomized algorithm chapters from MIT 6.006 / 6.046J, KTH DD1352 / DD2352, RWTH Aachen Algo I/II, and TU Munich IN0007.
 
 ## Writing Style
 
@@ -11,11 +11,13 @@ Teach algorithmic thinking, complexity, recursion, DP, graphs, greedy, strings, 
 - Explain constraint triggers.
 - Include why the algorithm works, when it fails, and how to debug edge cases.
 - Prefer deep reasoning over template dumping.
+- Catalog chapters may include a "🎓 University Proof Corner" near the top — a 1-3 page compression of 1-3 proofs from the `A*` chapters, with MIT/KTH/RWTH/TUM attribution and a "Full proofs: [link]" footer. See `00_CONTEXT/DECISIONS.md` D015.
 
 ## Boundaries
 
-Reusable interview templates belong in `04_Patterns_Templates`. Problem drills belong in `05_Problem_Solving`. Java-specific implementation gotchas belong in `07_Modern_Java` unless the algorithm lesson requires them.
+- Reusable interview templates belong in `04_Patterns_Templates`. Problem drills belong in `05_Problem_Solving`. Java-specific implementation gotchas belong in `07_Modern_Java` unless the algorithm lesson requires them.
+- The `A*` chapters are the rigorous, university-style foundation. Catalog chapters (`01..12_*`) teach implementation; Proof Corners link to the `A*` chapters for the underlying theory.
 
 ## Update Triggers
 
-Update this file when new algorithm families, competitive-programming strategies, or constraint-based selection rules are added.
+Update this file when new algorithm families, competitive-programming strategies, university-methodology additions, or constraint-based selection rules are added.
