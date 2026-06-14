@@ -2,18 +2,140 @@
 
 # CSS Foundations — Selectors, Cascade, Box Model & Display
 
-## 5W1H — Why This Chapter?
+## Section 0: War Stories — When CSS Basics Burned Production UIs
 
+> These were real UI bugs caused by misunderstanding the exact concepts this chapter teaches — the cascade, specificity, and the box model.
+
+### Story 1: The Specificity War — A `!important` Cascade That Took 3 Days to Untangle
+
+A team added a `!important` to fix a button color override in a hurry:
+
+```css
+/* In component.css */
+.btn-primary { background: blue !important; }
+```
+
+A month later, a new designer's theme file tried to override it:
+
+```css
+/* In theme.css */
+.btn-primary { background: green; } /* ← silently loses to !important */
+```
+
+The button stayed blue. The designer reported it as "Tailwind broken." A developer added another `!important` to the theme file to win:
+
+```css
+.btn-primary { background: green !important; }
+```
+
+Now a third developer's dark-mode override needed to win. They added another `!important`. Within 3 weeks, 14 `!important` declarations were fighting over 3 different button colors in 4 different files. No one could predict which color would render.
+
+The fix: understand specificity scoring and use it instead of `!important`:
+
+```
+Specificity (a, b, c):
+  a = inline styles        → (1,0,0)
+  b = IDs                  → (0,1,0)
+  c = classes/attributes   → (0,0,1)
+  elements/pseudo-elements → (0,0,0) (lowest)
+
+.btn-primary              → (0,0,1)
+.theme .btn-primary       → (0,0,2)  ← wins over single class
+.dark-mode .btn-primary   → (0,0,2)  ← same score, last-declared wins
+#header .btn-primary      → (0,1,1)  ← always wins over classes
+```
+
+**The lesson:** `!important` overrides the entire specificity system, making styles unpredictable. Use specificity-based selectors instead. Section 2 of this chapter explains the full scoring system.
+
+---
+
+### Story 2: The Box Model Bug That Broke Every Form Layout in IE
+
+A team's form inputs were wider than their containers on Internet Explorer:
+
+```css
+.form-field {
+  width: 100%; /* = content width */
+  padding: 12px;
+  border: 2px solid #ccc;
+}
+```
+
+Chrome: input = 100% wide (looks correct). IE: input = 100% + 24px padding + 4px border = 128px **wider** than the container.
+
+Root cause: the W3C box model default (`box-sizing: content-box`) adds padding and border **outside** the declared width. `width: 100%` means "the content area is 100%," not "the total element is 100%."
+
+Fix: `box-sizing: border-box` includes padding and border within the declared width:
+
+```css
+/* ✅ Modern baseline — paste this at the top of every CSS file */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+.form-field {
+  width: 100%;    /* Now total element is 100% — padding counted inside */
+  padding: 12px;  /* Does NOT add to width */
+  border: 2px solid #ccc; /* Does NOT add to width */
+}
+```
+
+Every modern CSS reset (Normalize.css, Tailwind's preflight) includes `box-sizing: border-box` for exactly this reason.
+
+**The lesson:** the default `content-box` model is unintuitive. Always set `box-sizing: border-box` globally. Section 3 of this chapter explains both models visually.
+
+---
+
+### Story 3: The Cascade Order That Made a Dark Mode Override Never Apply
+
+A React app had a dark mode class on the `<body>`. Developers expected dark mode styles to override default styles:
+
+```css
+/* globals.css — loaded first */
+.card { background: white; color: black; }
+
+/* dark-mode.css — loaded second */
+body.dark-mode .card { background: #1a1a1a; color: white; }
+```
+
+Dark mode styles applied correctly — on desktop. On mobile, they didn't. The mobile CSS file was loaded third:
+
+```css
+/* mobile.css — loaded third */
+@media (max-width: 768px) {
+  .card { background: white; color: black; } /* ← same specificity as globals.css */
+}
+```
+
+CSS rule: when specificity is equal, **the last declaration wins**. On mobile, `mobile.css` (position 3) loaded after `dark-mode.css` (position 2), so `mobile.css`'s `.card` rule won — always, regardless of dark mode.
+
+Fix: increase dark mode specificity OR ensure cascade order:
+
+```css
+/* Option A: increase specificity */
+body.dark-mode .card { background: #1a1a1a; } /* (0,1,1) vs (0,0,1) */
+
+/* Option B: media query inside dark-mode.css, loaded last */
+@media (max-width: 768px) {
+  body.dark-mode .card { background: #1a1a1a; }
+}
+```
+
+**The lesson:** cascade order (which stylesheet loads last) is the tiebreaker when specificity is equal. Media queries don't increase specificity — they're just conditions on when a rule applies.
+
+---
+
+## 5W1H — Why This Chapter?
 
 WHAT: CSS (Cascading Style Sheets) controls HOW HTML looks.
 Layout, colors, typography, spacing, animations.
 
-WHY:  HTML alone = newspaper from 1995. CSS = modern web.
+WHY: HTML alone = newspaper from 1995. CSS = modern web.
 Without CSS skills, you CAN'T build professional UIs.
 React components need CSS. Debugging layout issues needs
 deep CSS understanding.
 
-WHO:  Every frontend developer. Even "backend-focused" devs
+WHO: Every frontend developer. Even "backend-focused" devs
 need CSS basics for full-stack work.
 
 WHEN: After HTML basics. Before learning any CSS framework.
@@ -22,10 +144,9 @@ CSS fundamentals are FOREVER — Tailwind/Bootstrap change.
 WHERE: Browsers render CSS. Every website, web app, email
 template, mobile webview uses CSS.
 
-HOW:  CSS rules = selector { property: value; }
+HOW: CSS rules = selector { property: value; }
 Selector targets HTML. Properties change appearance.
 The CASCADE determines which rule wins when conflicts.
-
 
 ---
 
@@ -35,25 +156,49 @@ The CASCADE determines which rule wins when conflicts.
 
 ```css
 /* ELEMENT selector — targets ALL of that element */
-p { color: blue; }          /* Every <p> */
-h1 { font-size: 2rem; }    /* Every <h1> */
+p {
+  color: blue;
+} /* Every <p> */
+h1 {
+  font-size: 2rem;
+} /* Every <h1> */
 
 /* CLASS selector — targets elements with that class */
-.card { border: 1px solid #ccc; }
-.btn-primary { background: #3b82f6; }
+.card {
+  border: 1px solid #ccc;
+}
+.btn-primary {
+  background: #3b82f6;
+}
 
 /* ID selector — targets ONE specific element */
-#header { position: fixed; }
-#main-content { max-width: 1200px; }
+#header {
+  position: fixed;
+}
+#main-content {
+  max-width: 1200px;
+}
 
 /* UNIVERSAL selector — targets everything */
-* { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 /* ATTRIBUTE selector */
-input[type="email"] { border-color: blue; }
-a[href^="https"] { color: green; }    /* starts with */
-a[href$=".pdf"] { color: red; }       /* ends with */
-img[alt] { border: 2px solid green; } /* has attribute */
+input[type="email"] {
+  border-color: blue;
+}
+a[href^="https"] {
+  color: green;
+} /* starts with */
+a[href$=".pdf"] {
+  color: red;
+} /* ends with */
+img[alt] {
+  border: 2px solid green;
+} /* has attribute */
 ```
 
 ### Combinators — Relationships Between Elements
@@ -80,58 +225,112 @@ SELECTOR              │ WHAT IT TARGETS
 .parent ~ p           │ ALL <p> siblings after .parent
 ```
 
-
 ```css
 /* DESCENDANT (space) — any depth */
-.sidebar a { color: white; }   /* Any <a> inside .sidebar */
+.sidebar a {
+  color: white;
+} /* Any <a> inside .sidebar */
 
 /* CHILD (>) — direct children only */
-.nav > li { display: inline-block; }  /* Only direct <li> in .nav */
+.nav > li {
+  display: inline-block;
+} /* Only direct <li> in .nav */
 
 /* ADJACENT SIBLING (+) — immediately next */
-h2 + p { font-size: 1.1em; }  /* <p> right after <h2> */
+h2 + p {
+  font-size: 1.1em;
+} /* <p> right after <h2> */
 
 /* GENERAL SIBLING (~) — all following siblings */
-h2 ~ p { color: gray; }  /* All <p> after <h2>, same parent */
+h2 ~ p {
+  color: gray;
+} /* All <p> after <h2>, same parent */
 ```
 
 ### Pseudo-Classes & Pseudo-Elements
 
 ```css
 /* PSEUDO-CLASSES — state of elements */
-a:hover { color: red; }          /* Mouse over link */
-a:active { color: darkred; }     /* Being clicked */
-a:visited { color: purple; }     /* Already visited */
-input:focus { outline: 2px solid blue; }
-input:disabled { opacity: 0.5; }
-input:valid { border-color: green; }
-input:invalid { border-color: red; }
-input:placeholder-shown { font-style: italic; }
+a:hover {
+  color: red;
+} /* Mouse over link */
+a:active {
+  color: darkred;
+} /* Being clicked */
+a:visited {
+  color: purple;
+} /* Already visited */
+input:focus {
+  outline: 2px solid blue;
+}
+input:disabled {
+  opacity: 0.5;
+}
+input:valid {
+  border-color: green;
+}
+input:invalid {
+  border-color: red;
+}
+input:placeholder-shown {
+  font-style: italic;
+}
 
 /* STRUCTURAL pseudo-classes */
-li:first-child { font-weight: bold; }
-li:last-child { border-bottom: none; }
-li:nth-child(odd) { background: #f5f5f5; }   /* 1st, 3rd, 5th... */
-li:nth-child(3n) { color: red; }              /* Every 3rd */
-li:nth-child(n+4) { opacity: 0.8; }           /* 4th and beyond */
-p:not(.special) { margin-bottom: 1em; }       /* All except .special */
-div:empty { display: none; }                   /* No children */
-section:has(> h2) { padding-top: 2em; }        /* Contains h2 (NEW!) */
+li:first-child {
+  font-weight: bold;
+}
+li:last-child {
+  border-bottom: none;
+}
+li:nth-child(odd) {
+  background: #f5f5f5;
+} /* 1st, 3rd, 5th... */
+li:nth-child(3n) {
+  color: red;
+} /* Every 3rd */
+li:nth-child(n + 4) {
+  opacity: 0.8;
+} /* 4th and beyond */
+p:not(.special) {
+  margin-bottom: 1em;
+} /* All except .special */
+div:empty {
+  display: none;
+} /* No children */
+section:has(> h2) {
+  padding-top: 2em;
+} /* Contains h2 (NEW!) */
 
 /* PSEUDO-ELEMENTS — parts of elements */
-p::first-line { font-variant: small-caps; }
-p::first-letter { font-size: 3em; float: left; }
-.quote::before { content: '"'; font-size: 2em; }
-.quote::after { content: '"'; font-size: 2em; }
-::selection { background: #3b82f6; color: white; }
-input::placeholder { color: #999; }
-li::marker { color: #3b82f6; }  /* Bullet/number color */
+p::first-line {
+  font-variant: small-caps;
+}
+p::first-letter {
+  font-size: 3em;
+  float: left;
+}
+.quote::before {
+  content: '"';
+  font-size: 2em;
+}
+.quote::after {
+  content: '"';
+  font-size: 2em;
+}
+::selection {
+  background: #3b82f6;
+  color: white;
+}
+input::placeholder {
+  color: #999;
+}
+li::marker {
+  color: #3b82f6;
+} /* Bullet/number color */
 ```
 
 ---
-
-
-
 
 ## 2. The Cascade — How CSS Resolves Conflicts
 
@@ -151,7 +350,6 @@ The CASCADE resolves in this ORDER (highest to lowest priority):
 
 If SPECIFICITY is EQUAL → LAST rule in source order wins.
 ```
-
 
 ### Specificity Calculator
 
@@ -182,7 +380,6 @@ If SPECIFICITY is EQUAL → LAST rule in source order wins.
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ### Inheritance
 
 ```css
@@ -194,10 +391,10 @@ If SPECIFICITY is EQUAL → LAST rule in source order wins.
 
 /* Control inheritance explicitly: */
 .child {
-    color: inherit;  /* Use parent's value */
-    margin: initial; /* Use browser default */
-    padding: unset;  /* inherit if inheritable, else initial */
-    border: revert;  /* Use user-agent stylesheet value */
+  color: inherit; /* Use parent's value */
+  margin: initial; /* Use browser default */
+  padding: unset; /* inherit if inheritable, else initial */
+  border: revert; /* Use user-agent stylesheet value */
 }
 ```
 
@@ -237,11 +434,12 @@ BORDER-BOX (what you want):
   Content shrinks to fit. WHAT YOU SET IS WHAT YOU GET.
 ```
 
-
 ```css
 /* ALWAYS USE THIS RESET: */
-*, *::before, *::after {
-    box-sizing: border-box;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 /* REASONING: Without border-box, adding padding makes elements BIGGER
    than their set width. border-box makes width = total width.
@@ -249,27 +447,27 @@ BORDER-BOX (what you want):
 
 /* BOX MODEL PROPERTIES: */
 .card {
-    /* CONTENT */
-    width: 300px;
-    height: auto;          /* Height based on content */
-    min-width: 200px;
-    max-width: 500px;
-    min-height: 100px;
+  /* CONTENT */
+  width: 300px;
+  height: auto; /* Height based on content */
+  min-width: 200px;
+  max-width: 500px;
+  min-height: 100px;
 
-    /* PADDING (inside border) */
-    padding: 20px;                   /* All sides */
-    padding: 10px 20px;              /* Vertical | Horizontal */
-    padding: 10px 20px 15px;         /* Top | Horizontal | Bottom */
-    padding: 10px 20px 15px 5px;     /* Top | Right | Bottom | Left (clockwise) */
+  /* PADDING (inside border) */
+  padding: 20px; /* All sides */
+  padding: 10px 20px; /* Vertical | Horizontal */
+  padding: 10px 20px 15px; /* Top | Horizontal | Bottom */
+  padding: 10px 20px 15px 5px; /* Top | Right | Bottom | Left (clockwise) */
 
-    /* BORDER */
-    border: 2px solid #e2e8f0;
-    border-radius: 8px;             /* Rounded corners */
-    border-radius: 50%;             /* Circle (if equal width/height) */
+  /* BORDER */
+  border: 2px solid #e2e8f0;
+  border-radius: 8px; /* Rounded corners */
+  border-radius: 50%; /* Circle (if equal width/height) */
 
-    /* MARGIN (outside border) */
-    margin: 20px;
-    margin: 0 auto;     /* Center horizontally (needs defined width) */
+  /* MARGIN (outside border) */
+  margin: 20px;
+  margin: 0 auto; /* Center horizontally (needs defined width) */
 }
 ```
 
@@ -307,7 +505,6 @@ FIX/PREVENT:
 • Use overflow: hidden on parent
 ```
 
-
 ---
 
 ## 4. Display Property — How Elements Behave
@@ -336,7 +533,6 @@ grid           │ Element becomes GRID CONTAINER.
 contents       │ Element box disappears, children act as if
                │ they're direct children of grandparent.
 ```
-
 
 ```css
 /* VISUAL COMPARISON: */
@@ -369,14 +565,14 @@ contents       │ Element box disappears, children act as if
 ```css
 /* 6 WAYS TO SPECIFY COLOR: */
 .element {
-    color: red;                     /* Named (140+ names) */
-    color: #ff0000;                 /* Hex (6 digits: RRGGBB) */
-    color: #f00;                    /* Hex shorthand */
-    color: #ff000080;               /* Hex with alpha (8 digits) */
-    color: rgb(255, 0, 0);          /* RGB function */
-    color: rgba(255, 0, 0, 0.5);    /* RGB with alpha */
-    color: hsl(0, 100%, 50%);       /* HSL (Hue, Saturation, Lightness) */
-    color: hsla(0, 100%, 50%, 0.5); /* HSL with alpha */
+  color: red; /* Named (140+ names) */
+  color: #ff0000; /* Hex (6 digits: RRGGBB) */
+  color: #f00; /* Hex shorthand */
+  color: #ff000080; /* Hex with alpha (8 digits) */
+  color: rgb(255, 0, 0); /* RGB function */
+  color: rgba(255, 0, 0, 0.5); /* RGB with alpha */
+  color: hsl(0, 100%, 50%); /* HSL (Hue, Saturation, Lightness) */
+  color: hsla(0, 100%, 50%, 0.5); /* HSL with alpha */
 }
 
 /* HSL IS THE BEST FOR DESIGN SYSTEMS: */
@@ -422,42 +618,48 @@ contents       │ Element box disappears, children act as if
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ### Typography
 
 ```css
 .text {
-    /* FONT FAMILY (with fallback stack): */
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-                 Roboto, 'Helvetica Neue', Arial, sans-serif;
+  /* FONT FAMILY (with fallback stack): */
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif;
 
-    /* FONT SIZE (use rem!): */
-    font-size: 1rem;      /* 16px */
-    font-size: 1.125rem;  /* 18px */
-    font-size: 1.5rem;    /* 24px */
-    font-size: clamp(1rem, 2.5vw, 2rem); /* Fluid: min, preferred, max */
+  /* FONT SIZE (use rem!): */
+  font-size: 1rem; /* 16px */
+  font-size: 1.125rem; /* 18px */
+  font-size: 1.5rem; /* 24px */
+  font-size: clamp(1rem, 2.5vw, 2rem); /* Fluid: min, preferred, max */
 
-    /* FONT WEIGHT: */
-    font-weight: 400;   /* Normal */
-    font-weight: 500;   /* Medium */
-    font-weight: 600;   /* Semi-bold */
-    font-weight: 700;   /* Bold */
+  /* FONT WEIGHT: */
+  font-weight: 400; /* Normal */
+  font-weight: 500; /* Medium */
+  font-weight: 600; /* Semi-bold */
+  font-weight: 700; /* Bold */
 
-    /* LINE HEIGHT (unitless is best!): */
-    line-height: 1.5;   /* 1.5× font size — good for body */
-    line-height: 1.2;   /* Tighter for headings */
+  /* LINE HEIGHT (unitless is best!): */
+  line-height: 1.5; /* 1.5× font size — good for body */
+  line-height: 1.2; /* Tighter for headings */
 
-    /* LETTER & WORD SPACING: */
-    letter-spacing: -0.02em;  /* Tighter (headings) */
-    letter-spacing: 0.05em;   /* Wider (uppercase labels) */
+  /* LETTER & WORD SPACING: */
+  letter-spacing: -0.02em; /* Tighter (headings) */
+  letter-spacing: 0.05em; /* Wider (uppercase labels) */
 
-    /* TEXT PROPERTIES: */
-    text-align: center;
-    text-transform: uppercase;
-    text-decoration: none;
-    text-overflow: ellipsis;   /* ... for overflow */
-    white-space: nowrap;       /* Prevent wrapping */
-    overflow: hidden;          /* Required for ellipsis */
+  /* TEXT PROPERTIES: */
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-overflow: ellipsis; /* ... for overflow */
+  white-space: nowrap; /* Prevent wrapping */
+  overflow: hidden; /* Required for ellipsis */
 }
 
 /* RESPONSIVE TYPE SCALE: */
@@ -475,60 +677,60 @@ contents       │ Element box disappears, children act as if
 
 ---
 
-
-
 🔬 **Section Challenge — 5. Colors, Typography & Units**
 
 **Challenge 1 (Reasoning):** You write `.card .title { color: red; }` and also `#main .title { color: blue; }`. Both match the same element. Which wins and why? Now add `!important` to the first — what changes?
+
 <details><summary>Answer</summary>
 
 Without `!important`: `#main .title` wins because ID selectors (specificity `1-1-0`) outweigh class selectors (specificity `0-2-0`). Specificity is calculated as `(inline, ID, class, element)`. With `!important` on the first rule: the first rule wins because `!important` creates a separate priority tier that overrides ALL normal specificity. But if BOTH have `!important`, specificity decides again. This is why `!important` is dangerous — the only way to override `!important` is more `!important`, leading to specificity arms races.
+
 </details>
 
 ## 6. Backgrounds, Shadows & Borders
 
 ```css
 .card {
-    /* BACKGROUND: */
-    background-color: #ffffff;
-    background-image: url('/hero.jpg');
-    background-size: cover;          /* Fill container */
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;    /* Parallax effect */
+  /* BACKGROUND: */
+  background-color: #ffffff;
+  background-image: url("/hero.jpg");
+  background-size: cover; /* Fill container */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed; /* Parallax effect */
 
-    /* GRADIENT: */
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    background: radial-gradient(circle, #fff 0%, #ddd 100%);
+  /* GRADIENT: */
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: radial-gradient(circle, #fff 0%, #ddd 100%);
 
-    /* MULTIPLE BACKGROUNDS: */
-    background:
-        linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-        url('/hero.jpg') center/cover;
+  /* MULTIPLE BACKGROUNDS: */
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("/hero.jpg") center/cover;
 
-    /* BORDER: */
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;                  /* Rounded */
-    border-radius: 12px 12px 0 0;         /* Top only */
+  /* BORDER: */
+  border: 1px solid #e2e8f0;
+  border-radius: 12px; /* Rounded */
+  border-radius: 12px 12px 0 0; /* Top only */
 
-    /* BOX SHADOW: */
-    /* offset-x | offset-y | blur | spread | color */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);          /* Subtle */
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);     /* Medium */
-    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);   /* Large (floating) */
+  /* BOX SHADOW: */
+  /* offset-x | offset-y | blur | spread | color */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* Medium */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); /* Large (floating) */
 
-    /* MULTIPLE SHADOWS (layered = realistic): */
-    box-shadow:
-        0 1px 2px rgba(0,0,0,0.06),
-        0 4px 8px rgba(0,0,0,0.08),
-        0 12px 24px rgba(0,0,0,0.06);
+  /* MULTIPLE SHADOWS (layered = realistic): */
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.06),
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    0 12px 24px rgba(0, 0, 0, 0.06);
 
-    /* TEXT SHADOW: */
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  /* TEXT SHADOW: */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 
-    /* OUTLINE (doesn't affect layout): */
-    outline: 2px solid #3b82f6;
-    outline-offset: 2px;   /* Space between element and outline */
+  /* OUTLINE (doesn't affect layout): */
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px; /* Space between element and outline */
 }
 ```
 
@@ -549,45 +751,44 @@ Without `!important`: `#main .title` wins because ID selectors (specificity `1-1
 ╚══════════════════════════════════════════════════════════════════════╝
 ```
 
-
 ```css
 /* ABSOLUTE + RELATIVE pattern (most common): */
 .parent {
-    position: relative;  /* Creates positioning context */
+  position: relative; /* Creates positioning context */
 }
 .badge {
-    position: absolute;
-    top: -8px;          /* Offset from parent's top-left */
-    right: -8px;
-    /* Badge floats at parent's top-right corner */
+  position: absolute;
+  top: -8px; /* Offset from parent's top-left */
+  right: -8px;
+  /* Badge floats at parent's top-right corner */
 }
 
 /* CENTERING with absolute: */
 .centered {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%); /* Shift back by own size */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Shift back by own size */
 }
 
 /* FIXED header: */
 .navbar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;   /* Layer order: higher = on top */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Layer order: higher = on top */
 }
 body {
-    padding-top: 64px; /* Offset for fixed navbar height */
+  padding-top: 64px; /* Offset for fixed navbar height */
 }
 
 /* STICKY: acts relative UNTIL scroll threshold, then fixed */
 .table-header {
-    position: sticky;
-    top: 0;            /* Becomes fixed when scrolled to top */
-    background: white;
-    z-index: 10;
+  position: sticky;
+  top: 0; /* Becomes fixed when scrolled to top */
+  background: white;
+  z-index: 10;
 }
 ```
 
@@ -615,11 +816,7 @@ Children of z-index:5 can NEVER be above a sibling with z:10.
 This is why z-index "doesn't work" sometimes!
 ```
 
-
 ---
-
-
-
 
 ## 8. The CSS Reset & Base Styles
 
@@ -627,40 +824,56 @@ This is why z-index "doesn't work" sometimes!
 /* MODERN CSS RESET (Use this in every project): */
 
 /* 1. Box sizing for everything */
-*, *::before, *::after {
-    box-sizing: border-box;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 /* 2. Remove default margin */
 * {
-    margin: 0;
+  margin: 0;
 }
 
 /* 3. Improve text rendering */
 body {
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* 4. Improve media defaults */
-img, picture, video, canvas, svg {
-    display: block;
-    max-width: 100%;
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
 }
 
 /* 5. Input elements inherit font */
-input, button, textarea, select {
-    font: inherit;
+input,
+button,
+textarea,
+select {
+  font: inherit;
 }
 
 /* 6. Prevent text overflow */
-p, h1, h2, h3, h4, h5, h6 {
-    overflow-wrap: break-word;
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
 }
 
 /* 7. Root stacking context */
-#root, #__next {
-    isolation: isolate;
+#root,
+#__next {
+  isolation: isolate;
 }
 
 /* REASONING: Without these, every browser has different defaults.
@@ -707,7 +920,6 @@ Q: What is the cascade?
   → source order. The "cascading" in CSS means styles cascade through
   these priority levels to determine final applied styles.
 ```
-
 
 ---
 
