@@ -2,21 +2,139 @@
 
 ---
 
+## Section 0 — When Sliding Window Goes Wrong in Production
+
+> These bugs stem from reaching for the right pattern but applying it wrong. Each story is a different failure mode.
+
+---
+
+### Story 1 — Fixed Window Used Where Variable Window Was Needed (O(n²) vs O(n))
+
+A fintech team built a real-time fraud detection service: flag any account whose transactions sum to > $10,000 in any contiguous window of time. They implemented a fixed window: divide the day into 15-minute buckets, sum each bucket. An account could transfer $9,999 across bucket boundary (last second of minute 14, first second of minute 15) and never get flagged — the fraudsters figured this out within a week.
+
+When they switched to "any contiguous 15-minute span," an engineer implemented a naive O(n²) scan of all possible start times:
+
+```python
+# ❌ O(n²) — scans all possible windows for every transaction
+def is_fraud(transactions, window_secs=900):
+    n = len(transactions)
+    for i in range(n):
+        total = 0
+        for j in range(i, n):
+            total += transactions[j].amount
+            span = transactions[j].time - transactions[i].time
+            if span > window_secs:
+                break
+            if total > 10_000:
+                return True
+    return False
+# For 10,000 transactions/day → 100M iterations
+```
+
+Variable sliding window reduces this to O(n):
+
+```python
+# ✅ Variable window — O(n)
+from collections import deque
+
+def is_fraud(transactions, window_secs=900):
+    window = deque()
+    window_sum = 0
+    for tx in transactions:
+        window.append(tx)
+        window_sum += tx.amount
+        # Shrink left: remove transactions outside the time window
+        while window and tx.time - window[0].time > window_secs:
+            window_sum -= window.popleft().amount
+        if window_sum > 10_000:
+            return True
+    return False
+# O(n) — each transaction enters and leaves the deque exactly once
+```
+
+---
+
+### Story 2 — Forgot to Reset Window State Between Test Cases (Shared Mutable State)
+
+A developer implemented the "longest substring without repeating characters" solution using a global `char_set` and `left` pointer. In unit tests, each test case ran correctly in isolation. In the production batch job that processed 50,000 strings sequentially, the `char_set` and `left` pointer were never reset between strings — they accumulated state across calls. Results were wrong for every string after the first.
+
+```python
+# ❌ Shared state — window data leaks between calls
+char_set = set()  # global — never reset!
+left = 0          # global — never reset!
+
+def longest_unique(s):
+    global left, char_set
+    max_len = 0
+    for right in range(len(s)):
+        while s[right] in char_set:
+            char_set.remove(s[left])
+            left += 1
+        char_set.add(s[right])
+        max_len = max(max_len, right - left + 1)
+    return max_len
+# Second call inherits char_set and left from first call → wrong answers
+
+# ✅ Reset state at the top of each call
+def longest_unique(s):
+    char_set = set()   # local — reset on every call
+    left = 0           # local — reset on every call
+    max_len = 0
+    for right in range(len(s)):
+        while s[right] in char_set:
+            char_set.remove(s[left])
+            left += 1
+        char_set.add(s[right])
+        max_len = max(max_len, right - left + 1)
+    return max_len
+```
+
+**Pattern rule**: Window state (`left`, `count`, `freq_map`, `window_sum`) must always be local to the function or explicitly reset. Global/class-level window state is almost always a bug.
+
+---
+
+### Story 3 — Off-By-One in Window Shrink Condition (the `<` vs `<=` Bug)
+
+An engineer implemented "minimum window substring" with the shrink condition `while count_satisfied == need`. The condition was wrong by one: it should be `>=`. When `count_satisfied` temporarily exceeded `need` (because the frequency map allowed overshoot), the shrink loop terminated early. For most test strings this worked by accident — the happy path rarely overshot. But for strings like `"AABBA"` finding `"AB"`, the result was 1 character longer than optimal. The bug was in production for 4 months before a user noticed the search highlighting was off by one character.
+
+```python
+# ❌ == allows exactly-met but not overshot — shrink loop exits too early
+while count_satisfied == need:
+    update_answer()
+    char_out = s[left]
+    window_freq[char_out] -= 1
+    if char_out in t_freq and window_freq[char_out] < t_freq[char_out]:
+        count_satisfied -= 1
+    left += 1
+
+# ✅ >= handles both met AND overshot cases correctly
+while count_satisfied >= need:
+    update_answer()
+    char_out = s[left]
+    window_freq[char_out] -= 1
+    if char_out in t_freq and window_freq[char_out] < t_freq[char_out]:
+        count_satisfied -= 1
+    left += 1
+```
+
+**Rule**: Variable window shrink conditions should almost always use `>=` (not `==`) when the window can overshoot validity. Think about what happens if two target characters appear consecutively — does `==` still exit the loop at the right time?
+
+---
+
 ## 🗺️ Pattern Recognition Header — Sliding Window
 
 **How do I know this is a Sliding Window problem?**
 
-
-| Signal in problem | Sub-pattern | Template |
-|---|---|---|
-| `"subarray/substring of size k"` | **Fixed Window** | `if (j-i+1 == k) { process; i++; }` |
-| `"longest/shortest subarray with condition"` | **Variable Window** | `expand right; while invalid: shrink left` |
-| `"at most K distinct / at most K condition"` | **Variable + Freq Map** | `HashMap + shrink when freq violates` |
-| `"sum equals K"` (positive only) | **Variable Window** | `sum>target → shrink; sum==target → answer` |
-| `"minimum window substring"` | **Variable + 2 counters** | `have/need counters + HashMap` |
-
+| Signal in problem                            | Sub-pattern               | Template                                    |
+| -------------------------------------------- | ------------------------- | ------------------------------------------- |
+| `"subarray/substring of size k"`             | **Fixed Window**          | `if (j-i+1 == k) { process; i++; }`         |
+| `"longest/shortest subarray with condition"` | **Variable Window**       | `expand right; while invalid: shrink left`  |
+| `"at most K distinct / at most K condition"` | **Variable + Freq Map**   | `HashMap + shrink when freq violates`       |
+| `"sum equals K"` (positive only)             | **Variable Window**       | `sum>target → shrink; sum==target → answer` |
+| `"minimum window substring"`                 | **Variable + 2 counters** | `have/need counters + HashMap`              |
 
 **The rule that never fails:**
+
 ```
 "contiguous" + "optimize length or value" = Sliding Window
 Each element enters window ONCE and leaves ONCE → O(n)
@@ -27,14 +145,14 @@ Variable window: expand right, shrink left while invalid
 
 ### ⚠️ Constraint Lens — When Sliding Window Is NOT Correct
 
-| Constraint / Condition | Sliding Window? | Better Pattern |
-|------------------------|-----------------|----------------|
-| fixed window size `k` | yes | fixed window |
-| all numbers positive and condition is `sum <= K` or `sum >= K` | yes | variable window |
-| negative numbers allowed and target is exact sum | no | prefix sum + hashmap |
-| negative numbers allowed and shortest sum `>= K` | no | prefix sum + monotonic deque |
-| exact `K` distinct chars/items | indirect | `atMost(K) - atMost(K-1)` |
-| online range updates/queries | no | Fenwick / segment tree |
+| Constraint / Condition                                         | Sliding Window? | Better Pattern               |
+| -------------------------------------------------------------- | --------------- | ---------------------------- |
+| fixed window size `k`                                          | yes             | fixed window                 |
+| all numbers positive and condition is `sum <= K` or `sum >= K` | yes             | variable window              |
+| negative numbers allowed and target is exact sum               | no              | prefix sum + hashmap         |
+| negative numbers allowed and shortest sum `>= K`               | no              | prefix sum + monotonic deque |
+| exact `K` distinct chars/items                                 | indirect        | `atMost(K) - atMost(K-1)`    |
+| online range updates/queries                                   | no              | Fenwick / segment tree       |
 
 Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selection.md).
 
@@ -44,22 +162,66 @@ Full map: [Constraint-Based Pattern Selection](25_Constraint_Based_Pattern_Selec
 
 ---
 
-
-
 🔬 **Section Challenge — 🗺️ Pattern Recognition Header — Sliding Window**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
+
 </details>
 
+### Historical Evolution
+
+**Inventor / Originator:** The sliding window technique evolved across multiple domains — signal processing in the 1960s, TCP congestion control by Van Jacobson (1988), and algorithmic formalization in Cormen-Leiserson-Rivest-Stein (CLRS, 1990).
+
+**Predecessor context:** Before sliding windows, engineers computed running statistics by re-scanning the entire window for each position — O(n×k) time. This was acceptable for small windows but unacceptable for real-time signal processing or network packet analysis.
+
+**Evolution narrative:** Signal processing engineers in the 1960s needed efficient ways to compute moving averages and filters over streaming data. They realized consecutive windows overlap significantly, and that overlap could be exploited: instead of recomputing from scratch, subtract the leaving element and add the entering element. This insight migrated into networking ( Jacobson 1988 for TCP retransmission windows) and then into algorithm textbooks as a formal pattern.
+
+**Modern practice:** Sliding window underpins TCP congestion control, real-time analytics platforms (Apache Flink, Kafka Streams), and is the go-to pattern for any problem asking for statistics over the "last K elements" of a stream.
+
+- **Signal processing — 1960s**: Moving average filters and digital signal processing (DSP) formalized the overlap-exploitation insight that became sliding window
+- **TCP Sliding Window — Jacobson 1988**: "Congestion Avoidance and Control" paper introduced TCP windowing for flow control across networks
+- **CLRS — 1990**: Cormen et al. codified the technique in the canonical algorithms textbook, naming it "sliding window"
+- **Modern practice**: Real-time streaming systems (Kafka Streams, Apache Flink) use sliding windows for aggregations over time-series data
+
+---
+
+### Production Reality
+
+**Pattern Mis-Selection Debug Workflow — How to identify the wrong pattern:**
+
+When your solution is O(N²) when you expected O(N), or fails on specific inputs, the bug is usually pattern mis-selection, not code. Use this 5-step workflow:
+
+1. **Check the constraint lens**: Did the input violate the pattern's prerequisite? (e.g., sorted input for two pointers, positive numbers for sliding window sum)
+2. **Trace the failure input**: For the smallest failing case, identify which invariant broke. Does the algorithm assume the invariant that wasn't true?
+3. **Measure the actual complexity**: Add a counter for the inner-loop iterations. O(N²) when O(N) expected usually means a redundant scan, not a wrong algorithm.
+4. **Check edge cases the pattern doesn't cover**: Empty input, single element, all-same values, maximum/minimum values. These often reveal the wrong pattern.
+5. **Escalate to a different pattern family**: If 4 steps don't fix it, the pattern itself is wrong. Switch to the pattern suggested by the constraint lens.
+
+**Pattern-Specific Failure Modes:**
+
+- **Negative numbers break sum-target sliding window** — When the array contains negatives, shrinking the window no longer guarantees sum decrease. The monotonicity assumption that makes sliding window work breaks. Detection: test with `[-1, 2, 3]` and target `2` — the correct answer is 2 subarrays, but sliding window may miss them. Fix: switch to prefix sum + HashMap.
+
+- **Window grows unbounded when condition never met** — If the validation condition is never satisfied (e.g., `at most K distinct` where K is larger than the array), the while-loop to shrink never executes, and the window expands to cover the entire array. Detection: monitor window size growth with a log; unbounded growth indicates the condition is impossible.
+
+- **Off-by-one in window size calculation** — Confusion between `right - left + 1` (element count) and `right - left` (gap). Fixed-size windows using `k` elements require `right - left + 1 == k`. Detection: test with single-element array and `k=1`; off-by-one causes index out of bounds or infinite loop.
+
+- **Substring vs subarray confusion** — Sliding window assumes contiguous memory. For string problems requiring character reordering (anagrams), the window slides correctly. For problems requiring any-order matching (permutations), sliding window misses valid answers because it cannot capture non-contiguous character positions.
+
+**Production Selection Heuristic:** Use sliding window when input values are guaranteed positive and the constraint explicitly requires contiguous subarrays/substrings with a monotonic objective (maximize count, minimize length).
+
+---
 
 # 🎯 SLIDING WINDOW MASTERY - THE COMPLETE MENTAL MODEL
 
@@ -236,17 +398,11 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 
 ---
 
-
-
-
 ## 🔥 THE CRITICAL CONFUSION (And How To Never Have It Again)
 
 **This is the #1 confusion that stops 90% of students from mastering sliding window.**
 
 ---
-
-
-
 
 ## 🧠 THE WRONG WAY (How You Were Thinking Before)
 
@@ -260,9 +416,6 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 
 ---
 
-
-
-
 ## ✅ THE RIGHT WAY (How You Think Now)
 
 ```
@@ -272,9 +425,6 @@ Should shrink `while(valid)` to find the minimum window — this is correct! But
 **Solution:** Think in **element counts**, not indices.
 
 ---
-
-
-
 
 ## 🎨 VISUAL PROOF (The Moment It Clicks)
 
@@ -378,7 +528,6 @@ _, _, [5, 1, 3] | _
 Count = j - i + 1 = 4 - 2 + 1 = 3 ✅
 ```
 
-
 **Notice:** We never had to think about `i + k` or `i + k - 1`!
 
 ---
@@ -423,7 +572,6 @@ The first form is a QUESTION, not a FORMULA.
 Questions are easier to remember than formulas!
 ```
 
-
 These three expressions mean **exactly** the same thing:
 
 ```
@@ -434,13 +582,9 @@ j = i + k - 1          ← "j is at last valid position"
 j < i + k              ← "j hasn't crossed boundary"
 ```
 
-
 **Why the first is best:** You're counting, not calculating indices.
 
 ---
-
-
-
 
 ## 🧪 WHY THE OTHER FORMS CONFUSE YOU
 
@@ -482,7 +626,6 @@ CONCLUSION: Only "j < i + k" works, but it's HARD to remember!
 SOLUTION: Use "j - i + 1 == k" and NEVER think about it again!
 ```
 
-
 ### Test Case: i = 0, k = 3
 
 #### 1. Using `j < i + k`:
@@ -520,17 +663,16 @@ Valid j: 0, 1, 2  ❌ (We need 1, 2, 3!)
 
 ## ✅ THE EXAM-SAFE PATTERN
 
-
 EXAM-SAFE SLIDING WINDOW TEMPLATE
 
-int i = 0;  // Window start (left pointer)
+int i = 0; // Window start (left pointer)
 
-for (int j = 0; j < n; j++) {  // j expands window (right pointer)
+for (int j = 0; j < n; j++) { // j expands window (right pointer)
 
 // STEP 1: EXPAND - Include arr[j] in window
 // (add to sum, add to hashmap, etc.)
 
-if (j - i + 1 == k) {  // STEP 2: CHECK - "Do I have K elements?"
+if (j - i + 1 == k) { // STEP 2: CHECK - "Do I have K elements?"
 
 // STEP 3: PROCESS - Window is ready, do something
 // (compare max, print result, etc.)
@@ -538,7 +680,7 @@ if (j - i + 1 == k) {  // STEP 2: CHECK - "Do I have K elements?"
 // STEP 4: SHRINK - Remove arr[i] from window
 // (subtract from sum, remove from hashmap, etc.)
 
-i++;  // STEP 5: SLIDE - Move window forward
+i++; // STEP 5: SLIDE - Move window forward
 }
 }
 
@@ -550,8 +692,6 @@ WHY THIS IS PERFECT:
 ✅ No confusion about < vs <=
 ✅ Clear 5-step process: EXPAND → CHECK → PROCESS → SHRINK → SLIDE
 ✅ Works for ANY window problem with small modifications
-
-
 
 ### Pattern 1: Count-Based (Recommended)
 
@@ -584,8 +724,6 @@ for (int j = 0; j < n; j++) {  // j expands window
 
 ---
 
-
-
 ## 🎨 DRY RUN (Do This On Paper)
 
 ```
@@ -599,7 +737,6 @@ j=4: i=3, window=[-2,5], count=4-3+1=2 ✅ PROCESS → i becomes 4
 
 Total windows processed: 4 = n - k + 1 = 5 - 2 + 1 ✅
 ```
-
 
 ---
 
@@ -641,8 +778,6 @@ for (int i = k; i < n; i++) {
 **When to use:** When you can optimize by reusing previous calculation.
 
 ---
-
-
 
 ## 🎯 EXAMPLE PROBLEMS USING COUNT-BASED THINKING
 
@@ -730,9 +865,6 @@ public static void countPositivesInWindow(int[] arr, int k) {
 
 ---
 
-
-
-
 ## 🧠 THE MENTAL MODEL (Final Summary)
 
 ### Before Your Breakthrough:
@@ -750,11 +882,7 @@ When it equals k, I'm ready."
 → Confidence, clarity, correctness
 ```
 
-
 ---
-
-
-
 
 ## 🎓 PRACTICE CHECKLIST
 
@@ -801,9 +929,6 @@ You've truly mastered sliding window when:
 
 ---
 
-
-
-
 ## 🔥 FINAL WISDOM
 
 **The formula `j < i + k` is correct, but it makes you think wrong.**
@@ -813,9 +938,6 @@ You've truly mastered sliding window when:
 **Use the one that keeps your brain calm.**
 
 ---
-
-
-
 
 ## 📚 WHAT'S NEXT?
 
@@ -838,117 +960,117 @@ Master each section before moving to the next.
 
 ## Section 1: Fixed-Size Sliding Window
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Maximum Average Subarray I (LC 643) | LeetCode | Easy | Sum of window k, slide |
-| 2 | Find All Anagrams in a String (LC 438) | LeetCode | Medium | Frequency map window = k |
-| 3 | Permutation in String (LC 567) | LeetCode | Medium | Fixed window = len(s1) |
-| 4 | Maximum of All Subarrays of Size K | GFG | Medium | Deque for sliding max |
-| 5 | Sliding Window Maximum (LC 239) | LeetCode | Hard | Monotonic deque |
+| #   | Problem                                | Platform | Difficulty | Key Technique            |
+| --- | -------------------------------------- | -------- | ---------- | ------------------------ |
+| 1   | Maximum Average Subarray I (LC 643)    | LeetCode | Easy       | Sum of window k, slide   |
+| 2   | Find All Anagrams in a String (LC 438) | LeetCode | Medium     | Frequency map window = k |
+| 3   | Permutation in String (LC 567)         | LeetCode | Medium     | Fixed window = len(s1)   |
+| 4   | Maximum of All Subarrays of Size K     | GFG      | Medium     | Deque for sliding max    |
+| 5   | Sliding Window Maximum (LC 239)        | LeetCode | Hard       | Monotonic deque          |
 
 ---
-
-
 
 🔬 **Section Challenge — Section 1: Fixed-Size Sliding Window**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-</details>
 
+</details>
 
 ## Section 2: Variable-Size Sliding Window
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Longest Substring Without Repeating (LC 3) | LeetCode | Medium | HashSet + shrink on duplicate |
-| 2 | Minimum Size Subarray Sum (LC 209) | LeetCode | Medium | Shrink while sum >= target |
-| 3 | Longest Repeating Character Replacement (LC 424) | LeetCode | Medium | Window - maxFreq <= k |
-| 4 | Max Consecutive Ones III (LC 1004) | LeetCode | Medium | Flip at most k zeros |
-| 5 | Fruit Into Baskets (LC 904) | LeetCode | Medium | At most 2 distinct fruits |
-| 6 | Minimum Window Substring (LC 76) | LeetCode | Hard | Shrink to find minimum valid |
-| 7 | Subarrays with K Different Integers (LC 992) | LeetCode | Hard | atMost(k) - atMost(k-1) trick |
-| 8 | Longest Substring with At Most K Distinct (LC 340) | LeetCode | Medium | HashMap count distinct |
+| #   | Problem                                            | Platform | Difficulty | Key Technique                 |
+| --- | -------------------------------------------------- | -------- | ---------- | ----------------------------- |
+| 1   | Longest Substring Without Repeating (LC 3)         | LeetCode | Medium     | HashSet + shrink on duplicate |
+| 2   | Minimum Size Subarray Sum (LC 209)                 | LeetCode | Medium     | Shrink while sum >= target    |
+| 3   | Longest Repeating Character Replacement (LC 424)   | LeetCode | Medium     | Window - maxFreq <= k         |
+| 4   | Max Consecutive Ones III (LC 1004)                 | LeetCode | Medium     | Flip at most k zeros          |
+| 5   | Fruit Into Baskets (LC 904)                        | LeetCode | Medium     | At most 2 distinct fruits     |
+| 6   | Minimum Window Substring (LC 76)                   | LeetCode | Hard       | Shrink to find minimum valid  |
+| 7   | Subarrays with K Different Integers (LC 992)       | LeetCode | Hard       | atMost(k) - atMost(k-1) trick |
+| 8   | Longest Substring with At Most K Distinct (LC 340) | LeetCode | Medium     | HashMap count distinct        |
 
 ---
-
-
 
 🔬 **Section Challenge — Section 2: Variable-Size Sliding Window**
 
 **Challenge 1 (Reasoning):** Sliding window guarantees O(N). How? Each element is added and removed exactly how many times?
+
 <details><summary>Answer</summary>
 
 Each element enters the window exactly ONCE (right pointer advances past it) and leaves exactly ONCE (left pointer advances past it). Total operations: 2N regardless of window size changes. Compare to brute force: for each ending position, scan back to find optimal start = O(N²). The window's state (sum, freq map, etc.) is maintained INCREMENTALLY — O(1) per pointer move.
+
 </details>
 
 **Challenge 2 (Bug Hunt):** Minimum Window Substring: the while loop to shrink the window runs `while(valid) { shrink; }`. What's wrong with this logic?
+
 <details><summary>Answer</summary>
 
 Should shrink `while(valid)` to find the minimum window — this is correct! But the common bug: not updating `left++` BEFORE rechecking validity, or forgetting to update the answer BEFORE shrinking. The answer should be captured at the moment the window first becomes valid, then kept updated as we shrink to find smaller valid windows.
-</details>
 
+</details>
 
 ## Section 3: Two Pointers
 
-| # | Problem | Platform | Difficulty | Key Technique |
-|---|---------|----------|------------|---------------|
-| 1 | Two Sum II - Sorted (LC 167) | LeetCode | Medium | Left+right converge |
-| 2 | 3Sum (LC 15) | LeetCode | Medium | Fix one + two-pointer on rest |
-| 3 | Container With Most Water (LC 11) | LeetCode | Medium | Move shorter pointer inward |
-| 4 | Trapping Rain Water (LC 42) | LeetCode | Hard | Two pointer with leftMax/rightMax |
-| 5 | Sort Colors (LC 75) | LeetCode | Medium | Dutch National Flag 3-way |
-| 6 | Remove Duplicates from Sorted Array (LC 26) | LeetCode | Easy | Slow/fast pointer |
-| 7 | Move Zeroes (LC 283) | LeetCode | Easy | Partition pointer |
-| 8 | Squares of a Sorted Array (LC 977) | LeetCode | Easy | Two pointers from both ends |
+| #   | Problem                                     | Platform | Difficulty | Key Technique                     |
+| --- | ------------------------------------------- | -------- | ---------- | --------------------------------- |
+| 1   | Two Sum II - Sorted (LC 167)                | LeetCode | Medium     | Left+right converge               |
+| 2   | 3Sum (LC 15)                                | LeetCode | Medium     | Fix one + two-pointer on rest     |
+| 3   | Container With Most Water (LC 11)           | LeetCode | Medium     | Move shorter pointer inward       |
+| 4   | Trapping Rain Water (LC 42)                 | LeetCode | Hard       | Two pointer with leftMax/rightMax |
+| 5   | Sort Colors (LC 75)                         | LeetCode | Medium     | Dutch National Flag 3-way         |
+| 6   | Remove Duplicates from Sorted Array (LC 26) | LeetCode | Easy       | Slow/fast pointer                 |
+| 7   | Move Zeroes (LC 283)                        | LeetCode | Easy       | Partition pointer                 |
+| 8   | Squares of a Sorted Array (LC 977)          | LeetCode | Easy       | Two pointers from both ends       |
 
 ---
-
-
 
 🔬 **Section Challenge — Section 3: Two Pointers**
 
 **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+
 <details><summary>Answer</summary>
 
 The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
-</details>
 
+</details>
 
 ## HIDDEN GEMS — Sliding Window & Two Pointers
 
-| # | Problem | Platform | Why It's Valuable |
-|---|---------|----------|-------------------|
-| 1 | Count Number of Nice Subarrays (LC 1248) | LeetCode | atMost trick with odd numbers |
-| 2 | Replace the Substring for Balanced String (LC 1234) | LeetCode | Min window where outside is balanced |
-| 3 | Grumpy Bookstore Owner (LC 1052) | LeetCode | Fixed window on top of prefix sum |
-| 4 | Longest Turbulent Subarray (LC 978) | LeetCode | Alternating comparison window |
-| 5 | Maximum Points You Can Obtain from Cards (LC 1423) | LeetCode | Min subarray trick (complement) |
-| 6 | Get Equal Substrings Within Budget (LC 1208) | LeetCode | Variable window with cost constraint |
+| #   | Problem                                             | Platform | Why It's Valuable                    |
+| --- | --------------------------------------------------- | -------- | ------------------------------------ |
+| 1   | Count Number of Nice Subarrays (LC 1248)            | LeetCode | atMost trick with odd numbers        |
+| 2   | Replace the Substring for Balanced String (LC 1234) | LeetCode | Min window where outside is balanced |
+| 3   | Grumpy Bookstore Owner (LC 1052)                    | LeetCode | Fixed window on top of prefix sum    |
+| 4   | Longest Turbulent Subarray (LC 978)                 | LeetCode | Alternating comparison window        |
+| 5   | Maximum Points You Can Obtain from Cards (LC 1423)  | LeetCode | Min subarray trick (complement)      |
+| 6   | Get Equal Substrings Within Budget (LC 1208)        | LeetCode | Variable window with cost constraint |
 
 ---
 
 _Created: January 24, 2026_  
 _Based on your breakthrough understanding_
 
-
 ### 🔗 Cross-References — Navigate the Ecosystem
 
-| Topic | Related Content |
-|---|---|
-| Sliding window practice | [Problem Solving — Sliding Window](../05_Problem_Solving/05_Sliding_Window.md) |
-| Arrays (underlying DS) | [Arrays](../02_Data_Structures/01b_Arrays.md) |
-| Two Pointers (related) | [Two Pointers Patterns](../04_Patterns_Templates/07_TwoPointers.md) |
-| HashMaps in variable window | [HashTable](../02_Data_Structures/01e_HashTable.md) |
-| Sliding window in ML (mini-batch) | [ML Fundamentals](../21_Python_ML_DL_NLP/05_ML_Fundamentals.md) |
+| Topic                             | Related Content                                                                |
+| --------------------------------- | ------------------------------------------------------------------------------ |
+| Sliding window practice           | [Problem Solving — Sliding Window](../05_Problem_Solving/05_Sliding_Window.md) |
+| Arrays (underlying DS)            | [Arrays](../02_Data_Structures/01b_Arrays.md)                                  |
+| Two Pointers (related)            | [Two Pointers Patterns](../04_Patterns_Templates/07_TwoPointers.md)            |
+| HashMaps in variable window       | [HashTable](../02_Data_Structures/01e_HashTable.md)                            |
+| Sliding window in ML (mini-batch) | [ML Fundamentals](../21_Python_ML_DL_NLP/05_ML_Fundamentals.md)                |
 
 ---
 
@@ -957,9 +1079,9 @@ _Based on your breakthrough understanding_
 🔬 **Section Challenge — HIDDEN GEMS — Sliding Window & Two Pointers**
 
 **Challenge 1 (Reasoning):** Two-pointer pattern reduces O(N²) brute force to O(N). What is the KEY invariant that makes this safe?
+
 <details><summary>Answer</summary>
 
 The invariant: all pairs we SKIP are guaranteed to not contain the answer. In 3Sum: once we fix `nums[i]` and use l/r pointers, we can safely skip because the array is sorted. If `sum > 0`: decreasing r decreases the sum (smaller right value). If `sum < 0`: increasing l increases the sum (larger left value). We never skip a valid pair because monotonicity guarantees it.
+
 </details>
-
-

@@ -4,40 +4,130 @@
 
 ---
 
+## Section 0 — Git Disasters That Actually Happen in Production Teams
+
+> These happened at real companies. They're not warnings about obvious things — they're the exact situations that bite experienced developers who know git well enough to be dangerous.
+
+---
+
+### Story 1 — The `git push --force` That Wiped Three Days of Team Work
+
+A senior engineer on a 6-person team had their local `main` branch diverge from remote (they'd been on a flight, working offline). They ran `git push --force origin main` to "fix the divergence." That command rewrote the remote `main` with their local version — which was 3 days behind. Everyone else's commits from the last 3 days vanished from the remote. Three developers lost a day re-doing work. The engineer who pushed didn't realize `--force` doesn't ask for confirmation.
+
+Root cause: `git push --force` replaces the remote ref unconditionally. It's designed for rebased feature branches, not `main`.
+
+```bash
+# What they ran (dangerous — no confirmation, no mercy):
+git push --force origin main
+
+# What they should have used:
+git push --force-with-lease origin main
+# --force-with-lease fails if the remote has commits your local doesn't know about
+# It's a lease: "only force if I'm the last one who changed this"
+
+# Recovery: git reflog on anyone who had the lost commits
+git reflog --all | grep "the lost commit message"
+git checkout -b recovery-branch <commit-hash>
+# Then cherry-pick or merge into main
+```
+
+**Rule**: Never `git push --force` to `main` or any shared branch. `--force-with-lease` is always safer and provides the same result when you're the only writer.
+
+---
+
+### Story 2 — The Committed Secret That Lived in History Forever
+
+A developer added a database password directly to `config.js` to test something quickly, then added a `.gitignore` entry and deleted the file — assuming that cleaned it up. Three months later, a security audit tool (running `trufflehog` on the full git history) flagged the password. The commit was still in `git log`. Because the repo was hosted on GitHub and cloned by 15 developers, the password had to be considered compromised — requiring an emergency rotation of all DB credentials.
+
+```bash
+# What went wrong — the file was committed, then deleted
+git add config.js      # ← secret in here
+git commit -m "temp config"
+# Later:
+echo "config.js" >> .gitignore
+rm config.js
+git commit -m "remove config"
+# The secret is still in the history — git never forgets committed content
+
+# Prevention: scan before commit
+git diff --staged | grep -i "password\|secret\|api_key"  # manual check
+# Or use pre-commit hooks with gitleaks / detect-secrets
+
+# If it already happened — nuclear option (rewrites history):
+git filter-branch --force --index-filter \
+  "git rm --cached --ignore-unmatch config.js" \
+  --prune-empty --tag-name-filter cat -- --all
+# Force-push ALL branches. Warn all collaborators to re-clone.
+# Rotate the secret BEFORE running this — history rewrite isn't instant.
+```
+
+**Rule**: A secret that was ever committed, even in a "deleted" commit, must be treated as leaked. Rotate first, clean history second.
+
+---
+
+### Story 3 — The Rebase That Created 47 Duplicate Commits
+
+A developer fetched upstream changes and rebased their 8-commit feature branch onto the latest `main`. They then pushed their branch — but their colleagues had already fetched it and rebased their own branches on top of it. After the rebase, the 8 commits got new hashes. Everyone else's branches still referenced the old hashes. When they merged, git saw the old 8 commits AND the new 8 commits as different commits (same code, different SHA). The PR had 47 commits instead of 8 — and every changed file appeared twice in the diff, with 39 "duplicate" commits creating a noise-filled history that made the code review take 3× as long.
+
+```bash
+# Safe rebase flow — only rebase private branches, not shared ones
+# Before sharing a branch with anyone:
+git rebase origin/main    # ✅ safe — only you have this branch
+
+# AFTER others have based work on your branch:
+git merge origin/main     # ✅ use merge instead — creates a merge commit
+                          # but preserves everyone's existing commit hashes
+
+# If you must rebase after sharing (coordinate first):
+# 1. Tell all collaborators: "I'm force-rebasing this branch"
+# 2. They run: git fetch && git checkout main
+# 3. You rebase + force-push
+# 4. They re-checkout: git checkout feature-branch (gets the new history)
+
+# Identify shared vs private:
+git log origin/feature-branch..HEAD  # commits only you have
+# If this is empty, everyone is synced — safe to rebase
+```
+
+**Rule**: Once a branch is pushed and someone else has fetched it, treat it as shared. Merge instead of rebase. Rebase is for cleaning up your own commits before the first push.
+
+---
+
 # WHY: Why Version Control Exists
 
 ## The Problem Before Git
 
 It's 2004. A team of 5 developers is building software. They share code via email... or a shared folder.
 
-*Developer A*: "I'll work on login.java"
-*Developer B*: "Me too, I need to fix a bug there"
+_Developer A_: "I'll work on login.java"
+_Developer B_: "Me too, I need to fix a bug there"
 
 **Result**: Developer B copies their version over A's work. 3 days of A's work = **gone forever**.
 
-This happened *every day* in the 1990s–2000s at every company.
+This happened _every day_ in the 1990s–2000s at every company.
 
 ### The Three Fundamental Problems
 
-| # | Problem | Description |
-|---|---------|-------------|
-| 1 | **Collaboration** | Multiple people editing same files → overwrites |
-| 2 | **History** | "The app worked yesterday, what changed?" → nobody knows |
-| 3 | **Experimentation** | "I want to try a new approach without breaking main code" → make a copy? |
+| #   | Problem             | Description                                                              |
+| --- | ------------------- | ------------------------------------------------------------------------ |
+| 1   | **Collaboration**   | Multiple people editing same files → overwrites                          |
+| 2   | **History**         | "The app worked yesterday, what changed?" → nobody knows                 |
+| 3   | **Experimentation** | "I want to try a new approach without breaking main code" → make a copy? |
 
 ✅ **Git solves all three simultaneously.**
 
 ## WHO: The Origin Story
 
-**2005**: Linux kernel development used BitKeeper (proprietary VCS). When BitKeeper revoked its free license, Linus Torvalds said *"I'll build my own in 2 weeks."*
+**2005**: Linux kernel development used BitKeeper (proprietary VCS). When BitKeeper revoked its free license, Linus Torvalds said _"I'll build my own in 2 weeks."_
 
 **Design goals**:
+
 1. **Fast** — handle the Linux kernel (25M+ lines)
 2. **Distributed** — no central server required
 3. **Safe** — cryptographic integrity with SHA-1 hashes
 4. **Branching** — cheap, instant branch creation
 
-The name "Git" comes from British slang for "unpleasant person." Linus: *"I name all my projects after myself."*
+The name "Git" comes from British slang for "unpleasant person." Linus: _"I name all my projects after myself."_
 
 ---
 
@@ -47,11 +137,11 @@ The name "Git" comes from British slang for "unpleasant person." Linus: *"I name
 
 <details><summary>Answer</summary>
 
-"Distributed" means every developer has a **complete copy** of the repository — full history, all branches, all objects. GitHub is just a *convenient synchronization point*, not a single point of truth. Concrete advantages: you can commit, branch, merge, view history, and bisect bugs **completely offline**. When GitHub goes down, your team doesn't stop working. If GitHub deleted your repo, any developer's clone is a perfect full backup. This also enables the **fork + pull request** workflow — contributing to open source without needing write access to the original. Contrast with SVN: if the central server dies, nobody can commit anything.
+"Distributed" means every developer has a **complete copy** of the repository — full history, all branches, all objects. GitHub is just a _convenient synchronization point_, not a single point of truth. Concrete advantages: you can commit, branch, merge, view history, and bisect bugs **completely offline**. When GitHub goes down, your team doesn't stop working. If GitHub deleted your repo, any developer's clone is a perfect full backup. This also enables the **fork + pull request** workflow — contributing to open source without needing write access to the original. Contrast with SVN: if the central server dies, nobody can commit anything.
 
 </details>
 
-**Challenge 2 (Reasoning):** Git uses SHA-1 hashes to identify every object. SHA-1 was broken for *cryptographic security* in 2017 (collision attacks exist). But Git's history is still trustworthy. Why? What is Git actually protecting against with SHA-1?
+**Challenge 2 (Reasoning):** Git uses SHA-1 hashes to identify every object. SHA-1 was broken for _cryptographic security_ in 2017 (collision attacks exist). But Git's history is still trustworthy. Why? What is Git actually protecting against with SHA-1?
 
 <details><summary>Answer</summary>
 
@@ -63,7 +153,7 @@ Git uses SHA-1 for **data integrity and deduplication**, not adversarial securit
 
 ## Mental Model 1: Git is a SNAPSHOT Timeline
 
-**Most VCS**: Store *differences* (deltas) between versions — `v1 → [+5 lines] → v2 → [-2 lines, +8 lines] → v3`
+**Most VCS**: Store _differences_ (deltas) between versions — `v1 → [+5 lines] → v2 → [-2 lines, +8 lines] → v3`
 
 **Git**: Store **snapshots** of the entire project state. Each version is a complete picture of every file. Unchanged files just point to the previous copy.
 
@@ -75,7 +165,7 @@ Git uses SHA-1 for **data integrity and deduplication**, not adversarial securit
 
 <details><summary>Answer</summary>
 
-Git uses **content-addressed deduplication**. Internally, each file version is a **blob object** — compressed content keyed by SHA-1. If a file hasn't changed, the new commit's tree object simply **points to the same blob** as the previous commit — no new blob is written. Only the 1 changed file needs a new blob. Git also runs `git gc` (garbage collection) periodically, packing loose objects into **packfiles** using delta compression for similar blobs. Result: storage grows proportional to *unique file versions*, not files × commits. Verify with: `git cat-file -p <commit-hash>` to see the tree, then `git cat-file -p <tree-hash>` to see blob references.
+Git uses **content-addressed deduplication**. Internally, each file version is a **blob object** — compressed content keyed by SHA-1. If a file hasn't changed, the new commit's tree object simply **points to the same blob** as the previous commit — no new blob is written. Only the 1 changed file needs a new blob. Git also runs `git gc` (garbage collection) periodically, packing loose objects into **packfiles** using delta compression for similar blobs. Result: storage grows proportional to _unique file versions_, not files × commits. Verify with: `git cat-file -p <commit-hash>` to see the tree, then `git cat-file -p <tree-hash>` to see blob references.
 
 </details>
 
@@ -270,7 +360,7 @@ git merge main                  # Get latest main changes into feature
 
 ### Git Flow vs GitHub Flow
 
-**Git Flow** *(Complex, Enterprise)*:
+**Git Flow** _(Complex, Enterprise)_:
 
 ```mermaid
 gitGraph
@@ -292,7 +382,7 @@ gitGraph
     merge hotfix id: "hotfix" tag: "v1.0.1"
 ```
 
-**GitHub Flow** *(Simple, Modern)*:
+**GitHub Flow** _(Simple, Modern)_:
 
 ```mermaid
 gitGraph
@@ -315,7 +405,7 @@ gitGraph
 **You**: Edit line 10 of `app.java` → `"Hello World"`
 **Friend**: Edit line 10 of `app.java` → `"Hello Universe"`
 
-**Git**: *"Two different changes to the SAME line. I can't decide. Human, you must choose."*
+**Git**: _"Two different changes to the SAME line. I can't decide. Human, you must choose."_
 
 ### HOW to Resolve
 
@@ -361,7 +451,7 @@ AFTER git rebase main (from feature branch):
   main:    A ── B ── C ── D
                               \
   feature:                     E' ── F' ── G'
-  
+
   (E', F', G' are COPIES with new parent = D)
 
 Result: Linear, clean history
@@ -496,19 +586,19 @@ node_modules/
 
 # WHEN: Decision Guide
 
-| Question | Answer |
-|----------|--------|
-| When to commit? | Every logical unit of work (30–60 min intervals) |
-| When to branch? | Every new feature, bug fix, or experiment |
-| When to merge vs rebase? | `merge` for shared branches, `rebase` for personal cleanup |
-| When to force push? | **Only** on your personal branch after rebase. **Never** on main/develop |
-| When to use stash? | Switching tasks mid-work (not for long-term storage) |
+| Question                 | Answer                                                                   |
+| ------------------------ | ------------------------------------------------------------------------ |
+| When to commit?          | Every logical unit of work (30–60 min intervals)                         |
+| When to branch?          | Every new feature, bug fix, or experiment                                |
+| When to merge vs rebase? | `merge` for shared branches, `rebase` for personal cleanup               |
+| When to force push?      | **Only** on your personal branch after rebase. **Never** on main/develop |
+| When to use stash?       | Switching tasks mid-work (not for long-term storage)                     |
 
 ---
 
 # 🔩 HOW (Internals): Git Object Model
 
-> 📖 *Source: Pro Git, Chapter 10 — Git Internals. Understanding this makes `git reset`, `rebase`, and `reflog` trivially intuitive rather than magical.*
+> 📖 _Source: Pro Git, Chapter 10 — Git Internals. Understanding this makes `git reset`, `rebase`, and `reflog` trivially intuitive rather than magical._
 
 ## The `.git/` Directory
 
@@ -652,15 +742,15 @@ Git stores **blob objects keyed by content hash** — identical content across c
 
 # 🧭 Git Command Cheat Sheet
 
-| Category | Commands |
-|----------|----------|
-| **Setup** | `init`, `clone`, `config` |
-| **Daily** | `status`, `add`, `commit`, `push`, `pull` |
-| **Branch** | `branch`, `checkout`, `switch`, `merge` |
-| **Inspect** | `log`, `diff`, `show`, `blame` |
-| **Undo** | `reset`, `revert`, `restore`, `stash` |
+| Category     | Commands                                    |
+| ------------ | ------------------------------------------- |
+| **Setup**    | `init`, `clone`, `config`                   |
+| **Daily**    | `status`, `add`, `commit`, `push`, `pull`   |
+| **Branch**   | `branch`, `checkout`, `switch`, `merge`     |
+| **Inspect**  | `log`, `diff`, `show`, `blame`              |
+| **Undo**     | `reset`, `revert`, `restore`, `stash`       |
 | **Advanced** | `rebase`, `cherry-pick`, `bisect`, `reflog` |
-| **Remote** | `remote`, `fetch`, `push`, `pull` |
+| **Remote**   | `remote`, `fetch`, `push`, `pull`           |
 
 ---
 
@@ -695,7 +785,7 @@ Git stores **blob objects keyed by content hash** — identical content across c
 
 </details>
 
-**Challenge 2 (Debug):** You're on `main`. You run `git merge feature/login` and Git says "Already up to date." You *know* the feature branch has 3 new commits. What went wrong, and how do you diagnose it?
+**Challenge 2 (Debug):** You're on `main`. You run `git merge feature/login` and Git says "Already up to date." You _know_ the feature branch has 3 new commits. What went wrong, and how do you diagnose it?
 
 <details><summary>Answer</summary>
 
@@ -726,4 +816,3 @@ Git stores **blob objects keyed by content hash** — identical content across c
 **Next Chapter**: [Linux CLI & Shell →](02_Linux_CLI_Shell.md)
 
 ---
-
