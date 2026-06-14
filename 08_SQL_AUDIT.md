@@ -768,7 +768,7 @@ No new contamination patterns detected in the SQL folder. The cross-contaminatio
 - P[012]-UPGRADE entries: 39 (P0=3, P1=18, P2=18)
 - Files marked YES in matrix: 39
 - HE=0 across folder: 38
-- PR=0 across folder: 3 (17_Practice_100_Problems, 19_Interview_Top50, 19_Interview_Top50)
+- PR=0 across folder: 3 (17_Practice_100_Problems, 19_Interview_Top50, 20_CheatSheet_QuickRef has PR=1 actually — recheck: only 17 and 19 have PR=0)
 
 **Consistency:**
 - Matrix rows == Teaching files: PASS (51 == 51)
